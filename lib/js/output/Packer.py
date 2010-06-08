@@ -276,9 +276,10 @@ class Packer(object):
             return u""
 
 
-        #
-        # CONTINUE
-        #
+        # ------------------------------------------------------------
+        #   CONTINUE STATEMENT (LOOPS)
+        # ------------------------------------------------------------
+
 
         symbol("continue")
 
@@ -294,9 +295,9 @@ class Packer(object):
             return u""
 
 
-        #
-        # DEFAULT
-        #
+        # ------------------------------------------------------------
+        #   DEFAULT (CASE BLOCK)
+        # ------------------------------------------------------------
 
         symbol("default")
 
@@ -311,6 +312,11 @@ class Packer(object):
         def closing(s, node):
             return u""
 
+
+
+        # ------------------------------------------------------------
+        #   DEFINITION
+        # ------------------------------------------------------------
 
         symbol("definition")
 
@@ -330,6 +336,11 @@ class Packer(object):
             return r
 
 
+
+        # ------------------------------------------------------------
+        #   DEFINITION LIST
+        # ------------------------------------------------------------
+
         symbol("definitionList")
 
         @method(symbol("definitionList"))
@@ -342,6 +353,11 @@ class Packer(object):
             return u""
 
 
+
+        # ------------------------------------------------------------
+        #   DELETE KEYWORD
+        # ------------------------------------------------------------
+
         symbol("delete")
 
         @method(symbol("delete"))
@@ -353,6 +369,10 @@ class Packer(object):
         def closing(s, node):
             return u""
 
+
+        # ------------------------------------------------------------
+        #   ELSE STATEMENT
+        # ------------------------------------------------------------
 
         symbol("elseStatement")
 
@@ -371,6 +391,11 @@ class Packer(object):
             return u""
 
 
+
+        # ------------------------------------------------------------
+        #   EMPTY STATEMENT
+        # ------------------------------------------------------------
+
         symbol("emptyStatement")
 
         @method(symbol("emptyStatement"))
@@ -382,6 +407,11 @@ class Packer(object):
         def closing(s, node):
             return u""
 
+
+
+        # ------------------------------------------------------------
+        #   EXPRESSION
+        # ------------------------------------------------------------
 
         symbol("expression")
 
@@ -433,6 +463,11 @@ class Packer(object):
             return r
 
 
+
+        # ------------------------------------------------------------
+        #   FILE (ROOT NODE)
+        # ------------------------------------------------------------
+
         symbol("file")
 
         @method(symbol("file"))
@@ -444,6 +479,10 @@ class Packer(object):
             return u''
 
 
+        # ------------------------------------------------------------
+        #   FINALLY STATEMENT (TRY-CATCH-FINALLY)
+        # ------------------------------------------------------------
+
         symbol("finally")
 
         @method(symbol("finally"))
@@ -454,6 +493,10 @@ class Packer(object):
         def closing(s, node):
             return u""
 
+
+        # ------------------------------------------------------------
+        #   FIRST - PSEUDO BLOCK
+        # ------------------------------------------------------------
 
         symbol("first")
 
@@ -485,6 +528,10 @@ class Packer(object):
             return r
 
 
+        # ------------------------------------------------------------
+        #   FUNCTION
+        # ------------------------------------------------------------
+
         symbol("function")
 
         @method(symbol("function"))
@@ -500,6 +547,11 @@ class Packer(object):
             return u""
 
 
+
+        # ------------------------------------------------------------
+        #   GROUP
+        # ------------------------------------------------------------
+
         symbol("group")
 
         @method(symbol("group"))
@@ -512,6 +564,10 @@ class Packer(object):
             r += ")"
             return r
 
+
+        # ------------------------------------------------------------
+        #   IDENTIFIER
+        # ------------------------------------------------------------
 
         symbol("identifier")
 
@@ -532,6 +588,11 @@ class Packer(object):
             return r
 
 
+
+        # ------------------------------------------------------------
+        #   INSTATIATION (NEW STATEMENT)
+        # ------------------------------------------------------------
+
         symbol("instantiation")
 
         @method(symbol("instantiation"))
@@ -544,6 +605,11 @@ class Packer(object):
         def closing(s, node):
             return u""
 
+
+
+        # ------------------------------------------------------------
+        #   KEY (MAPS)
+        # ------------------------------------------------------------
 
         symbol("key")
 
@@ -561,6 +627,10 @@ class Packer(object):
                 r += "]"
             return r
 
+
+        # ------------------------------------------------------------
+        #   KEY-VALUE (MAPS)
+        # ------------------------------------------------------------
 
         symbol("keyvalue")
 
@@ -590,6 +660,10 @@ class Packer(object):
 
 
 
+        # ------------------------------------------------------------
+        #   LEFT (OPERATIONS????)
+        # ------------------------------------------------------------
+
         symbol("left")
 
         @method(symbol("left"))
@@ -604,6 +678,11 @@ class Packer(object):
                 r += cls.packOperator(node.parent.get("operator", False))
             return r
 
+
+
+        # ------------------------------------------------------------
+        #   LOOP :: LOOP
+        # ------------------------------------------------------------
 
         symbol("loop")
 
@@ -644,6 +723,12 @@ class Packer(object):
             return r
 
 
+
+
+        # ------------------------------------------------------------
+        #   MAP :: MAP
+        # ------------------------------------------------------------
+
         symbol("map")
 
         @method(symbol("map"))
@@ -657,6 +742,11 @@ class Packer(object):
             return "}"
 
 
+
+        # ------------------------------------------------------------
+        #   CORE :: OPERAND
+        # ------------------------------------------------------------
+
         symbol("operand")
 
         @method(symbol("operand"))
@@ -667,6 +757,11 @@ class Packer(object):
         def closing(s, node):
             return u""
 
+
+
+        # ------------------------------------------------------------
+        #   CORE :: OPERATION
+        # ------------------------------------------------------------
 
         symbol("operation")
 
@@ -680,6 +775,11 @@ class Packer(object):
             return u""
 
 
+
+        # ------------------------------------------------------------
+        #   FUNCTION :: PARAMS
+        # ------------------------------------------------------------
+
         symbol("params")
 
         @method(symbol("params"))
@@ -692,6 +792,10 @@ class Packer(object):
         def closing(s, node):
             return ")"
 
+
+        # ------------------------------------------------------------
+        #   CORE :: RETURN
+        # ------------------------------------------------------------
 
         symbol("return")
 
@@ -707,6 +811,11 @@ class Packer(object):
             return u""
 
 
+
+        # ------------------------------------------------------------
+        #   RIGHT
+        # ------------------------------------------------------------
+
         symbol("right")
 
         @method(symbol("right"))
@@ -720,6 +829,11 @@ class Packer(object):
         def closing(s, node):
             return u""
 
+
+
+        # ------------------------------------------------------------
+        #   SECOND
+        # ------------------------------------------------------------
 
         symbol("second")
 
@@ -748,6 +862,12 @@ class Packer(object):
             return r
 
 
+
+
+        # ------------------------------------------------------------
+        #   STATEMENT
+        # ------------------------------------------------------------
+
         symbol("statement")
 
         @method(symbol("statement"))
@@ -769,6 +889,11 @@ class Packer(object):
         def closing(s, node):
             return u""
 
+
+
+        # ------------------------------------------------------------
+        #   SWITCH :: SWITCH
+        # ------------------------------------------------------------
 
         symbol("switch")
 
@@ -795,6 +920,11 @@ class Packer(object):
             return r
 
 
+
+        # ------------------------------------------------------------
+        #   SPECIAL :: THIRD
+        # ------------------------------------------------------------
+
         symbol("third")
 
         @method(symbol("third"))
@@ -818,53 +948,65 @@ class Packer(object):
             return u""
 
 
+
+        # ------------------------------------------------------------
+        #   EXCEPTION :: THROW
+        # ------------------------------------------------------------
+
         symbol("throw")
 
         @method(symbol("throw"))
         def opening(s, node):
-            r = "throw"
-            return r
+            return u"throw"
 
 
         @method(symbol("throw"))
         def closing(s, node):
             return u""
 
+
+
+
+
+
+
+
+
+        # ------------------------------------------------------------
+        #   CORE :: VARIABLE
+        # ------------------------------------------------------------
 
         symbol("variable")
 
         @method(symbol("variable"))
         def opening(s, node):
-            r = u''
-            return r
+            return u""
 
         @method(symbol("variable"))
         def closing(s, node):
             return u""
 
 
+        # ------------------------------------------------------------
+        #   CORE :: VOID
+        # ------------------------------------------------------------
+
         symbol("void")
 
         @method(symbol("void"))
         def opening(s, node):
-            r = u''
-            r += "void"
-            r += "("
-            return r
+            return u"void("
 
         @method(symbol("void"))
         def closing(s, node):
-            r = u''
-            r += ")"
-            return r
+            return u")"
 
 
 
 
-    # --------------------------------------------------------------------------
-    # -- Helper for symbol methods ---------------------------------------------
-    # --------------------------------------------------------------------------
-
+    ##################################################################################
+    # HELPERS / INTERFACES
+    ##################################################################################
 
     @staticmethod
     def packOperator(name):
@@ -890,8 +1032,7 @@ class Packer(object):
         return s
 
 
+
     @staticmethod
     def pack(node):
         return Packer.symbol_base.emit(node)
-
-
