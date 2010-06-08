@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+################################################################################
+#
+#  qooxdoo - the new era of web development
+#
+#  http://qooxdoo.org
+#
+#  Copyright:
+#    2009 Sebastian Werner, sebastian-werner.net
+#
+#  License:
+#    LGPL: http://www.gnu.org/licenses/lgpl.html
+#    EPL: http://www.eclipse.org/org/documents/epl-v10.php
+#    See the LICENSE file in the project's top-level directory for details.
+#
+#  Authors:
+#    * Sebastian Werner (wpbasti)
+#
+################################################################################
+
+# Extend PYTHONPATH with 'lib'
+import sys, os
+sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
+
+# Import system modules
+import optparse, string, types, pprint, copy
+
+# Import features
+from misc.ExtendAction import ExtendAction
+from misc import filetool
+from js.input import tokenizer
+
+
+if __name__ == '__main__':
+    try:
+        parser = optparse.OptionParser(option_class=ExtendAction)
+
+        usage_str = '''%prog [options] file.js,...'''
+        parser.set_usage(usage_str)
+
+        (options, args) = parser.parse_args(sys.argv[1:])
+    
+        for filePath in args:
+            tokens = tokenizer.parseStream(filetool.read(filePath, "utf-8"))
+            for entry in tokens:
+                print "%s[%s] (%s,%s)" % (entry["type"], entry["detail"], entry["line"], entry["column"])
+
+    except KeyboardInterrupt:
+        print
+        print "Keyboard interrupt!"
+        sys.exit(1)

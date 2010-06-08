@@ -73,10 +73,8 @@ R_ALL = re.compile(S_ALL)
 
 
 
-
 parseLine = 1
 parseColumn = 1
-parseUniqueId = ""
 
 
 
@@ -91,37 +89,29 @@ def recoverEscape(s):
 
 
 def parseElement(element, tokens=[]):
-    # to be consistent with other worker 'parse*' routines, this should be passed
-    # and extend the tokens[] array, rather than just returning new tokens (postponed)
-    global parseUniqueId
     global parseLine
     global parseColumn
 
     if lang.RESERVED.has_key(element):
-        tok = { "type" : "reserved", "detail" : lang.RESERVED[element], "source" : element, "line" : parseLine, "column" : parseColumn, "id" : parseUniqueId }
+        tok = { "type" : "reserved", "detail" : lang.RESERVED[element], "source" : element, "line" : parseLine, "column" : parseColumn }
 
     elif element in lang.BUILTIN:
-        tok = { "type" : "builtin", "detail" : "", "source" : element, "line" : parseLine, "column" : parseColumn, "id" : parseUniqueId }
+        tok = { "type" : "builtin", "detail" : "", "source" : element, "line" : parseLine, "column" : parseColumn }
 
     elif R_NUMBER.search(element):
-        tok = { "type" : "number", "detail" : "int", "source" : element, "line" : parseLine, "column" : parseColumn, "id" : parseUniqueId }
-
-    elif element.startswith("__"):
-        tok = { "type" : "name", "detail" : "private", "source" : element, "line" : parseLine, "column" : parseColumn, "id" : parseUniqueId }
-
-    elif element.startswith("_"):
-        tok = { "type" : "name", "detail" : "protected", "source" : element, "line" : parseLine, "column" : parseColumn, "id" : parseUniqueId }
+        tok = { "type" : "number", "detail" : "int", "source" : element, "line" : parseLine, "column" : parseColumn }
 
     elif len(element) > 0:
-        tok = { "type" : "name", "detail" : "public", "source" : element, "line" : parseLine, "column" : parseColumn, "id" : parseUniqueId }
+        tok = { "type" : "name", "detail" : "", "source" : element, "line" : parseLine, "column" : parseColumn }
 
     parseColumn += len(element)
+    tokens.append(tok)
 
-    return tok
+    return tokens
+
 
 
 def parsePart(part, tokens=[]):
-    global parseUniqueId
     global parseLine
     global parseColumn
 
@@ -129,7 +119,7 @@ def parsePart(part, tokens=[]):
 
     for line in R_NEWLINE.split(part):
         if line == "\n":
-            tokens.append({ "type" : "eol", "source" : "", "detail" : "", "line" : parseLine, "column" : parseColumn, "id" : parseUniqueId })
+            tokens.append({ "type" : "eol", "source" : "", "detail" : "", "line" : parseLine, "column" : parseColumn })
             parseColumn = 1
             parseLine += 1
 
@@ -158,7 +148,7 @@ def parsePart(part, tokens=[]):
                         # convert existing element
                         if element != "":
                             if R_NONWHITESPACE.search(element):
-                                tokens.append(parseElement(element))
+                                parseElement(element, tokens)
 
                             element = ""
 
@@ -169,7 +159,7 @@ def parsePart(part, tokens=[]):
                                 (tokens[-1]['detail'] != 'float') and
                                 (tokens[-1]['detail'] != 'RP')    and
                                 (tokens[-1]['detail'] != 'public'))):
-                            tokens.append({ "type" : "regexp", "detail" : "", "source" : recoverEscape(mo.group(0)), "id" : parseUniqueId, "line" : parseLine, "column" : parseColumn })
+                            tokens.append({ "type" : "regexp", "detail" : "", "source" : recoverEscape(mo.group(0)), "line" : parseLine, "column" : parseColumn })
                             parseColumn += len(mo.group(0))
                             i += len(mo.group(0))
                         
@@ -184,12 +174,12 @@ def parsePart(part, tokens=[]):
                         # convert existing element
                         if element != "":
                             if R_NONWHITESPACE.search(element):
-                                tokens.append(parseElement(element))
+                                parseElement(element, tokens)
 
                             element = ""
 
                         # add character to token list
-                        tokens.append({ "type" : "token", "detail" : lang.PUNCTUATORS[char], "source" : char, "line" : parseLine, "column" : parseColumn, "id" : parseUniqueId })
+                        tokens.append({ "type" : "punctuator", "detail" : lang.PUNCTUATORS[char], "source" : char, "line" : parseLine, "column" : parseColumn })
                         parseColumn += 1
 
                     else:
@@ -198,11 +188,12 @@ def parsePart(part, tokens=[]):
                 # convert remaining stuff to tokens
                 if element != "":
                     if R_NONWHITESPACE.search(element):
-                        tokens.append(parseElement(element))
+                        parseElement(element, tokens)
 
                     element = ""
 
     return tokens
+
 
 
 ##
@@ -222,21 +213,6 @@ def parseFragmentLead(content, fragment, tokens):
 
 
 
-def hasLeadingContent(tokens):
-    pos = len(tokens) - 1
-    while pos > 0:
-        if tokens[pos]["type"] == "eol":
-            break
-
-        else:
-            return True
-
-    return False
-
-
-
-
-
 ##
 # Main parsing routine, in that it qualifies tokens from the stream (operators,
 # nums, strings, ...)
@@ -245,7 +221,6 @@ def parseStream(content):
     # make global variables available
     global parseLine
     global parseColumn
-    global parseUniqueId
 
     # reset global stuff
     parseColumn = 1
@@ -270,63 +245,24 @@ def parseStream(content):
         else:
             break
 
-        # Handle block comment
+        # Handle block comments
         if comment.R_BLOCK_COMMENT.match(fragment):
             source = recoverEscape(fragment)
-            format = comment.getFormat(source)
-            multiline = comment.isMultiLine(source)
-
-            # print "Type:MultiComment"
-            content = parseFragmentLead(content, fragment, tokens)  # sort of intelligent "pop"
-
-            atBegin = not hasLeadingContent(tokens)
-            if re.compile("^\s*\n").search(content):
-                atEnd = True
-            else:
-                atEnd = False
-
-            # print "Begin: %s, End: %s" % (atBegin, atEnd)
-
-            # Fixing source content
-            if atBegin:
-                source = comment.outdent(source, parseColumn - 1)
-
-            source = comment.correct(source)
-
-            connection = "before"
-
-            if atEnd and not atBegin:
-                connection = "after"
-            else:
-                connection = "before"
-
-            tokens.append({ "type" : "comment", "detail" : format, "multiline" : multiline, "connection" : connection, "source" : source, "id" : parseUniqueId, "line" : parseLine, "column" : parseColumn, "begin" : atBegin, "end" : atEnd })
+            content = parseFragmentLead(content, fragment, tokens)
+            tokens.append({ "type" : "comment", "detail" : "block", "source" : source, "line" : parseLine, "column" : parseColumn })
             parseLine += len(fragment.split("\n")) - 1
 
-        # Handle inline comment
+        # Handle inline comments
         elif comment.R_INLINE_COMMENT.match(fragment):
-            # print "Type:SingleComment"
             source = recoverEscape(fragment)
             content = parseFragmentLead(content, fragment, tokens)
+            tokens.append({ "type" : "comment", "detail" : "inline", "source" : source, "line" : parseLine, "column" : parseColumn })
 
-            atBegin = hasLeadingContent(tokens)
-            atEnd = True
-
-            if atBegin:
-                connection = "after"
-            else:
-                connection = "before"
-
-            source = comment.correct(source)
-
-            tokens.append({ "type" : "comment", "detail" : "inline", "multiline" : False, "connection" : connection, "source" : source, "id" : parseUniqueId, "line" : parseLine, "column" : parseColumn, "begin" : atBegin, "end" : atEnd })
-
-        # Handle string
+        # Handle strings A
         elif R_STRING_A.match(fragment):
-            # print "Type:StringA: %s" % fragment
             content = parseFragmentLead(content, fragment, tokens)
             source = recoverEscape(fragment)[1:-1]
-            tokens.append({ "type" : "string", "detail" : "singlequotes", "source" : source.replace("\\\n",""), "id" : parseUniqueId, "line" : parseLine, "column" : parseColumn })
+            tokens.append({ "type" : "string", "detail" : "singlequotes", "source" : source.replace("\\\n",""), "line" : parseLine, "column" : parseColumn })
             newLines = source.count("\\\n")
             parseLine += newLines
             if newLines:
@@ -334,12 +270,11 @@ def parseStream(content):
             else:
                 parseColumn += len(source) + 2
 
-        # Handle string
+        # Handle strings B
         elif R_STRING_B.match(fragment):
-            # print "Type:StringB: %s" % fragment
             content = parseFragmentLead(content, fragment, tokens)
             source = recoverEscape(fragment)[1:-1]
-            tokens.append({ "type" : "string", "detail" : "doublequotes", "source" : source.replace("\\\n",""), "id" : parseUniqueId, "line" : parseLine, "column" : parseColumn })
+            tokens.append({ "type" : "string", "detail" : "doublequotes", "source" : source.replace("\\\n",""), "line" : parseLine, "column" : parseColumn })
             newLines = source.count("\\\n")
             parseLine += newLines
             if newLines:
@@ -347,17 +282,15 @@ def parseStream(content):
             else:
                 parseColumn += len(source) + 2
 
-        # Handle float num
+        # Handle float numbers
         elif R_FLOAT.match(fragment):
-            # print "Type:Float: %s" % fragment
             content = parseFragmentLead(content, fragment, tokens)
-            tokens.append({ "type" : "number", "detail" : "float", "source" : fragment, "id" : parseUniqueId, "line" : parseLine, "column" : parseColumn })
+            tokens.append({ "type" : "number", "detail" : "float", "source" : fragment, "line" : parseLine, "column" : parseColumn })
 
-        # Handle operator
+        # Handle operators
         elif R_OPERATORS.match(fragment):
-            # print "Type:Operator: %s" % fragment
             content = parseFragmentLead(content, fragment, tokens)
-            tokens.append({ "type" : "token", "detail" : lang.PUNCTUATORS[fragment], "source" : fragment, "id" : parseUniqueId, "line" : parseLine, "column" : parseColumn })
+            tokens.append({ "type" : "punctuator", "detail" : lang.PUNCTUATORS[fragment], "source" : fragment, "line" : parseLine, "column" : parseColumn })
 
         # Handle everything else
         else:
@@ -366,7 +299,7 @@ def parseStream(content):
             if fragresult:
                 if R_REGEXP_A.match(fragment) or R_REGEXP_B.match(fragment) or R_REGEXP_C.match(fragment) or R_REGEXP_D.match(fragment) or R_REGEXP_E.match(fragment):
                     content = parseFragmentLead(content, fragresult.group(0), tokens)
-                    tokens.append({ "type" : "regexp", "detail" : "", "source" : recoverEscape(fragresult.group(0)), "id" : parseUniqueId, "line" : parseLine, "column" : parseColumn })
+                    tokens.append({ "type" : "regexp", "detail" : "", "source" : recoverEscape(fragresult.group(0)), "line" : parseLine, "column" : parseColumn })
 
                 else:
                     print "Bad regular expression: %s" % fragresult.group(0)
@@ -375,6 +308,6 @@ def parseStream(content):
                 print "Type:None!"
 
     parsePart(recoverEscape(content), tokens)
-    tokens.append({ "type" : "eof", "source" : "", "detail" : "", "id" : parseUniqueId, "line" : parseLine, "column" : parseColumn })
+    tokens.append({ "type" : "eof", "source" : "", "detail" : "", "line" : parseLine, "column" : parseColumn })
 
     return tokens
