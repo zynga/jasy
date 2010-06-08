@@ -43,7 +43,7 @@ class Packer(object):
             str = u""
             if node.type in ["comment", "commentsBefore", "commentsAfter"]:
                 return str
-            
+
             n   = None
             
             if node.type in Packer.symbol_table:
@@ -53,35 +53,23 @@ class Packer(object):
             if node.hasChildren():
                 for child in node.children:
                     str += cls.emit(child)
+                    
+                    # divide each child with a comma
+                    if node.type in ["array", "params", "expressionList"] and not child.isLastChild():
+                        str += u","
+                        
+                    # ["group", "block", "assignment", "call", "operation", "definitionList", "return", "break", "continue", "delete", "accessor", "instantiation", "throw", "variable", "emptyStatement"]
+                    elif node.type in ["block", "file"]:
+                        str += u";"
+                        
+                    elif node.type == "statement" and node.parent.type == "switch" and node.parent.get("switchType") == "case":
+                        str += u";"
+                        
+                    elif node.type in ["statement", "elseStatement"] and not node.hasChild("block") and node.parent.type == "loop":
+                        str += ";"
+                    
             if n:
                 str += n.closing(node)
-
-            # some other stuff
-            if node.hasParent():
-
-                # Add comma dividers between statements in these parents
-                if node.parent.type in ["array", "params", "expressionList"]:
-                    if not node.isLastChild(True):
-                        str += u","
-                    else:
-                        # close the last child of a file/block-level expressionList with semicolon
-                        if node.parent.type == "expressionList" and node.parent.parent.type in ["file", "block"]:
-                            str += ";"
-
-                # Semicolon handling
-                elif node.type in ["group", "block", "assignment", "call", "operation", "definitionList", "return", "break", "continue", "delete", "accessor", "instantiation", "throw", "variable", "emptyStatement"]:
-
-                    # Default semicolon handling
-                    if node.parent.type in ["block", "file"]:
-                        str += ";"
-
-                    # Special handling for switch statements
-                    elif node.parent.type == "statement" and node.parent.parent.type == "switch" and node.parent.parent.get("switchType") == "case":
-                        str += ";"
-
-                    # Special handling for loops (e.g. if) without blocks {}
-                    elif (node.parent.type in ["statement", "elseStatement"] and not node.parent.hasChild("block") and node.parent.parent.type == "loop"):
-                        str += ";"
 
             return str
 
@@ -134,6 +122,12 @@ class Packer(object):
         method = cls.method
 
 
+
+
+            
+            
+            
+
         ##################################################################################
         #  DEFINITION LIST
         ##################################################################################
@@ -148,7 +142,7 @@ class Packer(object):
         def opening(s, node):
             r = u''
             if node.parent.type != "definitionList":
-                r += "var"
+                r += "var "
             r += node.get("identifier")
             return r
 
@@ -168,8 +162,7 @@ class Packer(object):
 
         @method(symbol("definitionList"))
         def opening(s, node):
-            r = "var"
-            return r
+            return "var "
 
         @method(symbol("definitionList"))
         def closing(s, node):
@@ -820,6 +813,24 @@ class Packer(object):
         def closing(s, node):
             return u""
         
+        
+        # ------------------------------------------------------------
+        #   EXPRESSION LIST
+        # ------------------------------------------------------------
+
+        symbol("expressionList")
+        
+        @method(symbol("expressionList"))
+        def opening(s, node):
+            return u""
+
+        @method(symbol("expressionList"))
+        def closing(s, node):
+            if node.parent.type in ["file", "block"]:
+                return u";"
+            else:
+                return u""
+                        
 
         # ------------------------------------------------------------
         #   EXPRESSION
