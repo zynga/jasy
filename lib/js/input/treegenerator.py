@@ -55,7 +55,6 @@ class TokenStream(object):
     #
     def __init__ (self, tokens):
         self.tokens = tokens
-        self.commentsBefore = None
         self.parsepos = -1
 
     def curr (self):
@@ -142,58 +141,20 @@ class TokenStream(object):
 
 
 
-    ##
-    # Alternative to use, when we want to check if the next token
-    # is a comment, but are not able to use next() because if there is
-    # no comment we want to leave in our position
-    #
-    def comment (self, item, after=False):
-        length = len(self.tokens)
-
-        token = None
-        pos = self.parsepos
-
-        while pos < length - 1:
-            pos += 1
-            token = self.tokens[pos]
-
-            if token["type"] == "comment" and token["connection"] == "after" and (not token.has_key("inserted") or not token["inserted"]):
-
-                commentNode = createCommentNode(token)
-                token["inserted"] = True
-                if after:
-                    item.addListChild("commentsAfter", commentNode)
-                else:
-                    item.addChild(commentNode)
-
-            else:
-                break
-
-
-
-    def clearCommentsBefore(self):
-        commentsBefore = self.commentsBefore
-        self.commentsBefore = None
-        return commentsBefore
-
-
-
 class SyntaxException (Exception):
     pass
 
 
 
+##
+# Creates a new item tree node from token
+#
 def createItemNode(type, stream):
-    node = tree.Node(type)
-    node.set("line", stream.currLine())
-    node.set("column", stream.currColumn())
+    itemNode = tree.Node(type)
+    itemNode.set("line", stream.currLine())
+    itemNode.set("column", stream.currColumn())
 
-    commentsBefore = stream.clearCommentsBefore()
-    if commentsBefore:
-        for comment in commentsBefore:
-            node.addListChild("commentsBefore", comment)
-
-    return node
+    return itemNode
 
 ##
 # Creates a new comment tree node from token
@@ -206,8 +167,6 @@ def createCommentNode(token):
     commentNode.set("detail", token["detail"])
 
     return commentNode
-
-
 
 
 
@@ -248,13 +207,6 @@ def createSyntaxTree (tokenArr):
     while not stream.finished():
         rootBlock.addChild(readStatement(stream))
 
-    # collect prob. pending comments
-    try:
-        for c in stream.commentsBefore:  # stream.commentsBefore might not be defined
-            rootBlock.addChild(c)
-    except:
-        pass
-
     return rootBlock
 
 
@@ -292,12 +244,6 @@ def readStatement (stream, expressionMode = False, overrunSemicolon = True, inSt
         else:
             # Something else comes after the variable -> It's a sole variable
             item = variable
-
-        # Any comments found for the variable belong to the extracted item
-        commentsChild = variable.getChild("commentsBefore", False)
-        if item and commentsChild != None:
-            variable.removeChild(commentsChild)
-            item.addChild(commentsChild, 0)
 
     elif stream.currIsType("reserved", "FUNCTION"):
         item = createItemNode("function", stream)
@@ -428,8 +374,6 @@ def readStatement (stream, expressionMode = False, overrunSemicolon = True, inSt
             else:
                 finished = True
 
-        stream.comment(item, True)
-
     elif not expressionMode and stream.currIsType("reserved", LOOP_KEYWORDS):
         item = readLoop(stream)
     elif not expressionMode and stream.currIsType("reserved", "DO"):
@@ -446,19 +390,16 @@ def readStatement (stream, expressionMode = False, overrunSemicolon = True, inSt
         # NOTE: The expression after the return keyword is optional
         if not stream.currIsType("punctuator", "SEMICOLON") and not stream.currIsType("punctuator", "RC"):
             item.addListChild("expression", readExpression(stream))
-            stream.comment(item, True)
     elif not expressionMode and stream.currIsType("reserved", "THROW"):
         item = createItemNode("throw", stream)
         stream.next(item)
         item.addListChild("expression", readExpression(stream))
-        stream.comment(item, True)
     elif stream.currIsType("reserved", "DELETE"):
         # this covers both statement and expression context!
         item = createItemNode("delete", stream)
         item.set("left", True)
         stream.next(item)
         item.addListChild("expression", readExpression(stream))
-        stream.comment(item, True)
     elif not expressionMode and stream.currIsType("reserved", "BREAK"):
         item = createItemNode("break", stream)
         stream.next(item)
@@ -643,13 +584,6 @@ def readObjectOperation(stream, operand, onlyAllowMemberAccess = False):
     else:
         item = operand
 
-    # Any comments found for the operand belong to the item
-    if operand != item:
-        commentsChild = operand.getChild("commentsBefore", False)
-        if commentsChild != None:
-            operand.removeChild(commentsChild)
-            item.addChild(commentsChild, 0)
-
     return item
 
 
@@ -809,7 +743,6 @@ def readLoop(stream):
             first = createItemNode("first", stream)
             item.addChild(first)
             first.addChild(readStatement(stream, expressionMode=False, overrunSemicolon=False))
-            stream.comment(first, True)
 
         if stream.currIsType("punctuator", "SEMICOLON"):
             # It's a for (;;) loop
@@ -821,7 +754,6 @@ def readLoop(stream):
                 second = createItemNode("second", stream)
                 item.addChild(second)
                 second.addChild(readStatement(stream, expressionMode=True, inStatementList=False))
-                stream.comment(second, True)
 
             stream.expectCurrType("punctuator", "SEMICOLON")
             stream.next(item)
@@ -831,7 +763,6 @@ def readLoop(stream):
                 third = createItemNode("third", stream)
                 item.addChild(third)
                 third.addChild(readStatement(stream, expressionMode=False, overrunSemicolon=False))
-                stream.comment(third, True)
 
         elif stream.currIsType("punctuator", "RP"):
             # It's a for ( in ) loop
@@ -848,7 +779,6 @@ def readLoop(stream):
         stream.next(expr)
         expr.addChild(readExpression(stream))
         item.addChild(expr)
-        stream.comment(expr, True)
         stream.expectCurrType("punctuator", "RP")
 
     # comments should be already completed from the above code
