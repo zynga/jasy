@@ -55,6 +55,7 @@ class TokenStream(object):
     #
     def __init__ (self, tokens):
         self.tokens = tokens
+        self.commentsBefore = None
         self.parsepos = -1
         self.eolBefore = False
 
@@ -76,6 +77,12 @@ class TokenStream(object):
 
     def currColumn (self):
         return self.curr()["column"]
+
+    def currMultiline (self):
+        return self.curr()["multiline"]
+
+    def currConnection (self):
+        return self.curr()["connection"]
 
     def currIsType (self, tokenType, tokenDetail = None):
         if self.currType() != tokenType:
@@ -128,6 +135,28 @@ class TokenStream(object):
                 # ignore end of line
                 pass
 
+            #
+            # Special treatment of comments
+            #
+            elif token["type"] == "comment":
+                # After current item
+                if not self.commentsBefore: 
+                    self.commentsBefore = []
+
+                # Generating new tree node
+                commentNode = createCommentNode(token)
+                
+                # Store the new node with this generator (TokenStream) instance
+                self.commentsBefore.append(commentNode)
+
+                self.eolBefore = False
+                self.breakBefore = False
+
+            else:
+                break
+
+        #print "next token: " + str(token)
+
         if token == None:
             # return end of file token
             return self.tokens[length - 1]
@@ -149,11 +178,28 @@ class TokenStream(object):
             pos += 1
             token = self.tokens[pos]
 
+            if token["type"] == "comment" and token["connection"] == "after" and (not token.has_key("inserted") or not token["inserted"]):
+
+                commentNode = createCommentNode(token)
+                token["inserted"] = True
+                if after:
+                    item.addListChild("commentsAfter", commentNode)
+                else:
+                    item.addChild(commentNode)
+
+            else:
+                break
+
     def hadEolBefore(self):
         return self.eolBefore
 
     def hadBreakBefore(self):
         return self.breakBefore
+
+    def clearCommentsBefore(self):
+        commentsBefore = self.commentsBefore
+        self.commentsBefore = None
+        return commentsBefore
 
 
 
@@ -163,14 +209,22 @@ class SyntaxException (Exception):
 
 
 def createItemNode(type, stream):
+    # print "CREATE %s" % type
+
     node = tree.Node(type)
     node.set("line", stream.currLine())
     node.set("column", stream.currColumn())
 
+    commentsBefore = stream.clearCommentsBefore()
+    if commentsBefore:
+        for comment in commentsBefore:
+            node.addListChild("commentsBefore", comment)
+
     return node
 
-
-
+##
+# Creates a new comment tree node from token
+#
 def createCommentNode(token):
     commentNode = tree.Node("comment")
     commentNode.set("line", token["line"])
@@ -179,6 +233,8 @@ def createCommentNode(token):
     commentNode.set("detail", token["detail"])
 
     return commentNode
+
+
 
 
 
@@ -218,6 +274,13 @@ def createSyntaxTree (tokenArr):
 
     while not stream.finished():
         rootBlock.addChild(readStatement(stream))
+
+    # collect prob. pending comments
+    try:
+        for c in stream.commentsBefore:  # stream.commentsBefore might not be defined
+            rootBlock.addChild(c)
+    except:
+        pass
 
     return rootBlock
 
@@ -259,6 +322,12 @@ def readStatement (stream, expressionMode = False, overrunSemicolon = True, inSt
         else:
             # Something else comes after the variable -> It's a sole variable
             item = variable
+
+        # Any comments found for the variable belong to the extracted item
+        commentsChild = variable.getChild("commentsBefore", False)
+        if item and commentsChild != None:
+            variable.removeChild(commentsChild)
+            item.addChild(commentsChild, 0)
 
     elif stream.currIsType("reserved", "FUNCTION"):
         item = createItemNode("function", stream)
@@ -607,6 +676,13 @@ def readObjectOperation(stream, operand, onlyAllowMemberAccess = False):
         item = readObjectOperation(stream, item)
     else:
         item = operand
+
+    # Any comments found for the operand belong to the item
+    if operand != item:
+        commentsChild = operand.getChild("commentsBefore", False)
+        if commentsChild != None:
+            operand.removeChild(commentsChild)
+            item.addChild(commentsChild, 0)
 
     return item
 
