@@ -76,15 +76,10 @@ def main():
         print ">>> Missing filename!"
         return
 
-    if not options.quiet:
-        print ">>> Parsing file..."
     fileName = args[0]
     fileContent = filetool.read(fileName, "utf-8")
     fileId = "xxx"
     tokens = tokenizer.parseStream(fileContent, fileName)
-    
-    if not options.quiet:
-        print ">>> Creating tree..."
     tree = treegenerator.createSyntaxTree(tokens)
     
     
@@ -93,8 +88,6 @@ def main():
     #
     
     if len(options.variants) > 0:
-        if not options.quiet:
-            print ">>> Selecting variants..."
         varmap = {}
         for entry in options.variants:
             pos = entry.index(":")
@@ -103,23 +96,15 @@ def main():
         variantoptimizer.search(tree, varmap, fileId)
     
     if options.basecalls:
-        if not options.quiet:
-            print ">>> Optimizing basecalls..."
         basecalloptimizer.patch(tree)   
 
     if options.strings:
-        if not options.quiet:
-            print ">>> Optimizing strings..."
         _optimizeStrings(tree, fileId)
 
     if options.variables:
-        if not options.quiet:
-            print ">>> Optimizing variables..."
         variableoptimizer.search(tree)
 
     if options.privates:
-        if not options.quiet:
-            print ">>> Optimizing privates..."
         if options.cache:
             cache = Cache(options.cache, Log())
             privates = cache.read(options.privateskey)
@@ -134,13 +119,7 @@ def main():
     # Output the result
     #
             
-    if not options.quiet:
-        print ">>> Compiling..."
-
-    packer = Packer()
-    result = packer.serializeNode(tree)
-
-    print u"".join(result).encode('utf-8')
+    print Packer().pack(tree).encode('utf-8')
             
 
 #        

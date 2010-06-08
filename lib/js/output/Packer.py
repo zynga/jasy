@@ -21,35 +21,41 @@
 import sys, string, re
 from js.input import lang
 
-KEY = re.compile("^[A-Za-z0-9_$]+$")
-
 class Packer(object):
 
     symbol_table = {}
 
     def __init__(self):
         Packer.init_symtab()
+        
+        
 
-    # -- class symbol_base -----------------------------------------------------
+    ##################################################################################
+    # CLASS: SYMBOL BASE
+    ##################################################################################
 
     class symbol_base(object):
 
         @classmethod
         def emit(cls, node):
             str = u""
+            if node.type in ["comment", "commentsBefore", "commentsAfter"]:
+                return str
+            
             n   = None
+            
             if node.type in Packer.symbol_table:
                 n = Packer.symbol_table[node.type]()
                 str += n.opening(node)
+            
             if node.hasChildren():
                 for child in node.children:
-                    if not node.type in ["commentsBefore", "commentsAfter"]:
-                        str += cls.emit(child)
+                    str += cls.emit(child)
             if n:
                 str += n.closing(node)
 
             # some other stuff
-            if node.hasParent() and not node.type in ["comment", "commentsBefore", "commentsAfter"]:
+            if node.hasParent():
 
                 # Add comma dividers between statements in these parents
                 if node.parent.type in ["array", "params", "expressionList"]:
@@ -72,11 +78,7 @@ class Packer(object):
                         str += ";"
 
                     # Special handling for loops (e.g. if) without blocks {}
-                    elif (
-                        node.parent.type in ["statement", "elseStatement"] and
-                        not node.parent.hasChild("block") and
-                        node.parent.parent.type == "loop"
-                    ):
+                    elif (node.parent.type in ["statement", "elseStatement"] and not node.parent.hasChild("block") and node.parent.parent.type == "loop"):
                         str += ";"
 
             return str
@@ -88,10 +90,13 @@ class Packer(object):
         def closing(self, node):
             raise NotImplementedError("You need to override 'closing' method")
 
-    # -- end symbol_base -------------------------------------------------------
 
 
-    # -- class factory ------------------
+
+
+    ##################################################################################
+    # SYMBOL BASE
+    ##################################################################################
 
     @staticmethod
     def symbol(id, bp=0):
@@ -114,7 +119,12 @@ class Packer(object):
             setattr(s, fn.__name__, fn)
         return bind
 
-    # - Grammar ----------------------------------------------------------------
+
+
+
+    ##################################################################################
+    # GRAMMAR
+    ##################################################################################
 
     @classmethod
     def init_symtab(cls):
@@ -157,8 +167,7 @@ class Packer(object):
         def opening(s, node):
             r = u''
             if node.parent.type == "definition":
-                oper = node.get("operator", False)
-                r += cls.compileToken(oper)
+                r += cls.packOperator(node.get("operator", False))
             return r
 
         @method(symbol("assignment"))
@@ -229,6 +238,7 @@ class Packer(object):
             return u""
 
 
+
         symbol("comment")
 
         @method(symbol("comment"))
@@ -240,29 +250,6 @@ class Packer(object):
         def closing(s, node):
             return u""
 
-
-        symbol("commentsAfter")
-
-        @method(symbol("commentsAfter"))
-        def opening(s, node):
-            r = u''
-            return r
-
-        @method(symbol("commentsAfter"))
-        def closing(s, node):
-            return u""
-
-
-        symbol("commentsBefore")
-
-        @method(symbol("commentsBefore"))
-        def opening(s, node):
-            r = u''
-            return r
-
-        @method(symbol("commentsBefore"))
-        def closing(s, node):
-            return u""
 
 
         symbol("constant")
@@ -289,6 +276,10 @@ class Packer(object):
             return u""
 
 
+        #
+        # CONTINUE
+        #
+
         symbol("continue")
 
         @method(symbol("continue"))
@@ -302,6 +293,10 @@ class Packer(object):
         def closing(s, node):
             return u""
 
+
+        #
+        # DEFAULT
+        #
 
         symbol("default")
 
@@ -473,7 +468,7 @@ class Packer(object):
             elif node.parent.type == "operation":
                 # operation (var a = -1)
                 if node.parent.get("left", False) == True:
-                    r += cls.compileToken(node.parent.get("operator"))
+                    r += cls.packOperator(node.parent.get("operator"))
             return r
 
         @method(symbol("first"))
@@ -486,8 +481,7 @@ class Packer(object):
 
             # operation
             elif node.parent.type == "operation" and node.parent.get("left", False) != True:
-                oper = node.parent.get("operator")
-                r += cls.compileToken(oper)
+                r += cls.packOperator(node.parent.get("operator"))
             return r
 
 
@@ -607,8 +601,7 @@ class Packer(object):
         def closing(s, node):
             r = u''
             if node.hasParent() and node.parent.type == "assignment":
-                oper = node.parent.get("operator", False)
-                r += cls.compileToken(oper)
+                r += cls.packOperator(node.parent.get("operator", False))
             return r
 
 
@@ -874,19 +867,16 @@ class Packer(object):
 
 
     @staticmethod
-    def compileToken(name):
+    def packOperator(name):
         s = u''
-
-        if name in ["INC", "DEC", "TYPEOF"]:
-            pass
-
-        elif name in ["INSTANCEOF", "IN"]:
-            s += u" "
 
         if name == None:
             s += "="
 
         elif name in ["TYPEOF", "INSTANCEOF", "IN"]:
+            if name in ["INSTANCEOF", "IN"]:
+                s += u" "            
+            
             s += name.lower()
 
         else:
@@ -894,24 +884,14 @@ class Packer(object):
                 if lang.TOKENS[key] == name:
                     s += key
 
-        if name in ["INC", "DEC"]:
-            pass
-
-        elif name in ["TYPEOF", "INSTANCEOF", "IN"]:
+        if name in ["TYPEOF", "INSTANCEOF", "IN"]:
             s += u" "
 
         return s
 
 
-
-
-
-    # --------------------------------------------------------------------------
-    # -- Interface Methods -----------------------------------------------------
-    # --------------------------------------------------------------------------
-
     @staticmethod
-    def serializeNode(node, enableBreaks=False, enableVerbose=False):
+    def pack(node):
         return Packer.symbol_base.emit(node)
 
 
