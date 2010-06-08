@@ -77,12 +77,6 @@ class TokenStream(object):
     def currColumn (self):
         return self.curr()["column"]
 
-    def currMultiline (self):
-        return self.curr()["multiline"]
-
-    def currConnection (self):
-        return self.curr()["connection"]
-
     def currIsType (self, tokenType, tokenDetail = None):
         if self.currType() != tokenType:
             return False
@@ -104,6 +98,8 @@ class TokenStream(object):
     def finished (self):
         # NOTE: the last token is end of file
         return self.parsepos >= len(self.tokens) - 1
+        
+        
 
     ##
     # Iterator that returns the next token. Also takes special care if the next
@@ -127,30 +123,24 @@ class TokenStream(object):
             if token["type"] == "eol":
                 pass
 
-            #
-            # Special treatment of comments
-            #
+            # Comment treatment
             elif token["type"] == "comment":
-                # After current item
-                if not self.commentsBefore: 
-                    self.commentsBefore = []
-
-                # Generating new tree node
                 commentNode = createCommentNode(token)
-                
-                # Store the new node with this generator (TokenStream) instance
-                self.commentsBefore.append(commentNode)
+                if item:
+                    item.addChild(commentNode)
+                else:
+                    print "WARN: Could not handle comment"
 
+            # Code treatment
             else:
                 break
 
-        #print "next token: " + str(token)
-
         if token == None:
-            # return end of file token
             return self.tokens[length - 1]
         else:
             return token
+
+
 
     ##
     # Alternative to use, when we want to check if the next token
@@ -179,6 +169,8 @@ class TokenStream(object):
             else:
                 break
 
+
+
     def clearCommentsBefore(self):
         commentsBefore = self.commentsBefore
         self.commentsBefore = None
@@ -192,8 +184,6 @@ class SyntaxException (Exception):
 
 
 def createItemNode(type, stream):
-    # print "CREATE %s" % type
-
     node = tree.Node(type)
     node.set("line", stream.currLine())
     node.set("column", stream.currColumn())

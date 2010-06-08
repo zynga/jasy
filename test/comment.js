@@ -5,7 +5,7 @@ qx.Class.define("hello.World",
     /**
      * hello comment
      */
-    hello : function() {}
+    hello : /*assign*/function(arg1/* arg1 doc */, arg2) { hello() } // trail
  
   }
 });
