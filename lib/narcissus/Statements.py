@@ -1,7 +1,7 @@
-from next.Node import Node
-from next.Tokenizer import *
-from next.CompilerContext import CompilerContext
-from next.Expression import Expression
+from narcissus.Node import Node
+from narcissus.Tokenizer import *
+from narcissus.CompilerContext import CompilerContext
+from narcissus.Expression import Expression
 
 DECLARED_FORM = 0
 EXPRESSED_FORM = 1

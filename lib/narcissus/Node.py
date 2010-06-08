@@ -1,5 +1,5 @@
 import re
-from next.Tokenizer import *
+from narcissus.Tokenizer import *
 
 class Node(list):
 

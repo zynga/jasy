@@ -1,5 +1,5 @@
-from next.Tokenizer import *
-from next.Node import Node
+from narcissus.Tokenizer import *
+from narcissus.Node import Node
 
 opPrecedence = {
     "SEMICOLON": 0,

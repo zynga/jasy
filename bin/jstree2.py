@@ -1,4 +1,4 @@
-#!/usr/bin/python2.5
+#!/usr/bin/env python
 
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -43,16 +43,21 @@
  A lexical scanner and parser. JS implemented in JS, ported to Python.
 """
 
+# Extend PYTHONPATH with 'lib'
+import sys, os
+sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
+
+
 __author__ = "JT Olds"
 __author_email__ = "jtolds@xnet5.com"
 __date__ = "2009-03-24"
 __all__ = ["ParseError", "parse", "tokens"]
 
 import re, sys, types
-from next.Tokenizer import Tokenizer
-from next.Statements import Statements
-from next.Statements import Script
-from next.CompilerContext import CompilerContext
+from narcissus.Tokenizer import Tokenizer
+from narcissus.Statements import Statements
+from narcissus.Statements import Script
+from narcissus.CompilerContext import CompilerContext
 
 
 def parse(source, filename=None, starting_line_number=1):
