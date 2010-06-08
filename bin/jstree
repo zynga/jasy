@@ -42,8 +42,11 @@ if __name__ == '__main__':
             fileContent = filetool.read(filePath, "utf-8")
             tokens = tokenizer.parseStream(fileContent)
             tree = treegenerator.createSyntaxTree(tokens)
-    
-        print tree.toXml()
+
+            print "======================================================"
+            print "  FILE: %s" % filePath
+            print "======================================================"
+            print tree.toXml()
 
     except KeyboardInterrupt:
         print

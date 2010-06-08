@@ -93,16 +93,16 @@ def parseElement(element, tokens=[]):
     global parseColumn
 
     if lang.RESERVED.has_key(element):
-        tok = { "type" : "reserved", "detail" : lang.RESERVED[element], "source" : element, "line" : parseLine, "column" : parseColumn }
+        tok = { "type" : "reserved", "detail" : lang.RESERVED[element], "text" : element, "line" : parseLine, "column" : parseColumn }
 
     elif element in lang.BUILTIN:
-        tok = { "type" : "builtin", "detail" : "", "source" : element, "line" : parseLine, "column" : parseColumn }
+        tok = { "type" : "builtin", "detail" : "", "text" : element, "line" : parseLine, "column" : parseColumn }
 
     elif R_NUMBER.search(element):
-        tok = { "type" : "number", "detail" : "int", "source" : element, "line" : parseLine, "column" : parseColumn }
+        tok = { "type" : "number", "detail" : "int", "text" : element, "line" : parseLine, "column" : parseColumn }
 
     elif len(element) > 0:
-        tok = { "type" : "name", "detail" : "", "source" : element, "line" : parseLine, "column" : parseColumn }
+        tok = { "type" : "name", "detail" : "", "text" : element, "line" : parseLine, "column" : parseColumn }
 
     parseColumn += len(element)
     tokens.append(tok)
@@ -119,7 +119,7 @@ def parsePart(part, tokens=[]):
 
     for line in R_NEWLINE.split(part):
         if line == "\n":
-            tokens.append({ "type" : "eol", "source" : "", "detail" : "", "line" : parseLine, "column" : parseColumn })
+            tokens.append({ "type" : "eol", "text" : "", "detail" : "", "line" : parseLine, "column" : parseColumn })
             parseColumn = 1
             parseLine += 1
 
@@ -159,7 +159,7 @@ def parsePart(part, tokens=[]):
                                 (tokens[-1]['detail'] != 'float') and
                                 (tokens[-1]['detail'] != 'RP')    and
                                 (tokens[-1]['detail'] != 'public'))):
-                            tokens.append({ "type" : "regexp", "detail" : "", "source" : recoverEscape(mo.group(0)), "line" : parseLine, "column" : parseColumn })
+                            tokens.append({ "type" : "regexp", "detail" : "", "text" : recoverEscape(mo.group(0)), "line" : parseLine, "column" : parseColumn })
                             parseColumn += len(mo.group(0))
                             i += len(mo.group(0))
                         
@@ -179,7 +179,7 @@ def parsePart(part, tokens=[]):
                             element = ""
 
                         # add character to token list
-                        tokens.append({ "type" : "punctuator", "detail" : lang.PUNCTUATORS[char], "source" : char, "line" : parseLine, "column" : parseColumn })
+                        tokens.append({ "type" : "punctuator", "detail" : lang.PUNCTUATORS[char], "text" : char, "line" : parseLine, "column" : parseColumn })
                         parseColumn += 1
 
                     else:
@@ -212,6 +212,26 @@ def parseFragmentLead(content, fragment, tokens):
     return content[pos+len(fragment):]
 
 
+def cleanJavaDoc(text):
+    splitted = text.split("\n")
+    if len(splitted) > 1:
+        indent = 0
+        firstLine = splitted[1]
+        for char in firstLine:
+            if char == " " or char == "\t":
+                indent = indent + 1
+            else:
+                break
+        
+        if indent > 0:
+            result = []
+            for line in splitted:
+                result.append(line[indent+2:])
+                
+            return "\n".join(result)
+
+    return text
+    
 
 ##
 # Main parsing routine, in that it qualifies tokens from the stream (operators,
@@ -249,20 +269,34 @@ def parseStream(content):
         if comment.R_BLOCK_COMMENT.match(fragment):
             source = recoverEscape(fragment)
             content = parseFragmentLead(content, fragment, tokens)
-            tokens.append({ "type" : "comment", "detail" : "block", "source" : source, "line" : parseLine, "column" : parseColumn })
+            detail = "block"
+            
+            if source.startswith("/**"):        
+                source = source[3:]
+                detail = "doc"
+                source = cleanJavaDoc(source)
+                
+            elif source.startswith("/*"):
+                source = source[2:]
+
+            if source.endswith("*/"):
+                source = source[0:-2]
+                            
+            tokens.append({ "type" : "comment", "detail" : detail, "text" : source, "line" : parseLine, "column" : parseColumn })
             parseLine += len(fragment.split("\n")) - 1
 
         # Handle inline comments
         elif comment.R_INLINE_COMMENT.match(fragment):
             source = recoverEscape(fragment)
             content = parseFragmentLead(content, fragment, tokens)
-            tokens.append({ "type" : "comment", "detail" : "inline", "source" : source, "line" : parseLine, "column" : parseColumn })
+            source = source[2:].strip()
+            tokens.append({ "type" : "comment", "detail" : "inline", "text" : source, "line" : parseLine, "column" : parseColumn })
 
         # Handle strings A
         elif R_STRING_A.match(fragment):
             content = parseFragmentLead(content, fragment, tokens)
             source = recoverEscape(fragment)[1:-1]
-            tokens.append({ "type" : "string", "detail" : "singlequotes", "source" : source.replace("\\\n",""), "line" : parseLine, "column" : parseColumn })
+            tokens.append({ "type" : "string", "detail" : "singlequotes", "text" : source.replace("\\\n",""), "line" : parseLine, "column" : parseColumn })
             newLines = source.count("\\\n")
             parseLine += newLines
             if newLines:
@@ -274,7 +308,7 @@ def parseStream(content):
         elif R_STRING_B.match(fragment):
             content = parseFragmentLead(content, fragment, tokens)
             source = recoverEscape(fragment)[1:-1]
-            tokens.append({ "type" : "string", "detail" : "doublequotes", "source" : source.replace("\\\n",""), "line" : parseLine, "column" : parseColumn })
+            tokens.append({ "type" : "string", "detail" : "doublequotes", "text" : source.replace("\\\n",""), "line" : parseLine, "column" : parseColumn })
             newLines = source.count("\\\n")
             parseLine += newLines
             if newLines:
@@ -285,12 +319,12 @@ def parseStream(content):
         # Handle float numbers
         elif R_FLOAT.match(fragment):
             content = parseFragmentLead(content, fragment, tokens)
-            tokens.append({ "type" : "number", "detail" : "float", "source" : fragment, "line" : parseLine, "column" : parseColumn })
+            tokens.append({ "type" : "number", "detail" : "float", "text" : fragment, "line" : parseLine, "column" : parseColumn })
 
         # Handle operators
         elif R_OPERATORS.match(fragment):
             content = parseFragmentLead(content, fragment, tokens)
-            tokens.append({ "type" : "punctuator", "detail" : lang.PUNCTUATORS[fragment], "source" : fragment, "line" : parseLine, "column" : parseColumn })
+            tokens.append({ "type" : "punctuator", "detail" : lang.PUNCTUATORS[fragment], "text" : fragment, "line" : parseLine, "column" : parseColumn })
 
         # Handle everything else
         else:
@@ -299,7 +333,7 @@ def parseStream(content):
             if fragresult:
                 if R_REGEXP_A.match(fragment) or R_REGEXP_B.match(fragment) or R_REGEXP_C.match(fragment) or R_REGEXP_D.match(fragment) or R_REGEXP_E.match(fragment):
                     content = parseFragmentLead(content, fragresult.group(0), tokens)
-                    tokens.append({ "type" : "regexp", "detail" : "", "source" : recoverEscape(fragresult.group(0)), "line" : parseLine, "column" : parseColumn })
+                    tokens.append({ "type" : "regexp", "detail" : "", "text" : recoverEscape(fragresult.group(0)), "line" : parseLine, "column" : parseColumn })
 
                 else:
                     print "Bad regular expression: %s" % fragresult.group(0)
@@ -308,6 +342,6 @@ def parseStream(content):
                 print "Type:None!"
 
     parsePart(recoverEscape(content), tokens)
-    tokens.append({ "type" : "eof", "source" : "", "detail" : "", "line" : parseLine, "column" : parseColumn })
+    tokens.append({ "type" : "eof", "text" : "", "detail" : "", "line" : parseLine, "column" : parseColumn })
 
     return tokens

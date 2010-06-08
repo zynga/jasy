@@ -40,6 +40,10 @@ if __name__ == '__main__':
     
         for filePath in args:
             tokens = tokenizer.parseStream(filetool.read(filePath, "utf-8"))
+            
+            print "======================================================"
+            print "  FILE: %s" % filePath
+            print "======================================================"
             for entry in tokens:
                 print "%s[%s] (%s,%s)" % (entry["type"], entry["detail"], entry["line"], entry["column"])
 

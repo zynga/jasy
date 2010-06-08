@@ -68,7 +68,7 @@ class TokenStream(object):
         return self.curr()["detail"]
 
     def currSource (self):
-        return self.curr()["source"]
+        return self.curr()["text"]
 
     def currLine (self):
         return self.curr()["line"]
@@ -163,7 +163,7 @@ def createCommentNode(token):
     commentNode = tree.Node("comment")
     commentNode.set("line", token["line"])
     commentNode.set("column", token["column"])
-    commentNode.set("text", token["source"])
+    commentNode.set("text", token["text"])
     commentNode.set("detail", token["detail"])
 
     return commentNode
@@ -181,7 +181,7 @@ def raiseSyntaxException (token, expectedDesc = None):
     if token["detail"]:
         msg += "/" + token["detail"]
 
-    msg += ": '" + token["source"] + ", line:" + str(token["line"]) + \
+    msg += ": '" + token["text"] + ", line:" + str(token["line"]) + \
         ", column:" + str(token["column"])
 
     raise SyntaxException(msg)
