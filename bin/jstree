@@ -32,61 +32,25 @@ from misc.ExtendAction import ExtendAction
 # Import JavaScript stuff
 from misc import filetool
 from js.input import tokenizer, treegenerator, treeutil
-from js.output.Packer import Packer
 
 
-#from ecmascript.transform.optimizer import basecalloptimizer, privateoptimizer, stringoptimizer, variableoptimizer, variantoptimizer, inlineoptimizer
-#from generator.runtime.Log import Log
-#from generator.runtime.Cache import Cache
-
-            
-def main():
-    parser = optparse.OptionParser(option_class=ExtendAction)
-
-    usage_str = '''%prog [options] file.js,...'''
-    parser.set_usage(usage_str)
-    
-    # General flags
-    parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False, help="verbose output mode (extra verbose)")
-    parser.add_option("-q", "--quiet", action="store_true", dest="quiet", default=False, help="quiet output")
-
-    # Optimization flags
-    parser.add_option("-n", "--variables", action="store_true", dest="variables", default=False, help="optimize variables")
-    parser.add_option("-s", "--strings", action="store_true", dest="strings", default=False, help="optimize strings")
-    parser.add_option("-p", "--privates", action="store_true", dest="privates", default=False, help="optimize privates")
-    parser.add_option("-b", "--basecalls", action="store_true", dest="basecalls", default=False, help="optimize basecalls")            
-
-    # Variant support
-    parser.add_option("--variant", action="extend", dest="variants", metavar="KEY:VALUE", type="string", default=[], help="Selected variants")
-    
-    #
-    # Process arguments
-    #
-    (options, args) = parser.parse_args(sys.argv[1:])
-    
-    if len(args) == 0:
-        print ">>> Missing filename!"
-        return
-
-    fileName = args[0]
-    fileContent = filetool.read(fileName, "utf-8")
-    fileId = "xxx"
-    tokens = tokenizer.parseStream(fileContent)
-    tree = treegenerator.createSyntaxTree(tokens)
-    
-    print tree.toXml()
 
 
-           
-
-
-#
-# Main routine
-#            
-            
 if __name__ == '__main__':
     try:
-        main()
+        parser = optparse.OptionParser(option_class=ExtendAction)
+
+        usage_str = '''%prog [options] file.js,...'''
+        parser.set_usage(usage_str)
+    
+        (options, args) = parser.parse_args(sys.argv[1:])
+    
+        for filePath in args:
+            fileContent = filetool.read(filePath, "utf-8")
+            tokens = tokenizer.parseStream(fileContent)
+            tree = treegenerator.createSyntaxTree(tokens)
+    
+        print tree.toXml()
 
     except KeyboardInterrupt:
         print
