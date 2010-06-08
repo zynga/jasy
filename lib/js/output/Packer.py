@@ -7,6 +7,7 @@
 #
 #  Copyright:
 #    2006-2010 1&1 Internet AG, Germany, http://www.1und1.de
+#    2010 Deutsche Telekom AG, http://www.telekom.de
 #
 #  License:
 #    LGPL: http://www.gnu.org/licenses/lgpl.html
@@ -15,6 +16,7 @@
 #
 #  Authors:
 #    * Thomas Herchenroeder (thron7)
+#    * Sebastian Werner (wpbasti)
 #
 ################################################################################
 
@@ -186,18 +188,7 @@ class Packer(object):
             return "}"
 
 
-        symbol("break")
 
-        @method(symbol("break"))
-        def opening(s, node):
-            r = "break"
-            if node.get("label", False):
-                r += node.get("label", False)
-            return r
-
-        @method(symbol("break"))
-        def closing(s, node):
-            return u""
 
 
         symbol("call")
@@ -212,17 +203,6 @@ class Packer(object):
             return u""
 
 
-        symbol("case")
-
-        @method(symbol("case"))
-        def opening(s, node):
-            r = u''
-            r += "case"
-            return r
-
-        @method(symbol("case"))
-        def closing(s, node):
-            return ":"
 
 
         symbol("catch")
@@ -276,41 +256,11 @@ class Packer(object):
             return u""
 
 
-        # ------------------------------------------------------------
-        #   CONTINUE STATEMENT (LOOPS)
-        # ------------------------------------------------------------
 
 
-        symbol("continue")
-
-        @method(symbol("continue"))
-        def opening(s, node):
-            r = "continue"
-            if node.get("label", False):
-                r += node.get("label", False)
-            return r
-
-        @method(symbol("continue"))
-        def closing(s, node):
-            return u""
 
 
-        # ------------------------------------------------------------
-        #   DEFAULT (CASE BLOCK)
-        # ------------------------------------------------------------
 
-        symbol("default")
-
-        @method(symbol("default"))
-        def opening(s, node):
-            r = u''
-            r += "default"
-            r += ":"
-            return r
-
-        @method(symbol("default"))
-        def closing(s, node):
-            return u""
 
 
 
@@ -354,20 +304,7 @@ class Packer(object):
 
 
 
-        # ------------------------------------------------------------
-        #   DELETE KEYWORD
-        # ------------------------------------------------------------
 
-        symbol("delete")
-
-        @method(symbol("delete"))
-        def opening(s, node):
-            r = "delete"
-            return r
-
-        @method(symbol("delete"))
-        def closing(s, node):
-            return u""
 
 
         # ------------------------------------------------------------
@@ -465,7 +402,7 @@ class Packer(object):
 
 
         # ------------------------------------------------------------
-        #   FILE (ROOT NODE)
+        #   CORE :: FILE
         # ------------------------------------------------------------
 
         symbol("file")
@@ -479,53 +416,10 @@ class Packer(object):
             return u''
 
 
-        # ------------------------------------------------------------
-        #   FINALLY STATEMENT (TRY-CATCH-FINALLY)
-        # ------------------------------------------------------------
-
-        symbol("finally")
-
-        @method(symbol("finally"))
-        def opening(s, node):
-            return "finally"
-
-        @method(symbol("finally"))
-        def closing(s, node):
-            return u""
 
 
-        # ------------------------------------------------------------
-        #   FIRST - PSEUDO BLOCK
-        # ------------------------------------------------------------
 
-        symbol("first")
 
-        @method(symbol("first"))
-        def opening(s, node):
-            r = u''
-            # for loop
-            if node.parent.type == "loop" and node.parent.get("loopType") == "FOR":
-                r += "("
-
-            # operation
-            elif node.parent.type == "operation":
-                # operation (var a = -1)
-                if node.parent.get("left", False) == True:
-                    r += cls.packOperator(node.parent.get("operator"))
-            return r
-
-        @method(symbol("first"))
-        def closing(s, node):
-            r = u''
-            # for loop
-            if node.parent.type == "loop" and node.parent.get("loopType") == "FOR":
-                if node.parent.get("forVariant") == "iter":
-                    r += ";"
-
-            # operation
-            elif node.parent.type == "operation" and node.parent.get("left", False) != True:
-                r += cls.packOperator(node.parent.get("operator"))
-            return r
 
 
         # ------------------------------------------------------------
@@ -565,100 +459,28 @@ class Packer(object):
             return r
 
 
-        # ------------------------------------------------------------
-        #   IDENTIFIER
-        # ------------------------------------------------------------
 
-        symbol("identifier")
 
-        @method(symbol("identifier"))
-        def opening(s, node):
-            name = node.get("name", False)
-            if name != None:
-                return name
-            return u""
-
-        @method(symbol("identifier"))
-        def closing(s, node):
-            r = u''
-            if node.hasParent() and node.parent.type == "variable" and not node.isLastChild(True):
-                r += "."
-            elif node.hasParent() and node.parent.type == "label":
-                r += ":"
-            return r
 
 
 
         # ------------------------------------------------------------
-        #   INSTATIATION (NEW STATEMENT)
+        #   FUNCTION :: PARAMS
         # ------------------------------------------------------------
 
-        symbol("instantiation")
+        symbol("params")
 
-        @method(symbol("instantiation"))
-        def opening(s, node):
-            r = "new"
-            return r
-
-
-        @method(symbol("instantiation"))
-        def closing(s, node):
-            return u""
-
-
-
-        # ------------------------------------------------------------
-        #   KEY (MAPS)
-        # ------------------------------------------------------------
-
-        symbol("key")
-
-        @method(symbol("key"))
+        @method(symbol("params"))
         def opening(s, node):
             r = u''
-            if node.parent.type == "accessor":
-                r += "["
+            r += "("
             return r
 
-        @method(symbol("key"))
+        @method(symbol("params"))
         def closing(s, node):
-            r = u''
-            if node.hasParent() and node.parent.type == "accessor":
-                r += "]"
-            return r
-
-
-        # ------------------------------------------------------------
-        #   KEY-VALUE (MAPS)
-        # ------------------------------------------------------------
-
-        symbol("keyvalue")
-
-        @method(symbol("keyvalue"))
-        def opening(s, node):
-            r = u''
-            keyString = node.get("key")
-            keyQuote = node.get("quote", False)
-
-            if keyQuote != None:
-                # print "USE QUOTATION"
-                if keyQuote == "doublequotes":
-                    keyString = '"' + keyString + '"'
-                else:
-                    keyString = "'" + keyString + "'"
-
-            r += keyString
-            r += ":"
-            return r
-
-        @method(symbol("keyvalue"))
-        def closing(s, node):
-            r = u''
-            if node.hasParent() and node.parent.type == "map" and not node.isLastChild(True):
-                r += ","
-            return r
-
-
+            return ")"
+            
+            
 
         # ------------------------------------------------------------
         #   LEFT (OPERATIONS????)
@@ -679,9 +501,33 @@ class Packer(object):
             return r
 
 
+        # ------------------------------------------------------------
+        #   RIGHT
+        # ------------------------------------------------------------
+
+        symbol("right")
+
+        @method(symbol("right"))
+        def opening(s, node):
+            r = u''
+            if node.parent.type == "accessor":
+                r += "."
+            return r
+
+        @method(symbol("right"))
+        def closing(s, node):
+            return u""
+            
+
+
+
+
+        ##################################################################################
+        #  LOOP
+        ##################################################################################
 
         # ------------------------------------------------------------
-        #   LOOP :: LOOP
+        #   LOOP
         # ------------------------------------------------------------
 
         symbol("loop")
@@ -721,12 +567,52 @@ class Packer(object):
             if node.get("loopType") == "DO":
                 r += ";"
             return r
+            
+            
+        # ------------------------------------------------------------
+        #   BREAK
+        # ------------------------------------------------------------
+
+        symbol("break")
+
+        @method(symbol("break"))
+        def opening(s, node):
+            r = "break"
+            if node.get("label", False):
+                r += node.get("label", False)
+            return r
+
+        @method(symbol("break"))
+        def closing(s, node):
+            return u""
+            
+            
+        # ------------------------------------------------------------
+        #   CONTINUE
+        # ------------------------------------------------------------
+
+        symbol("continue")
+
+        @method(symbol("continue"))
+        def opening(s, node):
+            r = "continue"
+            if node.get("label", False):
+                r += node.get("label", False)
+            return r
+
+        @method(symbol("continue"))
+        def closing(s, node):
+            return u""            
 
 
 
+
+        ##################################################################################
+        #  MAP
+        ##################################################################################
 
         # ------------------------------------------------------------
-        #   MAP :: MAP
+        #   MAP
         # ------------------------------------------------------------
 
         symbol("map")
@@ -740,97 +626,164 @@ class Packer(object):
         @method(symbol("map"))
         def closing(s, node):
             return "}"
-
-
-
+            
+            
         # ------------------------------------------------------------
-        #   CORE :: OPERAND
-        # ------------------------------------------------------------
-
-        symbol("operand")
-
-        @method(symbol("operand"))
-        def opening(s, node):
-            return u""
-
-        @method(symbol("operand"))
-        def closing(s, node):
-            return u""
-
-
-
-        # ------------------------------------------------------------
-        #   CORE :: OPERATION
+        #   KEY
         # ------------------------------------------------------------
 
-        symbol("operation")
+        symbol("key")
 
-        @method(symbol("operation"))
-        def opening(s, node):
-            r = u''
-            return r
-
-        @method(symbol("operation"))
-        def closing(s, node):
-            return u""
-
-
-
-        # ------------------------------------------------------------
-        #   FUNCTION :: PARAMS
-        # ------------------------------------------------------------
-
-        symbol("params")
-
-        @method(symbol("params"))
-        def opening(s, node):
-            r = u''
-            r += "("
-            return r
-
-        @method(symbol("params"))
-        def closing(s, node):
-            return ")"
-
-
-        # ------------------------------------------------------------
-        #   CORE :: RETURN
-        # ------------------------------------------------------------
-
-        symbol("return")
-
-        @method(symbol("return"))
-        def opening(s, node):
-            r = "return"
-            if node.hasChildren():
-                r += u" "
-            return r
-
-        @method(symbol("return"))
-        def closing(s, node):
-            return u""
-
-
-
-        # ------------------------------------------------------------
-        #   RIGHT
-        # ------------------------------------------------------------
-
-        symbol("right")
-
-        @method(symbol("right"))
+        @method(symbol("key"))
         def opening(s, node):
             r = u''
             if node.parent.type == "accessor":
-                r += "."
+                r += "["
             return r
 
-        @method(symbol("right"))
+        @method(symbol("key"))
+        def closing(s, node):
+            r = u''
+            if node.hasParent() and node.parent.type == "accessor":
+                r += "]"
+            return r
+
+
+        # ------------------------------------------------------------
+        #   KEY-VALUE
+        # ------------------------------------------------------------
+
+        symbol("keyvalue")
+
+        @method(symbol("keyvalue"))
+        def opening(s, node):
+            r = u''
+            keyString = node.get("key")
+            keyQuote = node.get("quote", False)
+
+            if keyQuote != None:
+                # print "USE QUOTATION"
+                if keyQuote == "doublequotes":
+                    keyString = '"' + keyString + '"'
+                else:
+                    keyString = "'" + keyString + "'"
+
+            r += keyString
+            r += ":"
+            return r
+
+        @method(symbol("keyvalue"))
+        def closing(s, node):
+            r = u''
+            if node.hasParent() and node.parent.type == "map" and not node.isLastChild(True):
+                r += ","
+            return r
+            
+            
+
+
+        ##################################################################################
+        #  SWITCH
+        ##################################################################################
+
+        # ------------------------------------------------------------
+        #   CASE
+        # ------------------------------------------------------------
+
+        symbol("case")
+
+        @method(symbol("case"))
+        def opening(s, node):
+            r = u''
+            r += "case"
+            return r
+
+        @method(symbol("case"))
+        def closing(s, node):
+            return ":"
+
+
+        # ------------------------------------------------------------
+        #   DEFAULT
+        # ------------------------------------------------------------
+
+        symbol("default")
+
+        @method(symbol("default"))
+        def opening(s, node):
+            r = u''
+            r += "default"
+            r += ":"
+            return r
+
+        @method(symbol("default"))
         def closing(s, node):
             return u""
 
 
+        # ------------------------------------------------------------
+        #   SWITCH
+        # ------------------------------------------------------------
 
+        symbol("switch")
+
+        @method(symbol("switch"))
+        def opening(s, node):
+            r = u''
+            if node.get("switchType") == "catch":
+                r += "try"
+            elif node.get("switchType") == "case":
+                r += "switch"
+            return r
+
+        @method(symbol("switch"))
+        def closing(s, node):
+            r = u''
+            if node.get("switchType") == "case":
+                r += "}"
+            return r
+
+
+
+
+        ##################################################################################
+        #  SPECIAL
+        ##################################################################################
+
+        # ------------------------------------------------------------
+        #   FIRST
+        # ------------------------------------------------------------
+
+        symbol("first")
+
+        @method(symbol("first"))
+        def opening(s, node):
+            r = u''
+            # for loop
+            if node.parent.type == "loop" and node.parent.get("loopType") == "FOR":
+                r += "("
+
+            # operation
+            elif node.parent.type == "operation":
+                # operation (var a = -1)
+                if node.parent.get("left", False) == True:
+                    r += cls.packOperator(node.parent.get("operator"))
+            return r
+
+        @method(symbol("first"))
+        def closing(s, node):
+            r = u''
+            # for loop
+            if node.parent.type == "loop" and node.parent.get("loopType") == "FOR":
+                if node.parent.get("forVariant") == "iter":
+                    r += ";"
+
+            # operation
+            elif node.parent.type == "operation" and node.parent.get("left", False) != True:
+                r += cls.packOperator(node.parent.get("operator"))
+            return r
+            
+            
         # ------------------------------------------------------------
         #   SECOND
         # ------------------------------------------------------------
@@ -862,67 +815,8 @@ class Packer(object):
             return r
 
 
-
-
         # ------------------------------------------------------------
-        #   STATEMENT
-        # ------------------------------------------------------------
-
-        symbol("statement")
-
-        @method(symbol("statement"))
-        def opening(s, node):
-            r = u''
-            # for loop
-            if node.parent.type == "loop" and node.parent.get("loopType") == "FOR":
-                if node.parent.get("forVariant") == "iter":
-                    if not node.parent.hasChild("first") and not node.parent.hasChild("second") and not node.parent.hasChild("third"):
-                        r += "(;;";
-
-                    elif not node.parent.hasChild("second") and not node.parent.hasChild("third"):
-                        r += ";"
-
-                r += ")"
-            return r
-
-        @method(symbol("statement"))
-        def closing(s, node):
-            return u""
-
-
-
-        # ------------------------------------------------------------
-        #   SWITCH :: SWITCH
-        # ------------------------------------------------------------
-
-        symbol("switch")
-
-        @method(symbol("switch"))
-        def opening(s, node):
-            r = u''
-            # Additional new line before each switch/try
-            if not node.isFirstChild(True) and not node.getChild("commentsBefore", False):
-                prev = node.getPreviousSibling(False, True)
-                # No separation after case statements
-                if prev != None and prev.type in ["case", "default"]:
-                    pass
-            if node.get("switchType") == "catch":
-                r += "try"
-            elif node.get("switchType") == "case":
-                r += "switch"
-            return r
-
-        @method(symbol("switch"))
-        def closing(s, node):
-            r = u''
-            if node.get("switchType") == "case":
-                r += "}"
-            return r
-
-
-
-        # ------------------------------------------------------------
-        #   SPECIAL :: THIRD
+        #   THIRD
         # ------------------------------------------------------------
 
         symbol("third")
@@ -949,8 +843,28 @@ class Packer(object):
 
 
 
+
+        ##################################################################################
+        #  EXCEPTION
+        ##################################################################################
+
         # ------------------------------------------------------------
-        #   EXCEPTION :: THROW
+        #   FINALLY
+        # ------------------------------------------------------------
+
+        symbol("finally")
+
+        @method(symbol("finally"))
+        def opening(s, node):
+            return u"finally"
+
+        @method(symbol("finally"))
+        def closing(s, node):
+            return u""
+                
+                
+        # ------------------------------------------------------------
+        #   THROW
         # ------------------------------------------------------------
 
         symbol("throw")
@@ -968,12 +882,142 @@ class Packer(object):
 
 
 
+        ##################################################################################
+        #  CORE
+        ##################################################################################
+
+        # ------------------------------------------------------------
+        #   DELETE KEYWORD
+        # ------------------------------------------------------------
+
+        symbol("delete")
+
+        @method(symbol("delete"))
+        def opening(s, node):
+            return "delete"
+
+        @method(symbol("delete"))
+        def closing(s, node):
+            return u""
+            
+            
+        # ------------------------------------------------------------
+        #   IDENTIFIER
+        # ------------------------------------------------------------
+
+        symbol("identifier")
+
+        @method(symbol("identifier"))
+        def opening(s, node):
+            name = node.get("name", False)
+            if name != None:
+                return name
+            return u""
+
+        @method(symbol("identifier"))
+        def closing(s, node):
+            r = u''
+            if node.hasParent() and node.parent.type == "variable" and not node.isLastChild(True):
+                r += "."
+            elif node.hasParent() and node.parent.type == "label":
+                r += ":"
+            return r
+            
+            
+        # ------------------------------------------------------------
+        #   INSTATIATION
+        # ------------------------------------------------------------
+
+        symbol("instantiation")
+
+        @method(symbol("instantiation"))
+        def opening(s, node):
+            r = "new"
+            return r
 
 
+        @method(symbol("instantiation"))
+        def closing(s, node):
+            return u""
+            
+            
+        # ------------------------------------------------------------
+        #   OPERAND
+        # ------------------------------------------------------------
+
+        symbol("operand")
+
+        @method(symbol("operand"))
+        def opening(s, node):
+            return u""
+
+        @method(symbol("operand"))
+        def closing(s, node):
+            return u""
 
 
         # ------------------------------------------------------------
-        #   CORE :: VARIABLE
+        #   OPERATION
+        # ------------------------------------------------------------
+
+        symbol("operation")
+
+        @method(symbol("operation"))
+        def opening(s, node):
+            r = u''
+            return r
+
+        @method(symbol("operation"))
+        def closing(s, node):
+            return u""
+
+
+        # ------------------------------------------------------------
+        #   RETURN
+        # ------------------------------------------------------------
+
+        symbol("return")
+
+        @method(symbol("return"))
+        def opening(s, node):
+            r = "return"
+            if node.hasChildren():
+                r += u" "
+            return r
+
+        @method(symbol("return"))
+        def closing(s, node):
+            return u""
+            
+            
+        # ------------------------------------------------------------
+        #   STATEMENT
+        # ------------------------------------------------------------
+
+        symbol("statement")
+
+        @method(symbol("statement"))
+        def opening(s, node):
+            r = u''
+            # for loop
+            if node.parent.type == "loop" and node.parent.get("loopType") == "FOR":
+                if node.parent.get("forVariant") == "iter":
+                    if not node.parent.hasChild("first") and not node.parent.hasChild("second") and not node.parent.hasChild("third"):
+                        r += "(;;";
+
+                    elif not node.parent.hasChild("second") and not node.parent.hasChild("third"):
+                        r += ";"
+
+                r += ")"
+            return r
+
+        @method(symbol("statement"))
+        def closing(s, node):
+            return u""
+
+
+        # ------------------------------------------------------------
+        #   VARIABLE
         # ------------------------------------------------------------
 
         symbol("variable")
@@ -988,7 +1032,7 @@ class Packer(object):
 
 
         # ------------------------------------------------------------
-        #   CORE :: VOID
+        #   VOID
         # ------------------------------------------------------------
 
         symbol("void")
@@ -1004,8 +1048,9 @@ class Packer(object):
 
 
 
+
     ##################################################################################
-    # HELPERS / INTERFACES
+    #  HELPERS / INTERFACES
     ##################################################################################
 
     @staticmethod
