@@ -40,40 +40,44 @@ class Packer(object):
 
         @classmethod
         def emit(cls, node):
-            str = u""
+            result = u""
             if node.type in ["comment", "commentsBefore", "commentsAfter"]:
-                return str
+                return result
 
-            n   = None
+            sym = None
             
             if node.type in Packer.symbol_table:
-                n = Packer.symbol_table[node.type]()
-                str += n.opening(node)
+                sym = Packer.symbol_table[node.type]()
+                result += sym.opening(node)
+            else:
+                print " - Don't process: %s" % node.type
             
             if node.hasChildren():
                 for child in node.children:
-                    str += cls.emit(child)
+                    result += cls.emit(child)
                     
                     # divide each child with a comma
-                    if node.type in ["array", "params", "expressionList"] and not child.isLastChild():
-                        str += u","
+                    if node.type in ["array", "params", "expressionList"]:
+                        if not child.isLastChild():
+                            result += u","
                         
+                    # old code checked whether the child is none of these types:
                     # ["group", "block", "assignment", "call", "operation", "definitionList", "return", "break", "continue", "delete", "accessor", "instantiation", "throw", "variable", "emptyStatement"]
                     elif node.type in ["block", "file"]:
-                        str += u";"
+                        result += u";"
                         
-                    elif node.type == "statement" and node.parent.type == "switch" and node.parent.get("switchType") == "case":
-                        str += u";"
+                    #elif node.type == "statement" and node.parent.type == "switch" and node.parent.get("switchType") == "case":
+                        #result += u";"
+                        #pass
                         
-                    elif node.type in ["statement", "elseStatement"] and not node.hasChild("block") and node.parent.type == "loop":
-                        str += ";"
+                    #elif node.type in ["statement", "elseStatement"] and not node.hasChild("block") and node.parent.type == "loop":
+                    #    result += ";"
                     
-            if n:
-                str += n.closing(node)
+            if node.type in Packer.symbol_table:
+                result += sym.closing(node)
 
-            return str
+            return result
 
-        # tokens -> string
         def opening(self, node):
             raise NotImplementedError("You need to override 'opening' method")
 
