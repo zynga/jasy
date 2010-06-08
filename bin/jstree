@@ -23,24 +23,17 @@
 import sys, os
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
-# Import system modules
+
 import optparse, string, types, pprint, copy
-
-# Import features
-from misc.ExtendAction import ExtendAction
-
-# Import JavaScript stuff
 from misc import filetool
-from js.input import tokenizer, treegenerator, treeutil
-
-
+from js.input import tokenizer, treegenerator
 
 
 if __name__ == '__main__':
     try:
-        parser = optparse.OptionParser(option_class=ExtendAction)
+        parser = optparse.OptionParser()
 
-        usage_str = '''%prog [options] file.js,...'''
+        usage_str = '''%prog file.js,...'''
         parser.set_usage(usage_str)
     
         (options, args) = parser.parse_args(sys.argv[1:])
