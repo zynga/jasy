@@ -57,7 +57,6 @@ class TokenStream(object):
         self.tokens = tokens
         self.commentsBefore = None
         self.parsepos = -1
-        self.eolBefore = False
 
     def curr (self):
         """Returns the current token."""
@@ -117,8 +116,6 @@ class TokenStream(object):
     #
     def next (self, item=None, after=False):
         length = len(self.tokens)
-        self.eolBefore = False
-        self.breakBefore = False
 
         token = None
         while self.parsepos < length - 1:
@@ -128,11 +125,6 @@ class TokenStream(object):
 
             # EOL treatment
             if token["type"] == "eol":
-                if self.eolBefore:
-                    self.breakBefore = True
-
-                self.eolBefore = True
-                # ignore end of line
                 pass
 
             #
@@ -148,9 +140,6 @@ class TokenStream(object):
                 
                 # Store the new node with this generator (TokenStream) instance
                 self.commentsBefore.append(commentNode)
-
-                self.eolBefore = False
-                self.breakBefore = False
 
             else:
                 break
@@ -189,12 +178,6 @@ class TokenStream(object):
 
             else:
                 break
-
-    def hadEolBefore(self):
-        return self.eolBefore
-
-    def hadBreakBefore(self):
-        return self.breakBefore
 
     def clearCommentsBefore(self):
         commentsBefore = self.commentsBefore
@@ -295,9 +278,6 @@ def readExpression (stream, **kwargs):
 
 def readStatement (stream, expressionMode = False, overrunSemicolon = True, inStatementList = False):
     item = None
-
-    eolBefore = stream.hadEolBefore()
-    breakBefore = stream.hadBreakBefore()
 
     # print "PROGRESS: %s - %s (%s) [expr=%s]" % (stream.currType(), stream.currDetail(), stream.currLine(), expressionMode)
 
@@ -589,10 +569,6 @@ def readStatement (stream, expressionMode = False, overrunSemicolon = True, inSt
     if expressionMode and stream.currType() in ATOMS : # we have an item but couldn't use the next token in stream
         # must be an invalid expression
         raiseSyntaxException(stream.curr(), "operator or terminator")
-
-
-    item.set("eolBefore", eolBefore)
-    item.set("breakBefore", breakBefore)
 
     return item
 
