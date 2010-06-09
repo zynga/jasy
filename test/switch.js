@@ -1,15 +1,16 @@
 var x = 1;
+var r;
 switch(x)
 {
   case 1:
   case 2:
-    return 2;
+    r = 2;
 
   case 3:
-    return 3;
+    r = 3;
 
   default:
-    return null;
+    r = null;
 }
 
-hello()
+hello(r);

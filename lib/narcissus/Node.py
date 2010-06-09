@@ -1,5 +1,6 @@
 import re
 from narcissus.Tokenizer import *
+import simplejson as json
 
 class Node(list):
 
@@ -37,7 +38,128 @@ class Node(list):
 
     indentLevel = 0
 
-    def __str__(self):
+
+
+    def exportList(self, input):
+        return "--list--"
+
+
+
+    def export(self):
+        result = {}
+        
+        for attr in dir(self):
+            if attr.startswith("_") or attr.endswith("_"):
+                continue
+            else:
+                value = getattr(self, attr)
+                
+                if isinstance(value, (basestring, int, bool)):
+                    pass
+                elif isinstance(value, Node):
+                    value = value.export()
+                elif type(value) == list:
+                    temp = []
+                    for entry in value:
+                        if isinstance(entry, Node):
+                            temp.append(entry.export())
+                        else:
+                            temp.append(entry)
+                    
+                    value = temp
+                    
+                else:
+                    continue
+                
+                result[attr] = value
+                
+        if len(self) > 0:
+            result["children"] = children = []
+            for child in self:
+                children.append(child.export())
+        
+        return result
+
+
+
+    def toJson(self, compact=True):
+        if compact:
+            return json.dumps(self.export(), sort_keys=True, separators=(',',':'))
+        else:
+            return json.dumps(self.export(), sort_keys=True, indent=2)
+        
+
+    #__repr__ = toJson
+    #__str__ = toJson
+    
+    
+    
+    
+    
+    
+
+
+    def __stxxxxr__(self):
+        return ""
+
+
+
+
+
+        
+        a = list((str(i), v) for i, v in enumerate(self))
+        s = "%s<%s" % (Node.indentLevel * "", tokenstr(self.type_).lower())
+        
+        if len(self): 
+            s += ' length="%s"' % len(self)
+            
+        childLike = ("initializer", "funDecls", "varDecls")
+        
+        for attr in dir(self):
+            if attr.startswith("_"):
+                continue
+            elif attr in ("tokenizer", "append", "count", "extend", "getSource", "index", "insert", "pop", "remove", "reverse", "sort", "type_", "target", "filename", "indentLevel", "type"):
+                continue
+            elif attr in ("lineno", "start", "end"):
+                s += ' %s="%s"' % (attr, getattr(self, attr))
+            elif attr in childLike:
+                a.append((attr, getattr(self, attr)))
+                pass
+            else:
+                value = getattr(self, attr)
+                s += ' %s="%s"' % (attr, value)
+
+                print "YY: %s = %s" % (attr, value)
+
+
+                #print "ATTR: %s" % attr
+                #a.append((attr, getattr(self, attr)))
+        
+        s += ">\n"
+        
+        Node.indentLevel += 1
+        
+        for i, value in a:
+            if i == "value" and self.type_ == REGEXP:
+                s += "/%s/%s" % (value["regexp"], value["modifiers"])
+            elif value is None:
+                s += "null"
+            elif value is False:
+                s += "false"
+            elif value is True:
+                s += "true"
+            elif type(value) == list:
+                s += ','.join((str(x) for x in value))
+            else:
+                s += str(value)
+
+        Node.indentLevel -= 1
+        s += "%s</%s>\n" % (Node.indentLevel * "", tokenstr(self.type_).lower())
+        
+        return s
+
+
+
         a = list((str(i), v) for i, v in enumerate(self))
         for attr in dir(self):
             if attr[0] == "_": continue
@@ -51,6 +173,12 @@ class Node(list):
                 a.append((attr, getattr(self, attr)))
         if len(self): a.append(("length", len(self)))
         a.sort(lambda a, b: cmp(a[0], b[0]))
+        
+
+
+        print a
+        return ""
+        
         INDENTATION = "    "
         Node.indentLevel += 1
         n = Node.indentLevel
@@ -73,7 +201,7 @@ class Node(list):
         n = Node.indentLevel
         s += "\n%s}" % (INDENTATION * n)
         return s
-    __repr__ = __str__
+    #__repr__ = __str__
 
     def getSource(self):
         if getattr(self, "start", None) is not None:

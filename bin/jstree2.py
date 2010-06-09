@@ -55,9 +55,7 @@ __all__ = ["ParseError", "parse", "tokens"]
 
 import re, sys, types
 from narcissus.Tokenizer import Tokenizer
-from narcissus.Statements import Statements
-from narcissus.Statements import Script
-from narcissus.CompilerContext import CompilerContext
+from narcissus.Statements import Statements, Script, CompilerContext
 
 
 def parse(source, filename=None, starting_line_number=1):
@@ -78,8 +76,9 @@ def parse(source, filename=None, starting_line_number=1):
     n = Script(t, x)
     if not t.done:
         raise t.newSyntaxError("Syntax error")
-    print n
-    return n
+        
+    print n.toJson()
+
 
 if __name__ == "__main__":
     parse(file(sys.argv[1]).read(),sys.argv[1])

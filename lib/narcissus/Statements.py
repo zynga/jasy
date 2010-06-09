@@ -1,11 +1,23 @@
 from narcissus.Node import Node
 from narcissus.Tokenizer import *
-from narcissus.CompilerContext import CompilerContext
 from narcissus.Expression import Expression
 
 DECLARED_FORM = 0
 EXPRESSED_FORM = 1
 STATEMENT_FORM = 2
+
+class CompilerContext(object):
+    def __init__(self, inFunction):
+        self.inFunction = inFunction
+        self.stmtStack = []
+        self.funDecls = []
+        self.varDecls = []
+        self.bracketLevel = 0
+        self.curlyLevel = 0
+        self.parenLevel = 0
+        self.hookLevel = 0
+        self.ecmaStrictMode = False
+        self.inForLoopInit = False
 
 def Script(t, x):
     n = Statements(t, x)
