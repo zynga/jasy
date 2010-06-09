@@ -46,10 +46,17 @@ class Node(list):
 
 
     def export(self):
+        filterAttr = [ "filename", "indentLevel"]
+        
         result = {}
         
+        if len(self) > 0:
+            result["children"] = children = []
+            for child in self:
+                children.append(child.export())        
+        
         for attr in dir(self):
-            if attr.startswith("_") or attr.endswith("_"):
+            if attr in filterAttr or attr.startswith("_") or attr.endswith("_"):
                 continue
             else:
                 value = getattr(self, attr)
@@ -58,6 +65,8 @@ class Node(list):
                     pass
                 elif isinstance(value, Node):
                     value = value.export()
+                elif attr == "value" and self.type_ == REGEXP:
+                    value = "/%s/%s" % (value["regexp"], value["modifiers"])
                 elif type(value) == list:
                     temp = []
                     for entry in value:
@@ -73,24 +82,19 @@ class Node(list):
                 
                 result[attr] = value
                 
-        if len(self) > 0:
-            result["children"] = children = []
-            for child in self:
-                children.append(child.export())
-        
         return result
 
 
 
-    def toJson(self, compact=True):
+    def toJson(self, compact=False):
         if compact:
             return json.dumps(self.export(), sort_keys=True, separators=(',',':'))
         else:
             return json.dumps(self.export(), sort_keys=True, indent=2)
         
 
-    #__repr__ = toJson
-    #__str__ = toJson
+    __repr__ = toJson
+    __str__ = toJson
     
     
     
