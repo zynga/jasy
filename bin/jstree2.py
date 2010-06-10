@@ -1,16 +1,10 @@
 #!/usr/bin/env python
 
+import re, sys, os
+
 # Extend PYTHONPATH with 'lib'
-import sys, os
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
-
-__author__ = "JT Olds"
-__author_email__ = "jtolds@xnet5.com"
-__date__ = "2009-03-24"
-__all__ = ["ParseError", "parse", "tokens"]
-
-import re, sys, types
 from narcissus.Tokenizer import Tokenizer
 from narcissus.Statements import Script, CompilerContext
 
@@ -27,13 +21,12 @@ def parse(source, filename=None):
         ParseError
     """
     tokenizer = Tokenizer(source, filename)
-    context = CompilerContext(False)
-    node = Script(tokenizer, context)
+    root = Script(tokenizer, CompilerContext(False))
     
     if not tokenizer.done:
         raise tokenizer.newSyntaxError("Syntax error")
         
-    return node
+    return root
 
 
 if __name__ == "__main__":
