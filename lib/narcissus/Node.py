@@ -80,6 +80,7 @@ class Node(list):
         return result
 
 
+    # Returns the JSON representation of the node object
     def toJson(self, compact=False):
         if compact:
             return json.dumps(self.export(), sort_keys=True, separators=(',',':'))
@@ -87,6 +88,7 @@ class Node(list):
             return json.dumps(self.export(), sort_keys=True, indent=2)
 
 
+    # Returns the source code of the node
     def getSource(self):
         if getattr(self, "start", None) is not None:
             if getattr(self, "end", None) is not None:
@@ -99,6 +101,7 @@ class Node(list):
         return self.tokenizer.source[:]
         
 
+    # Returns the name of the file  here the node was generated from
     def getFileName(self):
         return self.tokenizer.filename
 
