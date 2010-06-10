@@ -46,6 +46,7 @@ class Node(list):
     # Converts node to an object structure containing all public information
     def export(self):
         result = {}
+        blockAttr = ["tokenizer", "target", "filename"]
         
         if len(self) > 0:
             result["children"] = children = []
@@ -53,7 +54,7 @@ class Node(list):
                 children.append(child.export())        
         
         for attr in dir(self):
-            if attr.startswith("_") or attr.endswith("_"):
+            if attr in blockAttr or attr.startswith("_") or attr.endswith("_"):
                 continue
             else:
                 value = getattr(self, attr)
@@ -114,4 +115,4 @@ def tokenstr(tt):
     t = tokens[tt]
     if re.match(r'^\W', t):
         return opTypeNames[t]
-    return t
+    return t.upper()

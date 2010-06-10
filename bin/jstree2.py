@@ -55,7 +55,7 @@ __all__ = ["ParseError", "parse", "tokens"]
 
 import re, sys, types
 from narcissus.Tokenizer import Tokenizer
-from narcissus.Statements import Statements, Script, CompilerContext
+from narcissus.Statements import Script, CompilerContext
 
 
 def parse(source, filename=None, starting_line_number=1):
