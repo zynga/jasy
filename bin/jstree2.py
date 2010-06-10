@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 
 from narcissus.Tokenizer import Tokenizer
 from narcissus.Statements import Script, CompilerContext
+from narcissus.Compressor import Compressor
 
 
 def parse(source, filename=None):
@@ -26,8 +27,13 @@ def parse(source, filename=None):
     if not tokenizer.done:
         raise tokenizer.newSyntaxError("Syntax error")
         
+        
+        
+    print root.toJson()
+    print Compressor(root)
+        
     return root
 
 
 if __name__ == "__main__":
-    print parse(file(sys.argv[1]).read(),sys.argv[1]).toJson()
+    parse(file(sys.argv[1]).read(),sys.argv[1])
