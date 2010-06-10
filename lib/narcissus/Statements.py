@@ -49,20 +49,41 @@ DECLARED_FORM = 0
 EXPRESSED_FORM = 1
 STATEMENT_FORM = 2
 
+# Used as a status container during tree-building for every function body and the global body
 class CompilerContext(object):
     def __init__(self, inFunction):
+        #######################
+        # PUBLIC
+        #######################
+
+        # collect all functions and variables which are declared inside this context
+        self.functions = []
+        self.variables = []
+
+        #######################
+        # PRIVATE
+        #######################
+
+        # Whether this is inside a function, mostly true, only for top-level scope it's false
         self.inFunction = inFunction
-        self.stmtStack = []
-        self.funDecls = []
-        self.varDecls = []
+        
+        # 
+        self.statementStack = []
+
+        #
         self.bracketLevel = 0
         self.curlyLevel = 0
         self.parenLevel = 0
         self.hookLevel = 0
+        
+        # Configure strict ecmascript mode
         self.ecmaStrictMode = False
+        
+        # Status flag during parsing
         self.inForLoopInit = False
 
 
+# This produces the root node of each file, basically a modified block node
 def Script(tokenizer, compilerContext):
     node = Statements(tokenizer, compilerContext)
     
@@ -70,86 +91,92 @@ def Script(tokenizer, compilerContext):
     node.type_ = SCRIPT
 
     # copy over context declarations into script node
-    node.funDecls = compilerContext.funDecls
-    node.varDecls = compilerContext.varDecls
+    node.functions = compilerContext.functions
+    node.variables = compilerContext.variables
 
     return node
     
-    
+
+# Processed all statements of a block
 def Statements(tokenizer, compilerContext):
     node = Node(tokenizer, BLOCK)
-    compilerContext.stmtStack.append(node)
+    compilerContext.statementStack.append(node)
 
+    # Process children until reaching end
     while not tokenizer.done and tokenizer.peek() != RIGHT_CURLY:
         node.append(Statement(tokenizer, compilerContext))
 
-    compilerContext.stmtStack.pop()
+    compilerContext.statementStack.pop()
     return node
 
 
+# Returns the block node
 def Block(tokenizer, compilerContext):
     tokenizer.mustMatch(LEFT_CURLY)
     node = Statements(tokenizer, compilerContext)
     tokenizer.mustMatch(RIGHT_CURLY)
     return node
-    
-    
-# Statement stack and nested statement handler.
+
+
+# Statement stack and nested statement handler
 def nest(tokenizer, compilerContext, node, func, end=None):
-    compilerContext.stmtStack.append(node)
+    compilerContext.statementStack.append(node)
     node = func(tokenizer, compilerContext)
-    compilerContext.stmtStack.pop()
-    if end: tokenizer.mustMatch(end)
-    return node    
+    compilerContext.statementStack.pop()
     
+    if end: 
+        tokenizer.mustMatch(end)
+    
+    return node    
+
 
 def Statement(tokenizer, compilerContext):
-    tt = tokenizer.get()
+    tokenType = tokenizer.get()
 
     # Cases for statements ending in a right curly return early, avoiding the
     # common semicolon insertion magic after this switch.
-    if tt == FUNCTION:
-        if len(compilerContext.stmtStack) > 1:
+    if tokenType == FUNCTION:
+        if len(compilerContext.statementStack) > 1:
             type_ = STATEMENT_FORM
         else:
             type_ = DECLARED_FORM
         return FunctionDefinition(tokenizer, compilerContext, True, type_)
 
-    elif tt == LEFT_CURLY:
+    elif tokenType == LEFT_CURLY:
         node = Statements(tokenizer, compilerContext)
         tokenizer.mustMatch(RIGHT_CURLY)
         return node
 
-    elif tt == IF:
+    elif tokenType == IF:
         node = Node(tokenizer)
         node.condition = ParenExpression(tokenizer, compilerContext)
-        compilerContext.stmtStack.append(node)
+        compilerContext.statementStack.append(node)
         node.thenPart = Statement(tokenizer, compilerContext)
         if tokenizer.match(ELSE):
             node.elsePart = Statement(tokenizer, compilerContext)
         else:
             node.elsePart = None
-        compilerContext.stmtStack.pop()
+        compilerContext.statementStack.pop()
         return node
 
-    elif tt == SWITCH:
+    elif tokenType == SWITCH:
         node = Node(tokenizer)
         tokenizer.mustMatch(LEFT_PAREN)
         node.discriminant = Expression(tokenizer, compilerContext)
         tokenizer.mustMatch(RIGHT_PAREN)
         node.cases = []
         node.defaultIndex = -1
-        compilerContext.stmtStack.append(node)
+        compilerContext.statementStack.append(node)
         tokenizer.mustMatch(LEFT_CURLY)
         while True:
-            tt = tokenizer.get()
-            if tt == RIGHT_CURLY: break
+            tokenType = tokenizer.get()
+            if tokenType == RIGHT_CURLY: break
 
-            if tt in (DEFAULT, CASE):
-                if tt == DEFAULT and node.defaultIndex >= 0:
+            if tokenType in (DEFAULT, CASE):
+                if tokenType == DEFAULT and node.defaultIndex >= 0:
                     raise tokenizer.newSyntaxError("More than one switch default")
                 n2 = Node(tokenizer)
-                if tt == DEFAULT:
+                if tokenType == DEFAULT:
                     node.defaultIndex = len(node.cases)
                 else:
                     n2.caseLabel = Expression(tokenizer, compilerContext, COLON)
@@ -158,22 +185,22 @@ def Statement(tokenizer, compilerContext):
             tokenizer.mustMatch(COLON)
             n2.statements = Node(tokenizer, BLOCK)
             while True:
-                tt = tokenizer.peek()
-                if(tt == CASE or tt == DEFAULT or tt == RIGHT_CURLY): break
+                tokenType = tokenizer.peek()
+                if(tokenType == CASE or tokenType == DEFAULT or tokenType == RIGHT_CURLY): break
                 n2.statements.append(Statement(tokenizer, compilerContext))
             node.cases.append(n2)
-        compilerContext.stmtStack.pop()
+        compilerContext.statementStack.pop()
         return node
 
-    elif tt == FOR:
+    elif tokenType == FOR:
         node = Node(tokenizer)
         n2 = None
         node.isLoop = True
         tokenizer.mustMatch(LEFT_PAREN)
-        tt = tokenizer.peek()
-        if tt != SEMICOLON:
+        tokenType = tokenizer.peek()
+        if tokenType != SEMICOLON:
             compilerContext.inForLoopInit = True
-            if tt == VAR or tt == CONST:
+            if tokenType == VAR or tokenType == CONST:
                 tokenizer.get()
                 n2 = Variables(tokenizer, compilerContext)
             else:
@@ -213,14 +240,14 @@ def Statement(tokenizer, compilerContext):
         node.body = nest(tokenizer, compilerContext, node, Statement)
         return node
 
-    elif tt == WHILE:
+    elif tokenType == WHILE:
         node = Node(tokenizer)
         node.isLoop = True
         node.condition = ParenExpression(tokenizer, compilerContext)
         node.body = nest(tokenizer, compilerContext, node, Statement)
         return node
 
-    elif tt == DO:
+    elif tokenType == DO:
         node = Node(tokenizer)
         node.isLoop = True
         node.body = nest(tokenizer, compilerContext, node, Statement, WHILE)
@@ -232,12 +259,12 @@ def Statement(tokenizer, compilerContext):
             tokenizer.match(SEMICOLON)
             return node
 
-    elif tt in (BREAK, CONTINUE):
+    elif tokenType in (BREAK, CONTINUE):
         node = Node(tokenizer)
         if tokenizer.peekOnSameLine() == IDENTIFIER:
             tokenizer.get()
             node.label = tokenizer.token.value
-        ss = compilerContext.stmtStack
+        ss = compilerContext.statementStack
         i = len(ss)
         label = getattr(node, "label", None)
         if label:
@@ -250,16 +277,16 @@ def Statement(tokenizer, compilerContext):
             while True:
                 i -= 1
                 if i < 0:
-                    if tt == BREAK:
+                    if tokenType == BREAK:
                         raise tokenizer.newSyntaxError("Invalid break")
                     else:
                         raise tokenizer.newSyntaxError("Invalid continue")
-                if (getattr(ss[i], "isLoop", None) or (tt == BREAK and
+                if (getattr(ss[i], "isLoop", None) or (tokenType == BREAK and
                         ss[i].type_ == SWITCH)):
                     break
         node.target = ss[i]
 
-    elif tt == TRY:
+    elif tokenType == TRY:
         node = Node(tokenizer)
         node.tryBlock = Block(tokenizer, compilerContext)
         node.catchClauses = []
@@ -284,46 +311,46 @@ def Statement(tokenizer, compilerContext):
             raise tokenizer.newSyntaxError("Invalid try statement")
         return node
 
-    elif tt in (CATCH, FINALLY):
-        raise tokenizer.newSyntaxError(tokens[tt] + " without preceding try")
+    elif tokenType in (CATCH, FINALLY):
+        raise tokenizer.newSyntaxError(tokens[tokenType] + " without preceding try")
 
-    elif tt == THROW:
+    elif tokenType == THROW:
         node = Node(tokenizer)
         node.exception = Expression(tokenizer, compilerContext)
 
-    elif tt == RETURN:
+    elif tokenType == RETURN:
         if not compilerContext.inFunction:
             raise tokenizer.newSyntaxError("Invalid return")
         node = Node(tokenizer)
-        tt = tokenizer.peekOnSameLine()
-        if tt not in (END, NEWLINE, SEMICOLON, RIGHT_CURLY):
+        tokenType = tokenizer.peekOnSameLine()
+        if tokenType not in (END, NEWLINE, SEMICOLON, RIGHT_CURLY):
             node.value = Expression(tokenizer, compilerContext)
 
-    elif tt == WITH:
+    elif tokenType == WITH:
         node = Node(tokenizer)
         node.object = ParenExpression(tokenizer, compilerContext)
         node.body = nest(tokenizer, compilerContext, node, Statement)
         return node
 
-    elif tt in (VAR, CONST):
+    elif tokenType in (VAR, CONST):
         node = Variables(tokenizer, compilerContext)
 
-    elif tt == DEBUGGER:
+    elif tokenType == DEBUGGER:
         node = Node(tokenizer)
 
-    elif tt in (NEWLINE, SEMICOLON):
+    elif tokenType in (NEWLINE, SEMICOLON):
         node = Node(tokenizer, SEMICOLON)
         node.expression = None
         return node
 
     else:
-        if tt == IDENTIFIER:
+        if tokenType == IDENTIFIER:
             tokenizer.scanOperand = False
-            tt = tokenizer.peek()
+            tokenType = tokenizer.peek()
             tokenizer.scanOperand = True
-            if tt == COLON:
+            if tokenType == COLON:
                 label = tokenizer.token.value
-                ss = compilerContext.stmtStack
+                ss = compilerContext.statementStack
                 i = len(ss) - 1
                 while i >= 0:
                     if getattr(ss[i], "label", None) == label:
@@ -341,8 +368,8 @@ def Statement(tokenizer, compilerContext):
         node.end = node.expression.end
 
     if tokenizer.lineno == tokenizer.token.lineno:
-        tt = tokenizer.peekOnSameLine()
-        if tt not in (END, NEWLINE, SEMICOLON, RIGHT_CURLY):
+        tokenType = tokenizer.peekOnSameLine()
+        if tokenType not in (END, NEWLINE, SEMICOLON, RIGHT_CURLY):
             raise tokenizer.newSyntaxError("Missing ; before statement")
     tokenizer.match(SEMICOLON)
     return node
@@ -362,9 +389,9 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     tokenizer.mustMatch(LEFT_PAREN)
     f.params = []
     while True:
-        tt = tokenizer.get()
-        if tt == RIGHT_PAREN: break
-        if tt != IDENTIFIER:
+        tokenType = tokenizer.get()
+        if tokenType == RIGHT_PAREN: break
+        if tokenType != IDENTIFIER:
             raise tokenizer.newSyntaxError("Missing formal parameter")
         f.params.append(tokenizer.token.value)
         if tokenizer.peek() != RIGHT_PAREN:
@@ -378,7 +405,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
 
     f.functionForm = functionForm
     if functionForm == DECLARED_FORM:
-        compilerContext.funDecls.append(f)
+        compilerContext.functions.append(f)
     return f
 
 def Variables(tokenizer, compilerContext):
@@ -393,7 +420,7 @@ def Variables(tokenizer, compilerContext):
             n2.initializer = Expression(tokenizer, compilerContext, COMMA)
         n2.readOnly = not not (node.type_ == CONST)
         node.append(n2)
-        compilerContext.varDecls.append(n2)
+        compilerContext.variables.append(n2)
         if not tokenizer.match(COMMA): break
     return node
 
@@ -496,23 +523,23 @@ def Expression(tokenizer, compilerContext, stop=None):
         
     try:
         while True:
-            tt = tokenizer.get()
-            if tt == END: break
-            if (tt == stop and compilerContext.bracketLevel == bl and compilerContext.curlyLevel == cl and
+            tokenType = tokenizer.get()
+            if tokenType == END: break
+            if (tokenType == stop and compilerContext.bracketLevel == bl and compilerContext.curlyLevel == cl and
                     compilerContext.parenLevel == pl and compilerContext.hookLevel == hl):
-                # Stop only if tt matches the optional stop parameter, and that
+                # Stop only if tokenType matches the optional stop parameter, and that
                 # token is not quoted by some kind of bracket.
                 break
-            if tt == SEMICOLON:
+            if tokenType == SEMICOLON:
                 # NB: cannot be empty, Statement handled that.
                 raise BreakOutOfLoops
 
-            elif tt in (ASSIGN, HOOK, COLON):
+            elif tokenType in (ASSIGN, HOOK, COLON):
                 if tokenizer.scanOperand:
                     raise BreakOutOfLoops
-                while ((operators and opPrecedence.get(operators[-1].type_, None) > opPrecedence.get(tt)) or (tt == COLON and operators and operators[-1].type_ == ASSIGN)):
+                while ((operators and opPrecedence.get(operators[-1].type_, None) > opPrecedence.get(tokenType)) or (tokenType == COLON and operators and operators[-1].type_ == ASSIGN)):
                     reduce_()
-                if tt == COLON:
+                if tokenType == COLON:
                     if operators:
                         node = operators[-1]
                     if not operators or node.type_ != HOOK:
@@ -520,19 +547,19 @@ def Expression(tokenizer, compilerContext, stop=None):
                     compilerContext.hookLevel -= 1
                 else:
                     operators.append(Node(tokenizer))
-                    if tt == ASSIGN:
+                    if tokenType == ASSIGN:
                         operands[-1].assignOp = tokenizer.token.assignOp
                     else:
                         compilerContext.hookLevel += 1
 
                 tokenizer.scanOperand = True
 
-            elif tt in (IN, COMMA, OR, AND, BITWISE_OR, BITWISE_XOR, BITWISE_AND, EQ, NE, 
+            elif tokenType in (IN, COMMA, OR, AND, BITWISE_OR, BITWISE_XOR, BITWISE_AND, EQ, NE, 
                 STRICT_EQ, STRICT_NE, LT, LE, GE, GT, INSTANCEOF, LSH, RSH, URSH, PLUS, MINUS, MUL, DIV, MOD, DOT):
                 
                 # We're treating comma as left-associative so reduce can fold
                 # left-heavy COMMA trees into a single array.
-                if tt == IN:
+                if tokenType == IN:
                     # An in operator should not be parsed if we're parsing the
                     # head of a for (...) loop, unless it is in the then part of
                     # a conditional expression, or parenthesized somehow.
@@ -540,21 +567,21 @@ def Expression(tokenizer, compilerContext, stop=None):
                         raise BreakOutOfLoops
                 if tokenizer.scanOperand:
                     raise BreakOutOfLoops
-                while (operators and opPrecedence.get(operators[-1].type_) >= opPrecedence.get(tt)):
+                while (operators and opPrecedence.get(operators[-1].type_) >= opPrecedence.get(tokenType)):
                     reduce_()
-                if tt == DOT:
+                if tokenType == DOT:
                     tokenizer.mustMatch(IDENTIFIER)
                     operands.append(Node(tokenizer, DOT, [operands.pop(), Node(tokenizer)]))
                 else:
                     operators.append(Node(tokenizer))
                     tokenizer.scanOperand = True
 
-            elif tt in (DELETE, VOID, TYPEOF, NOT, BITWISE_NOT, UNARY_PLUS, UNARY_MINUS, NEW):
+            elif tokenType in (DELETE, VOID, TYPEOF, NOT, BITWISE_NOT, UNARY_PLUS, UNARY_MINUS, NEW):
                 if not tokenizer.scanOperand:
                     raise BreakOutOfLoops
                 operators.append(Node(tokenizer))
 
-            elif tt in (INCREMENT, DECREMENT):
+            elif tokenType in (INCREMENT, DECREMENT):
                 if tokenizer.scanOperand:
                     operators.append(Node(tokenizer)) # prefix increment or decrement
                 else:
@@ -566,34 +593,34 @@ def Expression(tokenizer, compilerContext, stop=None):
                     # Use >, not >=, so postfix has higher precedence than
                     # prefix.
                     while (operators and opPrecedence.get(operators[-1].type_,
-                            None) > opPrecedence.get(tt)):
+                            None) > opPrecedence.get(tokenType)):
                         reduce_()
-                    node = Node(tokenizer, tt, [operands.pop()])
+                    node = Node(tokenizer, tokenType, [operands.pop()])
                     node.postfix = True
                     operands.append(node)
 
-            elif tt == FUNCTION:
+            elif tokenType == FUNCTION:
                 if not tokenizer.scanOperand:
                     raise BreakOutOfLoops
                 operands.append(FunctionDefinition(tokenizer, compilerContext, False, EXPRESSED_FORM))
                 tokenizer.scanOperand = False
 
-            elif tt in (NULL, THIS, TRUE, FALSE, IDENTIFIER, NUMBER, STRING,
+            elif tokenType in (NULL, THIS, TRUE, FALSE, IDENTIFIER, NUMBER, STRING,
                     REGEXP):
                 if not tokenizer.scanOperand:
                     raise BreakOutOfLoops
                 operands.append(Node(tokenizer))
                 tokenizer.scanOperand = False
 
-            elif tt == LEFT_BRACKET:
+            elif tokenType == LEFT_BRACKET:
                 if tokenizer.scanOperand:
                     # Array initializer. Parse using recursive descent, as the
                     # sub-grammer here is not an operator grammar.
                     node = Node(tokenizer, ARRAY_INIT)
                     while True:
-                        tt = tokenizer.peek()
-                        if tt == RIGHT_BRACKET: break
-                        if tt == COMMA:
+                        tokenType = tokenizer.peek()
+                        if tokenType == RIGHT_BRACKET: break
+                        if tokenType == COMMA:
                             tokenizer.get()
                             node.append(None)
                             continue
@@ -608,14 +635,14 @@ def Expression(tokenizer, compilerContext, stop=None):
                     tokenizer.scanOperand = True
                     compilerContext.bracketLevel += 1
 
-            elif tt == RIGHT_BRACKET:
+            elif tokenType == RIGHT_BRACKET:
                 if tokenizer.scanOperand or compilerContext.bracketLevel == bl:
                     raise BreakOutOfLoops
                 while reduce_().type_ != INDEX:
                     continue
                 compilerContext.bracketLevel -= 1
 
-            elif tt == LEFT_CURLY:
+            elif tokenType == LEFT_CURLY:
                 if not tokenizer.scanOperand:
                     raise BreakOutOfLoops
                 # Object initializer. As for array initializers (see above),
@@ -627,26 +654,23 @@ def Expression(tokenizer, compilerContext, stop=None):
                 try:
                     if not tokenizer.match(RIGHT_CURLY):
                         while True:
-                            tt = tokenizer.get()
+                            tokenType = tokenizer.get()
                             if ((tokenizer.token.value == "get" or
                                     tokenizer.token.value == "set") and
                                     tokenizer.peek == IDENTIFIER):
                                 if compilerContext.ecmaStrictMode:
-                                    raise tokenizer.newSyntaxError("Illegal property "
-                                            "accessor")
-                                node.append(FunctionDefinition(tokenizer, compilerContext, True,
-                                        EXPRESSED_FORM))
+                                    raise tokenizer.newSyntaxError("Illegal property accessor")
+                                node.append(FunctionDefinition(tokenizer, compilerContext, True, EXPRESSED_FORM))
                             else:
-                                if tt in (IDENTIFIER, NUMBER, STRING):
+                                if tokenType in (IDENTIFIER, NUMBER, STRING):
                                     id_ = Node(tokenizer)
-                                elif tt == RIGHT_CURLY:
+                                elif tokenType == RIGHT_CURLY:
                                     if compilerContext.ecmaStrictMode:
-                                        raise tokenizer.newSyntaxError("Illegal "
-                                                "trailing ,")
+                                        raise tokenizer.newSyntaxError("Illegal trailing ,")
                                     raise BreakOutOfObjectInit
                                 else:
-                                    raise tokenizer.newSyntaxError("Invalid property "
-                                            "name")
+                                    raise tokenizer.newSyntaxError("Invalid property name")
+                                    
                                 tokenizer.mustMatch(COLON)
                                 node.append(Node(tokenizer, PROPERTY_INIT, [id_,
                                         Expression(tokenizer, compilerContext, COMMA)]))
@@ -657,12 +681,12 @@ def Expression(tokenizer, compilerContext, stop=None):
                 tokenizer.scanOperand = False
                 compilerContext.curlyLevel -= 1
 
-            elif tt == RIGHT_CURLY:
+            elif tokenType == RIGHT_CURLY:
                 if not tokenizer.scanOperand and compilerContext.curlyLevel != cl:
                     raise ParseError("PANIC: right curly botch")
                 raise BreakOutOfLoops
 
-            elif tt == LEFT_PAREN:
+            elif tokenType == LEFT_PAREN:
                 if tokenizer.scanOperand:
                     operators.append(Node(tokenizer, GROUP))
                     compilerContext.parenLevel += 1
@@ -694,14 +718,14 @@ def Expression(tokenizer, compilerContext, stop=None):
                             operators.append(Node(tokenizer, CALL))
                         compilerContext.parenLevel += 1
 
-            elif tt == RIGHT_PAREN:
+            elif tokenType == RIGHT_PAREN:
                 if tokenizer.scanOperand or compilerContext.parenLevel == pl:
                     raise BreakOutOfLoops
                 while True:
-                    tt = reduce_().type_
-                    if tt in (GROUP, CALL, NEW_WITH_ARGS):
+                    tokenType = reduce_().type_
+                    if tokenType in (GROUP, CALL, NEW_WITH_ARGS):
                         break
-                if tt != GROUP:
+                if tokenType != GROUP:
                     if operands:
                         node = operands[-1]
                         if node[1].type_ != COMMA:
