@@ -1,7 +1,6 @@
 import re, sys, types
 from narcissus.Lang import *
 
-class Object: pass
 class Error_(Exception): pass
 class ParseError(Error_): pass
 
@@ -10,6 +9,9 @@ fpRegExp = re.compile(r'^\d+\.\d*(?:[eE][-+]?\d+)?|^\d+(?:\.\d*)?[eE][-+]?\d+|^\
 
 # A regexp to match regexp literals.
 reRegExp = re.compile(r'^\/((?:\\.|\[(?:\\.|[^\]])*\]|[^\/])+)\/([gimy]*)')
+
+class Token: 
+    pass
 
 class SyntaxError_(ParseError):
     def __init__(self, message, filename, lineno):
@@ -93,7 +95,7 @@ class Tokenizer(object):
         self.tokenIndex = (self.tokenIndex + 1) & 3
         token = self.tokens.get(self.tokenIndex)
         if not token:
-            token = Object()
+            token = Token()
             self.tokens[self.tokenIndex] = token
 
         if not input__:
