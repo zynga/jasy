@@ -31,7 +31,6 @@ class Node(list):
     type = property(lambda self: tokenstr(self.type_))
 
 
-
     # Always use push to add operands to an expression, to update start and end.
     def append(self, kid, numbers=[]):
         if kid:
@@ -41,14 +40,9 @@ class Node(list):
                 self.end = kid.end
         return list.append(self, kid)
 
-    indentLevel = 0
 
-
-
-    # Reprocesses content to be exportable only containing public data
+    # Converts node to an object structure containing all public information
     def export(self):
-        filterAttr = [ "filename", "indentLevel"]
-        
         result = {}
         
         if len(self) > 0:
@@ -57,7 +51,7 @@ class Node(list):
                 children.append(child.export())        
         
         for attr in dir(self):
-            if attr in filterAttr or attr.startswith("_") or attr.endswith("_"):
+            if attr.startswith("_") or attr.endswith("_"):
                 continue
             else:
                 value = getattr(self, attr)
@@ -86,33 +80,34 @@ class Node(list):
         return result
 
 
-
     def toJson(self, compact=False):
         if compact:
             return json.dumps(self.export(), sort_keys=True, separators=(',',':'))
         else:
             return json.dumps(self.export(), sort_keys=True, indent=2)
-        
 
-    __repr__ = toJson
-    __str__ = toJson
-    
-    
-    
+
     def getSource(self):
         if getattr(self, "start", None) is not None:
             if getattr(self, "end", None) is not None:
                 return self.tokenizer.source[self.start:self.end]
             return self.tokenizer.source[self.start:]
+        
         if getattr(self, "end", None) is not None:
             return self.tokenizer.source[:self.end]
+        
         return self.tokenizer.source[:]
         
 
-    filename = property(lambda self: self.tokenizer.filename)
+    def getFileName(self):
+        return self.tokenizer.filename
 
 
-    def __nonzero__(self): return True
+    __repr__ = toJson
+    __str__ = toJson
+
+    def __nonzero__(self): 
+        return True
     
     
 def tokenstr(tt):
