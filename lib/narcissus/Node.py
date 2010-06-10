@@ -13,19 +13,24 @@ class Node(list):
                 self.type_ = type_
             else:
                 self.type_ = getattr(token, "type_", None)
+                
             self.value = token.value
             self.lineno = token.lineno
             self.start = token.start
             self.end = token.end
+
         else:
             self.type_ = type_
             self.lineno = t.lineno
+
         self.tokenizer = t
 
         for arg in args:
             self.append(arg)
 
     type = property(lambda self: tokenstr(self.type_))
+
+
 
     # Always use push to add operands to an expression, to update start and end.
     def append(self, kid, numbers=[]):
@@ -40,11 +45,7 @@ class Node(list):
 
 
 
-    def exportList(self, input):
-        return "--list--"
-
-
-
+    # Reprocesses content to be exportable only containing public data
     def export(self):
         filterAttr = [ "filename", "indentLevel"]
         
@@ -106,21 +107,16 @@ class Node(list):
         if getattr(self, "end", None) is not None:
             return self.tokenizer.source[:self.end]
         return self.tokenizer.source[:]
+        
 
     filename = property(lambda self: self.tokenizer.filename)
 
+
     def __nonzero__(self): return True
-
-# Statement stack and nested statement handler.
-def nest(t, x, node, func, end=None):
-    x.stmtStack.append(node)
-    n = func(t, x)
-    x.stmtStack.pop()
-    if end: t.mustMatch(end)
-    return n
-
+    
+    
 def tokenstr(tt):
     t = tokens[tt]
     if re.match(r'^\W', t):
         return opTypeNames[t]
-    return t.upper()
+    return t

@@ -19,12 +19,14 @@ class CompilerContext(object):
         self.ecmaStrictMode = False
         self.inForLoopInit = False
 
+
 def Script(t, x):
     n = Statements(t, x)
     n.type_ = SCRIPT
     n.funDecls = x.funDecls
     n.varDecls = x.varDecls
     return n
+    
     
 def Statements(t, x):
     n = Node(t, BLOCK)
@@ -34,11 +36,22 @@ def Statements(t, x):
     x.stmtStack.pop()
     return n
 
+
 def Block(t, x):
     t.mustMatch(LEFT_CURLY)
     n = Statements(t, x)
     t.mustMatch(RIGHT_CURLY)
     return n
+    
+    
+# Statement stack and nested statement handler.
+def nest(t, x, node, func, end=None):
+    x.stmtStack.append(node)
+    n = func(t, x)
+    x.stmtStack.pop()
+    if end: t.mustMatch(end)
+    return n    
+    
 
 def Statement(t, x):
     tt = t.get()
