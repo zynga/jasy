@@ -1,5 +1,5 @@
 from narcissus.Node import Node
-from narcissus.Tokenizer import *
+from narcissus.Lang import *
 from narcissus.Expression import Expression
 
 DECLARED_FORM = 0

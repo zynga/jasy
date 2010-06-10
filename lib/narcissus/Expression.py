@@ -1,4 +1,4 @@
-from narcissus.Tokenizer import *
+from narcissus.Lang import *
 from narcissus.Node import Node
 
 opPrecedence = {
@@ -88,7 +88,9 @@ def Expression(t, x, stop=None):
         operands.append(n)
         return n
 
-    class BreakOutOfLoops(Exception): pass
+    class BreakOutOfLoops(Exception): 
+        pass
+        
     try:
         while True:
             tt = t.get()
@@ -105,9 +107,7 @@ def Expression(t, x, stop=None):
             elif tt in (ASSIGN, HOOK, COLON):
                 if t.scanOperand:
                     raise BreakOutOfLoops
-                while ((operators and opPrecedence.get(operators[-1].type_,
-                        None) > opPrecedence.get(tt)) or (tt == COLON and
-                        operators and operators[-1].type_ == ASSIGN)):
+                while ((operators and opPrecedence.get(operators[-1].type_, None) > opPrecedence.get(tt)) or (tt == COLON and operators and operators[-1].type_ == ASSIGN)):
                     reduce_()
                 if tt == COLON:
                     if operators:
@@ -124,10 +124,9 @@ def Expression(t, x, stop=None):
 
                 t.scanOperand = True
 
-            elif tt in (IN, COMMA, OR, AND, BITWISE_OR, BITWISE_XOR,
-                    BITWISE_AND, EQ, NE, STRICT_EQ, STRICT_NE, LT, LE, GE, GT,
-                    INSTANCEOF, LSH, RSH, URSH, PLUS, MINUS, MUL, DIV, MOD,
-                    DOT):
+            elif tt in (IN, COMMA, OR, AND, BITWISE_OR, BITWISE_XOR, BITWISE_AND, EQ, NE, 
+                STRICT_EQ, STRICT_NE, LT, LE, GE, GT, INSTANCEOF, LSH, RSH, URSH, PLUS, MINUS, MUL, DIV, MOD, DOT):
+                
                 # We're treating comma as left-associative so reduce can fold
                 # left-heavy COMMA trees into a single array.
                 if tt == IN:
@@ -150,8 +149,7 @@ def Expression(t, x, stop=None):
                     operators.append(Node(t))
                     t.scanOperand = True
 
-            elif tt in (DELETE, VOID, TYPEOF, NOT, BITWISE_NOT, UNARY_PLUS,
-                    UNARY_MINUS, NEW):
+            elif tt in (DELETE, VOID, TYPEOF, NOT, BITWISE_NOT, UNARY_PLUS, UNARY_MINUS, NEW):
                 if not t.scanOperand:
                     raise BreakOutOfLoops
                 operators.append(Node(t))

@@ -1,5 +1,5 @@
 import re
-from narcissus.Tokenizer import *
+from narcissus.Lang import *
 import simplejson as json
 
 class Node(list):
@@ -28,7 +28,9 @@ class Node(list):
         for arg in args:
             self.append(arg)
 
+
     type = property(lambda self: tokenstr(self.type_))
+    filename = property(lambda self: self.tokenizer.filename)
 
 
     # Always use push to add operands to an expression, to update start and end.
@@ -99,11 +101,6 @@ class Node(list):
             return self.tokenizer.source[:self.end]
         
         return self.tokenizer.source[:]
-        
-
-    # Returns the name of the file  here the node was generated from
-    def getFileName(self):
-        return self.tokenizer.filename
 
 
     __repr__ = toJson
