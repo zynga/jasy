@@ -90,7 +90,7 @@ class Node(list):
     # Converts node to an object structure containing all public information
     def export(self):
         result = {}
-        blockAttr = ["tokenizer", "target", "filename"]
+        blockAttr = ["tokenizer", "target", "filename", "start", "end"]
         
         if len(self) > 0:
             result["children"] = children = []

@@ -61,15 +61,15 @@ class SyntaxError_(ParseError):
         ParseError.__init__(self, "Syntax error: %s\n%s:%s" % (message, filename, lineno))
 
 class Tokenizer(object):
-    def __init__(self, s, f):
+    def __init__(self, source, filename):
         self.cursor = 0
-        self.source = str(s)
+        self.source = str(source)
         self.tokens = {}
         self.tokenIndex = 0
         self.lookahead = 0
         self.scanNewlines = False
         self.scanOperand = True
-        self.filename = f
+        self.filename = filename
         self.lineno = 1
 
     input_ = property(lambda self: self.source[self.cursor:])
