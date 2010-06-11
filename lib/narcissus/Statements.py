@@ -374,6 +374,8 @@ def Statement(tokenizer, compilerContext):
     tokenizer.match(SEMICOLON)
     return node
 
+
+# Process a function declaration
 def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     f = Node(tokenizer)
     if f.type_ != FUNCTION:
@@ -408,6 +410,8 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
         compilerContext.functions.append(f)
     return f
 
+
+# Processes a variable block
 def Variables(tokenizer, compilerContext):
     node = Node(tokenizer)
     while True:
@@ -424,6 +428,8 @@ def Variables(tokenizer, compilerContext):
         if not tokenizer.match(COMMA): break
     return node
 
+
+# ???
 def ParenExpression(tokenizer, compilerContext):
     tokenizer.mustMatch(LEFT_PAREN)
     node = Expression(tokenizer, compilerContext)
