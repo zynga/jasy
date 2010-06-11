@@ -160,8 +160,8 @@ class Node(list):
         return True
     
     
-def tokenstr(tt):
-    t = tokens[tt]
+def tokenstr(tokenType):
+    t = tokens[tokenType]
     if re.match(r'^\W', t):
-        return opTypeNames[t]
+        return operatorPunctuatorNames[t]
     return t.upper()

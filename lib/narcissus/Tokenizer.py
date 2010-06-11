@@ -47,11 +47,7 @@ from narcissus.Lang import *
 class Error_(Exception): pass
 class ParseError(Error_): pass
 
-# A regexp to match floating point literals (but not integer literals).
-fpRegExp = re.compile(r'^\d+\.\d*(?:[eE][-+]?\d+)?|^\d+(?:\.\d*)?[eE][-+]?\d+|^\.\d+(?:[eE][-+]?\d+)?')
 
-# A regexp to match regexp literals.
-reRegExp = re.compile(r'^\/((?:\\.|\[(?:\\.|[^\]])*\]|[^\/])+)\/([gimy]*)')
 
 class Token: 
     pass
@@ -151,26 +147,26 @@ class Tokenizer(object):
             return END
             
         def matchInput():
-            match = fpRegExp.match(input__)
+            match = floatingPointMatcher.match(input__)
             if match:
                 token.type_ = NUMBER
                 token.value = float(match.group(0))
                 return match.group(0)
 
-            match = re.match(r'^0[xX][\da-fA-F]+|^0[0-7]*|^\d+', input__)
+            match = numberMatcher.match(input__)
             if match:
                 token.type_ = NUMBER
                 token.value = eval(match.group(0))
                 return match.group(0)
 
-            match = re.match(r'^[$_\w]+', input__)       # FIXME no ES3 unicode
+            match = identifierMatcher.match(input__)
             if match:
                 id_ = match.group(0)
                 token.type_ = keywords.get(id_, IDENTIFIER)
                 token.value = id_
                 return match.group(0)
 
-            match = re.match(r'^"(?:\\.|[^"])*"|^\'(?:\\.|[^\'])*\'', input__)
+            match = stringMatcher.match(input__)
             if match:
                 token.type_ = STRING
                 token.value = eval(match.group(0))
@@ -181,21 +177,21 @@ class Tokenizer(object):
                 return match.group(0)
 
             if self.scanOperand:
-                match = reRegExp.match(input__)
+                match = regularExpressionMatcher.match(input__)
                 if match:
                     token.type_ = REGEXP
                     token.value = {"regexp": match.group(1), "modifiers": match.group(2)}
                     return match.group(0)
 
-            match = opRegExp.match(input__)
+            match = operatorPunctuatorMatcher.match(input__)
             if match:
                 op = match.group(0)
                 if assignOps.has_key(op) and input__[len(op)] == '=':
                     token.type_ = ASSIGN
-                    token.assignOp = globals()[opTypeNames[op]]
+                    token.assignOp = globals()[operatorPunctuatorNames[op]]
                     token.value = op
                     return match.group(0) + "="
-                token.type_ = globals()[opTypeNames[op]]
+                token.type_ = globals()[operatorPunctuatorNames[op]]
                 if self.scanOperand and (token.type_ in (PLUS, MINUS)):
                     token.type_ += UNARY_PLUS - PLUS
                 token.assignOp = None

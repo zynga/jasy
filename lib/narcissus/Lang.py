@@ -94,9 +94,9 @@ tokens = dict(enumerate((
 
 # Operator and punctuator mapping from token to tree node type name.
 # NB: superstring tokens (e.g., ++) must come before their substring token
-# counterparts (+ in the example), so that the opRegExp regular expression
+# counterparts (+ in the example), so that the operatorPunctuatorMatcher regular expression
 # synthesized from this list makes the longest possible match.
-opTypeNames = [
+operatorPunctuatorNames = [
         ('\n',   "NEWLINE"),
         (';',    "SEMICOLON"),
         (',',    "COMMA"),
@@ -145,7 +145,7 @@ for i, t in tokens.copy().iteritems():
         const_name = t.upper()
         keywords[t] = i
     elif re.match(r'^\W', t):
-        const_name = dict(opTypeNames)[t]
+        const_name = dict(operatorPunctuatorNames)[t]
     else:
         const_name = t
     globals()[const_name] = i
@@ -159,12 +159,28 @@ for i, t in enumerate(['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%'
     assignOps[i] = t
 
 # Build a regexp that recognizes operators and punctuators (except newline).
-opRegExpSrc = "^"
-for i, j in opTypeNames:
-    if i == "\n": continue
-    if opRegExpSrc != "^": opRegExpSrc += "|^"
-    opRegExpSrc += re.sub(r'[?|^&(){}\[\]+\-*\/\.]', lambda x: "\\%s" % x.group(0), i)
-opRegExp = re.compile(opRegExpSrc)
+operatorPunctuatorMatcherCode = "^"
+for operatorPunctuator, name in operatorPunctuatorNames:
+    if operatorPunctuator == "\n": 
+        continue
+    if operatorPunctuatorMatcherCode != "^": 
+        operatorPunctuatorMatcherCode += "|^"
 
-# Convert opTypeNames to an actual dictionary now that we don't care about ordering
-opTypeNames = dict(opTypeNames)
+    operatorPunctuatorMatcherCode += re.sub(r'[?|^&(){}\[\]+\-*\/\.]', lambda x: "\\%s" % x.group(0), operatorPunctuator)
+operatorPunctuatorMatcher = re.compile(operatorPunctuatorMatcherCode)
+
+# Convert operatorPunctuatorNames to an actual dictionary now that we don't care about ordering
+operatorPunctuatorNames = dict(operatorPunctuatorNames)
+
+# A regexp to match floating point literals (but not integer literals).
+floatingPointMatcher = re.compile(r'^\d+\.\d*(?:[eE][-+]?\d+)?|^\d+(?:\.\d*)?[eE][-+]?\d+|^\.\d+(?:[eE][-+]?\d+)?')
+
+numberMatcher = re.compile(r'^0[xX][\da-fA-F]+|^0[0-7]*|^\d+')
+
+identifierMatcher = re.compile(r'^[$_\w]+')
+
+stringMatcher = re.compile(r'^"(?:\\.|[^"])*"|^\'(?:\\.|[^\'])*\'')
+
+# A regexp to match regexp literals.
+regularExpressionMatcher = re.compile(r'^\/((?:\\.|\[(?:\\.|[^\]])*\]|[^\/])+)\/([gimy]*)')
+
