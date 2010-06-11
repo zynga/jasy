@@ -1,5 +1,3 @@
-#from narcissus.Lang import *
-
 def compress(node):
     return globals()[node.type](node)
 
@@ -44,7 +42,7 @@ def IDENTIFIER(node):
 
 
 def NUMBER(node):
-    return node.value
+    return "%s" % node.value
 
 
 def STRING(node):
@@ -74,3 +72,16 @@ def LIST(node):
         result += ","
     result = result[:-1]
     return result
+    
+    
+def OPERATOR(node, operator):
+    result = ""
+    for child in node:
+        result += compress(child)
+        result += operator
+    result = result[:-len(operator)]
+    return result
+    
+    
+def PLUS(node):
+    return OPERATOR(node, "+")

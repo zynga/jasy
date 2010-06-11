@@ -94,7 +94,7 @@ tokens = dict(enumerate((
 
 # Operator and punctuator mapping from token to tree node type name.
 # NB: superstring tokens (e.g., ++) must come before their substring token
-# counterparts (+ in the example), so that the operatorPunctuatorMatcher regular expression
+# counterparts (+ in the example), so that the symbolMatcher regular expression
 # synthesized from this list makes the longest possible match.
 operatorPunctuatorNames = [
         ('\n',   "NEWLINE"),
@@ -159,21 +159,21 @@ for i, t in enumerate(['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%'
     assignOps[i] = t
 
 # Build a regexp that recognizes operators and punctuators (except newline).
-operatorPunctuatorMatcherCode = "^"
+symbolMatcherCode = "^"
 for operatorPunctuator, name in operatorPunctuatorNames:
     if operatorPunctuator == "\n": 
         continue
-    if operatorPunctuatorMatcherCode != "^": 
-        operatorPunctuatorMatcherCode += "|^"
+    if symbolMatcherCode != "^": 
+        symbolMatcherCode += "|^"
 
-    operatorPunctuatorMatcherCode += re.sub(r'[?|^&(){}\[\]+\-*\/\.]', lambda x: "\\%s" % x.group(0), operatorPunctuator)
-operatorPunctuatorMatcher = re.compile(operatorPunctuatorMatcherCode)
+    symbolMatcherCode += re.sub(r'[?|^&(){}\[\]+\-*\/\.]', lambda x: "\\%s" % x.group(0), operatorPunctuator)
+symbolMatcher = re.compile(symbolMatcherCode)
 
 # Convert operatorPunctuatorNames to an actual dictionary now that we don't care about ordering
 operatorPunctuatorNames = dict(operatorPunctuatorNames)
 
 # A regexp to match floating point literals (but not integer literals).
-floatingPointMatcher = re.compile(r'^\d+\.\d*(?:[eE][-+]?\d+)?|^\d+(?:\.\d*)?[eE][-+]?\d+|^\.\d+(?:[eE][-+]?\d+)?')
+floatMatcher = re.compile(r'^\d+\.\d*(?:[eE][-+]?\d+)?|^\d+(?:\.\d*)?[eE][-+]?\d+|^\.\d+(?:[eE][-+]?\d+)?')
 
 numberMatcher = re.compile(r'^0[xX][\da-fA-F]+|^0[0-7]*|^\d+')
 

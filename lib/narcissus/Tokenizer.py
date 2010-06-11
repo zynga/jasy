@@ -147,7 +147,7 @@ class Tokenizer(object):
             return END
             
         def matchInput():
-            match = floatingPointMatcher.match(input__)
+            match = floatMatcher.match(input__)
             if match:
                 token.type_ = NUMBER
                 token.value = float(match.group(0))
@@ -183,7 +183,7 @@ class Tokenizer(object):
                     token.value = {"regexp": match.group(1), "modifiers": match.group(2)}
                     return match.group(0)
 
-            match = operatorPunctuatorMatcher.match(input__)
+            match = symbolMatcher.match(input__)
             if match:
                 op = match.group(0)
                 if assignOps.has_key(op) and input__[len(op)] == '=':
