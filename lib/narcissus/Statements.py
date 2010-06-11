@@ -49,6 +49,12 @@ DECLARED_FORM = 0
 EXPRESSED_FORM = 1
 STATEMENT_FORM = 2
 
+
+class SyntaxError(Exception):
+    def __init__(self, message, tokenizer):
+        Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, tokenizer.filename, tokenizer.lineno))
+
+
 # Used as a status container during tree-building for every function body and the global body
 class CompilerContext(object):
     def __init__(self, inFunction):
@@ -174,14 +180,14 @@ def Statement(tokenizer, compilerContext):
 
             if tokenType in (DEFAULT, CASE):
                 if tokenType == DEFAULT and node.defaultIndex >= 0:
-                    raise tokenizer.newSyntaxError("More than one switch default")
+                    raise SyntaxError("More than one switch default", tokenizer)
                 n2 = Node(tokenizer)
                 if tokenType == DEFAULT:
                     node.defaultIndex = len(node.cases)
                 else:
                     n2.caseLabel = Expression(tokenizer, compilerContext, COLON)
             else:
-                raise tokenizer.newSyntaxError("Invalid switch case")
+                raise SyntaxError("Invalid switch case", tokenizer)
             tokenizer.mustMatch(COLON)
             n2.statements = Node(tokenizer, BLOCK)
             while True:
@@ -276,16 +282,16 @@ def Statement(tokenizer, compilerContext):
             while True:
                 i -= 1
                 if i < 0:
-                    raise tokenizer.newSyntaxError("Label not found")
+                    raise SyntaxError("Label not found", tokenizer)
                 if getattr(ss[i], "label", None) == label: break
         else:
             while True:
                 i -= 1
                 if i < 0:
                     if tokenType == BREAK:
-                        raise tokenizer.newSyntaxError("Invalid break")
+                        raise SyntaxError("Invalid break", tokenizer)
                     else:
-                        raise tokenizer.newSyntaxError("Invalid continue")
+                        raise SyntaxError("Invalid continue", tokenizer)
                 if (getattr(ss[i], "isLoop", None) or (tokenType == BREAK and
                         ss[i].type_ == SWITCH)):
                     break
@@ -301,9 +307,9 @@ def Statement(tokenizer, compilerContext):
             n2.varName = tokenizer.mustMatch(IDENTIFIER).value
             if tokenizer.match(IF):
                 if compilerContext.ecmaStrictMode:
-                    raise tokenizer.newSyntaxError("Illegal catch guard")
+                    raise SyntaxError("Illegal catch guard", tokenizer)
                 if node.catchClauses and not node.catchClauses[-1].guard:
-                    raise tokenizer.newSyntaxError("Gaurded catch after unguarded")
+                    raise SyntaxError("Guarded catch after unguarded", tokenizer)
                 n2.guard = Expression(tokenizer, compilerContext)
             else:
                 n2.guard = None
@@ -313,11 +319,11 @@ def Statement(tokenizer, compilerContext):
         if tokenizer.match(FINALLY):
             node.finallyBlock = Block(tokenizer, compilerContext)
         if not node.catchClauses and not getattr(node, "finallyBlock", None):
-            raise tokenizer.newSyntaxError("Invalid try statement")
+            raise SyntaxError("Invalid try statement", tokenizer)
         return node
 
     elif tokenType in (CATCH, FINALLY):
-        raise tokenizer.newSyntaxError(tokens[tokenType] + " without preceding try")
+        raise SyntaxError(tokens[tokenType] + " without preceding try", tokenizer)
 
     elif tokenType == THROW:
         node = Node(tokenizer)
@@ -325,7 +331,7 @@ def Statement(tokenizer, compilerContext):
 
     elif tokenType == RETURN:
         if not compilerContext.inFunction:
-            raise tokenizer.newSyntaxError("Invalid return")
+            raise SyntaxError("Invalid return", tokenizer)
         node = Node(tokenizer)
         tokenType = tokenizer.peekOnSameLine()
         if tokenType not in (END, NEWLINE, SEMICOLON, RIGHT_CURLY):
@@ -359,7 +365,7 @@ def Statement(tokenizer, compilerContext):
                 i = len(ss) - 1
                 while i >= 0:
                     if getattr(ss[i], "label", None) == label:
-                        raise tokenizer.newSyntaxError("Duplicate label")
+                        raise SyntaxError("Duplicate label", tokenizer)
                     i -= 1
                 tokenizer.get()
                 node = Node(tokenizer, LABEL)
@@ -375,7 +381,7 @@ def Statement(tokenizer, compilerContext):
     if tokenizer.lineno == tokenizer.token.lineno:
         tokenType = tokenizer.peekOnSameLine()
         if tokenType not in (END, NEWLINE, SEMICOLON, RIGHT_CURLY):
-            raise tokenizer.newSyntaxError("Missing ; before statement")
+            raise SyntaxError("Missing ; before statement", tokenizer)
     tokenizer.match(SEMICOLON)
     return node
 
@@ -391,7 +397,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     if tokenizer.match(IDENTIFIER):
         f.name = tokenizer.token.value
     elif requireName:
-        raise tokenizer.newSyntaxError("Missing function identifier")
+        raise SyntaxError("Missing function identifier", tokenizer)
 
     tokenizer.mustMatch(LEFT_PAREN)
     f.params = []
@@ -399,7 +405,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
         tokenType = tokenizer.get()
         if tokenType == RIGHT_PAREN: break
         if tokenType != IDENTIFIER:
-            raise tokenizer.newSyntaxError("Missing formal parameter")
+            raise SyntaxError("Missing formal parameter", tokenizer)
         f.params.append(tokenizer.token.value)
         if tokenizer.peek() != RIGHT_PAREN:
             tokenizer.mustMatch(COMMA)
@@ -426,7 +432,7 @@ def Variables(tokenizer, compilerContext):
         
         if tokenizer.match(ASSIGN):
             if tokenizer.token.assignOp:
-                raise tokenizer.newSyntaxError("Invalid variable initialization")
+                raise SyntaxError("Invalid variable initialization", tokenizer)
             n2.initializer = Expression(tokenizer, compilerContext, COMMA)
             
         n2.readOnly = not not (node.type_ == CONST)
@@ -558,7 +564,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                     if operators:
                         node = operators[-1]
                     if not operators or node.type_ != HOOK:
-                        raise tokenizer.newSyntaxError("Invalid label")
+                        raise SyntaxError("Invalid label", tokenizer)
                     compilerContext.hookLevel -= 1
                 else:
                     operators.append(Node(tokenizer))
@@ -670,17 +676,17 @@ def Expression(tokenizer, compilerContext, stop=None):
                             tokenType = tokenizer.get()
                             if ((tokenizer.token.value == "get" or tokenizer.token.value == "set") and tokenizer.peek == IDENTIFIER):
                                 if compilerContext.ecmaStrictMode:
-                                    raise tokenizer.newSyntaxError("Illegal property accessor")
+                                    raise SyntaxError("Illegal property accessor", tokenizer)
                                 node.append(FunctionDefinition(tokenizer, compilerContext, True, EXPRESSED_FORM))
                             else:
                                 if tokenType in (IDENTIFIER, NUMBER, STRING):
                                     id_ = Node(tokenizer)
                                 elif tokenType == RIGHT_CURLY:
                                     if compilerContext.ecmaStrictMode:
-                                        raise tokenizer.newSyntaxError("Illegal trailing ,")
+                                        raise SyntaxError("Illegal trailing ,", tokenizer)
                                     raise BreakOutOfObjectInit
                                 else:
-                                    raise tokenizer.newSyntaxError("Invalid property name")
+                                    raise SyntaxError("Invalid property name", tokenizer)
                                     
                                 tokenizer.mustMatch(COLON)
                                 node.append(Node(tokenizer, PROPERTY_INIT, [id_, Expression(tokenizer, compilerContext, COMMA)]))
@@ -758,13 +764,13 @@ def Expression(tokenizer, compilerContext, stop=None):
         pass
 
     if compilerContext.hookLevel != hl:
-        raise tokenizer.newSyntaxError("Missing : after ?")
+        raise SyntaxError("Missing : after ?", tokenizer)
     if compilerContext.parenLevel != pl:
-        raise tokenizer.newSyntaxError("Missing ) in parenthetical")
+        raise SyntaxError("Missing ) in parenthetical", tokenizer)
     if compilerContext.bracketLevel != bl:
-        raise tokenizer.newSyntaxError("Missing ] in index expression")
+        raise SyntaxError("Missing ] in index expression", tokenizer)
     if tokenizer.scanOperand:
-        raise tokenizer.newSyntaxError("Missing operand")
+        raise SyntaxError("Missing operand", tokenizer)
 
     tokenizer.scanOperand = True
     tokenizer.unget()

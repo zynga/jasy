@@ -42,7 +42,7 @@ class Token:
     pass
 
 
-class SyntaxError(Exception):
+class ParseError(Exception):
     def __init__(self, message, filename, lineno):
         Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, filename, lineno))
 
@@ -64,13 +64,13 @@ class Tokenizer(object):
     token = property(lambda self: self.tokens.get(self.tokenIndex))
 
 
-    def match(self, tt):
-        return self.get() == tt or self.unget()
+    def match(self, tokenType):
+        return self.get() == tokenType or self.unget()
 
 
-    def mustMatch(self, tt):
-        if not self.match(tt):
-            raise SyntaxError("Missing " + tokens.get(tt).lower(), self.filename, self.lineno)
+    def mustMatch(self, tokenType):
+        if not self.match(tokenType):
+            raise ParseError("Missing " + tokens.get(tokenType).lower(), self.filename, self.lineno)
         return self.token
 
 
@@ -78,20 +78,20 @@ class Tokenizer(object):
         if self.lookahead:
             next = self.tokens.get((self.tokenIndex + self.lookahead) & 3)
             if self.scanNewlines and (getattr(next, "lineno", None) != getattr(self, "lineno", None)):
-                tt = NEWLINE
+                tokenType = NEWLINE
             else:
-                tt = getattr(next, "type_", None)
+                tokenType = getattr(next, "type_", None)
         else:
-            tt = self.get()
+            tokenType = self.get()
             self.unget()
-        return tt
+        return tokenType
 
 
     def peekOnSameLine(self):
         self.scanNewlines = True
-        tt = self.peek()
+        tokenType = self.peek()
         self.scanNewlines = False
-        return tt
+        return tokenType
 
 
     def get(self):
@@ -209,7 +209,7 @@ class Tokenizer(object):
                 token.type_ = NEWLINE
                 return match.group(0)
 
-        raise SyntaxError("Illegal token", self.filename, self.lineno)
+        raise ParseError("Illegal token", self.filename, self.lineno)
         
 
     def unget(self):
