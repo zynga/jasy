@@ -226,16 +226,21 @@ def Statement(tokenizer, compilerContext):
                 node.setup = n2
             else:
                 node.setup = None
+                
             tokenizer.mustMatch(SEMICOLON)
+            
             if tokenizer.peek() == SEMICOLON:
                 node.condition = None
             else:
                 node.condition = Expression(tokenizer, compilerContext)
+                
             tokenizer.mustMatch(SEMICOLON)
+            
             if tokenizer.peek() == RIGHT_PAREN:
                 node.update = None
             else:
                 node.update = Expression(tokenizer, compilerContext)
+                
         tokenizer.mustMatch(RIGHT_PAREN)
         node.body = nest(tokenizer, compilerContext, node, Statement)
         return node
@@ -418,11 +423,14 @@ def Variables(tokenizer, compilerContext):
         tokenizer.mustMatch(IDENTIFIER)
         n2 = Node(tokenizer)
         n2.name = n2.value
+        
         if tokenizer.match(ASSIGN):
             if tokenizer.token.assignOp:
                 raise tokenizer.newSyntaxError("Invalid variable initialization")
             n2.initializer = Expression(tokenizer, compilerContext, COMMA)
+            
         n2.readOnly = not not (node.type_ == CONST)
+        
         node.append(n2)
         compilerContext.variables.append(n2)
         if not tokenizer.match(COMMA): break
@@ -490,6 +498,7 @@ opArity = {
 for i in opArity.copy():
     opArity[globals()[i]] = opArity[i]
     
+    
 def Expression(tokenizer, compilerContext, stop=None):
     operators = []
     operands = []
@@ -531,11 +540,11 @@ def Expression(tokenizer, compilerContext, stop=None):
         while True:
             tokenType = tokenizer.get()
             if tokenType == END: break
-            if (tokenType == stop and compilerContext.bracketLevel == bl and compilerContext.curlyLevel == cl and
-                    compilerContext.parenLevel == pl and compilerContext.hookLevel == hl):
+            if (tokenType == stop and compilerContext.bracketLevel == bl and compilerContext.curlyLevel == cl and compilerContext.parenLevel == pl and compilerContext.hookLevel == hl):
                 # Stop only if tokenType matches the optional stop parameter, and that
                 # token is not quoted by some kind of bracket.
                 break
+                
             if tokenType == SEMICOLON:
                 # NB: cannot be empty, Statement handled that.
                 raise BreakOutOfLoops
@@ -659,9 +668,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                     if not tokenizer.match(RIGHT_CURLY):
                         while True:
                             tokenType = tokenizer.get()
-                            if ((tokenizer.token.value == "get" or
-                                    tokenizer.token.value == "set") and
-                                    tokenizer.peek == IDENTIFIER):
+                            if ((tokenizer.token.value == "get" or tokenizer.token.value == "set") and tokenizer.peek == IDENTIFIER):
                                 if compilerContext.ecmaStrictMode:
                                     raise tokenizer.newSyntaxError("Illegal property accessor")
                                 node.append(FunctionDefinition(tokenizer, compilerContext, True, EXPRESSED_FORM))
