@@ -592,14 +592,12 @@ def Expression(tokenizer, compilerContext, stop=None):
                     operators.append(Node(tokenizer)) # prefix increment or decrement
                 else:
                     # Don't cross a line boundary for postfix {in,de}crement.
-                    if (tokenizer.tokens.get((tokenizer.tokenIndex + tokenizer.lookahead - 1)
-                            & 3).lineno != tokenizer.lineno):
+                    if (tokenizer.tokens.get((tokenizer.tokenIndex + tokenizer.lookahead - 1) & 3).lineno != tokenizer.lineno):
                         raise BreakOutOfLoops
 
                     # Use >, not >=, so postfix has higher precedence than
                     # prefix.
-                    while (operators and opPrecedence.get(operators[-1].type_,
-                            None) > opPrecedence.get(tokenType)):
+                    while (operators and opPrecedence.get(operators[-1].type_, None) > opPrecedence.get(tokenType)):
                         reduce_()
                     node = Node(tokenizer, tokenType, [operands.pop()])
                     node.postfix = True
@@ -611,8 +609,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                 operands.append(FunctionDefinition(tokenizer, compilerContext, False, EXPRESSED_FORM))
                 tokenizer.scanOperand = False
 
-            elif tokenType in (NULL, THIS, TRUE, FALSE, IDENTIFIER, NUMBER, STRING,
-                    REGEXP):
+            elif tokenType in (NULL, THIS, TRUE, FALSE, IDENTIFIER, NUMBER, STRING, REGEXP):
                 if not tokenizer.scanOperand:
                     raise BreakOutOfLoops
                 operands.append(Node(tokenizer))
@@ -651,6 +648,7 @@ def Expression(tokenizer, compilerContext, stop=None):
             elif tokenType == LEFT_CURLY:
                 if not tokenizer.scanOperand:
                     raise BreakOutOfLoops
+                    
                 # Object initializer. As for array initializers (see above),
                 # parse using recursive descent.
                 compilerContext.curlyLevel += 1
@@ -678,11 +676,12 @@ def Expression(tokenizer, compilerContext, stop=None):
                                     raise tokenizer.newSyntaxError("Invalid property name")
                                     
                                 tokenizer.mustMatch(COLON)
-                                node.append(Node(tokenizer, PROPERTY_INIT, [id_,
-                                        Expression(tokenizer, compilerContext, COMMA)]))
+                                node.append(Node(tokenizer, PROPERTY_INIT, [id_, Expression(tokenizer, compilerContext, COMMA)]))
                             if not tokenizer.match(COMMA): break
                         tokenizer.mustMatch(RIGHT_CURLY)
-                except BreakOutOfObjectInit, e: pass
+                except BreakOutOfObjectInit, e: 
+                    pass
+                    
                 operands.append(node)
                 tokenizer.scanOperand = False
                 compilerContext.curlyLevel -= 1
@@ -747,7 +746,9 @@ def Expression(tokenizer, compilerContext, stop=None):
             # the while loop and let the tokenizer.scanOperand logic handle errors.
             else:
                 raise BreakOutOfLoops
-    except BreakOutOfLoops, e: pass
+                
+    except BreakOutOfLoops, e: 
+        pass
 
     if compilerContext.hookLevel != hl:
         raise tokenizer.newSyntaxError("Missing : after ?")
@@ -760,6 +761,8 @@ def Expression(tokenizer, compilerContext, stop=None):
 
     tokenizer.scanOperand = True
     tokenizer.unget()
+    
     while operators:
         reduce_()
+        
     return operands.pop()

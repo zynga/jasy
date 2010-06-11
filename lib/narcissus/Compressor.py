@@ -1,46 +1,76 @@
-from narcissus.Lang import *
+#from narcissus.Lang import *
 
 def Compressor(node):
+    return globals()[node.type](node)
+
+
+def SCRIPT(node):
     result = ""
-    
-    print node.type
-    
-    if node.type_ == NUMBER or node.type_ == STRING or node.type_ == IDENTIFIER:
-        result += node.value
-
-    elif node.type_ == VAR:
-        result += "var "
-
-    elif node.type_ == BLOCK:
-        result += "{"
-
-    
-    
-    # Process children of SCRIPT/BLOCK
-    if node.type_ == SCRIPT or node.type_ == BLOCK:
-        for child in node:
-            result += Compressor(child)
+    for child in node:
+        result += Compressor(child)
+        if result[-1] != ";":
             result += ";"
-            
-        # post-remove last semicolon
-        if node.type_ != SCRIPT:
-            result = result[:-1]          
-          
-            
-    # Process children of "VAR"
-    if node.type_ == VAR:
-        for child in node:
+    return result
+
+
+def BLOCK(node):
+    result = "{"
+    for child in node:
+        result += Compressor(child)
+        result += ";"
+    result = result[:-1]
+    result += "}"
+
+    return result
+
+
+def VAR(node):
+    result = "var "
+    for child in node:
+        result += Compressor(child)
+        result += ","    
+    result = result[:-1]
+
+    return result
+
+
+def IDENTIFIER(node):
+    result = node.value
+
+    if hasattr(node, "initializer"):
+        result += "=%s" % Compressor(node.initializer)
+
+    return result
+
+
+def NUMBER(node):
+    return node.value
+
+
+def STRING(node):
+    return "%s%s%s" % ('"', node.value, '"')
+    
+
+def SEMICOLON(node):
+    result = ""
+    if node.expression:
+        result += Compressor(node.expression)
+    return result + ";"
+    
+    
+def CALL(node):
+    result = Compressor(node[0]) + "("
+    for index, child in enumerate(node):
+        if index > 0:
             result += Compressor(child)
-            result += ","
-            
-        # post-remove last comma
-        result = result[:-1]
-
-
-    if node.type_ == BLOCK:
-        result += "}"
-        
-
-
-            
+    result += ")"
+    return result
+    
+    
+def LIST(node):
+    result = ""
+    for child in node:
+        result += Compressor(child)
+        result += ","
+    result = result[:-1]
     return result

@@ -47,10 +47,10 @@ import simplejson as json
 
 class Node(list):
 
-    def __init__(self, t, type_=None, args=[]):
+    def __init__(self, tokenizer, type_=None, args=[]):
         list.__init__(self)
 
-        token = t.token
+        token = tokenizer.token
         if token:
             if type_:
                 self.type_ = type_
@@ -58,16 +58,21 @@ class Node(list):
                 self.type_ = getattr(token, "type_", None)
                 
             self.comments = token.comments
-            self.value = token.value
             self.lineno = token.lineno
             self.start = token.start
             self.end = token.end
 
+            if hasattr(token, "value"):
+                self.value = token.value
+            
+            if hasattr(token, "variant"):
+                self.variant = token.variant            
+
         else:
             self.type_ = type_
-            self.lineno = t.lineno
+            self.lineno = tokenizer.lineno
 
-        self.tokenizer = t
+        self.tokenizer = tokenizer
 
         for arg in args:
             self.append(arg)

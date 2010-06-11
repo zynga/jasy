@@ -174,6 +174,10 @@ class Tokenizer(object):
             if match:
                 token.type_ = STRING
                 token.value = eval(match.group(0))
+                if match.group(0)[0] == "'":
+                    token.variant = "single"
+                else:
+                    token.variant = "double"
                 return match.group(0)
 
             if self.scanOperand:
