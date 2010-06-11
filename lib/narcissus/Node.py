@@ -57,7 +57,9 @@ class Node(list):
             else:
                 self.type_ = getattr(token, "type_", None)
                 
-            self.comments = token.comments
+            if hasattr(token, "comments"):
+                self.comments = token.comments
+                
             self.lineno = token.lineno
             self.start = token.start
             self.end = token.end

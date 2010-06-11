@@ -35,26 +35,17 @@
 #
 # ***** END LICENSE BLOCK ***** */
 
-"""
- PyNarcissus
-
- A lexical scanner and parser. JS implemented in JS, ported to Python.
-"""
-
 import re, sys, types
 from narcissus.Lang import *
-
-class Error_(Exception): pass
-class ParseError(Error_): pass
-
-
 
 class Token: 
     pass
 
-class SyntaxError_(ParseError):
+
+class SyntaxError(Exception):
     def __init__(self, message, filename, lineno):
-        ParseError.__init__(self, "Syntax error: %s\n%s:%s" % (message, filename, lineno))
+        Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, filename, lineno))
+
 
 class Tokenizer(object):
     def __init__(self, source, filename):
@@ -72,13 +63,16 @@ class Tokenizer(object):
     done = property(lambda self: self.peek() == END)
     token = property(lambda self: self.tokens.get(self.tokenIndex))
 
+
     def match(self, tt):
         return self.get() == tt or self.unget()
 
+
     def mustMatch(self, tt):
         if not self.match(tt):
-            raise self.newSyntaxError("Missing " + tokens.get(tt).lower())
+            raise SyntaxError("Missing " + tokens.get(tt).lower(), self.filename, self.lineno)
         return self.token
+
 
     def peek(self):
         if self.lookahead:
@@ -92,11 +86,13 @@ class Tokenizer(object):
             self.unget()
         return tt
 
+
     def peekOnSameLine(self):
         self.scanNewlines = True
         tt = self.peek()
         self.scanNewlines = False
         return tt
+
 
     def get(self):
         while self.lookahead:
@@ -131,92 +127,95 @@ class Tokenizer(object):
             if newlines:
                 self.lineno += len(newlines)
                 
-        
-
         self.tokenIndex = (self.tokenIndex + 1) & 3
         token = self.tokens.get(self.tokenIndex)
         if not token:
             token = Token()
             self.tokens[self.tokenIndex] = token
             
-        # Store comments on next token
-        token.comments = comments;
+        # Store comments
+        if len(comments) > 0:
+            token.comments = comments;
 
-        if not input__:
+        # Update token
+        if input__:
+            token.start = self.cursor        
+            self.cursor += len(self.matchInput(token, input__))
+            token.end = self.cursor
+            token.lineno = self.lineno
+        else:
             token.type_ = END
-            return END
-            
-        def matchInput():
-            match = floatMatcher.match(input__)
-            if match:
-                token.type_ = NUMBER
-                token.value = float(match.group(0))
-                return match.group(0)
 
-            match = numberMatcher.match(input__)
-            if match:
-                token.type_ = NUMBER
-                token.value = eval(match.group(0))
-                return match.group(0)
-
-            match = identifierMatcher.match(input__)
-            if match:
-                id_ = match.group(0)
-                print id_
-                token.type_ = keywords.get(id_, IDENTIFIER)
-                token.value = id_
-                return match.group(0)
-
-            match = stringMatcher.match(input__)
-            if match:
-                token.type_ = STRING
-                token.value = eval(match.group(0))
-                if match.group(0)[0] == "'":
-                    token.variant = "single"
-                else:
-                    token.variant = "double"
-                return match.group(0)
-
-            if self.scanOperand:
-                match = regularExprMatcher.match(input__)
-                if match:
-                    token.type_ = REGEXP
-                    token.value = {"regexp": match.group(1), "modifiers": match.group(2)}
-                    return match.group(0)
-
-            match = symbolMatcher.match(input__)
-            if match:
-                op = match.group(0)
-                if assignOps.has_key(op) and input__[len(op)] == '=':
-                    token.type_ = ASSIGN
-                    token.assignOp = globals()[operatorPunctuatorNames[op]]
-                    token.value = op
-                    return match.group(0) + "="
-                token.type_ = globals()[operatorPunctuatorNames[op]]
-                if self.scanOperand and (token.type_ in (PLUS, MINUS)):
-                    token.type_ += UNARY_PLUS - PLUS
-                token.assignOp = None
-                token.value = op
-                return match.group(0)
-
-            if self.scanNewlines:
-                match = re.match(r'^\n', input__)
-                if match:
-                    token.type_ = NEWLINE
-                    return match.group(0)
-
-            raise self.newSyntaxError("Illegal token")
-
-        token.start = self.cursor
-        self.cursor += len(matchInput())
-        token.end = self.cursor
-        token.lineno = self.lineno
+        # Return token type
         return getattr(token, "type_", None)
+        
+        
+    def matchInput(self, token, text):
+        match = floatMatcher.match(text)
+        if match:
+            token.type_ = NUMBER
+            token.value = float(match.group(0))
+            return match.group(0)
+
+        match = numberMatcher.match(text)
+        if match:
+            token.type_ = NUMBER
+            token.value = eval(match.group(0))
+            return match.group(0)
+
+        match = identifierMatcher.match(text)
+        if match:
+            id_ = match.group(0)
+            print id_
+            token.type_ = keywords.get(id_, IDENTIFIER)
+            token.value = id_
+            return match.group(0)
+
+        match = stringMatcher.match(text)
+        if match:
+            token.type_ = STRING
+            token.value = eval(match.group(0))
+            if match.group(0)[0] == "'":
+                token.variant = "single"
+            else:
+                token.variant = "double"
+            return match.group(0)
+
+        if self.scanOperand:
+            match = regularExprMatcher.match(text)
+            if match:
+                token.type_ = REGEXP
+                token.value = {"regexp": match.group(1), "modifiers": match.group(2)}
+                return match.group(0)
+
+        match = symbolMatcher.match(text)
+        if match:
+            op = match.group(0)
+            if assignOps.has_key(op) and text[len(op)] == '=':
+                token.type_ = ASSIGN
+                token.assignOp = globals()[operatorPunctuatorNames[op]]
+                token.value = op
+                return match.group(0) + "="
+            token.type_ = globals()[operatorPunctuatorNames[op]]
+            if self.scanOperand and (token.type_ in (PLUS, MINUS)):
+                token.type_ += UNARY_PLUS - PLUS
+            token.assignOp = None
+            token.value = op
+            return match.group(0)
+
+        if self.scanNewlines:
+            match = re.match(r'^\n', text)
+            if match:
+                token.type_ = NEWLINE
+                return match.group(0)
+
+        raise SyntaxError("Illegal token", self.filename, self.lineno)
+        
 
     def unget(self):
         self.lookahead += 1
-        if self.lookahead == 4: raise "PANIC: too much lookahead!"
+        
+        if self.lookahead == 4: 
+            raise "PANIC: too much lookahead!"
+        
         self.tokenIndex = (self.tokenIndex - 1) & 3
-
-    def newSyntaxError(self, m):
-        return SyntaxError_(m, self.filename, self.lineno)
