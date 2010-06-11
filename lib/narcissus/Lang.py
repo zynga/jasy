@@ -136,6 +136,30 @@ operatorPunctuatorNames = [
         ('(',    "LEFT_PAREN"),
         (')',    "RIGHT_PAREN"),
     ]
+    
+    
+#
+# Prepare regular expressions
+#    
+
+# Build a regexp that recognizes operators and punctuators (except newline).
+symbolMatcherCode = "^"
+for operatorPunctuator, name in operatorPunctuatorNames:
+    if operatorPunctuator == "\n": 
+        continue
+    if symbolMatcherCode != "^": 
+        symbolMatcherCode += "|^"
+
+    symbolMatcherCode += re.sub(r'[?|^&(){}\[\]+\-*\/\.]', lambda x: "\\%s" % x.group(0), operatorPunctuator)
+
+# Convert operatorPunctuatorNames to an actual dictionary now that we don't care about ordering
+operatorPunctuatorNames = dict(operatorPunctuatorNames)
+
+
+
+#
+#
+#
 
 keywords = {}
 
@@ -158,29 +182,26 @@ for i, t in enumerate(['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%'
     assignOps[t] = tokens[t]
     assignOps[i] = t
 
-# Build a regexp that recognizes operators and punctuators (except newline).
-symbolMatcherCode = "^"
-for operatorPunctuator, name in operatorPunctuatorNames:
-    if operatorPunctuator == "\n": 
-        continue
-    if symbolMatcherCode != "^": 
-        symbolMatcherCode += "|^"
 
-    symbolMatcherCode += re.sub(r'[?|^&(){}\[\]+\-*\/\.]', lambda x: "\\%s" % x.group(0), operatorPunctuator)
+
+#
+# Regular expressions for matching in tokenizer
+#
+
+# Matches all operators and punctuators
 symbolMatcher = re.compile(symbolMatcherCode)
 
-# Convert operatorPunctuatorNames to an actual dictionary now that we don't care about ordering
-operatorPunctuatorNames = dict(operatorPunctuatorNames)
-
-# A regexp to match floating point literals (but not integer literals).
+# Matches floating point literals (but not integer literals).
 floatMatcher = re.compile(r'^\d+\.\d*(?:[eE][-+]?\d+)?|^\d+(?:\.\d*)?[eE][-+]?\d+|^\.\d+(?:[eE][-+]?\d+)?')
 
+# Matches all non-float numbers
 numberMatcher = re.compile(r'^0[xX][\da-fA-F]+|^0[0-7]*|^\d+')
 
+# Matches valid JavaScript identifiers
 identifierMatcher = re.compile(r'^[$_\w]+')
 
+# Matches both string types
 stringMatcher = re.compile(r'^"(?:\\.|[^"])*"|^\'(?:\\.|[^\'])*\'')
 
-# A regexp to match regexp literals.
-regularExpressionMatcher = re.compile(r'^\/((?:\\.|\[(?:\\.|[^\]])*\]|[^\/])+)\/([gimy]*)')
-
+# Matches regexp literals.
+regularExprMatcher = re.compile(r'^\/((?:\\.|\[(?:\\.|[^\]])*\]|[^\/])+)\/([gimy]*)')

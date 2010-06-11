@@ -177,7 +177,7 @@ class Tokenizer(object):
                 return match.group(0)
 
             if self.scanOperand:
-                match = regularExpressionMatcher.match(input__)
+                match = regularExprMatcher.match(input__)
                 if match:
                     token.type_ = REGEXP
                     token.value = {"regexp": match.group(1), "modifiers": match.group(2)}

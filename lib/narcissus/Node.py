@@ -72,6 +72,8 @@ class Node(list):
             self.type_ = type_
             self.lineno = tokenizer.lineno
 
+        print "CREATE: %s" % self.type
+
         self.tokenizer = tokenizer
 
         for arg in args:

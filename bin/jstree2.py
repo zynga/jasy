@@ -29,7 +29,7 @@ def parse(source, filename=None):
         
         
         
-    print root.toJson()
+    #print root.toJson()
     print Compressor.compress(root)
         
     return root
