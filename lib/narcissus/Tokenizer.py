@@ -168,7 +168,7 @@ class Tokenizer(object):
         match = identifierMatcher.match(text)
         if match:
             id_ = match.group(0)
-            print id_
+            print "xx: %s - yy: %s" % (id_, IDENTIFIER)
             token.type_ = keywords.get(id_, IDENTIFIER)
             token.value = id_
             return match.group(0)
