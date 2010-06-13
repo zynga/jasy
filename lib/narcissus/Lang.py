@@ -157,9 +157,8 @@ operatorPunctuatorNames = dict(operatorPunctuatorNames)
 #
 #
 
-keywords = {}
-
 # Define const END, etc., based on the token names.  Also map name to index.
+keywords = {}
 for i, t in tokens.copy().iteritems():
     if re.match(r'^[a-z]', t):
         const_name = t.upper()
@@ -171,9 +170,9 @@ for i, t in tokens.copy().iteritems():
     globals()[const_name] = i
     tokens[t] = i
 
-assignOps = {}
 
 # Map assignment operators to their indexes in the tokens array.
+assignOps = {}
 for i, t in enumerate(['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%']):
     assignOps[t] = tokens[t]
     assignOps[i] = t
