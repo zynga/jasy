@@ -84,6 +84,7 @@ class Tokenizer(object):
         else:
             tokenType = self.get()
             self.unget()
+            
         return tokenType
 
 
@@ -112,18 +113,19 @@ class Tokenizer(object):
             if match:
                 spaces = match.group(0)
                 self.cursor += len(spaces)
-                newlines = re.findall(r'\n', spaces)
+                newlines = newlineMatcher.findall(spaces)
                 if newlines:
                     self.lineno += len(newlines)
                 input__ = self.input_
 
-            match = re.match(r'^\/(?:\*(?:.|\n)*?\*\/|\/.*)', input__)
+            match = commentMatcher.match(input__)
             if not match:
                 break
+                
             comment = match.group(0)
             comments.append(comment)
             self.cursor += len(comment)
-            newlines = re.findall(r'\n', comment)
+            newlines = newlineMatcher.findall(comment)
             if newlines:
                 self.lineno += len(newlines)
                 

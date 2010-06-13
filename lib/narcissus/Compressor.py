@@ -85,3 +85,20 @@ def OPERATOR(node, operator):
     
 def PLUS(node):
     return OPERATOR(node, "+")
+    
+def DOT(node):
+    return OPERATOR(node, ".")    
+    
+def OBJECT_INIT(node):
+    result = "{"
+    for child in node:
+        result += compress(child)
+        result += ","
+    result = result[:-1] + "}"
+    return result
+    
+def PROPERTY_INIT(node):
+    return OPERATOR(node, ":")    
+    
+def FUNCTION(node):
+    return "-function-"

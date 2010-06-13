@@ -184,6 +184,12 @@ for i, t in enumerate(['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%'
 # Regular expressions for matching in tokenizer
 #
 
+# Matches line feeds
+newlineMatcher = re.compile(r'\n')
+
+# Matches both comment styles
+commentMatcher = re.compile(r'^\/(?:\*(?:.|\n)*?\*\/|\/.*)')
+
 # Matches all operators and punctuators
 symbolMatcher = re.compile(symbolMatcherCode)
 
