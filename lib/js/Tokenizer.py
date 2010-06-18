@@ -213,6 +213,11 @@ class Tokenizer(object):
         
         
     def matchInput(self, token, text):
+        if text in keywords:
+            token.type = identifier
+            token.value = identifier
+            return identifier
+
         match = floatMatcher.match(text)
         if match:
             token.type = "number"
@@ -229,13 +234,10 @@ class Tokenizer(object):
 
         match = identifierMatcher.match(text)
         if match:
-            id_ = match.group(0)
-            if id_ in keywords:
-                token.type = id_
-            else:
-                token.type = "identifier"
-            token.value = id_
-            return id_
+            identifier = match.group(0)
+            token.type = "identifier"
+            token.value = identifier
+            return identifier
 
         match = stringMatcher.match(text)
         if match:

@@ -40,21 +40,6 @@
 # ***** END LICENSE BLOCK ***** */
 
 keywords = [
-    "end",
-
-    "conditional",
-
-    "unary_plus", "unary_minus",
-
-    # Nonterminal tree node type codes.
-    "script", "block", "label", "for_in", "call", "new_with_args", "index",
-    "array_init", "object_init", "property_init", "getter", "setter",
-    "group", "list",
-
-    # Terminals.
-    "identifier", "number", "string", "regexp",
-
-    # Keywords.
     "break",
     "case", "catch", "const", "continue",
     "debugger", "default", "delete", "do",
