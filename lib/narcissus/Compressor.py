@@ -14,8 +14,7 @@ def script(node):
 def block(node):
     result = "{"
     for child in node:
-        result += compress(child)
-        result += ";"
+        result += compress(child) + ";"
     result = result[:-1]
     result += "}"
 
@@ -25,8 +24,7 @@ def block(node):
 def var(node):
     result = "var "
     for child in node:
-        result += compress(child)
-        result += ","    
+        result += compress(child) + ","
     result = result[:-1]
 
     return result
@@ -68,8 +66,7 @@ def call(node):
 def list(node):
     result = ""
     for child in node:
-        result += compress(child)
-        result += ","
+        result += compress(child) + ","
     result = result[:-1]
     return result
     
@@ -77,8 +74,7 @@ def list(node):
 def operator(node, operator):
     result = ""
     for child in node:
-        result += compress(child)
-        result += operator
+        result += compress(child) + operator
     result = result[:-len(operator)]
     return result
     
