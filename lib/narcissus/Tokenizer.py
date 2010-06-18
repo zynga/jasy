@@ -207,8 +207,10 @@ class Tokenizer(object):
             token.type = operatorPunctuatorNames[op]
             
             # FIXME: What does this code do?
-            #if self.scanOperand and (token.type in (PLUS, MINUS)):
-            #    token.type += UNARY_PLUS - PLUS
+            if self.scanOperand and token.type in ("plus", "minus"):
+                #token.type += UNARY_PLUS - PLUS
+                print "SCAN OPERAND MODE!!!"
+                sys.exit(1)
                 
             token.assignOp = None
             token.value = op
