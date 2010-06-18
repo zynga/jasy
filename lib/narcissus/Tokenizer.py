@@ -153,8 +153,6 @@ class Tokenizer(object):
         
         
     def matchInput(self, token, text):
-        print "MATCH-INPUT: %s" % text
-        
         match = floatMatcher.match(text)
         if match:
             token.type = "number"
