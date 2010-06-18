@@ -10,7 +10,7 @@ from js.Statements import Script, CompilerContext
 import js.Compressor as Compressor
 
 
-def compress(source, filename=None):
+def jscompress(source, filename=None):
     tokenizer = Tokenizer(source, filename)
     root = Script(tokenizer, CompilerContext(False))
     if not tokenizer.done:
@@ -20,4 +20,4 @@ def compress(source, filename=None):
 
 
 if __name__ == "__main__":
-    compress(file(sys.argv[1]).read(),sys.argv[1])
+    print jscompress(file(sys.argv[1]).read(),sys.argv[1])
