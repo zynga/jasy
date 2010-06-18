@@ -140,25 +140,6 @@ operatorPunctuatorNames = [
     
     
 #
-# Prepare regular expressions
-#    
-
-# Build a regexp that recognizes operators and punctuators (except newline).
-symbolMatcherCode = "^"
-for operatorPunctuator, name in operatorPunctuatorNames:
-    if operatorPunctuator == "\n": 
-        continue
-    if symbolMatcherCode != "^": 
-        symbolMatcherCode += "|^"
-
-    symbolMatcherCode += re.sub(r'[?|^&(){}\[\]+\-*\/\.]', lambda x: "\\%s" % x.group(0), operatorPunctuator)
-
-# Convert operatorPunctuatorNames to an actual dictionary now that we don't care about ordering
-operatorPunctuatorNames = dict(operatorPunctuatorNames)
-
-
-
-#
 #
 #
 
@@ -167,41 +148,13 @@ keywords = {}
 for i, t in tokens.copy().iteritems():
     if re.match(r'^[a-z]', t):
         keywords[t] = True
-    print "REBUILD: %s[%s]" % (t, i)
-    tokens[t] = i
-
-
-# Map assignment operators to their indexes in the tokens array.
-assignOps = {}
-for i, t in enumerate(['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%']):
-    assignOps[t] = tokens[t]
+        
+print "BUILD KEYWORDS"
+print keywords
 
 
 
-#
-# Regular expressions for matching in tokenizer
-#
 
-# Matches line feeds
-newlineMatcher = re.compile(r'\n')
 
-# Matches both comment styles
-commentMatcher = re.compile(r'^\/(?:\*(?:.|\n)*?\*\/|\/.*)')
 
-# Matches all operators and punctuators
-symbolMatcher = re.compile(symbolMatcherCode)
 
-# Matches floating point literals (but not integer literals).
-floatMatcher = re.compile(r'^\d+\.\d*(?:[eE][-+]?\d+)?|^\d+(?:\.\d*)?[eE][-+]?\d+|^\.\d+(?:[eE][-+]?\d+)?')
-
-# Matches all non-float numbers
-numberMatcher = re.compile(r'^0[xX][\da-fA-F]+|^0[0-7]*|^\d+')
-
-# Matches valid JavaScript identifiers
-identifierMatcher = re.compile(r'^[$_\w]+')
-
-# Matches both string types
-stringMatcher = re.compile(r'^"(?:\\.|[^"])*"|^\'(?:\\.|[^\'])*\'')
-
-# Matches regexp literals.
-regularExprMatcher = re.compile(r'^\/((?:\\.|\[(?:\\.|[^\]])*\]|[^\/])+)\/([gimy]*)')

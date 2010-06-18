@@ -326,7 +326,7 @@ def Statement(tokenizer, compilerContext):
         return node
 
     elif tokenType in ("catch", "finally"):
-        raise SyntaxError(tokens[tokenType] + " without preceding try", tokenizer)
+        raise SyntaxError(tokenType + " without preceding try", tokenizer)
 
     elif tokenType == "throw":
         node = Node(tokenizer)
