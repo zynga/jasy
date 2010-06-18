@@ -39,8 +39,6 @@
 #
 # ***** END LICENSE BLOCK ***** */
 
-import re
-from js.Lang import *
 import simplejson as json
 
 class Node(list):

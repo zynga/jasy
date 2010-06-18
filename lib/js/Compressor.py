@@ -1,5 +1,9 @@
 def compress(node):
-    return globals()[node.type](node)
+    type = node.type
+    
+    
+    
+    return globals()[type](node)
 
 
 def script(node):
@@ -37,6 +41,15 @@ def identifier(node):
         result += "=%s" % compress(node.initializer)
 
     return result
+    
+
+def increment(node):
+    for child in node:
+        return compress(child) + "++"
+
+def decrement(node):
+    for child in node:
+        return compress(child) + "--"
 
 
 def number(node):
