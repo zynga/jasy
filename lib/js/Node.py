@@ -83,8 +83,10 @@ class Node(list):
         if kid:
             if hasattr(self, "start") and kid.start < self.start:
                 self.start = kid.start
+
             if hasattr(self, "end") and self.end < kid.end:
                 self.end = kid.end
+
         return list.append(self, kid)
 
 
@@ -101,6 +103,7 @@ class Node(list):
         for attr in dir(self):
             if attr in blockAttr or attr.startswith("_") or attr.endswith("_"):
                 continue
+                
             else:
                 value = getattr(self, attr)
                 
