@@ -39,34 +39,12 @@
 #
 # ***** END LICENSE BLOCK ***** */
 
-import re
-
-tokens = dict(enumerate((
-    # End of source.
+keywords = [
     "end",
 
-    # Operators and punctuators. Some pair-wise order matters, e.g. (+, -)
-    # and (UNARY_PLUS, UNARY_MINUS).
-    "\n", ";",
-    ",",
-    "=",
-    "?", ":", "conditional",
-    "||",
-    "&&",
-    "|",
-    "^",
-    "&",
-    "==", "!=", "===", "!==",
-    "<", "<=", ">=", ">",
-    "<<", ">>", ">>>",
-    "+", "-",
-    "*", "/", "%",
-    "!", "~", "unary_plus", "unary_minus",
-    "++", "--",
-    ".",
-    "[", "]",
-    "{", "}",
-    "(", ")",
+    "conditional",
+
+    "unary_plus", "unary_minus",
 
     # Nonterminal tree node type codes.
     "script", "block", "label", "for_in", "call", "new_with_args", "index",
@@ -88,10 +66,8 @@ tokens = dict(enumerate((
     "switch",
     "this", "throw", "true", "try", "typeof",
     "var", "void",
-    "while", "with"))
-)
-
-
+    "while", "with"
+]
 
 # Operator and punctuator mapping from token to tree node type name.
 # NB: superstring tokens (e.g., ++) must come before their substring token
@@ -136,25 +112,4 @@ operatorPunctuatorNames = [
     ('}',    "right_curly"),
     ('(',    "left_paren"),
     (')',    "right_paren"),
-]           
-    
-    
-#
-#
-#
-
-# Define const END, etc., based on the token names.  Also map name to index.
-keywords = {}
-for i, t in tokens.copy().iteritems():
-    if re.match(r'^[a-z]', t):
-        keywords[t] = True
-        
-print "BUILD KEYWORDS"
-print keywords
-
-
-
-
-
-
-
+]
