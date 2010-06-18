@@ -39,12 +39,6 @@
 #
 # ***** END LICENSE BLOCK ***** */
 
-"""
- PyNarcissus
-
- A lexical scanner and parser. JS implemented in JS, ported to Python.
-"""
-
 import re
 from js.Lang import *
 import simplejson as json
@@ -78,15 +72,10 @@ class Node(list):
             self.type = type
             self.lineno = tokenizer.lineno
 
-        print "CREATE: %s" % self.type
-
         self.tokenizer = tokenizer
 
         for arg in args:
             self.append(arg)
-
-
-    filename = property(lambda self: self.tokenizer.filename)
 
 
     # Always use push to add operands to an expression, to update start and end.
@@ -158,17 +147,16 @@ class Node(list):
             return self.tokenizer.source[:self.end]
         
         return self.tokenizer.source[:]
+        
+    
+    # Returns the file name
+    def getFileName(self):
+        return self.tokenizer.filename
 
 
+    # Map Python built-ins
     __repr__ = toJson
     __str__ = toJson
 
     def __nonzero__(self): 
         return True
-    
-    
-def tokenstr(tokenType):
-    t = tokens[tokenType]
-    if re.match(r'^\W', t):
-        return operatorPunctuatorNames[t]
-    return t.upper()
