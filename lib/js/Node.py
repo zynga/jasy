@@ -129,11 +129,11 @@ class Node(list):
 
 
     # Returns the JSON representation of the node object
-    def toJson(self, compact=False):
+    def toJson(self, compact=True):
         if compact:
-            return json.dumps(self.export(), sort_keys=True, separators=(',',':'))
+            return json.dumps(self.export(), sort_keys=True, ensure_ascii=False, separators=(',',':'))
         else:
-            return json.dumps(self.export(), sort_keys=True, indent=2)
+            return json.dumps(self.export(), sort_keys=True, ensure_ascii=False, indent=2)
 
 
     # Returns the source code of the node
