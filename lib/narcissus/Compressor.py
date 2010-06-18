@@ -2,7 +2,7 @@ def compress(node):
     return globals()[node.type](node)
 
 
-def SCRIPT(node):
+def script(node):
     result = ""
     for child in node:
         result += compress(child)
@@ -11,7 +11,7 @@ def SCRIPT(node):
     return result
 
 
-def BLOCK(node):
+def block(node):
     result = "{"
     for child in node:
         result += compress(child)
@@ -22,7 +22,7 @@ def BLOCK(node):
     return result
 
 
-def VAR(node):
+def var(node):
     result = "var "
     for child in node:
         result += compress(child)
@@ -32,7 +32,7 @@ def VAR(node):
     return result
 
 
-def IDENTIFIER(node):
+def identifier(node):
     result = node.value
 
     if hasattr(node, "initializer"):
@@ -41,22 +41,22 @@ def IDENTIFIER(node):
     return result
 
 
-def NUMBER(node):
+def number(node):
     return "%s" % node.value
 
 
-def STRING(node):
+def string(node):
     return "%s%s%s" % ('"', node.value, '"')
     
 
-def SEMICOLON(node):
+def semicolon(node):
     result = ""
     if node.expression:
         result += compress(node.expression)
     return result + ";"
     
     
-def CALL(node):
+def call(node):
     result = compress(node[0]) + "("
     for index, child in enumerate(node):
         if index > 0:
@@ -65,7 +65,7 @@ def CALL(node):
     return result
     
     
-def LIST(node):
+def list(node):
     result = ""
     for child in node:
         result += compress(child)
@@ -74,7 +74,7 @@ def LIST(node):
     return result
     
     
-def OPERATOR(node, operator):
+def operator(node, operator):
     result = ""
     for child in node:
         result += compress(child)
@@ -83,13 +83,13 @@ def OPERATOR(node, operator):
     return result
     
     
-def PLUS(node):
-    return OPERATOR(node, "+")
+def plus(node):
+    return operator(node, "+")
     
-def DOT(node):
-    return OPERATOR(node, ".")    
+def dot(node):
+    return operator(node, ".")    
     
-def OBJECT_INIT(node):
+def object_init(node):
     result = "{"
     for child in node:
         result += compress(child)
@@ -97,8 +97,8 @@ def OBJECT_INIT(node):
     result = result[:-1] + "}"
     return result
     
-def PROPERTY_INIT(node):
-    return OPERATOR(node, ":")    
+def property_init(node):
+    return operator(node, ":")    
     
-def FUNCTION(node):
+def function(node):
     return "-function-"

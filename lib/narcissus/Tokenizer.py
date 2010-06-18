@@ -200,10 +200,11 @@ class Tokenizer(object):
             op = match.group(0)
             if assignOps.has_key(op) and text[len(op)] == '=':
                 token.type = "assign"
-                token.assignOp = globals()[operatorPunctuatorNames[op]]
+                token.assignOp = operatorPunctuatorNames[op]
                 token.value = op
                 return match.group(0) + "="
-            token.type = globals()[operatorPunctuatorNames[op]]
+
+            token.type = operatorPunctuatorNames[op]
             
             # FIXME: What does this code do?
             #if self.scanOperand and (token.type in (PLUS, MINUS)):

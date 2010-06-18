@@ -169,6 +169,7 @@ for i, t in tokens.copy().iteritems():
     else:
         const_name = t
     #globals()[const_name] = i
+    #print "MAP: %s => %s" % (t, i)
     tokens[t] = i
 
 
