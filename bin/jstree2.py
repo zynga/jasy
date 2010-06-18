@@ -5,9 +5,9 @@ import re, sys, os
 # Extend PYTHONPATH with 'lib'
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
-from narcissus.Tokenizer import Tokenizer
-from narcissus.Statements import Script, CompilerContext
-import narcissus.Compressor as Compressor
+from js.Tokenizer import Tokenizer
+from js.Statements import Script, CompilerContext
+import js.Compressor as Compressor
 
 
 def parse(source, filename=None):

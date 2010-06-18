@@ -41,9 +41,9 @@
  A lexical scanner and parser. JS implemented in JS, ported to Python.
 """
 
-from narcissus.Node import Node
-from narcissus.Lang import *
-from narcissus.Tokenizer import Token
+from js.Node import Node
+from js.Lang import *
+from js.Tokenizer import Token
 
 DECLARED_FORM = 0
 EXPRESSED_FORM = 1

@@ -42,7 +42,7 @@
 """
 
 import re
-from narcissus.Lang import *
+from js.Lang import *
 import simplejson as json
 
 class Node(list):

@@ -36,7 +36,7 @@
 # ***** END LICENSE BLOCK ***** */
 
 import re, sys, types
-from narcissus.Lang import *
+from js.Lang import *
 
 class Token: 
     pass
