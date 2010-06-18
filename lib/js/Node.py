@@ -21,6 +21,10 @@
 # The Python version of the code was created by JT Olds <jtolds@xnet5.com>,
 # and is a direct translation from the Javascript version.
 #
+# This version was refactored by the original Python port by Sebastian 
+# Werner <info@sebastian-werner.net> for a cleaner Python-like implementation
+# with less globals and better structure.
+#
 # Alternatively, the contents of this file may be used under the terms of
 # either the GNU General Public License Version 2 or later (the "GPL"), or
 # the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
