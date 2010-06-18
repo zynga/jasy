@@ -142,6 +142,7 @@ def nest(tokenizer, compilerContext, node, func, end=None):
 
 def Statement(tokenizer, compilerContext):
     tokenType = tokenizer.get()
+    print "Statement: %s" % tokenType
 
     # Cases for statements ending in a right curly return early, avoiding the
     # common semicolon insertion magic after this switch.
@@ -384,7 +385,7 @@ def Statement(tokenizer, compilerContext):
     if tokenizer.line == tokenizer.token.line:
         tokenType = tokenizer.peekOnSameLine()
         if tokenType not in ("end", "newline", "semicolon", "right_curly"):
-            raise SyntaxError("Missing ; before statement", tokenizer)
+            raise SyntaxError("Missing ; before statement. Found %s" % tokenType, tokenizer)
     tokenizer.match("semicolon")
     return node
 
