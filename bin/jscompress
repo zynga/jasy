@@ -20,4 +20,4 @@ def jscompress(source, filename=None):
 
 
 if __name__ == "__main__":
-    print jscompress(file(sys.argv[1]).read(),sys.argv[1])
+    print jscompress(file(sys.argv[1]).read(), sys.argv[1])
