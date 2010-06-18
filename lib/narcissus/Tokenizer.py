@@ -60,7 +60,7 @@ class Tokenizer(object):
         self.lineno = 1
 
     input_ = property(lambda self: self.source[self.cursor:])
-    done = property(lambda self: self.peek() == END)
+    done = property(lambda self: self.peek() == "end")
     token = property(lambda self: self.tokens.get(self.tokenIndex))
 
 
@@ -100,7 +100,7 @@ class Tokenizer(object):
             self.lookahead -= 1
             self.tokenIndex = (self.tokenIndex + 1) & 3
             token = self.tokens.get(self.tokenIndex)
-            if getattr(token, "type_", None) != NEWLINE or self.scanNewlines:
+            if getattr(token, "type_", None) != "newline" or self.scanNewlines:
                 return getattr(token, "type_", None)
 
         comments = []
@@ -146,36 +146,42 @@ class Tokenizer(object):
             token.end = self.cursor
             token.lineno = self.lineno
         else:
-            token.type_ = END
+            token.type_ = "end"
 
         # Return token type
         return getattr(token, "type_", None)
         
         
     def matchInput(self, token, text):
+        print "MATCH-INPUT: %s" % text
+        
         match = floatMatcher.match(text)
         if match:
-            token.type_ = NUMBER
+            token.type_ = "number"
             token.value = float(match.group(0))
+            token.variant = "float"
             return match.group(0)
 
         match = numberMatcher.match(text)
         if match:
-            token.type_ = NUMBER
+            token.type_ = "number"
             token.value = eval(match.group(0))
+            token.variant = "int"
             return match.group(0)
 
         match = identifierMatcher.match(text)
         if match:
             id_ = match.group(0)
-            print "xx: %s - yy: %s" % (id_, IDENTIFIER)
-            token.type_ = keywords.get(id_, IDENTIFIER)
+            if id_ in keywords:
+                token.type_ = id_
+            else:
+                token.type_ = "identifier"
             token.value = id_
-            return match.group(0)
+            return id_
 
         match = stringMatcher.match(text)
         if match:
-            token.type_ = STRING
+            token.type_ = "string"
             token.value = eval(match.group(0))
             if match.group(0)[0] == "'":
                 token.variant = "single"
@@ -186,21 +192,27 @@ class Tokenizer(object):
         if self.scanOperand:
             match = regularExprMatcher.match(text)
             if match:
-                token.type_ = REGEXP
-                token.value = {"regexp": match.group(1), "modifiers": match.group(2)}
+                token.type_ = "regexp"
+                token.value = match.group(1)
+                token.variant = match.group(2)
                 return match.group(0)
 
         match = symbolMatcher.match(text)
         if match:
             op = match.group(0)
             if assignOps.has_key(op) and text[len(op)] == '=':
-                token.type_ = ASSIGN
+                token.type_ = "assign"
                 token.assignOp = globals()[operatorPunctuatorNames[op]]
                 token.value = op
                 return match.group(0) + "="
             token.type_ = globals()[operatorPunctuatorNames[op]]
+            
+            print "XXX: plus=%s, minus=%s, unary_plus=%s" % (PLUS, MINUS, UNARY_PLUS)
+            
+            # FIXME: What does this code do?
             if self.scanOperand and (token.type_ in (PLUS, MINUS)):
                 token.type_ += UNARY_PLUS - PLUS
+                
             token.assignOp = None
             token.value = op
             return match.group(0)
@@ -208,7 +220,7 @@ class Tokenizer(object):
         if self.scanNewlines:
             match = re.match(r'^\n', text)
             if match:
-                token.type_ = NEWLINE
+                token.type_ = "newline"
                 return match.group(0)
 
         raise ParseError("Illegal token", self.filename, self.lineno)

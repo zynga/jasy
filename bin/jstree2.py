@@ -11,16 +11,6 @@ import narcissus.Compressor as Compressor
 
 
 def parse(source, filename=None):
-    """Parse some Javascript
-
-    Args:
-        source: the Javascript source, as a string
-        filename: the filename to include in messages
-    Returns:
-        the parsed source code data structure
-    Raises:
-        ParseError
-    """
     tokenizer = Tokenizer(source, filename)
     root = Script(tokenizer, CompilerContext(False))
     

@@ -47,15 +47,15 @@ import simplejson as json
 
 class Node(list):
 
-    def __init__(self, tokenizer, type_=None, args=[]):
+    def __init__(self, tokenizer, type=None, args=[]):
         list.__init__(self)
 
         token = tokenizer.token
         if token:
-            if type_:
-                self.type_ = type_
+            if type:
+                self.type = type
             else:
-                self.type_ = getattr(token, "type_", None)
+                self.type = getattr(token, "type", None)
                 
             if hasattr(token, "comments"):
                 self.comments = token.comments
@@ -71,7 +71,7 @@ class Node(list):
                 self.variant = token.variant            
 
         else:
-            self.type_ = type_
+            self.type = type
             self.lineno = tokenizer.lineno
 
         print "CREATE: %s" % self.type
@@ -82,7 +82,6 @@ class Node(list):
             self.append(arg)
 
 
-    type = property(lambda self: tokenstr(self.type_))
     filename = property(lambda self: self.tokenizer.filename)
 
 
@@ -116,7 +115,7 @@ class Node(list):
                     pass
                 elif isinstance(value, Node):
                     value = value.export()
-                elif attr == "value" and self.type_ == REGEXP:
+                elif attr == "value" and self.type == REGEXP:
                     value = "/%s/%s" % (value["regexp"], value["modifiers"])
                 elif type(value) == list:
                     temp = []

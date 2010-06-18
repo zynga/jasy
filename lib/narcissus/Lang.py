@@ -39,14 +39,14 @@ import re
 
 tokens = dict(enumerate((
     # End of source.
-    "END",
+    "end",
 
     # Operators and punctuators. Some pair-wise order matters, e.g. (+, -)
     # and (UNARY_PLUS, UNARY_MINUS).
     "\n", ";",
     ",",
     "=",
-    "?", ":", "CONDITIONAL",
+    "?", ":", "conditional",
     "||",
     "&&",
     "|",
@@ -57,7 +57,7 @@ tokens = dict(enumerate((
     "<<", ">>", ">>>",
     "+", "-",
     "*", "/", "%",
-    "!", "~", "UNARY_PLUS", "UNARY_MINUS",
+    "!", "~", "unary_plus", "unary_minus",
     "++", "--",
     ".",
     "[", "]",
@@ -65,12 +65,12 @@ tokens = dict(enumerate((
     "(", ")",
 
     # Nonterminal tree node type codes.
-    "SCRIPT", "BLOCK", "LABEL", "FOR_IN", "CALL", "NEW_WITH_ARGS", "INDEX",
-    "ARRAY_INIT", "OBJECT_INIT", "PROPERTY_INIT", "GETTER", "SETTER",
-    "GROUP", "LIST",
+    "script", "block", "label", "for_in", "call", "new_with_args", "index",
+    "array_init", "object_init", "property_init", "getter", "setter",
+    "group", "list",
 
     # Terminals.
-    "IDENTIFIER", "NUMBER", "STRING", "REGEXP",
+    "identifier", "number", "string", "regexp",
 
     # Keywords.
     "break",
@@ -88,50 +88,51 @@ tokens = dict(enumerate((
 )
 
 
+
 # Operator and punctuator mapping from token to tree node type name.
 # NB: superstring tokens (e.g., ++) must come before their substring token
 # counterparts (+ in the example), so that the "symbolMatcher" regular expression
 # synthesized from this list makes the longest possible match.
 operatorPunctuatorNames = [
-    ('\n',   "NEWLINE"),
-    (';',    "SEMICOLON"),
-    (',',    "COMMA"),
-    ('?',    "HOOK"),
-    (':',    "COLON"),
-    ('||',   "OR"),
-    ('&&',   "AND"),
-    ('|',    "BITWISE_OR"),
-    ('^',    "BITWISE_XOR"),
-    ('&',    "BITWISE_AND"),
-    ('===',  "STRICT_EQ"),
-    ('==',   "EQ"),
-    ('=',    "ASSIGN"),
-    ('!==',  "STRICT_NE"),
-    ('!=',   "NE"),
-    ('<<',   "LSH"),
-    ('<=',   "LE"),
-    ('<',    "LT"),
-    ('>>>',  "URSH"),
-    ('>>',   "RSH"),
-    ('>=',   "GE"),
-    ('>',    "GT"),
-    ('++',   "INCREMENT"),
-    ('--',   "DECREMENT"),
-    ('+',    "PLUS"),
-    ('-',    "MINUS"),
-    ('*',    "MUL"),
-    ('/',    "DIV"),
-    ('%',    "MOD"),
-    ('!',    "NOT"),
-    ('~',    "BITWISE_NOT"),
-    ('.',    "DOT"),
-    ('[',    "LEFT_BRACKET"),
-    (']',    "RIGHT_BRACKET"),
-    ('{',    "LEFT_CURLY"),
-    ('}',    "RIGHT_CURLY"),
-    ('(',    "LEFT_PAREN"),
-    (')',    "RIGHT_PAREN"),
-]
+    ('\n',   "newline"),
+    (';',    "semicolon"),
+    (',',    "comma"),
+    ('?',    "hook"),
+    (':',    "colon"),
+    ('||',   "or"),
+    ('&&',   "and"),
+    ('|',    "bitwise_or"),
+    ('^',    "bitwise_xor"),
+    ('&',    "bitwise_and"),
+    ('===',  "strict_eq"),
+    ('==',   "eq"),
+    ('=',    "assign"),
+    ('!==',  "strict_ne"),
+    ('!=',   "ne"),
+    ('<<',   "lsh"),
+    ('<=',   "le"),
+    ('<',    "lt"),
+    ('>>>',  "ursh"),
+    ('>>',   "rsh"),
+    ('>=',   "ge"),
+    ('>',    "gt"),
+    ('++',   "increment"),
+    ('--',   "decrement"),
+    ('+',    "plus"),
+    ('-',    "minus"),
+    ('*',    "mul"),
+    ('/',    "div"),
+    ('%',    "mod"),
+    ('!',    "not"),
+    ('~',    "bitwise_not"),
+    ('.',    "dot"),
+    ('[',    "left_bracket"),
+    (']',    "right_bracket"),
+    ('{',    "left_curly"),
+    ('}',    "right_curly"),
+    ('(',    "left_paren"),
+    (')',    "right_paren"),
+]           
     
     
 #
@@ -167,7 +168,7 @@ for i, t in tokens.copy().iteritems():
         const_name = dict(operatorPunctuatorNames)[t]
     else:
         const_name = t
-    globals()[const_name] = i
+    #globals()[const_name] = i
     tokens[t] = i
 
 
