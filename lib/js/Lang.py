@@ -166,14 +166,8 @@ operatorPunctuatorNames = dict(operatorPunctuatorNames)
 keywords = {}
 for i, t in tokens.copy().iteritems():
     if re.match(r'^[a-z]', t):
-        const_name = t.upper()
-        keywords[t] = i
-    elif re.match(r'^\W', t):
-        const_name = dict(operatorPunctuatorNames)[t]
-    else:
-        const_name = t
-    #globals()[const_name] = i
-    #print "MAP: %s => %s" % (t, i)
+        keywords[t] = True
+    print "REBUILD: %s[%s]" % (t, i)
     tokens[t] = i
 
 
@@ -181,7 +175,6 @@ for i, t in tokens.copy().iteritems():
 assignOps = {}
 for i, t in enumerate(['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%']):
     assignOps[t] = tokens[t]
-    assignOps[i] = t
 
 
 
