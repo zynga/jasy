@@ -58,7 +58,7 @@ class Node(list):
             if hasattr(token, "comments"):
                 self.comments = token.comments
                 
-            self.lineno = token.lineno
+            self.line = token.line
             self.start = token.start
             self.end = token.end
 
@@ -70,7 +70,7 @@ class Node(list):
 
         else:
             self.type = type
-            self.lineno = tokenizer.lineno
+            self.line = tokenizer.line
 
         self.tokenizer = tokenizer
 
@@ -91,7 +91,7 @@ class Node(list):
     # Converts node to an object structure containing all public information
     def export(self):
         result = {}
-        blockAttr = ["tokenizer", "target", "filename", "start", "end"]
+        blockAttr = ["tokenizer", "target", "start", "end"]
         
         if len(self) > 0:
             result["children"] = children = []
@@ -129,7 +129,7 @@ class Node(list):
 
 
     # Returns the JSON representation of the node object
-    def toJson(self, compact=True):
+    def toJson(self, compact=False):
         if compact:
             return json.dumps(self.export(), sort_keys=True, ensure_ascii=False, separators=(',',':'))
         else:

@@ -47,8 +47,8 @@ class Token:
 
 
 class ParseError(Exception):
-    def __init__(self, message, filename, lineno):
-        Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, filename, lineno))
+    def __init__(self, message, filename, line):
+        Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, filename, line))
 
 
 class Tokenizer(object):
@@ -61,7 +61,7 @@ class Tokenizer(object):
         self.scanNewlines = False
         self.scanOperand = True
         self.filename = filename
-        self.lineno = 1
+        self.line = 1
 
     input_ = property(lambda self: self.source[self.cursor:])
     done = property(lambda self: self.peek() == "end")
@@ -74,14 +74,14 @@ class Tokenizer(object):
 
     def mustMatch(self, tokenType):
         if not self.match(tokenType):
-            raise ParseError("Missing " + tokenType, self.filename, self.lineno)
+            raise ParseError("Missing " + tokenType, self.filename, self.line)
         return self.token
 
 
     def peek(self):
         if self.lookahead:
             next = self.tokens.get((self.tokenIndex + self.lookahead) & 3)
-            if self.scanNewlines and (getattr(next, "lineno", None) != getattr(self, "lineno", None)):
+            if self.scanNewlines and (getattr(next, "line", None) != getattr(self, "line", None)):
                 tokenType = NEWLINE
             else:
                 tokenType = getattr(next, "type", None)
@@ -119,7 +119,7 @@ class Tokenizer(object):
                 self.cursor += len(spaces)
                 newlines = newlineMatcher.findall(spaces)
                 if newlines:
-                    self.lineno += len(newlines)
+                    self.line += len(newlines)
                 input__ = self.input_
 
             match = commentMatcher.match(input__)
@@ -131,7 +131,7 @@ class Tokenizer(object):
             self.cursor += len(comment)
             newlines = newlineMatcher.findall(comment)
             if newlines:
-                self.lineno += len(newlines)
+                self.line += len(newlines)
                 
         self.tokenIndex = (self.tokenIndex + 1) & 3
         token = self.tokens.get(self.tokenIndex)
@@ -148,7 +148,7 @@ class Tokenizer(object):
             token.start = self.cursor        
             self.cursor += len(self.matchInput(token, input__))
             token.end = self.cursor
-            token.lineno = self.lineno
+            token.line = self.line
         else:
             token.type = "end"
 
@@ -226,7 +226,7 @@ class Tokenizer(object):
                 token.type = "newline"
                 return match.group(0)
 
-        raise ParseError("Illegal token", self.filename, self.lineno)
+        raise ParseError("Illegal token", self.filename, self.line)
         
 
     def unget(self):

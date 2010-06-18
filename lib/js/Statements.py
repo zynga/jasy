@@ -56,7 +56,7 @@ STATEMENT_FORM = 2
 
 class SyntaxError(Exception):
     def __init__(self, message, tokenizer):
-        Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, tokenizer.filename, tokenizer.lineno))
+        Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, tokenizer.filename, tokenizer.line))
 
 
 # Used as a status container during tree-building for every function body and the global body
@@ -222,7 +222,7 @@ def Statement(tokenizer, compilerContext):
             if n2.type == "var":
                 if len(n2) != 1:
                     raise SyntaxError("Invalid for..in left-hand side",
-                            tokenizer.filename, n2.lineno)
+                            tokenizer.filename, n2.line)
 
                 # NB: n2[0].type == INDENTIFIER and n2[0].value == n2[0].name
                 node.iterator = n2[0]
@@ -381,7 +381,7 @@ def Statement(tokenizer, compilerContext):
         node.expression = Expression(tokenizer, compilerContext)
         node.end = node.expression.end
 
-    if tokenizer.lineno == tokenizer.token.lineno:
+    if tokenizer.line == tokenizer.token.line:
         tokenType = tokenizer.peekOnSameLine()
         if tokenType not in ("end", "newline", "semicolon", "right_curly"):
             raise SyntaxError("Missing ; before statement", tokenizer)
@@ -612,7 +612,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                     operators.append(Node(tokenizer)) # prefix increment or decrement
                 else:
                     # Don't cross a line boundary for postfix {in,de}crement.
-                    if (tokenizer.tokens.get((tokenizer.tokenIndex + tokenizer.lookahead - 1) & 3).lineno != tokenizer.lineno):
+                    if (tokenizer.tokens.get((tokenizer.tokenIndex + tokenizer.lookahead - 1) & 3).line != tokenizer.line):
                         raise BreakOutOfLoops
 
                     # Use >, not >=, so postfix has higher precedence than
