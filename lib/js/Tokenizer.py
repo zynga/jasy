@@ -331,7 +331,7 @@ class Tokenizer(object):
             # FIXME: What does this code do?
             if self.scanOperand and token.type in ("plus", "minus"):
                 #token.type += UNARY_PLUS - PLUS
-                raise "FIXME: Scan operand mode"
+                raise Exception("FIXME: Scan operand mode: %s" % self.line)
                 
             token.assignOp = None
             token.value = op
