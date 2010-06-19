@@ -39,12 +39,6 @@
 #
 # ***** END LICENSE BLOCK ***** */
 
-"""
- PyNarcissus
-
- A lexical scanner and parser. JS implemented in JS, ported to Python.
-"""
-
 from js.Node import Node
 from js.Lang import *
 from js.Tokenizer import Token

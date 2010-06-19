@@ -39,15 +39,72 @@
 #
 # ***** END LICENSE BLOCK ***** */
 
-import re, sys, types
-from js.Lang import operatorPunctuatorNames, keywords
+import re
+
+keywords = [
+    "break",
+    "case", "catch", "const", "continue",
+    "debugger", "default", "delete", "do",
+    "else", "enum",
+    "false", "finally", "for", "function",
+    "if", "in", "instanceof",
+    "new", "null",
+    "return",
+    "switch",
+    "this", "throw", "true", "try", "typeof",
+    "var", "void",
+    "while", "with"
+]
+
+assignOps = ['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%']
 
 
-# Map assignment operators to their indexes in the tokens array.
-assignOps = {}
-for t in ['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%']:
-    assignOps[t] = True
-    
+# Operator and punctuator mapping from token to tree node type name.
+# NB: superstring tokens (e.g., ++) must come before their substring token
+# counterparts (+ in the example), so that the "symbolMatcher" regular expression
+# synthesized from this list makes the longest possible match.
+operatorPunctuatorNames = [
+    ('\n',   "newline"),
+    (';',    "semicolon"),
+    (',',    "comma"),
+    ('?',    "hook"),
+    (':',    "colon"),
+    ('||',   "or"),
+    ('&&',   "and"),
+    ('|',    "bitwise_or"),
+    ('^',    "bitwise_xor"),
+    ('&',    "bitwise_and"),
+    ('===',  "strict_eq"),
+    ('==',   "eq"),
+    ('=',    "assign"),
+    ('!==',  "strict_ne"),
+    ('!=',   "ne"),
+    ('<<',   "lsh"),
+    ('<=',   "le"),
+    ('<',    "lt"),
+    ('>>>',  "ursh"),
+    ('>>',   "rsh"),
+    ('>=',   "ge"),
+    ('>',    "gt"),
+    ('++',   "increment"),
+    ('--',   "decrement"),
+    ('+',    "plus"),
+    ('-',    "minus"),
+    ('*',    "mul"),
+    ('/',    "div"),
+    ('%',    "mod"),
+    ('!',    "not"),
+    ('~',    "bitwise_not"),
+    ('.',    "dot"),
+    ('[',    "left_bracket"),
+    (']',    "right_bracket"),
+    ('{',    "left_curly"),
+    ('}',    "right_curly"),
+    ('(',    "left_paren"),
+    (')',    "right_paren"),
+]
+
+
 
 #
 # Prepare regular expressions
@@ -72,14 +129,14 @@ operatorPunctuatorNames = dict(operatorPunctuatorNames)
 # Regular expressions for matching in tokenizer
 #
 
+# Matches all operators and punctuators
+symbolMatcher = re.compile(symbolMatcherCode)
+
 # Matches line feeds
 newlineMatcher = re.compile(r'\n')
 
 # Matches both comment styles
 commentMatcher = re.compile(r'^\/(?:\*(?:.|\n)*?\*\/|\/.*)')
-
-# Matches all operators and punctuators
-symbolMatcher = re.compile(symbolMatcherCode)
 
 # Matches floating point literals (but not integer literals).
 floatMatcher = re.compile(r'^\d+\.\d*(?:[eE][-+]?\d+)?|^\d+(?:\.\d*)?[eE][-+]?\d+|^\.\d+(?:[eE][-+]?\d+)?')
@@ -97,6 +154,10 @@ stringMatcher = re.compile(r'^"(?:\\.|[^"])*"|^\'(?:\\.|[^\'])*\'')
 regularExprMatcher = re.compile(r'^\/((?:\\.|\[(?:\\.|[^\]])*\]|[^\/])+)\/([gimy]*)')
 
 
+
+#
+# Classes
+#
 
 class Token: 
     pass
@@ -230,7 +291,6 @@ class Tokenizer(object):
         match = identifierMatcher.match(text)
         if match:
             identifier = match.group(0)
-            
             if identifier in keywords:
                 token.type = identifier
             else:
@@ -260,7 +320,7 @@ class Tokenizer(object):
         match = symbolMatcher.match(text)
         if match:
             op = match.group(0)
-            if assignOps.has_key(op) and text[len(op)] == '=':
+            if op in assignOps and text[len(op)] == '=':
                 token.type = "assign"
                 token.assignOp = operatorPunctuatorNames[op]
                 token.value = op
@@ -271,8 +331,7 @@ class Tokenizer(object):
             # FIXME: What does this code do?
             if self.scanOperand and token.type in ("plus", "minus"):
                 #token.type += UNARY_PLUS - PLUS
-                print "SCAN OPERAND MODE!!!"
-                sys.exit(1)
+                raise "FIXME: Scan operand mode"
                 
             token.assignOp = None
             token.value = op
