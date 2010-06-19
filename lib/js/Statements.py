@@ -47,6 +47,13 @@ EXPRESSED_FORM = 1
 STATEMENT_FORM = 2
 
 
+def parse(tokenizer):
+    root = Script(tokenizer, CompilerContext(False))
+    if not tokenizer.done:
+        raise SyntaxError("Invalid end of file", tokenizer)
+    return root
+
+
 class SyntaxError(Exception):
     def __init__(self, message, tokenizer):
         Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, tokenizer.filename, tokenizer.line))
@@ -87,10 +94,7 @@ class CompilerContext(object):
 
 
 # This produces the root node of each file or function, basically a modified block node
-def Script(tokenizer, compilerContext=None):
-    if not compilerContext:
-        compilerContext = CompilerContext(False)
-        
+def Script(tokenizer, compilerContext):
     node = Statements(tokenizer, compilerContext)
     
     # change type from "block" to "script" for script root
@@ -138,7 +142,6 @@ def nest(tokenizer, compilerContext, node, func, end=None):
 
 def Statement(tokenizer, compilerContext):
     tokenType = tokenizer.get()
-    print "Statement: %s" % tokenType
 
     # Cases for statements ending in a right curly return early, avoiding the
     # common semicolon insertion magic after this switch.
