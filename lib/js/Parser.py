@@ -171,9 +171,9 @@ def Statement(tokenizer, compilerContext):
 
     elif tokenType == "switch":
         node = Node(tokenizer)
-        tokenizer.mustMatch("left_paran")
+        tokenizer.mustMatch("left_paren")
         node.discriminant = Expression(tokenizer, compilerContext)
-        tokenizer.mustMatch("right_paran")
+        tokenizer.mustMatch("right_paren")
         node.cases = []
         node.defaultIndex = -1
         compilerContext.statementStack.append(node)
@@ -206,7 +206,7 @@ def Statement(tokenizer, compilerContext):
         node = Node(tokenizer)
         n2 = None
         node.isLoop = True
-        tokenizer.mustMatch("left_paran")
+        tokenizer.mustMatch("left_paren")
         tokenType = tokenizer.peek()
         if tokenType != "semicolon":
             compilerContext.inForLoopInit = True
@@ -246,12 +246,12 @@ def Statement(tokenizer, compilerContext):
                 
             tokenizer.mustMatch("semicolon")
             
-            if tokenizer.peek() == "right_paran":
+            if tokenizer.peek() == "right_paren":
                 node.update = None
             else:
                 node.update = Expression(tokenizer, compilerContext)
                 
-        tokenizer.mustMatch("right_paran")
+        tokenizer.mustMatch("right_paren")
         node.body = nest(tokenizer, compilerContext, node, Statement)
         return node
 
@@ -306,7 +306,7 @@ def Statement(tokenizer, compilerContext):
         node.catchClauses = []
         while tokenizer.match("catch"):
             n2 = Node(tokenizer)
-            tokenizer.mustMatch("left_paran")
+            tokenizer.mustMatch("left_paren")
             n2.varName = tokenizer.mustMatch("identifier").value
             if tokenizer.match("if"):
                 if compilerContext.ecmaStrictMode:
@@ -316,7 +316,7 @@ def Statement(tokenizer, compilerContext):
                 n2.guard = Expression(tokenizer, compilerContext)
             else:
                 n2.guard = None
-            tokenizer.mustMatch("right_paran")
+            tokenizer.mustMatch("right_paren")
             n2.block = Block(tokenizer, compilerContext)
             node.catchClauses.append(n2)
         if tokenizer.match("finally"):
@@ -402,15 +402,15 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     elif requireName:
         raise SyntaxError("Missing function identifier", tokenizer)
 
-    tokenizer.mustMatch("left_paran")
+    tokenizer.mustMatch("left_paren")
     f.params = []
     while True:
         tokenType = tokenizer.get()
-        if tokenType == "right_paran": break
+        if tokenType == "right_paren": break
         if tokenType != "identifier":
             raise SyntaxError("Missing formal parameter", tokenizer)
         f.params.append(tokenizer.token.value)
-        if tokenizer.peek() != "right_paran":
+        if tokenizer.peek() != "right_paren":
             tokenizer.mustMatch("comma")
 
     tokenizer.mustMatch("left_curly")
@@ -448,9 +448,9 @@ def Variables(tokenizer, compilerContext):
 
 # ???
 def ParenExpression(tokenizer, compilerContext):
-    tokenizer.mustMatch("left_paran")
+    tokenizer.mustMatch("left_paren")
     node = Expression(tokenizer, compilerContext)
-    tokenizer.mustMatch("right_paran")
+    tokenizer.mustMatch("right_paren")
     return node
 
 
@@ -709,7 +709,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                     raise ParseError("PANIC: right curly botch")
                 raise BreakOutOfLoops
 
-            elif tokenType == "left_paran":
+            elif tokenType == "left_paren":
                 if tokenizer.scanOperand:
                     operators.append(Node(tokenizer, "group"))
                     compilerContext.parenLevel += 1
@@ -726,7 +726,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                         node = Token()
                         node.type = None
                     tokenizer.scanOperand = True
-                    if tokenizer.match("right_paran"):
+                    if tokenizer.match("right_paren"):
                         if node.type == "new":
                             operators.pop()
                             node.append(operands.pop())
@@ -741,7 +741,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                             operators.append(Node(tokenizer, "call"))
                         compilerContext.parenLevel += 1
 
-            elif tokenType == "right_paran":
+            elif tokenType == "right_paren":
                 if tokenizer.scanOperand or compilerContext.parenLevel == pl:
                     raise BreakOutOfLoops
                 while True:

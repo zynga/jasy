@@ -63,7 +63,7 @@ assignOps = ['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%']
 # NB: superstring tokens (e.g., ++) must come before their substring token
 # counterparts (+ in the example), so that the "symbolMatcher" regular expression
 # synthesized from this list makes the longest possible match.
-operatorPunctuatorNames = [
+symbolNames = [
     ('\n',   "newline"),
     (';',    "semicolon"),
     (',',    "comma"),
@@ -112,16 +112,16 @@ operatorPunctuatorNames = [
 
 # Build a regexp that recognizes operators and punctuators (except newline).
 symbolMatcherCode = "^"
-for operatorPunctuator, name in operatorPunctuatorNames:
-    if operatorPunctuator == "\n": 
+for symbol, name in symbolNames:
+    if symbol == "\n": 
         continue
     if symbolMatcherCode != "^": 
         symbolMatcherCode += "|^"
 
-    symbolMatcherCode += re.sub(r'[?|^&(){}\[\]+\-*\/\.]', lambda x: "\\%s" % x.group(0), operatorPunctuator)
+    symbolMatcherCode += re.sub(r'[?|^&(){}\[\]+\-*\/\.]', lambda x: "\\%s" % x.group(0), symbol)
 
-# Convert operatorPunctuatorNames to an actual dictionary now that we don't care about ordering
-operatorPunctuatorNames = dict(operatorPunctuatorNames)
+# Convert symbolNames to an actual dictionary now that we don't care about ordering
+symbolNames = dict(symbolNames)
 
 
 
@@ -322,11 +322,11 @@ class Tokenizer(object):
             op = match.group(0)
             if op in assignOps and text[len(op)] == '=':
                 token.type = "assign"
-                token.assignOp = operatorPunctuatorNames[op]
+                token.assignOp = symbolNames[op]
                 token.value = op
                 return match.group(0) + "="
 
-            token.type = operatorPunctuatorNames[op]
+            token.type = symbolNames[op]
             
             # FIXME: What does this code do?
             if self.scanOperand and token.type in ("plus", "minus"):
