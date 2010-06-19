@@ -12,7 +12,7 @@ import js.Compressor as Compressor
 
 def jscompress(source, filename=None):
     tokenizer = Tokenizer(source, filename)
-    root = Script(tokenizer, CompilerContext(False))
+    root = Script(tokenizer)
     if not tokenizer.done:
         raise tokenizer.newSyntaxError("Syntax error")
         

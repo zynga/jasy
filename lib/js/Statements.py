@@ -40,7 +40,6 @@
 # ***** END LICENSE BLOCK ***** */
 
 from js.Node import Node
-from js.Lang import *
 from js.Tokenizer import Token
 
 DECLARED_FORM = 0
@@ -87,8 +86,11 @@ class CompilerContext(object):
         self.inForLoopInit = False
 
 
-# This produces the root node of each file, basically a modified block node
-def Script(tokenizer, compilerContext):
+# This produces the root node of each file or function, basically a modified block node
+def Script(tokenizer, compilerContext=None):
+    if not compilerContext:
+        compilerContext = CompilerContext(False)
+        
     node = Statements(tokenizer, compilerContext)
     
     # change type from "block" to "script" for script root
