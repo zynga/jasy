@@ -328,10 +328,9 @@ class Tokenizer(object):
 
             token.type = symbolNames[op]
             
-            # FIXME: What does this code do?
+            # Detect unary operators
             if self.scanOperand and token.type in ("plus", "minus"):
-                #token.type += UNARY_PLUS - PLUS
-                raise Exception("FIXME: Scan operand mode: %s" % self.line)
+                token.type = "unary_" + token.type
                 
             token.assignOp = None
             token.value = op
