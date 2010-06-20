@@ -307,8 +307,7 @@ class Tokenizer(object):
             match = regularExprMatcher.match(text)
             if match:
                 token.type = "regexp"
-                token.value = match.group(1)
-                token.variant = match.group(2)
+                token.value = match.group(0)
                 return match.group(0)
 
         match = symbolMatcher.match(text)

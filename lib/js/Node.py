@@ -109,8 +109,6 @@ class Node(list):
                     pass
                 elif isinstance(value, Node):
                     value = value.export()
-                elif attr == "value" and self.type == REGEXP:
-                    value = "/%s/%s" % (value["regexp"], value["modifiers"])
                 elif type(value) == list:
                     temp = []
                     for entry in value:
