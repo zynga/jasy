@@ -142,6 +142,7 @@ def __block(node):
     result = "{"
     for child in node:
         result += compress(child) + ";"
+            
     result = result[:-1]
     result += "}"
 
@@ -170,7 +171,7 @@ def __semicolon(node):
     result = ""
     if node.expression:
         result += compress(node.expression)
-    return result + ";"
+    return result
 
 
 def __call(node):
@@ -259,6 +260,13 @@ def __assign(node):
     
     
 def __if(node):
-    return "if(" + compress(node.condition) + ")" + compress(node.thenPart)
+    result = "if(" + compress(node.condition) + ")" + compress(node.thenPart)
+    if node.elsePart:
+        result += "else" 
+        if node.elsePart.type != "block":
+            result += " "
+        result += compress(node.elsePart)
+        
+    return result
         
     
