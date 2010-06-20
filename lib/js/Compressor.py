@@ -4,22 +4,22 @@ import sys
 def compress(node):
     type = node.type
     
-    if type in prefix:
-        return __prefix(node)
-    elif type in postfix:
-        return __postfix(node)
-    elif type in divider:
-        return __divider(node)
+    if type in prefixes:
+        return prefix(node)
+    elif type in postfixes:
+        return postfix(node)
+    elif type in dividers:
+        return divider(node)
     else:
         try:
-            return globals()[type](node)
+            return globals()["__" + type](node)
         except KeyError:
             print "Compressor does not support type: %s from line: %s" % (type, node.line)
             print node.toJson()
             sys.exit(1)
 
 
-divider = {
+dividers = {
     "plus"          : '+',    
     "minus"         : '-',    
     "mul"           : '*',    
@@ -29,12 +29,12 @@ divider = {
     "property_init" : ":",
 }
 
-postfix = {
+postfixes = {
     "increment"     : "++",
     "decrement"     : "--"
 }
 
-prefix = {
+prefixes = {
     "unary_plus"    : "+",
     "unary_minus"   : "-"
 }
@@ -82,21 +82,21 @@ symbols = {
 # Shared features
 #
 
-def __divider(node):
-    operator = divider[node.type]
+def divider(node):
+    operator = dividers[node.type]
     result = ""
     for child in node:
         result += compress(child) + operator
     result = result[:-len(operator)]
     return result
 
-def __postfix(node):
+def postfix(node):
     for child in node:
-        return compress(child) + postfix[node.type]
+        return compress(child) + postfixes[node.type]
 
-def __prefix(node):
+def prefix(node):
     for child in node:
-        return prefix[node.type] + compress(child)
+        return prefixes[node.type] + compress(child)
 
 
 
@@ -104,7 +104,7 @@ def __prefix(node):
 # Main blocks
 #
 
-def script(node):
+def __script(node):
     result = ""
     for child in node:
         result += compress(child)
@@ -113,7 +113,7 @@ def script(node):
     return result
 
 
-def block(node):
+def __block(node):
     result = "{"
     for child in node:
         result += compress(child) + ";"
@@ -123,7 +123,7 @@ def block(node):
     return result
 
 
-def var(node):
+def __var(node):
     result = "var "
     for child in node:
         result += compress(child) + ","
@@ -132,7 +132,7 @@ def var(node):
     return result
 
 
-def identifier(node):
+def __identifier(node):
     result = node.value
 
     if hasattr(node, "initializer"):
@@ -141,14 +141,14 @@ def identifier(node):
     return result
     
 
-def semicolon(node):
+def __semicolon(node):
     result = ""
     if node.expression:
         result += compress(node.expression)
     return result + ";"
 
 
-def call(node):
+def __call(node):
     result = compress(node[0]) + "("
     for index, child in enumerate(node):
         if index > 0:
@@ -157,7 +157,7 @@ def call(node):
     return result
 
 
-def list(node):
+def __list(node):
     result = ""
     for child in node:
         result += compress(child) + ","
@@ -170,27 +170,30 @@ def list(node):
 # Primitives
 #
 
-def number(node):
+def __number(node):
     return "%s" % node.value
 
-def string(node):
+def __string(node):
     return json.dumps(node.value)
     
-def true(node):
+def __true(node):
     return "true"
 
-def false(node):
+def __false(node):
     return "false"
     
-def null(node):
+def __null(node):
     return "null"
+    
+def __this(node):
+    return "this"
 
 
 #
 #
 #
 
-def object_init(node):
+def __object_init(node):
     result = "{"
     for child in node:
         result += compress(child)
@@ -199,7 +202,7 @@ def object_init(node):
     return result
 
 
-def array_init(node):
+def __array_init(node):
     result = "["
     for child in node:
         result += compress(child)
@@ -208,7 +211,7 @@ def array_init(node):
     return result
 
 
-def function(node):
+def __function(node):
     result = "function"
     
     result += "("
@@ -230,11 +233,15 @@ def function(node):
     return result
     
     
-def throw(node):
+def __throw(node):
     return "throw " + compress(node.exception)
     
     
-def new_with_args(node):
+def __return(node):
+    return "return " + compress(node.value)
+    
+    
+def __new_with_args(node):
     result = ""
     for child in node:
         if result == "":
@@ -243,4 +250,12 @@ def new_with_args(node):
             result += compress(child)
             
     result += ")"
+    return result
+    
+    
+def __assign(node):
+    result = ""
+    for child in node:
+        result += compress(child) + "="
+    result = result[:-1]
     return result
