@@ -31,12 +31,13 @@ dividers = {
 
 postfixes = {
     "increment"     : "++",
-    "decrement"     : "--"
+    "decrement"     : "--",
 }
 
 prefixes = {
+    "not"           : "!",
     "unary_plus"    : "+",
-    "unary_minus"   : "-"
+    "unary_minus"   : "-",
 }
 
 
@@ -221,7 +222,7 @@ def __function(node):
     result += "){"
     
     for child in node.body:
-        result += compress(child)
+        result += compress(child) + ";"
         
     if result.endswith(";"):
         result = result[:-1]
@@ -236,7 +237,14 @@ def __throw(node):
     
     
 def __return(node):
-    return "return " + compress(node.value)
+    result = "return"
+    if hasattr(node, "value"):
+        # TODO: Access to value!!!
+        # Micro optimization, don't need a space when a block/map/array is returned
+        if not getattr(node.value, "type", None) in ("block", "object_init", "array_init"):
+            result += " "
+        result += compress(node.value)
+    return result
     
     
 def __new_with_args(node):
@@ -261,12 +269,17 @@ def __assign(node):
     
 def __if(node):
     result = "if(" + compress(node.condition) + ")" + compress(node.thenPart)
-    if node.elsePart:
+    if hasattr(node, "elsePart"):
         result += "else" 
-        if node.elsePart.type != "block":
+        # Micro optimization, don't need a space when a block/map/array is returned
+        if not getattr(node.value, "type", None) in ("block", "object_init", "array_init"):
             result += " "
         result += compress(node.elsePart)
         
     return result
-        
     
+    
+def __group(node):
+    for child in node:
+        return "(" + compress(child) + ")"
+        

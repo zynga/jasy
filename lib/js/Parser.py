@@ -164,8 +164,6 @@ def Statement(tokenizer, compilerContext):
         node.thenPart = Statement(tokenizer, compilerContext)
         if tokenizer.match("else"):
             node.elsePart = Statement(tokenizer, compilerContext)
-        else:
-            node.elsePart = None
         compilerContext.statementStack.pop()
         return node
 
