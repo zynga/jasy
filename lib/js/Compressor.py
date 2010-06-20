@@ -10,7 +10,12 @@ def compress(node):
     elif type in divider:
         return __divider(node)
     else:
-        return globals()[type](node)
+        try:
+            return globals()[type](node)
+        except KeyError:
+            print "Compressor does not support type: %s from line: %s" % (type, node.line)
+            print node.toJson()
+            return "XXX"
 
 
 divider = {
@@ -188,7 +193,16 @@ def object_init(node):
         result += ","
     result = result[:-1] + "}"
     return result
-    
+
+
+def array_init(node):
+    result = "["
+    for child in node:
+        result += compress(child)
+        result += ","
+    result = result[:-1] + "]"
+    return result
+
 
 def function(node):
     result = "function"
