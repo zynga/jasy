@@ -1,4 +1,5 @@
 import simplejson as json
+import sys
 
 def compress(node):
     type = node.type
@@ -15,7 +16,7 @@ def compress(node):
         except KeyError:
             print "Compressor does not support type: %s from line: %s" % (type, node.line)
             print node.toJson()
-            return "XXX"
+            sys.exit(1)
 
 
 divider = {
@@ -180,6 +181,9 @@ def true(node):
 
 def false(node):
     return "false"
+    
+def null(node):
+    return "null"
 
 
 #
@@ -223,4 +227,20 @@ def function(node):
         
     result += "}"
     
+    return result
+    
+    
+def throw(node):
+    return "throw " + compress(node.exception)
+    
+    
+def new_with_args(node):
+    result = ""
+    for child in node:
+        if result == "":
+            result += "new " + compress(child) + "("
+        else:
+            result += compress(child)
+            
+    result += ")"
     return result
