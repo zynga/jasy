@@ -278,14 +278,12 @@ class Tokenizer(object):
         if match:
             token.type = "number"
             token.value = float(match.group(0))
-            token.variant = "float"
             return match.group(0)
 
         match = numberMatcher.match(text)
         if match:
             token.type = "number"
             token.value = eval(match.group(0))
-            token.variant = "int"
             return match.group(0)
 
         match = identifierMatcher.match(text)
@@ -303,10 +301,6 @@ class Tokenizer(object):
         if match:
             token.type = "string"
             token.value = eval(match.group(0))
-            if match.group(0)[0] == "'":
-                token.variant = "single"
-            else:
-                token.variant = "double"
             return match.group(0)
 
         if self.scanOperand:

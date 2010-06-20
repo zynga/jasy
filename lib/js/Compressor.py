@@ -1,3 +1,5 @@
+import simplejson as json
+
 def compress(node):
     type = node.type
     
@@ -167,7 +169,7 @@ def number(node):
 
 
 def string(node):
-    return "%s%s%s" % ('"', node.value, '"')
+    return json.dumps(node.value)
     
     
 
