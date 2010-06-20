@@ -1,10 +1,100 @@
 def compress(node):
     type = node.type
     
-    
-    
-    return globals()[type](node)
+    if type in prefix:
+        return __prefix(node)
+    elif type in postfix:
+        return __postfix(node)
+    elif type in divider:
+        return __divider(node)
+    else:
+        return globals()[type](node)
 
+
+divider = {
+    "plus"          : '+',    
+    "minus"         : '-',    
+    "mul"           : '*',    
+    "div"           : '/',    
+    "mod"           : '%',
+    "dot"           : '.',    
+    "property_init" : ":",
+}
+
+postfix = {
+    "increment"     : "++",
+    "decrement"     : "--"
+}
+
+prefix = {
+    "unary_plus"    : "+",
+    "unary_minus"   : "-"
+}
+
+
+
+
+symbols = {
+    "newline"       : '\n',   
+    "semicolon"     : ';',    
+    "comma"         : ',',    
+    "hook"          : '?',    
+    "colon"         : ':',    
+    "or"            : '||',   
+    "and"           : '&&',   
+    "bitwise_or"    : '|',    
+    "bitwise_xor"   : '^',    
+    "bitwise_and"   : '&',    
+    "strict_eq"     : '===',  
+    "eq"            : '==',   
+    "assign"        : '=',    
+    "strict_ne"     : '!==',  
+    "ne"            : '!=',   
+    "lsh"           : '<<',   
+    "le"            : '<=',   
+    "lt"            : '<',    
+    "ursh"          : '>>>',  
+    "rsh"           : '>>',   
+    "ge"            : '>=',   
+    "gt"            : '>',    
+    "increment"     : '++',   
+    "decrement"     : '--',   
+    "not"           : '!',    
+    "bitwise_not"   : '~',    
+    "left_bracket"  : '[',    
+    "right_bracket" : ']',    
+    "left_curly"    : '{',    
+    "right_curly"   : '}',    
+    "left_paren"    : '(',    
+    "right_paren"   : ')'
+} 
+
+
+#
+# Shared features
+#
+
+def __divider(node):
+    operator = divider[node.type]
+    result = ""
+    for child in node:
+        result += compress(child) + operator
+    result = result[:-len(operator)]
+    return result
+
+def __postfix(node):
+    for child in node:
+        return compress(child) + postfix[node.type]
+
+def __prefix(node):
+    for child in node:
+        return prefix[node.type] + compress(child)
+
+
+
+#
+# Main blocks
+#
 
 def script(node):
     result = ""
@@ -43,14 +133,34 @@ def identifier(node):
     return result
     
 
-def increment(node):
-    for child in node:
-        return compress(child) + "++"
+def semicolon(node):
+    result = ""
+    if node.expression:
+        result += compress(node.expression)
+    return result + ";"
 
-def decrement(node):
-    for child in node:
-        return compress(child) + "--"
 
+def call(node):
+    result = compress(node[0]) + "("
+    for index, child in enumerate(node):
+        if index > 0:
+            result += compress(child)
+    result += ")"
+    return result
+
+
+def list(node):
+    result = ""
+    for child in node:
+        result += compress(child) + ","
+    result = result[:-1]
+    return result
+        
+
+
+#
+# Primitives
+#
 
 def number(node):
     return "%s" % node.value
@@ -59,45 +169,12 @@ def number(node):
 def string(node):
     return "%s%s%s" % ('"', node.value, '"')
     
+    
 
-def semicolon(node):
-    result = ""
-    if node.expression:
-        result += compress(node.expression)
-    return result + ";"
-    
-    
-def call(node):
-    result = compress(node[0]) + "("
-    for index, child in enumerate(node):
-        if index > 0:
-            result += compress(child)
-    result += ")"
-    return result
-    
-    
-def list(node):
-    result = ""
-    for child in node:
-        result += compress(child) + ","
-    result = result[:-1]
-    return result
-    
-    
-def operator(node, operator):
-    result = ""
-    for child in node:
-        result += compress(child) + operator
-    result = result[:-len(operator)]
-    return result
-    
-    
-def plus(node):
-    return operator(node, "+")
-    
-def dot(node):
-    return operator(node, ".")    
-    
+#
+#
+#
+
 def object_init(node):
     result = "{"
     for child in node:
@@ -106,8 +183,6 @@ def object_init(node):
     result = result[:-1] + "}"
     return result
     
-def property_init(node):
-    return operator(node, ":")    
-    
+
 def function(node):
     return "-function-"
