@@ -199,7 +199,7 @@ class Tokenizer(object):
         if self.lookahead:
             next = self.tokens.get((self.tokenIndex + self.lookahead) & 3)
             if self.scanNewlines and (getattr(next, "line", None) != getattr(self, "line", None)):
-                tokenType = NEWLINE
+                tokenType = "newline"
             else:
                 tokenType = getattr(next, "type", None)
         else:

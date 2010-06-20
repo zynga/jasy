@@ -167,11 +167,15 @@ def list(node):
 def number(node):
     return "%s" % node.value
 
-
 def string(node):
     return json.dumps(node.value)
     
-    
+def true(node):
+    return "true"
+
+def false(node):
+    return "false"
+
 
 #
 #
@@ -187,4 +191,22 @@ def object_init(node):
     
 
 def function(node):
-    return "-function-"
+    result = "function"
+    
+    result += "("
+    if len(node.params) > 0:
+        for param in node.params:
+            result += param + ","
+        result = result[:-1]
+        
+    result += "){"
+    
+    for child in node.body:
+        result += compress(child)
+        
+    if result.endswith(";"):
+        result = result[:-1]
+        
+    result += "}"
+    
+    return result

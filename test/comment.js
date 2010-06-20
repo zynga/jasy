@@ -7,7 +7,7 @@ qx.Class.define("hello.World",
      *
      * @param arg1 {String} first arg
      */
-    hello : /*assign*/function(arg1/* arg1 doc */, arg2) { hello() } // trail
+    hello : /*assign*/function(arg1/* arg1 doc */, arg2) { hello(); foo(); } // trail
  
   }
 });
