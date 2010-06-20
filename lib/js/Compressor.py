@@ -99,6 +99,28 @@ def prefix(node):
         return prefixes[node.type] + compress(child)
 
 
+#
+# Primitives
+#
+
+def __number(node):
+    return "%s" % node.value
+
+def __string(node):
+    return json.dumps(node.value)
+
+def __true(node):
+    return "true"
+
+def __false(node):
+    return "false"
+
+def __null(node):
+    return "null"
+
+def __this(node):
+    return "this"
+            
 
 #
 # Main blocks
@@ -108,6 +130,9 @@ def __script(node):
     result = ""
     for child in node:
         result += compress(child)
+        
+        # Verify that each script ends with a semicolon so we can
+        # append files after each other without a line feed
         if result[-1] != ";":
             result += ";"
     return result
@@ -164,34 +189,6 @@ def __list(node):
     result = result[:-1]
     return result
         
-
-
-#
-# Primitives
-#
-
-def __number(node):
-    return "%s" % node.value
-
-def __string(node):
-    return json.dumps(node.value)
-    
-def __true(node):
-    return "true"
-
-def __false(node):
-    return "false"
-    
-def __null(node):
-    return "null"
-    
-def __this(node):
-    return "this"
-
-
-#
-#
-#
 
 def __object_init(node):
     result = "{"
@@ -259,3 +256,9 @@ def __assign(node):
         result += compress(child) + "="
     result = result[:-1]
     return result
+    
+    
+def __if(node):
+    return "if(" + compress(node.condition) + ")" + compress(node.thenPart)
+        
+    
