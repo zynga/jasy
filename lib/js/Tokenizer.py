@@ -326,7 +326,6 @@ class Tokenizer(object):
                 token.type = "unary_" + token.type
                 
             token.assignOp = None
-            token.value = op
             return match.group(0)
 
         if self.scanNewlines:
