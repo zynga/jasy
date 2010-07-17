@@ -27,6 +27,8 @@ dividers = {
     "mod"           : '%',
     "dot"           : '.',    
     "property_init" : ":",
+    "or"            : "||",
+    "and"           : "&&"
 }
 
 postfixes = {
