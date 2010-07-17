@@ -126,38 +126,25 @@ def __array_init(node):
 #
 
 def __script(node):
+    
     result = u""
     for child in node:
         result += compress(child)
         
-    # Verify that each script ends with a semicolon so we can
-    # append files after each other without a line feed
-    if result[-1] != ";":
-        result += ";"
+        if result[-1] != ";":
+            result += ";"
         
     return result
 
 
 def __block(node):
-    return u"{%s}" % ";".join(map(compress, node))
-
+    return u"{%s}" % u";".join(map(compress, node))
     
 def __const(node):
-    result = "const "
-    for child in node:
-        result += u"%s," % compress(child)
-
-    result = result[:-1]
-    return result
-
+    return u"const %s" % u",".join(map(compress, node))
 
 def __var(node):
-    result = "var "
-    for child in node:
-        result += u"%s," % compress(child)
-
-    result = result[:-1]
-    return result    
+    return u"var %s" % u",".join(map(compress, node))
     
 
 def __list(node):
