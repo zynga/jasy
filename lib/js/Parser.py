@@ -424,38 +424,37 @@ def Statement(tokenizer, compilerContext):
 
 # Process a function declaration
 def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
-    f = Node(tokenizer)
-    if f.type != "function":
-        if f.value == "get":
-            f.type = "getter"
+    node = Node(tokenizer)
+    if node.type != "function":
+        if node.value == "get":
+            node.type = "getter"
         else:
-            f.type = "setter"
+            node.type = "setter"
     if tokenizer.match("identifier"):
-        f.name = tokenizer.token.value
+        node.name = tokenizer.token.value
     elif requireName:
         raise SyntaxError("Missing function identifier", tokenizer)
 
     tokenizer.mustMatch("left_paren")
-    f.params = []
+    node.params = []
     while True:
         tokenType = tokenizer.get()
         if tokenType == "right_paren": break
         if tokenType != "identifier":
             raise SyntaxError("Missing formal parameter", tokenizer)
-        f.params.append(tokenizer.token.value)
+        node.params.append(tokenizer.token.value)
         if tokenizer.peek() != "right_paren":
             tokenizer.mustMatch("comma")
 
     tokenizer.mustMatch("left_curly")
-    x2 = CompilerContext(True)
-    f.body = Script(tokenizer, x2)
+    node.body = Script(tokenizer, CompilerContext(True))
     tokenizer.mustMatch("right_curly")
-    f.end = tokenizer.token.end
+    node.end = tokenizer.token.end
 
-    f.functionForm = functionForm
+    node.functionForm = functionForm
     if functionForm == DECLARED_FORM:
-        compilerContext.functions.append(f)
-    return f
+        compilerContext.functions.append(node)
+    return node
 
 
 # Processes a variable block
