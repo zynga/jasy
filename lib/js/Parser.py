@@ -324,7 +324,7 @@ def Statement(tokenizer, compilerContext):
         node = Node(tokenizer)
         node.tryBlock = Block(tokenizer, compilerContext)
         node.catchClauses = []
-        
+
         while tokenizer.match("catch"):
             childNode = Node(tokenizer)
             tokenizer.mustMatch("left_paren")

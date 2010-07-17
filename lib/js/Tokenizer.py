@@ -251,10 +251,7 @@ class Tokenizer(object):
                 self.line += len(newlines)
                 
         self.tokenIndex = (self.tokenIndex + 1) & 3
-        token = self.tokens.get(self.tokenIndex)
-        if not token:
-            token = Token()
-            self.tokens[self.tokenIndex] = token
+        token = self.tokens[self.tokenIndex] = Token()
             
         # Store comments
         if len(comments) > 0:
