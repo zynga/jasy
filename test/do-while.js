@@ -1,0 +1,3 @@
+do{
+  something;
+}while(true);

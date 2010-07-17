@@ -362,6 +362,10 @@ def __if(node):
     
 def __while(node):
     return "while(" + compress(node.condition) + ")" + compress(node.body)
+
+
+def __do(node):
+    return "do" + compress(node.body) + "while(" + compress(node.condition) + ")"
         
         
 def __switch(node):
