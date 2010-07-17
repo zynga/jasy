@@ -139,13 +139,7 @@ def __script(node):
 
 
 def __block(node):
-    result = ""
-    if len(node) > 0: 
-        for child in node:
-            result += u"%s;" % compress(child)
-        result = result[:-1]
-        
-    return u"{%s}" % result
+    return u"{%s}" % ";".join(map(compress, node))
 
     
 def __const(node):
@@ -208,9 +202,6 @@ def __semicolon(node):
     return result
 
 
-
-
-    
 def __assign(node):
     # may be multi assign
     result = ""
