@@ -296,7 +296,9 @@ class Tokenizer(object):
         match = stringMatcher.match(text)
         if match:
             token.type = "string"
-            token.value = eval(match.group(0))
+            # Force to parse the string into an unicode string
+            token.value = eval("u"+match.group(0))
+            
             return match.group(0)
 
         if self.scanOperand:
