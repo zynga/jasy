@@ -162,8 +162,10 @@ def Statement(tokenizer, compilerContext):
         node.condition = ParenExpression(tokenizer, compilerContext)
         compilerContext.statementStack.append(node)
         node.thenPart = Statement(tokenizer, compilerContext)
+
         if tokenizer.match("else"):
             node.elsePart = Statement(tokenizer, compilerContext)
+            
         compilerContext.statementStack.pop()
         return node
 
@@ -176,9 +178,12 @@ def Statement(tokenizer, compilerContext):
         node.defaultIndex = -1
         compilerContext.statementStack.append(node)
         tokenizer.mustMatch("left_curly")
+        
         while True:
             tokenType = tokenizer.get()
-            if tokenType == "right_curly": break
+            
+            if tokenType == "right_curly": 
+                break
 
             if tokenType in ("default", "case"):
                 if tokenType == "default" and node.defaultIndex >= 0:
@@ -190,13 +195,20 @@ def Statement(tokenizer, compilerContext):
                     n2.caseLabel = Expression(tokenizer, compilerContext, "colon")
             else:
                 raise SyntaxError("Invalid switch case", tokenizer)
+                
             tokenizer.mustMatch("colon")
             n2.statements = Node(tokenizer, "block")
+            
             while True:
                 tokenType = tokenizer.peek()
-                if(tokenType == "case" or tokenType == "default" or tokenType == "right_curly"): break
+
+                if tokenType in ["case", "default", "right_curly"]:
+                    break
+                    
                 n2.statements.append(Statement(tokenizer, compilerContext))
+                
             node.cases.append(n2)
+            
         compilerContext.statementStack.pop()
         return node
 
@@ -302,10 +314,12 @@ def Statement(tokenizer, compilerContext):
         node = Node(tokenizer)
         node.tryBlock = Block(tokenizer, compilerContext)
         node.catchClauses = []
+        
         while tokenizer.match("catch"):
             n2 = Node(tokenizer)
             tokenizer.mustMatch("left_paren")
             n2.varName = tokenizer.mustMatch("identifier").value
+            
             if tokenizer.match("if"):
                 if compilerContext.ecmaStrictMode:
                     raise SyntaxError("Illegal catch guard", tokenizer)
@@ -314,13 +328,17 @@ def Statement(tokenizer, compilerContext):
                 n2.guard = Expression(tokenizer, compilerContext)
             else:
                 n2.guard = None
+                
             tokenizer.mustMatch("right_paren")
             n2.block = Block(tokenizer, compilerContext)
             node.catchClauses.append(n2)
+            
         if tokenizer.match("finally"):
             node.finallyBlock = Block(tokenizer, compilerContext)
+            
         if not node.catchClauses and not getattr(node, "finallyBlock", None):
             raise SyntaxError("Invalid try statement", tokenizer)
+            
         return node
 
     elif tokenType in ("catch", "finally"):
@@ -333,8 +351,10 @@ def Statement(tokenizer, compilerContext):
     elif tokenType == "return":
         if not compilerContext.inFunction:
             raise SyntaxError("Invalid return", tokenizer)
+            
         node = Node(tokenizer)
         tokenType = tokenizer.peekOnSameLine()
+        
         if tokenType not in ("end", "newline", "semicolon", "right_curly"):
             node.value = Expression(tokenizer, compilerContext)
 
@@ -468,18 +488,11 @@ opPrecedence = {
     "plus": 12, "minus": 12,
     "mul": 13, "div": 13, "mod": 13,
     "delete": 14, "void": 14, "typeof": 14,
-    # "pre_increment": 14, "pre_decrement": 14,
     "not": 14, "bitwise_not": 14, "unary_plus": 14, "unary_minus": 14,
-    "increment": 15, "decrement": 15,     # postfix
+    "increment": 15, "decrement": 15,
     "new": 16,
     "dot": 17
 }
-
-# Map operator type code to precedence
-#for i in opPrecedence.copy():
-#    opPrecedence[globals()[i]] = opPrecedence[i]
-
-
 
 opArity = {
     "comma": -2,
@@ -496,16 +509,12 @@ opArity = {
     "plus": 2, "minus": 2,
     "mul": 2, "div": 2, "mod": 2,
     "delete": 1, "void": 1, "typeof": 1,
-    # "pre_increment": 1, "pre_decrement": 1,
     "not": 1, "bitwise_not": 1, "unary_plus": 1, "unary_minus": 1,
-    "increment": 1, "decrement": 1,     # postfix
+    "increment": 1, "decrement": 1,
     "new": 1, "new_with_args": 2, "dot": 2, "index": 2, "call": 2,
     "array_init": 1, "object_init": 1, "group": 1
 }
 
-# Map operator type code to arity.
-#for i in opArity.copy():
-#    opArity[globals()[i]] = opArity[i]
     
     
 def Expression(tokenizer, compilerContext, stop=None):
@@ -561,16 +570,22 @@ def Expression(tokenizer, compilerContext, stop=None):
             elif tokenType in ("assign", "hook", "colon"):
                 if tokenizer.scanOperand:
                     raise BreakOutOfLoops
+                    
                 while ((operators and opPrecedence.get(operators[-1].type, None) > opPrecedence.get(tokenType)) or (tokenType == "colon" and operators and operators[-1].type == "assign")):
                     reduce_()
+                    
                 if tokenType == "colon":
                     if operators:
                         node = operators[-1]
+                    
                     if not operators or node.type != "hook":
                         raise SyntaxError("Invalid label", tokenizer)
+                    
                     compilerContext.hookLevel -= 1
+                    
                 else:
                     operators.append(Node(tokenizer))
+                    
                     if tokenType == "assign":
                         operands[-1].assignOp = tokenizer.token.assignOp
                     else:
@@ -589,10 +604,13 @@ def Expression(tokenizer, compilerContext, stop=None):
                     # a conditional expression, or parenthesized somehow.
                     if (compilerContext.inForLoopInit and not compilerContext.hookLevel and not compilerContext.bracketLevel and not compilerContext.curlyLevel and not compilerContext.parenLevel):
                         raise BreakOutOfLoops
+                        
                 if tokenizer.scanOperand:
                     raise BreakOutOfLoops
+                    
                 while (operators and opPrecedence.get(operators[-1].type) >= opPrecedence.get(tokenType)):
                     reduce_()
+                    
                 if tokenType == "dot":
                     tokenizer.mustMatch("identifier")
                     operands.append(Node(tokenizer, "dot", [operands.pop(), Node(tokenizer)]))
@@ -617,6 +635,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                     # prefix.
                     while (operators and opPrecedence.get(operators[-1].type, None) > opPrecedence.get(tokenType)):
                         reduce_()
+                        
                     node = Node(tokenizer, tokenType, [operands.pop()])
                     node.postfix = True
                     operands.append(node)
@@ -624,12 +643,14 @@ def Expression(tokenizer, compilerContext, stop=None):
             elif tokenType == "function":
                 if not tokenizer.scanOperand:
                     raise BreakOutOfLoops
+                    
                 operands.append(FunctionDefinition(tokenizer, compilerContext, False, EXPRESSED_FORM))
                 tokenizer.scanOperand = False
 
             elif tokenType in ("null", "this", "true", "false", "identifier", "number", "string", "regexp"):
                 if not tokenizer.scanOperand:
                     raise BreakOutOfLoops
+                    
                 operands.append(Node(tokenizer))
                 tokenizer.scanOperand = False
 
@@ -640,14 +661,19 @@ def Expression(tokenizer, compilerContext, stop=None):
                     node = Node(tokenizer, "array_init")
                     while True:
                         tokenType = tokenizer.peek()
-                        if tokenType == "right_bracket": break
+                        if tokenType == "right_bracket": 
+                            break
+                            
                         if tokenType == "comma":
                             tokenizer.get()
                             node.append(None)
                             continue
+                            
                         node.append(Expression(tokenizer, compilerContext, "comma"))
+                        
                         if not tokenizer.match("comma"):
                             break
+                            
                     tokenizer.mustMatch("right_bracket")
                     operands.append(node)
                     tokenizer.scanOperand = False
@@ -723,29 +749,36 @@ def Expression(tokenizer, compilerContext, stop=None):
                     else:
                         node = Token()
                         node.type = None
+                        
                     tokenizer.scanOperand = True
+                    
                     if tokenizer.match("right_paren"):
                         if node.type == "new":
                             operators.pop()
                             node.append(operands.pop())
                         else:
                             node = Node(tokenizer, "call", [operands.pop(), Node(tokenizer, "list")])
+                            
                         operands.append(node)
                         tokenizer.scanOperand = False
+                        
                     else:
                         if node.type == "new":
                             node.type = "new_with_args"
                         else:
                             operators.append(Node(tokenizer, "call"))
+                            
                         compilerContext.parenLevel += 1
 
             elif tokenType == "right_paren":
                 if tokenizer.scanOperand or compilerContext.parenLevel == pl:
                     raise BreakOutOfLoops
+                    
                 while True:
                     tokenType = reduce_().type
                     if tokenType in ("group", "call", "new_with_args"):
                         break
+                        
                 if tokenType != "group":
                     if operands:
                         node = operands[-1]
@@ -755,6 +788,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                             node[1].type = "list"
                     else:
                         raise ParseError, "Unexpected amount of operands"
+                        
                 compilerContext.parenLevel -= 1
 
             # Automatic semicolon insertion means we may scan across a newline
