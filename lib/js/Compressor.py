@@ -29,7 +29,6 @@ dividers = {
     "property_init" : ":",
     "or"            : "||",
     "and"           : "&&",
-    
     "strict_eq"     : '===',  
     "eq"            : '==',   
     "assign"        : '=',    
@@ -56,21 +55,15 @@ prefixes = {
     "unary_minus"   : "-",
 }
 
-
-
-
+# unused... just a friendly reminder
 symbols = {
     "newline"       : '\n',   
     "semicolon"     : ';',    
     "comma"         : ',',    
-    "hook"          : '?',    
     "colon"         : ':',    
     "bitwise_or"    : '|',    
     "bitwise_xor"   : '^',    
     "bitwise_and"   : '&',    
-    "increment"     : '++',   
-    "decrement"     : '--',   
-    "not"           : '!',    
     "bitwise_not"   : '~',    
     "left_bracket"  : '[',    
     "right_bracket" : ']',    
