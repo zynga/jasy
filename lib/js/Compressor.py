@@ -320,17 +320,13 @@ def __try(node):
     result = "try" + compress(node.tryBlock)
     
     for catch in node.catchClauses:
-        result += compress(catch)
+        result += "catch(" + catch.varName + ")" + compress(catch.block)
 
     if hasattr(node, "finallyBlock"):
         result += "finally" + compress(node.finallyBlock)
 
     return result
     
-    
-def __catch(node):
-    return "catch(" + node.varName + ")" + compress(node.block)
-     
     
 def __assign(node):
     result = ""
