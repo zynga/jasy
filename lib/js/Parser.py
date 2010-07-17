@@ -329,16 +329,6 @@ def Statement(tokenizer, compilerContext):
             childNode = Node(tokenizer)
             tokenizer.mustMatch("left_paren")
             childNode.varName = tokenizer.mustMatch("identifier").value
-            
-            if tokenizer.match("if"):
-                if compilerContext.ecmaStrictMode:
-                    raise SyntaxError("Illegal catch guard", tokenizer)
-                if node.catchClauses and not node.catchClauses[-1].guard:
-                    raise SyntaxError("Guarded catch after unguarded", tokenizer)
-                childNode.guard = Expression(tokenizer, compilerContext)
-            else:
-                childNode.guard = None
-                
             tokenizer.mustMatch("right_paren")
             childNode.block = Block(tokenizer, compilerContext)
             node.catchClauses.append(childNode)
