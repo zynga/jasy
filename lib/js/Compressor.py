@@ -228,6 +228,35 @@ def __array_init(node):
     result += "]"
     return result
 
+    
+def __new_with_args(node):
+    result = ""
+    for child in node:
+        if result == "":
+            result += "new " + compress(child) + "("
+        else:
+            result += compress(child)
+            
+    result += ")"
+    return result
+    
+
+def __assign(node):
+    result = ""
+
+    # may be multi assign
+    for child in node:
+        result += compress(child) + "="
+
+    # remove last trailing equal sign when no further child is there
+    result = result[:-1]
+    return result
+
+
+
+#
+# Functions
+#
 
 def __function(node):
     result = "function"
@@ -250,37 +279,21 @@ def __function(node):
     
     return result
     
-
-def __debugger(node):
-    return "debugger"
-    
-    
-def __throw(node):
-    return "throw " + compress(node.exception)
-    
     
 def __return(node):
     result = "return"
     if hasattr(node, "value"):
-        # TODO: Access to value!!!
         # Micro optimization, don't need a space when a block/map/array is returned
         if not getattr(node.value, "type", None) in ("block", "object_init", "array_init"):
             result += " "
         result += compress(node.value)
     return result
     
-    
-def __new_with_args(node):
-    result = ""
-    for child in node:
-        if result == "":
-            result += "new " + compress(child) + "("
-        else:
-            result += compress(child)
-            
-    result += ")"
-    return result
-    
+        
+      
+#
+# Exception Handling
+#            
     
 def __try(node):
     result = "try" + compress(node.tryBlock)
@@ -293,21 +306,12 @@ def __try(node):
 
     return result
     
+    
+def __throw(node):
+    return "throw " + compress(node.exception)    
+    
+    
 
-def __assign(node):
-    result = ""
-
-    # may be multi assign
-    for child in node:
-        result += compress(child) + "="
-    
-    # remove last trailing equal sign when no further child is there
-    result = result[:-1]
-    return result
-    
-    
-    
-    
 #
 # Flow
 #    
@@ -324,9 +328,8 @@ def __continue(node):
         return "continue %s" % node.label
     else:
         return "continue"
-        
     
-    
+
 #
 # Loops
 #    
