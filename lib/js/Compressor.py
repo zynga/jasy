@@ -4,7 +4,9 @@ import sys
 def compress(node):
     type = node.type
     
-    if type in prefixes:
+    if type in simple:
+        return type
+    elif type in prefixes:
         return prefix(node)
     elif type in postfixes:
         return postfix(node)
@@ -18,6 +20,8 @@ def compress(node):
             print node.toJson()
             sys.exit(1)
 
+
+simple = ["true","false","null","this","debugger"]
 
 dividers = {
     "plus"          : '+',    
@@ -88,7 +92,7 @@ def prefix(node):
 
 
 #
-# Primitives
+# Value types
 #
 
 def __regexp(node):
@@ -100,17 +104,6 @@ def __number(node):
 def __string(node):
     return json.dumps(node.value)
 
-def __true(node):
-    return "true"
-
-def __false(node):
-    return "false"
-
-def __null(node):
-    return "null"
-
-def __this(node):
-    return "this"
             
 
 #
@@ -288,33 +281,6 @@ def __new_with_args(node):
     result += ")"
     return result
     
-
-def __for(node):
-    result = "for("
-    
-    setup = node.setup
-    if setup: result += compress(setup)
-    result += ";"
-    
-    condition = node.condition
-    if condition: result += compress(condition)
-    result += ";"
-    
-    update = node.update
-    if update: result += compress(update)
-        
-    result += ")" + compress(node.body)
-    
-    return result
-    
-    
-def __for_in(node):
-    result = "for(" + compress(node.iterator) + " in "
-    result += compress(node.object) + ")" 
-    result += compress(node.body)
-    
-    return result    
-    
     
 def __try(node):
     result = "try" + compress(node.tryBlock)
@@ -340,6 +306,12 @@ def __assign(node):
     return result
     
     
+    
+    
+#
+# Flow
+#    
+    
 def __break(node):
     if hasattr(node, "label"):
         return "break %s" % node.label
@@ -354,6 +326,47 @@ def __continue(node):
         return "continue"
         
     
+    
+#
+# Loops
+#    
+    
+def __for(node):
+    result = "for("
+    
+    setup = node.setup
+    if setup: result += compress(setup)
+    result += ";"
+    
+    condition = node.condition
+    if condition: result += compress(condition)
+    result += ";"
+    
+    update = node.update
+    if update: result += compress(update)
+        
+    result += ")" + compress(node.body)
+    
+    return result
+    
+        
+def __for_in(node):
+    return "for(" + compress(node.iterator) + " in " + compress(node.object) + ")" + compress(node.body)
+
+    
+def __while(node):
+    return "while(" + compress(node.condition) + ")" + compress(node.body)
+
+
+def __do(node):
+    return "do" + compress(node.body) + "while(" + compress(node.condition) + ")"
+        
+       
+       
+#       
+# Conditionals
+#
+
 def __if(node):
     result = "if(" + compress(node.condition) + ")" + compress(node.thenPart)
     if hasattr(node, "elsePart"):
@@ -368,14 +381,6 @@ def __if(node):
         
     return result
     
-    
-def __while(node):
-    return "while(" + compress(node.condition) + ")" + compress(node.body)
-
-
-def __do(node):
-    return "do" + compress(node.body) + "while(" + compress(node.condition) + ")"
-        
         
 def __switch(node):
     result = "switch(" + compress(node.discriminant) + "){"
@@ -390,6 +395,4 @@ def __switch(node):
         
     result += "}"
     return result
-        
-
         
