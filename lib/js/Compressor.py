@@ -42,6 +42,7 @@ dividers = {
     "ge"            : '>=',   
     "gt"            : '>',    
     "instanceof"    : 'instanceof',
+    "comma"         : ','
 }
 
 
