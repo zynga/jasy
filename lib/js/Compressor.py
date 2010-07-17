@@ -1,6 +1,11 @@
 import simplejson as json
 import sys
 
+
+#
+# Main
+#
+
 def compress(node):
     type = node.type
     
@@ -20,6 +25,11 @@ def compress(node):
             print node.toJson()
             sys.exit(1)
 
+
+
+#
+# Data
+#
 
 simple = ["true","false","null","this","debugger"]
 
@@ -92,37 +102,23 @@ def prefix(node):
 
 
 #
-# Value types
+# Data types
 #
 
 def __regexp(node):
     return node.value
 
 def __number(node):
-    return "%s" % node.value
+    return u"%s" % node.value
 
 def __string(node):
     return json.dumps(node.value)
 
 def __object_init(node):
-    result = "{"
-    if len(node) > 0: 
-        for child in node:
-            result += compress(child) + ","
-        result = result[:-1]
-
-    result += "}"
-    return result
+    return u"{%s}" % u",".join(map(compress, node))
 
 def __array_init(node):
-    result = "["
-    if len(node) > 0: 
-        for child in node:
-            result += compress(child) + ","
-        result = result[:-1]
-
-    result += "]"
-    return result
+    return u"[%s]" % u",".join(map(compress, node))
             
 
 #
@@ -130,33 +126,32 @@ def __array_init(node):
 #
 
 def __script(node):
-    result = ""
+    result = u""
     for child in node:
         result += compress(child)
         
-        # Verify that each script ends with a semicolon so we can
-        # append files after each other without a line feed
-        if result[-1] != ";":
-            result += ";"
+    # Verify that each script ends with a semicolon so we can
+    # append files after each other without a line feed
+    if result[-1] != ";":
+        result += ";"
+        
     return result
 
 
 def __block(node):
-    result = "{"
-
+    result = ""
     if len(node) > 0: 
         for child in node:
-            result += compress(child) + ";"        
+            result += u"%s;" % compress(child)
         result = result[:-1]
         
-    result += "}"
-    return result
+    return u"{%s}" % result
 
     
 def __const(node):
     result = "const "
     for child in node:
-        result += compress(child) + ","
+        result += u"%s," % compress(child)
 
     result = result[:-1]
     return result
@@ -165,11 +160,20 @@ def __const(node):
 def __var(node):
     result = "var "
     for child in node:
-        result += compress(child) + ","
+        result += u"%s," % compress(child)
 
     result = result[:-1]
     return result    
     
+
+def __list(node):
+    result = ""
+    if len(node) > 0:
+        for child in node:
+            result += compress(child) + ","
+        result = result[:-1]
+    return result
+            
     
 def __group(node):
     for child in node:
@@ -204,12 +208,7 @@ def __semicolon(node):
     return result
 
 
-def __list(node):
-    result = ""
-    for child in node:
-        result += compress(child) + ","
-    result = result[:-1]
-    return result
+
 
     
 def __assign(node):
