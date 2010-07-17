@@ -363,6 +363,21 @@ def __if(node):
 def __while(node):
     return "while(" + compress(node.condition) + ")" + compress(node.body)
         
+        
+def __switch(node):
+    result = "switch(" + compress(node.discriminant) + "){"
+    for case in node.cases:
+        if hasattr(case, "caseLabel"):
+            result += "case " + compress(case.caseLabel) + ":"
+        else:
+            result += "default:"
+        
+        for statement in case.statements:
+            result += compress(statement) + ";"
+        
+    result += "}"
+    return result
+        
     
 def __group(node):
     for child in node:

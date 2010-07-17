@@ -1,5 +1,3 @@
-var x = 1;
-var r;
 switch(x)
 {
   case 1:
@@ -8,9 +6,8 @@ switch(x)
 
   case 3:
     r = 3;
+    break;
 
   default:
     r = null;
 }
-
-hello(r);
