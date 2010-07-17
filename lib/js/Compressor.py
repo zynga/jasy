@@ -364,15 +364,15 @@ def __for(node):
     
         
 def __for_in(node):
-    return "for(" + compress(node.iterator) + " in " + compress(node.object) + ")" + compress(node.body)
+    return "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), compress(node.body))
 
     
 def __while(node):
-    return "while(" + compress(node.condition) + ")" + compress(node.body)
+    return "while(%s)%s" % (compress(node.condition), compress(node.body))
 
 
 def __do(node):
-    return "do" + compress(node.body) + "while(" + compress(node.condition) + ")"
+    return "do%swhile(%s)" % (compress(node.body), compress(node.condition))
         
        
        
