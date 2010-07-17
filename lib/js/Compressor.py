@@ -4,7 +4,9 @@ import sys
 def compress(node):
     type = node.type
     
-    if type in prefixes:
+    if type in usevalue:
+        return node.value
+    elif type in prefixes:
         return prefix(node)
     elif type in postfixes:
         return postfix(node)
@@ -43,6 +45,9 @@ dividers = {
     "gt"            : '>',    
     
 }
+
+
+usevalue = [ "regexp" ]
 
 postfixes = {
     "increment"     : "++",
