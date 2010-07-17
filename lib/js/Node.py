@@ -53,8 +53,8 @@ class Node(list):
             if type:
                 self.type = type
                 
-                if hasattr(token, "value"):
-                    print "WARN: Ignore value '%s' on type '%s'" % (token.value, type)
+                #if hasattr(token, "value"):
+                #    print "WARN: Ignore value '%s' on type '%s'" % (token.value, type)
                 
             else:
                 self.type = getattr(token, "type", None)
