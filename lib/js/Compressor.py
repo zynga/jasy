@@ -45,9 +45,9 @@ dividers = {
     "bitwise_xor"   : '^',    
     "bitwise_and"   : '&',    
     "comma"         : ',',
-    "instanceof"    : 'instanceof',
+    "instanceof"    : ' instanceof ',
+    "in"            : ' in ',
 }
-
 
 postfixes = {
     "increment"     : "++",
