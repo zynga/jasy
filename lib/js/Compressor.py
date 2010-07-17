@@ -41,8 +41,11 @@ dividers = {
     "rsh"           : '>>',   
     "ge"            : '>=',   
     "gt"            : '>',    
+    "bitwise_or"    : '|',    
+    "bitwise_xor"   : '^',    
+    "bitwise_and"   : '&',    
+    "comma"         : ',',
     "instanceof"    : 'instanceof',
-    "comma"         : ','
 }
 
 
@@ -52,6 +55,7 @@ postfixes = {
 }
 
 prefixes = {
+    "bitwise_not"   : '~',
     "not"           : "!",
     "unary_plus"    : "+",
     "unary_minus"   : "-",
@@ -60,23 +64,6 @@ prefixes = {
     "typeof"        : "typeof "
 }
 
-# unused... just a friendly reminder
-symbols = {
-    "newline"       : '\n',   
-    "semicolon"     : ';',    
-    "comma"         : ',',    
-    "colon"         : ':',    
-    "bitwise_or"    : '|',    
-    "bitwise_xor"   : '^',    
-    "bitwise_and"   : '&',    
-    "bitwise_not"   : '~',    
-    "left_bracket"  : '[',    
-    "right_bracket" : ']',    
-    "left_curly"    : '{',    
-    "right_curly"   : '}',    
-    "left_paren"    : '(',    
-    "right_paren"   : ')'
-} 
 
 
 #
