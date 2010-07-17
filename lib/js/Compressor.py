@@ -104,6 +104,25 @@ def __number(node):
 def __string(node):
     return json.dumps(node.value)
 
+def __object_init(node):
+    result = "{"
+    if len(node) > 0: 
+        for child in node:
+            result += compress(child) + ","
+        result = result[:-1]
+
+    result += "}"
+    return result
+
+def __array_init(node):
+    result = "["
+    if len(node) > 0: 
+        for child in node:
+            result += compress(child) + ","
+        result = result[:-1]
+
+    result += "]"
+    return result
             
 
 #
@@ -124,25 +143,37 @@ def __script(node):
 
 def __block(node):
     result = "{"
-    for child in node:
-        result += compress(child) + ";"
-           
+
     if len(node) > 0: 
+        for child in node:
+            result += compress(child) + ";"        
         result = result[:-1]
         
     result += "}"
-
     return result
+
+    
+def __const(node):
+    result = "const "
+    for child in node:
+        result += compress(child) + ","
+
+    result = result[:-1]
+    return result
+
+
+def __var(node):
+    result = "var "
+    for child in node:
+        result += compress(child) + ","
+
+    result = result[:-1]
+    return result    
     
     
 def __group(node):
     for child in node:
-        return "(" + compress(child) + ")"
-                
-    
-    
-    
-    
+        return "(%s)" % compress(child)
     
     
 def __index(node):
@@ -155,24 +186,6 @@ def __index(node):
             result += "]"
 
     return result    
-
-
-def __const(node):
-    result = "const "
-    for child in node:
-        result += compress(child) + ","
-        
-    result = result[:-1]
-    return result
-    
-
-def __var(node):
-    result = "var "
-    for child in node:
-        result += compress(child) + ","
-        
-    result = result[:-1]
-    return result
 
 
 def __identifier(node):
@@ -199,54 +212,14 @@ def __list(node):
     return result
 
     
-def __new_with_args(node):
-    result = ""
-    for child in node:
-        if result == "":
-            result += "new " + compress(child) + "("
-        else:
-            result += compress(child)
-            
-    result += ")"
-    return result
-    
-
 def __assign(node):
-    result = ""
-
     # may be multi assign
+    result = ""
     for child in node:
         result += compress(child) + "="
 
     # remove last trailing equal sign when no further child is there
     result = result[:-1]
-    return result
-
-
-
-#
-# Data types
-#
-
-def __object_init(node):
-    result = "{"
-    if len(node) > 0: 
-        for child in node:
-            result += compress(child) + ","
-        result = result[:-1]
-
-    result += "}"
-    return result
-
-
-def __array_init(node):
-    result = "["
-    if len(node) > 0: 
-        for child in node:
-            result += compress(child) + ","
-        result = result[:-1]
-
-    result += "]"
     return result
 
 
@@ -284,6 +257,10 @@ def __call(node):
             result += compress(child)
     result += ")"
     return result
+    
+    
+def __new_with_args(node):
+    return "new %s(%s)" % (compress(node[0]), compress(node[1]))    
             
     
 def __return(node):
