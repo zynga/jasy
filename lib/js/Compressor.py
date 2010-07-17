@@ -31,51 +31,51 @@ def compress(node):
 # Data
 #
 
-simple = ["true","false","null","this","debugger"]
+simple = [u"true", u"false", u"null", u"this", u"debugger"]
 
 dividers = {
-    "plus"          : '+',    
-    "minus"         : '-',    
-    "mul"           : '*',    
-    "div"           : '/',    
-    "mod"           : '%',
-    "dot"           : '.',    
-    "property_init" : ":",
-    "or"            : "||",
-    "and"           : "&&",
-    "strict_eq"     : '===',  
-    "eq"            : '==',   
-    "assign"        : '=',    
-    "strict_ne"     : '!==',  
-    "ne"            : '!=',   
-    "lsh"           : '<<',   
-    "le"            : '<=',   
-    "lt"            : '<',    
-    "ursh"          : '>>>',  
-    "rsh"           : '>>',   
-    "ge"            : '>=',   
-    "gt"            : '>',    
-    "bitwise_or"    : '|',    
-    "bitwise_xor"   : '^',    
-    "bitwise_and"   : '&',    
-    "comma"         : ',',
-    "instanceof"    : ' instanceof ',
-    "in"            : ' in ',
+    "plus"          : u'+',    
+    "minus"         : u'-',    
+    "mul"           : u'*',    
+    "div"           : u'/',    
+    "mod"           : u'%',
+    "dot"           : u'.',    
+    "property_init" : u":",
+    "or"            : u"||",
+    "and"           : u"&&",
+    "strict_eq"     : u'===',  
+    "eq"            : u'==',   
+    "assign"        : u'=',    
+    "strict_ne"     : u'!==',  
+    "ne"            : u'!=',   
+    "lsh"           : u'<<',   
+    "le"            : u'<=',   
+    "lt"            : u'<',    
+    "ursh"          : u'>>>',  
+    "rsh"           : u'>>',   
+    "ge"            : u'>=',   
+    "gt"            : u'>',    
+    "bitwise_or"    : u'|',    
+    "bitwise_xor"   : u'^',    
+    "bitwise_and"   : u'&',    
+    "comma"         : u',',
+    "instanceof"    : u' instanceof ',
+    "in"            : u' in ',
 }
 
 postfixes = {
-    "increment"     : "++",
-    "decrement"     : "--",
+    "increment"     : u"++",
+    "decrement"     : u"--",
 }
 
 prefixes = {
-    "bitwise_not"   : '~',
-    "not"           : "!",
-    "unary_plus"    : "+",
-    "unary_minus"   : "-",
-    "delete"        : "delete ",
-    "new"           : "new ",
-    "typeof"        : "typeof "
+    "bitwise_not"   : u'~',
+    "not"           : u"!",
+    "unary_plus"    : u"+",
+    "unary_minus"   : u"-",
+    "delete"        : u"delete ",
+    "new"           : u"new ",
+    "typeof"        : u"typeof "
 }
 
 
@@ -86,7 +86,7 @@ prefixes = {
 
 def divider(node):
     operator = dividers[node.type]
-    result = ""
+    result = u""
     for child in node:
         result += compress(child) + operator
     result = result[:-len(operator)]
