@@ -138,8 +138,10 @@ def __block(node):
     result = "{"
     for child in node:
         result += compress(child) + ";"
-            
-    result = result[:-1]
+           
+    if len(node) > 0: 
+        result = result[:-1]
+        
     result += "}"
 
     return result
@@ -173,6 +175,7 @@ def __var(node):
     result = "var "
     for child in node:
         result += compress(child) + ","
+        
     result = result[:-1]
 
     return result
@@ -216,7 +219,9 @@ def __object_init(node):
     for child in node:
         result += compress(child)
         result += ","
-    result = result[:-1] + "}"
+
+    if len(node) > 0: 
+        result = result[:-1] + "}"
     return result
 
 
@@ -225,7 +230,9 @@ def __array_init(node):
     for child in node:
         result += compress(child)
         result += ","
-    result = result[:-1] + "]"
+    
+    if len(node) > 0: 
+        result = result[:-1] + "]"
     return result
 
 
@@ -277,11 +284,34 @@ def __new_with_args(node):
     result += ")"
     return result
     
+
+def __for(node):
+    result = "for("
+    
+    setup = node.setup
+    if setup: result += compress(setup)
+    result += ";"
+    
+    condition = node.condition
+    if condition: result += compress(condition)
+    result += ";"
+    
+    update = node.update
+    if update: result += compress(update)
+        
+    result += ")" + compress(node.body)
+    
+    return result
+    
     
 def __assign(node):
     result = ""
+
+    # may be multi assign
     for child in node:
         result += compress(child) + "="
+    
+    # remove last trailing equal sign when no further child is there
     result = result[:-1]
     return result
     
