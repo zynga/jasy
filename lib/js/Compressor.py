@@ -341,6 +341,13 @@ def __assign(node):
     return result
     
     
+def __break(node):
+    if hasattr(node, "label"):
+        return "break %s" % node.label
+    else:
+        return "break"
+        
+    
 def __if(node):
     result = "if(" + compress(node.condition) + ")" + compress(node.thenPart)
     if hasattr(node, "elsePart"):
@@ -355,6 +362,10 @@ def __if(node):
         
     return result
     
+    
+def __while(node):
+    return "while(" + compress(node.condition) + ")" + compress(node.body)
+        
     
 def __group(node):
     for child in node:
