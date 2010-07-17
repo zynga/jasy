@@ -48,25 +48,23 @@ class Node(list):
 
         token = tokenizer.token
         if token:
+            # We may define a custom type but use the same positioning as another token
+            # e.g. transform curlys in block nodes, etc.
             if type:
                 self.type = type
             else:
                 self.type = getattr(token, "type", None)
                 
+                if hasattr(token, "value"):
+                    self.value = token.value
+            
             if hasattr(token, "comments"):
                 self.comments = token.comments
                 
             self.line = token.line
             self.start = token.start
             self.end = token.end
-
-            if hasattr(token, "value"):
-                print "COPY: %s" % token.value
-                self.value = token.value
             
-            if hasattr(token, "variant"):
-                self.variant = token.variant            
-
         else:
             self.type = type
             self.line = tokenizer.line

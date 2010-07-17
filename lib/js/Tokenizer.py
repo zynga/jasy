@@ -268,7 +268,7 @@ class Tokenizer(object):
             token.line = self.line
         else:
             token.type = "end"
-
+            
         # Return token type
         return getattr(token, "type", None)
         
