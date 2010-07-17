@@ -107,7 +107,7 @@ def __string(node):
             
 
 #
-# Main blocks
+# Structure blocks
 #
 
 def __script(node):
@@ -140,6 +140,11 @@ def __group(node):
         return "(" + compress(child) + ")"
                 
     
+    
+    
+    
+    
+    
 def __index(node):
     result = ""
     for pos, child in enumerate(node):
@@ -152,15 +157,12 @@ def __index(node):
     return result    
 
 
-def __hook(node):
-    result = ""
-    for pos, child in enumerate(node):
-        result += compress(child)
-        if pos == 0:
-            result += "?"
-        elif pos == 1:
-            result += ":"
-
+def __const(node):
+    result = "const "
+    for child in node:
+        result += compress(child) + ","
+        
+    result = result[:-1]
     return result
     
 
@@ -170,7 +172,6 @@ def __var(node):
         result += compress(child) + ","
         
     result = result[:-1]
-
     return result
 
 
@@ -190,42 +191,11 @@ def __semicolon(node):
     return result
 
 
-def __call(node):
-    result = compress(node[0]) + "("
-    for index, child in enumerate(node):
-        if index > 0:
-            result += compress(child)
-    result += ")"
-    return result
-
-
 def __list(node):
     result = ""
     for child in node:
         result += compress(child) + ","
     result = result[:-1]
-    return result
-        
-
-def __object_init(node):
-    result = "{"
-    if len(node) > 0: 
-        for child in node:
-            result += compress(child) + ","
-        result = result[:-1]
-        
-    result += "}"
-    return result
-
-
-def __array_init(node):
-    result = "["
-    if len(node) > 0: 
-        for child in node:
-            result += compress(child) + ","
-        result = result[:-1]
-        
-    result += "]"
     return result
 
     
@@ -255,6 +225,33 @@ def __assign(node):
 
 
 #
+# Data types
+#
+
+def __object_init(node):
+    result = "{"
+    if len(node) > 0: 
+        for child in node:
+            result += compress(child) + ","
+        result = result[:-1]
+
+    result += "}"
+    return result
+
+
+def __array_init(node):
+    result = "["
+    if len(node) > 0: 
+        for child in node:
+            result += compress(child) + ","
+        result = result[:-1]
+
+    result += "]"
+    return result
+
+
+
+#
 # Functions
 #
 
@@ -279,6 +276,15 @@ def __function(node):
     
     return result
     
+    
+def __call(node):
+    result = compress(node[0]) + "("
+    for index, child in enumerate(node):
+        if index > 0:
+            result += compress(child)
+    result += ")"
+    return result
+            
     
 def __return(node):
     result = "return"
@@ -369,6 +375,18 @@ def __do(node):
 #       
 # Conditionals
 #
+
+def __hook(node):
+    result = ""
+    for pos, child in enumerate(node):
+        result += compress(child)
+        if pos == 0:
+            result += "?"
+        elif pos == 1:
+            result += ":"
+
+    return result
+    
 
 def __if(node):
     result = "if(" + compress(node.condition) + ")" + compress(node.thenPart)
