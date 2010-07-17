@@ -293,8 +293,7 @@ class Tokenizer(object):
                 token.type = identifier
             else:
                 token.type = "identifier"
-                
-            token.value = identifier
+                token.value = identifier
             return identifier
 
         match = stringMatcher.match(text)

@@ -61,6 +61,7 @@ class Node(list):
             self.end = token.end
 
             if hasattr(token, "value"):
+                print "COPY: %s" % token.value
                 self.value = token.value
             
             if hasattr(token, "variant"):
