@@ -54,6 +54,7 @@ prefixes = {
     "not"           : "!",
     "unary_plus"    : "+",
     "unary_minus"   : "-",
+    "delete"        : "delete "
 }
 
 # unused... just a friendly reminder
@@ -220,23 +221,23 @@ def __list(node):
 
 def __object_init(node):
     result = "{"
-    for child in node:
-        result += compress(child)
-        result += ","
-
     if len(node) > 0: 
-        result = result[:-1] + "}"
+        for child in node:
+            result += compress(child) + ","
+        result = result[:-1]
+        
+    result += "}"
     return result
 
 
 def __array_init(node):
     result = "["
-    for child in node:
-        result += compress(child)
-        result += ","
-    
     if len(node) > 0: 
-        result = result[:-1] + "]"
+        for child in node:
+            result += compress(child) + ","
+        result = result[:-1]
+        
+    result += "]"
     return result
 
 
@@ -327,7 +328,7 @@ def __try(node):
 
     return result
     
-    
+
 def __assign(node):
     result = ""
 
@@ -344,10 +345,13 @@ def __if(node):
     result = "if(" + compress(node.condition) + ")" + compress(node.thenPart)
     if hasattr(node, "elsePart"):
         result += "else" 
+        elseCode = compress(node.elsePart)
+        
         # Micro optimization, don't need a space when a block/map/array is returned
-        if not getattr(node.value, "type", None) in ("block", "object_init", "array_init"):
+        if not elseCode[0] in ["{","["]:
             result += " "
-        result += compress(node.elsePart)
+        
+        result += elseCode
         
     return result
     
