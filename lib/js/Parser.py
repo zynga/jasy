@@ -430,6 +430,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
             node.type = "getter"
         else:
             node.type = "setter"
+            
     if tokenizer.match("identifier"):
         node.name = tokenizer.token.value
     elif requireName:
@@ -439,10 +440,14 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     node.params = []
     while True:
         tokenType = tokenizer.get()
-        if tokenType == "right_paren": break
+        if tokenType == "right_paren": 
+            break
+            
         if tokenType != "identifier":
             raise SyntaxError("Missing formal parameter", tokenizer)
+            
         node.params.append(tokenizer.token.value)
+        
         if tokenizer.peek() != "right_paren":
             tokenizer.mustMatch("comma")
 
