@@ -216,19 +216,24 @@ def Statement(tokenizer, compilerContext):
         node = Node(tokenizer)
         childNode = None
         node.isLoop = True
+        
         tokenizer.mustMatch("left_paren")
         tokenType = tokenizer.peek()
+        
         if tokenType != "semicolon":
             compilerContext.inForLoopInit = True
+            
             if tokenType == "var" or tokenType == "const":
                 tokenizer.get()
                 childNode = Variables(tokenizer, compilerContext)
             else:
                 childNode = Expression(tokenizer, compilerContext)
+                
             compilerContext.inForLoopInit = False
 
         if childNode and tokenizer.match("in"):
             node.type = "for_in"
+            
             if childNode.type == "var":
                 if len(childNode) != 1:
                     raise SyntaxError("Invalid for..in left-hand side", tokenizer.filename, childNode.line)
@@ -236,10 +241,13 @@ def Statement(tokenizer, compilerContext):
                 # NB: childNode[0].type == INDENTIFIER and childNode[0].value == childNode[0].name
                 node.iterator = childNode[0]
                 node.varDecl = childNode
+            
             else:
                 node.iterator = childNode
                 node.varDecl = None
+                
             node.object = Expression(tokenizer, compilerContext)
+            
         else:
             if childNode:
                 node.setup = childNode
@@ -262,13 +270,16 @@ def Statement(tokenizer, compilerContext):
                 
         tokenizer.mustMatch("right_paren")
         node.body = nest(tokenizer, compilerContext, node, Statement)
+        
         return node
 
     elif tokenType == "while":
         node = Node(tokenizer)
+        
         node.isLoop = True
         node.condition = ParenExpression(tokenizer, compilerContext)
         node.body = nest(tokenizer, compilerContext, node, Statement)
+        
         return node
 
     elif tokenType == "do":
