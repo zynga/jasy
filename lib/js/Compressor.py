@@ -349,6 +349,13 @@ def __break(node):
         return "break %s" % node.label
     else:
         return "break"
+
+
+def __continue(node):
+    if hasattr(node, "label"):
+        return "continue %s" % node.label
+    else:
+        return "continue"
         
     
 def __if(node):
