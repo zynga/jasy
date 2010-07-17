@@ -148,7 +148,31 @@ def __block(node):
     result += "}"
 
     return result
+    
+    
+def __index(node):
+    result = ""
+    for pos, child in enumerate(node):
+        result += compress(child)
+        if pos == 0:
+            result += "["
+        elif pos == 1:
+            result += "]"
 
+    return result    
+
+
+def __hook(node):
+    result = ""
+    for pos, child in enumerate(node):
+        result += compress(child)
+        if pos == 0:
+            result += "?"
+        elif pos == 1:
+            result += ":"
+
+    return result
+    
 
 def __var(node):
     result = "var "
