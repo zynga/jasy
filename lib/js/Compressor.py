@@ -304,6 +304,16 @@ def __for(node):
     return result
     
     
+def __for_in(node):
+    result = "for("
+    result += compress(node.iterator)
+    result += " in "
+    result += compress(node.object)    
+    result += ")" + compress(node.body)
+    
+    return result    
+    
+    
 def __assign(node):
     result = ""
 
