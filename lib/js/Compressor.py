@@ -43,7 +43,7 @@ dividers = {
     "rsh"           : '>>',   
     "ge"            : '>=',   
     "gt"            : '>',    
-    
+    "instanceof"    : 'instanceof',
 }
 
 
