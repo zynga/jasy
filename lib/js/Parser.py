@@ -188,33 +188,33 @@ def Statement(tokenizer, compilerContext):
             if tokenType in ("default", "case"):
                 if tokenType == "default" and node.defaultIndex >= 0:
                     raise SyntaxError("More than one switch default", tokenizer)
-                n2 = Node(tokenizer)
+                childNode = Node(tokenizer)
                 if tokenType == "default":
                     node.defaultIndex = len(node.cases)
                 else:
-                    n2.caseLabel = Expression(tokenizer, compilerContext, "colon")
+                    childNode.caseLabel = Expression(tokenizer, compilerContext, "colon")
             else:
                 raise SyntaxError("Invalid switch case", tokenizer)
                 
             tokenizer.mustMatch("colon")
-            n2.statements = Node(tokenizer, "block")
+            childNode.statements = Node(tokenizer, "block")
             
             while True:
                 tokenType = tokenizer.peek()
 
-                if tokenType in ["case", "default", "right_curly"]:
+                if tokenType in ("case", "default", "right_curly"):
                     break
                     
-                n2.statements.append(Statement(tokenizer, compilerContext))
+                childNode.statements.append(Statement(tokenizer, compilerContext))
                 
-            node.cases.append(n2)
+            node.cases.append(childNode)
             
         compilerContext.statementStack.pop()
         return node
 
     elif tokenType == "for":
         node = Node(tokenizer)
-        n2 = None
+        childNode = None
         node.isLoop = True
         tokenizer.mustMatch("left_paren")
         tokenType = tokenizer.peek()
@@ -222,28 +222,27 @@ def Statement(tokenizer, compilerContext):
             compilerContext.inForLoopInit = True
             if tokenType == "var" or tokenType == "const":
                 tokenizer.get()
-                n2 = Variables(tokenizer, compilerContext)
+                childNode = Variables(tokenizer, compilerContext)
             else:
-                n2 = Expression(tokenizer, compilerContext)
+                childNode = Expression(tokenizer, compilerContext)
             compilerContext.inForLoopInit = False
 
-        if n2 and tokenizer.match("in"):
+        if childNode and tokenizer.match("in"):
             node.type = "for_in"
-            if n2.type == "var":
-                if len(n2) != 1:
-                    raise SyntaxError("Invalid for..in left-hand side",
-                            tokenizer.filename, n2.line)
+            if childNode.type == "var":
+                if len(childNode) != 1:
+                    raise SyntaxError("Invalid for..in left-hand side", tokenizer.filename, childNode.line)
 
-                # NB: n2[0].type == INDENTIFIER and n2[0].value == n2[0].name
-                node.iterator = n2[0]
-                node.varDecl = n2
+                # NB: childNode[0].type == INDENTIFIER and childNode[0].value == childNode[0].name
+                node.iterator = childNode[0]
+                node.varDecl = childNode
             else:
-                node.iterator = n2
+                node.iterator = childNode
                 node.varDecl = None
             node.object = Expression(tokenizer, compilerContext)
         else:
-            if n2:
-                node.setup = n2
+            if childNode:
+                node.setup = childNode
             else:
                 node.setup = None
                 
@@ -316,22 +315,22 @@ def Statement(tokenizer, compilerContext):
         node.catchClauses = []
         
         while tokenizer.match("catch"):
-            n2 = Node(tokenizer)
+            childNode = Node(tokenizer)
             tokenizer.mustMatch("left_paren")
-            n2.varName = tokenizer.mustMatch("identifier").value
+            childNode.varName = tokenizer.mustMatch("identifier").value
             
             if tokenizer.match("if"):
                 if compilerContext.ecmaStrictMode:
                     raise SyntaxError("Illegal catch guard", tokenizer)
                 if node.catchClauses and not node.catchClauses[-1].guard:
                     raise SyntaxError("Guarded catch after unguarded", tokenizer)
-                n2.guard = Expression(tokenizer, compilerContext)
+                childNode.guard = Expression(tokenizer, compilerContext)
             else:
-                n2.guard = None
+                childNode.guard = None
                 
             tokenizer.mustMatch("right_paren")
-            n2.block = Block(tokenizer, compilerContext)
-            node.catchClauses.append(n2)
+            childNode.block = Block(tokenizer, compilerContext)
+            node.catchClauses.append(childNode)
             
         if tokenizer.match("finally"):
             node.finallyBlock = Block(tokenizer, compilerContext)
@@ -384,14 +383,18 @@ def Statement(tokenizer, compilerContext):
                 label = tokenizer.token.value
                 ss = compilerContext.statementStack
                 i = len(ss) - 1
+                
                 while i >= 0:
                     if getattr(ss[i], "label", None) == label:
                         raise SyntaxError("Duplicate label", tokenizer)
                     i -= 1
+                
                 tokenizer.get()
+                
                 node = Node(tokenizer, "label")
                 node.label = label
                 node.statement = nest(tokenizer, compilerContext, node, Statement)
+                
                 return node
 
         node = Node(tokenizer, "semicolon")
@@ -403,6 +406,7 @@ def Statement(tokenizer, compilerContext):
         tokenType = tokenizer.peekOnSameLine()
         if tokenType not in ("end", "newline", "semicolon", "right_curly"):
             raise SyntaxError("Missing ; before statement. Found %s" % tokenType, tokenizer)
+            
     tokenizer.match("semicolon")
     return node
 
@@ -448,19 +452,22 @@ def Variables(tokenizer, compilerContext):
     node = Node(tokenizer)
     while True:
         tokenizer.mustMatch("identifier")
-        n2 = Node(tokenizer)
-        n2.name = n2.value
+        childNode = Node(tokenizer)
+        childNode.name = childNode.value
         
         if tokenizer.match("assign"):
             if tokenizer.token.assignOp:
                 raise SyntaxError("Invalid variable initialization", tokenizer)
-            n2.initializer = Expression(tokenizer, compilerContext, "comma")
+            childNode.initializer = Expression(tokenizer, compilerContext, "comma")
             
-        n2.readOnly = not not (node.type == "const")
+        childNode.readOnly = not not (node.type == "const")
         
-        node.append(n2)
-        compilerContext.variables.append(n2)
-        if not tokenizer.match("comma"): break
+        node.append(childNode)
+        compilerContext.variables.append(childNode)
+
+        if not tokenizer.match("comma"): 
+            break
+
     return node
 
 
