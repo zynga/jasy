@@ -309,14 +309,28 @@ def __for(node):
     
     
 def __for_in(node):
-    result = "for("
-    result += compress(node.iterator)
-    result += " in "
-    result += compress(node.object)    
-    result += ")" + compress(node.body)
+    result = "for(" + compress(node.iterator) + " in "
+    result += compress(node.object) + ")" 
+    result += compress(node.body)
     
     return result    
     
+    
+def __try(node):
+    result = "try" + compress(node.tryBlock)
+    
+    for catch in node.catchClauses:
+        result += compress(catch)
+
+    if hasattr(node, "finallyBlock"):
+        result += "finally" + compress(node.finallyBlock)
+
+    return result
+    
+    
+def __catch(node):
+    return "catch(" + node.varName + ")" + compress(node.block)
+     
     
 def __assign(node):
     result = ""
