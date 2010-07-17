@@ -142,6 +142,11 @@ def __block(node):
     return result
     
     
+def __group(node):
+    for child in node:
+        return "(" + compress(child) + ")"
+                
+    
 def __index(node):
     result = ""
     for pos, child in enumerate(node):
@@ -251,6 +256,10 @@ def __function(node):
     result += "}"
     
     return result
+    
+
+def __debugger(node):
+    return "debugger"
     
     
 def __throw(node):
@@ -382,8 +391,5 @@ def __switch(node):
     result += "}"
     return result
         
-    
-def __group(node):
-    for child in node:
-        return "(" + compress(child) + ")"
+
         
