@@ -55,7 +55,9 @@ prefixes = {
     "not"           : "!",
     "unary_plus"    : "+",
     "unary_minus"   : "-",
-    "delete"        : "delete "
+    "delete"        : "delete ",
+    "new"           : "new ",
+    "typeof"        : "typeof "
 }
 
 # unused... just a friendly reminder
