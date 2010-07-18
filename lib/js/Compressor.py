@@ -230,17 +230,10 @@ def __new_with_args(node):
 
 def __function(node):
     result = "function"
-    
     if hasattr(node, "name"):
         result += " %s" % node.name
     
-    result += "("
-    if len(node.params) > 0:
-        for param in node.params:
-            result += param + ","
-        result = result[:-1]
-        
-    result += "){%s}" % ";".join(map(compress, node))
+    result += "(%s){%s}" % (",".join(node.params), ";".join(map(compress, node.body)))
     
     return result
     
@@ -252,7 +245,6 @@ def __return(node):
 
         # Micro optimization, don't need a space when a block/map/array is returned
         if not valueCode.startswith(("[","{")): result += " "
-
         result += valueCode
         
     return result
@@ -346,8 +338,7 @@ def __if(node):
         elseCode = compress(node.elsePart)
         
         # Micro optimization, don't need a space when the child is a block/map/array
-        if not elseCode.startswith(("[","{")): result += " "
-        
+        if not elseCode.startswith(("[","{")): result += " "        
         result += elseCode
         
     return result
