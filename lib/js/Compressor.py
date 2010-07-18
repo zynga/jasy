@@ -40,11 +40,11 @@ def compress(node):
     if type in simple:
         return type
     elif type in prefixes:
-        return prefix(node)
+        return prefixes[node.type] + compress(node[0])
     elif type in postfixes:
-        return postfix(node)
+        return compress(node[0]) + postfixes[node.type]
     elif type in dividers:
-        return divider(node)
+        return dividers[node.type].join(map(compress, node))
     else:
         try:
             return globals()["__" + type](node)
@@ -123,21 +123,6 @@ ESCAPE_DCT = {
     '\r': '\\r',
     '\t': '\\t',
 }
-
-
-
-#
-# Shared features
-#
-
-def divider(node):
-    return dividers[node.type].join(map(compress, node))
-
-def postfix(node):
-    return compress(node[0]) + postfixes[node.type]
-
-def prefix(node):
-    return prefixes[node.type] + compress(node[0])
 
 
 #
