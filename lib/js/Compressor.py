@@ -115,13 +115,13 @@ prefixes = {
 
 ESCAPE = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t]')
 ESCAPE_DCT = {
-    '\\': '\\\\',
-    '"': '\\"',
-    '\b': '\\b',
-    '\f': '\\f',
-    '\n': '\\n',
-    '\r': '\\r',
-    '\t': '\\t',
+    '\\' : '\\\\',
+    '"'  : '\\"',
+    '\b' : '\\b',
+    '\f' : '\\f',
+    '\n' : '\\n',
+    '\r' : '\\r',
+    '\t' : '\\t',
 }
 
 
@@ -154,7 +154,6 @@ def __array_init(node):
 #
 
 def __script(node):
-    
     result = u""
     for child in node:
         result += compress(child)
@@ -273,19 +272,19 @@ def __return(node):
 #            
     
 def __try(node):
-    result = "try" + compress(node.tryBlock)
+    result = "try%s" % compress(node.tryBlock)
     
     for catch in node.catchClauses:
-        result += "catch(" + catch.varName + ")" + compress(catch.block)
+        result += "catch(%s)%s" % (catch.varName, compress(catch.block))
 
     if hasattr(node, "finallyBlock"):
-        result += "finally" + compress(node.finallyBlock)
+        result += "finally%s" % compress(node.finallyBlock)
 
     return result
     
     
 def __throw(node):
-    return "throw " + compress(node.exception)    
+    return "throw %s" % compress(node.exception)    
     
     
 
@@ -360,7 +359,7 @@ def __hook(node):
     
 
 def __if(node):
-    result = "if(" + compress(node.condition) + ")" + compress(node.thenPart)
+    result = "if(%s)%s" % (compress(node.condition), compress(node.thenPart))
     if hasattr(node, "elsePart"):
         result += "else" 
         elseCode = compress(node.elsePart)
@@ -375,10 +374,10 @@ def __if(node):
     
         
 def __switch(node):
-    result = "switch(" + compress(node.discriminant) + "){"
+    result = "switch(%s){" % compress(node.discriminant)
     for case in node.cases:
         if hasattr(case, "caseLabel"):
-            result += "case " + compress(case.caseLabel) + ":"
+            result += "case %s:" % compress(case.caseLabel)
         else:
             result += "default:"
         
