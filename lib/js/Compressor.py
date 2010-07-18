@@ -190,15 +190,7 @@ def __group(node):
     
     
 def __index(node):
-    result = ""
-    for pos, child in enumerate(node):
-        result += compress(child)
-        if pos == 0:
-            result += "["
-        elif pos == 1:
-            result += "]"
-
-    return result    
+    return "%s[%s]" % (compress(node[0]), compress(node[1]))
 
 
 def __identifier(node):
@@ -211,10 +203,7 @@ def __identifier(node):
     
 
 def __semicolon(node):
-    result = ""
-    if node.expression:
-        result += compress(node.expression)
-    return result
+    return "" if not node.expression else compress(node.expression)
 
 
 
@@ -233,8 +222,7 @@ def __function(node):
     if hasattr(node, "name"):
         result += " %s" % node.name
     
-    result += "(%s){%s}" % (",".join(node.params), ";".join(map(compress, node.body)))
-    
+    result += "(%s){%s}" % (",".join(node.params), ";".join(map(compress, node.body)))    
     return result
     
     
