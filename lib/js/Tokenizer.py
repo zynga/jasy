@@ -41,6 +41,8 @@
 
 import re
 
+__all__ = [ "Tokenizer" ]
+
 keywords = [
     "break",
     "case", "catch", "const", "continue",

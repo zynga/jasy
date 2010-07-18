@@ -28,6 +28,7 @@
 
 import re
 
+__all__ = [ "compress" ]
 
 
 #

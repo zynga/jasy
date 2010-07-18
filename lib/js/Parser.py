@@ -42,6 +42,8 @@
 from js.Node import Node
 from js.Tokenizer import Token
 
+__all__ = [ "parse" ]
+
 DECLARED_FORM = 0
 EXPRESSED_FORM = 1
 STATEMENT_FORM = 2
