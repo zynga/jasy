@@ -107,7 +107,7 @@ def __array_init(node):
             
 
 #
-# Structure blocks
+# Core features
 #
 
 def __script(node):
@@ -124,29 +124,23 @@ def __script(node):
 def __block(node):
     return u"{%s}" % u";".join(map(compress, node))
     
+def __group(node):
+    return "(%s)" % compress(node[0])
+
 def __const(node):
     return u"const %s" % u",".join(map(compress, node))
 
 def __var(node):
     return u"var %s" % u",".join(map(compress, node))
-    
 
 def __list(node):
-    result = ""
-    if len(node) > 0:
-        for child in node:
-            result += compress(child) + ","
-        result = result[:-1]
-    return result
-            
-    
-def __group(node):
-    return "(%s)" % compress(node[0])
-    
-    
+    return ",".join(map(compress, node))
+        
 def __index(node):
     return "%s[%s]" % (compress(node[0]), compress(node[1]))
 
+def __semicolon(node):
+    return "" if not node.expression else compress(node.expression)
 
 def __identifier(node):
     result = node.value
@@ -157,8 +151,6 @@ def __identifier(node):
     return result
     
 
-def __semicolon(node):
-    return "" if not node.expression else compress(node.expression)
 
 
 
