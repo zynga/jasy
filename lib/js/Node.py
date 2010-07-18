@@ -43,34 +43,35 @@ import simplejson as json
 
 class Node(list):
 
-    def __init__(self, tokenizer, type=None, args=[]):
+    def __init__(self, tokenizer=None, type=None, args=[]):
         list.__init__(self)
 
-        token = tokenizer.token
-        if token:
-            # We may define a custom type but use the same positioning as another token
-            # e.g. transform curlys in block nodes, etc.
-            if type:
-                self.type = type
+        if tokenizer:
+            token = tokenizer.token
+            if token:
+                # We may define a custom type but use the same positioning as another token
+                # e.g. transform curlys in block nodes, etc.
+                if type:
+                    self.type = type
                 
+                else:
+                    self.type = getattr(token, "type", None)
+                
+                if hasattr(token, "value"):
+                    self.value = token.value
+            
+                if hasattr(token, "comments"):
+                    self.comments = token.comments
+                
+                self.line = token.line
+                self.start = token.start
+                self.end = token.end
+            
             else:
-                self.type = getattr(token, "type", None)
-                
-            if hasattr(token, "value"):
-                self.value = token.value
-            
-            if hasattr(token, "comments"):
-                self.comments = token.comments
-                
-            self.line = token.line
-            self.start = token.start
-            self.end = token.end
-            
-        else:
-            self.type = type
-            self.line = tokenizer.line
+                self.type = type
+                self.line = tokenizer.line
 
-        self.tokenizer = tokenizer
+            self.tokenizer = tokenizer
 
         for arg in args:
             self.append(arg)
@@ -137,15 +138,19 @@ class Node(list):
 
     # Returns the source code of the node
     def getSource(self):
+        if not self.tokenizer:
+            raise "Could not find source for node '%s'" % node.type
+            
         if getattr(self, "start", None) is not None:
             if getattr(self, "end", None) is not None:
                 return self.tokenizer.source[self.start:self.end]
             return self.tokenizer.source[self.start:]
-        
+    
         if getattr(self, "end", None) is not None:
             return self.tokenizer.source[:self.end]
-        
+    
         return self.tokenizer.source[:]
+        
         
     
     # Returns the file name

@@ -2,31 +2,8 @@
 # JavaScript Tools - Compressor Module
 # Copyright 2010 Sebastian Werner
 # 
-# ---------------------------------------------------------------------------------------------
-#
-# Uses code by:
-#
-# Copyright (c) 2006 Bob Ippolito
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in
-# the Software without restriction, including without limitation the rights to
-# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-# of the Software, and to permit persons to whom the Software is furnished to do
-# so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
 
-import re, sys
+import re, sys, json
 
 __all__ = [ "compress" ]
 
@@ -50,7 +27,7 @@ def compress(node):
         try:
             return globals()["__" + type](node)
         except KeyError:
-            print "Compressor does not support type: %s from line: %s" % (type, node.line)
+            print "Compressor does not support type '%s' from line %s in file %s" % (type, node.line, node.getFileName())
             print node.toJson()
             sys.exit(1)
 
@@ -110,23 +87,6 @@ prefixes = {
 
 
 #
-# String encoder
-# Borrowed from SimpleJSON
-#
-
-ESCAPE = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t]')
-ESCAPE_DCT = {
-    '\\' : '\\\\',
-    '"'  : '\\"',
-    '\b' : '\\b',
-    '\f' : '\\f',
-    '\n' : '\\n',
-    '\r' : '\\r',
-    '\t' : '\\t',
-}
-
-
-#
 # Data types
 #
 
@@ -137,11 +97,7 @@ def __number(node):
     return u"%s" % node.value
 
 def __string(node):
-    """Return a JSON representation of a Python string"""
-    def replace(match):
-        return ESCAPE_DCT[match.group(0)]
-        
-    return '"' + ESCAPE.sub(replace, node.value) + '"'
+    return json.JSONEncoder().encode(node.value)
 
 def __object_init(node):
     return u"{%s}" % u",".join(map(compress, node))
@@ -185,8 +141,7 @@ def __list(node):
             
     
 def __group(node):
-    for child in node:
-        return "(%s)" % compress(child)
+    return "(%s)" % compress(node[0])
     
     
 def __index(node):
