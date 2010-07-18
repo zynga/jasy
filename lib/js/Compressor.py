@@ -222,6 +222,12 @@ def __semicolon(node):
 # Functions
 #
 
+def __call(node):
+    return "%s(%s)" % (compress(node[0]), compress(node[1]))
+    
+def __new_with_args(node):
+    return "new %s(%s)" % (compress(node[0]), compress(node[1]))    
+
 def __function(node):
     result = "function"
     
@@ -244,22 +250,14 @@ def __function(node):
     return result
     
     
-def __call(node):
-    return "%s(%s)" % (compress(node[0]), compress(node[1]))
-    
-    
-def __new_with_args(node):
-    return "new %s(%s)" % (compress(node[0]), compress(node[1]))    
-            
-    
 def __return(node):
     result = "return"
     if hasattr(node, "value"):
         valueCode = compress(node.value)
 
         # Micro optimization, don't need a space when a block/map/array is returned
-        if not valueCode[0] in ("[","{"):
-            result += " "
+        if not valueCode.startswith(("[","{")): result += " "
+
         result += valueCode
         
     return result
@@ -294,13 +292,8 @@ def __throw(node):
 def __label(node):
     return "%s:%s" % (node.label, compress(node.statement))
     
-    
 def __break(node):
-    if hasattr(node, "label"):
-        return "break %s" % node.label
-    else:
-        return "break"
-
+    return "break" if not hasattr(node, "label") else "break %s" % node.label
 
 def __continue(node):
     return "continue" if not hasattr(node, "label") else "continue %s" % node.label
@@ -310,6 +303,15 @@ def __continue(node):
 #
 # Loops
 #    
+    
+def __while(node):
+    return "while(%s)%s" % (compress(node.condition), compress(node.body))
+
+def __do(node):
+    return "do%swhile(%s)" % (compress(node.body), compress(node.condition))
+
+def __for_in(node):
+    return "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), compress(node.body))
     
 def __for(node):
     result = "for("
@@ -324,18 +326,6 @@ def __for(node):
     
     return result
     
-        
-def __for_in(node):
-    return "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), compress(node.body))
-
-    
-def __while(node):
-    return "while(%s)%s" % (compress(node.condition), compress(node.body))
-
-
-def __do(node):
-    return "do%swhile(%s)" % (compress(node.body), compress(node.condition))
-        
        
        
 #       
@@ -362,8 +352,7 @@ def __if(node):
         elseCode = compress(node.elsePart)
         
         # Micro optimization, don't need a space when the child is a block/map/array
-        if not elseCode[0] in ["{","["]:
-            result += " "
+        if not elseCode.startswith(("[","{")): result += " "
         
         result += elseCode
         
