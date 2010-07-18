@@ -26,7 +26,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import re
+import re, sys
 
 __all__ = [ "compress" ]
 
@@ -52,7 +52,7 @@ def compress(node):
         except KeyError:
             print "Compressor does not support type: %s from line: %s" % (type, node.line)
             print node.toJson()
-            raise KeyError
+            sys.exit(1)
 
 
 
@@ -291,6 +291,10 @@ def __throw(node):
 # Flow
 #    
     
+def __label(node):
+    return "%s:%s" % (node.label, compress(node.statement))
+    
+    
 def __break(node):
     if hasattr(node, "label"):
         return "break %s" % node.label
@@ -299,10 +303,8 @@ def __break(node):
 
 
 def __continue(node):
-    if hasattr(node, "label"):
-        return "continue %s" % node.label
-    else:
-        return "continue"
+    return "continue" if not hasattr(node, "label") else "continue %s" % node.label
+
     
 
 #
@@ -341,6 +343,7 @@ def __do(node):
 #
 
 def __hook(node):
+    """aka ternary operator"""
     result = ""
     for pos, child in enumerate(node):
         result += compress(child)
