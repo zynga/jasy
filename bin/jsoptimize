@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+
+import sys, os
+
+# Extend PYTHONPATH with 'lib'
+sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
+
+from js.Tokenizer import Tokenizer
+from js.Parser import parse
+from js.Compressor import compress
+from js.Optimizer import optimize
+
+
+def jsoptimize(source, filename=None):
+    tree = parse(Tokenizer(source, filename))
+    optimize(tree)
+    return compress(tree)
+
+
+if __name__ == "__main__":
+    print jsoptimize(file(sys.argv[1]).read(), sys.argv[1])
