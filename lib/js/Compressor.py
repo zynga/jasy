@@ -244,12 +244,7 @@ def __function(node):
     
     
 def __call(node):
-    result = compress(node[0]) + "("
-    for index, child in enumerate(node):
-        if index > 0:
-            result += compress(child)
-    result += ")"
-    return result
+    return "%s(%s)" % (compress(node[0]), compress(node[1]))
     
     
 def __new_with_args(node):
