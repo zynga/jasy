@@ -131,20 +131,13 @@ ESCAPE_DCT = {
 #
 
 def divider(node):
-    operator = dividers[node.type]
-    result = u""
-    for child in node:
-        result += compress(child) + operator
-    result = result[:-len(operator)]
-    return result
+    return dividers[node.type].join(map(compress, node))
 
 def postfix(node):
-    for child in node:
-        return compress(child) + postfixes[node.type]
+    return compress(node[0]) + postfixes[node.type]
 
 def prefix(node):
-    for child in node:
-        return prefixes[node.type] + compress(child)
+    return prefixes[node.type] + compress(node[0])
 
 
 #
@@ -236,17 +229,6 @@ def __semicolon(node):
     result = ""
     if node.expression:
         result += compress(node.expression)
-    return result
-
-
-def __assign(node):
-    # may be multi assign
-    result = ""
-    for child in node:
-        result += compress(child) + "="
-
-    # remove last trailing equal sign when no further child is there
-    result = result[:-1]
     return result
 
 
