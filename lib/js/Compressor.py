@@ -259,10 +259,13 @@ def __new_with_args(node):
 def __return(node):
     result = "return"
     if hasattr(node, "value"):
+        valueCode = compress(node.value)
+
         # Micro optimization, don't need a space when a block/map/array is returned
-        if not getattr(node.value, "type", None) in ("block", "object_init", "array_init"):
+        if not valueCode[0] in ("[","{"):
             result += " "
-        result += compress(node.value)
+        result += valueCode
+        
     return result
     
         
@@ -313,18 +316,13 @@ def __continue(node):
 def __for(node):
     result = "for("
     
-    setup = node.setup
-    if setup: result += compress(setup)
+    if node.setup: result += compress(node.setup)
     result += ";"
-    
-    condition = node.condition
-    if condition: result += compress(condition)
+    if node.condition: result += compress(node.condition)
     result += ";"
-    
-    update = node.update
-    if update: result += compress(update)
+    if node.update: result += compress(node.update)
         
-    result += ")" + compress(node.body)
+    result += ")%s" % compress(node.body)
     
     return result
     
@@ -364,7 +362,7 @@ def __if(node):
         result += "else" 
         elseCode = compress(node.elsePart)
         
-        # Micro optimization, don't need a space when a block/map/array is returned
+        # Micro optimization, don't need a space when the child is a block/map/array
         if not elseCode[0] in ["{","["]:
             result += " "
         
