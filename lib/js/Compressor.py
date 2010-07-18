@@ -120,7 +120,6 @@ def __script(node):
         
     return result
 
-
 def __block(node):
     return u"{%s}" % u";".join(map(compress, node))
     
@@ -152,8 +151,6 @@ def __identifier(node):
     
 
 
-
-
 #
 # Functions
 #
@@ -171,7 +168,6 @@ def __function(node):
     
     result += "(%s){%s}" % (",".join(node.params), ";".join(map(compress, node.body)))    
     return result
-    
     
 def __return(node):
     result = "return"
