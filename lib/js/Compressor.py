@@ -231,21 +231,16 @@ def __new_with_args(node):
 def __function(node):
     result = "function"
     
+    if hasattr(node, "name"):
+        result += " %s" % node.name
+    
     result += "("
     if len(node.params) > 0:
         for param in node.params:
             result += param + ","
         result = result[:-1]
         
-    result += "){"
-    
-    for child in node.body:
-        result += compress(child) + ";"
-        
-    if result.endswith(";"):
-        result = result[:-1]
-        
-    result += "}"
+    result += "){%s}" % ";".join(map(compress, node))
     
     return result
     
@@ -268,6 +263,9 @@ def __return(node):
 # Exception Handling
 #            
     
+def __throw(node):
+    return "throw %s" % compress(node.exception)
+
 def __try(node):
     result = "try%s" % compress(node.tryBlock)
     
@@ -278,13 +276,9 @@ def __try(node):
         result += "finally%s" % compress(node.finallyBlock)
 
     return result
-    
-    
-def __throw(node):
-    return "throw %s" % compress(node.exception)    
-    
-    
 
+    
+    
 #
 # Flow
 #    
