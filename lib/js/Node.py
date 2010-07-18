@@ -44,7 +44,7 @@
 #
 # ***** END LICENSE BLOCK ***** */
 
-import simplejson as json
+import json
 
 class Node(list):
 
