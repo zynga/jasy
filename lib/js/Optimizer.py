@@ -102,9 +102,6 @@ def optimizeBlock(node, translate):
             # every first identifier in a row of dots, or any identifier outsight of dot operator
             elif testChild(node):
                 node.value = translate[node.value]
-                
-            else:
-                print "FALSE: %s" % node.value
     
     processStructure(body, ["identifier", "function", "script"], optimizeLocals)
     return translate
