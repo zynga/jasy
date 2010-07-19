@@ -62,8 +62,8 @@ class Node(list):
                 else:
                     self.type = getattr(token, "type", None)
                 
-                if hasattr(token, "value"):
-                    self.value = token.value
+                    if hasattr(token, "value"):
+                        self.value = token.value
             
                 if hasattr(token, "comments"):
                     self.comments = token.comments
@@ -90,6 +90,8 @@ class Node(list):
 
             if hasattr(self, "end") and self.end < kid.end:
                 self.end = kid.end
+                
+            kid.parent = self
 
         return list.append(self, kid)
 
@@ -97,7 +99,7 @@ class Node(list):
     # Converts node to an object structure containing all public information
     def export(self):
         result = {}
-        blockAttr = ["tokenizer", "target", "start", "end"]
+        blockAttr = ["tokenizer", "target", "start", "end", "parent"]
         
         if len(self) > 0:
             result["children"] = children = []

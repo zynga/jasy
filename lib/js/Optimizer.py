@@ -6,7 +6,7 @@
 import string
 
 def optimize(node):
-    if node.type == "function":
+    if node.type == "function" or node.type == "script":
         optimizeFunction(node)
         
     for child in node:
@@ -31,6 +31,21 @@ def baseEncode(num, alphabet=string.letters):
     return "".join(arr)    
     
     
+def processStructure(node, types, callback):
+    if node.type in types:
+        callback(node)
+        
+    if hasattr(node, "initializer"):
+        processStructure(node.initializer, types, callback)
+
+    if hasattr(node, "expression"):
+        processStructure(node.expression, types, callback)
+
+        
+    for child in node:
+        processStructure(child, types, callback)
+    
+    
     
 #
 # Optimizer :: Function
@@ -38,17 +53,58 @@ def baseEncode(num, alphabet=string.letters):
 
 def optimizeFunction(node):
     translate = {}
-    pos = 0
-    for param in node.params:
-        translate[param] = baseEncode(pos)
+    if node.type == "function":
+        for pos, param in enumerate(node.params):
+            node.params[pos] = translate[param] = baseEncode(pos)
         pos += 1
-        
-    body = node.body
+        body = node.body
+    else:
+        pos = 0
+        body = node
+
     for item in body.functions + body.variables:
         if not item.name in translate:
             translate[item.name] = baseEncode(pos)
             pos += 1
         
+    def testChild(node):
+        if not "parent" in node:
+            return True
+            
+        parent = node.parent
+        
+        if parent.type != "dot":
+            return True
+        
+        if parent[1] is node:
+            return False
+            
+        if parent[0] is node:
+            return testChild(parent)
+        
+        
+    def optimizeLocals(node):
+        if node.type == "function" and hasattr(node, "name"):
+            node.name = translate[node.name]
+            
+        if node.type == "identifier" and node.value in translate:
+            # in a variable declaration
+            if hasattr(node, "name"):
+                node.name = node.value = translate[node.name]
+            
+            # every first identifier in a row of dots, or any identifier outsight of dot operator
+            elif testChild(node):
+                node.value = translate[node.value]
+                
+    
+    print "Optimizing..."
+    processStructure(body, ["identifier", "function", "script"], optimizeLocals)
+    
     print translate
+    #print node
+    
+    
+    
+
     
     
