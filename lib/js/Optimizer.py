@@ -4,13 +4,14 @@
 #
 
 import string
+from js.Node import Node
 
-def optimize(node):
+def optimize(node, pos=0):
     if node.type == "function" or node.type == "script":
-        optimizeFunction(node)
+        pos = optimizeBlock(node, pos)
         
-    for child in node:
-        optimize(child)
+    for child in getChildren(node):
+        optimize(child, pos)
         
       
       
@@ -31,33 +32,35 @@ def baseEncode(num, alphabet=string.letters):
     return "".join(arr)    
     
     
+def getChildren(node):
+    children = []
+    children.extend(node)
+    
+    if hasattr(node, "initializer"):
+        children.append(node.initializer)
+
+    if hasattr(node, "expression"):
+        children.append(node.expression)
+
+    if hasattr(node, "value") and isinstance(node.value, Node):
+        children.append(node.value)
+        
+    return children
+            
+    
 def processStructure(node, types, callback):
     if node.type in types:
         callback(node)
         
-    if hasattr(node, "initializer"):
-        processStructure(node.initializer, types, callback)
-
-    if hasattr(node, "expression"):
-        processStructure(node.expression, types, callback)
-
-    if hasattr(node, "value") and hasattr(node.value, "type"):
-        processStructure(node.value, types, callback)
-        
-    for child in node:
+    for child in getChildren(node):
         processStructure(child, types, callback)
     
     
-    
-#
-# Optimizer :: Function
-#         
-
-def optimizeFunction(node, pos=0):
+def optimizeBlock(node, pos=0):
     translate = {}
     if node.type == "function":
-        for param in node.params:
-            node.params[pos] = translate[param] = baseEncode(pos)
+        for i, param in enumerate(node.params):
+            node.params[i] = translate[param] = baseEncode(pos)
             pos += 1
         body = node.body
     else:
@@ -96,7 +99,6 @@ def optimizeFunction(node, pos=0):
             # every first identifier in a row of dots, or any identifier outsight of dot operator
             elif testChild(node):
                 node.value = translate[node.value]
-                
     
     processStructure(body, ["identifier", "function", "script"], optimizeLocals)
     return pos

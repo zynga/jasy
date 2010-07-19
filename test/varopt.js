@@ -1,6 +1,6 @@
-function x(alpha, beta, gamma) {
+function outer(alpha, beta, gamma) {
   function inner() {}
   var result = alpha * beta + gamma;
   var doNot = result.alpha.beta.gamma;
-  return result;
+  return result * outer(alpha, beta, gamma);
 }
