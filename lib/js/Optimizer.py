@@ -6,12 +6,15 @@
 import string
 from js.Node import Node
 
-def optimize(node, pos=0):
+def optimize(node, translate=None):
+    if not translate:
+        translate = {}
+    
     if node.type == "function" or node.type == "script":
-        pos = optimizeBlock(node, pos)
+        optimizeBlock(node, translate)
         
     for child in getChildren(node):
-        optimize(child, pos)
+        optimize(child, translate)
         
       
       
@@ -56,8 +59,8 @@ def processStructure(node, types, callback):
         processStructure(child, types, callback)
     
     
-def optimizeBlock(node, pos=0):
-    translate = {}
+def optimizeBlock(node, translate):
+    pos = len(translate)
     if node.type == "function":
         for i, param in enumerate(node.params):
             node.params[i] = translate[param] = baseEncode(pos)
@@ -99,9 +102,12 @@ def optimizeBlock(node, pos=0):
             # every first identifier in a row of dots, or any identifier outsight of dot operator
             elif testChild(node):
                 node.value = translate[node.value]
+                
+            else:
+                print "FALSE: %s" % node.value
     
     processStructure(body, ["identifier", "function", "script"], optimizeLocals)
-    return pos
+    return translate
     
 
     
