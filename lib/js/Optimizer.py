@@ -41,6 +41,9 @@ def processStructure(node, types, callback):
     if hasattr(node, "expression"):
         processStructure(node.expression, types, callback)
 
+    if hasattr(node, "value") and hasattr(node.value, "type"):
+        processStructure(node.value, types, callback)
+
         
     for child in node:
         processStructure(child, types, callback)
@@ -85,15 +88,18 @@ def optimizeFunction(node):
         
     def optimizeLocals(node):
         if node.type == "function" and hasattr(node, "name"):
+            print "FUNC: %s => %s" % (node.name, translate[node.name])
             node.name = translate[node.name]
             
         if node.type == "identifier" and node.value in translate:
             # in a variable declaration
             if hasattr(node, "name"):
-                node.name = node.value = translate[node.name]
+                print "DECL: %s => %s" % (node.value, translate[node.value])
+                node.name = node.value = translate[node.value]
             
             # every first identifier in a row of dots, or any identifier outsight of dot operator
             elif testChild(node):
+                print "ACCESS: %s => %s" % (node.value, translate[node.value])
                 node.value = translate[node.value]
                 
     
