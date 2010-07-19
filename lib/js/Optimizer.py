@@ -43,7 +43,6 @@ def processStructure(node, types, callback):
 
     if hasattr(node, "value") and hasattr(node.value, "type"):
         processStructure(node.value, types, callback)
-
         
     for child in node:
         processStructure(child, types, callback)
@@ -54,15 +53,14 @@ def processStructure(node, types, callback):
 # Optimizer :: Function
 #         
 
-def optimizeFunction(node):
+def optimizeFunction(node, pos=0):
     translate = {}
     if node.type == "function":
-        for pos, param in enumerate(node.params):
+        for param in node.params:
             node.params[pos] = translate[param] = baseEncode(pos)
-        pos += 1
+            pos += 1
         body = node.body
     else:
-        pos = 0
         body = node
 
     for item in body.functions + body.variables:
@@ -71,7 +69,7 @@ def optimizeFunction(node):
             pos += 1
         
     def testChild(node):
-        if not "parent" in node:
+        if not hasattr(node, "parent"):
             return True
             
         parent = node.parent
@@ -88,28 +86,20 @@ def optimizeFunction(node):
         
     def optimizeLocals(node):
         if node.type == "function" and hasattr(node, "name"):
-            print "FUNC: %s => %s" % (node.name, translate[node.name])
             node.name = translate[node.name]
             
         if node.type == "identifier" and node.value in translate:
             # in a variable declaration
             if hasattr(node, "name"):
-                print "DECL: %s => %s" % (node.value, translate[node.value])
                 node.name = node.value = translate[node.value]
             
             # every first identifier in a row of dots, or any identifier outsight of dot operator
             elif testChild(node):
-                print "ACCESS: %s => %s" % (node.value, translate[node.value])
                 node.value = translate[node.value]
                 
     
-    print "Optimizing..."
     processStructure(body, ["identifier", "function", "script"], optimizeLocals)
-    
-    print translate
-    #print node
-    
-    
+    return pos
     
 
     
