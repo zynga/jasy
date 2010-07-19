@@ -6,6 +6,8 @@
 import string
 from js.Node import Node
 
+__all__ = ["optimize"]
+
 def optimize(node, translate=None):
     if not translate:
         translate = {}
@@ -39,14 +41,11 @@ def getChildren(node):
     children = []
     children.extend(node)
     
-    if hasattr(node, "initializer"):
-        children.append(node.initializer)
-
-    if hasattr(node, "expression"):
-        children.append(node.expression)
-
-    if hasattr(node, "value") and isinstance(node.value, Node):
-        children.append(node.value)
+    for key in dir(node):
+        if not (key == "parent" or key.startswith("_")):
+            value = getattr(node, key)
+            if isinstance(value, Node):
+                children.append(value)
         
     return children
             
@@ -94,7 +93,7 @@ def optimizeBlock(node, translate):
         if node.type == "function" and hasattr(node, "name"):
             node.name = translate[node.name]
             
-        if node.type == "identifier" and node.value in translate:
+        elif node.type == "identifier" and node.value in translate:
             # in a variable declaration
             if hasattr(node, "name"):
                 node.name = node.value = translate[node.value]
