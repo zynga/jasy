@@ -18,6 +18,7 @@ def optimize(node, translate=None):
         translate = {}
     
     if node.type == "script":
+        translate = copy(translate)
         __optimizeScope(node, translate)
         
     for child in getChildren(node):
