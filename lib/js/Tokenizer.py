@@ -46,7 +46,7 @@
 
 import re
 
-__all__ = [ "Tokenizer" ]
+__all__ = [ "Tokenizer", "keywords" ]
 
 keywords = [
     "break",
