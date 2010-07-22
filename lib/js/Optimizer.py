@@ -12,6 +12,11 @@ __all__ = ["optimize"]
 empty = ("null", "this", "true", "false", "number", "string", "regexp")
 debug = True
 
+
+#
+# Public API
+#
+
 def optimize(node, translate=None, pos=0):
     if node.type == "script":
         translate = {} if not translate else copy(translate)
@@ -20,6 +25,11 @@ def optimize(node, translate=None, pos=0):
     for child in getChildren(node):
         optimize(child, translate, pos)
       
+
+
+#
+# Implementation
+#
 
 def __encode(pos):
     repl = None
