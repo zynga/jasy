@@ -10,7 +10,7 @@ from copy import copy
 __all__ = ["optimize"]
 
 empty = ("null", "this", "true", "false", "number", "string", "regexp")
-debug = True
+debug = False
 
 
 #
@@ -70,7 +70,7 @@ def __optimizeNode(node, translate, first=False):
             node.name = node.value = translate[node.value]
 
         # every scope relevant identifier (e.g. first identifier for dot-operator, etc.)
-        elif getattr(node, "scope", False) == True:
+        elif getattr(node, "scope", False):
             if debug: print " - Scope Variable: %s => %s" % (node.value, translate[node.value])
             node.value = translate[node.value]    
 
