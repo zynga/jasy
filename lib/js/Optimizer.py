@@ -46,7 +46,8 @@ def __optimizeScope(node, translate, pos):
     parent = getattr(node, "parent", None)
     if parent:
         for i, param in enumerate(parent.params):
-            pos, parent.params[i] = translate[param] = __encode(pos)
+            pos, translate[param] = __encode(pos)
+            parent.params[i] = translate[param]
 
     for item in node.functions + node.variables:
         if not item.name in translate:
