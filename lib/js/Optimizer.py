@@ -7,7 +7,6 @@ from js.Tokenizer import keywords
 from js.Util import *
 from copy import copy
 
-
 __all__ = ["optimize"]
 
 empty = ("null", "this", "true", "false", "number", "string", "regexp")
