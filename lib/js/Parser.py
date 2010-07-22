@@ -576,6 +576,7 @@ def Expression(tokenizer, compilerContext, stop=None):
     try:
         while True:
             tokenType = tokenizer.get()
+            
             if tokenType == "end": break
             if (tokenType == stop and compilerContext.bracketLevel == bl and compilerContext.curlyLevel == cl and compilerContext.parenLevel == pl and compilerContext.hookLevel == hl):
                 # Stop only if tokenType matches the optional stop parameter, and that
@@ -669,8 +670,11 @@ def Expression(tokenizer, compilerContext, stop=None):
             elif tokenType in ("null", "this", "true", "false", "identifier", "number", "string", "regexp"):
                 if not tokenizer.scanOperand:
                     raise BreakOutOfLoops
-                    
-                operands.append(Node(tokenizer))
+
+                node = Node(tokenizer)
+                if tokenType == "identifier":
+                    node.scope = True
+                operands.append(node)
                 tokenizer.scanOperand = False
 
             elif tokenType == "left_bracket":
