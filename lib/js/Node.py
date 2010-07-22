@@ -46,9 +46,12 @@
 
 import json
 
-class Node(list):
+nodeId = 0
 
+class Node(list):
     def __init__(self, tokenizer=None, type=None, args=[]):
+        global nodeId        
+        
         list.__init__(self)
 
         if tokenizer:
@@ -77,6 +80,9 @@ class Node(list):
                 self.line = tokenizer.line
 
             self.tokenizer = tokenizer
+            self.id = nodeId
+            
+            nodeId += 1
 
         for arg in args:
             self.append(arg)
