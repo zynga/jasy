@@ -12,34 +12,38 @@ __all__ = ["optimize"]
 empty = ("null", "this", "true", "false", "number", "string", "regexp")
 debug = True
 
-def optimize(node, translate=None):
-    if not translate:
-        translate = {}
-    
+def optimize(node, translate=None, pos=0):
     if node.type == "script":
-        translate = copy(translate)
-        __optimizeScope(node, translate)
+        translate = {} if not translate else copy(translate)
+        pos = __optimizeScope(node, translate, pos)
         
     for child in getChildren(node):
-        optimize(child, translate)
+        optimize(child, translate, pos)
+      
+
+def __encode(pos):
+    repl = None
+    while repl == None or repl in keywords:
+        repl = baseEncode(pos)
+        pos += 1
+        
+    return pos, repl
         
       
-def __optimizeScope(node, translate):
+def __optimizeScope(node, translate, pos):
     if debug: print "Optimize scope at line: %s" % node.line
     
-    pos = len(translate)
     parent = getattr(node, "parent", None)
     if parent:
         for i, param in enumerate(parent.params):
-            parent.params[i] = translate[param] = baseEncode(pos)
-            pos += 1
+            pos, parent.params[i] = translate[param] = __encode(pos)
 
     for item in node.functions + node.variables:
         if not item.name in translate:
-            translate[item.name] = baseEncode(pos)
-            pos += 1
+            pos, translate[item.name] = __encode(pos)
         
     __optimizeNode(node, translate, True)
+    return pos
 
 
 def __optimizeNode(node, translate, first=False):
