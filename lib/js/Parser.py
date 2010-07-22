@@ -450,6 +450,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
 
     tokenizer.mustMatch("left_curly")
     node.body = Script(tokenizer, CompilerContext(True))
+    node.body.parent = node
     tokenizer.mustMatch("right_curly")
     node.end = tokenizer.token.end
 

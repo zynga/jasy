@@ -5,6 +5,8 @@
 
 from js.Tokenizer import keywords
 from js.Util import *
+from copy import copy
+
 
 __all__ = ["optimize"]
 
@@ -24,20 +26,18 @@ def optimize(node, translate=None):
       
 def __optimizeScope(node, translate):
     pos = len(translate)
-    if node.type == "function":
-        for i, param in enumerate(node.params):
-            node.params[i] = translate[param] = baseEncode(pos)
+    parent = getattr(node, "parent", None)
+    if parent:
+        for i, param in enumerate(parent.params):
+            parent.params[i] = translate[param] = baseEncode(pos)
             pos += 1
-        body = node.body
-    else:
-        body = node
 
-    for item in body.functions + body.variables:
+    for item in node.functions + node.variables:
         if not item.name in translate:
             translate[item.name] = baseEncode(pos)
             pos += 1
         
-    __optimizeNode(body, translate)
+    __optimizeNode(node, translate)
 
 
 def __optimizeNode(node, translate):
