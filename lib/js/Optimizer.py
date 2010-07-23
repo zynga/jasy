@@ -19,6 +19,9 @@ debug = False
 
 def optimize(node, translate=None, pos=0):
     if node.type == "script":
+        # before going into a function scope, make a copy of the parent scope
+        # to not modify the parent scope and badly influence the variable length
+        # of other child scopes
         translate = {} if not translate else copy(translate)
         pos = __optimizeScope(node, translate, pos)
         

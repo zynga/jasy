@@ -100,7 +100,7 @@ class CompilerContext(object):
         self.inForLoopInit = False
 
 
-# This produces the root node of each file or function, basically a modified block node
+# This produces the root node of each file or function body, basically a modified block node
 def Script(tokenizer, compilerContext):
     node = Statements(tokenizer, compilerContext)
     
@@ -484,7 +484,7 @@ def Variables(tokenizer, compilerContext):
     return node
 
 
-# ???
+# An expression placed into parens like for if, while, do and with
 def ParenExpression(tokenizer, compilerContext):
     tokenizer.mustMatch("left_paren")
     node = Expression(tokenizer, compilerContext)
