@@ -458,7 +458,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     if functionForm == DECLARED_FORM:
         name = getattr(node, "name", None)
         if name and not name in compilerContext.declares:
-            compilerContext.declares.append(node)
+            compilerContext.declares.append(name)
     return node
 
 

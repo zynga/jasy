@@ -47,7 +47,7 @@ def __optimizeScope(node, translate, pos):
     if debug: print "Optimize scope at line: %s" % node.line
     
     parent = getattr(node, "parent", None)
-    if parent:
+    if parent and parent.type == "function":
         for i, param in enumerate(parent.params):
             pos, translate[param] = __encode(pos)
             parent.params[i] = translate[param]
