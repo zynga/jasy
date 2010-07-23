@@ -149,6 +149,54 @@ class Node(list):
             return json.dumps(self.export(), sort_keys=True, ensure_ascii=False, indent=2)
 
 
+    def toXml(self, indent=0):
+        blockAttr = ["tokenizer", "target", "start", "end", "parent", "id", "type"]
+        tab = "  "
+        lead = tab * indent
+        attrs = []
+        res = ""
+        for child in self:
+            res += child.toXml(indent+1)
+            
+        for attr in dir(self):
+            if attr in blockAttr or attr[0] == "_" or attr[-1] == "_":
+                continue
+            child = getattr(self, attr)
+            
+            # is a node or a list with nodes
+            if isinstance(child, Node) or (type(child) == list and len(child) > 0 and isinstance(child[0], Node)):
+                if len(self) > 0:
+                    raise "Unexpected additional child %s in %s" % (attr, self.type)
+                    
+                res += "%s<%s>\n" % (tab * (indent+1), attr)
+                if type(child) == list:
+                    for listChild in child:
+                        res += listChild.toXml(indent+2)
+                else:
+                    res += child.toXml(indent+2)
+                res += "%s</%s>\n" % (tab * (indent+1), attr)
+                
+            # primitive types or a list with primitive types
+            elif type(child) in (bool, int, float, str, unicode, list):
+                if child == False:
+                    child = "false"
+                elif child == True:
+                    child = "true"
+                elif type(child) == list:
+                    child = ",".join(child)
+                elif type(child) in (int, float):
+                    child = str(child)
+                attrs.append('%s=%s' % (attr, json.dumps(child)))
+                
+        attrs = "" if len(attrs) == 0 else " " + " ".join(attrs)
+        if len(res) == 0:
+            res = "%s<%s%s/>\n" % (lead, self.type, attrs)
+        else:
+            res = "%s<%s%s>\n%s%s</%s>\n" % (lead, self.type, attrs, res, lead, self.type)
+            
+        return res
+
+
     # Returns the source code of the node
     def getSource(self):
         if not self.tokenizer:
@@ -163,7 +211,6 @@ class Node(list):
             return self.tokenizer.source[:self.end]
     
         return self.tokenizer.source[:]
-        
         
     
     # Returns the file name
