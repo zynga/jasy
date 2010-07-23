@@ -73,9 +73,9 @@ class CompilerContext(object):
         # PUBLIC
         #######################
 
-        # collect all functions and variables which are declared inside this context
-        self.functions = []
-        self.variables = []
+        # collect all defined and used variables
+        self.declares = []
+        self.accesses = []
 
         #######################
         # PRIVATE
@@ -107,9 +107,9 @@ def Script(tokenizer, compilerContext):
     # change type from "block" to "script" for script root
     node.type = "script"
 
-    # copy over context declarations into script node
-    node.functions = compilerContext.functions
-    node.variables = compilerContext.variables
+    # copy over context declarations/accesses into script node
+    node.declares = compilerContext.declares
+    node.accesses = compilerContext.accesses
 
     return node
     
@@ -456,7 +456,9 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
 
     node.functionForm = functionForm
     if functionForm == DECLARED_FORM:
-        compilerContext.functions.append(node)
+        name = getattr(node, "name", None)
+        if name and not name in compilerContext.declares:
+            compilerContext.declares.append(node)
     return node
 
 
@@ -476,7 +478,8 @@ def Variables(tokenizer, compilerContext):
         childNode.readOnly = not not (node.type == "const")
         
         node.append(childNode)
-        compilerContext.variables.append(childNode)
+        if not childNode.value in compilerContext.declares:
+            compilerContext.declares.append(childNode.value)
 
         if not tokenizer.match("comma"): 
             break
@@ -675,6 +678,8 @@ def Expression(tokenizer, compilerContext, stop=None):
                 node = Node(tokenizer)
                 if tokenType == "identifier":
                     node.scope = True
+                    if not node.value in compilerContext.accesses:
+                        compilerContext.accesses.append(node.value)
                 operands.append(node)
                 tokenizer.scanOperand = False
 

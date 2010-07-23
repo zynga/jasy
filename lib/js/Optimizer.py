@@ -52,9 +52,9 @@ def __optimizeScope(node, translate, pos):
             pos, translate[param] = __encode(pos)
             parent.params[i] = translate[param]
 
-    for item in node.functions + node.variables:
-        if not item.name in translate:
-            pos, translate[item.name] = __encode(pos)
+    for name in node.declares:
+        if not name in translate:
+            pos, translate[name] = __encode(pos)
         
     __optimizeNode(node, translate, True)
     return pos
