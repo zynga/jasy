@@ -11,8 +11,7 @@ from js.Parser import parse
 
 def jstree(source, filename=None):
     root = parse(Tokenizer(source, filename))
-    return root.toXml()
-
+    return root.toJson()
 
 if __name__ == "__main__":
     print jstree(file(sys.argv[1]).read(), sys.argv[1])

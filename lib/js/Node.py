@@ -82,7 +82,11 @@ class Node(list):
             self.tokenizer = tokenizer
             self.id = nodeId
             
-            nodeId += 1
+        elif type:
+            self.type = type
+            self.id = nodeId
+
+        nodeId += 1
 
         for arg in args:
             self.append(arg)
@@ -102,101 +106,99 @@ class Node(list):
         return list.append(self, kid)
 
 
-    # Converts node to an object structure containing all public information
+    # Returns a data structure containing all relevant information about the node
     def export(self):
-        result = {}
-        blockAttr = ["tokenizer", "target", "start", "end", "parent"]
-        
-        if len(self) > 0:
-            result["children"] = children = []
-            for child in self:
-                children.append(child.export())        
-        
-        for attr in dir(self):
-            if attr in blockAttr or attr.startswith("_") or attr.endswith("_"):
-                continue
-                
-            else:
-                value = getattr(self, attr)
-                
-                if isinstance(value, (basestring, int, bool)):
-                    pass
-                elif isinstance(value, Node):
-                    value = value.export()
-                elif type(value) == list:
-                    temp = []
-                    for entry in value:
-                        if isinstance(entry, Node):
-                            temp.append(entry.export())
-                        else:
-                            temp.append(entry)
-                    
-                    value = temp
-                    
-                else:
-                    continue
-                
-                result[attr] = value
-                
-        return result
-
-
-    # Returns the JSON representation of the node object
-    def toJson(self, compact=False):
-        if compact:
-            return json.dumps(self.export(), sort_keys=True, ensure_ascii=False, separators=(',',':'))
-        else:
-            return json.dumps(self.export(), sort_keys=True, ensure_ascii=False, indent=2)
-
-
-    def toXml(self, indent=0):
-        blockAttr = ["tokenizer", "target", "start", "end", "parent", "id", "type"]
-        tab = "  "
-        lead = tab * indent
-        attrs = []
-        res = ""
+        children = []
         for child in self:
-            res += child.toXml(indent+1)
-            
+            children.append(child)
+
+        attrs = {}
+        blockAttr = ["tokenizer", "target", "start", "end", "parent", "id"]
         for attr in dir(self):
             if attr in blockAttr or attr[0] == "_" or attr[-1] == "_":
                 continue
             child = getattr(self, attr)
-            
+
             # is a node or a list with nodes
             if isinstance(child, Node) or (type(child) == list and len(child) > 0 and isinstance(child[0], Node)):
                 if len(self) > 0:
                     raise "Unexpected additional child %s in %s" % (attr, self.type)
-                    
-                res += "%s<%s>\n" % (tab * (indent+1), attr)
+
+                helper = Node(None, attr)
+
                 if type(child) == list:
                     for listChild in child:
-                        res += listChild.toXml(indent+2)
+                        helper.append(listChild)
                 else:
-                    res += child.toXml(indent+2)
-                res += "%s</%s>\n" % (tab * (indent+1), attr)
-                
+                    helper.append(child)
+
+                children.append(helper)
+
             # primitive types or a list with primitive types
             elif type(child) in (bool, int, float, str, unicode, list):
-                if child == False:
-                    child = "false"
-                elif child == True:
-                    child = "true"
-                elif type(child) == list:
-                    child = ",".join(child)
-                elif type(child) in (int, float):
-                    child = str(child)
-                attrs.append('%s=%s' % (attr, json.dumps(child)))
-                
-        attrs = "" if len(attrs) == 0 else " " + " ".join(attrs)
-        if len(res) == 0:
-            res = "%s<%s%s/>\n" % (lead, self.type, attrs)
+                attrs[attr] = child
+
+        return attrs, children        
+
+
+    # Converts node to XML
+    def toXml(self, indent=0, tab="  "):
+        def attrs2Xml(attrs):
+            result = []
+            for name in attrs:
+                if name != "type":
+                    value = attrs[name]
+                    if type(value) == bool:
+                        value = "true" if value else "false" 
+                    elif type(value) in (int, float):
+                        value = str(value)
+                    elif type(value) == list:
+                        value = ",".join(value)
+                    result.append('%s=%s' % (name, json.dumps(value)))
+            return (" " + " ".join(result)) if len(result) > 0 else ""
+
+        lead = tab * indent
+        attrs, children = self.export()
+        typeattr = attrs["type"]
+
+        if len(children) == 0:
+            result = "%s<%s%s/>\n" % (lead, typeattr, attrs2Xml(attrs))
         else:
-            res = "%s<%s%s>\n%s%s</%s>\n" % (lead, self.type, attrs, res, lead, self.type)
-            
-        return res
+            result = "%s<%s%s>\n" % (lead, typeattr, attrs2Xml(attrs))
 
+            for child in children:
+                result += child.toXml(indent+1)
 
+            result += "%s</%s>\n" % (lead, typeattr)
+
+        return result
+        
+        
+    # Converts node to JSON
+    def toJson(self, indent=0, tab="  "):
+        lead = tab * indent
+        innerLead = tab * (indent+1)
+        attrs, children = self.export()
+        blocks = []
+
+        for name in attrs:
+            value = json.dumps(attrs[name])
+            blocks.append("%s%s : %s" % (innerLead, name, value))
+
+        if len(children) > 0:
+            content = "%schildren : \n" % innerLead
+            content += "%s[\n" % innerLead
+            for child in children:
+                content += child.toJson(indent+2)
+            content += "%s]" % innerLead
+            blocks.append(content)
+
+        if len(blocks) > 0:
+            blocks = ",\n".join(blocks) + "\n"
+
+        return "%s{\n%s%s}\n" % (lead, blocks, lead)
+        
+        
     # Returns the source code of the node
     def getSource(self):
         if not self.tokenizer:
@@ -219,8 +221,8 @@ class Node(list):
 
 
     # Map Python built-ins
-    __repr__ = toJson
-    __str__ = toJson
+    __repr__ = toXml
+    __str__ = toXml
 
     def __nonzero__(self): 
         return True

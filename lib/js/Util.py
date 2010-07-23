@@ -31,3 +31,4 @@ def getChildren(node):
                 children.append(value)
         
     return children
+    
