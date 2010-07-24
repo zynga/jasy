@@ -154,6 +154,7 @@ def Statement(tokenizer, compilerContext):
         tokenizer.mustMatch("right_paren")
         cases = Node(tokenizer, "cases")
         node.append(cases)
+        node.cases = cases
         node.defaultIndex = -1
         compilerContext.statementStack.append(node)
         tokenizer.mustMatch("left_curly")
@@ -305,6 +306,7 @@ def Statement(tokenizer, compilerContext):
         node.append(Block(tokenizer, compilerContext), "tryBlock")
         catches = Node(tokenizer, "catches")
         node.append(catches)
+        node.catches = catches
 
         while tokenizer.match("catch"):
             childNode = Node(tokenizer)
