@@ -66,6 +66,17 @@ class Node(list):
 
         return list.append(self, kid)
 
+    
+    # Replaces the given kid with the given replacement kid
+    def replace(self, kid, repl):
+        self[self.index(kid)] = repl
+        
+        if hasattr(kid, "rel"):
+            repl.rel = kid.rel
+            setattr(self, kid.rel, repl)
+        
+        return kid
+        
 
     # Converts the node to XML
     def toXml(self, format=True, indent=0, tab="  "):

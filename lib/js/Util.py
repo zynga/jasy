@@ -4,7 +4,6 @@
 #
 
 import string
-from js.Node import Node
 
 
 def baseEncode(num, alphabet=string.letters):

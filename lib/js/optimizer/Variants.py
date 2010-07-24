@@ -4,7 +4,8 @@
 #
 
 import json
-
+from js.Tokenizer import Tokenizer
+from js.Parser import parseExpression
 
 #
 # Public API
@@ -27,10 +28,6 @@ def optimize(node, data):
 #
 
 def __assembleDot(node, result=None):
-    
-    if node.type != "dot":
-        raise "Wrong node type for __assembleDot!"
-
     if result == None:
         result = []
         
@@ -45,10 +42,7 @@ def __assembleDot(node, result=None):
     return ".".join(result)
     
     
-def __replace(node, replacement):
-    #pos = node.parent.index(node)
-    #print "Replace at index: %s" % pos
-    pass
-    
-    
+def __replace(node, expression):
+    repl = parseExpression(Tokenizer(expression, None))
+    return node.parent.replace(node, repl)
     

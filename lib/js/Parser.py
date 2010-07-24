@@ -10,7 +10,7 @@
 from js.Node import Node
 from js.Tokenizer import Token
 
-__all__ = [ "parse" ]
+__all__ = [ "parse", "parseExpression" ]
 
 DECLARED_FORM = 0
 EXPRESSED_FORM = 1
@@ -22,6 +22,14 @@ def parse(tokenizer):
     if not tokenizer.done:
         raise SyntaxError("Invalid end of file", tokenizer)
     return root
+    
+    
+# Utility method to parse expression, basically useful to replace specific nodes
+# with other generated nodes etc.
+def parseExpression(tokenizer):
+    node = Expression(tokenizer, CompilerContext(False))    
+    node.fromExpression = True
+    return node
 
 
 class SyntaxError(Exception):
