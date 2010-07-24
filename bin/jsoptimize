@@ -8,12 +8,12 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 from js.Tokenizer import Tokenizer
 from js.Parser import parse
 from js.Compressor import compress
-from js.Optimizer import optimize
+from js.optimizer import LocalVariables
 
 
 def jsoptimize(source, filename=None):
     tree = parse(Tokenizer(source, filename))
-    optimize(tree)
+    LocalVariables.optimize(tree)
     return compress(tree)
 
 
