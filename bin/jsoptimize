@@ -9,10 +9,20 @@ from js.Tokenizer import Tokenizer
 from js.Parser import parse
 from js.Compressor import compress
 from js.optimizer import LocalVariables
+from js.optimizer import Variants
 
 
 def jsoptimize(source, filename=None):
+    variantData = {
+        "js.Variant.DEBUG" : False,
+        "js.Variant.LOCAL_STORAGE" : True,
+    
+    }
+    
+    
+    
     tree = parse(Tokenizer(source, filename))
+    Variants.optimize(tree, variantData)
     LocalVariables.optimize(tree)
     return compress(tree)
 

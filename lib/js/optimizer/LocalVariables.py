@@ -1,5 +1,5 @@
 #
-# JavaScript Tools - Compressor Module
+# JavaScript Tools - Optimizer for local variable names
 # Copyright 2010 Sebastian Werner
 #
 
