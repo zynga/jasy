@@ -20,7 +20,7 @@ Done
 In Progress
 -----------
 
-- Variant Processing (Removing debug blocks, ...)
+- Variant Processing (Removing debug blocks, alternative code, ...)
 
 Todo
 ----
