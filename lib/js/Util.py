@@ -19,16 +19,3 @@ def baseEncode(num, alphabet=string.letters):
     arr.reverse()
     return "".join(arr)    
     
-    
-def getChildren(node):
-    children = []
-    children.extend(node)
-    
-    for key in dir(node):
-        if not (key == "parent" or key == "target" or key.startswith("_")):
-            value = getattr(node, key)
-            if isinstance(value, Node):
-                children.append(value)
-        
-    return children
-    
