@@ -75,7 +75,7 @@ class Node(list):
 
 
     # Always use push to add operands to an expression, to update start and end.
-    def append(self, kid):
+    def append(self, kid, rel=None):
         if kid:
             if hasattr(self, "start") and kid.start < self.start:
                 self.start = kid.start
@@ -84,6 +84,11 @@ class Node(list):
                 self.end = kid.end
                 
             kid.parent = self
+            
+            # alias for function
+            if rel != None:
+                setattr(self, rel, kid)
+                setattr(kid, "rel", rel)
 
         return list.append(self, kid)
 
