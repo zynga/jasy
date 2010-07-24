@@ -130,11 +130,14 @@ def Statement(tokenizer, compilerContext):
     elif tokenType == "if":
         node = Node(tokenizer)
         node.condition = ParenExpression(tokenizer, compilerContext)
+        node.append(node.condition)
         compilerContext.statementStack.append(node)
         node.thenPart = Statement(tokenizer, compilerContext)
+        node.append(node.thenPart)
 
         if tokenizer.match("else"):
             node.elsePart = Statement(tokenizer, compilerContext)
+            node.append(node.elsePart)
             
         compilerContext.statementStack.pop()
         return node
@@ -143,6 +146,7 @@ def Statement(tokenizer, compilerContext):
         node = Node(tokenizer)
         tokenizer.mustMatch("left_paren")
         node.discriminant = Expression(tokenizer, compilerContext)
+        node.append(node.discriminant)
         tokenizer.mustMatch("right_paren")
         node.cases = []
         node.defaultIndex = -1
@@ -163,11 +167,13 @@ def Statement(tokenizer, compilerContext):
                     node.defaultIndex = len(node.cases)
                 else:
                     childNode.caseLabel = Expression(tokenizer, compilerContext, "colon")
+                    childNode.append(childNode.caseLabel)
             else:
                 raise SyntaxError("Invalid switch case", tokenizer)
                 
             tokenizer.mustMatch("colon")
             childNode.statements = Node(tokenizer, "block")
+            childNode.append(childNode.statements)
             
             while True:
                 tokenType = tokenizer.peek()
@@ -178,6 +184,7 @@ def Statement(tokenizer, compilerContext):
                 childNode.statements.append(Statement(tokenizer, compilerContext))
                 
             node.cases.append(childNode)
+            node.append(childNode)
             
         compilerContext.statementStack.pop()
         return node
@@ -203,6 +210,7 @@ def Statement(tokenizer, compilerContext):
 
         if childNode and tokenizer.match("in"):
             node.type = "for_in"
+            node.append(childNode)
             
             if childNode.type == "var":
                 if len(childNode) != 1:
@@ -217,10 +225,12 @@ def Statement(tokenizer, compilerContext):
                 node.varDecl = None
                 
             node.object = Expression(tokenizer, compilerContext)
+            node.append(node.object)
             
         else:
             if childNode:
                 node.setup = childNode
+                node.append(childNode)
             else:
                 node.setup = None
                 
@@ -230,6 +240,7 @@ def Statement(tokenizer, compilerContext):
                 node.condition = None
             else:
                 node.condition = Expression(tokenizer, compilerContext)
+                node.append(node.condition)
                 
             tokenizer.mustMatch("semicolon")
             
@@ -237,9 +248,11 @@ def Statement(tokenizer, compilerContext):
                 node.update = None
             else:
                 node.update = Expression(tokenizer, compilerContext)
+                node.append(node.update)
                 
         tokenizer.mustMatch("right_paren")
         node.body = nest(tokenizer, compilerContext, node, Statement)
+        node.append(node.body)
         
         return node
 
@@ -248,7 +261,9 @@ def Statement(tokenizer, compilerContext):
         
         node.isLoop = True
         node.condition = ParenExpression(tokenizer, compilerContext)
+        node.append(node.condition)
         node.body = nest(tokenizer, compilerContext, node, Statement)
+        node.append(node.body)
         
         return node
 
@@ -256,7 +271,9 @@ def Statement(tokenizer, compilerContext):
         node = Node(tokenizer)
         node.isLoop = True
         node.body = nest(tokenizer, compilerContext, node, Statement, "while")
+        node.append(node.body)
         node.condition = ParenExpression(tokenizer, compilerContext)
+        node.append(node.condition)
         if not compilerContext.ecmaStrictMode:
             # <script language="JavaScript"> (without version hints) may need
             # automatic semicolon insertion without a newline after do-while.
@@ -293,6 +310,7 @@ def Statement(tokenizer, compilerContext):
     elif tokenType == "try":
         node = Node(tokenizer)
         node.tryBlock = Block(tokenizer, compilerContext)
+        node.append(node.tryBlock)
         node.catchClauses = []
 
         while tokenizer.match("catch"):
@@ -301,10 +319,13 @@ def Statement(tokenizer, compilerContext):
             childNode.varName = tokenizer.mustMatch("identifier").value
             tokenizer.mustMatch("right_paren")
             childNode.block = Block(tokenizer, compilerContext)
+            childNode.append(childNode.block)
             node.catchClauses.append(childNode)
+            node.append(childNode)
             
         if tokenizer.match("finally"):
             node.finallyBlock = Block(tokenizer, compilerContext)
+            node.append(node.finallyBlock)
             
         if not node.catchClauses and not getattr(node, "finallyBlock", None):
             raise SyntaxError("Invalid try statement", tokenizer)
@@ -317,6 +338,7 @@ def Statement(tokenizer, compilerContext):
     elif tokenType == "throw":
         node = Node(tokenizer)
         node.exception = Expression(tokenizer, compilerContext)
+        node.append(node.exception)
 
     elif tokenType == "return":
         if not compilerContext.inFunction:
@@ -327,11 +349,14 @@ def Statement(tokenizer, compilerContext):
         
         if tokenType not in ("end", "newline", "semicolon", "right_curly"):
             node.value = Expression(tokenizer, compilerContext)
+            node.append(node.value)
 
     elif tokenType == "with":
         node = Node(tokenizer)
         node.object = ParenExpression(tokenizer, compilerContext)
+        node.append(node.object)
         node.body = nest(tokenizer, compilerContext, node, Statement)
+        node.append(node.body)
         return node
 
     elif tokenType in ("var", "const"):
@@ -365,12 +390,14 @@ def Statement(tokenizer, compilerContext):
                 node = Node(tokenizer, "label")
                 node.label = label
                 node.statement = nest(tokenizer, compilerContext, node, Statement)
+                node.append(node.statement)
                 
                 return node
 
         node = Node(tokenizer, "semicolon")
         tokenizer.unget()
         node.expression = Expression(tokenizer, compilerContext)
+        node.append(node.expression)
         node.end = node.expression.end
 
     if tokenizer.line == tokenizer.token.line:
@@ -413,9 +440,10 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
 
     tokenizer.mustMatch("left_curly")
     node.body = Script(tokenizer, CompilerContext(True))
-    node.body.parent = node
+    node.append(node.body)
     tokenizer.mustMatch("right_curly")
     node.end = tokenizer.token.end
+    node.append(node.end)
 
     node.functionForm = functionForm
     if functionForm == DECLARED_FORM:
@@ -437,6 +465,7 @@ def Variables(tokenizer, compilerContext):
             if tokenizer.token.assignOp:
                 raise SyntaxError("Invalid variable initialization", tokenizer)
             childNode.initializer = Expression(tokenizer, compilerContext, "comma")
+            childNode.append(childNode.initializer)
             
         childNode.readOnly = not not (node.type == "const")
         

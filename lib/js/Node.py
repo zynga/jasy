@@ -88,61 +88,31 @@ class Node(list):
         return list.append(self, kid)
 
 
-    # Generator for listing the children
     def children(self):
-        if self.type in self.__childAttributes:
-            if len(self):
-                raise "Double children usage in type: %s" % self.type
-            
-            for name in self.__childAttributes[self.type]:
-                value = getattr(self, name, None)
-                if value != None:
-                    if isinstance(value, Node):
-                        yield value
+        for child in self:
+            yield child
 
-                    elif isinstance(value, list):
-                        for child in value:
-                            if isinstance(child, Node):
-                                yield child
-                    
-                    else:
-                        raise "Unexpected attribute value at %s" % name
-        else:
-            for child in self:
-                yield child            
-            
 
     # Returns a data structure containing all relevant information about the node
     def export(self):
-        children = []
-        for child in self:
-            children.append(child)
-
         attrs = {}
-        blockAttr = ["tokenizer", "target", "start", "end", "parent"]
-        for attr in dir(self):
-            if attr in blockAttr or attr[0] == "_" or attr[-1] == "_":
-                continue
-            child = getattr(self, attr)
-
-            # is a node or a list with nodes
-            if isinstance(child, Node) or (type(child) == list and len(child) > 0 and isinstance(child[0], Node)):
-                if len(self) > 0:
-                    raise "Unexpected additional child %s in %s" % (attr, self.type)
-
-                helper = Node(None, attr)
-
-                if type(child) == list:
-                    for listChild in child:
-                        helper.append(listChild)
-                else:
-                    helper.append(child)
-
-                children.append(helper)
-
-            # primitive types or a list with primitive types
-            elif type(child) in (bool, int, float, str, unicode, list):
-                attrs[attr] = child
+        for name in dir(self):
+            if not name in ("start", "end") and name[0] != "_":
+                value = getattr(self, name)
+                if type(value) in (bool, int, float, str, unicode, list):
+                    attrs[name] = value
+                
+        children = []
+        if self.type in self.__childAttributes:
+            for name in self.__childAttributes[self.type]:
+                value = getattr(self, name, None)
+                if value != None:
+                    helper = Node(None, name, [value])                    
+                    children.append(helper)
+        else:
+            for child in self:
+                children.append(child)
+            
 
         return attrs, children        
 
@@ -212,7 +182,7 @@ class Node(list):
     # Returns the source code of the node
     def getSource(self):
         if not self.tokenizer:
-            raise "Could not find source for node '%s'" % node.type
+            raise Exception("Could not find source for node '%s'" % node.type)
             
         if getattr(self, "start", None) is not None:
             if getattr(self, "end", None) is not None:
