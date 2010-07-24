@@ -27,5 +27,7 @@ Todo
 
 - String optimizations
 - API data
+- Unicode data merge-in (CLDR)
+- PO-File translations
 - ...
 
