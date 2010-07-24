@@ -192,7 +192,7 @@ def __throw(node):
 def __try(node):
     result = "try%s" % compress(node.tryBlock)
     
-    for catch in node.catchClauses:
+    for catch in node.catches:
         result += "catch(%s)%s" % (catch.varName, compress(catch.block))
 
     if hasattr(node, "finallyBlock"):
@@ -278,8 +278,8 @@ def __if(node):
 def __switch(node):
     result = "switch(%s){" % compress(node.discriminant)
     for case in node.cases:
-        if hasattr(case, "caseLabel"):
-            result += "case %s:" % compress(case.caseLabel)
+        if hasattr(case, "label"):
+            result += "case %s:" % compress(case.label)
         else:
             result += "default:"
         

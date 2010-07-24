@@ -144,7 +144,8 @@ def Statement(tokenizer, compilerContext):
         tokenizer.mustMatch("left_paren")
         node.append(Expression(tokenizer, compilerContext), "discriminant")
         tokenizer.mustMatch("right_paren")
-        node.cases = []
+        cases = Node(tokenizer, "cases")
+        node.append(cases, "cases")
         node.defaultIndex = -1
         compilerContext.statementStack.append(node)
         tokenizer.mustMatch("left_curly")
@@ -160,9 +161,9 @@ def Statement(tokenizer, compilerContext):
                     raise SyntaxError("More than one switch default", tokenizer)
                 childNode = Node(tokenizer)
                 if tokenType == "default":
-                    node.defaultIndex = len(node.cases)
+                    node.defaultIndex = len(cases)
                 else:
-                    childNode.append(Expression(tokenizer, compilerContext, "colon"), "caseLabel")
+                    childNode.append(Expression(tokenizer, compilerContext, "colon"), "label")
             else:
                 raise SyntaxError("Invalid switch case", tokenizer)
                 
@@ -177,8 +178,7 @@ def Statement(tokenizer, compilerContext):
                     
                 childNode.statements.append(Statement(tokenizer, compilerContext))
                 
-            node.cases.append(childNode)
-            node.append(childNode)
+            cases.append(childNode)
             
         compilerContext.statementStack.pop()
         return node
@@ -295,7 +295,8 @@ def Statement(tokenizer, compilerContext):
     elif tokenType == "try":
         node = Node(tokenizer)
         node.append(Block(tokenizer, compilerContext), "tryBlock")
-        node.catchClauses = []
+        catches = Node(tokenizer, "catches")
+        node.append(catches, "catches")
 
         while tokenizer.match("catch"):
             childNode = Node(tokenizer)
@@ -303,13 +304,12 @@ def Statement(tokenizer, compilerContext):
             childNode.varName = tokenizer.mustMatch("identifier").value
             tokenizer.mustMatch("right_paren")
             childNode.append(Block(tokenizer, compilerContext), "block")
-            node.catchClauses.append(childNode)
-            node.append(childNode)
+            catches.append(childNode)
             
         if tokenizer.match("finally"):
             node.append(Block(tokenizer, compilerContext), "finallyBlock")
             
-        if not node.catchClauses and not getattr(node, "finallyBlock", None):
+        if not catches and not getattr(node, "finallyBlock", None):
             raise SyntaxError("Invalid try statement", tokenizer)
             
         return node
