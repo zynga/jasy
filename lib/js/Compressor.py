@@ -277,7 +277,6 @@ def __if(node):
         
 def __switch(node):
     result = "switch(%s){" % compress(node.discriminant)
-    print node
     for case in node.cases:
         if hasattr(case, "label"):
             result += "case %s:" % compress(case.label)
