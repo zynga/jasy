@@ -11,15 +11,34 @@ from js.Parser import parseExpression
 # Public API
 #
 
-def optimize(node, data):
+# First step: replaces all occourences with incoming values
+def replace(node, data):
     if node.type == "dot":
         assembled = __assembleDot(node)
         if assembled and assembled in data:
             print "Replace %s => %s" % (assembled, data[assembled])
-            __replace(node, data[assembled])
+            repl = parseExpression(Tokenizer(data[assembled], None))
+            node.parent.replace(node, repl)            
     
     for child in node:
-        optimize(child, data)
+        replace(child, data)
+        
+
+# Second step: Reprocesses JavaScript to remove dead paths
+def optimize(node):
+    if node.type == "if":
+        condition = node.condition
+        if condition.type == "false":
+            if hasattr(node, "elsePart"):
+                node.parent.replace(node, node.elsePart)
+            else:
+                node.parent.remove(node)
+            
+        elif condition.type == "true":
+            node.parent.replace(node, node.thenPart)
+    
+    for child in node:
+        optimize(child)
     
     
     
@@ -40,9 +59,5 @@ def __assembleDot(node, result=None):
             print "Unsupported type: %s" % child.type
             
     return ".".join(result)
-    
-    
-def __replace(node, expression):
-    repl = parseExpression(Tokenizer(expression, None))
-    return node.parent.replace(node, repl)
+
     

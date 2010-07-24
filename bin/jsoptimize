@@ -15,7 +15,7 @@ from js.optimizer import Variants
 def jsoptimize(source, filename=None):
     variantData = {
         "js.Variant.VERSION" : 0.3,
-        "js.Variant.DEBUG" : "false",
+        "js.Variant.DEBUG" : "true",
         "js.Variant.LOCAL_STORAGE" : "true",
         "js.Variant.NATIVE_JSON" : "true",
         "js.Variant.THEME" : '"blueish"',
@@ -23,7 +23,9 @@ def jsoptimize(source, filename=None):
     }
     
     tree = parse(Tokenizer(source, filename))
-    Variants.optimize(tree, variantData)
+    Variants.replace(tree, variantData)
+    print tree
+    Variants.optimize(tree)
     LocalVariables.optimize(tree)
     return compress(tree)
 
