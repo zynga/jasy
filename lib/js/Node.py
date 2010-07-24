@@ -48,32 +48,6 @@ class Node(list):
             self.append(arg)
 
 
-    __childAttributes = {
-        # statements
-        "if" : ["condition", "thenPart", "elsePart"],
-        "switch": ["discriminant", "cases"],
-        "case" : ["statements"],
-        "default" : ["statements"],
-        "for_in" : ["object", "iterator", "body"],
-        "for" : ["setup", "condition", "update", "body"],
-        "while" : ["condition", "body"],
-        "do" : ["condition", "body"],
-        "try" : ["tryBlock", "catchClauses", "finallyBlock"],
-        "catch" : ["block"],
-        "throw" : ["exception"],
-        "return" : ["value"],
-        "with" : ["object", "body"],
-        "newline" : ["expression"],
-        "semicolon" : ["expression"],
-        "label" : ["statement"],
-        
-        # functions
-        "function" : ["params", "body"],
-        "setter" : ["params", "body"],
-        "getter" : ["params", "body"],
-    }
-
-
     # Always use push to add operands to an expression, to update start and end.
     def append(self, kid, rel=None):
         if kid:
@@ -93,90 +67,73 @@ class Node(list):
         return list.append(self, kid)
 
 
-    # Returns a data structure containing all relevant information about the node
-    def export(self):
-        attrs = {}
-        for name in dir(self):
-            if not name in ("start", "end") and name[0] != "_":
-                value = getattr(self, name)
-                if type(value) in (bool, int, float, str, unicode, list):
-                    attrs[name] = value
-                
-        children = []
-        if self.type in self.__childAttributes:
-            for name in self.__childAttributes[self.type]:
-                value = getattr(self, name, None)
-                if value != None:
-                    helper = Node(None, name, [value])                    
-                    children.append(helper)
-        else:
-            for child in self:
-                children.append(child)
-            
-
-        return attrs, children        
-
-
-    # Converts node to XML
+    # Converts the node to XML
     def toXml(self, format=True, indent=0, tab="  "):
-        def attrs2Xml(attrs):
-            result = []
-            for name in attrs:
-                if name != "type":
-                    value = attrs[name]
+        lead = tab * indent if format else ""
+        innerLead = tab * (indent+1) if format else ""
+        lineBreak = "\n" if format else ""
+
+        relatedChildren = []
+        attrsCollection = []
+        for name in dir(self):
+            if name not in ("type", "parent", "rel", "start", "end") and name[0] != "_":
+                value = getattr(self, name)
+                if isinstance(value, Node) and hasattr(value, "rel"):
+                    relatedChildren.append(value)
+                elif type(value) in (bool, int, long, float, basestring, str, unicode, list):
                     if type(value) == bool:
                         value = "true" if value else "false" 
-                    elif type(value) in (int, float):
+                    elif type(value) in (int, long, float):
                         value = str(value)
                     elif type(value) == list:
                         value = ",".join(value)
-                    result.append('%s=%s' % (name, json.dumps(value)))
-            return (" " + " ".join(result)) if len(result) > 0 else ""
+                    attrsCollection.append('%s=%s' % (name, json.dumps(value)))
 
-        lead = tab * indent if format else ""
-        lineBreak = "\n" if format else ""
+        attrs = (" " + " ".join(attrsCollection)) if len(attrsCollection) > 0 else ""
 
-        attrs, children = self.export()
-        typeattr = attrs["type"]
+        if len(self) == 0 and len(relatedChildren) == 0:
+            result = "%s<%s%s/>%s" % (lead, self.type, attrs, lineBreak)
 
-        if len(children) == 0:
-            result = "%s<%s%s/>%s" % (lead, typeattr, attrs2Xml(attrs), lineBreak)
         else:
-            result = "%s<%s%s>%s" % (lead, typeattr, attrs2Xml(attrs), lineBreak)
+            result = "%s<%s%s>%s" % (lead, self.type, attrs, lineBreak)
 
-            for child in children:
-                result += child.toXml(format, indent+1)
+            for child in self:
+                if not hasattr(child, "rel"):
+                    result += child.toXml(format, indent+1)
 
-            result += "%s</%s>%s" % (lead, typeattr, lineBreak)
+            for child in relatedChildren:
+                result += "%s<%s>%s" % (innerLead, child.rel, lineBreak)
+                result += child.toXml(format, indent+2)
+                result += "%s</%s>%s" % (innerLead, child.rel, lineBreak)
+
+            result += "%s</%s>%s" % (lead, self.type, lineBreak)
 
         return result
         
         
-    # Converts node to JSON
-    def toJson(self, format=True, indent=0, tab="  "):
-        lead = tab * indent if format else ""
-        innerLead = tab * (indent+1) if format else ""
-        lineBreak = "\n" if format else ""
+    # Creates a python data structure containing all recursive data of the node
+    def export(self):
+        attrs = {}
+        for name in dir(self):
+            if name not in ("parent", "rel", "start", "end") and name[0] != "_":
+                value = getattr(self, name)
+                if isinstance(value, Node) and hasattr(value, "rel"):
+                    attrs[name] = value.export()
+                elif type(value) in (bool, int, long, float, basestring, str, unicode, list):
+                    attrs[name] = value
         
-        attrs, children = self.export()
-        blocks = []
-
-        for name in attrs:
-            value = json.dumps(attrs[name], separators=(',',':'))
-            blocks.append("%s%s:%s" % (innerLead, name, value))
-
-        if len(children) > 0:
-            content = "%schildren:%s" % (innerLead, lineBreak)
-            content += "%s[%s" % (innerLead, lineBreak)
-            for child in children:
-                content += child.toJson(format, indent+2)
-            content += "%s]" % innerLead
-            blocks.append(content)
-
-        if len(blocks) > 0:
-            blocks = (",%s" % lineBreak).join(blocks) + lineBreak
-
-        return "%s{%s%s%s}%s" % (lead, lineBreak, blocks, lead, lineBreak)
+        for child in self:
+            if not hasattr(child, "rel"):
+                if not "children" in attrs:
+                    attrs["children"] = []
+                attrs["children"].append(child.export())
+        
+        return attrs    
+        
+        
+    # Converts the node to JSON
+    def toJson(self, format=True, indent=2, tab="  "):
+        return json.dumps(self.export(), indent=indent)
         
         
     # Returns the source code of the node
