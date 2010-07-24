@@ -17,7 +17,7 @@ def optimize(node, data):
             print "Found %s => %s" % (assembled, data[assembled])
             __replace(node, data[assembled])
     
-    for child in node.children():
+    for child in node:
         optimize(child, data)
     
     

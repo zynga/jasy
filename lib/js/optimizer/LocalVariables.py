@@ -4,7 +4,7 @@
 #
 
 from js.Tokenizer import keywords
-from js.Util import *
+from js.Util import baseEncode
 from copy import copy
 
 __all__ = ["optimize"]
@@ -25,7 +25,7 @@ def optimize(node, translate=None, pos=0):
         translate = {} if not translate else copy(translate)
         pos = __optimizeScope(node, translate, pos)
         
-    for child in getChildren(node):
+    for child in node:
         optimize(child, translate, pos)
       
 
@@ -81,5 +81,5 @@ def __optimizeNode(node, translate, first=False):
     # Don't recurse into types which never have children
     # Don't recurse into closures. These are processed by __optimizeScope later
     if not nodeType in empty and (first or not nodeType == "script"):
-        for child in getChildren(node):
+        for child in node:
             __optimizeNode(child, translate, False)

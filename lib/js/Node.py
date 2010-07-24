@@ -67,7 +67,7 @@ class Node(list):
         "semicolon" : ["expression"],
         "label" : ["statement"],
         
-        # other
+        # functions
         "function" : ["params", "body"],
         "setter" : ["params", "body"],
         "getter" : ["params", "body"],
@@ -86,11 +86,6 @@ class Node(list):
             kid.parent = self
 
         return list.append(self, kid)
-
-
-    def children(self):
-        for child in self:
-            yield child
 
 
     # Returns a data structure containing all relevant information about the node
