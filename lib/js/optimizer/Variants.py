@@ -15,7 +15,7 @@ def optimize(node, data):
     if node.type == "dot":
         assembled = __assembleDot(node)
         if assembled and assembled in data:
-            print "Found %s => %s" % (assembled, data[assembled])
+            print "Replace %s => %s" % (assembled, data[assembled])
             __replace(node, data[assembled])
     
     for child in node:

@@ -14,8 +14,12 @@ from js.optimizer import Variants
 
 def jsoptimize(source, filename=None):
     variantData = {
+        "js.Variant.VERSION" : 0.3,
         "js.Variant.DEBUG" : "false",
-        "js.Variant.LOCAL_STORAGE" : "true",    
+        "js.Variant.LOCAL_STORAGE" : "true",
+        "js.Variant.NATIVE_JSON" : "true",
+        "js.Variant.THEME" : '"blueish"',
+        "js.Variant.LOCALE" : '"de_DE"'
     }
     
     tree = parse(Tokenizer(source, filename))
