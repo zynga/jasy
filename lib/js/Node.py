@@ -142,7 +142,7 @@ class Node(list):
 
 
     # Converts node to XML
-    def toXml(self, indent=0, tab="  "):
+    def toXml(self, format=True, indent=0, tab="  "):
         def attrs2Xml(attrs):
             result = []
             for name in attrs:
@@ -157,46 +157,50 @@ class Node(list):
                     result.append('%s=%s' % (name, json.dumps(value)))
             return (" " + " ".join(result)) if len(result) > 0 else ""
 
-        lead = tab * indent
+        lead = tab * indent if format else ""
+        lineBreak = "\n" if format else ""
+
         attrs, children = self.export()
         typeattr = attrs["type"]
 
         if len(children) == 0:
-            result = "%s<%s%s/>\n" % (lead, typeattr, attrs2Xml(attrs))
+            result = "%s<%s%s/>%s" % (lead, typeattr, attrs2Xml(attrs), lineBreak)
         else:
-            result = "%s<%s%s>\n" % (lead, typeattr, attrs2Xml(attrs))
+            result = "%s<%s%s>%s" % (lead, typeattr, attrs2Xml(attrs), lineBreak)
 
             for child in children:
-                result += child.toXml(indent+1)
+                result += child.toXml(format, indent+1)
 
-            result += "%s</%s>\n" % (lead, typeattr)
+            result += "%s</%s>%s" % (lead, typeattr, lineBreak)
 
         return result
         
         
     # Converts node to JSON
-    def toJson(self, indent=0, tab="  "):
-        lead = tab * indent
-        innerLead = tab * (indent+1)
+    def toJson(self, format=True, indent=0, tab="  "):
+        lead = tab * indent if format else ""
+        innerLead = tab * (indent+1) if format else ""
+        lineBreak = "\n" if format else ""
+        
         attrs, children = self.export()
         blocks = []
 
         for name in attrs:
-            value = json.dumps(attrs[name])
-            blocks.append("%s%s : %s" % (innerLead, name, value))
+            value = json.dumps(attrs[name], separators=(',',':'))
+            blocks.append("%s%s:%s" % (innerLead, name, value))
 
         if len(children) > 0:
-            content = "%schildren : \n" % innerLead
-            content += "%s[\n" % innerLead
+            content = "%schildren:%s" % (innerLead, lineBreak)
+            content += "%s[%s" % (innerLead, lineBreak)
             for child in children:
-                content += child.toJson(indent+2)
+                content += child.toJson(format, indent+2)
             content += "%s]" % innerLead
             blocks.append(content)
 
         if len(blocks) > 0:
-            blocks = ",\n".join(blocks) + "\n"
+            blocks = (",%s" % lineBreak).join(blocks) + lineBreak
 
-        return "%s{\n%s%s}\n" % (lead, blocks, lead)
+        return "%s{%s%s%s}%s" % (lead, lineBreak, blocks, lead, lineBreak)
         
         
     # Returns the source code of the node
