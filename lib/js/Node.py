@@ -9,6 +9,7 @@
 
 import json
 
+
 class Node(list):
     def __init__(self, tokenizer=None, type=None, args=[]):
         list.__init__(self)
@@ -47,6 +48,32 @@ class Node(list):
             self.append(arg)
 
 
+    __childAttributes = {
+        # statements
+        "if" : ["condition", "thenPart", "elsePart"],
+        "switch": ["discriminant", "cases"],
+        "case" : ["statements"],
+        "default" : ["statements"],
+        "for_in" : ["object", "iterator", "body"],
+        "for" : ["setup", "condition", "update", "body"],
+        "while" : ["condition", "body"],
+        "do" : ["condition", "body"],
+        "try" : ["tryBlock", "catchClauses", "finallyBlock"],
+        "catch" : ["block"],
+        "throw" : ["exception"],
+        "return" : ["value"],
+        "with" : ["object", "body"],
+        "newline" : ["expression"],
+        "semicolon" : ["expression"],
+        "label" : ["statement"],
+        
+        # other
+        "function" : ["params", "body"],
+        "setter" : ["params", "body"],
+        "getter" : ["params", "body"],
+    }
+
+
     # Always use push to add operands to an expression, to update start and end.
     def append(self, kid, numbers=[]):
         if kid:
@@ -63,15 +90,27 @@ class Node(list):
 
     # Generator for listing the children
     def children(self):
-        for child in self:
-            yield child
-        
-        for key in dir(self):
-            if not (key == "parent" or key == "target" or key[0] == "_"):
-                value = getattr(self, key)
-                if isinstance(value, Node):
-                    yield value
+        if self.type in self.__childAttributes:
+            if len(self):
+                raise "Double children usage in type: %s" % self.type
+            
+            for name in self.__childAttributes[self.type]:
+                value = getattr(self, name, None)
+                if value != None:
+                    if isinstance(value, Node):
+                        yield value
 
+                    elif isinstance(value, list):
+                        for child in value:
+                            if isinstance(child, Node):
+                                yield child
+                    
+                    else:
+                        raise "Unexpected attribute value at %s" % name
+        else:
+            for child in self:
+                yield child            
+            
 
     # Returns a data structure containing all relevant information about the node
     def export(self):

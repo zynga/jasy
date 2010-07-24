@@ -11,14 +11,11 @@ import json
 #
 
 def optimize(node, data):
-
     if node.type == "dot":
-        parent = getattr(node, "parent", None)
-        if not parent or node.parent.type != "dot":
-            assembled = __assembleDot(node)
-            if assembled and assembled in data:
-                print "Found %s => %s" % (assembled, data[assembled])
-                __replace(node, data[assembled])
+        assembled = __assembleDot(node)
+        if assembled and assembled in data:
+            print "Found %s => %s" % (assembled, data[assembled])
+            __replace(node, data[assembled])
     
     for child in node.children():
         optimize(child, data)
@@ -49,8 +46,9 @@ def __assembleDot(node, result=None):
     
     
 def __replace(node, replacement):
-    pos = node.parent.index(node)
-    print "Replace at index: %s" % pos
+    #pos = node.parent.index(node)
+    #print "Replace at index: %s" % pos
+    pass
     
     
     
