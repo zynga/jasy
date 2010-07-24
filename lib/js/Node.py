@@ -46,12 +46,8 @@
 
 import json
 
-nodeId = 0
-
 class Node(list):
     def __init__(self, tokenizer=None, type=None, args=[]):
-        global nodeId        
-        
         list.__init__(self)
 
         if tokenizer:
@@ -80,13 +76,9 @@ class Node(list):
                 self.line = tokenizer.line
 
             self.tokenizer = tokenizer
-            self.id = nodeId
             
         elif type:
             self.type = type
-            self.id = nodeId
-
-        nodeId += 1
 
         for arg in args:
             self.append(arg)
@@ -113,7 +105,7 @@ class Node(list):
             children.append(child)
 
         attrs = {}
-        blockAttr = ["tokenizer", "target", "start", "end", "parent", "id"]
+        blockAttr = ["tokenizer", "target", "start", "end", "parent"]
         for attr in dir(self):
             if attr in blockAttr or attr[0] == "_" or attr[-1] == "_":
                 continue
