@@ -43,7 +43,9 @@ def optimize(node):
             node.parent.replace(node, node.thenPart)
             
     
-
+    # Optimize hook statement
+    if node.type == "hook":
+        print node
             
     
     # Optimize block statements
@@ -52,6 +54,13 @@ def optimize(node):
     
     
     
+    
+    
+    
+#
+# Implementation
+#
+
 def __checkCondition(node):
     if node.type == "false":
         return False
@@ -83,15 +92,8 @@ def __checkCondition(node):
         if type(innerResult) == bool:
             return not innerResult
 
-        
     return None
-    
-    
-    
-    
-#
-# Implementation
-#
+
 
 def __assembleDot(node, result=None):
     if result == None:
