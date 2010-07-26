@@ -38,14 +38,16 @@ def optimize(node):
                 node.parent.replace(node, node.elsePart)
             else:
                 node.parent.remove(node)
-            
         elif check is True:
             node.parent.replace(node, node.thenPart)
-            
     
     # Optimize hook statement
     if node.type == "hook":
-        print node
+        check = __checkCondition(node[0])
+        if check is False:
+            node.parent.replace(node, node[2])
+        elif check is True:
+            node.parent.replace(node, node[1])
             
     
     # Optimize block statements
