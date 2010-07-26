@@ -29,25 +29,49 @@ def optimize(node):
     # Process from inside to outside
     for child in node:
         optimize(child)
-
+        
     # Optimize if cases
     if node.type == "if":
-        condition = node.condition
-        if condition.type == "false":
+        check = __checkCondition(node.condition)
+        if check is False:
             if hasattr(node, "elsePart"):
                 node.parent.replace(node, node.elsePart)
             else:
                 node.parent.remove(node)
             
-        elif condition.type == "true":
+        elif check is True:
             node.parent.replace(node, node.thenPart)
-            print node.parent
+            
     
+
+            
     
     # Optimize block statements
     if node.type == "block" and len(node) == 1:
         node.parent.replace(node, node[0])
     
+    
+    
+def __checkCondition(node):
+    if node.type == "false":
+        return False
+    
+    elif node.type == "true":
+        return True
+
+    # Equal operator
+    elif node.type == "eq" and node[0].type == node[1].type:
+        if node[0].type in ("string","number"):
+            return node[0].value == node[1].value
+        
+        if node[0].type == "true":
+            return True
+        elif node[0].type == "false":
+            return False    
+        
+    
+        
+    return None
     
     
     

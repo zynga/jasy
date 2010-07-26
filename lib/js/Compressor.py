@@ -265,6 +265,9 @@ def __hook(node):
 def __if(node):
     result = "if(%s)%s" % (compress(node.condition), compress(node.thenPart))
     if hasattr(node, "elsePart"):
+        # if-blocks with braces
+        if not result.endswith((";","}")): result += ";"            
+        
         result += "else" 
         elseCode = compress(node.elsePart)
         
