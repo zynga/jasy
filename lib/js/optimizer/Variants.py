@@ -16,7 +16,7 @@ def replace(node, data):
     if node.type == "dot":
         assembled = __assembleDot(node)
         if assembled and assembled in data:
-            print "Replace %s => %s" % (assembled, data[assembled])
+            # print "Replace %s => %s" % (assembled, data[assembled])
             repl = parseExpression(Tokenizer(data[assembled], None))
             node.parent.replace(node, repl)            
     
