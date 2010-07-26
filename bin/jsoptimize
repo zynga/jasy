@@ -24,6 +24,7 @@ def jsoptimize(source, filename=None):
     
     tree = parse(Tokenizer(source, filename))
     Variants.replace(tree, variantData)
+    print tree
     Variants.optimize(tree)
     LocalVariables.optimize(tree)
     return compress(tree)

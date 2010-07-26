@@ -33,23 +33,22 @@ def optimize(node):
     # Optimize if cases
     if node.type == "if":
         check = __checkCondition(node.condition)
-        if check is False:
+        if check is True:
+            node.parent.replace(node, node.thenPart)
+        elif check is False:
             if hasattr(node, "elsePart"):
                 node.parent.replace(node, node.elsePart)
             else:
                 node.parent.remove(node)
-        elif check is True:
-            node.parent.replace(node, node.thenPart)
     
     # Optimize hook statement
     if node.type == "hook":
         check = __checkCondition(node[0])
-        if check is False:
-            node.parent.replace(node, node[2])
-        elif check is True:
+        if check is True:
             node.parent.replace(node, node[1])
+        elif check is False:
+            node.parent.replace(node, node[2])
             
-    
     # Optimize block statements
     if node.type == "block" and len(node) == 1:
         node.parent.replace(node, node[0])
@@ -66,34 +65,35 @@ def optimize(node):
 def __checkCondition(node):
     if node.type == "false":
         return False
-    
     elif node.type == "true":
         return True
-
-    # Equal operator
-    elif node.type == "eq" and node[0].type == node[1].type:
-        if node[0].type in ("string","number"):
-            return node[0].value == node[1].value
-        elif node[0].type == "true":
-            return True
-        elif node[0].type == "false":
-            return False    
-
-    # Not equal operator
-    elif node.type == "ne" and node[0].type == node[1].type:
-        if node[0].type in ("string","number"):
-            return node[0].value != node[1].value
-        elif node[0].type == "true":
-            return False
-        elif node[0].type == "false":
-            return True    
-
-    # Inverted 
+    elif node.type == "eq":
+        return __compareNodes(node[0], node[1])
+    elif node.type == "ne":
+        return __invertResult(__compareNodes(node[0], node[1]))
     elif node.type == "not":
-        innerResult = __checkCondition(node[0])
-        if type(innerResult) == bool:
-            return not innerResult
+        return __invertResult(__checkCondition(node[0]))
 
+    return None
+    
+    
+def __invertResult(result):
+    if type(result) == bool:
+        return not result
+    return result
+    
+    
+def __compareNodes(a, b):
+    if a.type == b.type:
+        if a.type in ("string","number"):
+            return a.value == b.value
+        elif a.type == "true":
+            return True
+        elif b.type == "false":
+            return False    
+    elif a.type in ("true","false") and b.type in ("true","false"):
+        return False
+        
     return None
 
 
