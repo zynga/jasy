@@ -26,6 +26,11 @@ def replace(node, data):
 
 # Second step: Reprocesses JavaScript to remove dead paths
 def optimize(node):
+    # Process from inside to outside
+    for child in node:
+        optimize(child)
+
+    # Optimize if cases
     if node.type == "if":
         condition = node.condition
         if condition.type == "false":
@@ -36,9 +41,14 @@ def optimize(node):
             
         elif condition.type == "true":
             node.parent.replace(node, node.thenPart)
+            print node.parent
     
-    for child in node:
-        optimize(child)
+    
+    # Optimize block statements
+    if node.type == "block" and len(node) == 1:
+        node.parent.replace(node, node[0])
+    
+    
     
     
     
