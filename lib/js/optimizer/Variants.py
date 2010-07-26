@@ -63,13 +63,26 @@ def __checkCondition(node):
     elif node.type == "eq" and node[0].type == node[1].type:
         if node[0].type in ("string","number"):
             return node[0].value == node[1].value
-        
-        if node[0].type == "true":
+        elif node[0].type == "true":
             return True
         elif node[0].type == "false":
             return False    
-        
-    
+
+    # Not equal operator
+    elif node.type == "ne" and node[0].type == node[1].type:
+        if node[0].type in ("string","number"):
+            return node[0].value != node[1].value
+        elif node[0].type == "true":
+            return False
+        elif node[0].type == "false":
+            return True    
+
+    # Inverted 
+    elif node.type == "not":
+        innerResult = __checkCondition(node[0])
+        if type(innerResult) == bool:
+            return not innerResult
+
         
     return None
     
