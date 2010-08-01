@@ -217,6 +217,13 @@ def Statement(tokenizer, compilerContext):
         node = Node(tokenizer)
         childNode = None
         node.isLoop = True
+
+        # JavaScript 1.6 "for each(key in list)"
+        if tokenizer.match("identifier"):
+            if tokenizer.token.value != "each":
+                raise SyntaxError("Illegal identifier after for", tokenizer.filename, node.line)
+            else:
+                node.foreach = true;
         
         tokenizer.mustMatch("left_paren")
         tokenType = tokenizer.peek()
