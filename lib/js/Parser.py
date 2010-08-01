@@ -240,7 +240,6 @@ def Statement(tokenizer, compilerContext):
                 # don't confuse w/ n.varDecl used by for/in.
                 node.varDecls = [];
                 node.varDecls.extend(childNode)
-                break;                
             else:
                 childNode = Expression(tokenizer, compilerContext)
                 
