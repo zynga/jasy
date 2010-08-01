@@ -221,7 +221,7 @@ def Statement(tokenizer, compilerContext):
         # JavaScript 1.6 "for each(key in list)"
         if tokenizer.match("identifier"):
             if tokenizer.token.value != "each":
-                raise SyntaxError("Illegal identifier after for", tokenizer.filename, node.line)
+                raise SyntaxError("Illegal identifier after for", tokenizer)
             else:
                 node.foreach = true;
         
@@ -234,6 +234,13 @@ def Statement(tokenizer, compilerContext):
             if tokenType == "var" or tokenType == "const":
                 tokenizer.get()
                 childNode = Variables(tokenizer, compilerContext)
+            elif tokenType == "let":
+                tokenizer.get();
+                childNode = Variables(tokenizer, compilerContext, "local decls");
+                # don't confuse w/ n.varDecl used by for/in.
+                node.varDecls = [];
+                node.varDecls.extend(childNode)
+                break;                
             else:
                 childNode = Expression(tokenizer, compilerContext)
                 
@@ -243,21 +250,31 @@ def Statement(tokenizer, compilerContext):
             node.type = "for_in"
             node.append(childNode)
             
-            if childNode.type == "var":
+            if childNode.type == "var" or childNode.type == "let":
                 if len(childNode) != 1:
-                    raise SyntaxError("Invalid for..in left-hand side", tokenizer.filename, childNode.line)
+                    raise SyntaxError("Invalid for..in left-hand side", tokenizer)
 
-                # NB: childNode[0].type == INDENTIFIER and childNode[0].value == childNode[0].name
                 node.iterator = childNode[0]
                 node.varDecl = childNode
             
             else:
-                node.iterator = childNode
+                oldchildNode = childNode;
+                while (childNode.type == "group") 
+                    childNode = childNode[0]; # strip parens
+
+                if childNode.type != "identifier" and childNode.type != "call" and childNode.type != "dot" and childNode.type != "index":
+                    raise SyntaxError("Invalid for..in left-hand side", tokenizer)
+                
+                node.iterator = oldchildNode;                
                 node.varDecl = None
                 
             node.append(Expression(tokenizer, compilerContext), "object")
             
         else:
+            # classic for loop
+            if node.foreach:
+                raise SyntaxError("Illegal for-each syntax", tokenizer);
+                         
             if childNode:
                 node.append(childNode, "setup")
             else:
@@ -308,15 +325,19 @@ def Statement(tokenizer, compilerContext):
         if tokenizer.peekOnSameLine() == "identifier":
             tokenizer.get()
             node.label = tokenizer.token.value
+        
         ss = compilerContext.statementStack
         i = len(ss)
         label = getattr(node, "label", None)
+        
         if label:
             while True:
                 i -= 1
                 if i < 0:
                     raise SyntaxError("Label not found", tokenizer)
-                if getattr(ss[i], "label", None) == label: break
+                if getattr(ss[i], "label", None) == label: 
+                    break
+        
         else:
             while True:
                 i -= 1
@@ -325,8 +346,10 @@ def Statement(tokenizer, compilerContext):
                         raise SyntaxError("Invalid break", tokenizer)
                     else:
                         raise SyntaxError("Invalid continue", tokenizer)
-                if (getattr(ss[i], "isLoop", None) or (tokenType == "break" and ss[i].type == "switch")):
+                        
+                if getattr(ss[i], "isLoop", None) or (tokenType == "break" and ss[i].type == "switch"):
                     break
+                    
         node.target = ss[i]
 
     elif tokenType == "try":
