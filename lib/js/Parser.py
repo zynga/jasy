@@ -765,18 +765,18 @@ def Expression(tokenizer, compilerContext, stop=None):
 
             elif tokenType == "yield":
                 if not compilerContext.inFunction:
-                    raise SyntaxError("yield not in function", tokenizer);
+                    raise SyntaxError("yield not in function", tokenizer)
 
                 # yield is followed by 0 or 1 expr, so we don't know if we should
                 # go to operator or operand mode, we must handle the expr here.
-                node = new Node(tokenizer);
+                node = Node(tokenizer)
                 
-                tt = tokenizer.peek()
-                if tt != "semicolon" and tt !== "right_curly" and tt !== "right_paren" and tt !== "right_bracket" and tt !== "comma" and tt !== "colon":
-                    node.value = Expression(tokenizer, compilerContext);
+                tokenType = tokenizer.peek()
+                if tokenType != "semicolon" and tokenType !== "right_curly" and tokenType !== "right_paren" and tokenType !== "right_bracket" and tokenType !== "comma" and tokenType !== "colon":
+                    node.value = Expression(tokenizer, compilerContext)
                 
-                operands.push(node);
-                Tokenizer.scanOperand = False;
+                operands.push(node)
+                Tokenizer.scanOperand = False
 
                     
             elif tokenType in ("delete", "void", "typeof", "not", "bitwise_not", "unary_plus", "unary_minus", "new"):
@@ -850,7 +850,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                             if elms != 1:
                                 raise SyntaxError("Invalid comprehension", tokenizer)
                                 
-                            forInNode = new Node(tokenizer, "for_in")
+                            forInNode = Node(tokenizer, "for_in")
                             if tokenizer.match("identifier"):
                                 if tokenizer.token.value != "each":
                                     raise SyntaxError("Invalid comprehension", tokenizer)
@@ -862,16 +862,16 @@ def Expression(tokenizer, compilerContext, stop=None):
                             # compilerContext.inForLoopInit = true; => won't work because this FOR
                             # may be inside another expression => parenLevel !== 0
                             innerContext = new CompilerContext(compilerContext.inFunction)
-                            innerContext.inForLoopInit = True;
+                            innerContext.inForLoopInit = True
                             
                             iterator = Expression(tokenizer, innerContext)
                             if iterator.type != "identifier":
-                                throw tokenizer.newSyntaxError("Invalid comprehension");
+                                throw tokenizer.newSyntaxError("Invalid comprehension")
                                 
-                            forInNode.append(iterator, "iterator");
-                            tokenizer.mustMatch("in");
+                            forInNode.append(iterator, "iterator")
+                            tokenizer.mustMatch("in")
                             forInNode.append(Expression(tokenizer, compilerContext), "object")
-                            tokenizer.mustMatch("right_paren");
+                            tokenizer.mustMatch("right_paren")
 
                             if tokenizer.match("if"):
                                 forInNode.append(Expression(tokenizer, compilerContext), "condition")
