@@ -129,9 +129,22 @@ def nest(tokenizer, compilerContext, node, func, end=None):
 def Statement(tokenizer, compilerContext):
     tokenType = tokenizer.get()
 
+    if tokenType == "let":
+        node = LetForm(tokenizer, compilerContext, STATEMENT_FORM);
+        if node.type === LET_STM:
+            return node
+            
+        # exps in stm context are semi nodes
+        if node.type == LET_EXP:
+            node2 = new Node(tokenizer, "semicolon");
+            node2.expression = node;
+            node = node2;
+            node.end = node.expression.end;
+
     # Cases for statements ending in a right curly return early, avoiding the
     # common semicolon insertion magic after this switch.
-    if tokenType == "function":
+    elif tokenType == "function":
+        # DECLARED_FORM extends fundefs of the context, STATEMENT_FORM doesn't.
         if len(compilerContext.statementStack) > 1:
             type = STATEMENT_FORM
         else:
@@ -156,10 +169,10 @@ def Statement(tokenizer, compilerContext):
         return node
 
     elif tokenType == "switch":
+        # This allows CASEs after a DEFAULT, which is in the standard.
         node = Node(tokenizer)
-        tokenizer.mustMatch("left_paren")
-        node.append(Expression(tokenizer, compilerContext), "discriminant")
-        tokenizer.mustMatch("right_paren")
+        node.append(ParenExpression(tokenizer, compilerContext), "discriminant")
+        
         cases = Node(tokenizer, "cases")
         node.append(cases)
         node.cases = cases

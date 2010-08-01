@@ -39,6 +39,7 @@ class Node(list):
                 self.type = type
                 self.line = tokenizer.line
 
+            # nodes use a tokenizer for debugging (getSource, filename getter)
             self.tokenizer = tokenizer
             
         elif type:
