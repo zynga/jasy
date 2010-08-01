@@ -130,16 +130,16 @@ def Statement(tokenizer, compilerContext):
     tokenType = tokenizer.get()
 
     if tokenType == "let":
-        node = LetForm(tokenizer, compilerContext, STATEMENT_FORM);
+        node = LetForm(tokenizer, compilerContext, STATEMENT_FORM)
         if node.type == LET_STM:
             return node
             
         # exps in stm context are semi nodes
         if node.type == LET_EXP:
-            node2 = Node(tokenizer, "semicolon");
-            node2.expression = node;
-            node = node2;
-            node.end = node.expression.end;
+            node2 = Node(tokenizer, "semicolon")
+            node2.expression = node
+            node = node2
+            node.end = node.expression.end
 
     # Cases for statements ending in a right curly return early, avoiding the
     # common semicolon insertion magic after this switch.
@@ -223,7 +223,7 @@ def Statement(tokenizer, compilerContext):
             if tokenizer.token.value != "each":
                 raise SyntaxError("Illegal identifier after for", tokenizer)
             else:
-                node.foreach = true;
+                node.foreach = True
         
         tokenizer.mustMatch("left_paren")
         tokenType = tokenizer.peek()
@@ -235,10 +235,10 @@ def Statement(tokenizer, compilerContext):
                 tokenizer.get()
                 childNode = Variables(tokenizer, compilerContext)
             elif tokenType == "let":
-                tokenizer.get();
-                childNode = Variables(tokenizer, compilerContext, "local decls");
+                tokenizer.get()
+                childNode = Variables(tokenizer, compilerContext, "local decls")
                 # don't confuse w/ n.varDecl used by for/in.
-                node.varDecls = [];
+                node.varDecls = []
                 node.varDecls.extend(childNode)
             else:
                 childNode = Expression(tokenizer, compilerContext)
@@ -257,14 +257,14 @@ def Statement(tokenizer, compilerContext):
                 node.varDecl = childNode
             
             else:
-                oldchildNode = childNode;
+                oldchildNode = childNode
                 while childNode.type == "group":
-                    childNode = childNode[0]; # strip parens
+                    childNode = childNode[0] # strip parens
 
                 if childNode.type != "identifier" and childNode.type != "call" and childNode.type != "dot" and childNode.type != "index":
                     raise SyntaxError("Invalid for..in left-hand side", tokenizer)
                 
-                node.iterator = oldchildNode;                
+                node.iterator = oldchildNode                
                 node.varDecl = None
                 
             node.append(Expression(tokenizer, compilerContext), "object")
@@ -272,7 +272,7 @@ def Statement(tokenizer, compilerContext):
         else:
             # classic for loop
             if node.foreach:
-                raise SyntaxError("Illegal for-each syntax", tokenizer);
+                raise SyntaxError("Illegal for-each syntax", tokenizer)
                          
             if childNode:
                 node.append(childNode, "setup")
@@ -347,7 +347,7 @@ def Statement(tokenizer, compilerContext):
                 if i < statementStack.length-1 and getattr(statementStack[i+1], "isLoop", None):
                     i+=1
                 elif tokenType == "continue":
-                    raise SyntaxError("Invalid continue", tokenizer);      
+                    raise SyntaxError("Invalid continue", tokenizer)      
                 
         else:
             while True:
@@ -494,11 +494,11 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     tokenizer.mustMatch("right_curly")
     
     if tokenizer.match("left_curly"):
-        node.append(Script(tokenizer, CompilerContext(True)), "body");
+        node.append(Script(tokenizer, CompilerContext(True)), "body")
         tokenizer.mustMatch("right_curly")
     else:
         # Expression closures (JavaScript 1.8) 
-        node.append(Expression(tokenizer, compilerContext, "comma"), "body");
+        node.append(Expression(tokenizer, compilerContext, "comma"), "body")
     
     node.end = tokenizer.token.end
 
@@ -514,13 +514,13 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
 def Variables(tokenizer, compilerContext, hint=None):
     node = Node(tokenizer)
     while True:
-        peekType = tokenizer.peek();
+        peekType = tokenizer.peek()
         if peekType == "left_curly" or peekType == "left_bracket":
-            childNode = Expression(tokenizer, compilerContext); # for destructuring
+            childNode = Expression(tokenizer, compilerContext) # for destructuring
         else:
-            tokenizer.mustMatch("identifier");
-            childNode = Node(tokenizer);
-            childNode.name = childNode.value;
+            tokenizer.mustMatch("identifier")
+            childNode = Node(tokenizer)
+            childNode.name = childNode.value
         
         if tokenizer.match("assign"):
             if tokenizer.token.assignOp:
@@ -544,17 +544,17 @@ def Variables(tokenizer, compilerContext, hint=None):
     
 # doesn't handle lets in the toplevel of forloop heads
 def LetForm(tokenizer, compilerContext, form):
-    node = Node(tokenizer);
-    hasLeftParen = tokenizer.match("left_paren");
-    childNode = Variables(tokenizer, compilerContext, "local decls");
+    node = Node(tokenizer)
+    hasLeftParen = tokenizer.match("left_paren")
+    childNode = Variables(tokenizer, compilerContext, "local decls")
     
     # let statement and let expression
     if hasLeftParen:
-        tokenizer.mustMatch("right_paren");
-        node.varDecls = [];
+        tokenizer.mustMatch("right_paren")
+        node.varDecls = []
         
         for (i = 0; i < childNode.length; i++)
-            node.varDecls.push(childNode[i]);
+            node.varDecls.push(childNode[i])
         
         if form == STATEMENT_FORM and tokenizer.peek() == "right_curly":
             node.type = "let_stm"
@@ -569,21 +569,21 @@ def LetForm(tokenizer, compilerContext, form):
         
     # let definition
     else:
-        node.type = "let_def";
+        node.type = "let_def"
         //search context to find enclosing BLOCK
-        ss = compilerContext.stmtStack;
-        i = ss.length;
-        while (ss[--i].type !== BLOCK) ; # a BLOCK *must* be found.
-        s = ss[i];
-        s.varDecls = s.varDecls || [];
-        node.varDecls = [];
+        ss = compilerContext.stmtStack
+        i = ss.length
+        while (ss[--i].type !== BLOCK)  # a BLOCK *must* be found.
+        s = ss[i]
+        s.varDecls = s.varDecls || []
+        node.varDecls = []
         
         for (i = 0; i < childNode.length; i++) {
-            s.varDecls.push(childNode[i]); # the vars must go in the correct scope
-            node.varDecls.push(childNode[i]); # but the assignments must stay here
+            s.varDecls.push(childNode[i]) # the vars must go in the correct scope
+            node.varDecls.push(childNode[i]) # but the assignments must stay here
         }
 
-    return node;
+    return node
 }    
 
 
