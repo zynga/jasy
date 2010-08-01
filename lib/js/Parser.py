@@ -489,10 +489,6 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
         if tokenizer.peek() != "right_paren":
             tokenizer.mustMatch("comma")
 
-    tokenizer.mustMatch("left_curly")
-    node.append(Script(tokenizer, CompilerContext(True)), "body")
-    tokenizer.mustMatch("right_curly")
-    
     if tokenizer.match("left_curly"):
         node.append(Script(tokenizer, CompilerContext(True)), "body")
         tokenizer.mustMatch("right_curly")
