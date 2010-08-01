@@ -771,7 +771,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                 # go to operator or operand mode, we must handle the expr here.
                 node = new Node(tokenizer);
                 
-                tt = t.peek()
+                tt = tokenizer.peek()
                 if tt != "semicolon" and tt !== "right_curly" and tt !== "right_paren" and tt !== "right_bracket" and tt !== "comma" and tt !== "colon":
                     node.value = Expression(tokenizer, compilerContext);
                 
@@ -831,7 +831,9 @@ def Expression(tokenizer, compilerContext, stop=None):
                     # Array initializer. Parse using recursive descent, as the
                     # sub-grammer here is not an operator grammar.
                     node = Node(tokenizer, "array_init")
+                    elms = 0
                     while True:
+                        elms += 1
                         tokenType = tokenizer.peek()
                         if tokenType == "right_bracket": 
                             break
@@ -842,6 +844,39 @@ def Expression(tokenizer, compilerContext, stop=None):
                             continue
                             
                         node.append(Expression(tokenizer, compilerContext, "comma"))
+                        
+                        # array comprehensions
+                        if tokenizer.match("for"): 
+                            if elms != 1:
+                                raise SyntaxError("Invalid comprehension", tokenizer)
+                                
+                            forInNode = new Node(tokenizer, "for_in")
+                            if tokenizer.match("identifier"):
+                                if tokenizer.token.value != "each":
+                                    raise SyntaxError("Invalid comprehension", tokenizer)
+                                else:
+                                    node.foreach = True
+
+                            tokenizer.mustMatch(LEFT_PAREN)
+
+                            # compilerContext.inForLoopInit = true; => won't work because this FOR
+                            # may be inside another expression => parenLevel !== 0
+                            innerContext = new CompilerContext(compilerContext.inFunction)
+                            innerContext.inForLoopInit = True;
+                            
+                            iterator = Expression(tokenizer, innerContext)
+                            if iterator.type != "identifier":
+                                throw tokenizer.newSyntaxError("Invalid comprehension");
+                                
+                            forInNode.append(iterator, "iterator");
+                            tokenizer.mustMatch("in");
+                            forInNode.append(Expression(tokenizer, compilerContext), "object")
+                            tokenizer.mustMatch("right_paren");
+
+                            if tokenizer.match("if"):
+                                forInNode.append(Expression(tokenizer, compilerContext), "condition")
+                                
+                            break   
                         
                         if not tokenizer.match("comma"):
                             break
