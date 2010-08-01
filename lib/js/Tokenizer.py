@@ -95,20 +95,6 @@ for symbol, name in symbolNames:
 # Convert symbolNames to an actual dictionary now that we don't care about ordering
 symbolNames = dict(symbolNames)
 
-# Build up a trie of operator tokens.
-opTokens = {}
-for op in symbolNames:
-    if op == "\n" or op == ".":
-        continue
-    
-    node = opTokens
-    for i, ch in enumerate(op):
-        if not ch in node:
-            node[ch] = {}
-        node = node[ch]
-        node["op"] = op
-
-
 
 
 #
@@ -339,6 +325,7 @@ class Tokenizer(object):
         while(True):
             ch = input[self.cursor]
             self.cursor += 1
+            
             if ch == '.' and not floating:
                 floating = True
                 ch = input[self.cursor]
@@ -449,20 +436,14 @@ class Tokenizer(object):
         token = self.token
         input = self.source
 
-        # A bit ugly, but it seems wasteful to write a trie lookup routine for
-        # only 3 characters...
-        node = opTokens[ch]
-        next = input[self.cursor]
-        if next in node:
-            node = node[next]
-            self.cursor += 1
+        op = ch
+        while(True):
             next = input[self.cursor]
-            if next in node:
-                node = node[next]
+            if (op + next) in symbolNames:
                 self.cursor += 1
-                next = input[self.cursor]
-
-        op = node["op"]
+                op += next
+            else:
+                break
         
         if op in assignOps and input[self.cursor] == '=':
             self.cursor += 1
