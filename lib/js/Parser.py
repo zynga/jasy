@@ -342,9 +342,9 @@ def Statement(tokenizer, compilerContext):
                 # a loop, then break targets its labeled statement. Labels can be
                 # nested so we skip all labels immediately enclosing the nearest
                 # non-label statement.
-                while i < statementStack.length-1 and statementStack[i+1].type == "label":
+                while i < len(statementStack)-1 and statementStack[i+1].type == "label":
                     i+=1                    
-                if i < statementStack.length-1 and getattr(statementStack[i+1], "isLoop", None):
+                if i < len(statementStack)-1 and getattr(statementStack[i+1], "isLoop", None):
                     i+=1
                 elif tokenType == "continue":
                     raise SyntaxError("Invalid continue", tokenizer)      
@@ -567,7 +567,7 @@ def LetForm(tokenizer, compilerContext, form):
         # search context to find enclosing BLOCK
         # a BLOCK *must* be found
         statementStack = compilerContext.statementStack
-        i = statementStack.length
+        i = len(statementStack)
         while (statementStack[--i].type != "block"):
             pass
             
