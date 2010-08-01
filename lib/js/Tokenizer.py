@@ -203,12 +203,13 @@ class Tokenizer(object):
             elif ch == '/' and next == '*':
                 self.cursor += 1
                 while (True):
-                    ch = input[self.cursor]
-                    self.cursor += 1
-                    if ch === undefined:
+                    try:
+                        ch = input[self.cursor]
+                        self.cursor += 1
+                    except IndexError:
                         raise ParseError("Unterminated comment")
-
-                    elif ch == '*':
+                        
+                    if ch == '*':
                         next = input[self.cursor]
                         if next == '/':
                             self.cursor += 1
@@ -220,16 +221,17 @@ class Tokenizer(object):
             elif ch == '/' and next == '/':
                 self.cursor += 1
                 while (True):
-                    ch = input[self.cursor]
-                    self.cursor += 1
-                    if ch == undefined:
+                    try:
+                        ch = input[self.cursor]
+                        self.cursor += 1
+                    except IndexError:
                         return
 
-                    elif ch == '\n':
+                    if ch == '\n':
                         self.lineno += 1
                         break
 
-            elif ch !== ' ' and ch !== '\t':
+            elif ch != ' ' and ch != '\t':
                 self.cursor--
                 return
 
@@ -364,7 +366,7 @@ class Tokenizer(object):
         delim = ch
         ch = input[self.cursor]
         self.cursor += 1
-        while ch !== delim:
+        while ch != delim:
             if ch == '\\':
                 hasEscapes = True
                 self.cursor += 1
@@ -384,29 +386,29 @@ class Tokenizer(object):
         token.type = "regexp"
 
         while (True):
-            ch = input[self.cursor]
-            self.cursor += 1
+            try:
+                ch = input[self.cursor]
+                self.cursor += 1
+            except IndexError:
+                raise ParseError("Unterminated regex")
 
             if ch == '\\':
                 self.cursor += 1
                 
             elif ch == '[':
                 while (True):
-                    if ch === undefined:
-                        raise ParseError("Unterminated character class")
-
                     if ch == '\\':
                         self.cursor += 1
 
-                    ch = input[self.cursor]
-                    self.cursor += 1
+                    try:
+                        ch = input[self.cursor]
+                        self.cursor += 1
+                    except IndexError:
+                        raise ParseError("Unterminated character class")
                     
                     if ch == ']':
                         break
                     
-            elif ch === undefined:
-                raise ParseError("Unterminated regex")
-            
             if ch == '/':
                 break
 
