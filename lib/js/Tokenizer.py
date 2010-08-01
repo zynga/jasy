@@ -198,7 +198,7 @@ class Tokenizer(object):
             next = input[self.cursor]
 
             if ch == '\n' and not self.scanNewlines:
-                self.lineno += 1
+                self.line += 1
                 
             elif ch == '/' and next == '*':
                 self.cursor += 1
@@ -216,7 +216,7 @@ class Tokenizer(object):
                             break
                             
                     elif ch == '\n':
-                        self.lineno += 1
+                        self.line += 1
 
             elif ch == '/' and next == '/':
                 self.cursor += 1
@@ -228,7 +228,7 @@ class Tokenizer(object):
                         return
 
                     if ch == '\n':
-                        self.lineno += 1
+                        self.line += 1
                         break
 
             elif ch != ' ' and ch != '\t':
@@ -500,15 +500,15 @@ class Tokenizer(object):
         if self.tokenIndex in self.tokens:
             token = self.tokens[self.tokenIndex]
         else:
-            self.tokens[self.tokenIndex] = token = {}
+            self.tokens[self.tokenIndex] = token = Token()
 
         input = self.source
-        if self.cursor == input.length:
+        if self.cursor == len(input):
             token.type = "end"
             return token.type
             
         token.start = self.cursor
-        token.lineno = self.lineno
+        token.line = self.line
 
         ch = input[self.cursor]
         self.cursor += 1
@@ -536,7 +536,7 @@ class Tokenizer(object):
         
         elif self.scanNewlines and ch == '\n':
             token.type = "newline"
-            self.lineno += 1
+            self.line += 1
         
         else:
             raise ParseError("Illegal token")
