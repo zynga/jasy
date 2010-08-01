@@ -772,7 +772,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                 node = Node(tokenizer)
                 
                 tokenType = tokenizer.peek()
-                if tokenType != "semicolon" and tokenType !== "right_curly" and tokenType !== "right_paren" and tokenType !== "right_bracket" and tokenType !== "comma" and tokenType !== "colon":
+                if tokenType != "semicolon" and tokenType != "right_curly" and tokenType != "right_paren" and tokenType != "right_bracket" and tokenType != "comma" and tokenType != "colon":
                     node.value = Expression(tokenizer, compilerContext)
                 
                 operands.push(node)
@@ -860,7 +860,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                             tokenizer.mustMatch(LEFT_PAREN)
 
                             # compilerContext.inForLoopInit = true; => won't work because this FOR
-                            # may be inside another expression => parenLevel !== 0
+                            # may be inside another expression => parenLevel != 0
                             innerContext = new CompilerContext(compilerContext.inFunction)
                             innerContext.inForLoopInit = True
                             
