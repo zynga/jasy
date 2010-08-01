@@ -326,8 +326,8 @@ def Statement(tokenizer, compilerContext):
             tokenizer.get()
             node.label = tokenizer.token.value
         
-        ss = compilerContext.statementStack
-        i = len(ss)
+        statementStack = compilerContext.statementStack
+        i = len(statementStack)
         label = getattr(node, "label", None)
         
         if label:
@@ -335,9 +335,21 @@ def Statement(tokenizer, compilerContext):
                 i -= 1
                 if i < 0:
                     raise SyntaxError("Label not found", tokenizer)
-                if getattr(ss[i], "label", None) == label: 
+                if getattr(statementStack[i], "label", None) == label: 
                     break
-        
+                    
+                # Both break and continue to label need to be handled specially
+                # within a labeled loop, so that they target that loop. If not in
+                # a loop, then break targets its labeled statement. Labels can be
+                # nested so we skip all labels immediately enclosing the nearest
+                # non-label statement.
+                while i < statementStack.length - 1 and statementStack[i+1].type == "label":
+                    i+=1                    
+                if i < statementStack.length - 1 and statementStack[i+1].isLoop:
+                    i+=1
+                else if tokenType == "continue":
+                    raise SyntaxError("Invalid continue", tokenizer);      
+                
         else:
             while True:
                 i -= 1
@@ -347,10 +359,10 @@ def Statement(tokenizer, compilerContext):
                     else:
                         raise SyntaxError("Invalid continue", tokenizer)
                         
-                if getattr(ss[i], "isLoop", None) or (tokenType == "break" and ss[i].type == "switch"):
+                if getattr(statementStack[i], "isLoop", None) or (tokenType == "break" and statementStack[i].type == "switch"):
                     break
                     
-        node.target = ss[i]
+        node.target = statementStack[i]
 
     elif tokenType == "try":
         node = Node(tokenizer)
@@ -416,11 +428,11 @@ def Statement(tokenizer, compilerContext):
             tokenizer.scanOperand = True
             if tokenType == "colon":
                 label = tokenizer.token.value
-                ss = compilerContext.statementStack
-                i = len(ss) - 1
+                statementStack = compilerContext.statementStack
+                i = len(statementStack) - 1
                 
                 while i >= 0:
-                    if getattr(ss[i], "label", None) == label:
+                    if getattr(statementStack[i], "label", None) == label:
                         raise SyntaxError("Duplicate label", tokenizer)
                     i -= 1
                 
