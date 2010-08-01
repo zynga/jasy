@@ -131,11 +131,11 @@ def Statement(tokenizer, compilerContext):
 
     if tokenType == "let":
         node = LetForm(tokenizer, compilerContext, STATEMENT_FORM)
-        if node.type == LET_STM:
+        if node.type == "let_stm":
             return node
             
         # exps in stm context are semi nodes
-        if node.type == LET_EXP:
+        if node.type == "let_exp":
             node2 = Node(tokenizer, "semicolon")
             node2.expression = node
             node = node2
