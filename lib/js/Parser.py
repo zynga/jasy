@@ -136,7 +136,7 @@ def Statement(tokenizer, compilerContext):
             
         # exps in stm context are semi nodes
         if node.type == LET_EXP:
-            node2 = new Node(tokenizer, "semicolon");
+            node2 = Node(tokenizer, "semicolon");
             node2.expression = node;
             node = node2;
             node.end = node.expression.end;
@@ -259,7 +259,7 @@ def Statement(tokenizer, compilerContext):
             
             else:
                 oldchildNode = childNode;
-                while (childNode.type == "group") 
+                while childNode.type == "group":
                     childNode = childNode[0]; # strip parens
 
                 if childNode.type != "identifier" and childNode.type != "call" and childNode.type != "dot" and childNode.type != "index":
@@ -347,7 +347,7 @@ def Statement(tokenizer, compilerContext):
                     i+=1                    
                 if i < statementStack.length-1 and getattr(statementStack[i+1], "isLoop", None):
                     i+=1
-                else if tokenType == "continue":
+                elif tokenType == "continue":
                     raise SyntaxError("Invalid continue", tokenizer);      
                 
         else:
@@ -493,6 +493,14 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     tokenizer.mustMatch("left_curly")
     node.append(Script(tokenizer, CompilerContext(True)), "body")
     tokenizer.mustMatch("right_curly")
+    
+    if tokenizer.match("left_curly"):
+        node.append(Script(tokenizer, CompilerContext(True)), "body");
+        tokenizer.mustMatch("right_curly")
+    else:
+        # Expression closures (JavaScript 1.8) 
+        node.append(Expression(tokenizer, compilerContext, "comma"), "body");
+    
     node.end = tokenizer.token.end
 
     node.functionForm = functionForm
