@@ -39,47 +39,51 @@ assignOperators = ["|", "^", "&", "<<", ">>", ">>>", "+", "-", "*", "/", "%"]
 # NB: because the lexer doesn't backtrack, all token prefixes must themselves
 # be valid tokens (e.g. !== is acceptable because its prefixes are the valid
 # tokens != and !).
-operatorNames = [
-    (";",    "semicolon"),
-    (",",    "comma"),
-    ("?",    "hook"),
-    (":",    "colon"),
-    ("||",   "or"),
-    ("&&",   "and"),
-    ("|",    "bitwise_or"),
-    ("^",    "bitwise_xor"),
-    ("&",    "bitwise_and"),
-    ("===",  "strict_eq"),
-    ("==",   "eq"),
-    ("=",    "assign"),
-    ("!==",  "strict_ne"),
-    ("!=",   "ne"),
-    ("<<",   "lsh"),
-    ("<=",   "le"),
-    ("<",    "lt"),
-    (">>>",  "ursh"),
-    (">>",   "rsh"),
-    (">=",   "ge"),
-    (">",    "gt"),
-    ("++",   "increment"),
-    ("--",   "decrement"),
-    ("+",    "plus"),
-    ("-",    "minus"),
-    ("*",    "mul"),
-    ("/",    "div"),
-    ("%",    "mod"),
-    ("!",    "not"),
-    ("~",    "bitwise_not"),
-    ("[",    "left_bracket"),
-    ("]",    "right_bracket"),
-    ("{",    "left_curly"),
-    ("}",    "right_curly"),
-    ("(",    "left_paren"),
-    (")",    "right_paren"),
-]
+operatorNames = {
+    '<'   : 'lt', 
+    '>'   : 'gt', 
+    '<='  : 'le', 
+    '>='  : 'ge', 
+    '!='  : 'ne', 
+    '!'   : 'not', 
+    '=='  : 'eq', 
+    '===' : 'strict_eq', 
+    '!==' : 'strict_ne', 
 
-operatorNames = dict(operatorNames)
-print operatorNames
+    '>>'  : 'rsh', 
+    '<<'  : 'lsh',
+    '>>>' : 'ursh', 
+     
+    '+'   : 'plus', 
+    '*'   : 'mul', 
+    '-'   : 'minus', 
+    '/'   : 'div', 
+    '%'   : 'mod', 
+
+    ','   : 'comma', 
+    ';'   : 'semicolon', 
+    ':'   : 'colon', 
+    '='   : 'assign', 
+    '?'   : 'hook', 
+
+    '&&'  : 'and', 
+    '||'  : 'or', 
+
+    '++'  : 'increment', 
+    '--'  : 'decrement', 
+
+    ')'   : 'right_paren', 
+    '('   : 'left_paren', 
+    '['   : 'left_bracket', 
+    ']'   : 'right_bracket', 
+    '{'   : 'left_curly', 
+    '}'   : 'right_curly', 
+
+    '&'   : 'bitwise_and', 
+    '^'   : 'bitwise_xor', 
+    '|'   : 'bitwise_or', 
+    '~'   : 'bitwise_not'
+}
 
 
 
