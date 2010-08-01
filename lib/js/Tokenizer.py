@@ -31,10 +31,6 @@ keywords = [
 ]
 
 
-# Assignment operators
-assignOperators = ["|", "^", "&", "<<", ">>", ">>>", "+", "-", "*", "/", "%"]
-
-
 # Operator and punctuator mapping from token to tree node type name.
 # NB: because the lexer doesn't backtrack, all token prefixes must themselves
 # be valid tokens (e.g. !== is acceptable because its prefixes are the valid
@@ -84,6 +80,11 @@ operatorNames = {
     '|'   : 'bitwise_or', 
     '~'   : 'bitwise_not'
 }
+
+
+# Assignment operators
+assignOperators = ["|", "^", "&", "<<", ">>", ">>>", "+", "-", "*", "/", "%"]
+
 
 
 
