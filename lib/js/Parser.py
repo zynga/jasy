@@ -131,7 +131,7 @@ def Statement(tokenizer, compilerContext):
 
     if tokenType == "let":
         node = LetForm(tokenizer, compilerContext, STATEMENT_FORM);
-        if node.type === LET_STM:
+        if node.type == LET_STM:
             return node
             
         # exps in stm context are semi nodes
