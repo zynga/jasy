@@ -95,6 +95,20 @@ for symbol, name in symbolNames:
 # Convert symbolNames to an actual dictionary now that we don't care about ordering
 symbolNames = dict(symbolNames)
 
+# Build up a trie of operator tokens.
+opTokens = {}
+for op in symbolNames:
+    if op == "\n" or op == ".":
+        continue
+    
+    node = opTokens
+    for i, ch in enumerate(op):
+        if not ch in node:
+            node[ch] = {}
+        node = node[ch]
+        node["op"] = op
+
+
 
 
 #
@@ -193,9 +207,17 @@ class Tokenizer(object):
         input = self.source
         
         while (True):
-            ch = input[self.cursor]
+            if len(input) > self.cursor:
+                ch = input[self.cursor]
+            else:
+                return
+                
             self.cursor += 1
-            next = input[self.cursor]
+            
+            if len(input) > self.cursor:
+                next = input[self.cursor]
+            else:
+                next = None
 
             if ch == '\n' and not self.scanNewlines:
                 self.line += 1
@@ -356,7 +378,6 @@ class Tokenizer(object):
 
         else:
             token.type = "dot"
-            token.assignOp = null
 
 
     def lexString(self, ch):
@@ -441,24 +462,21 @@ class Tokenizer(object):
                 self.cursor += 1
                 next = input[self.cursor]
 
-        op = node.op
-        if assignOps[op] and input[self.cursor] == '=':
+        op = node["op"]
+        
+        if op in assignOps and input[self.cursor] == '=':
             self.cursor += 1
             token.type = "assign"
-            token.assignOp = tokenIds[opTypeNames[op]]
+            token.assignOp = symbolNames[op]
             op += '='
             
         else:
-            token.type = tokenIds[opTypeNames[op]]
+            token.type = symbolNames[op]
             if self.scanOperand:
                 if token.type == "plus":
                     token.type = "unary_plus"
                 elif token.type == "minus":
                     token.type = "unary_minus"
-
-            token.assignOp = null
-
-        token.value = op
 
 
     # FIXME: Unicode escape sequences
@@ -469,8 +487,6 @@ class Tokenizer(object):
 
         try:
             while True:
-                print "CURSOR: %s" % self.cursor
-            
                 ch = input[self.cursor]
                 self.cursor += 1
             
@@ -503,11 +519,7 @@ class Tokenizer(object):
         self.skip()
 
         self.tokenIndex = (self.tokenIndex + 1) & 3
-
-        if self.tokenIndex in self.tokens:
-            token = self.tokens[self.tokenIndex]
-        else:
-            self.tokens[self.tokenIndex] = token = Token()
+        self.tokens[self.tokenIndex] = token = Token()
 
         input = self.source
         if self.cursor == len(input):
@@ -526,11 +538,15 @@ class Tokenizer(object):
         elif self.scanOperand and ch == '/':
             self.lexRegExp(ch)
         
-        elif ch in opTokens:
-            self.lexOp(ch)
-        
         elif ch == '.':
             self.lexDot(ch)
+
+        elif self.scanNewlines and ch == '\n':
+            token.type = "newline"
+            self.line += 1
+
+        elif ch in symbolNames:
+            self.lexOp(ch)
         
         elif ch >= '1' and ch <= '9':
             self.lexNumber(ch)
@@ -540,10 +556,6 @@ class Tokenizer(object):
         
         elif ch == '"' or ch == "'":
             self.lexString(ch)
-        
-        elif self.scanNewlines and ch == '\n':
-            token.type = "newline"
-            self.line += 1
         
         else:
             raise ParseError("Illegal token")
