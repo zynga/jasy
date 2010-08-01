@@ -861,7 +861,7 @@ def Expression(tokenizer, compilerContext, stop=None):
 
                             # compilerContext.inForLoopInit = true; => won't work because this FOR
                             # may be inside another expression => parenLevel != 0
-                            innerContext = new CompilerContext(compilerContext.inFunction)
+                            innerContext = CompilerContext(compilerContext.inFunction)
                             innerContext.inForLoopInit = True
                             
                             iterator = Expression(tokenizer, innerContext)
