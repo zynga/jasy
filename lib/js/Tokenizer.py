@@ -351,11 +351,11 @@ class Tokenizer(object):
 
         exponent = self.lexExponent()
 
-        str = input[token.start:self.cursor]
+        segment = input[token.start:self.cursor]
         if floating or exponent:
-            token.value = float(str)
+            token.value = float(segment)
         else:
-            token.value = int(str)
+            token.value = int(segment)
 
 
     def lexDot(self, ch):
