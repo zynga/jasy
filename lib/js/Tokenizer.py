@@ -28,7 +28,7 @@ keywords = [
     "while", "with"
 ]
 
-assignOps = ['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%']
+assignOps = ["|", "^", "&", "<<", ">>", ">>>", "+", "-", "*", "/", "%"]
 
 
 # Operator and punctuator mapping from token to tree node type name.
@@ -36,44 +36,44 @@ assignOps = ['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%']
 # be valid tokens (e.g. !== is acceptable because its prefixes are the valid
 # tokens != and !).
 symbolNames = [
-    ('\n',   "newline"),
-    (';',    "semicolon"),
-    (',',    "comma"),
-    ('?',    "hook"),
-    (':',    "colon"),
-    ('||',   "or"),
-    ('&&',   "and"),
-    ('|',    "bitwise_or"),
-    ('^',    "bitwise_xor"),
-    ('&',    "bitwise_and"),
-    ('===',  "strict_eq"),
-    ('==',   "eq"),
-    ('=',    "assign"),
-    ('!==',  "strict_ne"),
-    ('!=',   "ne"),
-    ('<<',   "lsh"),
-    ('<=',   "le"),
-    ('<',    "lt"),
-    ('>>>',  "ursh"),
-    ('>>',   "rsh"),
-    ('>=',   "ge"),
-    ('>',    "gt"),
-    ('++',   "increment"),
-    ('--',   "decrement"),
-    ('+',    "plus"),
-    ('-',    "minus"),
-    ('*',    "mul"),
-    ('/',    "div"),
-    ('%',    "mod"),
-    ('!',    "not"),
-    ('~',    "bitwise_not"),
-    ('.',    "dot"),
-    ('[',    "left_bracket"),
-    (']',    "right_bracket"),
-    ('{',    "left_curly"),
-    ('}',    "right_curly"),
-    ('(',    "left_paren"),
-    (')',    "right_paren"),
+    ("\n",   "newline"),
+    (";",    "semicolon"),
+    (",",    "comma"),
+    ("?",    "hook"),
+    (":",    "colon"),
+    ("||",   "or"),
+    ("&&",   "and"),
+    ("|",    "bitwise_or"),
+    ("^",    "bitwise_xor"),
+    ("&",    "bitwise_and"),
+    ("===",  "strict_eq"),
+    ("==",   "eq"),
+    ("=",    "assign"),
+    ("!==",  "strict_ne"),
+    ("!=",   "ne"),
+    ("<<",   "lsh"),
+    ("<=",   "le"),
+    ("<",    "lt"),
+    (">>>",  "ursh"),
+    (">>",   "rsh"),
+    (">=",   "ge"),
+    (">",    "gt"),
+    ("++",   "increment"),
+    ("--",   "decrement"),
+    ("+",    "plus"),
+    ("-",    "minus"),
+    ("*",    "mul"),
+    ("/",    "div"),
+    ("%",    "mod"),
+    ("!",    "not"),
+    ("~",    "bitwise_not"),
+    (".",    "dot"),
+    ("[",    "left_bracket"),
+    ("]",    "right_bracket"),
+    ("{",    "left_curly"),
+    ("}",    "right_curly"),
+    ("(",    "left_paren"),
+    (")",    "right_paren"),
 ]
 
 symbolNames = dict(symbolNames)
@@ -117,6 +117,7 @@ class Tokenizer(object):
     def mustMatch(self, tokenType):
         if not self.match(tokenType):
             raise ParseError("Missing " + tokenType, self.filename, self.line)
+            
         return self.token
 
 
@@ -158,10 +159,10 @@ class Tokenizer(object):
             else:
                 next = None
 
-            if ch == '\n' and not self.scanNewlines:
+            if ch == "\n" and not self.scanNewlines:
                 self.line += 1
                 
-            elif ch == '/' and next == '*':
+            elif ch == "/" and next == "*":
                 self.cursor += 1
                 while (True):
                     try:
@@ -170,16 +171,16 @@ class Tokenizer(object):
                     except IndexError:
                         raise ParseError("Unterminated comment", self.filename, self.line)
                         
-                    if ch == '*':
+                    if ch == "*":
                         next = input[self.cursor]
-                        if next == '/':
+                        if next == "/":
                             self.cursor += 1
                             break
                             
-                    elif ch == '\n':
+                    elif ch == "\n":
                         self.line += 1
 
-            elif ch == '/' and next == '/':
+            elif ch == "/" and next == "/":
                 self.cursor += 1
                 while (True):
                     try:
@@ -188,11 +189,11 @@ class Tokenizer(object):
                     except IndexError:
                         return
 
-                    if ch == '\n':
+                    if ch == "\n":
                         self.line += 1
                         break
 
-            elif ch != ' ' and ch != '\t':
+            elif ch != " " and ch != "\t":
                 self.cursor -= 1
                 return
 
@@ -202,21 +203,21 @@ class Tokenizer(object):
     def lexExponent(self):
         input = self.source
         next = input[self.cursor]
-        if next == 'e' or next == 'E':
+        if next == "e" or next == "E":
             self.cursor += 1
             ch = input[self.cursor]
             self.cursor += 1
-            if ch == '+' or ch == '-':
+            if ch == "+" or ch == "-":
                 ch = input[self.cursor]
                 self.cursor += 1
 
-            if ch < '0' or ch > '9':
+            if ch < "0" or ch > "9":
                 raise ParseError("Missing exponent", self.filename, self.line)
 
             while(True):
                 ch = input[self.cursor]
                 self.cursor += 1
-                if not (ch >= '0' and ch <= '9'):
+                if not (ch >= "0" and ch <= "9"):
                     break
                 
             self.cursor -= 1
@@ -232,32 +233,32 @@ class Tokenizer(object):
 
         ch = input[self.cursor]
         self.cursor += 1
-        if ch == '.':
+        if ch == ".":
             while(True):
                 ch = input[self.cursor]
                 self.cursor += 1
-                if not (ch >= '0' and ch <= '9'):
+                if not (ch >= "0" and ch <= "9"):
                     break
                 
             self.cursor -= 1
             self.lexExponent()
             token.value = parseFloat(token.start, self.cursor)
             
-        elif ch == 'x' or ch == 'X':
+        elif ch == "x" or ch == "X":
             while(True):
                 ch = input[self.cursor]
                 self.cursor += 1
-                if not ((ch >= '0' and ch <= '9') or (ch >= 'a' and ch <= 'f') or (ch >= 'A' and ch <= 'F')):
+                if not ((ch >= "0" and ch <= "9") or (ch >= "a" and ch <= "f") or (ch >= "A" and ch <= "F")):
                     break
                     
             self.cursor -= 1
             token.value = parseInt(input[token.start:self.cursor])
 
-        elif ch >= '0' and ch <= '7':
+        elif ch >= "0" and ch <= "7":
             while(True):
                 ch = input[self.cursor]
                 self.cursor += 1
-                if not (ch >= '0' and ch <= '7'):
+                if not (ch >= "0" and ch <= "7"):
                     break
                     
             self.cursor -= 1
@@ -279,12 +280,12 @@ class Tokenizer(object):
             ch = input[self.cursor]
             self.cursor += 1
             
-            if ch == '.' and not floating:
+            if ch == "." and not floating:
                 floating = True
                 ch = input[self.cursor]
                 self.cursor += 1
                 
-            if not (ch >= '0' and ch <= '9'):
+            if not (ch >= "0" and ch <= "9"):
                 break
 
         self.cursor -= 1
@@ -303,11 +304,11 @@ class Tokenizer(object):
         input = self.source
         next = input[self.cursor]
         
-        if next >= '0' and next <= '9':
+        if next >= "0" and next <= "9":
             while (True):
                 ch = input[self.cursor]
                 self.cursor += 1
-                if not (ch >= '0' and ch <= '9'):
+                if not (ch >= "0" and ch <= "9"):
                     break
 
             self.cursor -= 1
@@ -330,7 +331,7 @@ class Tokenizer(object):
         ch = input[self.cursor]
         self.cursor += 1
         while ch != delim:
-            if ch == '\\':
+            if ch == "\\":
                 hasEscapes = True
                 self.cursor += 1
 
@@ -355,12 +356,12 @@ class Tokenizer(object):
             except IndexError:
                 raise ParseError("Unterminated regex", self.filename, self.line)
 
-            if ch == '\\':
+            if ch == "\\":
                 self.cursor += 1
                 
-            elif ch == '[':
+            elif ch == "[":
                 while (True):
-                    if ch == '\\':
+                    if ch == "\\":
                         self.cursor += 1
 
                     try:
@@ -369,16 +370,16 @@ class Tokenizer(object):
                     except IndexError:
                         raise ParseError("Unterminated character class", self.filename, self.line)
                     
-                    if ch == ']':
+                    if ch == "]":
                         break
                     
-            if ch == '/':
+            if ch == "/":
                 break
 
         while(True):
             ch = input[self.cursor]
             self.cursor += 1
-            if not (ch >= 'a' and ch <= 'z'):
+            if not (ch >= "a" and ch <= "z"):
                 break
 
         self.cursor -= 1
@@ -398,11 +399,11 @@ class Tokenizer(object):
             else:
                 break
         
-        if op in assignOps and input[self.cursor] == '=':
+        if op in assignOps and input[self.cursor] == "=":
             self.cursor += 1
             token.type = "assign"
             token.assignOp = symbolNames[op]
-            op += '='
+            op += "="
             
         else:
             token.type = symbolNames[op]
@@ -424,7 +425,7 @@ class Tokenizer(object):
                 ch = input[self.cursor]
                 self.cursor += 1
             
-                if not ((ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or (ch >= '0' and ch <= '9') or ch == '$' or ch == '_'):
+                if not ((ch >= "a" and ch <= "z") or (ch >= "A" and ch <= "Z") or (ch >= "0" and ch <= "9") or ch == "$" or ch == "_"):
                     break
                     
         except IndexError:
@@ -466,26 +467,26 @@ class Tokenizer(object):
         ch = input[self.cursor]
         self.cursor += 1
         
-        if (ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or ch == '$' or ch == '_':
+        if (ch >= "a" and ch <= "z") or (ch >= "A" and ch <= "Z") or ch == "$" or ch == "_":
             self.lexIdent(ch)
         
-        elif self.scanOperand and ch == '/':
+        elif self.scanOperand and ch == "/":
             self.lexRegExp(ch)
         
-        elif ch == '.':
+        elif ch == ".":
             self.lexDot(ch)
 
-        elif self.scanNewlines and ch == '\n':
+        elif self.scanNewlines and ch == "\n":
             token.type = "newline"
             self.line += 1
 
         elif ch in symbolNames:
             self.lexOp(ch)
         
-        elif ch >= '1' and ch <= '9':
+        elif ch >= "1" and ch <= "9":
             self.lexNumber(ch)
         
-        elif ch == '0':
+        elif ch == "0":
             self.lexZeroNumber(ch)
         
         elif ch == '"' or ch == "'":
