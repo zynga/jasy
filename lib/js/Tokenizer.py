@@ -549,6 +549,6 @@ class Tokenizer(object):
         self.lookahead += 1
         
         if self.lookahead == 4: 
-            raise "PANIC: too much lookahead!"
+            raise ParseError("PANIC: too much lookahead!")
         
         self.tokenIndex = (self.tokenIndex - 1) & 3
