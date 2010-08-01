@@ -466,13 +466,19 @@ class Tokenizer(object):
     def lexIdent(self, ch):
         token = self.token
         input = self.source
-        
-        while True:
-            ch = input[self.cursor]
-            self.cursor += 1
+
+        try:
+            while True:
+                print "CURSOR: %s" % self.cursor
             
-            if (ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or (ch >= '0' and ch <= '9') or ch == '$' or ch == '_':
-                break
+                ch = input[self.cursor]
+                self.cursor += 1
+            
+                if not ((ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or (ch >= '0' and ch <= '9') or ch == '$' or ch == '_'):
+                    break
+                    
+        except IndexError:
+            pass
         
         # Put the non-word character back.
         self.cursor -= 1
