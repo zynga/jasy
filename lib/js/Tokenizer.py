@@ -193,37 +193,40 @@ class Tokenizer(object):
         input = self.source
         
         while (True):
-            ch = input[self.cursor++]
+            ch = input[self.cursor]
+            self.cursor += 1
             next = input[self.cursor]
 
-            if ch === '\n' and !self.scanNewlines:
-                self.lineno++
+            if ch == '\n' and not self.scanNewlines:
+                self.lineno += 1
                 
-            elif ch === '/' and next === '*':
-                self.cursor++
+            elif ch == '/' and next == '*':
+                self.cursor += 1
                 while (True):
-                    ch = input[self.cursor++]
+                    ch = input[self.cursor]
+                    self.cursor += 1
                     if ch === undefined:
                         raise ParseError("Unterminated comment")
 
-                    elif ch === '*':
+                    elif ch == '*':
                         next = input[self.cursor]
-                        if next === '/':
-                            self.cursor++
+                        if next == '/':
+                            self.cursor += 1
                             break
                             
-                    elif ch === '\n':
-                        self.lineno++
+                    elif ch == '\n':
+                        self.lineno += 1
 
-            elif ch === '/' and next === '/':
-                self.cursor++
+            elif ch == '/' and next == '/':
+                self.cursor += 1
                 while (True):
-                    ch = input[self.cursor++]
-                    if ch === undefined:
+                    ch = input[self.cursor]
+                    self.cursor += 1
+                    if ch == undefined:
                         return
 
-                    elif ch === '\n':
-                        self.lineno++
+                    elif ch == '\n':
+                        self.lineno += 1
                         break
 
             elif ch !== ' ' and ch !== '\t':
@@ -236,17 +239,20 @@ class Tokenizer(object):
     def lexExponent(self):
         input = self.source
         next = input[self.cursor]
-        if next === 'e' or next === 'E':
-            self.cursor++
-            ch = input[self.cursor++]
-            if ch === '+' or ch === '-':
-                ch = input[self.cursor++]
+        if next == 'e' or next == 'E':
+            self.cursor += 1
+            ch = input[self.cursor]
+            self.cursor += 1
+            if ch == '+' or ch == '-':
+                ch = input[self.cursor]
+                self.cursor += 1
 
             if ch < '0' or ch > '9':
                 raise ParseError("Missing exponent")
 
             while(True):
-                ch = input[self.cursor++]
+                ch = input[self.cursor]
+                self.cursor += 1
                 if not (ch >= '0' and ch <= '9'):
                     break
                 
@@ -261,10 +267,12 @@ class Tokenizer(object):
         input = self.source
         token.type = "number"
 
-        ch = input[self.cursor++]
-        if ch === '.':
+        ch = input[self.cursor]
+        self.cursor += 1
+        if ch == '.':
             while(True):
-                ch = input[self.cursor++]
+                ch = input[self.cursor]
+                self.cursor += 1
                 if not (ch >= '0' and ch <= '9'):
                     break
                 
@@ -272,9 +280,10 @@ class Tokenizer(object):
             self.lexExponent()
             token.value = parseFloat(token.start, self.cursor)
             
-        elif ch === 'x' or ch === 'X':
+        elif ch == 'x' or ch == 'X':
             while(True):
-                ch = input[self.cursor++]
+                ch = input[self.cursor]
+                self.cursor += 1
                 if not ((ch >= '0' and ch <= '9') or (ch >= 'a' and ch <= 'f') or (ch >= 'A' and ch <= 'F')):
                     break
                     
@@ -283,7 +292,8 @@ class Tokenizer(object):
 
         elif ch >= '0' and ch <= '7':
             while(True):
-                ch = input[self.cursor++]
+                ch = input[self.cursor]
+                self.cursor += 1
                 if not (ch >= '0' and ch <= '7'):
                     break
                     
@@ -303,10 +313,12 @@ class Tokenizer(object):
 
         floating = False
         while(True):
-            ch = input[self.cursor++]
-            if ch === '.' and not floating:
+            ch = input[self.cursor]
+            self.cursor += 1
+            if ch == '.' and not floating:
                 floating = True
-                ch = input[self.cursor++]
+                ch = input[self.cursor]
+                self.cursor += 1
                 
             if not (ch >= '0' and ch <= '9'):
                 break
@@ -327,7 +339,8 @@ class Tokenizer(object):
         
         if next >= '0' and next <= '9':
             while (True):
-                ch = input[self.cursor++]
+                ch = input[self.cursor]
+                self.cursor += 1
                 if not (ch >= '0' and ch <= '9'):
                     break
 
@@ -349,13 +362,15 @@ class Tokenizer(object):
 
         hasEscapes = False
         delim = ch
-        ch = input[self.cursor++]
+        ch = input[self.cursor]
+        self.cursor += 1
         while ch !== delim:
-            if ch === '\\':
+            if ch == '\\':
                 hasEscapes = True
-                self.cursor++
+                self.cursor += 1
 
-            ch = input[self.cursor++]
+            ch = input[self.cursor]
+            self.cursor += 1
 
         if hasEscapes:
             token.value = eval(input.substring(token.start, self.cursor))
@@ -369,20 +384,22 @@ class Tokenizer(object):
         token.type = "regexp"
 
         while (True):
-            ch = input[self.cursor++]
+            ch = input[self.cursor]
+            self.cursor += 1
 
-            if ch === '\\':
-                self.cursor++
+            if ch == '\\':
+                self.cursor += 1
                 
-            elif ch === '[':
+            elif ch == '[':
                 while (True):
                     if ch === undefined:
                         raise ParseError("Unterminated character class")
 
-                    if ch === '\\':
-                        self.cursor++
+                    if ch == '\\':
+                        self.cursor += 1
 
-                    ch = input[self.cursor++]
+                    ch = input[self.cursor]
+                    self.cursor += 1
                     
                     if ch == ']':
                         break
@@ -394,7 +411,8 @@ class Tokenizer(object):
                 break
 
         while(True):
-            ch = input[self.cursor++]
+            ch = input[self.cursor]
+            self.cursor += 1
             if not (ch >= 'a' and ch <= 'z'):
                 break
 
@@ -412,16 +430,16 @@ class Tokenizer(object):
         next = input[self.cursor]
         if next in node:
             node = node[next]
-            self.cursor++
+            self.cursor += 1
             next = input[self.cursor]
             if next in node:
                 node = node[next]
-                self.cursor++
+                self.cursor += 1
                 next = input[self.cursor]
 
         op = node.op
-        if assignOps[op] and input[self.cursor] === '=':
-            self.cursor++
+        if assignOps[op] and input[self.cursor] == '=':
+            self.cursor += 1
             token.type = "assign"
             token.assignOp = tokenIds[opTypeNames[op]]
             op += '='
@@ -446,9 +464,9 @@ class Tokenizer(object):
         input = self.source
         
         while True:
-            ch = input[self.cursor++]
+            ch = input[self.cursor += 1]
             
-            if (ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or (ch >= '0' and ch <= '9') or ch === '$' or ch === '_'):
+            if (ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or (ch >= '0' and ch <= '9') or ch == '$' or ch == '_'):
                 break
         
         # Put the non-word character back.
@@ -478,39 +496,40 @@ class Tokenizer(object):
             self.tokens[self.tokenIndex] = token = {}
 
         input = self.source
-        if self.cursor === input.length:
+        if self.cursor == input.length:
             return token.type = END
 
         token.start = self.cursor
         token.lineno = self.lineno
 
-        ch = input[self.cursor++]
+        ch = input[self.cursor]
+        self.cursor += 1
         
-        if (ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or ch === '$' or ch === '_':
+        if (ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or ch == '$' or ch == '_':
             self.lexIdent(ch)
         
-        elif self.scanOperand and ch === '/':
+        elif self.scanOperand and ch == '/':
             self.lexRegExp(ch)
         
         elif ch in opTokens:
             self.lexOp(ch)
         
-        elif ch === '.':
+        elif ch == '.':
             self.lexDot(ch)
         
         elif ch >= '1' and ch <= '9':
             self.lexNumber(ch)
         
-        elif ch === '0':
+        elif ch == '0':
             self.lexZeroNumber(ch)
         
-        elif ch === '"' or ch === "'":
+        elif ch == '"' or ch == "'":
             self.lexString(ch)
         
-        elif self.scanNewlines and ch === '\n':
+        elif self.scanNewlines and ch == '\n':
             token.type = NEWLINE
             token.value = '\n'
-            self.lineno++
+            self.lineno += 1
         
         else:
             raise ParseError("Illegal token")
