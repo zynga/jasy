@@ -232,7 +232,7 @@ class Tokenizer(object):
                         break
 
             elif ch != ' ' and ch != '\t':
-                self.cursor--
+                self.cursor -= 1
                 return
 
 
@@ -258,7 +258,7 @@ class Tokenizer(object):
                 if not (ch >= '0' and ch <= '9'):
                     break
                 
-            self.cursor--
+            self.cursor -= 1
             return True
 
         return False
@@ -278,7 +278,7 @@ class Tokenizer(object):
                 if not (ch >= '0' and ch <= '9'):
                     break
                 
-            self.cursor--
+            self.cursor -= 1
             self.lexExponent()
             token.value = parseFloat(token.start, self.cursor)
             
@@ -289,7 +289,7 @@ class Tokenizer(object):
                 if not ((ch >= '0' and ch <= '9') or (ch >= 'a' and ch <= 'f') or (ch >= 'A' and ch <= 'F')):
                     break
                     
-            self.cursor--
+            self.cursor -= 1
             token.value = parseInt(input.substring(token.start, self.cursor))
 
         elif ch >= '0' and ch <= '7':
@@ -299,11 +299,11 @@ class Tokenizer(object):
                 if not (ch >= '0' and ch <= '7'):
                     break
                     
-            self.cursor--
+            self.cursor -= 1
             token.value = parseInt(input.substring(token.start, self.cursor))
 
         else:
-            self.cursor--
+            self.cursor -= 1
             self.lexExponent()     # 0E1, &c.
             token.value = 0
     
@@ -325,13 +325,15 @@ class Tokenizer(object):
             if not (ch >= '0' and ch <= '9'):
                 break
 
-        self.cursor--
+        self.cursor -= 1
 
         exponent = self.lexExponent()
-        floating = floating or exponent
 
         str = input.substring(token.start, self.cursor)
-        token.value = floating ? parseFloat(str) : parseInt(str)
+        if floating or exponent:
+            test.value = parseFloat(str)
+        else:
+            test.value = parseInt(str)
 
 
     def lexDot(self, ch):
@@ -346,7 +348,7 @@ class Tokenizer(object):
                 if not (ch >= '0' and ch <= '9'):
                     break
 
-            self.cursor--
+            self.cursor -= 1
             self.lexExponent()
 
             token.type = "number"
@@ -418,7 +420,7 @@ class Tokenizer(object):
             if not (ch >= 'a' and ch <= 'z'):
                 break
 
-        self.cursor--
+        self.cursor -= 1
         token.value = eval(input.substring(token.start, self.cursor))
     
 
@@ -466,13 +468,14 @@ class Tokenizer(object):
         input = self.source
         
         while True:
-            ch = input[self.cursor += 1]
+            ch = input[self.cursor]
+            self.cursor += 1
             
-            if (ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or (ch >= '0' and ch <= '9') or ch == '$' or ch == '_'):
+            if (ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or (ch >= '0' and ch <= '9') or ch == '$' or ch == '_':
                 break
         
         # Put the non-word character back.
-        self.cursor--
+        self.cursor -= 1
 
         id = input[token.start:self.cursor]
         token.type = keywords[id] if id in keywords else "identifier"
@@ -483,8 +486,8 @@ class Tokenizer(object):
     # It consumes input *only* if there is no lookahead.
     # Dispatch to the appropriate lexing function depending on the input.
     def get(self):
-        while (self.lookahead):
-            --self.lookahead
+        while self.lookahead:
+            self.lookahead -= 1
             self.tokenIndex = (self.tokenIndex + 1) & 3
             token = self.tokens[self.tokenIndex]
             if token.type != NEWLINE or self.scanNewlines:
@@ -499,8 +502,9 @@ class Tokenizer(object):
 
         input = self.source
         if self.cursor == input.length:
-            return token.type = END
-
+            token.type = "end"
+            return token.type
+            
         token.start = self.cursor
         token.lineno = self.lineno
 
