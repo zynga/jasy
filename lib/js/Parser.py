@@ -511,12 +511,16 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
 
 
 # Processes a variable block
-def Variables(tokenizer, compilerContext):
+def Variables(tokenizer, compilerContext, hint=None):
     node = Node(tokenizer)
     while True:
-        tokenizer.mustMatch("identifier")
-        childNode = Node(tokenizer)
-        childNode.name = childNode.value
+        peekType = tokenizer.peek();
+        if peekType == "left_curly" or peekType == "left_bracket":
+            childNode = Expression(tokenizer, compilerContext); # for destructuring
+        else:
+            tokenizer.mustMatch("identifier");
+            childNode = Node(tokenizer);
+            childNode.name = childNode.value;
         
         if tokenizer.match("assign"):
             if tokenizer.token.assignOp:
@@ -526,13 +530,61 @@ def Variables(tokenizer, compilerContext):
         childNode.readOnly = not not (node.type == "const")
         
         node.append(childNode)
-        if not childNode.value in compilerContext.declares:
-            compilerContext.declares.append(childNode.value)
+
+        # LETs use "local decls"
+        if hint != "local decls":
+            if not childNode.value in compilerContext.declares:
+                compilerContext.declares.append(childNode.value)
 
         if not tokenizer.match("comma"): 
             break
 
     return node
+    
+    
+# doesn't handle lets in the toplevel of forloop heads
+def LetForm(tokenizer, compilerContext, form):
+    node = Node(tokenizer);
+    hasLeftParen = tokenizer.match("left_paren");
+    childNode = Variables(tokenizer, compilerContext, "local decls");
+    
+    # let statement and let expression
+    if hasLeftParen:
+        tokenizer.mustMatch("right_paren");
+        node.varDecls = [];
+        
+        for (i = 0; i < childNode.length; i++)
+            node.varDecls.push(childNode[i]);
+        
+        if form == STATEMENT_FORM and tokenizer.peek() == "right_curly":
+            node.type = "let_stm"
+            node.append(nest(tokenizer, compilerContext, node, Block), "body")
+            
+        else:
+            node.type = "let_exp"
+            node.append(Expression(tokenizer, compilerContext, COMMA), "body")
+
+    elif form == EXPRESSED_FORM:
+        raise SyntaxError("Let-definition used as expression.", tokenizer)
+        
+    # let definition
+    else:
+        node.type = "let_def";
+        //search context to find enclosing BLOCK
+        ss = compilerContext.stmtStack;
+        i = ss.length;
+        while (ss[--i].type !== BLOCK) ; # a BLOCK *must* be found.
+        s = ss[i];
+        s.varDecls = s.varDecls || [];
+        node.varDecls = [];
+        
+        for (i = 0; i < childNode.length; i++) {
+            s.varDecls.push(childNode[i]); # the vars must go in the correct scope
+            node.varDecls.push(childNode[i]); # but the assignments must stay here
+        }
+
+    return node;
+}    
 
 
 # An expression placed into parens like for if, while, do and with
