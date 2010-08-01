@@ -56,7 +56,7 @@ class CompilerContext(object):
         # Whether this is inside a function, mostly true, only for top-level scope it's false
         self.inFunction = inFunction
         
-        # The elms of stmtStack are used to find the target label of CONTINUEs and
+        # The elms of statementStack are used to find the target label of CONTINUEs and
         # BREAKs. Its length is used in function definitions.
         self.statementStack = []
 
@@ -552,14 +552,11 @@ def LetForm(tokenizer, compilerContext, form):
     if hasLeftParen:
         tokenizer.mustMatch("right_paren")
         node.varDecls = []
-        
-        for (i = 0; i < childNode.length; i++)
-            node.varDecls.push(childNode[i])
+        node.varDecls.extend(childNode)
         
         if form == STATEMENT_FORM and tokenizer.peek() == "right_curly":
             node.type = "let_stm"
             node.append(nest(tokenizer, compilerContext, node, Block), "body")
-            
         else:
             node.type = "let_exp"
             node.append(Expression(tokenizer, compilerContext, COMMA), "body")
@@ -570,21 +567,26 @@ def LetForm(tokenizer, compilerContext, form):
     # let definition
     else:
         node.type = "let_def"
-        //search context to find enclosing BLOCK
-        ss = compilerContext.stmtStack
-        i = ss.length
-        while (ss[--i].type !== BLOCK)  # a BLOCK *must* be found.
-        s = ss[i]
-        s.varDecls = s.varDecls || []
-        node.varDecls = []
+
+        # search context to find enclosing BLOCK
+        # a BLOCK *must* be found
+        statementStack = compilerContext.statementStack
+        i = statementStack.length
+        while (statementStack[--i].type != "block"):
+            pass
+            
+        statement = statementStack[i]
         
-        for (i = 0; i < childNode.length; i++) {
-            s.varDecls.push(childNode[i]) # the vars must go in the correct scope
-            node.varDecls.push(childNode[i]) # but the assignments must stay here
-        }
+        # the vars must go in the correct scope
+        if not hasattr(statement, "varDecls"):
+            statement.varDecls = []
+        statement.varDecls.extend(childNode) 
+        
+        # but the assignments must stay here
+        node.varDecls = []
+        node.varDecls.extend(childNode) 
 
     return node
-}    
 
 
 # An expression placed into parens like for if, while, do and with
@@ -639,7 +641,8 @@ opArity = {
 }
 
     
-    
+# When scanOperand is true the parser wants an operand (the "default" mode).
+# When it's false, the parser is expecting an operator.
 def Expression(tokenizer, compilerContext, stop=None):
     operators = []
     operands = []
@@ -648,6 +651,9 @@ def Expression(tokenizer, compilerContext, stop=None):
     pl = compilerContext.parenLevel
     hl = compilerContext.hookLevel
 
+    # Uses an operator and its operands to construct a whole expression.
+    # The result of reduce isn't used by its callers. It's left on the operands
+    # stack and it's retrieved from there.
     def reduce_():
         node = operators.pop()
         op = node.type
@@ -692,6 +698,19 @@ def Expression(tokenizer, compilerContext, stop=None):
                 # NB: cannot be empty, Statement handled that.
                 raise BreakOutOfLoops
 
+            # Parse let expressions
+            elif tokenType == "let":
+              # "let" is not an operator, no need to assign precedence to it.
+              if not tokenizer.scanOperand:
+                raise BreakOutOfLoops
+                
+              operands.append(LetForm(tokenizer, compilerContext, EXPRESSED_FORM))
+              tokenizer.scanOperand = False
+
+            # If we are expecting an operator and find sth else it may not be an error,
+            # because of semicolon insertion. So Expression doesn't throw for this.
+            # If it turns out to be an error it is detected by various other parts of
+            # the code and the msg may be obscure.
             elif tokenType in ("assign", "hook", "colon"):
                 if tokenizer.scanOperand:
                     raise BreakOutOfLoops
@@ -743,14 +762,34 @@ def Expression(tokenizer, compilerContext, stop=None):
                     operators.append(Node(tokenizer))
                     tokenizer.scanOperand = True
 
+
+            elif tokenType == "yield":
+                if not compilerContext.inFunction:
+                    raise SyntaxError("yield not in function", tokenizer);
+
+                # yield is followed by 0 or 1 expr, so we don't know if we should
+                # go to operator or operand mode, we must handle the expr here.
+                node = new Node(tokenizer);
+                
+                tt = t.peek()
+                if tt != "semicolon" and tt !== "right_curly" and tt !== "right_paren" and tt !== "right_bracket" and tt !== "comma" and tt !== "colon":
+                    node.value = Expression(tokenizer, compilerContext);
+                
+                operands.push(node);
+                Tokenizer.scanOperand = False;
+
+                    
             elif tokenType in ("delete", "void", "typeof", "not", "bitwise_not", "unary_plus", "unary_minus", "new"):
                 if not tokenizer.scanOperand:
                     raise BreakOutOfLoops
+                    
                 operators.append(Node(tokenizer))
+                
 
             elif tokenType in ("increment", "decrement"):
                 if tokenizer.scanOperand:
                     operators.append(Node(tokenizer)) # prefix increment or decrement
+                    
                 else:
                     # Don't cross a line boundary for postfix {in,de}crement.
                     if (tokenizer.tokens.get((tokenizer.tokenIndex + tokenizer.lookahead - 1) & 3).line != tokenizer.line):
@@ -765,12 +804,14 @@ def Expression(tokenizer, compilerContext, stop=None):
                     node.postfix = True
                     operands.append(node)
 
+
             elif tokenType == "function":
                 if not tokenizer.scanOperand:
                     raise BreakOutOfLoops
                     
                 operands.append(FunctionDefinition(tokenizer, compilerContext, False, EXPRESSED_FORM))
                 tokenizer.scanOperand = False
+
 
             elif tokenType in ("null", "this", "true", "false", "identifier", "number", "string", "regexp"):
                 if not tokenizer.scanOperand:
@@ -783,6 +824,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                         compilerContext.accesses.append(node.value)
                 operands.append(node)
                 tokenizer.scanOperand = False
+
 
             elif tokenType == "left_bracket":
                 if tokenizer.scanOperand:
@@ -812,12 +854,14 @@ def Expression(tokenizer, compilerContext, stop=None):
                     tokenizer.scanOperand = True
                     compilerContext.bracketLevel += 1
 
+
             elif tokenType == "right_bracket":
                 if tokenizer.scanOperand or compilerContext.bracketLevel == bl:
                     raise BreakOutOfLoops
                 while reduce_().type != "index":
                     continue
                 compilerContext.bracketLevel -= 1
+
 
             elif tokenType == "left_curly":
                 if not tokenizer.scanOperand:
@@ -828,7 +872,9 @@ def Expression(tokenizer, compilerContext, stop=None):
                 compilerContext.curlyLevel += 1
                 node = Node(tokenizer, "object_init")
 
-                class BreakOutOfObjectInit(Exception): pass
+                class BreakOutOfObjectInit(Exception): 
+                    pass
+                    
                 try:
                     if not tokenizer.match("right_curly"):
                         while True:
@@ -851,6 +897,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                                 node.append(Node(tokenizer, "property_init", [id_, Expression(tokenizer, compilerContext, "comma")]))
                             if not tokenizer.match("comma"): break
                         tokenizer.mustMatch("right_curly")
+                
                 except BreakOutOfObjectInit, e: 
                     pass
                     
@@ -858,10 +905,12 @@ def Expression(tokenizer, compilerContext, stop=None):
                 tokenizer.scanOperand = False
                 compilerContext.curlyLevel -= 1
 
+
             elif tokenType == "right_curly":
                 if not tokenizer.scanOperand and compilerContext.curlyLevel != cl:
                     raise ParseError("PANIC: right curly botch")
                 raise BreakOutOfLoops
+
 
             elif tokenType == "left_paren":
                 if tokenizer.scanOperand:
@@ -900,6 +949,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                             
                         compilerContext.parenLevel += 1
 
+
             elif tokenType == "right_paren":
                 if tokenizer.scanOperand or compilerContext.parenLevel == pl:
                     raise BreakOutOfLoops
@@ -920,6 +970,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                         raise ParseError, "Unexpected amount of operands"
                         
                 compilerContext.parenLevel -= 1
+
 
             # Automatic semicolon insertion means we may scan across a newline
             # and into the beginning of another statement. If so, break out of

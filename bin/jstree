@@ -5,17 +5,12 @@ import sys, os
 # Extend PYTHONPATH with 'lib'
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
-from js.Lexer import Lexer, ParseError
+from js.Lexer import Lexer
 from js.Parser import parse
 
 
 def jstree(source, filename=None):
-    try:
-        root = parse(Lexer(source, filename))
-    except ParseError as error:
-        print error
-        return
-        
+    root = parse(Lexer(source, filename))
     return root.toXml()
 
 if __name__ == "__main__":
