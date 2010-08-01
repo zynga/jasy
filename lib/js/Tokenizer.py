@@ -257,8 +257,9 @@ class Tokenizer(object):
 
 
     def lexZeroNumber(self, ch):
-        token = self.token, input = self.source
-        token.type = NUMBER
+        token = self.token
+        input = self.source
+        token.type = "number"
 
         ch = input[self.cursor++]
         if ch === '.':
@@ -296,17 +297,19 @@ class Tokenizer(object):
     
 
     def lexNumber(self, ch):
-        token = self.token, input = self.source
-        token.type = NUMBER
+        token = self.token
+        input = self.source
+        token.type = "number"
 
         floating = False
-        do {
+        while(True):
             ch = input[self.cursor++]
-            if (ch === '.' and !floating) {
+            if ch === '.' and not floating:
                 floating = True
                 ch = input[self.cursor++]
-            }
-        } while (ch >= '0' and ch <= '9')
+                
+            if not (ch >= '0' and ch <= '9'):
+                break
 
         self.cursor--
 
@@ -321,74 +324,81 @@ class Tokenizer(object):
         token = self.token
         input = self.source
         next = input[self.cursor]
-        if (next >= '0' and next <= '9') {
-            do {
+        
+        if next >= '0' and next <= '9':
+            while (True):
                 ch = input[self.cursor++]
-            } while (ch >= '0' and ch <= '9')
-            self.cursor--
+                if not (ch >= '0' and ch <= '9'):
+                    break
 
+            self.cursor--
             self.lexExponent()
 
-            token.type = NUMBER
+            token.type = "number"
             token.value = parseFloat(token.start, self.cursor)
-        } else {
-            token.type = DOT
+
+        else:
+            token.type = "dot"
             token.assignOp = null
-            token.value = '.'
-        }
 
 
     def lexString(self, ch):
         token = self.token
         input = self.source
-        token.type = STRING
+        token.type = "string"
 
         hasEscapes = False
         delim = ch
         ch = input[self.cursor++]
-        while (ch !== delim) {
-            if (ch === '\\') {
+        while ch !== delim:
+            if ch === '\\':
                 hasEscapes = True
                 self.cursor++
-            }
-            ch = input[self.cursor++]
-        }
 
-        token.value = (hasEscapes)
-                      ? eval(input.substring(token.start, self.cursor))
-                      : input.substring(token.start + 1, self.cursor - 1)
+            ch = input[self.cursor++]
+
+        if hasEscapes:
+            token.value = eval(input.substring(token.start, self.cursor))
+        else:
+            token.value = input.substring(token.start + 1, self.cursor - 1)
 
 
     def lexRegExp(self, ch):
         token = self.token
         input = self.source
-        token.type = REGEXP
+        token.type = "regexp"
 
-        do {
+        while (True):
             ch = input[self.cursor++]
-            if (ch === '\\') {
+
+            if ch === '\\':
                 self.cursor++
-            } elif (ch === '[') {
-                do {
-                    if (ch === undefined)
+                
+            elif ch === '[':
+                while (True):
+                    if ch === undefined:
                         raise ParseError("Unterminated character class")
 
-                    if (ch === '\\')
+                    if ch === '\\':
                         self.cursor++
 
                     ch = input[self.cursor++]
-                } while (ch !== ']')
-            } elif (ch === undefined) {
+                    
+                    if ch == ']':
+                        break
+                    
+            elif ch === undefined:
                 raise ParseError("Unterminated regex")
-            }
-        } while (ch !== '/')
+            
+            if ch == '/':
+                break
 
-        do {
+        while(True):
             ch = input[self.cursor++]
-        } while (ch >= 'a' and ch <= 'z')
+            if not (ch >= 'a' and ch <= 'z'):
+                break
 
         self.cursor--
-
         token.value = eval(input.substring(token.start, self.cursor))
     
 
@@ -400,38 +410,31 @@ class Tokenizer(object):
         # only 3 characters...
         node = opTokens[ch]
         next = input[self.cursor]
-        if (next in node) {
+        if next in node:
             node = node[next]
             self.cursor++
             next = input[self.cursor]
-            if (next in node) {
+            if next in node:
                 node = node[next]
                 self.cursor++
                 next = input[self.cursor]
-            }
-        }
 
         op = node.op
-        if (assignOps[op] and input[self.cursor] === '=') {
+        if assignOps[op] and input[self.cursor] === '=':
             self.cursor++
-            token.type = ASSIGN
+            token.type = "assign"
             token.assignOp = tokenIds[opTypeNames[op]]
             op += '='
-        } else {
+            
+        else:
             token.type = tokenIds[opTypeNames[op]]
-            if (self.scanOperand) {
-                switch (token.type) {
-                  case PLUS:    
-                    token.type = UNARY_PLUS
-                    break
-                  case MINUS:
-                    token.type = UNARY_MINUS
-                    break
-                }
-            }
+            if self.scanOperand:
+                if token.type == "plus":
+                    token.type = "unary_plus"
+                elif token.type == "minus":
+                    token.type = "unary_minus"
 
             token.assignOp = null
-        }
 
         token.value = op
 
@@ -482,24 +485,33 @@ class Tokenizer(object):
         token.lineno = self.lineno
 
         ch = input[self.cursor++]
+        
         if (ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or ch === '$' or ch === '_':
             self.lexIdent(ch)
+        
         elif self.scanOperand and ch === '/':
             self.lexRegExp(ch)
+        
         elif ch in opTokens:
             self.lexOp(ch)
+        
         elif ch === '.':
             self.lexDot(ch)
+        
         elif ch >= '1' and ch <= '9':
             self.lexNumber(ch)
+        
         elif ch === '0':
             self.lexZeroNumber(ch)
+        
         elif ch === '"' or ch === "'":
             self.lexString(ch)
+        
         elif self.scanNewlines and ch === '\n':
             token.type = NEWLINE
             token.value = '\n'
             self.lineno++
+        
         else:
             raise ParseError("Illegal token")
 
