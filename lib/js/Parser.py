@@ -39,6 +39,7 @@ class SyntaxError(Exception):
 
 # Used as a status container during tree-building for every function body and the global body
 class CompilerContext(object):
+    # inFunction is used to check if a return stm appears in a valid context.
     def __init__(self, inFunction):
         #######################
         # PUBLIC
@@ -55,7 +56,8 @@ class CompilerContext(object):
         # Whether this is inside a function, mostly true, only for top-level scope it's false
         self.inFunction = inFunction
         
-        # 
+        # The elms of stmtStack are used to find the target label of CONTINUEs and
+        # BREAKs. Its length is used in function definitions.
         self.statementStack = []
 
         #
@@ -64,8 +66,8 @@ class CompilerContext(object):
         self.parenLevel = 0
         self.hookLevel = 0
         
-        # Configure strict ecmascript mode
-        self.ecmaStrictMode = False
+        # Configure strict ecmascript 3 mode
+        self.ecma3OnlyMode = False
         
         # Status flag during parsing
         self.inForLoopInit = False
@@ -268,7 +270,7 @@ def Statement(tokenizer, compilerContext):
         node.isLoop = True
         node.append(nest(tokenizer, compilerContext, node, Statement, "while"), "body")
         node.append(ParenExpression(tokenizer, compilerContext), "condition")
-        if not compilerContext.ecmaStrictMode:
+        if not compilerContext.ecma3OnlyMode:
             # <script language="JavaScript"> (without version hints) may need
             # automatic semicolon insertion without a newline after do-while.
             # See http://bugzilla.mozilla.org/show_bug.cgi?id=238945.
@@ -709,14 +711,14 @@ def Expression(tokenizer, compilerContext, stop=None):
                         while True:
                             tokenType = tokenizer.get()
                             if ((tokenizer.token.value == "get" or tokenizer.token.value == "set") and tokenizer.peek == "identifier"):
-                                if compilerContext.ecmaStrictMode:
+                                if compilerContext.ecma3OnlyMode:
                                     raise SyntaxError("Illegal property accessor", tokenizer)
                                 node.append(FunctionDefinition(tokenizer, compilerContext, True, EXPRESSED_FORM))
                             else:
                                 if tokenType in ("identifier", "number", "string"):
                                     id_ = Node(tokenizer)
                                 elif tokenType == "right_curly":
-                                    if compilerContext.ecmaStrictMode:
+                                    if compilerContext.ecma3OnlyMode:
                                         raise SyntaxError("Illegal trailing ,", tokenizer)
                                     raise BreakOutOfObjectInit
                                 else:
