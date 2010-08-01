@@ -18,11 +18,13 @@ keywords = [
     "else", "enum",
     "false", "finally", "for", "function",
     "if", "in", "instanceof",
+    "let",
     "new", "null",
     "return",
     "switch",
     "this", "throw", "true", "try", "typeof",
     "var", "void",
+    "yield",
     "while", "with"
 ]
 
@@ -30,9 +32,9 @@ assignOps = ['|', '^', '&', '<<', '>>', '>>>', '+', '-', '*', '/', '%']
 
 
 # Operator and punctuator mapping from token to tree node type name.
-# NB: superstring tokens (e.g., ++) must come before their substring token
-# counterparts (+ in the example), so that the "symbolMatcher" regular expression
-# synthesized from this list makes the longest possible match.
+# NB: because the lexer doesn't backtrack, all token prefixes must themselves
+# be valid tokens (e.g. !== is acceptable because its prefixes are the valid
+# tokens != and !).
 symbolNames = [
     ('\n',   "newline"),
     (';',    "semicolon"),
@@ -186,123 +188,323 @@ class Tokenizer(object):
         return tokenType
 
 
-    def get(self):
-        while self.lookahead:
-            self.lookahead -= 1
-            self.tokenIndex = (self.tokenIndex + 1) & 3
-            token = self.tokens.get(self.tokenIndex)
-            if getattr(token, "type", None) != "newline" or self.scanNewlines:
-                return getattr(token, "type", None)
+    # Eats comments and whitespace.
+    def skip(self):
+        input = self.source
+        
+        while (True):
+            ch = input[self.cursor++]
+            next = input[self.cursor]
 
-        comments = []
-        while True:
-            input__ = self.input_
-            if self.scanNewlines:
-                match = re.match(r'^[ \t]+', input__)
-            else:
-                match = re.match(r'^\s+', input__)
-            if match:
-                spaces = match.group(0)
-                self.cursor += len(spaces)
-                newlines = newlineMatcher.findall(spaces)
-                if newlines:
-                    self.line += len(newlines)
-                input__ = self.input_
+            if ch === '\n' and !self.scanNewlines:
+                self.lineno++
+                
+            elif ch === '/' and next === '*':
+                self.cursor++
+                while (True):
+                    ch = input[self.cursor++]
+                    if ch === undefined:
+                        raise ParseError("Unterminated comment")
 
-            match = commentMatcher.match(input__)
-            if not match:
-                break
+                    elif ch === '*':
+                        next = input[self.cursor]
+                        if next === '/':
+                            self.cursor++
+                            break
+                            
+                    elif ch === '\n':
+                        self.lineno++
+
+            elif ch === '/' and next === '/':
+                self.cursor++
+                while (True):
+                    ch = input[self.cursor++]
+                    if ch === undefined:
+                        return
+
+                    elif ch === '\n':
+                        self.lineno++
+                        break
+
+            elif ch !== ' ' and ch !== '\t':
+                self.cursor--
+                return
+
+
+    # Lexes the exponential part of a number, if present. Returns True if an
+    # exponential part was found.
+    def lexExponent(self):
+        input = self.source
+        next = input[self.cursor]
+        if next === 'e' or next === 'E':
+            self.cursor++
+            ch = input[self.cursor++]
+            if ch === '+' or ch === '-':
+                ch = input[self.cursor++]
+
+            if ch < '0' or ch > '9':
+                raise ParseError("Missing exponent")
+
+            while(True):
+                ch = input[self.cursor++]
+                if not (ch >= '0' and ch <= '9'):
+                    break
                 
-            comment = match.group(0)
-            comments.append(comment)
-            self.cursor += len(comment)
-            newlines = newlineMatcher.findall(comment)
-            if newlines:
-                self.line += len(newlines)
+            self.cursor--
+            return True
+
+        return False
+
+
+    def lexZeroNumber(self, ch):
+        token = self.token, input = self.source
+        token.type = NUMBER
+
+        ch = input[self.cursor++]
+        if ch === '.':
+            while(True):
+                ch = input[self.cursor++]
+                if not (ch >= '0' and ch <= '9'):
+                    break
                 
-        self.tokenIndex = (self.tokenIndex + 1) & 3
-        token = self.tokens[self.tokenIndex] = Token()
+            self.cursor--
+            self.lexExponent()
+            token.value = parseFloat(token.start, self.cursor)
             
-        # Store comments
-        if len(comments) > 0:
-            token.comments = comments;
+        elif ch === 'x' or ch === 'X':
+            while(True):
+                ch = input[self.cursor++]
+                if not ((ch >= '0' and ch <= '9') or (ch >= 'a' and ch <= 'f') or (ch >= 'A' and ch <= 'F')):
+                    break
+                    
+            self.cursor--
+            token.value = parseInt(input.substring(token.start, self.cursor))
 
-        # Update token
-        if input__:
-            token.start = self.cursor        
-            self.cursor += len(self.matchInput(token, input__))
-            token.end = self.cursor
-            token.line = self.line
+        elif ch >= '0' and ch <= '7':
+            while(True):
+                ch = input[self.cursor++]
+                if not (ch >= '0' and ch <= '7'):
+                    break
+                    
+            self.cursor--
+            token.value = parseInt(input.substring(token.start, self.cursor))
+
         else:
-            token.type = "end"
-            
-        # Return token type
-        return getattr(token, "type", None)
+            self.cursor--
+            self.lexExponent()     # 0E1, &c.
+            token.value = 0
+    
+
+    def lexNumber(self, ch):
+        token = self.token, input = self.source
+        token.type = NUMBER
+
+        floating = False
+        do {
+            ch = input[self.cursor++]
+            if (ch === '.' and !floating) {
+                floating = True
+                ch = input[self.cursor++]
+            }
+        } while (ch >= '0' and ch <= '9')
+
+        self.cursor--
+
+        exponent = self.lexExponent()
+        floating = floating or exponent
+
+        str = input.substring(token.start, self.cursor)
+        token.value = floating ? parseFloat(str) : parseInt(str)
+
+
+    def lexDot(self, ch):
+        token = self.token
+        input = self.source
+        next = input[self.cursor]
+        if (next >= '0' and next <= '9') {
+            do {
+                ch = input[self.cursor++]
+            } while (ch >= '0' and ch <= '9')
+            self.cursor--
+
+            self.lexExponent()
+
+            token.type = NUMBER
+            token.value = parseFloat(token.start, self.cursor)
+        } else {
+            token.type = DOT
+            token.assignOp = null
+            token.value = '.'
+        }
+
+
+    def lexString(self, ch):
+        token = self.token
+        input = self.source
+        token.type = STRING
+
+        hasEscapes = False
+        delim = ch
+        ch = input[self.cursor++]
+        while (ch !== delim) {
+            if (ch === '\\') {
+                hasEscapes = True
+                self.cursor++
+            }
+            ch = input[self.cursor++]
+        }
+
+        token.value = (hasEscapes)
+                      ? eval(input.substring(token.start, self.cursor))
+                      : input.substring(token.start + 1, self.cursor - 1)
+
+
+    def lexRegExp(self, ch):
+        token = self.token
+        input = self.source
+        token.type = REGEXP
+
+        do {
+            ch = input[self.cursor++]
+            if (ch === '\\') {
+                self.cursor++
+            } elif (ch === '[') {
+                do {
+                    if (ch === undefined)
+                        raise ParseError("Unterminated character class")
+
+                    if (ch === '\\')
+                        self.cursor++
+
+                    ch = input[self.cursor++]
+                } while (ch !== ']')
+            } elif (ch === undefined) {
+                raise ParseError("Unterminated regex")
+            }
+        } while (ch !== '/')
+
+        do {
+            ch = input[self.cursor++]
+        } while (ch >= 'a' and ch <= 'z')
+
+        self.cursor--
+
+        token.value = eval(input.substring(token.start, self.cursor))
+    
+
+    def lexOp(self, ch):
+        token = self.token
+        input = self.source
+
+        # A bit ugly, but it seems wasteful to write a trie lookup routine for
+        # only 3 characters...
+        node = opTokens[ch]
+        next = input[self.cursor]
+        if (next in node) {
+            node = node[next]
+            self.cursor++
+            next = input[self.cursor]
+            if (next in node) {
+                node = node[next]
+                self.cursor++
+                next = input[self.cursor]
+            }
+        }
+
+        op = node.op
+        if (assignOps[op] and input[self.cursor] === '=') {
+            self.cursor++
+            token.type = ASSIGN
+            token.assignOp = tokenIds[opTypeNames[op]]
+            op += '='
+        } else {
+            token.type = tokenIds[opTypeNames[op]]
+            if (self.scanOperand) {
+                switch (token.type) {
+                  case PLUS:    
+                    token.type = UNARY_PLUS
+                    break
+                  case MINUS:
+                    token.type = UNARY_MINUS
+                    break
+                }
+            }
+
+            token.assignOp = null
+        }
+
+        token.value = op
+
+
+    # FIXME: Unicode escape sequences
+    # FIXME: Unicode identifiers
+    def lexIdent(self, ch):
+        token = self.token
+        input = self.source
         
+        while True:
+            ch = input[self.cursor++]
+            
+            if (ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or (ch >= '0' and ch <= '9') or ch === '$' or ch === '_'):
+                break
         
-    def matchInput(self, token, text):
-        match = floatMatcher.match(text)
-        if match:
-            token.type = "number"
-            token.value = float(match.group(0))
-            return match.group(0)
+        # Put the non-word character back.
+        self.cursor--
 
-        match = numberMatcher.match(text)
-        if match:
-            token.type = "number"
-            token.value = eval(match.group(0))
-            return match.group(0)
+        id = input[token.start:self.cursor]
+        token.type = keywords[id] if id in keywords else "identifier"
+        token.value = id
 
-        match = identifierMatcher.match(text)
-        if match:
-            identifier = match.group(0)
-            if identifier in keywords:
-                token.type = identifier
-            else:
-                token.type = "identifier"
-                token.value = identifier
-            return identifier
 
-        match = stringMatcher.match(text)
-        if match:
-            token.type = "string"
-            # Force to parse the string into an unicode string
-            token.value = eval("u"+match.group(0))
-            
-            return match.group(0)
+    # void -> token type
+    # It consumes input *only* if there is no lookahead.
+    # Dispatch to the appropriate lexing function depending on the input.
+    def get(self):
+        while (self.lookahead):
+            --self.lookahead
+            self.tokenIndex = (self.tokenIndex + 1) & 3
+            token = self.tokens[self.tokenIndex]
+            if token.type != NEWLINE or self.scanNewlines:
+                return token.type
 
-        if self.scanOperand:
-            match = regularExprMatcher.match(text)
-            if match:
-                token.type = "regexp"
-                token.value = match.group(0)
-                return match.group(0)
+        self.skip()
 
-        match = symbolMatcher.match(text)
-        if match:
-            op = match.group(0)
-            if op in assignOps and text[len(op)] == '=':
-                token.type = "assign"
-                token.assignOp = symbolNames[op]
-                token.value = op
-                return match.group(0) + "="
+        self.tokenIndex = (self.tokenIndex + 1) & 3
+        token = self.tokens[self.tokenIndex]
+        if not token:
+            self.tokens[self.tokenIndex] = token = {}
 
-            token.type = symbolNames[op]
-            
-            # Detect unary operators
-            if self.scanOperand and token.type in ("plus", "minus"):
-                token.type = "unary_" + token.type
-                
-            token.assignOp = None
-            return match.group(0)
+        input = self.source
+        if self.cursor === input.length:
+            return token.type = END
 
-        if self.scanNewlines:
-            match = re.match(r'^\n', text)
-            if match:
-                token.type = "newline"
-                return match.group(0)
+        token.start = self.cursor
+        token.lineno = self.lineno
 
-        raise ParseError("Illegal token", self.filename, self.line)
+        ch = input[self.cursor++]
+        if (ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or ch === '$' or ch === '_':
+            self.lexIdent(ch)
+        elif self.scanOperand and ch === '/':
+            self.lexRegExp(ch)
+        elif ch in opTokens:
+            self.lexOp(ch)
+        elif ch === '.':
+            self.lexDot(ch)
+        elif ch >= '1' and ch <= '9':
+            self.lexNumber(ch)
+        elif ch === '0':
+            self.lexZeroNumber(ch)
+        elif ch === '"' or ch === "'":
+            self.lexString(ch)
+        elif self.scanNewlines and ch === '\n':
+            token.type = NEWLINE
+            token.value = '\n'
+            self.lineno++
+        else:
+            raise ParseError("Illegal token")
+
+        token.end = self.cursor
+        return token.type
         
 
     def unget(self):
