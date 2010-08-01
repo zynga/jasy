@@ -546,6 +546,7 @@ def Expression(tokenizer, compilerContext, stop=None):
         if node.end < tokenizer.token.end:
             node.end = tokenizer.token.end
 
+        # this always appends to the END!!!! and might be the problem!!!
         operands.append(node)
         return node
 
@@ -589,7 +590,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                         operands[-1].assignOp = tokenizer.token.assignOp
                     else:
                         compilerContext.hookLevel += 1
-
+                        
                 tokenizer.scanOperand = True
 
             elif tokenType in ("in", "comma", "or", "and", "bitwise_or", "bitwise_xor", "bitwise_and", "eq", "ne", 
