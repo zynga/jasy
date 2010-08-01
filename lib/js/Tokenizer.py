@@ -76,6 +76,8 @@ symbolNames = [
     (')',    "right_paren"),
 ]
 
+symbolNames = dict(symbolNames)
+
 
 
 #
@@ -166,7 +168,7 @@ class Tokenizer(object):
                         ch = input[self.cursor]
                         self.cursor += 1
                     except IndexError:
-                        raise ParseError("Unterminated comment")
+                        raise ParseError("Unterminated comment", self.filename, self.line)
                         
                     if ch == '*':
                         next = input[self.cursor]
@@ -209,7 +211,7 @@ class Tokenizer(object):
                 self.cursor += 1
 
             if ch < '0' or ch > '9':
-                raise ParseError("Missing exponent")
+                raise ParseError("Missing exponent", self.filename, self.line)
 
             while(True):
                 ch = input[self.cursor]
@@ -351,7 +353,7 @@ class Tokenizer(object):
                 ch = input[self.cursor]
                 self.cursor += 1
             except IndexError:
-                raise ParseError("Unterminated regex")
+                raise ParseError("Unterminated regex", self.filename, self.line)
 
             if ch == '\\':
                 self.cursor += 1
@@ -365,7 +367,7 @@ class Tokenizer(object):
                         ch = input[self.cursor]
                         self.cursor += 1
                     except IndexError:
-                        raise ParseError("Unterminated character class")
+                        raise ParseError("Unterminated character class", self.filename, self.line)
                     
                     if ch == ']':
                         break
@@ -490,7 +492,7 @@ class Tokenizer(object):
             self.lexString(ch)
         
         else:
-            raise ParseError("Illegal token")
+            raise ParseError("Illegal token: %s" % ch, self.filename, self.line)
 
         token.end = self.cursor
         return token.type
@@ -500,6 +502,6 @@ class Tokenizer(object):
         self.lookahead += 1
         
         if self.lookahead == 4: 
-            raise ParseError("PANIC: too much lookahead!")
+            raise ParseError("PANIC: too much lookahead!", self.filename, self.line)
         
         self.tokenIndex = (self.tokenIndex - 1) & 3
