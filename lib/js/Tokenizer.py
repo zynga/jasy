@@ -312,7 +312,7 @@ class Tokenizer(object):
                     break
                     
             self.cursor -= 1
-            token.value = parseInt(input.substring(token.start, self.cursor))
+            token.value = parseInt(input[token.start:self.cursor])
 
         elif ch >= '0' and ch <= '7':
             while(True):
@@ -322,7 +322,7 @@ class Tokenizer(object):
                     break
                     
             self.cursor -= 1
-            token.value = parseInt(input.substring(token.start, self.cursor))
+            token.value = parseInt(input[token.start:self.cursor])
 
         else:
             self.cursor -= 1
@@ -351,7 +351,7 @@ class Tokenizer(object):
 
         exponent = self.lexExponent()
 
-        str = input.substring(token.start, self.cursor)
+        str = input[token.start:self.cursor]
         if floating or exponent:
             test.value = parseFloat(str)
         else:
@@ -398,9 +398,9 @@ class Tokenizer(object):
             self.cursor += 1
 
         if hasEscapes:
-            token.value = eval(input.substring(token.start, self.cursor))
+            token.value = eval(input[token.start:self.cursor])
         else:
-            token.value = input.substring(token.start + 1, self.cursor - 1)
+            token.value = input[token.start+1:self.cursor-1]
 
 
     def lexRegExp(self, ch):
@@ -442,7 +442,7 @@ class Tokenizer(object):
                 break
 
         self.cursor -= 1
-        token.value = eval(input.substring(token.start, self.cursor))
+        token.value = eval(input[token.start:self.cursor])
     
 
     def lexOp(self, ch):
