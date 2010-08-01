@@ -343,9 +343,9 @@ def Statement(tokenizer, compilerContext):
                 # a loop, then break targets its labeled statement. Labels can be
                 # nested so we skip all labels immediately enclosing the nearest
                 # non-label statement.
-                while i < statementStack.length - 1 and statementStack[i+1].type == "label":
+                while i < statementStack.length-1 and statementStack[i+1].type == "label":
                     i+=1                    
-                if i < statementStack.length - 1 and statementStack[i+1].isLoop:
+                if i < statementStack.length-1 and getattr(statementStack[i+1], "isLoop", None):
                     i+=1
                 else if tokenType == "continue":
                     raise SyntaxError("Invalid continue", tokenizer);      
@@ -362,7 +362,7 @@ def Statement(tokenizer, compilerContext):
                 if getattr(statementStack[i], "isLoop", None) or (tokenType == "break" and statementStack[i].type == "switch"):
                     break
                     
-        node.target = statementStack[i]
+        node.target = statementStack[i] # cycle in the AST
 
     elif tokenType == "try":
         node = Node(tokenizer)
@@ -444,11 +444,14 @@ def Statement(tokenizer, compilerContext):
                 
                 return node
 
+        # expression statement.
+        # We unget the current token to parse the expr as a whole.
         node = Node(tokenizer, "semicolon")
         tokenizer.unget()
         node.append(Expression(tokenizer, compilerContext), "expression")
         node.end = node.expression.end
 
+    # semicolon-insertion magic
     if tokenizer.line == tokenizer.token.line:
         tokenType = tokenizer.peekOnSameLine()
         if tokenType not in ("end", "newline", "semicolon", "right_curly"):
