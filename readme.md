@@ -1,13 +1,19 @@
 JS Tools
 ========
 
-New tool chain based on narcissus tree generator.
+Fresh tool chain for JavaScript based on narcissus tree generator. Should support all kind of processing for JavaScript:
+
+- Code Optimization
+- Dependency Calculation
+- Documentation
+- Pretty Printing
+- Code Quality Checks / Lint
 
 Goals
 -----
 
 - Light-weight cross platform tool chain for processing JavaScript code
-- In the future a replacement for qooxdoo's massive tool chain
+- In the future a replacement for qooxdoo's tool chain
 - Modular tools instead of one monolithic solution
 
 Usage
@@ -21,6 +27,7 @@ Done
 ----
 
 - Parser (reworked a lot of stuff from original code)
+- Added support for Generators, Block Scope, Function Expressions, Array Comprehensions, ...
 - Compressor (generate JavaScript code without white-spaces, etc.)
 - Local Variable Optimizer
 - Variant Processing (Removing debug blocks, alternative code, ...)
@@ -30,12 +37,14 @@ In Progress
 
 - Auto Closure Wrapping for string optimizations, keyword optimization, etc.
 
-
 Todo
 ----
 
 - String optimizations
+- Comment processing (Parse and attach to nodes)
 - API data
-- Unicode data merge-in (CLDR)
-- PO-File translations
+- Unicode Data Merge (CLDR)
+- PO-File Translations
+- Lint Checks
+- Pretty Printer
 - ...
