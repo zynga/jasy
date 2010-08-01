@@ -51,7 +51,6 @@ dividers = {
     "and"           : "&&",
     "strict_eq"     : '===',  
     "eq"            : '==',   
-    "assign"        : '=',    
     "strict_ne"     : '!==',  
     "ne"            : '!=',   
     "lsh"           : '<<',   
@@ -149,6 +148,14 @@ def __identifier(node):
 
     return result
     
+def __assign(node):
+    dist = node[0]
+    source = node[1]
+
+    assignOp = getattr(node[0], "assignOp", None)
+    oper = "=" if not assignOp else dividers[assignOp] + "="
+
+    return compress(node[0]) + oper + compress(node[1])
 
 
 #

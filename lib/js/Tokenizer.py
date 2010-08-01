@@ -11,6 +11,8 @@ import re
 
 __all__ = [ "Tokenizer", "keywords" ]
 
+
+# JavaScript 1.7 keywords
 keywords = [
     "break",
     "case", "catch", "const", "continue",
@@ -28,15 +30,16 @@ keywords = [
     "while", "with"
 ]
 
-assignOps = ["|", "^", "&", "<<", ">>", ">>>", "+", "-", "*", "/", "%"]
+
+# Assignment operators
+assignOperators = ["|", "^", "&", "<<", ">>", ">>>", "+", "-", "*", "/", "%"]
 
 
 # Operator and punctuator mapping from token to tree node type name.
 # NB: because the lexer doesn't backtrack, all token prefixes must themselves
 # be valid tokens (e.g. !== is acceptable because its prefixes are the valid
 # tokens != and !).
-symbolNames = [
-    ("\n",   "newline"),
+operatorNames = [
     (";",    "semicolon"),
     (",",    "comma"),
     ("?",    "hook"),
@@ -67,7 +70,6 @@ symbolNames = [
     ("%",    "mod"),
     ("!",    "not"),
     ("~",    "bitwise_not"),
-    (".",    "dot"),
     ("[",    "left_bracket"),
     ("]",    "right_bracket"),
     ("{",    "left_curly"),
@@ -76,7 +78,8 @@ symbolNames = [
     (")",    "right_paren"),
 ]
 
-symbolNames = dict(symbolNames)
+operatorNames = dict(operatorNames)
+print operatorNames
 
 
 
@@ -393,20 +396,20 @@ class Tokenizer(object):
         op = ch
         while(True):
             next = input[self.cursor]
-            if (op + next) in symbolNames:
+            if (op + next) in operatorNames:
                 self.cursor += 1
                 op += next
             else:
                 break
         
-        if op in assignOps and input[self.cursor] == "=":
+        if input[self.cursor] == "=" and op in assignOperators:
             self.cursor += 1
             token.type = "assign"
-            token.assignOp = symbolNames[op]
+            token.assignOp = operatorNames[op]
             op += "="
             
         else:
-            token.type = symbolNames[op]
+            token.type = operatorNames[op]
             token.assignOp = None
             if self.scanOperand:
                 if token.type == "plus":
@@ -484,7 +487,7 @@ class Tokenizer(object):
             token.type = "newline"
             self.line += 1
 
-        elif ch in symbolNames:
+        elif ch in operatorNames:
             self.lexOp(ch)
         
         elif ch >= "1" and ch <= "9":
