@@ -478,6 +478,7 @@ class Tokenizer(object):
                     break
                     
         except IndexError:
+            self.cursor += 1
             pass
         
         # Put the non-word character back.
