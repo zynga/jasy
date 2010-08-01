@@ -5,7 +5,7 @@ import sys, os
 # Extend PYTHONPATH with 'lib'
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
-from js.Tokenizer import Tokenizer
+from js.Lexer import Lexer
 from js.Parser import parse
 from js.Compressor import compress
 from js.optimizer import LocalVariables
@@ -22,7 +22,7 @@ def jsoptimize(source, filename=None):
         "js.Variant.LOCALE" : '"de_DE"'
     }
     
-    tree = parse(Tokenizer(source, filename))
+    tree = parse(Lexer(source, filename))
     print tree
     Variants.replace(tree, variantData)
     Variants.optimize(tree)

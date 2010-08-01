@@ -9,7 +9,7 @@
 
 import re
 
-__all__ = [ "Tokenizer", "keywords" ]
+__all__ = [ "Lexer", "keywords" ]
 
 
 # JavaScript 1.7 keywords
@@ -101,7 +101,7 @@ class ParseError(Exception):
         Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, filename, line))
 
 
-class Tokenizer(object):
+class Lexer(object):
     def __init__(self, source, filename):
         self.cursor = 0
         self.source = str(source)

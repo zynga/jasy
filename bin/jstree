@@ -5,13 +5,13 @@ import sys, os
 # Extend PYTHONPATH with 'lib'
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
-from js.Tokenizer import Tokenizer, ParseError
+from js.Lexer import Lexer, ParseError
 from js.Parser import parse
 
 
 def jstree(source, filename=None):
     try:
-        root = parse(Tokenizer(source, filename))
+        root = parse(Lexer(source, filename))
     except ParseError as error:
         print error
         return
