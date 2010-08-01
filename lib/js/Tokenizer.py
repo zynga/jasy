@@ -407,6 +407,7 @@ class Tokenizer(object):
             
         else:
             token.type = symbolNames[op]
+            token.assignOp = None
             if self.scanOperand:
                 if token.type == "plus":
                     token.type = "unary_plus"
@@ -435,9 +436,12 @@ class Tokenizer(object):
         # Put the non-word character back.
         self.cursor -= 1
 
-        id = input[token.start:self.cursor]
-        token.type = keywords[id] if id in keywords else "identifier"
-        token.value = id
+        identifier = input[token.start:self.cursor]
+        if identifier in keywords:
+            token.type = identifier
+        else:
+            token.type = "identifier"
+            token.value = identifier
 
 
     # void -> token type
