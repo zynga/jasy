@@ -866,7 +866,7 @@ def Expression(tokenizer, compilerContext, stop=None):
                             
                             iterator = Expression(tokenizer, innerContext)
                             if iterator.type != "identifier":
-                                throw tokenizer.newSyntaxError("Invalid comprehension")
+                                raise SyntaxError("Invalid comprehension", tokenizer)
                                 
                             forInNode.append(iterator, "iterator")
                             tokenizer.mustMatch("in")
