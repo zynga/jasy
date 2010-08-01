@@ -353,9 +353,9 @@ class Tokenizer(object):
 
         str = input[token.start:self.cursor]
         if floating or exponent:
-            test.value = parseFloat(str)
+            token.value = float(str)
         else:
-            test.value = parseInt(str)
+            token.value = int(str)
 
 
     def lexDot(self, ch):
@@ -374,7 +374,7 @@ class Tokenizer(object):
             self.lexExponent()
 
             token.type = "number"
-            token.value = parseFloat(token.start, self.cursor)
+            token.value = float(input[token.start:self.cursor])
 
         else:
             token.type = "dot"
