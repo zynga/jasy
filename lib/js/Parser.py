@@ -81,8 +81,14 @@ def Script(tokenizer, compilerContext):
     node.type = "script"
 
     # copy over context declarations/accesses into script node
-    node.declares = compilerContext.declares
+    # node.declares = compilerContext.declares
     node.accesses = compilerContext.accesses
+
+    # LETs may add varDecls to blocks.
+    if not "declares" in node:
+        node.declares = []
+    
+    node.declares.extend(compilerContext.declares)
 
     return node
     
