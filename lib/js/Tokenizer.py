@@ -490,14 +490,16 @@ class Tokenizer(object):
             self.lookahead -= 1
             self.tokenIndex = (self.tokenIndex + 1) & 3
             token = self.tokens[self.tokenIndex]
-            if token.type != NEWLINE or self.scanNewlines:
+            if token.type != "newline" or self.scanNewlines:
                 return token.type
 
         self.skip()
 
         self.tokenIndex = (self.tokenIndex + 1) & 3
-        token = self.tokens[self.tokenIndex]
-        if not token:
+
+        if self.tokenIndex in self.tokens:
+            token = self.tokens[self.tokenIndex]
+        else:
             self.tokens[self.tokenIndex] = token = {}
 
         input = self.source
@@ -533,8 +535,7 @@ class Tokenizer(object):
             self.lexString(ch)
         
         elif self.scanNewlines and ch == '\n':
-            token.type = NEWLINE
-            token.value = '\n'
+            token.type = "newline"
             self.lineno += 1
         
         else:
