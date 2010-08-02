@@ -154,7 +154,7 @@ def Statement(tokenizer, compilerContext):
                 builder.SWITCH$setDefaultIndex(node, node.cases.length)
                 tokenizer.mustMatch(COLON)
                 builder.DEFAULT$initializeStatements(childNode, tokenizer)
-                while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT &&
+                while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT and
                        tokenType != RIGHT_CURLY)
                     builder.DEFAULT$addStatement(childNode, Statement(tokenizer, compilerContext))
                 builder.DEFAULT$finish(childNode)
@@ -165,7 +165,7 @@ def Statement(tokenizer, compilerContext):
                 builder.CASE$setLabel(childNode, Expression(tokenizer, compilerContext, COLON))
                 tokenizer.mustMatch(COLON)
                 builder.CASE$initializeStatements(childNode, tokenizer)
-                while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT &&
+                while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT and
                        tokenType != RIGHT_CURLY)
                     builder.CASE$addStatement(childNode, Statement(tokenizer, compilerContext))
                 builder.CASE$finish(childNode)
@@ -434,8 +434,6 @@ def Statement(tokenizer, compilerContext):
 
 
 
-
-
 def MagicalSemicolon(tokenizer):
     if tokenizer.lineno == tokenizer.token.lineno:
         tokenType = tokenizer.peekOnSameLine()
@@ -444,6 +442,7 @@ def MagicalSemicolon(tokenizer):
             raise SyntaxError("Missing ; before statement")
     
     tokenizer.match(SEMICOLON)
+
     
 
 def returnOrYield(tokenizer, compilerContext):
@@ -464,9 +463,9 @@ def returnOrYield(tokenizer, compilerContext):
         node = builder.YIELD$build(tokenizer)
 
     tt2 = tokenizer.peek(True)
-    if (tt2 != END and tt2 != NEWLINE and tt2 != SEMICOLON and tt2 != RIGHT_CURLY
-        and (tokenType != YIELD ||
-            (tt2 != tokenType and tt2 != RIGHT_BRACKET and tt2 != RIGHT_PAREN &&
+    if tt2 != END and tt2 != NEWLINE and tt2 != SEMICOLON and tt2 != RIGHT_CURLY
+        and (tokenType != YIELD or
+            (tt2 != tokenType and tt2 != RIGHT_BRACKET and tt2 != RIGHT_PAREN and
              tt2 != COLON and tt2 != COMMA))) {
         if (tokenType == RETURN) {
             builder.RETURN$setValue(node, Expression(tokenizer, compilerContext))
@@ -1066,7 +1065,7 @@ def EqualityExpression(tokenizer, compilerContext) {
     var builder = compilerContext.builder
 
     node = RelationalExpression(tokenizer, compilerContext)
-    while (tokenizer.match(EQ) or tokenizer.match(NE) ||
+    while (tokenizer.match(EQ) or tokenizer.match(NE) or
            tokenizer.match(STRICT_EQ) or tokenizer.match(STRICT_NE)) {
         childNode = builder.EQUALITY$build(tokenizer)
         builder.EQUALITY$addOperand(childNode, node)
@@ -1089,8 +1088,8 @@ def RelationalExpression(tokenizer, compilerContext) {
     # 
     compilerContext.inForLoopInit = False
     node = ShiftExpression(tokenizer, compilerContext)
-    while ((tokenizer.match(LT) or tokenizer.match(LE) or tokenizer.match(GE) or tokenizer.match(GT) ||
-           (oldLoopInit == False and tokenizer.match(IN)) ||
+    while ((tokenizer.match(LT) or tokenizer.match(LE) or tokenizer.match(GE) or tokenizer.match(GT) or
+           (oldLoopInit == False and tokenizer.match(IN)) or
            tokenizer.match(INSTANCEOF))) {
         childNode = builder.RELATIONAL$build(tokenizer)
         builder.RELATIONAL$addOperand(childNode, node)
@@ -1311,7 +1310,7 @@ def PrimaryExpression(tokenizer, compilerContext) {
         if (!tokenizer.match(RIGHT_CURLY)) {
             do {
                 tokenType = tokenizer.get()
-                if ((tokenizer.token.value == "get" or tokenizer.token.value == "set") &&
+                if ((tokenizer.token.value == "get" or tokenizer.token.value == "set") and
                     tokenizer.peek() == IDENTIFIER) {
                     if (compilerContext.ecma3OnlyMode)
                         raise SyntaxError("Illegal property accessor")
