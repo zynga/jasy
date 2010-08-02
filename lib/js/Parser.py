@@ -2,15 +2,16 @@
 # JavaScript Tools - Parser Module
 # License: MPL 1.1/GPL 2.0/LGPL 2.1
 # Authors: 
-#   - Brendan Eich <brendan@mozilla.org> (Original JavaScript) (2004)
-#   - JT Olds <jtolds@xnet5.com> (Python Translation) (2009)
-#   - Sebastian Werner <info@sebastian-werner.net> (Refactoring Python) (2010)
+#   - Brendan Eich <brendan@mozilla.org> (Original JavaScript) (2004-2010)
+#   - Sebastian Werner <info@sebastian-werner.net> (Python Port) (2010)
 #
 
 from js.Node import Node
 from js.Tokenizer import Token
+from js.Builder import Builder
 
-__all__ = [ "parse", "parseExpression" ]
+#__all__ = [ "parse", "parseExpression" ]
+__all__ = [ "parse" ]
 
 
 class SyntaxError(Exception):
