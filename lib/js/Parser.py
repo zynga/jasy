@@ -635,40 +635,43 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     # (since the def body is _not_ hoisted, only the declaration) and
     # upon hoisting, needs to recalculate all its upvars up front.
     # 
-    if (x2.needsHoisting) {
+    if x2.needsHoisting:
         # Order is important here! funDecls must come _after_ varDecls!
         builder.setHoists(f.body.id, x2.varDecls.concat(x2.funDecls))
 
-        if (compilerContext.inFunction) {
+        if compilerContext.inFunction:
             # Propagate up to the parent def if we're an inner function.
             compilerContext.needsHoisting = True
-        } else {
+        
+        else:
             # Only re-parse toplevel functions.
             var x3 = x2
             x2 = new CompilerContext(True, builder)
             tokenizer.rewind(rp)
+            
             # Set a flag in case the builder wants to have different behavior
             # on the second pass.
             builder.secondPass = True
             builder.FUNCTION$hoistVars(f.body.id, True)
             builder.FUNCTION$setBody(f, Script(tokenizer, x2))
             builder.secondPass = False
-        }
-    }
 
-    if (tokenType == LEFT_CURLY)
+    if tokenType == LEFT_CURLY:
         tokenizer.mustMatch(RIGHT_CURLY)
 
     f.end = tokenizer.token.end
     f.functionForm = functionForm
-    if (functionForm == DECLARED_FORM)
+    
+    if functionForm == DECLARED_FORM:
         compilerContext.funDecls.push(f)
+        
     builder.FUNCTION$finish(f, compilerContext)
+    
     return f
-}
 
 
-def Variables(tokenizer, compilerContext, letBlock) {
+
+def Variables(tokenizer, compilerContext, letBlock):
     """Parses a comma-separated list of var declarations (and maybe initializations)."""
     var builder = compilerContext.builder
     var node, ss, i, s
