@@ -357,84 +357,110 @@ def Statement(tokenizer, compilerContext):
         node = builder.TRY$build(tokenizer)
         builder.TRY$setTryBlock(node, Block(tokenizer, compilerContext))
         
-        while (tokenizer.match(CATCH)) {
+        while tokenizer.match(CATCH):
             childNode = builder.CATCH$build(tokenizer)
             tokenizer.mustMatch(LEFT_PAREN)
-            switch (tokenizer.get()) {
-              case LEFT_BRACKET:
-              case LEFT_CURLY:
+            nextTokenType = tokenizer.get()
+            
+            
+            if nextTokenType == LEFT_BRACKET or nextTokenType == LEFT_CURLY:
                 # Destructured catch identifiers.
                 tokenizer.unget()
                 builder.CATCH$setVarName(childNode, DestructuringExpression(tokenizer, compilerContext, True))
-              case IDENTIFIER:
+            elif nextTokenType == IDENTIFIER:
                 builder.CATCH$setVarName(childNode, tokenizer.token.value)
-                break
-              default:
-                raise SyntaxError("Missing identifier in catch")
-                break
-            }
-            if (tokenizer.match(IF)) {
-                if (compilerContext.ecma3OnlyMode)
-                    raise SyntaxError("Illegal catch guard")
-                if (node.catchClauses.length and !node.catchClauses.top().guard)
-                    raise SyntaxError("Guarded catch after unguarded")
+            else:
+                raise SyntaxError("Missing identifier in catch", tokenizer)
+
+            if tokenizer.match(IF):
+                if compilerContext.ecma3OnlyMode:
+                    raise SyntaxError("Illegal catch guard", tokenizer)
+                    
+                if node.catchClauses.length and not node.catchClauses.top().guard:
+                    raise SyntaxError("Guarded catch after unguarded", tokenizer)
+                    
                 builder.CATCH$setGuard(childNode, Expression(tokenizer, compilerContext))
-            } else {
+                
+            else:
                 builder.CATCH$setGuard(childNode, null)
-            }
+            
             tokenizer.mustMatch(RIGHT_PAREN)
+            
             builder.CATCH$setBlock(childNode, Block(tokenizer, compilerContext))
             builder.CATCH$finish(childNode)
+            
             builder.TRY$addCatch(node, childNode)
-        }
+        
         builder.TRY$finishCatches(node)
-        if (tokenizer.match(FINALLY))
+        
+        if tokenizer.match(FINALLY):
             builder.TRY$setFinallyBlock(node, Block(tokenizer, compilerContext))
-        if (!node.catchClauses.length and !node.finallyBlock)
-            raise SyntaxError("Invalid try statement")
+            
+        if not node.catchClauses.length and not node.finallyBlock:
+            raise SyntaxError("Invalid try statement", tokenizer)
+            
         builder.TRY$finish(node)
         return node
+        
 
     elif tokenType == CATCH or tokenType == FINALLY:
         raise SyntaxError(tokens[tokenType] + " without preceding try")
 
+
     elif tokenType == THROW:
         node = builder.THROW$build(tokenizer)
+        
         builder.THROW$setException(node, Expression(tokenizer, compilerContext))
         builder.THROW$finish(node)
-        break
+        
+        # NO RETURN
+
 
     elif tokenType == RETURN:
         node = returnOrYield(tokenizer, compilerContext)
-        break
+        
+        # NO RETURN
+
 
     elif tokenType == WITH:
         node = builder.WITH$build(tokenizer)
+
         builder.WITH$setObject(node, ParenExpression(tokenizer, compilerContext))
         builder.WITH$setBody(node, nest(tokenizer, compilerContext, node, Statement))
         builder.WITH$finish(node)
+
         return node
+
 
     elif tokenType == VAR or tokenType == CONST:
         node = Variables(tokenizer, compilerContext)
-        break
+        
+        # NO RETURN
+        
 
     elif tokenType == LET:
-        if (tokenizer.peek() == LEFT_PAREN)
+        if tokenizer.peek() == LEFT_PAREN:
             node = LetBlock(tokenizer, compilerContext, True)
         else
             node = Variables(tokenizer, compilerContext)
-        break
+        
+        # NO RETURN
+        
 
     elif tokenType == DEBUGGER:
         node = builder.DEBUGGER$build(tokenizer)
-        break
+        
+        # NO RETURN
+        
 
     elif tokenType == NEWLINE or tokenType == SEMICOLON:
         node = builder.SEMICOLON$build(tokenizer)
+        
         builder.SEMICOLON$setExpression(node, null)
         builder.SEMICOLON$finish(tokenizer)
+        
         return node
+
 
     else:
         if tokenType == IDENTIFIER:
