@@ -110,25 +110,25 @@ STATEMENT_FORM = 2
 
     def Statement(tokenizer, compilerContext):
         """Parses a Statement."""
-        var i, label, node, childNode, ss, tokenType = tokenizer.get(True)
-        var builder = compilerContext.builder
+
+        tokenType = tokenizer.get(True)
+        builder = compilerContext.builder
 
         # Cases for statements ending in a right curly return early, avoiding the
         # common semicolon insertion magic after this switch.
-        switch (tokenType) {
-          case FUNCTION:
+        
+        if tokenType == FUNCTION:
             # DECLARED_FORM extends funDecls of compilerContext, STATEMENT_FORM doesn'tokenizer.
             return FunctionDefinition(tokenizer, compilerContext, True,
                                       (compilerContext.stmtStack.length > 1)
                                       ? STATEMENT_FORM
                                       : DECLARED_FORM)
-
-          case LEFT_CURLY:
+        elif tokenType == LEFT_CURLY:
             node = Statements(tokenizer, compilerContext)
             tokenizer.mustMatch(RIGHT_CURLY)
             return node
-
-          case IF:
+            
+        elif tokenType == IF:
             node = builder.IF$build(tokenizer)
             builder.IF$setCondition(node, ParenExpression(tokenizer, compilerContext))
             compilerContext.stmtStack.push(node)
@@ -138,8 +138,8 @@ STATEMENT_FORM = 2
             compilerContext.stmtStack.pop()
             builder.IF$finish(node)
             return node
-
-          case SWITCH:
+            
+        elif tokenType == SWITCH:
             # This allows CASEs after a DEFAULT, which is in the standard.
             node = builder.SWITCH$build(tokenizer)
             builder.SWITCH$setDiscriminant(node, ParenExpression(tokenizer, compilerContext))
@@ -179,8 +179,8 @@ STATEMENT_FORM = 2
             compilerContext.stmtStack.pop()
             builder.SWITCH$finish(node)
             return node
-
-          case FOR:
+            
+        elif tokenType == FOR:
             node = builder.FOR$build(tokenizer)
             if (tokenizer.match(IDENTIFIER) and tokenizer.token.value == "each")
                 builder.FOR$rebuildForEach(node)
@@ -241,15 +241,15 @@ STATEMENT_FORM = 2
             }
             builder.FOR$finish(node)
             return node
-
-          case WHILE:
+            
+        elif tokenType == WHILE:
             node = builder.WHILE$build(tokenizer)
             builder.WHILE$setCondition(node, ParenExpression(tokenizer, compilerContext))
             builder.WHILE$setBody(node, nest(tokenizer, compilerContext, node, Statement))
             builder.WHILE$finish(node)
-            return node
-
-          case DO:
+            return node                                    
+            
+        elif tokenType == DO:
             node = builder.DO$build(tokenizer)
             builder.DO$setBody(node, nest(tokenizer, compilerContext, node, Statement, WHILE))
             builder.DO$setCondition(node, ParenExpression(tokenizer, compilerContext))
@@ -262,9 +262,8 @@ STATEMENT_FORM = 2
                 return node
             }
             break
-
-          case BREAK:
-          case CONTINUE:
+          
+        elif tokenType == BREAK or tokenType == CONTINUE:
             node = tokenType == BREAK ? builder.BREAK$build(tokenizer) : builder.CONTINUE$build(tokenizer)
 
             if (tokenizer.peekOnSameLine() == IDENTIFIER) {
@@ -285,13 +284,13 @@ STATEMENT_FORM = 2
                         raise SyntaxError("Label not found")
                 } while (ss[i].label != label)
 
-                /*
-                 * Both break and continue to label need to be handled specially
-                 * within a labeled loop, so that they target that loop. If not in
-                 * a loop, then break targets its labeled statement. Labels can be
-                 * nested so we skip all labels immediately enclosing the nearest
-                 * non-label statement.
-                 */
+                # 
+                # Both break and continue to label need to be handled specially
+                # within a labeled loop, so that they target that loop. If not in
+                # a loop, then break targets its labeled statement. Labels can be
+                # nested so we skip all labels immediately enclosing the nearest
+                # non-label statement.
+                # 
                 while (i < ss.length - 1 and ss[i+1].type == LABEL)
                     i++
                 if (i < ss.length - 1 and ss[i+1].isLoop)
@@ -316,7 +315,7 @@ STATEMENT_FORM = 2
             }
             break
 
-          case TRY:
+        elif tokenType == TRY:
             node = builder.TRY$build(tokenizer)
             builder.TRY$setTryBlock(node, Block(tokenizer, compilerContext))
             while (tokenizer.match(CATCH)) {
@@ -357,69 +356,69 @@ STATEMENT_FORM = 2
             builder.TRY$finish(node)
             return node
 
-          case CATCH:
-          case FINALLY:
+        elif tokenType == CATCH or tokenType == FINALLY:
             raise SyntaxError(tokens[tokenType] + " without preceding try")
 
-          case THROW:
+        elif tokenType == THROW:
             node = builder.THROW$build(tokenizer)
             builder.THROW$setException(node, Expression(tokenizer, compilerContext))
             builder.THROW$finish(node)
             break
 
-          case RETURN:
+        elif tokenType == RETURN:
             node = returnOrYield(tokenizer, compilerContext)
             break
 
-          case WITH:
+        elif tokenType == WITH:
             node = builder.WITH$build(tokenizer)
             builder.WITH$setObject(node, ParenExpression(tokenizer, compilerContext))
             builder.WITH$setBody(node, nest(tokenizer, compilerContext, node, Statement))
             builder.WITH$finish(node)
             return node
 
-          case VAR:
-          case CONST:
+        elif tokenType == VAR or tokenType == CONST:
             node = Variables(tokenizer, compilerContext)
             break
 
-          case LET:
+        elif tokenType == LET:
             if (tokenizer.peek() == LEFT_PAREN)
                 node = LetBlock(tokenizer, compilerContext, True)
             else
                 node = Variables(tokenizer, compilerContext)
             break
 
-          case DEBUGGER:
+        elif tokenType == DEBUGGER:
             node = builder.DEBUGGER$build(tokenizer)
             break
 
-          case NEWLINE:
-          case SEMICOLON:
+        elif tokenType == NEWLINE or tokenType == SEMICOLON:
             node = builder.SEMICOLON$build(tokenizer)
             builder.SEMICOLON$setExpression(node, null)
             builder.SEMICOLON$finish(tokenizer)
             return node
 
-          default:
-            if (tokenType == IDENTIFIER) {
+        else:
+            if tokenType == IDENTIFIER:
                 tokenType = tokenizer.peek()
+
                 # Labeled statement.
-                if (tokenType == COLON) {
+                if tokenType == COLON:
                     label = tokenizer.token.value
                     ss = compilerContext.stmtStack
+                   
                     for (i = ss.length-1; i >= 0; --i) {
                         if (ss[i].label == label)
                             raise SyntaxError("Duplicate label")
                     }
+                    
                     tokenizer.get()
                     node = builder.LABEL$build(tokenizer)
+                    
                     builder.LABEL$setLabel(node, label)
                     builder.LABEL$setStatement(node, nest(tokenizer, compilerContext, node, Statement))
                     builder.LABEL$finish(node)
+                    
                     return node
-                }
-            }
 
             # Expression statement.
             # We unget the current token to parse the expression as a whole.
@@ -429,35 +428,40 @@ STATEMENT_FORM = 2
             node.end = node.expression.end
             builder.SEMICOLON$finish(node)
             break
-        }
 
         MagicalSemicolon(tokenizer)
         return node
-    }
 
-    def MagicalSemicolon(tokenizer) {
-        var tokenType
-        if (tokenizer.lineno == tokenizer.token.lineno) {
+
+
+
+
+    def MagicalSemicolon(tokenizer):
+        if tokenizer.lineno == tokenizer.token.lineno:
             tokenType = tokenizer.peekOnSameLine()
-            if (tokenType != END and tokenType != NEWLINE and tokenType != SEMICOLON and tokenType != RIGHT_CURLY)
+        
+            if tokenType != END and tokenType != NEWLINE and tokenType != SEMICOLON and tokenType != RIGHT_CURLY:
                 raise SyntaxError("Missing ; before statement")
-        }
+        
         tokenizer.match(SEMICOLON)
-    }
+        
 
-    def returnOrYield(tokenizer, compilerContext) {
-        var node, builder = compilerContext.builder, tokenType = tokenizer.token.type, tt2
+    def returnOrYield(tokenizer, compilerContext):
+        builder = compilerContext.builder
+        tokenType = tokenizer.token.type
 
-        if (tokenType == RETURN) {
-            if (!compilerContext.inFunction)
+        if tokenType == RETURN:
+            if not compilerContext.inFunction:
                 raise SyntaxError("Return not in function")
+                
             node = builder.RETURN$build(tokenizer)
-        } else /* (tokenType == YIELD) */ {
-            if (!compilerContext.inFunction)
+            
+        else:
+            if !compilerContext.inFunction:
                 raise SyntaxError("Yield not in function")
+                
             compilerContext.isGenerator = True
             node = builder.YIELD$build(tokenizer)
-        }
 
         tt2 = tokenizer.peek(True)
         if (tt2 != END and tt2 != NEWLINE and tt2 != SEMICOLON and tt2 != RIGHT_CURLY
