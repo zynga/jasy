@@ -555,59 +555,60 @@ def returnOrYield(tokenizer, compilerContext):
 
 
 
-def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
-    var builder = compilerContext.builder
-    var f = builder.FUNCTION$build(tokenizer)
+def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
+    builder = compilerContext.builder
+    f = builder.FUNCTION$build(tokenizer)
+    
     if tokenizer.match(IDENTIFIER):
         builder.FUNCTION$setName(f, tokenizer.token.value)
     elif requireName:
         raise SyntaxError("Missing def identifier", tokenizer)
 
     tokenizer.mustMatch(LEFT_PAREN)
-    if (!tokenizer.match(RIGHT_PAREN)) {
-        do {
-            switch (tokenizer.get()) {
-              case LEFT_BRACKET:
-              case LEFT_CURLY:
+    
+    if not tokenizer.match(RIGHT_PAREN):
+        while True:
+            tokenType = tokenizer.get()
+            if tokenType == LEFT_BRACKET or tokenType == LEFT_CURLY:
                 # Destructured formal parameters.
                 tokenizer.unget()
                 builder.FUNCTION$addParam(f, DestructuringExpression(tokenizer, compilerContext))
-                break
-              case IDENTIFIER:
+                
+            elif tokenType == IDENTIFIER:
                 builder.FUNCTION$addParam(f, tokenizer.token.value)
-                break
-              default:
+                
+            else:
                 raise SyntaxError("Missing formal parameter", tokenizer)
+        
+            if not tokenizer.match(COMMA):
                 break
-            }
-        } while (tokenizer.match(COMMA))
+        
         tokenizer.mustMatch(RIGHT_PAREN)
-    }
 
     # Do we have an expression closure or a normal body?
-    var tokenType = tokenizer.get()
-    if (tokenType != LEFT_CURLY)
+    tokenType = tokenizer.get()
+    if tokenType != LEFT_CURLY:
         tokenizer.unget()
 
     var x2 = new CompilerContext(True, builder)
     var rp = tokenizer.save()
-    if (compilerContext.inFunction) {
+    
+    if compilerContext.inFunction:
         # 
         # Inner functions don'tokenizer reset block numbering. They also need to
         # remember which block they were parsed in for hoisting (see comment
         # below).
         # 
         x2.blockId = compilerContext.blockId
-    }
 
-    if (tokenType != LEFT_CURLY) {
+    if tokenType != LEFT_CURLY:
         builder.FUNCTION$setBody(f, AssignExpression(tokenizer, compilerContext))
-        if (compilerContext.isGenerator)
+        if compilerContext.isGenerator:
             raise SyntaxError("Generator returns a value", tokenizer)
-    } else {
+            
+    else:
         builder.FUNCTION$hoistVars(x2.blockId)
         builder.FUNCTION$setBody(f, Script(tokenizer, x2))
-    }
 
     # 
     # To linearize hoisting with nested blocks needing hoists, if a toplevel
@@ -1451,6 +1452,6 @@ def parse(builder, source, filename, line) {
     var node = Script(tokenizer, compilerContext)
     
     if not tokenizer.done:
-        raise SyntaxError("Syntax error")
+        raise SyntaxError("Syntax error", tokenizer)
 
     return node
