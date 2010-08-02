@@ -293,6 +293,7 @@ def Statement(tokenizer, compilerContext):
 
         # NO RETURN
       
+      
     elif tokenType == BREAK or tokenType == CONTINUE:
         if tokenType == BREAK:
             node = builder.BREAK$build(tokenizer) 
@@ -362,13 +363,14 @@ def Statement(tokenizer, compilerContext):
             tokenizer.mustMatch(LEFT_PAREN)
             nextTokenType = tokenizer.get()
             
-            
             if nextTokenType == LEFT_BRACKET or nextTokenType == LEFT_CURLY:
                 # Destructured catch identifiers.
                 tokenizer.unget()
                 builder.CATCH$setVarName(childNode, DestructuringExpression(tokenizer, compilerContext, True))
+            
             elif nextTokenType == IDENTIFIER:
                 builder.CATCH$setVarName(childNode, tokenizer.token.value)
+            
             else:
                 raise SyntaxError("Missing identifier in catch", tokenizer)
 
@@ -492,7 +494,9 @@ def Statement(tokenizer, compilerContext):
         builder.SEMICOLON$setExpression(node, Expression(tokenizer, compilerContext))
         node.end = node.expression.end
         builder.SEMICOLON$finish(node)
-        break
+        
+        # NO RETURN
+        
 
     MagicalSemicolon(tokenizer)
     return node
@@ -504,7 +508,7 @@ def MagicalSemicolon(tokenizer):
         tokenType = tokenizer.peekOnSameLine()
     
         if tokenType != END and tokenType != NEWLINE and tokenType != SEMICOLON and tokenType != RIGHT_CURLY:
-            raise SyntaxError("Missing ; before statement")
+            raise SyntaxError("Missing ; before statement", tokenizer)
     
     tokenizer.match(SEMICOLON)
 
