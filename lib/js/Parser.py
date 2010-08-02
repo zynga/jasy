@@ -520,13 +520,13 @@ def returnOrYield(tokenizer, compilerContext):
 
     if tokenType == RETURN:
         if not compilerContext.inFunction:
-            raise SyntaxError("Return not in function")
+            raise SyntaxError("Return not in function", tokenizer)
             
         node = builder.RETURN$build(tokenizer)
         
     else:
         if !compilerContext.inFunction:
-            raise SyntaxError("Yield not in function")
+            raise SyntaxError("Yield not in function", tokenizer)
             
         compilerContext.isGenerator = True
         node = builder.YIELD$build(tokenizer)
@@ -544,7 +544,7 @@ def returnOrYield(tokenizer, compilerContext):
 
     # Disallow return v; in generator.
     if compilerContext.hasReturnWithValue and compilerContext.isGenerator:
-        raise SyntaxError("Generator returns a value")
+        raise SyntaxError("Generator returns a value", tokenizer)
 
     if tokenType == RETURN:
         builder.RETURN$finish(node)
@@ -561,7 +561,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
     if tokenizer.match(IDENTIFIER):
         builder.FUNCTION$setName(f, tokenizer.token.value)
     elif requireName:
-        raise SyntaxError("Missing def identifier")
+        raise SyntaxError("Missing def identifier", tokenizer)
 
     tokenizer.mustMatch(LEFT_PAREN)
     if (!tokenizer.match(RIGHT_PAREN)) {
@@ -577,7 +577,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
                 builder.FUNCTION$addParam(f, tokenizer.token.value)
                 break
               default:
-                raise SyntaxError("Missing formal parameter")
+                raise SyntaxError("Missing formal parameter", tokenizer)
                 break
             }
         } while (tokenizer.match(COMMA))
@@ -603,7 +603,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
     if (tokenType != LEFT_CURLY) {
         builder.FUNCTION$setBody(f, AssignExpression(tokenizer, compilerContext))
         if (compilerContext.isGenerator)
-            raise SyntaxError("Generator returns a value")
+            raise SyntaxError("Generator returns a value", tokenizer)
     } else {
         builder.FUNCTION$hoistVars(x2.blockId)
         builder.FUNCTION$setBody(f, Script(tokenizer, x2))
@@ -946,9 +946,9 @@ def ParenExpression(tokenizer, compilerContext) {
     var err = "expression must be parenthesized"
     if (tokenizer.match(FOR)) {
         if (node.type == YIELD and !node.parenthesized)
-            raise SyntaxError("Yield " + err)
+            raise SyntaxError("Yield " + err, tokenizer)
         if (node.type == COMMA and !node.parenthesized)
-            raise SyntaxError("Generator " + err)
+            raise SyntaxError("Generator " + err, tokenizer)
         node = GeneratorExpression(tokenizer, compilerContext, node)
     }
 
@@ -1005,7 +1005,7 @@ def AssignExpression(tokenizer, compilerContext) {
       case IDENTIFIER: case DOT: case INDEX: case CALL:
         break
       default:
-        raise SyntaxError("Bad left-hand side of assignment")
+        raise SyntaxError("Bad left-hand side of assignment", tokenizer)
         break
     }
 
@@ -1036,7 +1036,7 @@ def ConditionalExpression(tokenizer, compilerContext) {
         builder.HOOK$setThenPart(node, AssignExpression(tokenizer, compilerContext))
         compilerContext.inForLoopInit = oldLoopInit
         if (!tokenizer.match(COLON))
-            raise SyntaxError("Missing : after ?")
+            raise SyntaxError("Missing : after ?", tokenizer)
         builder.HOOK$setElsePart(node, AssignExpression(tokenizer, compilerContext))
         builder.HOOK$finish(node)
     }
@@ -1318,11 +1318,11 @@ def ArgumentList(tokenizer, compilerContext) {
     do {
         childNode = AssignExpression(tokenizer, compilerContext)
         if (childNode.type == YIELD and !childNode.parenthesized and tokenizer.peek() == COMMA)
-            raise SyntaxError("Yield " + err)
+            raise SyntaxError("Yield " + err, tokenizer)
         if (tokenizer.match(FOR)) {
             childNode = GeneratorExpression(tokenizer, compilerContext, childNode)
             if (node.length > 1 or tokenizer.peek(True) == COMMA)
-                raise SyntaxError("Generator " + err)
+                raise SyntaxError("Generator " + err, tokenizer)
         }
         builder.LIST$addOperand(node, childNode)
     } while (tokenizer.match(COMMA))
