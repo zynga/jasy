@@ -119,37 +119,50 @@ def Statement(tokenizer, compilerContext):
     
     if tokenType == FUNCTION:
         # DECLARED_FORM extends funDecls of compilerContext, STATEMENT_FORM doesn'tokenizer.
-        return FunctionDefinition(tokenizer, compilerContext, True,
-                                  (compilerContext.stmtStack.length > 1)
-                                  ? STATEMENT_FORM
-                                  : DECLARED_FORM)
+        if compilerContext.stmtStack.length > 1:
+            kind = STATEMENT_FORM
+        else:
+            kind = DECLARED_FORM
+        
+        return FunctionDefinition(tokenizer, compilerContext, True, kind)
+        
+        
     elif tokenType == LEFT_CURLY:
         node = Statements(tokenizer, compilerContext)
         tokenizer.mustMatch(RIGHT_CURLY)
+        
         return node
+        
         
     elif tokenType == IF:
         node = builder.IF$build(tokenizer)
         builder.IF$setCondition(node, ParenExpression(tokenizer, compilerContext))
         compilerContext.stmtStack.push(node)
         builder.IF$setThenPart(node, Statement(tokenizer, compilerContext))
-        if (tokenizer.match(ELSE))
+
+        if tokenizer.match(ELSE):
             builder.IF$setElsePart(node, Statement(tokenizer, compilerContext))
+
         compilerContext.stmtStack.pop()
         builder.IF$finish(node)
+        
         return node
+        
         
     elif tokenType == SWITCH:
         # This allows CASEs after a DEFAULT, which is in the standard.
         node = builder.SWITCH$build(tokenizer)
         builder.SWITCH$setDiscriminant(node, ParenExpression(tokenizer, compilerContext))
         compilerContext.stmtStack.push(node)
+
         tokenizer.mustMatch(LEFT_CURLY)
-        while ((tokenType = tokenizer.get()) != RIGHT_CURLY) {
-            switch (tokenType) {
-              case DEFAULT:
-                if (node.defaultIndex >= 0)
-                    raise SyntaxError("More than one switch default")
+        tokenType = tokenizer.get()
+        
+        while tokenType != RIGHT_CURLY:
+            if tokenType == DEFAULT:
+                if node.defaultIndex >= 0:
+                    raise SyntaxError("More than one switch default", tokenizer)
+                    
                 childNode = builder.DEFAULT$build(tokenizer)
                 builder.SWITCH$setDefaultIndex(node, node.cases.length)
                 tokenizer.mustMatch(COLON)
@@ -160,7 +173,7 @@ def Statement(tokenizer, compilerContext):
                 builder.DEFAULT$finish(childNode)
                 break
 
-              case CASE:
+            elif tokenType == CASE:
                 childNode = builder.CASE$build(tokenizer)
                 builder.CASE$setLabel(childNode, Expression(tokenizer, compilerContext, COLON))
                 tokenizer.mustMatch(COLON)
@@ -171,15 +184,18 @@ def Statement(tokenizer, compilerContext):
                 builder.CASE$finish(childNode)
                 break
 
-              default:
-                raise SyntaxError("Invalid switch case")
-            }
+            else:
+                raise SyntaxError("Invalid switch case", tokenizer)
+
             builder.SWITCH$addCase(node, childNode)
-        }
+            tokenType = tokenizer.get()
+
         compilerContext.stmtStack.pop()
         builder.SWITCH$finish(node)
+
         return node
         
+
     elif tokenType == FOR:
         node = builder.FOR$build(tokenizer)
         if (tokenizer.match(IDENTIFIER) and tokenizer.token.value == "each")
@@ -242,43 +258,48 @@ def Statement(tokenizer, compilerContext):
         builder.FOR$finish(node)
         return node
         
+        
     elif tokenType == WHILE:
         node = builder.WHILE$build(tokenizer)
+        
         builder.WHILE$setCondition(node, ParenExpression(tokenizer, compilerContext))
         builder.WHILE$setBody(node, nest(tokenizer, compilerContext, node, Statement))
         builder.WHILE$finish(node)
+        
         return node                                    
+        
         
     elif tokenType == DO:
         node = builder.DO$build(tokenizer)
+        
         builder.DO$setBody(node, nest(tokenizer, compilerContext, node, Statement, WHILE))
         builder.DO$setCondition(node, ParenExpression(tokenizer, compilerContext))
         builder.DO$finish(node)
-        if (!compilerContext.ecmaStrictMode) {
+        
+        if not compilerContext.ecmaStrictMode:
             # <script language="JavaScript"> (without version hints) may need
             # automatic semicolon insertion without a newline after do-while.
             # See http://bugzilla.mozilla.org/show_bug.cgi?id=238945.
             tokenizer.match(SEMICOLON)
             return node
-        }
-        break
+
       
     elif tokenType == BREAK or tokenType == CONTINUE:
         node = tokenType == BREAK ? builder.BREAK$build(tokenizer) : builder.CONTINUE$build(tokenizer)
 
-        if (tokenizer.peekOnSameLine() == IDENTIFIER) {
+        if tokenizer.peekOnSameLine() == IDENTIFIER:
             tokenizer.get()
-            if (tokenType == BREAK)
+            
+            if tokenType == BREAK:
                 builder.BREAK$setLabel(node, tokenizer.token.value)
-            else
+            else:
                 builder.CONTINUE$setLabel(node, tokenizer.token.value)
-        }
 
         ss = compilerContext.stmtStack
         i = ss.length
         label = node.label
 
-        if (label) {
+        if label:
             do {
                 if (--i < 0)
                     raise SyntaxError("Label not found")
@@ -1371,6 +1392,7 @@ def PrimaryExpression(tokenizer, compilerContext) {
       default:
         raise SyntaxError("Missing operand")
         break
+
 
     return node
 
