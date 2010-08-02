@@ -40,27 +40,20 @@ class SyntaxError(Exception):
 # Used as a status container during tree-building for every function body and the global body
 class CompilerContext(object):
     # inFunction is used to check if a return stm appears in a valid context.
-    def __init__(self, inFunction):
-        #######################
-        # PUBLIC
-        #######################
-
-        # collect all defined and used variables
-        self.declares = []
-        self.accesses = []
-
-        #######################
-        # PRIVATE
-        #######################
-
+    def __init__(self, inFunction, builder):
         # Whether this is inside a function, mostly true, only for top-level scope it's false
         self.inFunction = inFunction
         
-        # The elms of statementStack are used to find the target label of CONTINUEs and
-        # BREAKs. Its length is used in function definitions.
+        self.hasEmptyReturn = False
+        self.hasReturnWithValue = False
+        self.isGenerator = False
+        self.blockId = 0
+        self.builder = builder
         self.statementStack = []
-
-        #
+        self.funDecls = []
+        self.varDecls = []
+         
+        # Status
         self.bracketLevel = 0
         self.curlyLevel = 0
         self.parenLevel = 0
@@ -73,8 +66,8 @@ class CompilerContext(object):
         self.inForLoopInit = False
 
 
-# This produces the root node of each file or function body, basically a modified block node
 def Script(tokenizer, compilerContext):
+    """Parses the toplevel and function bodies."""
     node = Statements(tokenizer, compilerContext)
     
     # change type from "block" to "script" for script root
@@ -84,11 +77,8 @@ def Script(tokenizer, compilerContext):
     # node.declares = compilerContext.declares
     node.accesses = compilerContext.accesses
 
-    # LETs may add varDecls to blocks.
-    if not "declares" in node:
-        node.declares = []
-    
-    node.declares.extend(compilerContext.declares)
+    node.funDecls = compilerContext.funDecls
+    node.varDecls = compilerContext.varDecls
 
     return node
     

@@ -32,6 +32,8 @@ class Node(list):
                     self.comments = token.comments
                 
                 self.line = token.line
+                
+                # Start & end are file positions for error handling.
                 self.start = token.start
                 self.end = token.end
             
@@ -51,6 +53,7 @@ class Node(list):
 
     # Always use push to add operands to an expression, to update start and end.
     def append(self, kid, rel=None):
+        # kid can be null e.g. [1, , 2].
         if kid:
             if hasattr(self, "start") and kid.start < self.start:
                 self.start = kid.start
