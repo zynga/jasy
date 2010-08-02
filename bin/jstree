@@ -10,7 +10,7 @@ from js.Parser import parse
 
 
 def jstree(source, filename=None):
-    root = parse(Lexer(source, filename))
+    root = parse(Tokenizer(source, filename))
     return root.toXml()
 
 if __name__ == "__main__":
