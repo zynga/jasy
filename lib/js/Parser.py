@@ -717,29 +717,31 @@ def Variables(tokenizer, compilerContext, letBlock):
 
     node = build.call(builder, tokenizer)
     initializers = []
-    do {
-        var tokenType = tokenizer.get()
-        # 
+
+    while True:
+        tokenType = tokenizer.get()
+
         # FIXME Should have a special DECLARATION node instead of overloading
         # IDENTIFIER to mean both identifier declarations and destructured
         # declarations.
-        # 
-        var childNode = builder.DECL$build(tokenizer)
-        if (tokenType == LEFT_BRACKET or tokenType == LEFT_CURLY) {
+        childNode = builder.DECL$build(tokenizer)
+        
+        if tokenType == LEFT_BRACKET or tokenType == LEFT_CURLY:
             # Pass in s if we need to add each pattern matched into
             # its varDecls, else pass in compilerContext.
             var data = null
+
             # Need to unget to parse the full destructured expression.
             tokenizer.unget()
             builder.DECL$setName(childNode, DestructuringExpression(tokenizer, compilerContext, True, s))
-            if (compilerContext.inForLoopInit and tokenizer.peek() == IN) {
+
+            if compilerContext.inForLoopInit and tokenizer.peek() == IN:
                 addDecl.call(builder, node, childNode, s)
                 continue
-            }
 
             tokenizer.mustMatch(ASSIGN)
             if (tokenizer.token.assignOp)
-                raise SyntaxError("Invalid variable initialization")
+                raise SyntaxError("Invalid variable initialization", tokenizer)
 
             # Parse the init as a normal assignment.
             var n3 = builder.ASSIGN$build(tokenizer)
@@ -752,44 +754,44 @@ def Variables(tokenizer, compilerContext, letBlock):
             builder.DECL$finish(childNode)
             addDecl.call(builder, node, childNode, s)
             continue
-        }
 
-        if (tokenType != IDENTIFIER)
-            raise SyntaxError("Missing variable name")
+        if tokenType != IDENTIFIER:
+            raise SyntaxError("Missing variable name", tokenizer)
 
         builder.DECL$setName(childNode, tokenizer.token.value)
         builder.DECL$setReadOnly(childNode, node.type == CONST)
         addDecl.call(builder, node, childNode, s)
 
-        if (tokenizer.match(ASSIGN)) {
-            if (tokenizer.token.assignOp)
-                raise SyntaxError("Invalid variable initialization")
+        if tokenizer.match(ASSIGN):
+            if tokenizer.token.assignOp:
+                raise SyntaxError("Invalid variable initialization", tokenizer)
 
             # Parse the init as a normal assignment.
             var id = mkIdentifier(childNode.tokenizer, childNode.name, True)
             var n3 = builder.ASSIGN$build(tokenizer)
+            
             builder.ASSIGN$addOperand(n3, id)
             builder.ASSIGN$addOperand(n3, AssignExpression(tokenizer, compilerContext))
             builder.ASSIGN$finish(n3)
+            
             initializers.push(n3)
 
             # But only add the rhs as the initializer.
             builder.DECL$setInitializer(childNode, n3[1])
-        }
 
         builder.DECL$finish(childNode)
         s.varDecls.push(childNode)
-    } while (tokenizer.match(COMMA))
+        
+        if not tokenizer.match(COMMA):
+            break
+        
     finish.call(builder, node)
     return node
-}
 
-# 
-# LetBlock :: (tokenizer, compiler context, boolean) -> node
-# 
-# Does not handle let inside of for loop init.
-# 
-def LetBlock(tokenizer, compilerContext, isStatement) {
+
+
+def LetBlock(tokenizer, compilerContext, isStatement):
+    """Does not handle let inside of for loop init."""
     var node, childNode, binds
     var builder = compilerContext.builder
 
