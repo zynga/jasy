@@ -102,24 +102,31 @@ class ParseError(Exception):
 
 
 class Lexer(object):
-    def __init__(self, source, filename):
+    def __init__(self, source, filename="", line=1):
+        # source: JavaScript source
+        # filename: Filename (for debugging proposes)
+        # line: Line number (for debugging proposes)
         self.cursor = 0
         self.source = str(source)
         self.tokens = {}
         self.tokenIndex = 0
         self.lookahead = 0
         self.scanNewlines = False
-        self.scanOperand = True
         self.filename = filename
-        self.line = 1
+        self.line = line
 
     input_ = property(lambda self: self.source[self.cursor:])
-    done = property(lambda self: self.peek() == "end")
     token = property(lambda self: self.tokens.get(self.tokenIndex))
 
 
-    def match(self, tokenType):
-        return self.get() == tokenType or self.unget()
+    def done(self):
+        # We need to set scanOperand to true here because the first thing
+        # might be a regexp.
+        return self.peek(True) == "end"
+        
+
+    def match(self, tokenType, scanOperand=False):
+        return self.get(scanOperand) == tokenType or self.unget()
 
 
     def mustMatch(self, tokenType):
@@ -129,7 +136,7 @@ class Lexer(object):
         return self.token
 
 
-    def peek(self):
+    def peek(self, scanOperand=False):
         if self.lookahead:
             next = self.tokens.get((self.tokenIndex + self.lookahead) & 3)
             if self.scanNewlines and (getattr(next, "line", None) != getattr(self, "line", None)):
@@ -137,15 +144,15 @@ class Lexer(object):
             else:
                 tokenType = getattr(next, "type", None)
         else:
-            tokenType = self.get()
+            tokenType = self.get(scanOperand)
             self.unget()
             
         return tokenType
 
 
-    def peekOnSameLine(self):
+    def peekOnSameLine(self, scanOperand=False):
         self.scanNewlines = True
-        tokenType = self.peek()
+        tokenType = self.peek(scanOperand)
         self.scanNewlines = False
         return tokenType
 
@@ -416,11 +423,6 @@ class Lexer(object):
         else:
             token.type = operatorNames[op]
             token.assignOp = None
-            if self.scanOperand:
-                if token.type == "plus":
-                    token.type = "unary_plus"
-                elif token.type == "minus":
-                    token.type = "unary_minus"
 
 
     # FIXME: Unicode escape sequences
@@ -452,10 +454,9 @@ class Lexer(object):
             token.value = identifier
 
 
-    # void -> token type
-    # It consumes input *only* if there is no lookahead.
-    # Dispatch to the appropriate lexing function depending on the input.
-    def get(self):
+    def get(self, scanOperand=False):
+        """ It consumes input *only* if there is no lookahead."""
+        """ Dispatch to the appropriate lexing function depending on the input."""
         while self.lookahead:
             self.lookahead -= 1
             self.tokenIndex = (self.tokenIndex + 1) & 3
@@ -482,7 +483,7 @@ class Lexer(object):
         if (ch >= "a" and ch <= "z") or (ch >= "A" and ch <= "Z") or ch == "$" or ch == "_":
             self.lexIdent(ch)
         
-        elif self.scanOperand and ch == "/":
+        elif scanOperand and ch == "/":
             self.lexRegExp(ch)
         
         elif ch == ".":
@@ -512,9 +513,30 @@ class Lexer(object):
         
 
     def unget(self):
+        """ Match depends on unget returning undefined."""
         self.lookahead += 1
         
         if self.lookahead == 4: 
             raise ParseError("PANIC: too much lookahead!", self.filename, self.line)
         
         self.tokenIndex = (self.tokenIndex - 1) & 3
+        
+    
+    def save(self):
+        return {
+            cursor: this.cursor,
+            tokenIndex: this.tokenIndex,
+            tokens: this.tokens.slice(),
+            lookahead: this.lookahead,
+            scanNewlines: this.scanNewlines,
+            lineno: this.lineno
+        }
+
+    
+    def rewind(self, point):
+        this.cursor = point.cursor
+        this.tokenIndex = point.tokenIndex
+        this.tokens = point.tokens.slice()
+        this.lookahead = point.lookahead
+        this.scanNewline = point.scanNewline
+        this.lineno = point.lineno
