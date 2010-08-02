@@ -19,11 +19,11 @@ class SyntaxError(Exception):
         Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, tokenizer.filename, tokenizer.line))
 
 
-# Used as a status container during tree-building for every function body and the global body
+# Used as a status container during tree-building for every def body and the global body
 class CompilerContext(object):
     # inFunction is used to check if a return stm appears in a valid context.
     def __init__(self, inFunction, builder):
-        # Whether this is inside a function, mostly true, only for top-level scope it's false
+        # Whether this is inside a function, mostly True, only for top-level scope it's False
         self.inFunction = inFunction
         
         self.hasEmptyReturn = False
@@ -49,7 +49,7 @@ class CompilerContext(object):
 
 
 def Script(tokenizer, compilerContext):
-    """Parses the toplevel and function bodies."""
+    """Parses the toplevel and def bodies."""
     node = Statements(tokenizer, compilerContext)
     
     # change type from "block" to "script" for script root
@@ -72,7 +72,7 @@ def Script(tokenizer, compilerContext):
 
 
     // Statement stack and nested statement handler.
-    function nest(tokenizer, compilerContext, node, func, end) {
+    def nest(tokenizer, compilerContext, node, func, end) {
         compilerContext.stmtStack.push(node)
         var node = func(tokenizer, compilerContext)
         compilerContext.stmtStack.pop()
@@ -85,24 +85,24 @@ def Script(tokenizer, compilerContext):
      *
      * Parses a list of Statements.
      */
-    function Statements(tokenizer, compilerContext) {
+    def Statements(tokenizer, compilerContext) {
         var builder = compilerContext.builder
         var node = builder.BLOCK$build(tokenizer, compilerContext.blockId++)
         builder.BLOCK$hoistLets(node)
         compilerContext.stmtStack.push(node)
-        while (!tokenizer.done && tokenizer.peek(true) != RIGHT_CURLY)
+        while (!tokenizer.done && tokenizer.peek(True) != RIGHT_CURLY)
             builder.BLOCK$addStatement(node, Statement(tokenizer, compilerContext))
         compilerContext.stmtStack.pop()
         builder.BLOCK$finish(node)
         if (node.needsHoisting) {
             builder.setHoists(node.id, node.varDecls)
             // Propagate up to the function.
-            compilerContext.needsHoisting = true
+            compilerContext.needsHoisting = True
         }
         return node
     }
 
-    function Block(tokenizer, compilerContext) {
+    def Block(tokenizer, compilerContext) {
         tokenizer.mustMatch(LEFT_CURLY)
         var node = Statements(tokenizer, compilerContext)
         tokenizer.mustMatch(RIGHT_CURLY)
@@ -116,16 +116,16 @@ def Script(tokenizer, compilerContext):
      *
      * Parses a Statement.
      */
-    function Statement(tokenizer, compilerContext) {
-        var i, label, node, n2, ss, tt = tokenizer.get(true)
+    def Statement(tokenizer, compilerContext) {
+        var i, label, node, childNode, ss, tokenType = tokenizer.get(True)
         var builder = compilerContext.builder
 
         // Cases for statements ending in a right curly return early, avoiding the
         // common semicolon insertion magic after this switch.
-        switch (tt) {
+        switch (tokenType) {
           case FUNCTION:
             // DECLARED_FORM extends funDecls of compilerContext, STATEMENT_FORM doesn'tokenizer.
-            return FunctionDefinition(tokenizer, compilerContext, true,
+            return FunctionDefinition(tokenizer, compilerContext, True,
                                       (compilerContext.stmtStack.length > 1)
                                       ? STATEMENT_FORM
                                       : DECLARED_FORM)
@@ -152,36 +152,36 @@ def Script(tokenizer, compilerContext):
             builder.SWITCH$setDiscriminant(node, ParenExpression(tokenizer, compilerContext))
             compilerContext.stmtStack.push(node)
             tokenizer.mustMatch(LEFT_CURLY)
-            while ((tt = tokenizer.get()) != RIGHT_CURLY) {
-                switch (tt) {
+            while ((tokenType = tokenizer.get()) != RIGHT_CURLY) {
+                switch (tokenType) {
                   case DEFAULT:
                     if (node.defaultIndex >= 0)
-                        throw tokenizer.newSyntaxError("More than one switch default")
-                    n2 = builder.DEFAULT$build(tokenizer)
+                        raise SyntaxError("More than one switch default")
+                    childNode = builder.DEFAULT$build(tokenizer)
                     builder.SWITCH$setDefaultIndex(node, node.cases.length)
                     tokenizer.mustMatch(COLON)
-                    builder.DEFAULT$initializeStatements(n2, tokenizer)
-                    while ((tt=tokenizer.peek(true)) != CASE && tt != DEFAULT &&
-                           tt != RIGHT_CURLY)
-                        builder.DEFAULT$addStatement(n2, Statement(tokenizer, compilerContext))
-                    builder.DEFAULT$finish(n2)
+                    builder.DEFAULT$initializeStatements(childNode, tokenizer)
+                    while ((tokenType=tokenizer.peek(True)) != CASE && tokenType != DEFAULT &&
+                           tokenType != RIGHT_CURLY)
+                        builder.DEFAULT$addStatement(childNode, Statement(tokenizer, compilerContext))
+                    builder.DEFAULT$finish(childNode)
                     break
 
                   case CASE:
-                    n2 = builder.CASE$build(tokenizer)
-                    builder.CASE$setLabel(n2, Expression(tokenizer, compilerContext, COLON))
+                    childNode = builder.CASE$build(tokenizer)
+                    builder.CASE$setLabel(childNode, Expression(tokenizer, compilerContext, COLON))
                     tokenizer.mustMatch(COLON)
-                    builder.CASE$initializeStatements(n2, tokenizer)
-                    while ((tt=tokenizer.peek(true)) != CASE && tt != DEFAULT &&
-                           tt != RIGHT_CURLY)
-                        builder.CASE$addStatement(n2, Statement(tokenizer, compilerContext))
-                    builder.CASE$finish(n2)
+                    builder.CASE$initializeStatements(childNode, tokenizer)
+                    while ((tokenType=tokenizer.peek(True)) != CASE && tokenType != DEFAULT &&
+                           tokenType != RIGHT_CURLY)
+                        builder.CASE$addStatement(childNode, Statement(tokenizer, compilerContext))
+                    builder.CASE$finish(childNode)
                     break
 
                   default:
-                    throw tokenizer.newSyntaxError("Invalid switch case")
+                    raise SyntaxError("Invalid switch case")
                 }
-                builder.SWITCH$addCase(node, n2)
+                builder.SWITCH$addCase(node, childNode)
             }
             compilerContext.stmtStack.pop()
             builder.SWITCH$finish(node)
@@ -192,15 +192,15 @@ def Script(tokenizer, compilerContext):
             if (tokenizer.match(IDENTIFIER) && tokenizer.token.value == "each")
                 builder.FOR$rebuildForEach(node)
             tokenizer.mustMatch(LEFT_PAREN)
-            if ((tt = tokenizer.peek()) != SEMICOLON) {
-                compilerContext.inForLoopInit = true
-                if (tt == VAR || tt == CONST) {
+            if ((tokenType = tokenizer.peek()) != SEMICOLON) {
+                compilerContext.inForLoopInit = True
+                if (tokenType == VAR || tokenType == CONST) {
                     tokenizer.get()
-                    n2 = Variables(tokenizer, compilerContext)
-                } else if (tt == LET) {
+                    childNode = Variables(tokenizer, compilerContext)
+                } else if (tokenType == LET) {
                     tokenizer.get()
                     if (tokenizer.peek() == LEFT_PAREN) {
-                        n2 = LetBlock(tokenizer, compilerContext, false)
+                        childNode = LetBlock(tokenizer, compilerContext, False)
                     } else {
                         /*
                          * Let in for head, we need to add an implicit block
@@ -208,30 +208,30 @@ def Script(tokenizer, compilerContext):
                          */
                         var forBlock = builder.BLOCK$build(tokenizer, compilerContext.blockId++)
                         compilerContext.stmtStack.push(forBlock)
-                        n2 = Variables(tokenizer, compilerContext, forBlock)
+                        childNode = Variables(tokenizer, compilerContext, forBlock)
                     }
                 } else {
-                    n2 = Expression(tokenizer, compilerContext)
+                    childNode = Expression(tokenizer, compilerContext)
                 }
-                compilerContext.inForLoopInit = false
+                compilerContext.inForLoopInit = False
             }
-            if (n2 && tokenizer.match(IN)) {
+            if (childNode && tokenizer.match(IN)) {
                 builder.FOR$rebuildForIn(node)
                 builder.FOR$setObject(node, Expression(tokenizer, compilerContext), forBlock)
-                if (n2.type == VAR || n2.type == LET) {
-                    if (n2.length != 1) {
+                if (childNode.type == VAR || childNode.type == LET) {
+                    if (childNode.length != 1) {
                         throw new SyntaxError("Invalid for..in left-hand side",
-                                              tokenizer.filename, n2.lineno)
+                                              tokenizer.filename, childNode.lineno)
                     }
-                    builder.FOR$setIterator(node, n2[0], n2, forBlock)
+                    builder.FOR$setIterator(node, childNode[0], childNode, forBlock)
                 } else {
-                    builder.FOR$setIterator(node, n2, null, forBlock)
+                    builder.FOR$setIterator(node, childNode, null, forBlock)
                 }
             } else {
-                builder.FOR$setSetup(node, n2)
+                builder.FOR$setSetup(node, childNode)
                 tokenizer.mustMatch(SEMICOLON)
                 if (node.isEach)
-                    throw tokenizer.newSyntaxError("Invalid for each..in loop")
+                    raise SyntaxError("Invalid for each..in loop")
                 builder.FOR$setCondition(node, (tokenizer.peek() == SEMICOLON)
                                   ? null
                                   : Expression(tokenizer, compilerContext))
@@ -272,11 +272,11 @@ def Script(tokenizer, compilerContext):
 
           case BREAK:
           case CONTINUE:
-            node = tt == BREAK ? builder.BREAK$build(tokenizer) : builder.CONTINUE$build(tokenizer)
+            node = tokenType == BREAK ? builder.BREAK$build(tokenizer) : builder.CONTINUE$build(tokenizer)
 
             if (tokenizer.peekOnSameLine() == IDENTIFIER) {
                 tokenizer.get()
-                if (tt == BREAK)
+                if (tokenType == BREAK)
                     builder.BREAK$setLabel(node, tokenizer.token.value)
                 else
                     builder.CONTINUE$setLabel(node, tokenizer.token.value)
@@ -289,7 +289,7 @@ def Script(tokenizer, compilerContext):
             if (label) {
                 do {
                     if (--i < 0)
-                        throw tokenizer.newSyntaxError("Label not found")
+                        raise SyntaxError("Label not found")
                 } while (ss[i].label != label)
 
                 /*
@@ -303,18 +303,18 @@ def Script(tokenizer, compilerContext):
                     i++
                 if (i < ss.length - 1 && ss[i+1].isLoop)
                     i++
-                else if (tt == CONTINUE)
-                    throw tokenizer.newSyntaxError("Invalid continue")
+                else if (tokenType == CONTINUE)
+                    raise SyntaxError("Invalid continue")
             } else {
                 do {
                     if (--i < 0) {
-                        throw tokenizer.newSyntaxError("Invalid " + ((tt == BREAK)
+                        raise SyntaxError("Invalid " + ((tokenType == BREAK)
                                                              ? "break"
                                                              : "continue"))
                     }
-                } while (!ss[i].isLoop && !(tt == BREAK && ss[i].type == SWITCH))
+                } while (!ss[i].isLoop && !(tokenType == BREAK && ss[i].type == SWITCH))
             }
-            if (tt == BREAK) {
+            if (tokenType == BREAK) {
                 builder.BREAK$setTarget(node, ss[i])
                 builder.BREAK$finish(node)
             } else {
@@ -327,46 +327,46 @@ def Script(tokenizer, compilerContext):
             node = builder.TRY$build(tokenizer)
             builder.TRY$setTryBlock(node, Block(tokenizer, compilerContext))
             while (tokenizer.match(CATCH)) {
-                n2 = builder.CATCH$build(tokenizer)
+                childNode = builder.CATCH$build(tokenizer)
                 tokenizer.mustMatch(LEFT_PAREN)
                 switch (tokenizer.get()) {
                   case LEFT_BRACKET:
                   case LEFT_CURLY:
                     // Destructured catch identifiers.
                     tokenizer.unget()
-                    builder.CATCH$setVarName(n2, DestructuringExpression(tokenizer, compilerContext, true))
+                    builder.CATCH$setVarName(childNode, DestructuringExpression(tokenizer, compilerContext, True))
                   case IDENTIFIER:
-                    builder.CATCH$setVarName(n2, tokenizer.token.value)
+                    builder.CATCH$setVarName(childNode, tokenizer.token.value)
                     break
                   default:
-                    throw tokenizer.newSyntaxError("Missing identifier in catch")
+                    raise SyntaxError("Missing identifier in catch")
                     break
                 }
                 if (tokenizer.match(IF)) {
                     if (compilerContext.ecma3OnlyMode)
-                        throw tokenizer.newSyntaxError("Illegal catch guard")
+                        raise SyntaxError("Illegal catch guard")
                     if (node.catchClauses.length && !node.catchClauses.top().guard)
-                        throw tokenizer.newSyntaxError("Guarded catch after unguarded")
-                    builder.CATCH$setGuard(n2, Expression(tokenizer, compilerContext))
+                        raise SyntaxError("Guarded catch after unguarded")
+                    builder.CATCH$setGuard(childNode, Expression(tokenizer, compilerContext))
                 } else {
-                    builder.CATCH$setGuard(n2, null)
+                    builder.CATCH$setGuard(childNode, null)
                 }
                 tokenizer.mustMatch(RIGHT_PAREN)
-                builder.CATCH$setBlock(n2, Block(tokenizer, compilerContext))
-                builder.CATCH$finish(n2)
-                builder.TRY$addCatch(node, n2)
+                builder.CATCH$setBlock(childNode, Block(tokenizer, compilerContext))
+                builder.CATCH$finish(childNode)
+                builder.TRY$addCatch(node, childNode)
             }
             builder.TRY$finishCatches(node)
             if (tokenizer.match(FINALLY))
                 builder.TRY$setFinallyBlock(node, Block(tokenizer, compilerContext))
             if (!node.catchClauses.length && !node.finallyBlock)
-                throw tokenizer.newSyntaxError("Invalid try statement")
+                raise SyntaxError("Invalid try statement")
             builder.TRY$finish(node)
             return node
 
           case CATCH:
           case FINALLY:
-            throw tokenizer.newSyntaxError(tokens[tt] + " without preceding try")
+            raise SyntaxError(tokens[tokenType] + " without preceding try")
 
           case THROW:
             node = builder.THROW$build(tokenizer)
@@ -392,7 +392,7 @@ def Script(tokenizer, compilerContext):
 
           case LET:
             if (tokenizer.peek() == LEFT_PAREN)
-                node = LetBlock(tokenizer, compilerContext, true)
+                node = LetBlock(tokenizer, compilerContext, True)
             else
                 node = Variables(tokenizer, compilerContext)
             break
@@ -409,15 +409,15 @@ def Script(tokenizer, compilerContext):
             return node
 
           default:
-            if (tt == IDENTIFIER) {
-                tt = tokenizer.peek()
+            if (tokenType == IDENTIFIER) {
+                tokenType = tokenizer.peek()
                 // Labeled statement.
-                if (tt == COLON) {
+                if (tokenType == COLON) {
                     label = tokenizer.token.value
                     ss = compilerContext.stmtStack
                     for (i = ss.length-1; i >= 0; --i) {
                         if (ss[i].label == label)
-                            throw tokenizer.newSyntaxError("Duplicate label")
+                            raise SyntaxError("Duplicate label")
                     }
                     tokenizer.get()
                     node = builder.LABEL$build(tokenizer)
@@ -442,50 +442,50 @@ def Script(tokenizer, compilerContext):
         return node
     }
 
-    function MagicalSemicolon(tokenizer) {
-        var tt
+    def MagicalSemicolon(tokenizer) {
+        var tokenType
         if (tokenizer.lineno == tokenizer.token.lineno) {
-            tt = tokenizer.peekOnSameLine()
-            if (tt != END && tt != NEWLINE && tt != SEMICOLON && tt != RIGHT_CURLY)
-                throw tokenizer.newSyntaxError("Missing ; before statement")
+            tokenType = tokenizer.peekOnSameLine()
+            if (tokenType != END && tokenType != NEWLINE && tokenType != SEMICOLON && tokenType != RIGHT_CURLY)
+                raise SyntaxError("Missing ; before statement")
         }
         tokenizer.match(SEMICOLON)
     }
 
-    function returnOrYield(tokenizer, compilerContext) {
-        var node, builder = compilerContext.builder, tt = tokenizer.token.type, tt2
+    def returnOrYield(tokenizer, compilerContext) {
+        var node, builder = compilerContext.builder, tokenType = tokenizer.token.type, tt2
 
-        if (tt == RETURN) {
+        if (tokenType == RETURN) {
             if (!compilerContext.inFunction)
-                throw tokenizer.newSyntaxError("Return not in function")
+                raise SyntaxError("Return not in function")
             node = builder.RETURN$build(tokenizer)
-        } else /* (tt == YIELD) */ {
+        } else /* (tokenType == YIELD) */ {
             if (!compilerContext.inFunction)
-                throw tokenizer.newSyntaxError("Yield not in function")
-            compilerContext.isGenerator = true
+                raise SyntaxError("Yield not in function")
+            compilerContext.isGenerator = True
             node = builder.YIELD$build(tokenizer)
         }
 
-        tt2 = tokenizer.peek(true)
+        tt2 = tokenizer.peek(True)
         if (tt2 != END && tt2 != NEWLINE && tt2 != SEMICOLON && tt2 != RIGHT_CURLY
-            && (tt != YIELD ||
-                (tt2 != tt && tt2 != RIGHT_BRACKET && tt2 != RIGHT_PAREN &&
+            && (tokenType != YIELD ||
+                (tt2 != tokenType && tt2 != RIGHT_BRACKET && tt2 != RIGHT_PAREN &&
                  tt2 != COLON && tt2 != COMMA))) {
-            if (tt == RETURN) {
+            if (tokenType == RETURN) {
                 builder.RETURN$setValue(node, Expression(tokenizer, compilerContext))
-                compilerContext.hasReturnWithValue = true
+                compilerContext.hasReturnWithValue = True
             } else {
                 builder.YIELD$setValue(node, AssignExpression(tokenizer, compilerContext))
             }
-        } else if (tt == RETURN) {
-            compilerContext.hasEmptyReturn = true
+        } else if (tokenType == RETURN) {
+            compilerContext.hasEmptyReturn = True
         }
 
         // Disallow return v; in generator.
         if (compilerContext.hasReturnWithValue && compilerContext.isGenerator)
-            throw tokenizer.newSyntaxError("Generator returns a value")
+            raise SyntaxError("Generator returns a value")
 
-        if (tt == RETURN)
+        if (tokenType == RETURN)
             builder.RETURN$finish(node)
         else
             builder.YIELD$finish(node)
@@ -498,13 +498,13 @@ def Script(tokenizer, compilerContext):
      *                        DECLARED_FORM or EXPRESSED_FORM or STATEMENT_FORM)
      *                    -> node
      */
-    function FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
+    def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
         var builder = compilerContext.builder
         var f = builder.FUNCTION$build(tokenizer)
         if (tokenizer.match(IDENTIFIER))
             builder.FUNCTION$setName(f, tokenizer.token.value)
         else if (requireName)
-            throw tokenizer.newSyntaxError("Missing function identifier")
+            raise SyntaxError("Missing def identifier")
 
         tokenizer.mustMatch(LEFT_PAREN)
         if (!tokenizer.match(RIGHT_PAREN)) {
@@ -520,7 +520,7 @@ def Script(tokenizer, compilerContext):
                     builder.FUNCTION$addParam(f, tokenizer.token.value)
                     break
                   default:
-                    throw tokenizer.newSyntaxError("Missing formal parameter")
+                    raise SyntaxError("Missing formal parameter")
                     break
                 }
             } while (tokenizer.match(COMMA))
@@ -528,11 +528,11 @@ def Script(tokenizer, compilerContext):
         }
 
         // Do we have an expression closure or a normal body?
-        var tt = tokenizer.get()
-        if (tt != LEFT_CURLY)
+        var tokenType = tokenizer.get()
+        if (tokenType != LEFT_CURLY)
             tokenizer.unget()
 
-        var x2 = new CompilerContext(true, builder)
+        var x2 = new CompilerContext(True, builder)
         var rp = tokenizer.save()
         if (compilerContext.inFunction) {
             /*
@@ -543,10 +543,10 @@ def Script(tokenizer, compilerContext):
             x2.blockId = compilerContext.blockId
         }
 
-        if (tt != LEFT_CURLY) {
+        if (tokenType != LEFT_CURLY) {
             builder.FUNCTION$setBody(f, AssignExpression(tokenizer, compilerContext))
             if (compilerContext.isGenerator)
-                throw tokenizer.newSyntaxError("Generator returns a value")
+                raise SyntaxError("Generator returns a value")
         } else {
             builder.FUNCTION$hoistVars(x2.blockId)
             builder.FUNCTION$setBody(f, Script(tokenizer, x2))
@@ -554,27 +554,27 @@ def Script(tokenizer, compilerContext):
 
         /*
          * To linearize hoisting with nested blocks needing hoists, if a toplevel
-         * function has any hoists we reparse the entire thing. Each toplevel
-         * function is parsed at most twice.
+         * def has any hoists we reparse the entire thing. Each toplevel
+         * def is parsed at most twice.
          *
          * Pass 1: If there needs to be hoisting at any child block or inner
-         * function, the entire function gets reparsed.
+         * function, the entire def gets reparsed.
          *
          * Pass 2: It's possible that hoisting has changed the upvars of
          * functions. That is, consider:
          *
-         * function f() {
+         * def f() {
          *   compilerContext = 0
          *   g()
          *   compilerContext; // compilerContext's forward pointer should be invalidated!
-         *   function g() {
+         *   def g() {
          *     compilerContext = 'g'
          *   }
          *   var compilerContext
          * }
          *
-         * So, a function needs to remember in which block it is parsed under
-         * (since the function body is _not_ hoisted, only the declaration) and
+         * So, a def needs to remember in which block it is parsed under
+         * (since the def body is _not_ hoisted, only the declaration) and
          * upon hoisting, needs to recalculate all its upvars up front.
          */
         if (x2.needsHoisting) {
@@ -582,23 +582,23 @@ def Script(tokenizer, compilerContext):
             builder.setHoists(f.body.id, x2.varDecls.concat(x2.funDecls))
 
             if (compilerContext.inFunction) {
-                // Propagate up to the parent function if we're an inner function.
-                compilerContext.needsHoisting = true
+                // Propagate up to the parent def if we're an inner function.
+                compilerContext.needsHoisting = True
             } else {
                 // Only re-parse toplevel functions.
                 var x3 = x2
-                x2 = new CompilerContext(true, builder)
+                x2 = new CompilerContext(True, builder)
                 tokenizer.rewind(rp)
                 // Set a flag in case the builder wants to have different behavior
                 // on the second pass.
-                builder.secondPass = true
-                builder.FUNCTION$hoistVars(f.body.id, true)
+                builder.secondPass = True
+                builder.FUNCTION$hoistVars(f.body.id, True)
                 builder.FUNCTION$setBody(f, Script(tokenizer, x2))
-                builder.secondPass = false
+                builder.secondPass = False
             }
         }
 
-        if (tt == LEFT_CURLY)
+        if (tokenType == LEFT_CURLY)
             tokenizer.mustMatch(RIGHT_CURLY)
 
         f.end = tokenizer.token.end
@@ -615,7 +615,7 @@ def Script(tokenizer, compilerContext):
      * Parses a comma-separated list of var declarations (and maybe
      * initializations).
      */
-    function Variables(tokenizer, compilerContext, letBlock) {
+    def Variables(tokenizer, compilerContext, letBlock) {
         var builder = compilerContext.builder
         var node, ss, i, s
         var build, addDecl, finish
@@ -642,7 +642,7 @@ def Script(tokenizer, compilerContext):
                 i = ss.length
                 while (ss[--i].type !== BLOCK) ; // a BLOCK *must* be found.
                 /*
-                 * Lets at the function toplevel are just vars, at least in
+                 * Lets at the def toplevel are just vars, at least in
                  * SpiderMonkey.
                  */
                 if (i == 0) {
@@ -661,55 +661,55 @@ def Script(tokenizer, compilerContext):
         node = build.call(builder, tokenizer)
         initializers = []
         do {
-            var tt = tokenizer.get()
+            var tokenType = tokenizer.get()
             /*
              * FIXME Should have a special DECLARATION node instead of overloading
              * IDENTIFIER to mean both identifier declarations and destructured
              * declarations.
              */
-            var n2 = builder.DECL$build(tokenizer)
-            if (tt == LEFT_BRACKET || tt == LEFT_CURLY) {
+            var childNode = builder.DECL$build(tokenizer)
+            if (tokenType == LEFT_BRACKET || tokenType == LEFT_CURLY) {
                 // Pass in s if we need to add each pattern matched into
                 // its varDecls, else pass in compilerContext.
                 var data = null
                 // Need to unget to parse the full destructured expression.
                 tokenizer.unget()
-                builder.DECL$setName(n2, DestructuringExpression(tokenizer, compilerContext, true, s))
+                builder.DECL$setName(childNode, DestructuringExpression(tokenizer, compilerContext, True, s))
                 if (compilerContext.inForLoopInit && tokenizer.peek() == IN) {
-                    addDecl.call(builder, node, n2, s)
+                    addDecl.call(builder, node, childNode, s)
                     continue
                 }
 
                 tokenizer.mustMatch(ASSIGN)
                 if (tokenizer.token.assignOp)
-                    throw tokenizer.newSyntaxError("Invalid variable initialization")
+                    raise SyntaxError("Invalid variable initialization")
 
                 // Parse the init as a normal assignment.
                 var n3 = builder.ASSIGN$build(tokenizer)
-                builder.ASSIGN$addOperand(n3, n2.name)
+                builder.ASSIGN$addOperand(n3, childNode.name)
                 builder.ASSIGN$addOperand(n3, AssignExpression(tokenizer, compilerContext))
                 builder.ASSIGN$finish(n3)
 
                 // But only add the rhs as the initializer.
-                builder.DECL$setInitializer(n2, n3[1])
-                builder.DECL$finish(n2)
-                addDecl.call(builder, node, n2, s)
+                builder.DECL$setInitializer(childNode, n3[1])
+                builder.DECL$finish(childNode)
+                addDecl.call(builder, node, childNode, s)
                 continue
             }
 
-            if (tt != IDENTIFIER)
-                throw tokenizer.newSyntaxError("Missing variable name")
+            if (tokenType != IDENTIFIER)
+                raise SyntaxError("Missing variable name")
 
-            builder.DECL$setName(n2, tokenizer.token.value)
-            builder.DECL$setReadOnly(n2, node.type == CONST)
-            addDecl.call(builder, node, n2, s)
+            builder.DECL$setName(childNode, tokenizer.token.value)
+            builder.DECL$setReadOnly(childNode, node.type == CONST)
+            addDecl.call(builder, node, childNode, s)
 
             if (tokenizer.match(ASSIGN)) {
                 if (tokenizer.token.assignOp)
-                    throw tokenizer.newSyntaxError("Invalid variable initialization")
+                    raise SyntaxError("Invalid variable initialization")
 
                 // Parse the init as a normal assignment.
-                var id = mkIdentifier(n2.tokenizer, n2.name, true)
+                var id = mkIdentifier(childNode.tokenizer, childNode.name, True)
                 var n3 = builder.ASSIGN$build(tokenizer)
                 builder.ASSIGN$addOperand(n3, id)
                 builder.ASSIGN$addOperand(n3, AssignExpression(tokenizer, compilerContext))
@@ -717,11 +717,11 @@ def Script(tokenizer, compilerContext):
                 initializers.push(n3)
 
                 // But only add the rhs as the initializer.
-                builder.DECL$setInitializer(n2, n3[1])
+                builder.DECL$setInitializer(childNode, n3[1])
             }
 
-            builder.DECL$finish(n2)
-            s.varDecls.push(n2)
+            builder.DECL$finish(childNode)
+            s.varDecls.push(childNode)
         } while (tokenizer.match(COMMA))
         finish.call(builder, node)
         return node
@@ -732,8 +732,8 @@ def Script(tokenizer, compilerContext):
      *
      * Does not handle let inside of for loop init.
      */
-    function LetBlock(tokenizer, compilerContext, isStatement) {
-        var node, n2, binds
+    def LetBlock(tokenizer, compilerContext, isStatement) {
+        var node, childNode, binds
         var builder = compilerContext.builder
 
         // tokenizer.token.type must be LET
@@ -748,18 +748,18 @@ def Script(tokenizer, compilerContext):
              * need to wrap the LET_BLOCK node in a SEMICOLON node so that we pop
              * the return value of the expression.
              */
-            n2 = builder.SEMICOLON$build(tokenizer)
-            builder.SEMICOLON$setExpression(n2, node)
-            builder.SEMICOLON$finish(n2)
-            isStatement = false
+            childNode = builder.SEMICOLON$build(tokenizer)
+            builder.SEMICOLON$setExpression(childNode, node)
+            builder.SEMICOLON$finish(childNode)
+            isStatement = False
         }
 
         if (isStatement) {
-            n2 = Block(tokenizer, compilerContext)
-            builder.LET_BLOCK$setBlock(node, n2)
+            childNode = Block(tokenizer, compilerContext)
+            builder.LET_BLOCK$setBlock(node, childNode)
         } else {
-            n2 = AssignExpression(tokenizer, compilerContext)
-            builder.LET_BLOCK$setExpression(node, n2)
+            childNode = AssignExpression(tokenizer, compilerContext)
+            builder.LET_BLOCK$setExpression(node, childNode)
         }
 
         builder.LET_BLOCK$finish(node)
@@ -767,9 +767,9 @@ def Script(tokenizer, compilerContext):
         return node
     }
 
-    function checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data) {
+    def checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data) {
         if (node.type == ARRAY_COMP)
-            throw tokenizer.newSyntaxError("Invalid array comprehension left-hand side")
+            raise SyntaxError("Invalid array comprehension left-hand side")
         if (node.type != ARRAY_INIT && node.type != OBJECT_INIT)
             return
 
@@ -788,27 +788,27 @@ def Script(tokenizer, compilerContext):
             if (lhs && simpleNamesOnly) {
                 // In declarations, lhs must be simple names
                 if (lhs.type != IDENTIFIER) {
-                    throw tokenizer.newSyntaxError("Missing name in pattern")
+                    raise SyntaxError("Missing name in pattern")
                 } else if (data) {
-                    var n2 = builder.DECL$build(tokenizer)
-                    builder.DECL$setName(n2, lhs.value)
+                    var childNode = builder.DECL$build(tokenizer)
+                    builder.DECL$setName(childNode, lhs.value)
                     // Don'tokenizer need to set initializer because it's just for
                     // hoisting anyways.
-                    builder.DECL$finish(n2)
+                    builder.DECL$finish(childNode)
                     // Each pattern needs to be added to varDecls.
-                    data.varDecls.push(n2)
+                    data.varDecls.push(childNode)
                 }
             }
         }
     }
 
-    function DestructuringExpression(tokenizer, compilerContext, simpleNamesOnly, data) {
+    def DestructuringExpression(tokenizer, compilerContext, simpleNamesOnly, data) {
         var node = PrimaryExpression(tokenizer, compilerContext)
         checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data)
         return node
     }
 
-    function GeneratorExpression(tokenizer, compilerContext, e) {
+    def GeneratorExpression(tokenizer, compilerContext, e) {
         var node
 
         node = builder.GENERATOR$build(tokenizer)
@@ -819,7 +819,7 @@ def Script(tokenizer, compilerContext):
         return node
     }
 
-    function comprehensionTail(tokenizer, compilerContext) {
+    def comprehensionTail(tokenizer, compilerContext) {
         var body, node
         var builder = compilerContext.builder
         // tokenizer.token.type must be FOR
@@ -849,19 +849,19 @@ def Script(tokenizer, compilerContext):
                 var n3 = builder.DECL$build(tokenizer)
                 builder.DECL$setName(n3, n3.value)
                 builder.DECL$finish(n3)
-                var n2 = builder.VAR$build(tokenizer)
-                builder.VAR$addDecl(n2, n3)
-                builder.VAR$finish(n2)
-                builder.FOR$setIterator(node, n3, n2)
+                var childNode = builder.VAR$build(tokenizer)
+                builder.VAR$addDecl(childNode, n3)
+                builder.VAR$finish(childNode)
+                builder.FOR$setIterator(node, n3, childNode)
                 /*
                  * Don'tokenizer add to varDecls since the semantics of comprehensions is
-                 * such that the variables are in their own function when
+                 * such that the variables are in their own def when
                  * desugared.
                  */
                 break
 
               default:
-                throw tokenizer.newSyntaxError("Missing identifier")
+                raise SyntaxError("Missing identifier")
             }
             tokenizer.mustMatch(IN)
             builder.FOR$setObject(node, Expression(tokenizer, compilerContext))
@@ -877,7 +877,7 @@ def Script(tokenizer, compilerContext):
         return body
     }
 
-    function ParenExpression(tokenizer, compilerContext) {
+    def ParenExpression(tokenizer, compilerContext) {
         tokenizer.mustMatch(LEFT_PAREN)
 
         /*
@@ -886,16 +886,16 @@ def Script(tokenizer, compilerContext):
          * for statement.
          */
         var oldLoopInit = compilerContext.inForLoopInit
-        compilerContext.inForLoopInit = false
+        compilerContext.inForLoopInit = False
         var node = Expression(tokenizer, compilerContext)
         compilerContext.inForLoopInit = oldLoopInit
 
         var err = "expression must be parenthesized"
         if (tokenizer.match(FOR)) {
             if (node.type == YIELD && !node.parenthesized)
-                throw tokenizer.newSyntaxError("Yield " + err)
+                raise SyntaxError("Yield " + err)
             if (node.type == COMMA && !node.parenthesized)
-                throw tokenizer.newSyntaxError("Generator " + err)
+                raise SyntaxError("Generator " + err)
             node = GeneratorExpression(tokenizer, compilerContext, node)
         }
 
@@ -909,19 +909,19 @@ def Script(tokenizer, compilerContext):
      *
      * Top-down expression parser matched against SpiderMonkey.
      */
-    function Expression(tokenizer, compilerContext) {
-        var node, n2
+    def Expression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
 
         node = AssignExpression(tokenizer, compilerContext)
         if (tokenizer.match(COMMA)) {
-            n2 = builder.COMMA$build(tokenizer)
-            builder.COMMA$addOperand(n2, node)
-            node = n2
+            childNode = builder.COMMA$build(tokenizer)
+            builder.COMMA$addOperand(childNode, node)
+            node = childNode
             do {
-                n2 = node[node.length-1]
-                if (n2.type == YIELD && !n2.parenthesized)
-                    throw tokenizer.newSyntaxError("Yield expression must be parenthesized")
+                childNode = node[node.length-1]
+                if (childNode.type == YIELD && !childNode.parenthesized)
+                    raise SyntaxError("Yield expression must be parenthesized")
                 builder.COMMA$addOperand(node, AssignExpression(tokenizer, compilerContext))
             } while (tokenizer.match(COMMA))
             builder.COMMA$finish(node)
@@ -930,13 +930,13 @@ def Script(tokenizer, compilerContext):
         return node
     }
 
-    function AssignExpression(tokenizer, compilerContext) {
+    def AssignExpression(tokenizer, compilerContext) {
         var node, lhs
         var builder = compilerContext.builder
 
         // Have to treat yield like an operand because it could be the leftmost
         // operand of the expression.
-        if (tokenizer.match(YIELD, true))
+        if (tokenizer.match(YIELD, True))
             return returnOrYield(tokenizer, compilerContext)
 
         node = builder.ASSIGN$build(tokenizer)
@@ -955,7 +955,7 @@ def Script(tokenizer, compilerContext):
           case IDENTIFIER: case DOT: case INDEX: case CALL:
             break
           default:
-            throw tokenizer.newSyntaxError("Bad left-hand side of assignment")
+            raise SyntaxError("Bad left-hand side of assignment")
             break
         }
 
@@ -967,26 +967,26 @@ def Script(tokenizer, compilerContext):
         return node
     }
 
-    function ConditionalExpression(tokenizer, compilerContext) {
-        var node, n2
+    def ConditionalExpression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
 
         node = OrExpression(tokenizer, compilerContext)
         if (tokenizer.match(HOOK)) {
-            n2 = node
+            childNode = node
             node = builder.HOOK$build(tokenizer)
-            builder.HOOK$setCondition(node, n2)
+            builder.HOOK$setCondition(node, childNode)
             /*
              * Always accept the 'in' operator in the middle clause of a ternary,
              * where it's unambiguous, even if we might be parsing the init of a
              * for statement.
              */
             var oldLoopInit = compilerContext.inForLoopInit
-            compilerContext.inForLoopInit = false
+            compilerContext.inForLoopInit = False
             builder.HOOK$setThenPart(node, AssignExpression(tokenizer, compilerContext))
             compilerContext.inForLoopInit = oldLoopInit
             if (!tokenizer.match(COLON))
-                throw tokenizer.newSyntaxError("Missing : after ?")
+                raise SyntaxError("Missing : after ?")
             builder.HOOK$setElsePart(node, AssignExpression(tokenizer, compilerContext))
             builder.HOOK$finish(node)
         }
@@ -994,105 +994,105 @@ def Script(tokenizer, compilerContext):
         return node
     }
 
-    function OrExpression(tokenizer, compilerContext) {
-        var node, n2
+    def OrExpression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
 
         node = AndExpression(tokenizer, compilerContext)
         while (tokenizer.match(OR)) {
-            n2 = builder.OR$build(tokenizer)
-            builder.OR$addOperand(n2, node)
-            builder.OR$addOperand(n2, AndExpression(tokenizer, compilerContext))
-            builder.OR$finish(n2)
-            node = n2
+            childNode = builder.OR$build(tokenizer)
+            builder.OR$addOperand(childNode, node)
+            builder.OR$addOperand(childNode, AndExpression(tokenizer, compilerContext))
+            builder.OR$finish(childNode)
+            node = childNode
         }
 
         return node
     }
 
-    function AndExpression(tokenizer, compilerContext) {
-        var node, n2
+    def AndExpression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
 
         node = BitwiseOrExpression(tokenizer, compilerContext)
         while (tokenizer.match(AND)) {
-            n2 = builder.AND$build(tokenizer)
-            builder.AND$addOperand(n2, node)
-            builder.AND$addOperand(n2, BitwiseOrExpression(tokenizer, compilerContext))
-            builder.AND$finish(n2)
-            node = n2
+            childNode = builder.AND$build(tokenizer)
+            builder.AND$addOperand(childNode, node)
+            builder.AND$addOperand(childNode, BitwiseOrExpression(tokenizer, compilerContext))
+            builder.AND$finish(childNode)
+            node = childNode
         }
 
         return node
     }
 
-    function BitwiseOrExpression(tokenizer, compilerContext) {
-        var node, n2
+    def BitwiseOrExpression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
 
         node = BitwiseXorExpression(tokenizer, compilerContext)
         while (tokenizer.match(BITWISE_OR)) {
-            n2 = builder.BITWISE_OR$build(tokenizer)
-            builder.BITWISE_OR$addOperand(n2, node)
-            builder.BITWISE_OR$addOperand(n2, BitwiseXorExpression(tokenizer, compilerContext))
-            builder.BITWISE_OR$finish(n2)
-            node = n2
+            childNode = builder.BITWISE_OR$build(tokenizer)
+            builder.BITWISE_OR$addOperand(childNode, node)
+            builder.BITWISE_OR$addOperand(childNode, BitwiseXorExpression(tokenizer, compilerContext))
+            builder.BITWISE_OR$finish(childNode)
+            node = childNode
         }
 
         return node
     }
 
-    function BitwiseXorExpression(tokenizer, compilerContext) {
-        var node, n2
+    def BitwiseXorExpression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
 
         node = BitwiseAndExpression(tokenizer, compilerContext)
         while (tokenizer.match(BITWISE_XOR)) {
-            n2 = builder.BITWISE_XOR$build(tokenizer)
-            builder.BITWISE_XOR$addOperand(n2, node)
-            builder.BITWISE_XOR$addOperand(n2, BitwiseAndExpression(tokenizer, compilerContext))
-            builder.BITWISE_XOR$finish(n2)
-            node = n2
+            childNode = builder.BITWISE_XOR$build(tokenizer)
+            builder.BITWISE_XOR$addOperand(childNode, node)
+            builder.BITWISE_XOR$addOperand(childNode, BitwiseAndExpression(tokenizer, compilerContext))
+            builder.BITWISE_XOR$finish(childNode)
+            node = childNode
         }
 
         return node
     }
 
-    function BitwiseAndExpression(tokenizer, compilerContext) {
-        var node, n2
+    def BitwiseAndExpression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
 
         node = EqualityExpression(tokenizer, compilerContext)
         while (tokenizer.match(BITWISE_AND)) {
-            n2 = builder.BITWISE_AND$build(tokenizer)
-            builder.BITWISE_AND$addOperand(n2, node)
-            builder.BITWISE_AND$addOperand(n2, EqualityExpression(tokenizer, compilerContext))
-            builder.BITWISE_AND$finish(n2)
-            node = n2
+            childNode = builder.BITWISE_AND$build(tokenizer)
+            builder.BITWISE_AND$addOperand(childNode, node)
+            builder.BITWISE_AND$addOperand(childNode, EqualityExpression(tokenizer, compilerContext))
+            builder.BITWISE_AND$finish(childNode)
+            node = childNode
         }
 
         return node
     }
 
-    function EqualityExpression(tokenizer, compilerContext) {
-        var node, n2
+    def EqualityExpression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
 
         node = RelationalExpression(tokenizer, compilerContext)
         while (tokenizer.match(EQ) || tokenizer.match(NE) ||
                tokenizer.match(STRICT_EQ) || tokenizer.match(STRICT_NE)) {
-            n2 = builder.EQUALITY$build(tokenizer)
-            builder.EQUALITY$addOperand(n2, node)
-            builder.EQUALITY$addOperand(n2, RelationalExpression(tokenizer, compilerContext))
-            builder.EQUALITY$finish(n2)
-            node = n2
+            childNode = builder.EQUALITY$build(tokenizer)
+            builder.EQUALITY$addOperand(childNode, node)
+            builder.EQUALITY$addOperand(childNode, RelationalExpression(tokenizer, compilerContext))
+            builder.EQUALITY$finish(childNode)
+            node = childNode
         }
 
         return node
     }
 
-    function RelationalExpression(tokenizer, compilerContext) {
-        var node, n2
+    def RelationalExpression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
         var oldLoopInit = compilerContext.inForLoopInit
 
@@ -1100,75 +1100,75 @@ def Script(tokenizer, compilerContext):
          * Uses of the in operator in shiftExprs are always unambiguous,
          * so unset the flag that prohibits recognizing it.
          */
-        compilerContext.inForLoopInit = false
+        compilerContext.inForLoopInit = False
         node = ShiftExpression(tokenizer, compilerContext)
         while ((tokenizer.match(LT) || tokenizer.match(LE) || tokenizer.match(GE) || tokenizer.match(GT) ||
-               (oldLoopInit == false && tokenizer.match(IN)) ||
+               (oldLoopInit == False && tokenizer.match(IN)) ||
                tokenizer.match(INSTANCEOF))) {
-            n2 = builder.RELATIONAL$build(tokenizer)
-            builder.RELATIONAL$addOperand(n2, node)
-            builder.RELATIONAL$addOperand(n2, ShiftExpression(tokenizer, compilerContext))
-            builder.RELATIONAL$finish(n2)
-            node = n2
+            childNode = builder.RELATIONAL$build(tokenizer)
+            builder.RELATIONAL$addOperand(childNode, node)
+            builder.RELATIONAL$addOperand(childNode, ShiftExpression(tokenizer, compilerContext))
+            builder.RELATIONAL$finish(childNode)
+            node = childNode
         }
         compilerContext.inForLoopInit = oldLoopInit
 
         return node
     }
 
-    function ShiftExpression(tokenizer, compilerContext) {
-        var node, n2
+    def ShiftExpression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
 
         node = AddExpression(tokenizer, compilerContext)
         while (tokenizer.match(LSH) || tokenizer.match(RSH) || tokenizer.match(URSH)) {
-            n2 = builder.SHIFT$build(tokenizer)
-            builder.SHIFT$addOperand(n2, node)
-            builder.SHIFT$addOperand(n2, AddExpression(tokenizer, compilerContext))
-            builder.SHIFT$finish(n2)
-            node = n2
+            childNode = builder.SHIFT$build(tokenizer)
+            builder.SHIFT$addOperand(childNode, node)
+            builder.SHIFT$addOperand(childNode, AddExpression(tokenizer, compilerContext))
+            builder.SHIFT$finish(childNode)
+            node = childNode
         }
 
         return node
     }
 
-    function AddExpression(tokenizer, compilerContext) {
-        var node, n2
+    def AddExpression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
 
         node = MultiplyExpression(tokenizer, compilerContext)
         while (tokenizer.match(PLUS) || tokenizer.match(MINUS)) {
-            n2 = builder.ADD$build(tokenizer)
-            builder.ADD$addOperand(n2, node)
-            builder.ADD$addOperand(n2, MultiplyExpression(tokenizer, compilerContext))
-            builder.ADD$finish(n2)
-            node = n2
+            childNode = builder.ADD$build(tokenizer)
+            builder.ADD$addOperand(childNode, node)
+            builder.ADD$addOperand(childNode, MultiplyExpression(tokenizer, compilerContext))
+            builder.ADD$finish(childNode)
+            node = childNode
         }
 
         return node
     }
 
-    function MultiplyExpression(tokenizer, compilerContext) {
-        var node, n2
+    def MultiplyExpression(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
 
         node = UnaryExpression(tokenizer, compilerContext)
         while (tokenizer.match(MUL) || tokenizer.match(DIV) || tokenizer.match(MOD)) {
-            n2 = builder.MULTIPLY$build(tokenizer)
-            builder.MULTIPLY$addOperand(n2, node)
-            builder.MULTIPLY$addOperand(n2, UnaryExpression(tokenizer, compilerContext))
-            builder.MULTIPLY$finish(n2)
-            node = n2
+            childNode = builder.MULTIPLY$build(tokenizer)
+            builder.MULTIPLY$addOperand(childNode, node)
+            builder.MULTIPLY$addOperand(childNode, UnaryExpression(tokenizer, compilerContext))
+            builder.MULTIPLY$finish(childNode)
+            node = childNode
         }
 
         return node
     }
 
-    function UnaryExpression(tokenizer, compilerContext) {
-        var node, n2, tt
+    def UnaryExpression(tokenizer, compilerContext) {
+        var node, childNode, tokenType
         var builder = compilerContext.builder
 
-        switch (tt = tokenizer.get(true)) {
+        switch (tokenType = tokenizer.get(True)) {
           case DELETE: case VOID: case TYPEOF:
           case NOT: case BITWISE_NOT: case PLUS: case MINUS:
             node = builder.UNARY$build(tokenizer)
@@ -1179,22 +1179,22 @@ def Script(tokenizer, compilerContext):
           case DECREMENT:
             // Prefix increment/decrement.
             node = builder.UNARY$build(tokenizer)
-            builder.UNARY$addOperand(node, MemberExpression(tokenizer, compilerContext, true))
+            builder.UNARY$addOperand(node, MemberExpression(tokenizer, compilerContext, True))
             break
 
           default:
             tokenizer.unget()
-            node = MemberExpression(tokenizer, compilerContext, true)
+            node = MemberExpression(tokenizer, compilerContext, True)
 
             // Don'tokenizer look across a newline boundary for a postfix {in,de}crement.
             if (tokenizer.tokens[(tokenizer.tokenIndex + tokenizer.lookahead - 1) & 3].lineno ==
                 tokenizer.lineno) {
                 if (tokenizer.match(INCREMENT) || tokenizer.match(DECREMENT)) {
-                    n2 = builder.UNARY$build(tokenizer)
-                    builder.UNARY$setPostfix(n2)
+                    childNode = builder.UNARY$build(tokenizer)
+                    builder.UNARY$setPostfix(childNode)
                     builder.UNARY$finish(node)
-                    builder.UNARY$addOperand(n2, node)
-                    node = n2
+                    builder.UNARY$addOperand(childNode, node)
+                    node = childNode
                 }
             }
             break
@@ -1204,13 +1204,13 @@ def Script(tokenizer, compilerContext):
         return node
     }
 
-    function MemberExpression(tokenizer, compilerContext, allowCallSyntax) {
-        var node, n2, tt
+    def MemberExpression(tokenizer, compilerContext, allowCallSyntax) {
+        var node, childNode, tokenType
         var builder = compilerContext.builder
 
         if (tokenizer.match(NEW)) {
             node = builder.MEMBER$build(tokenizer)
-            builder.MEMBER$addOperand(node, MemberExpression(tokenizer, compilerContext, false))
+            builder.MEMBER$addOperand(node, MemberExpression(tokenizer, compilerContext, False))
             if (tokenizer.match(LEFT_PAREN)) {
                 builder.MEMBER$rebuildNewWithArgs(node)
                 builder.MEMBER$addOperand(node, ArgumentList(tokenizer, compilerContext))
@@ -1220,27 +1220,27 @@ def Script(tokenizer, compilerContext):
             node = PrimaryExpression(tokenizer, compilerContext)
         }
 
-        while ((tt = tokenizer.get()) != END) {
-            switch (tt) {
+        while ((tokenType = tokenizer.get()) != END) {
+            switch (tokenType) {
               case DOT:
-                n2 = builder.MEMBER$build(tokenizer)
-                builder.MEMBER$addOperand(n2, node)
+                childNode = builder.MEMBER$build(tokenizer)
+                builder.MEMBER$addOperand(childNode, node)
                 tokenizer.mustMatch(IDENTIFIER)
-                builder.MEMBER$addOperand(n2, builder.MEMBER$build(tokenizer))
+                builder.MEMBER$addOperand(childNode, builder.MEMBER$build(tokenizer))
                 break
 
               case LEFT_BRACKET:
-                n2 = builder.MEMBER$build(tokenizer, INDEX)
-                builder.MEMBER$addOperand(n2, node)
-                builder.MEMBER$addOperand(n2, Expression(tokenizer, compilerContext))
+                childNode = builder.MEMBER$build(tokenizer, INDEX)
+                builder.MEMBER$addOperand(childNode, node)
+                builder.MEMBER$addOperand(childNode, Expression(tokenizer, compilerContext))
                 tokenizer.mustMatch(RIGHT_BRACKET)
                 break
 
               case LEFT_PAREN:
                 if (allowCallSyntax) {
-                    n2 = builder.MEMBER$build(tokenizer, CALL)
-                    builder.MEMBER$addOperand(n2, node)
-                    builder.MEMBER$addOperand(n2, ArgumentList(tokenizer, compilerContext))
+                    childNode = builder.MEMBER$build(tokenizer, CALL)
+                    builder.MEMBER$addOperand(childNode, node)
+                    builder.MEMBER$addOperand(childNode, ArgumentList(tokenizer, compilerContext))
                     break
                 }
 
@@ -1250,31 +1250,31 @@ def Script(tokenizer, compilerContext):
                 return node
             }
 
-            builder.MEMBER$finish(n2)
-            node = n2
+            builder.MEMBER$finish(childNode)
+            node = childNode
         }
 
         return node
     }
 
-    function ArgumentList(tokenizer, compilerContext) {
-        var node, n2
+    def ArgumentList(tokenizer, compilerContext) {
+        var node, childNode
         var builder = compilerContext.builder
         var err = "expression must be parenthesized"
 
         node = builder.LIST$build(tokenizer)
-        if (tokenizer.match(RIGHT_PAREN, true))
+        if (tokenizer.match(RIGHT_PAREN, True))
             return node
         do {
-            n2 = AssignExpression(tokenizer, compilerContext)
-            if (n2.type == YIELD && !n2.parenthesized && tokenizer.peek() == COMMA)
-                throw tokenizer.newSyntaxError("Yield " + err)
+            childNode = AssignExpression(tokenizer, compilerContext)
+            if (childNode.type == YIELD && !childNode.parenthesized && tokenizer.peek() == COMMA)
+                raise SyntaxError("Yield " + err)
             if (tokenizer.match(FOR)) {
-                n2 = GeneratorExpression(tokenizer, compilerContext, n2)
-                if (node.length > 1 || tokenizer.peek(true) == COMMA)
-                    throw tokenizer.newSyntaxError("Generator " + err)
+                childNode = GeneratorExpression(tokenizer, compilerContext, childNode)
+                if (node.length > 1 || tokenizer.peek(True) == COMMA)
+                    raise SyntaxError("Generator " + err)
             }
-            builder.LIST$addOperand(node, n2)
+            builder.LIST$addOperand(node, childNode)
         } while (tokenizer.match(COMMA))
         tokenizer.mustMatch(RIGHT_PAREN)
         builder.LIST$finish(node)
@@ -1282,35 +1282,35 @@ def Script(tokenizer, compilerContext):
         return node
     }
 
-    function PrimaryExpression(tokenizer, compilerContext) {
-        var node, n2, n3, tt = tokenizer.get(true)
+    def PrimaryExpression(tokenizer, compilerContext) {
+        var node, childNode, n3, tokenType = tokenizer.get(True)
         var builder = compilerContext.builder
 
-        switch (tt) {
+        switch (tokenType) {
           case FUNCTION:
-            node = FunctionDefinition(tokenizer, compilerContext, false, EXPRESSED_FORM)
+            node = FunctionDefinition(tokenizer, compilerContext, False, EXPRESSED_FORM)
             break
 
           case LEFT_BRACKET:
             node = builder.ARRAY_INIT$build(tokenizer)
-            while ((tt = tokenizer.peek()) != RIGHT_BRACKET) {
-                if (tt == COMMA) {
+            while ((tokenType = tokenizer.peek()) != RIGHT_BRACKET) {
+                if (tokenType == COMMA) {
                     tokenizer.get()
                     builder.ARRAY_INIT$addElement(node, null)
                     continue
                 }
                 builder.ARRAY_INIT$addElement(node, AssignExpression(tokenizer, compilerContext))
-                if (tt != COMMA && !tokenizer.match(COMMA))
+                if (tokenType != COMMA && !tokenizer.match(COMMA))
                     break
             }
 
             // If we matched exactly one element and got a FOR, we have an
             // array comprehension.
             if (node.length == 1 && tokenizer.match(FOR)) {
-                n2 = builder.ARRAY_COMP$build(tokenizer)
-                builder.ARRAY_COMP$setExpression(n2, node[0])
-                builder.ARRAY_COMP$setTail(n2, comprehensionTail(tokenizer, compilerContext))
-                node = n2
+                childNode = builder.ARRAY_COMP$build(tokenizer)
+                builder.ARRAY_COMP$setExpression(childNode, node[0])
+                builder.ARRAY_COMP$setTail(childNode, comprehensionTail(tokenizer, compilerContext))
+                node = childNode
             }
             tokenizer.mustMatch(RIGHT_BRACKET)
             builder.PRIMARY$finish(node)
@@ -1323,22 +1323,22 @@ def Script(tokenizer, compilerContext):
           object_init:
             if (!tokenizer.match(RIGHT_CURLY)) {
                 do {
-                    tt = tokenizer.get()
+                    tokenType = tokenizer.get()
                     if ((tokenizer.token.value == "get" || tokenizer.token.value == "set") &&
                         tokenizer.peek() == IDENTIFIER) {
                         if (compilerContext.ecma3OnlyMode)
-                            throw tokenizer.newSyntaxError("Illegal property accessor")
-                        var fd = FunctionDefinition(tokenizer, compilerContext, true, EXPRESSED_FORM)
+                            raise SyntaxError("Illegal property accessor")
+                        var fd = FunctionDefinition(tokenizer, compilerContext, True, EXPRESSED_FORM)
                         builder.OBJECT_INIT$addProperty(node, fd)
                     } else {
-                        switch (tt) {
+                        switch (tokenType) {
                           case IDENTIFIER: case NUMBER: case STRING:
                             id = builder.PRIMARY$build(tokenizer, IDENTIFIER)
                             builder.PRIMARY$finish(id)
                             break
                           case RIGHT_CURLY:
                             if (compilerContext.ecma3OnlyMode)
-                                throw tokenizer.newSyntaxError("Illegal trailing ,")
+                                raise SyntaxError("Illegal trailing ,")
                             break object_init
                           default:
                             if (tokenizer.token.value in keywords) {
@@ -1346,19 +1346,19 @@ def Script(tokenizer, compilerContext):
                                 builder.PRIMARY$finish(id)
                                 break
                             }
-                            throw tokenizer.newSyntaxError("Invalid property name")
+                            raise SyntaxError("Invalid property name")
                         }
                         if (tokenizer.match(COLON)) {
-                            n2 = builder.PROPERTY_INIT$build(tokenizer)
-                            builder.PROPERTY_INIT$addOperand(n2, id)
-                            builder.PROPERTY_INIT$addOperand(n2, AssignExpression(tokenizer, compilerContext))
-                            builder.PROPERTY_INIT$finish(n2)
-                            builder.OBJECT_INIT$addProperty(node, n2)
+                            childNode = builder.PROPERTY_INIT$build(tokenizer)
+                            builder.PROPERTY_INIT$addOperand(childNode, id)
+                            builder.PROPERTY_INIT$addOperand(childNode, AssignExpression(tokenizer, compilerContext))
+                            builder.PROPERTY_INIT$finish(childNode)
+                            builder.OBJECT_INIT$addProperty(node, childNode)
                         } else {
                             // Support, e.g., |var {compilerContext, y} = o| as destructuring shorthand
                             // for |var {compilerContext: compilerContext, y: y} = o|, per proposed JS2/ES4 for JS1.8.
                             if (tokenizer.peek() != COMMA && tokenizer.peek() != RIGHT_CURLY)
-                                throw tokenizer.newSyntaxError("Missing : after property")
+                                raise SyntaxError("Missing : after property")
                             builder.OBJECT_INIT$addProperty(node, id)
                         }
                     }
@@ -1373,11 +1373,11 @@ def Script(tokenizer, compilerContext):
             // unget.
             tokenizer.unget()
             node = ParenExpression(tokenizer, compilerContext)
-            node.parenthesized = true
+            node.parenthesized = True
             break
 
           case LET:
-            node = LetBlock(tokenizer, compilerContext, false)
+            node = LetBlock(tokenizer, compilerContext, False)
             break
 
           case NULL: case THIS: case TRUE: case FALSE:
@@ -1387,7 +1387,7 @@ def Script(tokenizer, compilerContext):
             break
 
           default:
-            throw tokenizer.newSyntaxError("Missing operand")
+            raise SyntaxError("Missing operand")
             break
         }
 
@@ -1397,12 +1397,12 @@ def Script(tokenizer, compilerContext):
     /*
      * parse :: (builder, file ptr, path, line number) -> node
      */
-    function parse(builder, s, f, l) {
+    def parse(builder, s, f, l) {
         var tokenizer = new Tokenizer(s, f, l)
-        var compilerContext = new CompilerContext(false, builder)
+        var compilerContext = new CompilerContext(False, builder)
         var node = Script(tokenizer, compilerContext)
         if (!tokenizer.done)
-            throw tokenizer.newSyntaxError("Syntax error")
+            raise SyntaxError("Syntax error")
 
         return node
     }
