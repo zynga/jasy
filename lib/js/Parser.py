@@ -198,63 +198,69 @@ def Statement(tokenizer, compilerContext):
 
     elif tokenType == FOR:
         node = builder.FOR$build(tokenizer)
-        if (tokenizer.match(IDENTIFIER) and tokenizer.token.value == "each")
+        
+        if tokenizer.match(IDENTIFIER) and tokenizer.token.value == "each":
             builder.FOR$rebuildForEach(node)
+            
         tokenizer.mustMatch(LEFT_PAREN)
-        if ((tokenType = tokenizer.peek()) != SEMICOLON) {
+        tokenType = tokenizer.peek()
+        
+        if tokenType != SEMICOLON:
             compilerContext.inForLoopInit = True
-            if (tokenType == VAR or tokenType == CONST) {
+            
+            if tokenType == VAR or tokenType == CONST:
                 tokenizer.get()
                 childNode = Variables(tokenizer, compilerContext)
-            } elif (tokenType == LET) {
+            
+            elif tokenType == LET:
                 tokenizer.get()
-                if (tokenizer.peek() == LEFT_PAREN) {
+                
+                if tokenizer.peek() == LEFT_PAREN:
                     childNode = LetBlock(tokenizer, compilerContext, False)
-                } else {
-                    # 
+                    
+                else:
                     # Let in for head, we need to add an implicit block
                     # around the rest of the for.
-                    # 
-                    var forBlock = builder.BLOCK$build(tokenizer, compilerContext.blockId++)
+                    forBlock = builder.BLOCK$build(tokenizer, compilerContext.blockId++)
                     compilerContext.stmtStack.push(forBlock)
                     childNode = Variables(tokenizer, compilerContext, forBlock)
-                }
-            } else {
+                
+            else:
                 childNode = Expression(tokenizer, compilerContext)
-            }
+            
             compilerContext.inForLoopInit = False
-        }
-        if (childNode and tokenizer.match(IN)) {
+
+        if childNode and tokenizer.match(IN):
             builder.FOR$rebuildForIn(node)
             builder.FOR$setObject(node, Expression(tokenizer, compilerContext), forBlock)
-            if (childNode.type == VAR or childNode.type == LET) {
-                if (childNode.length != 1) {
-                    throw new SyntaxError("Invalid for..in left-hand side",
-                                          tokenizer.filename, childNode.lineno)
-                }
+            
+            if childNode.type == VAR or childNode.type == LET:
+                if len(childNode) != 1:
+                    raise SyntaxError("Invalid for..in left-hand side", tokenizer)
+
                 builder.FOR$setIterator(node, childNode[0], childNode, forBlock)
-            } else {
+                
+            else:
                 builder.FOR$setIterator(node, childNode, null, forBlock)
-            }
-        } else {
+
+        else:
             builder.FOR$setSetup(node, childNode)
             tokenizer.mustMatch(SEMICOLON)
-            if (node.isEach)
+            
+            if node.isEach:
                 raise SyntaxError("Invalid for each..in loop")
-            builder.FOR$setCondition(node, (tokenizer.peek() == SEMICOLON)
-                              ? null
-                              : Expression(tokenizer, compilerContext))
+                
+            builder.FOR$setCondition(node, (tokenizer.peek() == SEMICOLON) ? null : Expression(tokenizer, compilerContext))
             tokenizer.mustMatch(SEMICOLON)
-            builder.FOR$setUpdate(node, (tokenizer.peek() == RIGHT_PAREN)
-                               ? null
-                               : Expression(tokenizer, compilerContext))
-        }
+            builder.FOR$setUpdate(node, (tokenizer.peek() == RIGHT_PAREN) ? null : Expression(tokenizer, compilerContext))
+        
         tokenizer.mustMatch(RIGHT_PAREN)
         builder.FOR$setBody(node, nest(tokenizer, compilerContext, node, Statement))
-        if (forBlock) {
+        
+        if forBlock:
             builder.BLOCK$finish(forBlock)
             compilerContext.stmtStack.pop()
-        }
+    
         builder.FOR$finish(node)
         return node
         
