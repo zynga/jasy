@@ -167,9 +167,10 @@ def Statement(tokenizer, compilerContext):
                 builder.SWITCH$setDefaultIndex(node, node.cases.length)
                 tokenizer.mustMatch(COLON)
                 builder.DEFAULT$initializeStatements(childNode, tokenizer)
-                while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT and
-                       tokenType != RIGHT_CURLY)
+                
+                while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT and tokenType != RIGHT_CURLY)
                     builder.DEFAULT$addStatement(childNode, Statement(tokenizer, compilerContext))
+                    
                 builder.DEFAULT$finish(childNode)
                 break
 
@@ -178,9 +179,10 @@ def Statement(tokenizer, compilerContext):
                 builder.CASE$setLabel(childNode, Expression(tokenizer, compilerContext, COLON))
                 tokenizer.mustMatch(COLON)
                 builder.CASE$initializeStatements(childNode, tokenizer)
-                while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT and
-                       tokenType != RIGHT_CURLY)
+                
+                while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT and tokenType != RIGHT_CURLY)
                     builder.CASE$addStatement(childNode, Statement(tokenizer, compilerContext))
+                
                 builder.CASE$finish(childNode)
                 break
 
@@ -289,9 +291,13 @@ def Statement(tokenizer, compilerContext):
             tokenizer.match(SEMICOLON)
             return node
 
+        # NO RETURN
       
     elif tokenType == BREAK or tokenType == CONTINUE:
-        node = tokenType == BREAK ? builder.BREAK$build(tokenizer) : builder.CONTINUE$build(tokenizer)
+        if tokenType == BREAK:
+            node = builder.BREAK$build(tokenizer) 
+        else:
+            node = builder.CONTINUE$build(tokenizer)
 
         if tokenizer.peekOnSameLine() == IDENTIFIER:
             tokenizer.get()
@@ -306,10 +312,12 @@ def Statement(tokenizer, compilerContext):
         label = node.label
 
         if label:
-            do {
-                if (--i < 0)
-                    raise SyntaxError("Label not found")
-            } while (ss[i].label != label)
+            while True:
+                i -= 1
+                if i < 0:
+                    raise SyntaxError("Label not found", tokenizer)
+                if ss[i].label == label:
+                    break
 
             # 
             # Both break and continue to label need to be handled specially
@@ -318,34 +326,37 @@ def Statement(tokenizer, compilerContext):
             # nested so we skip all labels immediately enclosing the nearest
             # non-label statement.
             # 
-            while (i < ss.length - 1 and ss[i+1].type == LABEL)
+            while i < ss.length - 1 and ss[i+1].type == LABEL:
                 i++
-            if (i < ss.length - 1 and ss[i+1].isLoop)
+                
+            if i < ss.length - 1 and ss[i+1].isLoop:
                 i++
-            elif (tokenType == CONTINUE)
-                raise SyntaxError("Invalid continue")
-        } else {
-            do {
-                if (--i < 0) {
-                    raise SyntaxError("Invalid " + ((tokenType == BREAK)
-                                                         ? "break"
-                                                         : "continue"))
-                }
-            } while (!ss[i].isLoop and !(tokenType == BREAK and ss[i].type == SWITCH))
-        }
+            elif tokenType == CONTINUE:
+                raise SyntaxError("Invalid continue", tokenizer)
+                
+        else:
+            while True:
+                i -= 1
+                if i < 0:
+                    raise SyntaxError("Invalid " + ((tokenType == BREAK) ? "break" : "continue"))
+                if ss[i].isLoop or (tokenType == BREAK and ss[i].type == SWITCH):
+                    break
         
         if tokenType == BREAK:
             builder.BREAK$setTarget(node, ss[i])
             builder.BREAK$finish(node)
+
         else:
             builder.CONTINUE$setTarget(node, ss[i])
             builder.CONTINUE$finish(node)
         
-        break
+        # NO RETURN        
+
 
     elif tokenType == TRY:
         node = builder.TRY$build(tokenizer)
         builder.TRY$setTryBlock(node, Block(tokenizer, compilerContext))
+        
         while (tokenizer.match(CATCH)) {
             childNode = builder.CATCH$build(tokenizer)
             tokenizer.mustMatch(LEFT_PAREN)
