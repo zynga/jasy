@@ -673,48 +673,48 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
 
 def Variables(tokenizer, compilerContext, letBlock):
     """Parses a comma-separated list of var declarations (and maybe initializations)."""
-    var builder = compilerContext.builder
-    var node, ss, i, s
-    var build, addDecl, finish
-    switch (tokenizer.token.type) {
-      case VAR:
+    
+    builder = compilerContext.builder
+    if tokenizer.token.type == VAR:
         build = builder.VAR$build
         addDecl = builder.VAR$addDecl
         finish = builder.VAR$finish
         s = compilerContext
-        break
-      case CONST:
+            
+    elif tokenizer.token.type == CONST:
         build = builder.CONST$build
         addDecl = builder.CONST$addDecl
         finish = builder.CONST$finish
         s = compilerContext
-        break
-      case LET:
-      case LEFT_PAREN:
+        
+    elif tokenizer.token.type == LET or tokenizer.token.type == LEFT_PAREN:
         build = builder.LET$build
         addDecl = builder.LET$addDecl
         finish = builder.LET$finish
-        if (!letBlock) {
+        
+        if not letBlock:
             ss = compilerContext.stmtStack
             i = ss.length
-            while (ss[--i].type !== BLOCK) ; # a BLOCK *must* be found.
-            # 
-            # Lets at the def toplevel are just vars, at least in
-            # SpiderMonkey.
-            # 
-            if (i == 0) {
+            
+            # a BLOCK *must* be found.
+            while ss[--i].type !== BLOCK:
+                pass
+
+            # Lets at the def toplevel are just vars, at least in SpiderMonkey.
+            if i == 0:
                 build = builder.VAR$build
                 addDecl = builder.VAR$addDecl
                 finish = builder.VAR$finish
                 s = compilerContext
-            } else {
+
+            else:
                 s = ss[i]
-            }
-        } else {
+            
+        else:
             s = letBlock
-        }
-        break
-    }
+
+
+
     node = build.call(builder, tokenizer)
     initializers = []
     do {
