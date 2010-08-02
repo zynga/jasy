@@ -17,7 +17,7 @@ keywords = [
     "break",
     "case", "catch", "const", "continue",
     "debugger", "default", "delete", "do",
-    "else", "enum",
+    "else",
     "false", "finally", "for", "function",
     "if", "in", "instanceof",
     "let",
