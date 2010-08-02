@@ -195,10 +195,10 @@ def Statement(tokenizer, compilerContext):
                 if (tokenizer.peek() == LEFT_PAREN) {
                     childNode = LetBlock(tokenizer, compilerContext, False)
                 } else {
-                    /*
-                     * Let in for head, we need to add an implicit block
-                     * around the rest of the for.
-                     */
+                    # 
+                    # Let in for head, we need to add an implicit block
+                    # around the rest of the for.
+                    # 
                     var forBlock = builder.BLOCK$build(tokenizer, compilerContext.blockId++)
                     compilerContext.stmtStack.push(forBlock)
                     childNode = Variables(tokenizer, compilerContext, forBlock)
@@ -490,11 +490,8 @@ def returnOrYield(tokenizer, compilerContext):
     return node
 }
 
-/*
- * FunctionDefinition :: (tokenizer, compiler context, boolean,
- *                        DECLARED_FORM or EXPRESSED_FORM or STATEMENT_FORM)
- *                    -> node
- */
+
+
 def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
     var builder = compilerContext.builder
     var f = builder.FUNCTION$build(tokenizer)
@@ -532,11 +529,11 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
     var x2 = new CompilerContext(True, builder)
     var rp = tokenizer.save()
     if (compilerContext.inFunction) {
-        /*
-         * Inner functions don'tokenizer reset block numbering. They also need to
-         * remember which block they were parsed in for hoisting (see comment
-         * below).
-         */
+        # 
+        # Inner functions don'tokenizer reset block numbering. They also need to
+        # remember which block they were parsed in for hoisting (see comment
+        # below).
+        # 
         x2.blockId = compilerContext.blockId
     }
 
@@ -549,31 +546,31 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
         builder.FUNCTION$setBody(f, Script(tokenizer, x2))
     }
 
-    /*
-     * To linearize hoisting with nested blocks needing hoists, if a toplevel
-     * def has any hoists we reparse the entire thing. Each toplevel
-     * def is parsed at most twice.
-     *
-     * Pass 1: If there needs to be hoisting at any child block or inner
-     * function, the entire def gets reparsed.
-     *
-     * Pass 2: It's possible that hoisting has changed the upvars of
-     * functions. That is, consider:
-     *
-     * def f() {
-     *   compilerContext = 0
-     *   g()
-     *   compilerContext; # compilerContext's forward pointer should be invalidated!
-     *   def g() {
-     *     compilerContext = 'g'
-     *   }
-     *   var compilerContext
-     * }
-     *
-     * So, a def needs to remember in which block it is parsed under
-     * (since the def body is _not_ hoisted, only the declaration) and
-     * upon hoisting, needs to recalculate all its upvars up front.
-     */
+    # 
+    # To linearize hoisting with nested blocks needing hoists, if a toplevel
+    # def has any hoists we reparse the entire thing. Each toplevel
+    # def is parsed at most twice.
+    # 
+    # Pass 1: If there needs to be hoisting at any child block or inner
+    # function, the entire def gets reparsed.
+    # 
+    # Pass 2: It's possible that hoisting has changed the upvars of
+    # functions. That is, consider:
+    # 
+    # def f() {
+    #   compilerContext = 0
+    #   g()
+    #   compilerContext; # compilerContext's forward pointer should be invalidated!
+    #   def g() {
+    #     compilerContext = 'g'
+    #   }
+    #   var compilerContext
+    # }
+    # 
+    # So, a def needs to remember in which block it is parsed under
+    # (since the def body is _not_ hoisted, only the declaration) and
+    # upon hoisting, needs to recalculate all its upvars up front.
+    # 
     if (x2.needsHoisting) {
         # Order is important here! funDecls must come _after_ varDecls!
         builder.setHoists(f.body.id, x2.varDecls.concat(x2.funDecls))
@@ -606,13 +603,9 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
     return f
 }
 
-/*
- * Variables :: (tokenizer, compiler context) -> node
- *
- * Parses a comma-separated list of var declarations (and maybe
- * initializations).
- */
+
 def Variables(tokenizer, compilerContext, letBlock) {
+    """Parses a comma-separated list of var declarations (and maybe initializations)."""
     var builder = compilerContext.builder
     var node, ss, i, s
     var build, addDecl, finish
@@ -638,10 +631,10 @@ def Variables(tokenizer, compilerContext, letBlock) {
             ss = compilerContext.stmtStack
             i = ss.length
             while (ss[--i].type !== BLOCK) ; # a BLOCK *must* be found.
-            /*
-             * Lets at the def toplevel are just vars, at least in
-             * SpiderMonkey.
-             */
+            # 
+            # Lets at the def toplevel are just vars, at least in
+            # SpiderMonkey.
+            # 
             if (i == 0) {
                 build = builder.VAR$build
                 addDecl = builder.VAR$addDecl
@@ -659,11 +652,11 @@ def Variables(tokenizer, compilerContext, letBlock) {
     initializers = []
     do {
         var tokenType = tokenizer.get()
-        /*
-         * FIXME Should have a special DECLARATION node instead of overloading
-         * IDENTIFIER to mean both identifier declarations and destructured
-         * declarations.
-         */
+        # 
+        # FIXME Should have a special DECLARATION node instead of overloading
+        # IDENTIFIER to mean both identifier declarations and destructured
+        # declarations.
+        # 
         var childNode = builder.DECL$build(tokenizer)
         if (tokenType == LEFT_BRACKET or tokenType == LEFT_CURLY) {
             # Pass in s if we need to add each pattern matched into
@@ -724,11 +717,11 @@ def Variables(tokenizer, compilerContext, letBlock) {
     return node
 }
 
-/*
- * LetBlock :: (tokenizer, compiler context, boolean) -> node
- *
- * Does not handle let inside of for loop init.
- */
+# 
+# LetBlock :: (tokenizer, compiler context, boolean) -> node
+# 
+# Does not handle let inside of for loop init.
+# 
 def LetBlock(tokenizer, compilerContext, isStatement) {
     var node, childNode, binds
     var builder = compilerContext.builder
@@ -740,11 +733,11 @@ def LetBlock(tokenizer, compilerContext, isStatement) {
     tokenizer.mustMatch(RIGHT_PAREN)
 
     if (isStatement and tokenizer.peek() != LEFT_CURLY) {
-        /*
-         * If this is really an expression in let statement guise, then we
-         * need to wrap the LET_BLOCK node in a SEMICOLON node so that we pop
-         * the return value of the expression.
-         */
+        # 
+        # If this is really an expression in let statement guise, then we
+        # need to wrap the LET_BLOCK node in a SEMICOLON node so that we pop
+        # the return value of the expression.
+        # 
         childNode = builder.SEMICOLON$build(tokenizer)
         builder.SEMICOLON$setExpression(childNode, node)
         builder.SEMICOLON$finish(childNode)
@@ -850,11 +843,11 @@ def comprehensionTail(tokenizer, compilerContext) {
             builder.VAR$addDecl(childNode, n3)
             builder.VAR$finish(childNode)
             builder.FOR$setIterator(node, n3, childNode)
-            /*
-             * Don'tokenizer add to varDecls since the semantics of comprehensions is
-             * such that the variables are in their own def when
-             * desugared.
-             */
+            # 
+            # Don'tokenizer add to varDecls since the semantics of comprehensions is
+            # such that the variables are in their own def when
+            # desugared.
+            # 
             break
 
           default:
@@ -877,11 +870,11 @@ def comprehensionTail(tokenizer, compilerContext) {
 def ParenExpression(tokenizer, compilerContext) {
     tokenizer.mustMatch(LEFT_PAREN)
 
-    /*
-     * Always accept the 'in' operator in a parenthesized expression,
-     * where it's unambiguous, even if we might be parsing the init of a
-     * for statement.
-     */
+    # 
+    # Always accept the 'in' operator in a parenthesized expression,
+    # where it's unambiguous, even if we might be parsing the init of a
+    # for statement.
+    # 
     var oldLoopInit = compilerContext.inForLoopInit
     compilerContext.inForLoopInit = False
     var node = Expression(tokenizer, compilerContext)
@@ -901,12 +894,9 @@ def ParenExpression(tokenizer, compilerContext) {
     return node
 }
 
-/*
- * Expression: (tokenizer, compiler context) -> node
- *
- * Top-down expression parser matched against SpiderMonkey.
- */
+
 def Expression(tokenizer, compilerContext) {
+    """Top-down expression parser matched against SpiderMonkey."""
     var node, childNode
     var builder = compilerContext.builder
 
@@ -973,11 +963,11 @@ def ConditionalExpression(tokenizer, compilerContext) {
         childNode = node
         node = builder.HOOK$build(tokenizer)
         builder.HOOK$setCondition(node, childNode)
-        /*
-         * Always accept the 'in' operator in the middle clause of a ternary,
-         * where it's unambiguous, even if we might be parsing the init of a
-         * for statement.
-         */
+        # 
+        # Always accept the 'in' operator in the middle clause of a ternary,
+        # where it's unambiguous, even if we might be parsing the init of a
+        # for statement.
+        # 
         var oldLoopInit = compilerContext.inForLoopInit
         compilerContext.inForLoopInit = False
         builder.HOOK$setThenPart(node, AssignExpression(tokenizer, compilerContext))
@@ -1093,10 +1083,10 @@ def RelationalExpression(tokenizer, compilerContext) {
     var builder = compilerContext.builder
     var oldLoopInit = compilerContext.inForLoopInit
 
-    /*
-     * Uses of the in operator in shiftExprs are always unambiguous,
-     * so unset the flag that prohibits recognizing it.
-     */
+    # 
+    # Uses of the in operator in shiftExprs are always unambiguous,
+    # so unset the flag that prohibits recognizing it.
+    # 
     compilerContext.inForLoopInit = False
     node = ShiftExpression(tokenizer, compilerContext)
     while ((tokenizer.match(LT) or tokenizer.match(LE) or tokenizer.match(GE) or tokenizer.match(GT) ||
@@ -1391,9 +1381,7 @@ def PrimaryExpression(tokenizer, compilerContext) {
     return node
 }
 
-/*
- * parse :: (builder, file ptr, path, line number) -> node
- */
+
 def parse(builder, s, f, l) {
     var tokenizer = new Tokenizer(s, f, l)
     var compilerContext = new CompilerContext(False, builder)
