@@ -190,7 +190,7 @@ def Statement(tokenizer, compilerContext):
             if (tokenType == VAR or tokenType == CONST) {
                 tokenizer.get()
                 childNode = Variables(tokenizer, compilerContext)
-            } else if (tokenType == LET) {
+            } elif (tokenType == LET) {
                 tokenizer.get()
                 if (tokenizer.peek() == LEFT_PAREN) {
                     childNode = LetBlock(tokenizer, compilerContext, False)
@@ -295,7 +295,7 @@ def Statement(tokenizer, compilerContext):
                 i++
             if (i < ss.length - 1 and ss[i+1].isLoop)
                 i++
-            else if (tokenType == CONTINUE)
+            elif (tokenType == CONTINUE)
                 raise SyntaxError("Invalid continue")
         } else {
             do {
@@ -306,13 +306,14 @@ def Statement(tokenizer, compilerContext):
                 }
             } while (!ss[i].isLoop and !(tokenType == BREAK and ss[i].type == SWITCH))
         }
-        if (tokenType == BREAK) {
+        
+        if tokenType == BREAK:
             builder.BREAK$setTarget(node, ss[i])
             builder.BREAK$finish(node)
-        } else {
+        else:
             builder.CONTINUE$setTarget(node, ss[i])
             builder.CONTINUE$finish(node)
-        }
+        
         break
 
     elif tokenType == TRY:
@@ -462,41 +463,36 @@ def returnOrYield(tokenizer, compilerContext):
         compilerContext.isGenerator = True
         node = builder.YIELD$build(tokenizer)
 
-    tt2 = tokenizer.peek(True)
-    if tt2 != END and tt2 != NEWLINE and tt2 != SEMICOLON and tt2 != RIGHT_CURLY
-        and (tokenType != YIELD or
-            (tt2 != tokenType and tt2 != RIGHT_BRACKET and tt2 != RIGHT_PAREN and
-             tt2 != COLON and tt2 != COMMA))) {
-        if (tokenType == RETURN) {
+    nextTokenType = tokenizer.peek(True)
+    if nextTokenType != END and nextTokenType != NEWLINE and nextTokenType != SEMICOLON and nextTokenType != RIGHT_CURLY and (tokenType != YIELD or (nextTokenType != tokenType and nextTokenType != RIGHT_BRACKET and nextTokenType != RIGHT_PAREN and nextTokenType != COLON and nextTokenType != COMMA))):
+        if tokenType == RETURN:
             builder.RETURN$setValue(node, Expression(tokenizer, compilerContext))
             compilerContext.hasReturnWithValue = True
-        } else {
+        else:
             builder.YIELD$setValue(node, AssignExpression(tokenizer, compilerContext))
-        }
-    } else if (tokenType == RETURN) {
+        
+    elif tokenType == RETURN:
         compilerContext.hasEmptyReturn = True
-    }
 
     # Disallow return v; in generator.
-    if (compilerContext.hasReturnWithValue and compilerContext.isGenerator)
+    if compilerContext.hasReturnWithValue and compilerContext.isGenerator:
         raise SyntaxError("Generator returns a value")
 
-    if (tokenType == RETURN)
+    if tokenType == RETURN:
         builder.RETURN$finish(node)
-    else
+    else:
         builder.YIELD$finish(node)
 
     return node
-}
 
 
 
 def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
     var builder = compilerContext.builder
     var f = builder.FUNCTION$build(tokenizer)
-    if (tokenizer.match(IDENTIFIER))
+    if tokenizer.match(IDENTIFIER):
         builder.FUNCTION$setName(f, tokenizer.token.value)
-    else if (requireName)
+    elif requireName:
         raise SyntaxError("Missing def identifier")
 
     tokenizer.mustMatch(LEFT_PAREN)
@@ -778,7 +774,7 @@ def checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data) 
             # In declarations, lhs must be simple names
             if (lhs.type != IDENTIFIER) {
                 raise SyntaxError("Missing name in pattern")
-            } else if (data) {
+            } elif (data) {
                 var childNode = builder.DECL$build(tokenizer)
                 builder.DECL$setName(childNode, lhs.value)
                 # Don'tokenizer need to set initializer because it's just for
@@ -1375,18 +1371,17 @@ def PrimaryExpression(tokenizer, compilerContext) {
       default:
         raise SyntaxError("Missing operand")
         break
-    }
 
     return node
-}
 
 
-def parse(builder, s, f, l) {
-    var tokenizer = new Tokenizer(s, f, l)
+
+def parse(builder, source, filename, line) {
+    var tokenizer = new Tokenizer(source, filename, line)
     var compilerContext = new CompilerContext(False, builder)
     var node = Script(tokenizer, compilerContext)
-    if (!tokenizer.done)
+    
+    if not tokenizer.done:
         raise SyntaxError("Syntax error")
 
     return node
-}
