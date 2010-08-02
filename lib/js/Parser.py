@@ -55,10 +55,7 @@ def Script(tokenizer, compilerContext):
     # change type from "block" to "script" for script root
     node.type = "script"
 
-    # copy over context declarations/accesses into script node
-    # node.declares = compilerContext.declares
-    node.accesses = compilerContext.accesses
-
+    # copy over data from compiler context
     node.funDecls = compilerContext.funDecls
     node.varDecls = compilerContext.varDecls
 
@@ -75,12 +72,12 @@ def Script(tokenizer, compilerContext):
 
 
     // Statement stack and nested statement handler.
-    function nest(t, x, node, func, end) {
-        x.stmtStack.push(node);
-        var n = func(t, x);
-        x.stmtStack.pop();
-        end && t.mustMatch(end);
-        return n;
+    function nest(tokenizer, compilerContext, node, func, end) {
+        compilerContext.stmtStack.push(node)
+        var node = func(tokenizer, compilerContext)
+        compilerContext.stmtStack.pop()
+        end && tokenizer.mustMatch(end)
+        return node
     }
 
     /*
@@ -88,212 +85,212 @@ def Script(tokenizer, compilerContext):
      *
      * Parses a list of Statements.
      */
-    function Statements(t, x) {
-        var b = x.builder;
-        var n = b.BLOCK$build(t, x.blockId++);
-        b.BLOCK$hoistLets(n);
-        x.stmtStack.push(n);
-        while (!t.done && t.peek(true) != RIGHT_CURLY)
-            b.BLOCK$addStatement(n, Statement(t, x));
-        x.stmtStack.pop();
-        b.BLOCK$finish(n);
-        if (n.needsHoisting) {
-            b.setHoists(n.id, n.varDecls);
+    function Statements(tokenizer, compilerContext) {
+        var builder = compilerContext.builder
+        var node = builder.BLOCK$build(tokenizer, compilerContext.blockId++)
+        builder.BLOCK$hoistLets(node)
+        compilerContext.stmtStack.push(node)
+        while (!tokenizer.done && tokenizer.peek(true) != RIGHT_CURLY)
+            builder.BLOCK$addStatement(node, Statement(tokenizer, compilerContext))
+        compilerContext.stmtStack.pop()
+        builder.BLOCK$finish(node)
+        if (node.needsHoisting) {
+            builder.setHoists(node.id, node.varDecls)
             // Propagate up to the function.
-            x.needsHoisting = true;
+            compilerContext.needsHoisting = true
         }
-        return n;
+        return node
     }
 
-    function Block(t, x) {
-        t.mustMatch(LEFT_CURLY);
-        var n = Statements(t, x);
-        t.mustMatch(RIGHT_CURLY);
-        return n;
+    function Block(tokenizer, compilerContext) {
+        tokenizer.mustMatch(LEFT_CURLY)
+        var node = Statements(tokenizer, compilerContext)
+        tokenizer.mustMatch(RIGHT_CURLY)
+        return node
     }
 
-    const DECLARED_FORM = 0, EXPRESSED_FORM = 1, STATEMENT_FORM = 2;
+    const DECLARED_FORM = 0, EXPRESSED_FORM = 1, STATEMENT_FORM = 2
 
     /*
      * Statement :: (tokenizer, compiler context) -> node
      *
      * Parses a Statement.
      */
-    function Statement(t, x) {
-        var i, label, n, n2, ss, tt = t.get(true);
-        var b = x.builder;
+    function Statement(tokenizer, compilerContext) {
+        var i, label, node, n2, ss, tt = tokenizer.get(true)
+        var builder = compilerContext.builder
 
         // Cases for statements ending in a right curly return early, avoiding the
         // common semicolon insertion magic after this switch.
         switch (tt) {
           case FUNCTION:
-            // DECLARED_FORM extends funDecls of x, STATEMENT_FORM doesn't.
-            return FunctionDefinition(t, x, true,
-                                      (x.stmtStack.length > 1)
+            // DECLARED_FORM extends funDecls of compilerContext, STATEMENT_FORM doesn'tokenizer.
+            return FunctionDefinition(tokenizer, compilerContext, true,
+                                      (compilerContext.stmtStack.length > 1)
                                       ? STATEMENT_FORM
-                                      : DECLARED_FORM);
+                                      : DECLARED_FORM)
 
           case LEFT_CURLY:
-            n = Statements(t, x);
-            t.mustMatch(RIGHT_CURLY);
-            return n;
+            node = Statements(tokenizer, compilerContext)
+            tokenizer.mustMatch(RIGHT_CURLY)
+            return node
 
           case IF:
-            n = b.IF$build(t);
-            b.IF$setCondition(n, ParenExpression(t, x));
-            x.stmtStack.push(n);
-            b.IF$setThenPart(n, Statement(t, x));
-            if (t.match(ELSE))
-                b.IF$setElsePart(n, Statement(t, x));
-            x.stmtStack.pop();
-            b.IF$finish(n);
-            return n;
+            node = builder.IF$build(tokenizer)
+            builder.IF$setCondition(node, ParenExpression(tokenizer, compilerContext))
+            compilerContext.stmtStack.push(node)
+            builder.IF$setThenPart(node, Statement(tokenizer, compilerContext))
+            if (tokenizer.match(ELSE))
+                builder.IF$setElsePart(node, Statement(tokenizer, compilerContext))
+            compilerContext.stmtStack.pop()
+            builder.IF$finish(node)
+            return node
 
           case SWITCH:
             // This allows CASEs after a DEFAULT, which is in the standard.
-            n = b.SWITCH$build(t);
-            b.SWITCH$setDiscriminant(n, ParenExpression(t, x));
-            x.stmtStack.push(n);
-            t.mustMatch(LEFT_CURLY);
-            while ((tt = t.get()) != RIGHT_CURLY) {
+            node = builder.SWITCH$build(tokenizer)
+            builder.SWITCH$setDiscriminant(node, ParenExpression(tokenizer, compilerContext))
+            compilerContext.stmtStack.push(node)
+            tokenizer.mustMatch(LEFT_CURLY)
+            while ((tt = tokenizer.get()) != RIGHT_CURLY) {
                 switch (tt) {
                   case DEFAULT:
-                    if (n.defaultIndex >= 0)
-                        throw t.newSyntaxError("More than one switch default");
-                    n2 = b.DEFAULT$build(t);
-                    b.SWITCH$setDefaultIndex(n, n.cases.length);
-                    t.mustMatch(COLON);
-                    b.DEFAULT$initializeStatements(n2, t);
-                    while ((tt=t.peek(true)) != CASE && tt != DEFAULT &&
+                    if (node.defaultIndex >= 0)
+                        throw tokenizer.newSyntaxError("More than one switch default")
+                    n2 = builder.DEFAULT$build(tokenizer)
+                    builder.SWITCH$setDefaultIndex(node, node.cases.length)
+                    tokenizer.mustMatch(COLON)
+                    builder.DEFAULT$initializeStatements(n2, tokenizer)
+                    while ((tt=tokenizer.peek(true)) != CASE && tt != DEFAULT &&
                            tt != RIGHT_CURLY)
-                        b.DEFAULT$addStatement(n2, Statement(t, x));
-                    b.DEFAULT$finish(n2);
-                    break;
+                        builder.DEFAULT$addStatement(n2, Statement(tokenizer, compilerContext))
+                    builder.DEFAULT$finish(n2)
+                    break
 
                   case CASE:
-                    n2 = b.CASE$build(t);
-                    b.CASE$setLabel(n2, Expression(t, x, COLON));
-                    t.mustMatch(COLON);
-                    b.CASE$initializeStatements(n2, t);
-                    while ((tt=t.peek(true)) != CASE && tt != DEFAULT &&
+                    n2 = builder.CASE$build(tokenizer)
+                    builder.CASE$setLabel(n2, Expression(tokenizer, compilerContext, COLON))
+                    tokenizer.mustMatch(COLON)
+                    builder.CASE$initializeStatements(n2, tokenizer)
+                    while ((tt=tokenizer.peek(true)) != CASE && tt != DEFAULT &&
                            tt != RIGHT_CURLY)
-                        b.CASE$addStatement(n2, Statement(t, x));
-                    b.CASE$finish(n2);
-                    break;
+                        builder.CASE$addStatement(n2, Statement(tokenizer, compilerContext))
+                    builder.CASE$finish(n2)
+                    break
 
                   default:
-                    throw t.newSyntaxError("Invalid switch case");
+                    throw tokenizer.newSyntaxError("Invalid switch case")
                 }
-                b.SWITCH$addCase(n, n2);
+                builder.SWITCH$addCase(node, n2)
             }
-            x.stmtStack.pop();
-            b.SWITCH$finish(n);
-            return n;
+            compilerContext.stmtStack.pop()
+            builder.SWITCH$finish(node)
+            return node
 
           case FOR:
-            n = b.FOR$build(t);
-            if (t.match(IDENTIFIER) && t.token.value == "each")
-                b.FOR$rebuildForEach(n);
-            t.mustMatch(LEFT_PAREN);
-            if ((tt = t.peek()) != SEMICOLON) {
-                x.inForLoopInit = true;
+            node = builder.FOR$build(tokenizer)
+            if (tokenizer.match(IDENTIFIER) && tokenizer.token.value == "each")
+                builder.FOR$rebuildForEach(node)
+            tokenizer.mustMatch(LEFT_PAREN)
+            if ((tt = tokenizer.peek()) != SEMICOLON) {
+                compilerContext.inForLoopInit = true
                 if (tt == VAR || tt == CONST) {
-                    t.get();
-                    n2 = Variables(t, x);
+                    tokenizer.get()
+                    n2 = Variables(tokenizer, compilerContext)
                 } else if (tt == LET) {
-                    t.get();
-                    if (t.peek() == LEFT_PAREN) {
-                        n2 = LetBlock(t, x, false);
+                    tokenizer.get()
+                    if (tokenizer.peek() == LEFT_PAREN) {
+                        n2 = LetBlock(tokenizer, compilerContext, false)
                     } else {
                         /*
                          * Let in for head, we need to add an implicit block
                          * around the rest of the for.
                          */
-                        var forBlock = b.BLOCK$build(t, x.blockId++);
-                        x.stmtStack.push(forBlock);
-                        n2 = Variables(t, x, forBlock);
+                        var forBlock = builder.BLOCK$build(tokenizer, compilerContext.blockId++)
+                        compilerContext.stmtStack.push(forBlock)
+                        n2 = Variables(tokenizer, compilerContext, forBlock)
                     }
                 } else {
-                    n2 = Expression(t, x);
+                    n2 = Expression(tokenizer, compilerContext)
                 }
-                x.inForLoopInit = false;
+                compilerContext.inForLoopInit = false
             }
-            if (n2 && t.match(IN)) {
-                b.FOR$rebuildForIn(n);
-                b.FOR$setObject(n, Expression(t, x), forBlock);
+            if (n2 && tokenizer.match(IN)) {
+                builder.FOR$rebuildForIn(node)
+                builder.FOR$setObject(node, Expression(tokenizer, compilerContext), forBlock)
                 if (n2.type == VAR || n2.type == LET) {
                     if (n2.length != 1) {
                         throw new SyntaxError("Invalid for..in left-hand side",
-                                              t.filename, n2.lineno);
+                                              tokenizer.filename, n2.lineno)
                     }
-                    b.FOR$setIterator(n, n2[0], n2, forBlock);
+                    builder.FOR$setIterator(node, n2[0], n2, forBlock)
                 } else {
-                    b.FOR$setIterator(n, n2, null, forBlock);
+                    builder.FOR$setIterator(node, n2, null, forBlock)
                 }
             } else {
-                b.FOR$setSetup(n, n2);
-                t.mustMatch(SEMICOLON);
-                if (n.isEach)
-                    throw t.newSyntaxError("Invalid for each..in loop");
-                b.FOR$setCondition(n, (t.peek() == SEMICOLON)
+                builder.FOR$setSetup(node, n2)
+                tokenizer.mustMatch(SEMICOLON)
+                if (node.isEach)
+                    throw tokenizer.newSyntaxError("Invalid for each..in loop")
+                builder.FOR$setCondition(node, (tokenizer.peek() == SEMICOLON)
                                   ? null
-                                  : Expression(t, x));
-                t.mustMatch(SEMICOLON);
-                b.FOR$setUpdate(n, (t.peek() == RIGHT_PAREN)
+                                  : Expression(tokenizer, compilerContext))
+                tokenizer.mustMatch(SEMICOLON)
+                builder.FOR$setUpdate(node, (tokenizer.peek() == RIGHT_PAREN)
                                    ? null
-                                   : Expression(t, x));
+                                   : Expression(tokenizer, compilerContext))
             }
-            t.mustMatch(RIGHT_PAREN);
-            b.FOR$setBody(n, nest(t, x, n, Statement));
+            tokenizer.mustMatch(RIGHT_PAREN)
+            builder.FOR$setBody(node, nest(tokenizer, compilerContext, node, Statement))
             if (forBlock) {
-                b.BLOCK$finish(forBlock);
-                x.stmtStack.pop();
+                builder.BLOCK$finish(forBlock)
+                compilerContext.stmtStack.pop()
             }
-            b.FOR$finish(n);
-            return n;
+            builder.FOR$finish(node)
+            return node
 
           case WHILE:
-            n = b.WHILE$build(t);
-            b.WHILE$setCondition(n, ParenExpression(t, x));
-            b.WHILE$setBody(n, nest(t, x, n, Statement));
-            b.WHILE$finish(n);
-            return n;
+            node = builder.WHILE$build(tokenizer)
+            builder.WHILE$setCondition(node, ParenExpression(tokenizer, compilerContext))
+            builder.WHILE$setBody(node, nest(tokenizer, compilerContext, node, Statement))
+            builder.WHILE$finish(node)
+            return node
 
           case DO:
-            n = b.DO$build(t);
-            b.DO$setBody(n, nest(t, x, n, Statement, WHILE));
-            b.DO$setCondition(n, ParenExpression(t, x));
-            b.DO$finish(n);
-            if (!x.ecmaStrictMode) {
+            node = builder.DO$build(tokenizer)
+            builder.DO$setBody(node, nest(tokenizer, compilerContext, node, Statement, WHILE))
+            builder.DO$setCondition(node, ParenExpression(tokenizer, compilerContext))
+            builder.DO$finish(node)
+            if (!compilerContext.ecmaStrictMode) {
                 // <script language="JavaScript"> (without version hints) may need
                 // automatic semicolon insertion without a newline after do-while.
                 // See http://bugzilla.mozilla.org/show_bug.cgi?id=238945.
-                t.match(SEMICOLON);
-                return n;
+                tokenizer.match(SEMICOLON)
+                return node
             }
-            break;
+            break
 
           case BREAK:
           case CONTINUE:
-            n = tt == BREAK ? b.BREAK$build(t) : b.CONTINUE$build(t);
+            node = tt == BREAK ? builder.BREAK$build(tokenizer) : builder.CONTINUE$build(tokenizer)
 
-            if (t.peekOnSameLine() == IDENTIFIER) {
-                t.get();
+            if (tokenizer.peekOnSameLine() == IDENTIFIER) {
+                tokenizer.get()
                 if (tt == BREAK)
-                    b.BREAK$setLabel(n, t.token.value);
+                    builder.BREAK$setLabel(node, tokenizer.token.value)
                 else
-                    b.CONTINUE$setLabel(n, t.token.value);
+                    builder.CONTINUE$setLabel(node, tokenizer.token.value)
             }
 
-            ss = x.stmtStack;
-            i = ss.length;
-            label = n.label;
+            ss = compilerContext.stmtStack
+            i = ss.length
+            label = node.label
 
             if (label) {
                 do {
                     if (--i < 0)
-                        throw t.newSyntaxError("Label not found");
-                } while (ss[i].label != label);
+                        throw tokenizer.newSyntaxError("Label not found")
+                } while (ss[i].label != label)
 
                 /*
                  * Both break and continue to label need to be handled specially
@@ -303,197 +300,197 @@ def Script(tokenizer, compilerContext):
                  * non-label statement.
                  */
                 while (i < ss.length - 1 && ss[i+1].type == LABEL)
-                    i++;
+                    i++
                 if (i < ss.length - 1 && ss[i+1].isLoop)
-                    i++;
+                    i++
                 else if (tt == CONTINUE)
-                    throw t.newSyntaxError("Invalid continue");
+                    throw tokenizer.newSyntaxError("Invalid continue")
             } else {
                 do {
                     if (--i < 0) {
-                        throw t.newSyntaxError("Invalid " + ((tt == BREAK)
+                        throw tokenizer.newSyntaxError("Invalid " + ((tt == BREAK)
                                                              ? "break"
-                                                             : "continue"));
+                                                             : "continue"))
                     }
-                } while (!ss[i].isLoop && !(tt == BREAK && ss[i].type == SWITCH));
+                } while (!ss[i].isLoop && !(tt == BREAK && ss[i].type == SWITCH))
             }
             if (tt == BREAK) {
-                b.BREAK$setTarget(n, ss[i]);
-                b.BREAK$finish(n);
+                builder.BREAK$setTarget(node, ss[i])
+                builder.BREAK$finish(node)
             } else {
-                b.CONTINUE$setTarget(n, ss[i]);
-                b.CONTINUE$finish(n);
+                builder.CONTINUE$setTarget(node, ss[i])
+                builder.CONTINUE$finish(node)
             }
-            break;
+            break
 
           case TRY:
-            n = b.TRY$build(t);
-            b.TRY$setTryBlock(n, Block(t, x));
-            while (t.match(CATCH)) {
-                n2 = b.CATCH$build(t);
-                t.mustMatch(LEFT_PAREN);
-                switch (t.get()) {
+            node = builder.TRY$build(tokenizer)
+            builder.TRY$setTryBlock(node, Block(tokenizer, compilerContext))
+            while (tokenizer.match(CATCH)) {
+                n2 = builder.CATCH$build(tokenizer)
+                tokenizer.mustMatch(LEFT_PAREN)
+                switch (tokenizer.get()) {
                   case LEFT_BRACKET:
                   case LEFT_CURLY:
                     // Destructured catch identifiers.
-                    t.unget();
-                    b.CATCH$setVarName(n2, DestructuringExpression(t, x, true));
+                    tokenizer.unget()
+                    builder.CATCH$setVarName(n2, DestructuringExpression(tokenizer, compilerContext, true))
                   case IDENTIFIER:
-                    b.CATCH$setVarName(n2, t.token.value);
-                    break;
+                    builder.CATCH$setVarName(n2, tokenizer.token.value)
+                    break
                   default:
-                    throw t.newSyntaxError("Missing identifier in catch");
-                    break;
+                    throw tokenizer.newSyntaxError("Missing identifier in catch")
+                    break
                 }
-                if (t.match(IF)) {
-                    if (x.ecma3OnlyMode)
-                        throw t.newSyntaxError("Illegal catch guard");
-                    if (n.catchClauses.length && !n.catchClauses.top().guard)
-                        throw t.newSyntaxError("Guarded catch after unguarded");
-                    b.CATCH$setGuard(n2, Expression(t, x));
+                if (tokenizer.match(IF)) {
+                    if (compilerContext.ecma3OnlyMode)
+                        throw tokenizer.newSyntaxError("Illegal catch guard")
+                    if (node.catchClauses.length && !node.catchClauses.top().guard)
+                        throw tokenizer.newSyntaxError("Guarded catch after unguarded")
+                    builder.CATCH$setGuard(n2, Expression(tokenizer, compilerContext))
                 } else {
-                    b.CATCH$setGuard(n2, null);
+                    builder.CATCH$setGuard(n2, null)
                 }
-                t.mustMatch(RIGHT_PAREN);
-                b.CATCH$setBlock(n2, Block(t, x));
-                b.CATCH$finish(n2);
-                b.TRY$addCatch(n, n2);
+                tokenizer.mustMatch(RIGHT_PAREN)
+                builder.CATCH$setBlock(n2, Block(tokenizer, compilerContext))
+                builder.CATCH$finish(n2)
+                builder.TRY$addCatch(node, n2)
             }
-            b.TRY$finishCatches(n);
-            if (t.match(FINALLY))
-                b.TRY$setFinallyBlock(n, Block(t, x));
-            if (!n.catchClauses.length && !n.finallyBlock)
-                throw t.newSyntaxError("Invalid try statement");
-            b.TRY$finish(n);
-            return n;
+            builder.TRY$finishCatches(node)
+            if (tokenizer.match(FINALLY))
+                builder.TRY$setFinallyBlock(node, Block(tokenizer, compilerContext))
+            if (!node.catchClauses.length && !node.finallyBlock)
+                throw tokenizer.newSyntaxError("Invalid try statement")
+            builder.TRY$finish(node)
+            return node
 
           case CATCH:
           case FINALLY:
-            throw t.newSyntaxError(tokens[tt] + " without preceding try");
+            throw tokenizer.newSyntaxError(tokens[tt] + " without preceding try")
 
           case THROW:
-            n = b.THROW$build(t);
-            b.THROW$setException(n, Expression(t, x));
-            b.THROW$finish(n);
-            break;
+            node = builder.THROW$build(tokenizer)
+            builder.THROW$setException(node, Expression(tokenizer, compilerContext))
+            builder.THROW$finish(node)
+            break
 
           case RETURN:
-            n = returnOrYield(t, x);
-            break;
+            node = returnOrYield(tokenizer, compilerContext)
+            break
 
           case WITH:
-            n = b.WITH$build(t);
-            b.WITH$setObject(n, ParenExpression(t, x));
-            b.WITH$setBody(n, nest(t, x, n, Statement));
-            b.WITH$finish(n);
-            return n;
+            node = builder.WITH$build(tokenizer)
+            builder.WITH$setObject(node, ParenExpression(tokenizer, compilerContext))
+            builder.WITH$setBody(node, nest(tokenizer, compilerContext, node, Statement))
+            builder.WITH$finish(node)
+            return node
 
           case VAR:
           case CONST:
-            n = Variables(t, x);
-            break;
+            node = Variables(tokenizer, compilerContext)
+            break
 
           case LET:
-            if (t.peek() == LEFT_PAREN)
-                n = LetBlock(t, x, true);
+            if (tokenizer.peek() == LEFT_PAREN)
+                node = LetBlock(tokenizer, compilerContext, true)
             else
-                n = Variables(t, x);
-            break;
+                node = Variables(tokenizer, compilerContext)
+            break
 
           case DEBUGGER:
-            n = b.DEBUGGER$build(t);
-            break;
+            node = builder.DEBUGGER$build(tokenizer)
+            break
 
           case NEWLINE:
           case SEMICOLON:
-            n = b.SEMICOLON$build(t);
-            b.SEMICOLON$setExpression(n, null);
-            b.SEMICOLON$finish(t);
-            return n;
+            node = builder.SEMICOLON$build(tokenizer)
+            builder.SEMICOLON$setExpression(node, null)
+            builder.SEMICOLON$finish(tokenizer)
+            return node
 
           default:
             if (tt == IDENTIFIER) {
-                tt = t.peek();
+                tt = tokenizer.peek()
                 // Labeled statement.
                 if (tt == COLON) {
-                    label = t.token.value;
-                    ss = x.stmtStack;
+                    label = tokenizer.token.value
+                    ss = compilerContext.stmtStack
                     for (i = ss.length-1; i >= 0; --i) {
                         if (ss[i].label == label)
-                            throw t.newSyntaxError("Duplicate label");
+                            throw tokenizer.newSyntaxError("Duplicate label")
                     }
-                    t.get();
-                    n = b.LABEL$build(t);
-                    b.LABEL$setLabel(n, label)
-                    b.LABEL$setStatement(n, nest(t, x, n, Statement));
-                    b.LABEL$finish(n);
-                    return n;
+                    tokenizer.get()
+                    node = builder.LABEL$build(tokenizer)
+                    builder.LABEL$setLabel(node, label)
+                    builder.LABEL$setStatement(node, nest(tokenizer, compilerContext, node, Statement))
+                    builder.LABEL$finish(node)
+                    return node
                 }
             }
 
             // Expression statement.
             // We unget the current token to parse the expression as a whole.
-            n = b.SEMICOLON$build(t);
-            t.unget();
-            b.SEMICOLON$setExpression(n, Expression(t, x));
-            n.end = n.expression.end;
-            b.SEMICOLON$finish(n);
-            break;
+            node = builder.SEMICOLON$build(tokenizer)
+            tokenizer.unget()
+            builder.SEMICOLON$setExpression(node, Expression(tokenizer, compilerContext))
+            node.end = node.expression.end
+            builder.SEMICOLON$finish(node)
+            break
         }
 
-        MagicalSemicolon(t);
-        return n;
+        MagicalSemicolon(tokenizer)
+        return node
     }
 
-    function MagicalSemicolon(t) {
-        var tt;
-        if (t.lineno == t.token.lineno) {
-            tt = t.peekOnSameLine();
+    function MagicalSemicolon(tokenizer) {
+        var tt
+        if (tokenizer.lineno == tokenizer.token.lineno) {
+            tt = tokenizer.peekOnSameLine()
             if (tt != END && tt != NEWLINE && tt != SEMICOLON && tt != RIGHT_CURLY)
-                throw t.newSyntaxError("Missing ; before statement");
+                throw tokenizer.newSyntaxError("Missing ; before statement")
         }
-        t.match(SEMICOLON);
+        tokenizer.match(SEMICOLON)
     }
 
-    function returnOrYield(t, x) {
-        var n, b = x.builder, tt = t.token.type, tt2;
+    function returnOrYield(tokenizer, compilerContext) {
+        var node, builder = compilerContext.builder, tt = tokenizer.token.type, tt2
 
         if (tt == RETURN) {
-            if (!x.inFunction)
-                throw t.newSyntaxError("Return not in function");
-            n = b.RETURN$build(t);
+            if (!compilerContext.inFunction)
+                throw tokenizer.newSyntaxError("Return not in function")
+            node = builder.RETURN$build(tokenizer)
         } else /* (tt == YIELD) */ {
-            if (!x.inFunction)
-                throw t.newSyntaxError("Yield not in function");
-            x.isGenerator = true;
-            n = b.YIELD$build(t);
+            if (!compilerContext.inFunction)
+                throw tokenizer.newSyntaxError("Yield not in function")
+            compilerContext.isGenerator = true
+            node = builder.YIELD$build(tokenizer)
         }
 
-        tt2 = t.peek(true);
+        tt2 = tokenizer.peek(true)
         if (tt2 != END && tt2 != NEWLINE && tt2 != SEMICOLON && tt2 != RIGHT_CURLY
             && (tt != YIELD ||
                 (tt2 != tt && tt2 != RIGHT_BRACKET && tt2 != RIGHT_PAREN &&
                  tt2 != COLON && tt2 != COMMA))) {
             if (tt == RETURN) {
-                b.RETURN$setValue(n, Expression(t, x));
-                x.hasReturnWithValue = true;
+                builder.RETURN$setValue(node, Expression(tokenizer, compilerContext))
+                compilerContext.hasReturnWithValue = true
             } else {
-                b.YIELD$setValue(n, AssignExpression(t, x));
+                builder.YIELD$setValue(node, AssignExpression(tokenizer, compilerContext))
             }
         } else if (tt == RETURN) {
-            x.hasEmptyReturn = true;
+            compilerContext.hasEmptyReturn = true
         }
 
         // Disallow return v; in generator.
-        if (x.hasReturnWithValue && x.isGenerator)
-            throw t.newSyntaxError("Generator returns a value");
+        if (compilerContext.hasReturnWithValue && compilerContext.isGenerator)
+            throw tokenizer.newSyntaxError("Generator returns a value")
 
         if (tt == RETURN)
-            b.RETURN$finish(n);
+            builder.RETURN$finish(node)
         else
-            b.YIELD$finish(n);
+            builder.YIELD$finish(node)
 
-        return n;
+        return node
     }
 
     /*
@@ -501,58 +498,58 @@ def Script(tokenizer, compilerContext):
      *                        DECLARED_FORM or EXPRESSED_FORM or STATEMENT_FORM)
      *                    -> node
      */
-    function FunctionDefinition(t, x, requireName, functionForm) {
-        var b = x.builder;
-        var f = b.FUNCTION$build(t);
-        if (t.match(IDENTIFIER))
-            b.FUNCTION$setName(f, t.token.value);
+    function FunctionDefinition(tokenizer, compilerContext, requireName, functionForm) {
+        var builder = compilerContext.builder
+        var f = builder.FUNCTION$build(tokenizer)
+        if (tokenizer.match(IDENTIFIER))
+            builder.FUNCTION$setName(f, tokenizer.token.value)
         else if (requireName)
-            throw t.newSyntaxError("Missing function identifier");
+            throw tokenizer.newSyntaxError("Missing function identifier")
 
-        t.mustMatch(LEFT_PAREN);
-        if (!t.match(RIGHT_PAREN)) {
+        tokenizer.mustMatch(LEFT_PAREN)
+        if (!tokenizer.match(RIGHT_PAREN)) {
             do {
-                switch (t.get()) {
+                switch (tokenizer.get()) {
                   case LEFT_BRACKET:
                   case LEFT_CURLY:
                     // Destructured formal parameters.
-                    t.unget();
-                    b.FUNCTION$addParam(f, DestructuringExpression(t, x));
-                    break;
+                    tokenizer.unget()
+                    builder.FUNCTION$addParam(f, DestructuringExpression(tokenizer, compilerContext))
+                    break
                   case IDENTIFIER:
-                    b.FUNCTION$addParam(f, t.token.value);
-                    break;
+                    builder.FUNCTION$addParam(f, tokenizer.token.value)
+                    break
                   default:
-                    throw t.newSyntaxError("Missing formal parameter");
-                    break;
+                    throw tokenizer.newSyntaxError("Missing formal parameter")
+                    break
                 }
-            } while (t.match(COMMA));
-            t.mustMatch(RIGHT_PAREN);
+            } while (tokenizer.match(COMMA))
+            tokenizer.mustMatch(RIGHT_PAREN)
         }
 
         // Do we have an expression closure or a normal body?
-        var tt = t.get();
+        var tt = tokenizer.get()
         if (tt != LEFT_CURLY)
-            t.unget();
+            tokenizer.unget()
 
-        var x2 = new CompilerContext(true, b);
-        var rp = t.save();
-        if (x.inFunction) {
+        var x2 = new CompilerContext(true, builder)
+        var rp = tokenizer.save()
+        if (compilerContext.inFunction) {
             /*
-             * Inner functions don't reset block numbering. They also need to
+             * Inner functions don'tokenizer reset block numbering. They also need to
              * remember which block they were parsed in for hoisting (see comment
              * below).
              */
-            x2.blockId = x.blockId;
+            x2.blockId = compilerContext.blockId
         }
 
         if (tt != LEFT_CURLY) {
-            b.FUNCTION$setBody(f, AssignExpression(t, x));
-            if (x.isGenerator)
-                throw t.newSyntaxError("Generator returns a value");
+            builder.FUNCTION$setBody(f, AssignExpression(tokenizer, compilerContext))
+            if (compilerContext.isGenerator)
+                throw tokenizer.newSyntaxError("Generator returns a value")
         } else {
-            b.FUNCTION$hoistVars(x2.blockId);
-            b.FUNCTION$setBody(f, Script(t, x2));
+            builder.FUNCTION$hoistVars(x2.blockId)
+            builder.FUNCTION$setBody(f, Script(tokenizer, x2))
         }
 
         /*
@@ -567,13 +564,13 @@ def Script(tokenizer, compilerContext):
          * functions. That is, consider:
          *
          * function f() {
-         *   x = 0;
-         *   g();
-         *   x; // x's forward pointer should be invalidated!
+         *   compilerContext = 0
+         *   g()
+         *   compilerContext; // compilerContext's forward pointer should be invalidated!
          *   function g() {
-         *     x = 'g';
+         *     compilerContext = 'g'
          *   }
-         *   var x;
+         *   var compilerContext
          * }
          *
          * So, a function needs to remember in which block it is parsed under
@@ -582,34 +579,34 @@ def Script(tokenizer, compilerContext):
          */
         if (x2.needsHoisting) {
             // Order is important here! funDecls must come _after_ varDecls!
-            b.setHoists(f.body.id, x2.varDecls.concat(x2.funDecls));
+            builder.setHoists(f.body.id, x2.varDecls.concat(x2.funDecls))
 
-            if (x.inFunction) {
+            if (compilerContext.inFunction) {
                 // Propagate up to the parent function if we're an inner function.
-                x.needsHoisting = true;
+                compilerContext.needsHoisting = true
             } else {
                 // Only re-parse toplevel functions.
-                var x3 = x2;
-                x2 = new CompilerContext(true, b);
-                t.rewind(rp);
+                var x3 = x2
+                x2 = new CompilerContext(true, builder)
+                tokenizer.rewind(rp)
                 // Set a flag in case the builder wants to have different behavior
                 // on the second pass.
-                b.secondPass = true;
-                b.FUNCTION$hoistVars(f.body.id, true);
-                b.FUNCTION$setBody(f, Script(t, x2));
-                b.secondPass = false;
+                builder.secondPass = true
+                builder.FUNCTION$hoistVars(f.body.id, true)
+                builder.FUNCTION$setBody(f, Script(tokenizer, x2))
+                builder.secondPass = false
             }
         }
 
         if (tt == LEFT_CURLY)
-            t.mustMatch(RIGHT_CURLY);
+            tokenizer.mustMatch(RIGHT_CURLY)
 
-        f.end = t.token.end;
-        f.functionForm = functionForm;
+        f.end = tokenizer.token.end
+        f.functionForm = functionForm
         if (functionForm == DECLARED_FORM)
-            x.funDecls.push(f);
-        b.FUNCTION$finish(f, x);
-        return f;
+            compilerContext.funDecls.push(f)
+        builder.FUNCTION$finish(f, compilerContext)
+        return f
     }
 
     /*
@@ -618,116 +615,116 @@ def Script(tokenizer, compilerContext):
      * Parses a comma-separated list of var declarations (and maybe
      * initializations).
      */
-    function Variables(t, x, letBlock) {
-        var b = x.builder;
-        var n, ss, i, s;
-        var build, addDecl, finish;
-        switch (t.token.type) {
+    function Variables(tokenizer, compilerContext, letBlock) {
+        var builder = compilerContext.builder
+        var node, ss, i, s
+        var build, addDecl, finish
+        switch (tokenizer.token.type) {
           case VAR:
-            build = b.VAR$build;
-            addDecl = b.VAR$addDecl;
-            finish = b.VAR$finish;
-            s = x;
-            break;
+            build = builder.VAR$build
+            addDecl = builder.VAR$addDecl
+            finish = builder.VAR$finish
+            s = compilerContext
+            break
           case CONST:
-            build = b.CONST$build;
-            addDecl = b.CONST$addDecl;
-            finish = b.CONST$finish;
-            s = x;
-            break;
+            build = builder.CONST$build
+            addDecl = builder.CONST$addDecl
+            finish = builder.CONST$finish
+            s = compilerContext
+            break
           case LET:
           case LEFT_PAREN:
-            build = b.LET$build;
-            addDecl = b.LET$addDecl;
-            finish = b.LET$finish;
+            build = builder.LET$build
+            addDecl = builder.LET$addDecl
+            finish = builder.LET$finish
             if (!letBlock) {
-                ss = x.stmtStack;
-                i = ss.length;
+                ss = compilerContext.stmtStack
+                i = ss.length
                 while (ss[--i].type !== BLOCK) ; // a BLOCK *must* be found.
                 /*
                  * Lets at the function toplevel are just vars, at least in
                  * SpiderMonkey.
                  */
                 if (i == 0) {
-                    build = b.VAR$build;
-                    addDecl = b.VAR$addDecl;
-                    finish = b.VAR$finish;
-                    s = x;
+                    build = builder.VAR$build
+                    addDecl = builder.VAR$addDecl
+                    finish = builder.VAR$finish
+                    s = compilerContext
                 } else {
-                    s = ss[i];
+                    s = ss[i]
                 }
             } else {
-                s = letBlock;
+                s = letBlock
             }
-            break;
+            break
         }
-        n = build.call(b, t);
-        initializers = [];
+        node = build.call(builder, tokenizer)
+        initializers = []
         do {
-            var tt = t.get();
+            var tt = tokenizer.get()
             /*
              * FIXME Should have a special DECLARATION node instead of overloading
              * IDENTIFIER to mean both identifier declarations and destructured
              * declarations.
              */
-            var n2 = b.DECL$build(t);
+            var n2 = builder.DECL$build(tokenizer)
             if (tt == LEFT_BRACKET || tt == LEFT_CURLY) {
                 // Pass in s if we need to add each pattern matched into
-                // its varDecls, else pass in x.
-                var data = null;
+                // its varDecls, else pass in compilerContext.
+                var data = null
                 // Need to unget to parse the full destructured expression.
-                t.unget();
-                b.DECL$setName(n2, DestructuringExpression(t, x, true, s));
-                if (x.inForLoopInit && t.peek() == IN) {
-                    addDecl.call(b, n, n2, s);
-                    continue;
+                tokenizer.unget()
+                builder.DECL$setName(n2, DestructuringExpression(tokenizer, compilerContext, true, s))
+                if (compilerContext.inForLoopInit && tokenizer.peek() == IN) {
+                    addDecl.call(builder, node, n2, s)
+                    continue
                 }
 
-                t.mustMatch(ASSIGN);
-                if (t.token.assignOp)
-                    throw t.newSyntaxError("Invalid variable initialization");
+                tokenizer.mustMatch(ASSIGN)
+                if (tokenizer.token.assignOp)
+                    throw tokenizer.newSyntaxError("Invalid variable initialization")
 
                 // Parse the init as a normal assignment.
-                var n3 = b.ASSIGN$build(t);
-                b.ASSIGN$addOperand(n3, n2.name);
-                b.ASSIGN$addOperand(n3, AssignExpression(t, x));
-                b.ASSIGN$finish(n3);
+                var n3 = builder.ASSIGN$build(tokenizer)
+                builder.ASSIGN$addOperand(n3, n2.name)
+                builder.ASSIGN$addOperand(n3, AssignExpression(tokenizer, compilerContext))
+                builder.ASSIGN$finish(n3)
 
                 // But only add the rhs as the initializer.
-                b.DECL$setInitializer(n2, n3[1]);
-                b.DECL$finish(n2);
-                addDecl.call(b, n, n2, s);
-                continue;
+                builder.DECL$setInitializer(n2, n3[1])
+                builder.DECL$finish(n2)
+                addDecl.call(builder, node, n2, s)
+                continue
             }
 
             if (tt != IDENTIFIER)
-                throw t.newSyntaxError("Missing variable name");
+                throw tokenizer.newSyntaxError("Missing variable name")
 
-            b.DECL$setName(n2, t.token.value);
-            b.DECL$setReadOnly(n2, n.type == CONST);
-            addDecl.call(b, n, n2, s);
+            builder.DECL$setName(n2, tokenizer.token.value)
+            builder.DECL$setReadOnly(n2, node.type == CONST)
+            addDecl.call(builder, node, n2, s)
 
-            if (t.match(ASSIGN)) {
-                if (t.token.assignOp)
-                    throw t.newSyntaxError("Invalid variable initialization");
+            if (tokenizer.match(ASSIGN)) {
+                if (tokenizer.token.assignOp)
+                    throw tokenizer.newSyntaxError("Invalid variable initialization")
 
                 // Parse the init as a normal assignment.
-                var id = mkIdentifier(n2.tokenizer, n2.name, true);
-                var n3 = b.ASSIGN$build(t);
-                b.ASSIGN$addOperand(n3, id);
-                b.ASSIGN$addOperand(n3, AssignExpression(t, x));
-                b.ASSIGN$finish(n3);
-                initializers.push(n3);
+                var id = mkIdentifier(n2.tokenizer, n2.name, true)
+                var n3 = builder.ASSIGN$build(tokenizer)
+                builder.ASSIGN$addOperand(n3, id)
+                builder.ASSIGN$addOperand(n3, AssignExpression(tokenizer, compilerContext))
+                builder.ASSIGN$finish(n3)
+                initializers.push(n3)
 
                 // But only add the rhs as the initializer.
-                b.DECL$setInitializer(n2, n3[1]);
+                builder.DECL$setInitializer(n2, n3[1])
             }
 
-            b.DECL$finish(n2);
-            s.varDecls.push(n2);
-        } while (t.match(COMMA));
-        finish.call(b, n);
-        return n;
+            builder.DECL$finish(n2)
+            s.varDecls.push(n2)
+        } while (tokenizer.match(COMMA))
+        finish.call(builder, node)
+        return node
     }
 
     /*
@@ -735,176 +732,176 @@ def Script(tokenizer, compilerContext):
      *
      * Does not handle let inside of for loop init.
      */
-    function LetBlock(t, x, isStatement) {
-        var n, n2, binds;
-        var b = x.builder;
+    function LetBlock(tokenizer, compilerContext, isStatement) {
+        var node, n2, binds
+        var builder = compilerContext.builder
 
-        // t.token.type must be LET
-        n = b.LET_BLOCK$build(t);
-        t.mustMatch(LEFT_PAREN);
-        b.LET_BLOCK$setVariables(n, Variables(t, x, n));
-        t.mustMatch(RIGHT_PAREN);
+        // tokenizer.token.type must be LET
+        node = builder.LET_BLOCK$build(tokenizer)
+        tokenizer.mustMatch(LEFT_PAREN)
+        builder.LET_BLOCK$setVariables(node, Variables(tokenizer, compilerContext, node))
+        tokenizer.mustMatch(RIGHT_PAREN)
 
-        if (isStatement && t.peek() != LEFT_CURLY) {
+        if (isStatement && tokenizer.peek() != LEFT_CURLY) {
             /*
              * If this is really an expression in let statement guise, then we
              * need to wrap the LET_BLOCK node in a SEMICOLON node so that we pop
              * the return value of the expression.
              */
-            n2 = b.SEMICOLON$build(t);
-            b.SEMICOLON$setExpression(n2, n);
-            b.SEMICOLON$finish(n2);
-            isStatement = false;
+            n2 = builder.SEMICOLON$build(tokenizer)
+            builder.SEMICOLON$setExpression(n2, node)
+            builder.SEMICOLON$finish(n2)
+            isStatement = false
         }
 
         if (isStatement) {
-            n2 = Block(t, x);
-            b.LET_BLOCK$setBlock(n, n2);
+            n2 = Block(tokenizer, compilerContext)
+            builder.LET_BLOCK$setBlock(node, n2)
         } else {
-            n2 = AssignExpression(t, x);
-            b.LET_BLOCK$setExpression(n, n2);
+            n2 = AssignExpression(tokenizer, compilerContext)
+            builder.LET_BLOCK$setExpression(node, n2)
         }
 
-        b.LET_BLOCK$finish(n);
+        builder.LET_BLOCK$finish(node)
 
-        return n;
+        return node
     }
 
-    function checkDestructuring(t, x, n, simpleNamesOnly, data) {
-        if (n.type == ARRAY_COMP)
-            throw t.newSyntaxError("Invalid array comprehension left-hand side");
-        if (n.type != ARRAY_INIT && n.type != OBJECT_INIT)
-            return;
+    function checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data) {
+        if (node.type == ARRAY_COMP)
+            throw tokenizer.newSyntaxError("Invalid array comprehension left-hand side")
+        if (node.type != ARRAY_INIT && node.type != OBJECT_INIT)
+            return
 
-        var b = x.builder;
+        var builder = compilerContext.builder
 
-        for (var i = 0, j = n.length; i < j; i++) {
-            var nn = n[i], lhs, rhs;
+        for (var i = 0, j = node.length; i < j; i++) {
+            var nn = node[i], lhs, rhs
             if (!nn)
-                continue;
+                continue
             if (nn.type == PROPERTY_INIT)
-                lhs = nn[0], rhs = nn[1];
+                lhs = nn[0], rhs = nn[1]
             else
-                lhs = null, rhs = null;
+                lhs = null, rhs = null
             if (rhs && (rhs.type == ARRAY_INIT || rhs.type == OBJECT_INIT))
-                checkDestructuring(t, x, rhs, simpleNamesOnly, data);
+                checkDestructuring(tokenizer, compilerContext, rhs, simpleNamesOnly, data)
             if (lhs && simpleNamesOnly) {
                 // In declarations, lhs must be simple names
                 if (lhs.type != IDENTIFIER) {
-                    throw t.newSyntaxError("Missing name in pattern");
+                    throw tokenizer.newSyntaxError("Missing name in pattern")
                 } else if (data) {
-                    var n2 = b.DECL$build(t);
-                    b.DECL$setName(n2, lhs.value);
-                    // Don't need to set initializer because it's just for
+                    var n2 = builder.DECL$build(tokenizer)
+                    builder.DECL$setName(n2, lhs.value)
+                    // Don'tokenizer need to set initializer because it's just for
                     // hoisting anyways.
-                    b.DECL$finish(n2);
+                    builder.DECL$finish(n2)
                     // Each pattern needs to be added to varDecls.
-                    data.varDecls.push(n2);
+                    data.varDecls.push(n2)
                 }
             }
         }
     }
 
-    function DestructuringExpression(t, x, simpleNamesOnly, data) {
-        var n = PrimaryExpression(t, x);
-        checkDestructuring(t, x, n, simpleNamesOnly, data);
-        return n;
+    function DestructuringExpression(tokenizer, compilerContext, simpleNamesOnly, data) {
+        var node = PrimaryExpression(tokenizer, compilerContext)
+        checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data)
+        return node
     }
 
-    function GeneratorExpression(t, x, e) {
-        var n;
+    function GeneratorExpression(tokenizer, compilerContext, e) {
+        var node
 
-        n = b.GENERATOR$build(t);
-        b.GENERATOR$setExpression(n, e);
-        b.GENERATOR$setTail(n, comprehensionTail(t, x));
-        b.GENERATOR$finish(n);
+        node = builder.GENERATOR$build(tokenizer)
+        builder.GENERATOR$setExpression(node, e)
+        builder.GENERATOR$setTail(node, comprehensionTail(tokenizer, compilerContext))
+        builder.GENERATOR$finish(node)
 
-        return n;
+        return node
     }
 
-    function comprehensionTail(t, x) {
-        var body, n;
-        var b = x.builder;
-        // t.token.type must be FOR
-        body = b.COMP_TAIL$build(t);
+    function comprehensionTail(tokenizer, compilerContext) {
+        var body, node
+        var builder = compilerContext.builder
+        // tokenizer.token.type must be FOR
+        body = builder.COMP_TAIL$build(tokenizer)
 
         do {
-            n = b.FOR$build(t);
+            node = builder.FOR$build(tokenizer)
             // Comprehension tails are always for..in loops.
-            b.FOR$rebuildForIn(n);
-            if (t.match(IDENTIFIER)) {
+            builder.FOR$rebuildForIn(node)
+            if (tokenizer.match(IDENTIFIER)) {
                 // But sometimes they're for each..in.
-                if (t.token.value == "each")
-                    b.FOR$rebuildForEach(n);
+                if (tokenizer.token.value == "each")
+                    builder.FOR$rebuildForEach(node)
                 else
-                    t.unget();
+                    tokenizer.unget()
             }
-            t.mustMatch(LEFT_PAREN);
-            switch(t.get()) {
+            tokenizer.mustMatch(LEFT_PAREN)
+            switch(tokenizer.get()) {
               case LEFT_BRACKET:
               case LEFT_CURLY:
-                t.unget();
+                tokenizer.unget()
                 // Destructured left side of for in comprehension tails.
-                b.FOR$setIterator(n, DestructuringExpression(t, x), null);
-                break;
+                builder.FOR$setIterator(node, DestructuringExpression(tokenizer, compilerContext), null)
+                break
 
               case IDENTIFIER:
-                var n3 = b.DECL$build(t);
-                b.DECL$setName(n3, n3.value);
-                b.DECL$finish(n3);
-                var n2 = b.VAR$build(t);
-                b.VAR$addDecl(n2, n3);
-                b.VAR$finish(n2);
-                b.FOR$setIterator(n, n3, n2);
+                var n3 = builder.DECL$build(tokenizer)
+                builder.DECL$setName(n3, n3.value)
+                builder.DECL$finish(n3)
+                var n2 = builder.VAR$build(tokenizer)
+                builder.VAR$addDecl(n2, n3)
+                builder.VAR$finish(n2)
+                builder.FOR$setIterator(node, n3, n2)
                 /*
-                 * Don't add to varDecls since the semantics of comprehensions is
+                 * Don'tokenizer add to varDecls since the semantics of comprehensions is
                  * such that the variables are in their own function when
                  * desugared.
                  */
-                break;
+                break
 
               default:
-                throw t.newSyntaxError("Missing identifier");
+                throw tokenizer.newSyntaxError("Missing identifier")
             }
-            t.mustMatch(IN);
-            b.FOR$setObject(n, Expression(t, x));
-            t.mustMatch(RIGHT_PAREN);
-            b.COMP_TAIL$addFor(body, n);
-        } while (t.match(FOR));
+            tokenizer.mustMatch(IN)
+            builder.FOR$setObject(node, Expression(tokenizer, compilerContext))
+            tokenizer.mustMatch(RIGHT_PAREN)
+            builder.COMP_TAIL$addFor(body, node)
+        } while (tokenizer.match(FOR))
 
         // Optional guard.
-        if (t.match(IF))
-            b.COMP_TAIL$setGuard(body, ParenExpression(t, x));
+        if (tokenizer.match(IF))
+            builder.COMP_TAIL$setGuard(body, ParenExpression(tokenizer, compilerContext))
 
-        b.COMP_TAIL$finish(body);
-        return body;
+        builder.COMP_TAIL$finish(body)
+        return body
     }
 
-    function ParenExpression(t, x) {
-        t.mustMatch(LEFT_PAREN);
+    function ParenExpression(tokenizer, compilerContext) {
+        tokenizer.mustMatch(LEFT_PAREN)
 
         /*
          * Always accept the 'in' operator in a parenthesized expression,
          * where it's unambiguous, even if we might be parsing the init of a
          * for statement.
          */
-        var oldLoopInit = x.inForLoopInit;
-        x.inForLoopInit = false;
-        var n = Expression(t, x);
-        x.inForLoopInit = oldLoopInit;
+        var oldLoopInit = compilerContext.inForLoopInit
+        compilerContext.inForLoopInit = false
+        var node = Expression(tokenizer, compilerContext)
+        compilerContext.inForLoopInit = oldLoopInit
 
-        var err = "expression must be parenthesized";
-        if (t.match(FOR)) {
-            if (n.type == YIELD && !n.parenthesized)
-                throw t.newSyntaxError("Yield " + err);
-            if (n.type == COMMA && !n.parenthesized)
-                throw t.newSyntaxError("Generator " + err);
-            n = GeneratorExpression(t, x, n);
+        var err = "expression must be parenthesized"
+        if (tokenizer.match(FOR)) {
+            if (node.type == YIELD && !node.parenthesized)
+                throw tokenizer.newSyntaxError("Yield " + err)
+            if (node.type == COMMA && !node.parenthesized)
+                throw tokenizer.newSyntaxError("Generator " + err)
+            node = GeneratorExpression(tokenizer, compilerContext, node)
         }
 
-        t.mustMatch(RIGHT_PAREN);
+        tokenizer.mustMatch(RIGHT_PAREN)
 
-        return n;
+        return node
     }
 
     /*
@@ -912,500 +909,500 @@ def Script(tokenizer, compilerContext):
      *
      * Top-down expression parser matched against SpiderMonkey.
      */
-    function Expression(t, x) {
-        var n, n2;
-        var b = x.builder;
+    function Expression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
 
-        n = AssignExpression(t, x);
-        if (t.match(COMMA)) {
-            n2 = b.COMMA$build(t);
-            b.COMMA$addOperand(n2, n);
-            n = n2;
+        node = AssignExpression(tokenizer, compilerContext)
+        if (tokenizer.match(COMMA)) {
+            n2 = builder.COMMA$build(tokenizer)
+            builder.COMMA$addOperand(n2, node)
+            node = n2
             do {
-                n2 = n[n.length-1];
+                n2 = node[node.length-1]
                 if (n2.type == YIELD && !n2.parenthesized)
-                    throw t.newSyntaxError("Yield expression must be parenthesized");
-                b.COMMA$addOperand(n, AssignExpression(t, x));
-            } while (t.match(COMMA));
-            b.COMMA$finish(n);
+                    throw tokenizer.newSyntaxError("Yield expression must be parenthesized")
+                builder.COMMA$addOperand(node, AssignExpression(tokenizer, compilerContext))
+            } while (tokenizer.match(COMMA))
+            builder.COMMA$finish(node)
         }
 
-        return n;
+        return node
     }
 
-    function AssignExpression(t, x) {
-        var n, lhs;
-        var b = x.builder;
+    function AssignExpression(tokenizer, compilerContext) {
+        var node, lhs
+        var builder = compilerContext.builder
 
         // Have to treat yield like an operand because it could be the leftmost
         // operand of the expression.
-        if (t.match(YIELD, true))
-            return returnOrYield(t, x);
+        if (tokenizer.match(YIELD, true))
+            return returnOrYield(tokenizer, compilerContext)
 
-        n = b.ASSIGN$build(t);
-        lhs = ConditionalExpression(t, x);
+        node = builder.ASSIGN$build(tokenizer)
+        lhs = ConditionalExpression(tokenizer, compilerContext)
 
-        if (!t.match(ASSIGN)) {
-            b.ASSIGN$finish(n);
-            return lhs;
+        if (!tokenizer.match(ASSIGN)) {
+            builder.ASSIGN$finish(node)
+            return lhs
         }
 
         switch (lhs.type) {
           case OBJECT_INIT:
           case ARRAY_INIT:
-            checkDestructuring(t, x, lhs);
+            checkDestructuring(tokenizer, compilerContext, lhs)
             // FALL THROUGH
           case IDENTIFIER: case DOT: case INDEX: case CALL:
-            break;
+            break
           default:
-            throw t.newSyntaxError("Bad left-hand side of assignment");
-            break;
+            throw tokenizer.newSyntaxError("Bad left-hand side of assignment")
+            break
         }
 
-        b.ASSIGN$setAssignOp(n, t.token.assignOp);
-        b.ASSIGN$addOperand(n, lhs);
-        b.ASSIGN$addOperand(n, AssignExpression(t, x));
-        b.ASSIGN$finish(n);
+        builder.ASSIGN$setAssignOp(node, tokenizer.token.assignOp)
+        builder.ASSIGN$addOperand(node, lhs)
+        builder.ASSIGN$addOperand(node, AssignExpression(tokenizer, compilerContext))
+        builder.ASSIGN$finish(node)
 
-        return n;
+        return node
     }
 
-    function ConditionalExpression(t, x) {
-        var n, n2;
-        var b = x.builder;
+    function ConditionalExpression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
 
-        n = OrExpression(t, x);
-        if (t.match(HOOK)) {
-            n2 = n;
-            n = b.HOOK$build(t);
-            b.HOOK$setCondition(n, n2);
+        node = OrExpression(tokenizer, compilerContext)
+        if (tokenizer.match(HOOK)) {
+            n2 = node
+            node = builder.HOOK$build(tokenizer)
+            builder.HOOK$setCondition(node, n2)
             /*
              * Always accept the 'in' operator in the middle clause of a ternary,
              * where it's unambiguous, even if we might be parsing the init of a
              * for statement.
              */
-            var oldLoopInit = x.inForLoopInit;
-            x.inForLoopInit = false;
-            b.HOOK$setThenPart(n, AssignExpression(t, x));
-            x.inForLoopInit = oldLoopInit;
-            if (!t.match(COLON))
-                throw t.newSyntaxError("Missing : after ?");
-            b.HOOK$setElsePart(n, AssignExpression(t, x));
-            b.HOOK$finish(n);
+            var oldLoopInit = compilerContext.inForLoopInit
+            compilerContext.inForLoopInit = false
+            builder.HOOK$setThenPart(node, AssignExpression(tokenizer, compilerContext))
+            compilerContext.inForLoopInit = oldLoopInit
+            if (!tokenizer.match(COLON))
+                throw tokenizer.newSyntaxError("Missing : after ?")
+            builder.HOOK$setElsePart(node, AssignExpression(tokenizer, compilerContext))
+            builder.HOOK$finish(node)
         }
 
-        return n;
+        return node
     }
 
-    function OrExpression(t, x) {
-        var n, n2;
-        var b = x.builder;
+    function OrExpression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
 
-        n = AndExpression(t, x);
-        while (t.match(OR)) {
-            n2 = b.OR$build(t);
-            b.OR$addOperand(n2, n);
-            b.OR$addOperand(n2, AndExpression(t, x));
-            b.OR$finish(n2);
-            n = n2;
+        node = AndExpression(tokenizer, compilerContext)
+        while (tokenizer.match(OR)) {
+            n2 = builder.OR$build(tokenizer)
+            builder.OR$addOperand(n2, node)
+            builder.OR$addOperand(n2, AndExpression(tokenizer, compilerContext))
+            builder.OR$finish(n2)
+            node = n2
         }
 
-        return n;
+        return node
     }
 
-    function AndExpression(t, x) {
-        var n, n2;
-        var b = x.builder;
+    function AndExpression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
 
-        n = BitwiseOrExpression(t, x);
-        while (t.match(AND)) {
-            n2 = b.AND$build(t);
-            b.AND$addOperand(n2, n);
-            b.AND$addOperand(n2, BitwiseOrExpression(t, x));
-            b.AND$finish(n2);
-            n = n2;
+        node = BitwiseOrExpression(tokenizer, compilerContext)
+        while (tokenizer.match(AND)) {
+            n2 = builder.AND$build(tokenizer)
+            builder.AND$addOperand(n2, node)
+            builder.AND$addOperand(n2, BitwiseOrExpression(tokenizer, compilerContext))
+            builder.AND$finish(n2)
+            node = n2
         }
 
-        return n;
+        return node
     }
 
-    function BitwiseOrExpression(t, x) {
-        var n, n2;
-        var b = x.builder;
+    function BitwiseOrExpression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
 
-        n = BitwiseXorExpression(t, x);
-        while (t.match(BITWISE_OR)) {
-            n2 = b.BITWISE_OR$build(t);
-            b.BITWISE_OR$addOperand(n2, n);
-            b.BITWISE_OR$addOperand(n2, BitwiseXorExpression(t, x));
-            b.BITWISE_OR$finish(n2);
-            n = n2;
+        node = BitwiseXorExpression(tokenizer, compilerContext)
+        while (tokenizer.match(BITWISE_OR)) {
+            n2 = builder.BITWISE_OR$build(tokenizer)
+            builder.BITWISE_OR$addOperand(n2, node)
+            builder.BITWISE_OR$addOperand(n2, BitwiseXorExpression(tokenizer, compilerContext))
+            builder.BITWISE_OR$finish(n2)
+            node = n2
         }
 
-        return n;
+        return node
     }
 
-    function BitwiseXorExpression(t, x) {
-        var n, n2;
-        var b = x.builder;
+    function BitwiseXorExpression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
 
-        n = BitwiseAndExpression(t, x);
-        while (t.match(BITWISE_XOR)) {
-            n2 = b.BITWISE_XOR$build(t);
-            b.BITWISE_XOR$addOperand(n2, n);
-            b.BITWISE_XOR$addOperand(n2, BitwiseAndExpression(t, x));
-            b.BITWISE_XOR$finish(n2);
-            n = n2;
+        node = BitwiseAndExpression(tokenizer, compilerContext)
+        while (tokenizer.match(BITWISE_XOR)) {
+            n2 = builder.BITWISE_XOR$build(tokenizer)
+            builder.BITWISE_XOR$addOperand(n2, node)
+            builder.BITWISE_XOR$addOperand(n2, BitwiseAndExpression(tokenizer, compilerContext))
+            builder.BITWISE_XOR$finish(n2)
+            node = n2
         }
 
-        return n;
+        return node
     }
 
-    function BitwiseAndExpression(t, x) {
-        var n, n2;
-        var b = x.builder;
+    function BitwiseAndExpression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
 
-        n = EqualityExpression(t, x);
-        while (t.match(BITWISE_AND)) {
-            n2 = b.BITWISE_AND$build(t);
-            b.BITWISE_AND$addOperand(n2, n);
-            b.BITWISE_AND$addOperand(n2, EqualityExpression(t, x));
-            b.BITWISE_AND$finish(n2);
-            n = n2;
+        node = EqualityExpression(tokenizer, compilerContext)
+        while (tokenizer.match(BITWISE_AND)) {
+            n2 = builder.BITWISE_AND$build(tokenizer)
+            builder.BITWISE_AND$addOperand(n2, node)
+            builder.BITWISE_AND$addOperand(n2, EqualityExpression(tokenizer, compilerContext))
+            builder.BITWISE_AND$finish(n2)
+            node = n2
         }
 
-        return n;
+        return node
     }
 
-    function EqualityExpression(t, x) {
-        var n, n2;
-        var b = x.builder;
+    function EqualityExpression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
 
-        n = RelationalExpression(t, x);
-        while (t.match(EQ) || t.match(NE) ||
-               t.match(STRICT_EQ) || t.match(STRICT_NE)) {
-            n2 = b.EQUALITY$build(t);
-            b.EQUALITY$addOperand(n2, n);
-            b.EQUALITY$addOperand(n2, RelationalExpression(t, x));
-            b.EQUALITY$finish(n2);
-            n = n2;
+        node = RelationalExpression(tokenizer, compilerContext)
+        while (tokenizer.match(EQ) || tokenizer.match(NE) ||
+               tokenizer.match(STRICT_EQ) || tokenizer.match(STRICT_NE)) {
+            n2 = builder.EQUALITY$build(tokenizer)
+            builder.EQUALITY$addOperand(n2, node)
+            builder.EQUALITY$addOperand(n2, RelationalExpression(tokenizer, compilerContext))
+            builder.EQUALITY$finish(n2)
+            node = n2
         }
 
-        return n;
+        return node
     }
 
-    function RelationalExpression(t, x) {
-        var n, n2;
-        var b = x.builder;
-        var oldLoopInit = x.inForLoopInit;
+    function RelationalExpression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
+        var oldLoopInit = compilerContext.inForLoopInit
 
         /*
          * Uses of the in operator in shiftExprs are always unambiguous,
          * so unset the flag that prohibits recognizing it.
          */
-        x.inForLoopInit = false;
-        n = ShiftExpression(t, x);
-        while ((t.match(LT) || t.match(LE) || t.match(GE) || t.match(GT) ||
-               (oldLoopInit == false && t.match(IN)) ||
-               t.match(INSTANCEOF))) {
-            n2 = b.RELATIONAL$build(t);
-            b.RELATIONAL$addOperand(n2, n);
-            b.RELATIONAL$addOperand(n2, ShiftExpression(t, x));
-            b.RELATIONAL$finish(n2);
-            n = n2;
+        compilerContext.inForLoopInit = false
+        node = ShiftExpression(tokenizer, compilerContext)
+        while ((tokenizer.match(LT) || tokenizer.match(LE) || tokenizer.match(GE) || tokenizer.match(GT) ||
+               (oldLoopInit == false && tokenizer.match(IN)) ||
+               tokenizer.match(INSTANCEOF))) {
+            n2 = builder.RELATIONAL$build(tokenizer)
+            builder.RELATIONAL$addOperand(n2, node)
+            builder.RELATIONAL$addOperand(n2, ShiftExpression(tokenizer, compilerContext))
+            builder.RELATIONAL$finish(n2)
+            node = n2
         }
-        x.inForLoopInit = oldLoopInit;
+        compilerContext.inForLoopInit = oldLoopInit
 
-        return n;
+        return node
     }
 
-    function ShiftExpression(t, x) {
-        var n, n2;
-        var b = x.builder;
+    function ShiftExpression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
 
-        n = AddExpression(t, x);
-        while (t.match(LSH) || t.match(RSH) || t.match(URSH)) {
-            n2 = b.SHIFT$build(t);
-            b.SHIFT$addOperand(n2, n);
-            b.SHIFT$addOperand(n2, AddExpression(t, x));
-            b.SHIFT$finish(n2);
-            n = n2;
+        node = AddExpression(tokenizer, compilerContext)
+        while (tokenizer.match(LSH) || tokenizer.match(RSH) || tokenizer.match(URSH)) {
+            n2 = builder.SHIFT$build(tokenizer)
+            builder.SHIFT$addOperand(n2, node)
+            builder.SHIFT$addOperand(n2, AddExpression(tokenizer, compilerContext))
+            builder.SHIFT$finish(n2)
+            node = n2
         }
 
-        return n;
+        return node
     }
 
-    function AddExpression(t, x) {
-        var n, n2;
-        var b = x.builder;
+    function AddExpression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
 
-        n = MultiplyExpression(t, x);
-        while (t.match(PLUS) || t.match(MINUS)) {
-            n2 = b.ADD$build(t);
-            b.ADD$addOperand(n2, n);
-            b.ADD$addOperand(n2, MultiplyExpression(t, x));
-            b.ADD$finish(n2);
-            n = n2;
+        node = MultiplyExpression(tokenizer, compilerContext)
+        while (tokenizer.match(PLUS) || tokenizer.match(MINUS)) {
+            n2 = builder.ADD$build(tokenizer)
+            builder.ADD$addOperand(n2, node)
+            builder.ADD$addOperand(n2, MultiplyExpression(tokenizer, compilerContext))
+            builder.ADD$finish(n2)
+            node = n2
         }
 
-        return n;
+        return node
     }
 
-    function MultiplyExpression(t, x) {
-        var n, n2;
-        var b = x.builder;
+    function MultiplyExpression(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
 
-        n = UnaryExpression(t, x);
-        while (t.match(MUL) || t.match(DIV) || t.match(MOD)) {
-            n2 = b.MULTIPLY$build(t);
-            b.MULTIPLY$addOperand(n2, n);
-            b.MULTIPLY$addOperand(n2, UnaryExpression(t, x));
-            b.MULTIPLY$finish(n2);
-            n = n2;
+        node = UnaryExpression(tokenizer, compilerContext)
+        while (tokenizer.match(MUL) || tokenizer.match(DIV) || tokenizer.match(MOD)) {
+            n2 = builder.MULTIPLY$build(tokenizer)
+            builder.MULTIPLY$addOperand(n2, node)
+            builder.MULTIPLY$addOperand(n2, UnaryExpression(tokenizer, compilerContext))
+            builder.MULTIPLY$finish(n2)
+            node = n2
         }
 
-        return n;
+        return node
     }
 
-    function UnaryExpression(t, x) {
-        var n, n2, tt;
-        var b = x.builder;
+    function UnaryExpression(tokenizer, compilerContext) {
+        var node, n2, tt
+        var builder = compilerContext.builder
 
-        switch (tt = t.get(true)) {
+        switch (tt = tokenizer.get(true)) {
           case DELETE: case VOID: case TYPEOF:
           case NOT: case BITWISE_NOT: case PLUS: case MINUS:
-            n = b.UNARY$build(t);
-            b.UNARY$addOperand(n, UnaryExpression(t, x));
-            break;
+            node = builder.UNARY$build(tokenizer)
+            builder.UNARY$addOperand(node, UnaryExpression(tokenizer, compilerContext))
+            break
 
           case INCREMENT:
           case DECREMENT:
             // Prefix increment/decrement.
-            n = b.UNARY$build(t)
-            b.UNARY$addOperand(n, MemberExpression(t, x, true));
-            break;
+            node = builder.UNARY$build(tokenizer)
+            builder.UNARY$addOperand(node, MemberExpression(tokenizer, compilerContext, true))
+            break
 
           default:
-            t.unget();
-            n = MemberExpression(t, x, true);
+            tokenizer.unget()
+            node = MemberExpression(tokenizer, compilerContext, true)
 
-            // Don't look across a newline boundary for a postfix {in,de}crement.
-            if (t.tokens[(t.tokenIndex + t.lookahead - 1) & 3].lineno ==
-                t.lineno) {
-                if (t.match(INCREMENT) || t.match(DECREMENT)) {
-                    n2 = b.UNARY$build(t);
-                    b.UNARY$setPostfix(n2);
-                    b.UNARY$finish(n);
-                    b.UNARY$addOperand(n2, n);
-                    n = n2;
+            // Don'tokenizer look across a newline boundary for a postfix {in,de}crement.
+            if (tokenizer.tokens[(tokenizer.tokenIndex + tokenizer.lookahead - 1) & 3].lineno ==
+                tokenizer.lineno) {
+                if (tokenizer.match(INCREMENT) || tokenizer.match(DECREMENT)) {
+                    n2 = builder.UNARY$build(tokenizer)
+                    builder.UNARY$setPostfix(n2)
+                    builder.UNARY$finish(node)
+                    builder.UNARY$addOperand(n2, node)
+                    node = n2
                 }
             }
-            break;
+            break
         }
 
-        b.UNARY$finish(n);
-        return n;
+        builder.UNARY$finish(node)
+        return node
     }
 
-    function MemberExpression(t, x, allowCallSyntax) {
-        var n, n2, tt;
-        var b = x.builder;
+    function MemberExpression(tokenizer, compilerContext, allowCallSyntax) {
+        var node, n2, tt
+        var builder = compilerContext.builder
 
-        if (t.match(NEW)) {
-            n = b.MEMBER$build(t);
-            b.MEMBER$addOperand(n, MemberExpression(t, x, false));
-            if (t.match(LEFT_PAREN)) {
-                b.MEMBER$rebuildNewWithArgs(n);
-                b.MEMBER$addOperand(n, ArgumentList(t, x));
+        if (tokenizer.match(NEW)) {
+            node = builder.MEMBER$build(tokenizer)
+            builder.MEMBER$addOperand(node, MemberExpression(tokenizer, compilerContext, false))
+            if (tokenizer.match(LEFT_PAREN)) {
+                builder.MEMBER$rebuildNewWithArgs(node)
+                builder.MEMBER$addOperand(node, ArgumentList(tokenizer, compilerContext))
             }
-            b.MEMBER$finish(n);
+            builder.MEMBER$finish(node)
         } else {
-            n = PrimaryExpression(t, x);
+            node = PrimaryExpression(tokenizer, compilerContext)
         }
 
-        while ((tt = t.get()) != END) {
+        while ((tt = tokenizer.get()) != END) {
             switch (tt) {
               case DOT:
-                n2 = b.MEMBER$build(t);
-                b.MEMBER$addOperand(n2, n);
-                t.mustMatch(IDENTIFIER);
-                b.MEMBER$addOperand(n2, b.MEMBER$build(t));
-                break;
+                n2 = builder.MEMBER$build(tokenizer)
+                builder.MEMBER$addOperand(n2, node)
+                tokenizer.mustMatch(IDENTIFIER)
+                builder.MEMBER$addOperand(n2, builder.MEMBER$build(tokenizer))
+                break
 
               case LEFT_BRACKET:
-                n2 = b.MEMBER$build(t, INDEX);
-                b.MEMBER$addOperand(n2, n);
-                b.MEMBER$addOperand(n2, Expression(t, x));
-                t.mustMatch(RIGHT_BRACKET);
-                break;
+                n2 = builder.MEMBER$build(tokenizer, INDEX)
+                builder.MEMBER$addOperand(n2, node)
+                builder.MEMBER$addOperand(n2, Expression(tokenizer, compilerContext))
+                tokenizer.mustMatch(RIGHT_BRACKET)
+                break
 
               case LEFT_PAREN:
                 if (allowCallSyntax) {
-                    n2 = b.MEMBER$build(t, CALL);
-                    b.MEMBER$addOperand(n2, n);
-                    b.MEMBER$addOperand(n2, ArgumentList(t, x));
-                    break;
+                    n2 = builder.MEMBER$build(tokenizer, CALL)
+                    builder.MEMBER$addOperand(n2, node)
+                    builder.MEMBER$addOperand(n2, ArgumentList(tokenizer, compilerContext))
+                    break
                 }
 
                 // FALL THROUGH
               default:
-                t.unget();
-                return n;
+                tokenizer.unget()
+                return node
             }
 
-            b.MEMBER$finish(n2);
-            n = n2;
+            builder.MEMBER$finish(n2)
+            node = n2
         }
 
-        return n;
+        return node
     }
 
-    function ArgumentList(t, x) {
-        var n, n2;
-        var b = x.builder;
-        var err = "expression must be parenthesized";
+    function ArgumentList(tokenizer, compilerContext) {
+        var node, n2
+        var builder = compilerContext.builder
+        var err = "expression must be parenthesized"
 
-        n = b.LIST$build(t);
-        if (t.match(RIGHT_PAREN, true))
-            return n;
+        node = builder.LIST$build(tokenizer)
+        if (tokenizer.match(RIGHT_PAREN, true))
+            return node
         do {
-            n2 = AssignExpression(t, x);
-            if (n2.type == YIELD && !n2.parenthesized && t.peek() == COMMA)
-                throw t.newSyntaxError("Yield " + err);
-            if (t.match(FOR)) {
-                n2 = GeneratorExpression(t, x, n2);
-                if (n.length > 1 || t.peek(true) == COMMA)
-                    throw t.newSyntaxError("Generator " + err);
+            n2 = AssignExpression(tokenizer, compilerContext)
+            if (n2.type == YIELD && !n2.parenthesized && tokenizer.peek() == COMMA)
+                throw tokenizer.newSyntaxError("Yield " + err)
+            if (tokenizer.match(FOR)) {
+                n2 = GeneratorExpression(tokenizer, compilerContext, n2)
+                if (node.length > 1 || tokenizer.peek(true) == COMMA)
+                    throw tokenizer.newSyntaxError("Generator " + err)
             }
-            b.LIST$addOperand(n, n2);
-        } while (t.match(COMMA));
-        t.mustMatch(RIGHT_PAREN);
-        b.LIST$finish(n);
+            builder.LIST$addOperand(node, n2)
+        } while (tokenizer.match(COMMA))
+        tokenizer.mustMatch(RIGHT_PAREN)
+        builder.LIST$finish(node)
 
-        return n;
+        return node
     }
 
-    function PrimaryExpression(t, x) {
-        var n, n2, n3, tt = t.get(true);
-        var b = x.builder;
+    function PrimaryExpression(tokenizer, compilerContext) {
+        var node, n2, n3, tt = tokenizer.get(true)
+        var builder = compilerContext.builder
 
         switch (tt) {
           case FUNCTION:
-            n = FunctionDefinition(t, x, false, EXPRESSED_FORM);
-            break;
+            node = FunctionDefinition(tokenizer, compilerContext, false, EXPRESSED_FORM)
+            break
 
           case LEFT_BRACKET:
-            n = b.ARRAY_INIT$build(t);
-            while ((tt = t.peek()) != RIGHT_BRACKET) {
+            node = builder.ARRAY_INIT$build(tokenizer)
+            while ((tt = tokenizer.peek()) != RIGHT_BRACKET) {
                 if (tt == COMMA) {
-                    t.get();
-                    b.ARRAY_INIT$addElement(n, null);
-                    continue;
+                    tokenizer.get()
+                    builder.ARRAY_INIT$addElement(node, null)
+                    continue
                 }
-                b.ARRAY_INIT$addElement(n, AssignExpression(t, x));
-                if (tt != COMMA && !t.match(COMMA))
-                    break;
+                builder.ARRAY_INIT$addElement(node, AssignExpression(tokenizer, compilerContext))
+                if (tt != COMMA && !tokenizer.match(COMMA))
+                    break
             }
 
             // If we matched exactly one element and got a FOR, we have an
             // array comprehension.
-            if (n.length == 1 && t.match(FOR)) {
-                n2 = b.ARRAY_COMP$build(t);
-                b.ARRAY_COMP$setExpression(n2, n[0]);
-                b.ARRAY_COMP$setTail(n2, comprehensionTail(t, x));
-                n = n2;
+            if (node.length == 1 && tokenizer.match(FOR)) {
+                n2 = builder.ARRAY_COMP$build(tokenizer)
+                builder.ARRAY_COMP$setExpression(n2, node[0])
+                builder.ARRAY_COMP$setTail(n2, comprehensionTail(tokenizer, compilerContext))
+                node = n2
             }
-            t.mustMatch(RIGHT_BRACKET);
-            b.PRIMARY$finish(n);
-            break;
+            tokenizer.mustMatch(RIGHT_BRACKET)
+            builder.PRIMARY$finish(node)
+            break
 
           case LEFT_CURLY:
-            var id;
-            n = b.OBJECT_INIT$build(t);
+            var id
+            node = builder.OBJECT_INIT$build(tokenizer)
 
           object_init:
-            if (!t.match(RIGHT_CURLY)) {
+            if (!tokenizer.match(RIGHT_CURLY)) {
                 do {
-                    tt = t.get();
-                    if ((t.token.value == "get" || t.token.value == "set") &&
-                        t.peek() == IDENTIFIER) {
-                        if (x.ecma3OnlyMode)
-                            throw t.newSyntaxError("Illegal property accessor");
-                        var fd = FunctionDefinition(t, x, true, EXPRESSED_FORM);
-                        b.OBJECT_INIT$addProperty(n, fd);
+                    tt = tokenizer.get()
+                    if ((tokenizer.token.value == "get" || tokenizer.token.value == "set") &&
+                        tokenizer.peek() == IDENTIFIER) {
+                        if (compilerContext.ecma3OnlyMode)
+                            throw tokenizer.newSyntaxError("Illegal property accessor")
+                        var fd = FunctionDefinition(tokenizer, compilerContext, true, EXPRESSED_FORM)
+                        builder.OBJECT_INIT$addProperty(node, fd)
                     } else {
                         switch (tt) {
                           case IDENTIFIER: case NUMBER: case STRING:
-                            id = b.PRIMARY$build(t, IDENTIFIER);
-                            b.PRIMARY$finish(id);
-                            break;
+                            id = builder.PRIMARY$build(tokenizer, IDENTIFIER)
+                            builder.PRIMARY$finish(id)
+                            break
                           case RIGHT_CURLY:
-                            if (x.ecma3OnlyMode)
-                                throw t.newSyntaxError("Illegal trailing ,");
-                            break object_init;
+                            if (compilerContext.ecma3OnlyMode)
+                                throw tokenizer.newSyntaxError("Illegal trailing ,")
+                            break object_init
                           default:
-                            if (t.token.value in keywords) {
-                                id = b.PRIMARY$build(t, IDENTIFIER);
-                                b.PRIMARY$finish(id);
-                                break;
+                            if (tokenizer.token.value in keywords) {
+                                id = builder.PRIMARY$build(tokenizer, IDENTIFIER)
+                                builder.PRIMARY$finish(id)
+                                break
                             }
-                            throw t.newSyntaxError("Invalid property name");
+                            throw tokenizer.newSyntaxError("Invalid property name")
                         }
-                        if (t.match(COLON)) {
-                            n2 = b.PROPERTY_INIT$build(t);
-                            b.PROPERTY_INIT$addOperand(n2, id);
-                            b.PROPERTY_INIT$addOperand(n2, AssignExpression(t, x));
-                            b.PROPERTY_INIT$finish(n2);
-                            b.OBJECT_INIT$addProperty(n, n2);
+                        if (tokenizer.match(COLON)) {
+                            n2 = builder.PROPERTY_INIT$build(tokenizer)
+                            builder.PROPERTY_INIT$addOperand(n2, id)
+                            builder.PROPERTY_INIT$addOperand(n2, AssignExpression(tokenizer, compilerContext))
+                            builder.PROPERTY_INIT$finish(n2)
+                            builder.OBJECT_INIT$addProperty(node, n2)
                         } else {
-                            // Support, e.g., |var {x, y} = o| as destructuring shorthand
-                            // for |var {x: x, y: y} = o|, per proposed JS2/ES4 for JS1.8.
-                            if (t.peek() != COMMA && t.peek() != RIGHT_CURLY)
-                                throw t.newSyntaxError("Missing : after property");
-                            b.OBJECT_INIT$addProperty(n, id);
+                            // Support, e.g., |var {compilerContext, y} = o| as destructuring shorthand
+                            // for |var {compilerContext: compilerContext, y: y} = o|, per proposed JS2/ES4 for JS1.8.
+                            if (tokenizer.peek() != COMMA && tokenizer.peek() != RIGHT_CURLY)
+                                throw tokenizer.newSyntaxError("Missing : after property")
+                            builder.OBJECT_INIT$addProperty(node, id)
                         }
                     }
-                } while (t.match(COMMA));
-                t.mustMatch(RIGHT_CURLY);
+                } while (tokenizer.match(COMMA))
+                tokenizer.mustMatch(RIGHT_CURLY)
             }
-            b.OBJECT_INIT$finish(n);
-            break;
+            builder.OBJECT_INIT$finish(node)
+            break
 
           case LEFT_PAREN:
             // ParenExpression does its own matching on parentheses, so we need to
             // unget.
-            t.unget();
-            n = ParenExpression(t, x);
-            n.parenthesized = true;
-            break;
+            tokenizer.unget()
+            node = ParenExpression(tokenizer, compilerContext)
+            node.parenthesized = true
+            break
 
           case LET:
-            n = LetBlock(t, x, false);
-            break;
+            node = LetBlock(tokenizer, compilerContext, false)
+            break
 
           case NULL: case THIS: case TRUE: case FALSE:
           case IDENTIFIER: case NUMBER: case STRING: case REGEXP:
-            n = b.PRIMARY$build(t);
-            b.PRIMARY$finish(n);
-            break;
+            node = builder.PRIMARY$build(tokenizer)
+            builder.PRIMARY$finish(node)
+            break
 
           default:
-            throw t.newSyntaxError("Missing operand");
-            break;
+            throw tokenizer.newSyntaxError("Missing operand")
+            break
         }
 
-        return n;
+        return node
     }
 
     /*
      * parse :: (builder, file ptr, path, line number) -> node
      */
-    function parse(b, s, f, l) {
-        var t = new Tokenizer(s, f, l);
-        var x = new CompilerContext(false, b);
-        var n = Script(t, x);
-        if (!t.done)
-            throw t.newSyntaxError("Syntax error");
+    function parse(builder, s, f, l) {
+        var tokenizer = new Tokenizer(s, f, l)
+        var compilerContext = new CompilerContext(false, builder)
+        var node = Script(tokenizer, compilerContext)
+        if (!tokenizer.done)
+            throw tokenizer.newSyntaxError("Syntax error")
 
-        return n;
+        return node
     }
