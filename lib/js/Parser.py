@@ -65,7 +65,7 @@ def Script(tokenizer, compilerContext):
 def nest(tokenizer, compilerContext, node, func, end):
     """Statement stack and nested statement handler."""
     compilerContext.stmtStack.push(node)
-    var node = func(tokenizer, compilerContext)
+    node = func(tokenizer, compilerContext)
     compilerContext.stmtStack.pop()
     end and tokenizer.mustMatch(end)
     
@@ -97,7 +97,7 @@ def Statements(tokenizer, compilerContext):
 
 def Block(tokenizer, compilerContext):
     tokenizer.mustMatch(LEFT_CURLY)
-    var node = Statements(tokenizer, compilerContext)
+    node = Statements(tokenizer, compilerContext)
     tokenizer.mustMatch(RIGHT_CURLY)
     
     return node
@@ -590,8 +590,8 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     if tokenType != LEFT_CURLY:
         tokenizer.unget()
 
-    var x2 = new CompilerContext(True, builder)
-    var rp = tokenizer.save()
+    x2 = new CompilerContext(True, builder)
+    rp = tokenizer.save()
     
     if compilerContext.inFunction:
         # 
@@ -645,7 +645,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
         
         else:
             # Only re-parse toplevel functions.
-            var x3 = x2
+            x3 = x2
             x2 = new CompilerContext(True, builder)
             tokenizer.rewind(rp)
             
@@ -713,8 +713,6 @@ def Variables(tokenizer, compilerContext, letBlock):
         else:
             s = letBlock
 
-
-
     node = build.call(builder, tokenizer)
     initializers = []
 
@@ -729,7 +727,7 @@ def Variables(tokenizer, compilerContext, letBlock):
         if tokenType == LEFT_BRACKET or tokenType == LEFT_CURLY:
             # Pass in s if we need to add each pattern matched into
             # its varDecls, else pass in compilerContext.
-            var data = null
+            data = null
 
             # Need to unget to parse the full destructured expression.
             tokenizer.unget()
@@ -744,7 +742,7 @@ def Variables(tokenizer, compilerContext, letBlock):
                 raise SyntaxError("Invalid variable initialization", tokenizer)
 
             # Parse the init as a normal assignment.
-            var n3 = builder.ASSIGN$build(tokenizer)
+            n3 = builder.ASSIGN$build(tokenizer)
             builder.ASSIGN$addOperand(n3, childNode.name)
             builder.ASSIGN$addOperand(n3, AssignExpression(tokenizer, compilerContext))
             builder.ASSIGN$finish(n3)
@@ -767,8 +765,8 @@ def Variables(tokenizer, compilerContext, letBlock):
                 raise SyntaxError("Invalid variable initialization", tokenizer)
 
             # Parse the init as a normal assignment.
-            var id = mkIdentifier(childNode.tokenizer, childNode.name, True)
-            var n3 = builder.ASSIGN$build(tokenizer)
+            id = mkIdentifier(childNode.tokenizer, childNode.name, True)
+            n3 = builder.ASSIGN$build(tokenizer)
             
             builder.ASSIGN$addOperand(n3, id)
             builder.ASSIGN$addOperand(n3, AssignExpression(tokenizer, compilerContext))
@@ -792,8 +790,7 @@ def Variables(tokenizer, compilerContext, letBlock):
 
 def LetBlock(tokenizer, compilerContext, isStatement):
     """Does not handle let inside of for loop init."""
-    var node, childNode, binds
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     # tokenizer.token.type must be LET
     node = builder.LET_BLOCK$build(tokenizer)
@@ -801,30 +798,27 @@ def LetBlock(tokenizer, compilerContext, isStatement):
     builder.LET_BLOCK$setVariables(node, Variables(tokenizer, compilerContext, node))
     tokenizer.mustMatch(RIGHT_PAREN)
 
-    if (isStatement and tokenizer.peek() != LEFT_CURLY) {
-        # 
+    if isStatement and tokenizer.peek() != LEFT_CURLY:
         # If this is really an expression in let statement guise, then we
         # need to wrap the LET_BLOCK node in a SEMICOLON node so that we pop
         # the return value of the expression.
-        # 
         childNode = builder.SEMICOLON$build(tokenizer)
         builder.SEMICOLON$setExpression(childNode, node)
         builder.SEMICOLON$finish(childNode)
         isStatement = False
-    }
 
-    if (isStatement) {
+    if isStatement:
         childNode = Block(tokenizer, compilerContext)
         builder.LET_BLOCK$setBlock(node, childNode)
-    } else {
+        
+    else:
         childNode = AssignExpression(tokenizer, compilerContext)
         builder.LET_BLOCK$setExpression(node, childNode)
-    }
 
     builder.LET_BLOCK$finish(node)
-
     return node
-}
+
+
 
 def checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data) {
     if (node.type == ARRAY_COMP)
@@ -832,10 +826,10 @@ def checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data) 
     if (node.type != ARRAY_INIT and node.type != OBJECT_INIT)
         return
 
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
-    for (var i = 0, j = node.length; i < j; i++) {
-        var nn = node[i], lhs, rhs
+    for (i = 0, j = node.length; i < j; i++) {
+        nn = node[i], lhs, rhs
         if (!nn)
             continue
         if (nn.type == PROPERTY_INIT)
@@ -849,7 +843,7 @@ def checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data) 
             if (lhs.type != IDENTIFIER) {
                 raise SyntaxError("Missing name in pattern")
             } elif (data) {
-                var childNode = builder.DECL$build(tokenizer)
+                childNode = builder.DECL$build(tokenizer)
                 builder.DECL$setName(childNode, lhs.value)
                 # Don'tokenizer need to set initializer because it's just for
                 # hoisting anyways.
@@ -862,14 +856,12 @@ def checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data) 
 }
 
 def DestructuringExpression(tokenizer, compilerContext, simpleNamesOnly, data) {
-    var node = PrimaryExpression(tokenizer, compilerContext)
+    node = PrimaryExpression(tokenizer, compilerContext)
     checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data)
     return node
 }
 
 def GeneratorExpression(tokenizer, compilerContext, e) {
-    var node
-
     node = builder.GENERATOR$build(tokenizer)
     builder.GENERATOR$setExpression(node, e)
     builder.GENERATOR$setTail(node, comprehensionTail(tokenizer, compilerContext))
@@ -879,8 +871,7 @@ def GeneratorExpression(tokenizer, compilerContext, e) {
 }
 
 def comprehensionTail(tokenizer, compilerContext) {
-    var body, node
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
     # tokenizer.token.type must be FOR
     body = builder.COMP_TAIL$build(tokenizer)
 
@@ -905,10 +896,10 @@ def comprehensionTail(tokenizer, compilerContext) {
             break
 
           case IDENTIFIER:
-            var n3 = builder.DECL$build(tokenizer)
+            n3 = builder.DECL$build(tokenizer)
             builder.DECL$setName(n3, n3.value)
             builder.DECL$finish(n3)
-            var childNode = builder.VAR$build(tokenizer)
+            childNode = builder.VAR$build(tokenizer)
             builder.VAR$addDecl(childNode, n3)
             builder.VAR$finish(childNode)
             builder.FOR$setIterator(node, n3, childNode)
@@ -944,12 +935,12 @@ def ParenExpression(tokenizer, compilerContext) {
     # where it's unambiguous, even if we might be parsing the init of a
     # for statement.
     # 
-    var oldLoopInit = compilerContext.inForLoopInit
+    oldLoopInit = compilerContext.inForLoopInit
     compilerContext.inForLoopInit = False
-    var node = Expression(tokenizer, compilerContext)
+    node = Expression(tokenizer, compilerContext)
     compilerContext.inForLoopInit = oldLoopInit
 
-    var err = "expression must be parenthesized"
+    err = "expression must be parenthesized"
     if (tokenizer.match(FOR)) {
         if (node.type == YIELD and !node.parenthesized)
             raise SyntaxError("Yield " + err, tokenizer)
@@ -966,8 +957,7 @@ def ParenExpression(tokenizer, compilerContext) {
 
 def Expression(tokenizer, compilerContext) {
     """Top-down expression parser matched against SpiderMonkey."""
-    var node, childNode
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     node = AssignExpression(tokenizer, compilerContext)
     if (tokenizer.match(COMMA)) {
@@ -987,8 +977,7 @@ def Expression(tokenizer, compilerContext) {
 }
 
 def AssignExpression(tokenizer, compilerContext) {
-    var node, lhs
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     # Have to treat yield like an operand because it could be the leftmost
     # operand of the expression.
@@ -1024,8 +1013,7 @@ def AssignExpression(tokenizer, compilerContext) {
 }
 
 def ConditionalExpression(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     node = OrExpression(tokenizer, compilerContext)
     if (tokenizer.match(HOOK)) {
@@ -1037,7 +1025,7 @@ def ConditionalExpression(tokenizer, compilerContext) {
         # where it's unambiguous, even if we might be parsing the init of a
         # for statement.
         # 
-        var oldLoopInit = compilerContext.inForLoopInit
+        oldLoopInit = compilerContext.inForLoopInit
         compilerContext.inForLoopInit = False
         builder.HOOK$setThenPart(node, AssignExpression(tokenizer, compilerContext))
         compilerContext.inForLoopInit = oldLoopInit
@@ -1051,8 +1039,7 @@ def ConditionalExpression(tokenizer, compilerContext) {
 }
 
 def OrExpression(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     node = AndExpression(tokenizer, compilerContext)
     while (tokenizer.match(OR)) {
@@ -1067,8 +1054,7 @@ def OrExpression(tokenizer, compilerContext) {
 }
 
 def AndExpression(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     node = BitwiseOrExpression(tokenizer, compilerContext)
     while (tokenizer.match(AND)) {
@@ -1083,8 +1069,7 @@ def AndExpression(tokenizer, compilerContext) {
 }
 
 def BitwiseOrExpression(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     node = BitwiseXorExpression(tokenizer, compilerContext)
     while (tokenizer.match(BITWISE_OR)) {
@@ -1099,8 +1084,7 @@ def BitwiseOrExpression(tokenizer, compilerContext) {
 }
 
 def BitwiseXorExpression(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     node = BitwiseAndExpression(tokenizer, compilerContext)
     while (tokenizer.match(BITWISE_XOR)) {
@@ -1115,8 +1099,7 @@ def BitwiseXorExpression(tokenizer, compilerContext) {
 }
 
 def BitwiseAndExpression(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     node = EqualityExpression(tokenizer, compilerContext)
     while (tokenizer.match(BITWISE_AND)) {
@@ -1131,8 +1114,7 @@ def BitwiseAndExpression(tokenizer, compilerContext) {
 }
 
 def EqualityExpression(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     node = RelationalExpression(tokenizer, compilerContext)
     while (tokenizer.match(EQ) or tokenizer.match(NE) or
@@ -1148,9 +1130,8 @@ def EqualityExpression(tokenizer, compilerContext) {
 }
 
 def RelationalExpression(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
-    var oldLoopInit = compilerContext.inForLoopInit
+    builder = compilerContext.builder
+    oldLoopInit = compilerContext.inForLoopInit
 
     # 
     # Uses of the in operator in shiftExprs are always unambiguous,
@@ -1173,8 +1154,7 @@ def RelationalExpression(tokenizer, compilerContext) {
 }
 
 def ShiftExpression(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     node = AddExpression(tokenizer, compilerContext)
     while (tokenizer.match(LSH) or tokenizer.match(RSH) or tokenizer.match(URSH)) {
@@ -1189,8 +1169,7 @@ def ShiftExpression(tokenizer, compilerContext) {
 }
 
 def AddExpression(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     node = MultiplyExpression(tokenizer, compilerContext)
     while (tokenizer.match(PLUS) or tokenizer.match(MINUS)) {
@@ -1205,8 +1184,7 @@ def AddExpression(tokenizer, compilerContext) {
 }
 
 def MultiplyExpression(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     node = UnaryExpression(tokenizer, compilerContext)
     while (tokenizer.match(MUL) or tokenizer.match(DIV) or tokenizer.match(MOD)) {
@@ -1221,8 +1199,7 @@ def MultiplyExpression(tokenizer, compilerContext) {
 }
 
 def UnaryExpression(tokenizer, compilerContext) {
-    var node, childNode, tokenType
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     switch (tokenType = tokenizer.get(True)) {
       case DELETE: case VOID: case TYPEOF:
@@ -1261,8 +1238,7 @@ def UnaryExpression(tokenizer, compilerContext) {
 }
 
 def MemberExpression(tokenizer, compilerContext, allowCallSyntax) {
-    var node, childNode, tokenType
-    var builder = compilerContext.builder
+    builder = compilerContext.builder
 
     if (tokenizer.match(NEW)) {
         node = builder.MEMBER$build(tokenizer)
@@ -1314,9 +1290,8 @@ def MemberExpression(tokenizer, compilerContext, allowCallSyntax) {
 }
 
 def ArgumentList(tokenizer, compilerContext) {
-    var node, childNode
-    var builder = compilerContext.builder
-    var err = "expression must be parenthesized"
+    builder = compilerContext.builder
+    err = "expression must be parenthesized"
 
     node = builder.LIST$build(tokenizer)
     if (tokenizer.match(RIGHT_PAREN, True))
@@ -1339,8 +1314,8 @@ def ArgumentList(tokenizer, compilerContext) {
 }
 
 def PrimaryExpression(tokenizer, compilerContext) {
-    var node, childNode, n3, tokenType = tokenizer.get(True)
-    var builder = compilerContext.builder
+    tokenType = tokenizer.get(True)
+    builder = compilerContext.builder
 
     switch (tokenType) {
       case FUNCTION:
@@ -1373,7 +1348,6 @@ def PrimaryExpression(tokenizer, compilerContext) {
         break
 
       case LEFT_CURLY:
-        var id
         node = builder.OBJECT_INIT$build(tokenizer)
 
       object_init:
@@ -1384,7 +1358,7 @@ def PrimaryExpression(tokenizer, compilerContext) {
                     tokenizer.peek() == IDENTIFIER) {
                     if (compilerContext.ecma3OnlyMode)
                         raise SyntaxError("Illegal property accessor")
-                    var fd = FunctionDefinition(tokenizer, compilerContext, True, EXPRESSED_FORM)
+                    fd = FunctionDefinition(tokenizer, compilerContext, True, EXPRESSED_FORM)
                     builder.OBJECT_INIT$addProperty(node, fd)
                 } else {
                     switch (tokenType) {
@@ -1452,9 +1426,9 @@ def PrimaryExpression(tokenizer, compilerContext) {
 
 
 def parse(builder, source, filename, line) {
-    var tokenizer = new Tokenizer(source, filename, line)
-    var compilerContext = new CompilerContext(False, builder)
-    var node = Script(tokenizer, compilerContext)
+    tokenizer = new Tokenizer(source, filename, line)
+    compilerContext = new CompilerContext(False, builder)
+    node = Script(tokenizer, compilerContext)
     
     if not tokenizer.done:
         raise SyntaxError("Syntax error", tokenizer)
