@@ -99,8 +99,8 @@ VanillaBuilder.prototype = {
         n.isEach = true;
     },
 
-    // NB. This function is called after rebuildForEach, if that's called
-    // at all.
+    # NB. This function is called after rebuildForEach, if that's called
+    # at all.
     FOR$rebuildForIn: function(n) {
         n.type = FOR_IN;
     },
@@ -552,7 +552,7 @@ VanillaBuilder.prototype = {
     },
 
     EQUALITY$build: function(t) {
-        // NB t.token.type must be EQ, NE, STRICT_EQ, or STRICT_NE.
+        # NB t.token.type must be EQ, NE, STRICT_EQ, or STRICT_NE.
         return new Node(t);
     },
 
@@ -564,7 +564,7 @@ VanillaBuilder.prototype = {
     },
 
     RELATIONAL$build: function(t) {
-        // NB t.token.type must be LT, LE, GE, or GT.
+        # NB t.token.type must be LT, LE, GE, or GT.
         return new Node(t);
     },
 
@@ -576,7 +576,7 @@ VanillaBuilder.prototype = {
     },
 
     SHIFT$build: function(t) {
-        // NB t.token.type must be LSH, RSH, or URSH.
+        # NB t.token.type must be LSH, RSH, or URSH.
         return new Node(t);
     },
 
@@ -588,7 +588,7 @@ VanillaBuilder.prototype = {
     },
 
     ADD$build: function(t) {
-        // NB t.token.type must be PLUS or MINUS.
+        # NB t.token.type must be PLUS or MINUS.
         return new Node(t);
     },
 
@@ -600,7 +600,7 @@ VanillaBuilder.prototype = {
     },
 
     MULTIPLY$build: function(t) {
-        // NB t.token.type must be MUL, DIV, or MOD.
+        # NB t.token.type must be MUL, DIV, or MOD.
         return new Node(t);
     },
 
@@ -612,8 +612,8 @@ VanillaBuilder.prototype = {
     },
 
     UNARY$build: function(t) {
-        // NB t.token.type must be DELETE, VOID, TYPEOF, NOT, BITWISE_NOT,
-        // UNARY_PLUS, UNARY_MINUS, INCREMENT, or DECREMENT.
+        # NB t.token.type must be DELETE, VOID, TYPEOF, NOT, BITWISE_NOT,
+        # UNARY_PLUS, UNARY_MINUS, INCREMENT, or DECREMENT.
         if (t.token.type == PLUS)
             t.token.type = UNARY_PLUS;
         else if (t.token.type == MINUS)
@@ -633,7 +633,7 @@ VanillaBuilder.prototype = {
     },
 
     MEMBER$build: function(t, tt) {
-        // NB t.token.type must be NEW, DOT, or INDEX.
+        # NB t.token.type must be NEW, DOT, or INDEX.
         return new Node(t, tt);
     },
 
@@ -649,8 +649,8 @@ VanillaBuilder.prototype = {
     },
 
     PRIMARY$build: function(t, tt) {
-        // NB t.token.type must be NULL, THIS, TRUIE, FALSE, IDENTIFIER,
-        // NUMBER, STRING, or REGEXP.
+        # NB t.token.type must be NULL, THIS, TRUIE, FALSE, IDENTIFIER,
+        # NUMBER, STRING, or REGEXP.
         return new Node(t, tt);
     },
 
