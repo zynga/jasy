@@ -100,7 +100,7 @@ class ParseError(Exception):
         Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, filename, line))
 
 
-class Lexer(object):
+class Tokenizer(object):
     def __init__(self, source, filename="", line=1):
         # source: JavaScript source
         # filename: Filename (for debugging proposes)
