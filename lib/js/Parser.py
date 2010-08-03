@@ -820,509 +820,492 @@ def LetBlock(tokenizer, compilerContext, isStatement):
 
 
 
-def checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data) {
-    if (node.type == ARRAY_COMP)
+def checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data):
+    if node.type == ARRAY_COMP:
         raise SyntaxError("Invalid array comprehension left-hand side")
-    if (node.type != ARRAY_INIT and node.type != OBJECT_INIT)
+        
+    if node.type != ARRAY_INIT and node.type != OBJECT_INIT:
         return
 
     builder = compilerContext.builder
 
-    for (i = 0, j = node.length; i < j; i++) {
-        nn = node[i], lhs, rhs
-        if (!nn)
+    for child in node:
+        if child == None:
             continue
-        if (nn.type == PROPERTY_INIT)
-            lhs = nn[0], rhs = nn[1]
-        else
-            lhs = null, rhs = null
-        if (rhs and (rhs.type == ARRAY_INIT or rhs.type == OBJECT_INIT))
+        
+        if child.type == PROPERTY_INIT:
+            lhs = child[0]
+            rhs = child[1]
+        else:
+            lhs = None
+            rhs = None
+        
+        if rhs and (rhs.type == ARRAY_INIT or rhs.type == OBJECT_INIT):
             checkDestructuring(tokenizer, compilerContext, rhs, simpleNamesOnly, data)
-        if (lhs and simpleNamesOnly) {
+            
+        if lhs and simpleNamesOnly:
             # In declarations, lhs must be simple names
-            if (lhs.type != IDENTIFIER) {
+            if lhs.type != IDENTIFIER:
                 raise SyntaxError("Missing name in pattern")
-            } elif (data) {
+                
+            elif data:
                 childNode = builder.DECL$build(tokenizer)
                 builder.DECL$setName(childNode, lhs.value)
-                # Don'tokenizer need to set initializer because it's just for
+
+                # Don't need to set initializer because it's just for
                 # hoisting anyways.
                 builder.DECL$finish(childNode)
+
                 # Each pattern needs to be added to varDecls.
                 data.varDecls.push(childNode)
-            }
-        }
-    }
-}
 
-def DestructuringExpression(tokenizer, compilerContext, simpleNamesOnly, data) {
+
+def DestructuringExpression(tokenizer, compilerContext, simpleNamesOnly, data):
     node = PrimaryExpression(tokenizer, compilerContext)
     checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data)
-    return node
-}
 
-def GeneratorExpression(tokenizer, compilerContext, e) {
+    return node
+
+
+def GeneratorExpression(tokenizer, compilerContext, e):
     node = builder.GENERATOR$build(tokenizer)
+
     builder.GENERATOR$setExpression(node, e)
     builder.GENERATOR$setTail(node, comprehensionTail(tokenizer, compilerContext))
     builder.GENERATOR$finish(node)
 
     return node
-}
 
-def comprehensionTail(tokenizer, compilerContext) {
+
+def comprehensionTail(tokenizer, compilerContext):
     builder = compilerContext.builder
+    
     # tokenizer.token.type must be FOR
     body = builder.COMP_TAIL$build(tokenizer)
 
-    do {
+    while True:
         node = builder.FOR$build(tokenizer)
+        
         # Comprehension tails are always for..in loops.
         builder.FOR$rebuildForIn(node)
-        if (tokenizer.match(IDENTIFIER)) {
+        if tokenizer.match(IDENTIFIER):
             # But sometimes they're for each..in.
-            if (tokenizer.token.value == "each")
+            if tokenizer.token.value == "each":
                 builder.FOR$rebuildForEach(node)
-            else
+            else:
                 tokenizer.unget()
-        }
+
         tokenizer.mustMatch(LEFT_PAREN)
-        switch(tokenizer.get()) {
-          case LEFT_BRACKET:
-          case LEFT_CURLY:
+        
+        tokenType = tokenizer.get()
+        if tokenType == LEFT_BRACKET or tokenType == LEFT_CURLY:
             tokenizer.unget()
             # Destructured left side of for in comprehension tails.
             builder.FOR$setIterator(node, DestructuringExpression(tokenizer, compilerContext), null)
             break
 
-          case IDENTIFIER:
+        elif tokenType == IDENTIFIER:
             n3 = builder.DECL$build(tokenizer)
+            
             builder.DECL$setName(n3, n3.value)
             builder.DECL$finish(n3)
+            
             childNode = builder.VAR$build(tokenizer)
+            
             builder.VAR$addDecl(childNode, n3)
             builder.VAR$finish(childNode)
             builder.FOR$setIterator(node, n3, childNode)
-            # 
-            # Don'tokenizer add to varDecls since the semantics of comprehensions is
+            
+            # Don't add to varDecls since the semantics of comprehensions is
             # such that the variables are in their own def when
             # desugared.
-            # 
             break
 
-          default:
+        else:
             raise SyntaxError("Missing identifier")
-        }
+        
         tokenizer.mustMatch(IN)
         builder.FOR$setObject(node, Expression(tokenizer, compilerContext))
         tokenizer.mustMatch(RIGHT_PAREN)
         builder.COMP_TAIL$addFor(body, node)
-    } while (tokenizer.match(FOR))
+        
+        if not tokenizer.match(FOR):
+            break
 
     # Optional guard.
     if (tokenizer.match(IF))
         builder.COMP_TAIL$setGuard(body, ParenExpression(tokenizer, compilerContext))
 
     builder.COMP_TAIL$finish(body)
-    return body
-}
 
-def ParenExpression(tokenizer, compilerContext) {
+    return body
+
+
+def ParenExpression(tokenizer, compilerContext):
     tokenizer.mustMatch(LEFT_PAREN)
 
-    # 
     # Always accept the 'in' operator in a parenthesized expression,
     # where it's unambiguous, even if we might be parsing the init of a
     # for statement.
-    # 
     oldLoopInit = compilerContext.inForLoopInit
     compilerContext.inForLoopInit = False
     node = Expression(tokenizer, compilerContext)
     compilerContext.inForLoopInit = oldLoopInit
 
     err = "expression must be parenthesized"
-    if (tokenizer.match(FOR)) {
-        if (node.type == YIELD and !node.parenthesized)
+    if tokenizer.match(FOR):
+        if node.type == YIELD and not node.parenthesized:
             raise SyntaxError("Yield " + err, tokenizer)
-        if (node.type == COMMA and !node.parenthesized)
+            
+        if node.type == COMMA and not node.parenthesized:
             raise SyntaxError("Generator " + err, tokenizer)
+            
         node = GeneratorExpression(tokenizer, compilerContext, node)
-    }
 
     tokenizer.mustMatch(RIGHT_PAREN)
 
     return node
-}
 
 
-def Expression(tokenizer, compilerContext) {
+def Expression(tokenizer, compilerContext):
     """Top-down expression parser matched against SpiderMonkey."""
     builder = compilerContext.builder
-
     node = AssignExpression(tokenizer, compilerContext)
-    if (tokenizer.match(COMMA)) {
+
+    if tokenizer.match(COMMA):
         childNode = builder.COMMA$build(tokenizer)
         builder.COMMA$addOperand(childNode, node)
         node = childNode
-        do {
+        while True:
             childNode = node[node.length-1]
-            if (childNode.type == YIELD and !childNode.parenthesized)
+            if childNode.type == YIELD and not childNode.parenthesized:
                 raise SyntaxError("Yield expression must be parenthesized")
             builder.COMMA$addOperand(node, AssignExpression(tokenizer, compilerContext))
-        } while (tokenizer.match(COMMA))
+            
+            if not tokenizer.match(COMMA):
+                break
+                
         builder.COMMA$finish(node)
-    }
 
     return node
-}
 
-def AssignExpression(tokenizer, compilerContext) {
+
+def AssignExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
 
     # Have to treat yield like an operand because it could be the leftmost
     # operand of the expression.
-    if (tokenizer.match(YIELD, True))
+    if tokenizer.match(YIELD, True):
         return returnOrYield(tokenizer, compilerContext)
 
     node = builder.ASSIGN$build(tokenizer)
     lhs = ConditionalExpression(tokenizer, compilerContext)
 
-    if (!tokenizer.match(ASSIGN)) {
+    if not tokenizer.match(ASSIGN):
         builder.ASSIGN$finish(node)
         return lhs
-    }
 
-    switch (lhs.type) {
-      case OBJECT_INIT:
-      case ARRAY_INIT:
+    if lhs.type == OBJECT_INIT or lhs.type == ARRAY_INIT:
         checkDestructuring(tokenizer, compilerContext, lhs)
-        # FALL THROUGH
-      case IDENTIFIER: case DOT: case INDEX: case CALL:
-        break
-      default:
+    elif lhs.type == IDENTIFIER or lhs.type == DOT or lhs.type == INDEX or lhs.type == CALL:
+        pass
+    else:
         raise SyntaxError("Bad left-hand side of assignment", tokenizer)
-        break
-    }
-
+        
     builder.ASSIGN$setAssignOp(node, tokenizer.token.assignOp)
     builder.ASSIGN$addOperand(node, lhs)
     builder.ASSIGN$addOperand(node, AssignExpression(tokenizer, compilerContext))
     builder.ASSIGN$finish(node)
 
     return node
-}
 
-def ConditionalExpression(tokenizer, compilerContext) {
+
+def ConditionalExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
-
     node = OrExpression(tokenizer, compilerContext)
-    if (tokenizer.match(HOOK)) {
+
+    if tokenizer.match(HOOK):
         childNode = node
         node = builder.HOOK$build(tokenizer)
         builder.HOOK$setCondition(node, childNode)
-        # 
+
         # Always accept the 'in' operator in the middle clause of a ternary,
         # where it's unambiguous, even if we might be parsing the init of a
         # for statement.
-        # 
         oldLoopInit = compilerContext.inForLoopInit
         compilerContext.inForLoopInit = False
         builder.HOOK$setThenPart(node, AssignExpression(tokenizer, compilerContext))
         compilerContext.inForLoopInit = oldLoopInit
-        if (!tokenizer.match(COLON))
+        
+        if not tokenizer.match(COLON):
             raise SyntaxError("Missing : after ?", tokenizer)
+            
         builder.HOOK$setElsePart(node, AssignExpression(tokenizer, compilerContext))
         builder.HOOK$finish(node)
-    }
 
     return node
-}
+    
 
-def OrExpression(tokenizer, compilerContext) {
+def OrExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
-
     node = AndExpression(tokenizer, compilerContext)
-    while (tokenizer.match(OR)) {
+    
+    while tokenizer.match(OR):
         childNode = builder.OR$build(tokenizer)
         builder.OR$addOperand(childNode, node)
         builder.OR$addOperand(childNode, AndExpression(tokenizer, compilerContext))
         builder.OR$finish(childNode)
         node = childNode
-    }
 
     return node
-}
 
-def AndExpression(tokenizer, compilerContext) {
+
+def AndExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
-
     node = BitwiseOrExpression(tokenizer, compilerContext)
-    while (tokenizer.match(AND)) {
+
+    while tokenizer.match(AND):
         childNode = builder.AND$build(tokenizer)
         builder.AND$addOperand(childNode, node)
         builder.AND$addOperand(childNode, BitwiseOrExpression(tokenizer, compilerContext))
         builder.AND$finish(childNode)
         node = childNode
-    }
 
     return node
-}
 
-def BitwiseOrExpression(tokenizer, compilerContext) {
+
+def BitwiseOrExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
-
     node = BitwiseXorExpression(tokenizer, compilerContext)
-    while (tokenizer.match(BITWISE_OR)) {
+    
+    while tokenizer.match(BITWISE_OR):
         childNode = builder.BITWISE_OR$build(tokenizer)
         builder.BITWISE_OR$addOperand(childNode, node)
         builder.BITWISE_OR$addOperand(childNode, BitwiseXorExpression(tokenizer, compilerContext))
         builder.BITWISE_OR$finish(childNode)
         node = childNode
-    }
 
     return node
-}
 
-def BitwiseXorExpression(tokenizer, compilerContext) {
+
+def BitwiseXorExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
-
     node = BitwiseAndExpression(tokenizer, compilerContext)
-    while (tokenizer.match(BITWISE_XOR)) {
+    
+    while tokenizer.match(BITWISE_XOR):
         childNode = builder.BITWISE_XOR$build(tokenizer)
         builder.BITWISE_XOR$addOperand(childNode, node)
         builder.BITWISE_XOR$addOperand(childNode, BitwiseAndExpression(tokenizer, compilerContext))
         builder.BITWISE_XOR$finish(childNode)
         node = childNode
-    }
 
     return node
-}
 
-def BitwiseAndExpression(tokenizer, compilerContext) {
+
+def BitwiseAndExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
-
     node = EqualityExpression(tokenizer, compilerContext)
-    while (tokenizer.match(BITWISE_AND)) {
+
+    while tokenizer.match(BITWISE_AND):
         childNode = builder.BITWISE_AND$build(tokenizer)
         builder.BITWISE_AND$addOperand(childNode, node)
         builder.BITWISE_AND$addOperand(childNode, EqualityExpression(tokenizer, compilerContext))
         builder.BITWISE_AND$finish(childNode)
         node = childNode
-    }
 
     return node
-}
 
-def EqualityExpression(tokenizer, compilerContext) {
+
+def EqualityExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
-
     node = RelationalExpression(tokenizer, compilerContext)
-    while (tokenizer.match(EQ) or tokenizer.match(NE) or
-           tokenizer.match(STRICT_EQ) or tokenizer.match(STRICT_NE)) {
+    
+    while tokenizer.match(EQ) or tokenizer.match(NE) or tokenizer.match(STRICT_EQ) or tokenizer.match(STRICT_NE):
         childNode = builder.EQUALITY$build(tokenizer)
         builder.EQUALITY$addOperand(childNode, node)
         builder.EQUALITY$addOperand(childNode, RelationalExpression(tokenizer, compilerContext))
         builder.EQUALITY$finish(childNode)
         node = childNode
-    }
 
     return node
-}
 
-def RelationalExpression(tokenizer, compilerContext) {
+
+def RelationalExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
     oldLoopInit = compilerContext.inForLoopInit
 
-    # 
     # Uses of the in operator in shiftExprs are always unambiguous,
     # so unset the flag that prohibits recognizing it.
-    # 
     compilerContext.inForLoopInit = False
     node = ShiftExpression(tokenizer, compilerContext)
-    while ((tokenizer.match(LT) or tokenizer.match(LE) or tokenizer.match(GE) or tokenizer.match(GT) or
-           (oldLoopInit == False and tokenizer.match(IN)) or
-           tokenizer.match(INSTANCEOF))) {
+
+    while tokenizer.match(LT) or tokenizer.match(LE) or tokenizer.match(GE) or tokenizer.match(GT) or (oldLoopInit == False and tokenizer.match(IN)) or tokenizer.match(INSTANCEOF):
         childNode = builder.RELATIONAL$build(tokenizer)
         builder.RELATIONAL$addOperand(childNode, node)
         builder.RELATIONAL$addOperand(childNode, ShiftExpression(tokenizer, compilerContext))
         builder.RELATIONAL$finish(childNode)
         node = childNode
-    }
+    
     compilerContext.inForLoopInit = oldLoopInit
 
     return node
-}
 
-def ShiftExpression(tokenizer, compilerContext) {
+
+def ShiftExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
-
     node = AddExpression(tokenizer, compilerContext)
-    while (tokenizer.match(LSH) or tokenizer.match(RSH) or tokenizer.match(URSH)) {
+    
+    while tokenizer.match(LSH) or tokenizer.match(RSH) or tokenizer.match(URSH):
         childNode = builder.SHIFT$build(tokenizer)
         builder.SHIFT$addOperand(childNode, node)
         builder.SHIFT$addOperand(childNode, AddExpression(tokenizer, compilerContext))
         builder.SHIFT$finish(childNode)
         node = childNode
-    }
 
     return node
-}
 
-def AddExpression(tokenizer, compilerContext) {
+
+def AddExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
-
     node = MultiplyExpression(tokenizer, compilerContext)
-    while (tokenizer.match(PLUS) or tokenizer.match(MINUS)) {
+    
+    while tokenizer.match(PLUS) or tokenizer.match(MINUS):
         childNode = builder.ADD$build(tokenizer)
         builder.ADD$addOperand(childNode, node)
         builder.ADD$addOperand(childNode, MultiplyExpression(tokenizer, compilerContext))
         builder.ADD$finish(childNode)
         node = childNode
-    }
 
     return node
-}
 
-def MultiplyExpression(tokenizer, compilerContext) {
+
+def MultiplyExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
-
     node = UnaryExpression(tokenizer, compilerContext)
-    while (tokenizer.match(MUL) or tokenizer.match(DIV) or tokenizer.match(MOD)) {
+    
+    while tokenizer.match(MUL) or tokenizer.match(DIV) or tokenizer.match(MOD):
         childNode = builder.MULTIPLY$build(tokenizer)
         builder.MULTIPLY$addOperand(childNode, node)
         builder.MULTIPLY$addOperand(childNode, UnaryExpression(tokenizer, compilerContext))
         builder.MULTIPLY$finish(childNode)
         node = childNode
-    }
 
     return node
-}
 
-def UnaryExpression(tokenizer, compilerContext) {
+
+def UnaryExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
+    tokenType = tokenizer.get(True)
 
-    switch (tokenType = tokenizer.get(True)) {
-      case DELETE: case VOID: case TYPEOF:
-      case NOT: case BITWISE_NOT: case PLUS: case MINUS:
+    if tokenType in [DELETE, VOID, TYPEOF, NOT, BITWISE_NOT, PLUS, MINUS]:
         node = builder.UNARY$build(tokenizer)
         builder.UNARY$addOperand(node, UnaryExpression(tokenizer, compilerContext))
-        break
-
-      case INCREMENT:
-      case DECREMENT:
+    
+    elif tokenType == INCREMENT or tokenType == DECREMENT:
         # Prefix increment/decrement.
         node = builder.UNARY$build(tokenizer)
         builder.UNARY$addOperand(node, MemberExpression(tokenizer, compilerContext, True))
-        break
 
-      default:
+    else:
         tokenizer.unget()
         node = MemberExpression(tokenizer, compilerContext, True)
 
-        # Don'tokenizer look across a newline boundary for a postfix {in,de}crement.
-        if (tokenizer.tokens[(tokenizer.tokenIndex + tokenizer.lookahead - 1) & 3].lineno ==
-            tokenizer.lineno) {
-            if (tokenizer.match(INCREMENT) or tokenizer.match(DECREMENT)) {
+        # Don't look across a newline boundary for a postfix {in,de}crement.
+        if tokenizer.tokens[(tokenizer.tokenIndex + tokenizer.lookahead - 1) & 3].lineno == tokenizer.lineno:
+            if tokenizer.match(INCREMENT) or tokenizer.match(DECREMENT):
                 childNode = builder.UNARY$build(tokenizer)
                 builder.UNARY$setPostfix(childNode)
                 builder.UNARY$finish(node)
                 builder.UNARY$addOperand(childNode, node)
                 node = childNode
-            }
-        }
-        break
-    }
 
     builder.UNARY$finish(node)
     return node
-}
 
-def MemberExpression(tokenizer, compilerContext, allowCallSyntax) {
+
+def MemberExpression(tokenizer, compilerContext, allowCallSyntax):
     builder = compilerContext.builder
 
-    if (tokenizer.match(NEW)) {
+    if tokenizer.match(NEW):
         node = builder.MEMBER$build(tokenizer)
         builder.MEMBER$addOperand(node, MemberExpression(tokenizer, compilerContext, False))
-        if (tokenizer.match(LEFT_PAREN)) {
+        
+        if tokenizer.match(LEFT_PAREN):
             builder.MEMBER$rebuildNewWithArgs(node)
             builder.MEMBER$addOperand(node, ArgumentList(tokenizer, compilerContext))
-        }
+        
         builder.MEMBER$finish(node)
-    } else {
+    
+    else:
         node = PrimaryExpression(tokenizer, compilerContext)
-    }
 
-    while ((tokenType = tokenizer.get()) != END) {
-        switch (tokenType) {
-          case DOT:
+    while True:
+        tokenType = tokenizer.get()
+        if tokenType == END:
+            break
+        
+        if tokenType == DOT:
             childNode = builder.MEMBER$build(tokenizer)
             builder.MEMBER$addOperand(childNode, node)
             tokenizer.mustMatch(IDENTIFIER)
             builder.MEMBER$addOperand(childNode, builder.MEMBER$build(tokenizer))
-            break
 
-          case LEFT_BRACKET:
+        elif tokenType == LEFT_BRACKET:
             childNode = builder.MEMBER$build(tokenizer, INDEX)
             builder.MEMBER$addOperand(childNode, node)
             builder.MEMBER$addOperand(childNode, Expression(tokenizer, compilerContext))
             tokenizer.mustMatch(RIGHT_BRACKET)
-            break
 
-          case LEFT_PAREN:
-            if (allowCallSyntax) {
-                childNode = builder.MEMBER$build(tokenizer, CALL)
-                builder.MEMBER$addOperand(childNode, node)
-                builder.MEMBER$addOperand(childNode, ArgumentList(tokenizer, compilerContext))
-                break
-            }
+        elif tokenType == LEFT_PAREN and allowCallSyntax:
+            childNode = builder.MEMBER$build(tokenizer, CALL)
+            builder.MEMBER$addOperand(childNode, node)
+            builder.MEMBER$addOperand(childNode, ArgumentList(tokenizer, compilerContext))
 
-            # FALL THROUGH
-          default:
+        else:
             tokenizer.unget()
             return node
-        }
 
         builder.MEMBER$finish(childNode)
         node = childNode
-    }
 
     return node
-}
 
-def ArgumentList(tokenizer, compilerContext) {
+
+def ArgumentList(tokenizer, compilerContext):
     builder = compilerContext.builder
-    err = "expression must be parenthesized"
-
     node = builder.LIST$build(tokenizer)
-    if (tokenizer.match(RIGHT_PAREN, True))
+    
+    if tokenizer.match(RIGHT_PAREN, True):
         return node
-    do {
+    
+    while True:    
         childNode = AssignExpression(tokenizer, compilerContext)
-        if (childNode.type == YIELD and !childNode.parenthesized and tokenizer.peek() == COMMA)
-            raise SyntaxError("Yield " + err, tokenizer)
-        if (tokenizer.match(FOR)) {
+        if childNode.type == YIELD and !childNode.parenthesized and tokenizer.peek() == COMMA:
+            raise SyntaxError("Yield expression must be parenthesized", tokenizer)
+            
+        if tokenizer.match(FOR):
             childNode = GeneratorExpression(tokenizer, compilerContext, childNode)
-            if (node.length > 1 or tokenizer.peek(True) == COMMA)
-                raise SyntaxError("Generator " + err, tokenizer)
-        }
+            if node.length > 1 or tokenizer.peek(True) == COMMA:
+                raise SyntaxError("Generator expression must be parenthesized", tokenizer)
+        
         builder.LIST$addOperand(node, childNode)
-    } while (tokenizer.match(COMMA))
+        if not tokenizer.match(COMMA):
+            break
+
     tokenizer.mustMatch(RIGHT_PAREN)
     builder.LIST$finish(node)
 
     return node
-}
 
-def PrimaryExpression(tokenizer, compilerContext) {
-    tokenType = tokenizer.get(True)
+
+def PrimaryExpression(tokenizer, compilerContext):
     builder = compilerContext.builder
+    tokenType = tokenizer.get(True)
 
-    switch (tokenType) {
-      case FUNCTION:
+    if tokenType == FUNCTION:
         node = FunctionDefinition(tokenizer, compilerContext, False, EXPRESSED_FORM)
-        break
 
-      case LEFT_BRACKET:
+    elif tokenType == LEFT_BRACKET:
         node = builder.ARRAY_INIT$build(tokenizer)
         while ((tokenType = tokenizer.peek()) != RIGHT_BRACKET) {
             if (tokenType == COMMA) {
@@ -1345,87 +1328,87 @@ def PrimaryExpression(tokenizer, compilerContext) {
         }
         tokenizer.mustMatch(RIGHT_BRACKET)
         builder.PRIMARY$finish(node)
-        break
 
-      case LEFT_CURLY:
+    elif tokenType == LEFT_CURLY:
         node = builder.OBJECT_INIT$build(tokenizer)
-
-      object_init:
-        if (!tokenizer.match(RIGHT_CURLY)) {
-            do {
-                tokenType = tokenizer.get()
-                if ((tokenizer.token.value == "get" or tokenizer.token.value == "set") and
-                    tokenizer.peek() == IDENTIFIER) {
-                    if (compilerContext.ecma3OnlyMode)
-                        raise SyntaxError("Illegal property accessor")
-                    fd = FunctionDefinition(tokenizer, compilerContext, True, EXPRESSED_FORM)
-                    builder.OBJECT_INIT$addProperty(node, fd)
-                } else {
-                    switch (tokenType) {
-                      case IDENTIFIER: case NUMBER: case STRING:
-                        id = builder.PRIMARY$build(tokenizer, IDENTIFIER)
-                        builder.PRIMARY$finish(id)
-                        break
-                      case RIGHT_CURLY:
-                        if (compilerContext.ecma3OnlyMode)
-                            raise SyntaxError("Illegal trailing ,")
-                        break object_init
-                      default:
-                        if (tokenizer.token.value in keywords) {
+        # FALL THROUGH ...
+        
+        
+        def object_init():
+            if not tokenizer.match(RIGHT_CURLY):
+                while True:
+                    tokenType = tokenizer.get()
+                    
+                    if (tokenizer.token.value == "get" or tokenizer.token.value == "set") and tokenizer.peek() == IDENTIFIER:
+                        if compilerContext.ecma3OnlyMode:
+                            raise SyntaxError("Illegal property accessor", tokenizer)
+                            
+                        fd = FunctionDefinition(tokenizer, compilerContext, True, EXPRESSED_FORM)
+                        builder.OBJECT_INIT$addProperty(node, fd)
+                        
+                    else:
+                        if tokenType == IDENTIFIER or tokenType == NUMBER or tokenType == STRING:
                             id = builder.PRIMARY$build(tokenizer, IDENTIFIER)
                             builder.PRIMARY$finish(id)
-                            break
-                        }
-                        raise SyntaxError("Invalid property name")
-                    }
-                    if (tokenizer.match(COLON)) {
-                        childNode = builder.PROPERTY_INIT$build(tokenizer)
-                        builder.PROPERTY_INIT$addOperand(childNode, id)
-                        builder.PROPERTY_INIT$addOperand(childNode, AssignExpression(tokenizer, compilerContext))
-                        builder.PROPERTY_INIT$finish(childNode)
-                        builder.OBJECT_INIT$addProperty(node, childNode)
-                    } else {
-                        # Support, e.g., |var {compilerContext, y} = o| as destructuring shorthand
-                        # for |var {compilerContext: compilerContext, y: y} = o|, per proposed JS2/ES4 for JS1.8.
-                        if (tokenizer.peek() != COMMA and tokenizer.peek() != RIGHT_CURLY)
-                            raise SyntaxError("Missing : after property")
-                        builder.OBJECT_INIT$addProperty(node, id)
-                    }
-                }
-            } while (tokenizer.match(COMMA))
-            tokenizer.mustMatch(RIGHT_CURLY)
-        }
-        builder.OBJECT_INIT$finish(node)
-        break
+                            
+                        elif tokenType == RIGHT_CURLY:
+                            if compilerContext.ecma3OnlyMode:
+                                raise SyntaxError("Illegal trailing ,", tokenizer)
+                            
+                            # re-call self
+                            object_init()
+                            
+                        else:
+                            if tokenizer.token.value in keywords:
+                                id = builder.PRIMARY$build(tokenizer, IDENTIFIER)
+                                builder.PRIMARY$finish(id)
+                            else:
+                                raise SyntaxError("Invalid property name", tokenizer)
+                        
+                        if tokenizer.match(COLON):
+                            childNode = builder.PROPERTY_INIT$build(tokenizer)
+                            builder.PROPERTY_INIT$addOperand(childNode, id)
+                            builder.PROPERTY_INIT$addOperand(childNode, AssignExpression(tokenizer, compilerContext))
+                            builder.PROPERTY_INIT$finish(childNode)
+                            builder.OBJECT_INIT$addProperty(node, childNode)
+                            
+                        else:
+                            # Support, e.g., |var {compilerContext, y} = o| as destructuring shorthand
+                            # for |var {compilerContext: compilerContext, y: y} = o|, per proposed JS2/ES4 for JS1.8.
+                            if tokenizer.peek() != COMMA and tokenizer.peek() != RIGHT_CURLY:
+                                raise SyntaxError("Missing : after property", tokenizer)
+                            builder.OBJECT_INIT$addProperty(node, id)
+                        
+                    if not tokenizer.match(COMMA):
+                        break
 
-      case LEFT_PAREN:
-        # ParenExpression does its own matching on parentheses, so we need to
-        # unget.
+                tokenizer.mustMatch(RIGHT_CURLY)
+
+            builder.OBJECT_INIT$finish(node)
+        
+        # Initial call
+        object_init()        
+
+    elif tokenType == LEFT_PAREN:
+        # ParenExpression does its own matching on parentheses, so we need to unget.
         tokenizer.unget()
         node = ParenExpression(tokenizer, compilerContext)
         node.parenthesized = True
-        break
 
-      case LET:
+    elif tokenType == LET:
         node = LetBlock(tokenizer, compilerContext, False)
-        break
 
-      case NULL: case THIS: case TRUE: case FALSE:
-      case IDENTIFIER: case NUMBER: case STRING: case REGEXP:
+    elif tokenType in [NULL, THIS, TRUE, FALSE, IDENTIFIER, NUMBER, STRING, REGEXP]:
         node = builder.PRIMARY$build(tokenizer)
         builder.PRIMARY$finish(node)
-        break
 
-      default:
-        raise SyntaxError("Missing operand")
-        break
-
+    else:
+        raise SyntaxError("Missing operand", tokenizer)
 
     return node
 
 
-
-def parse(builder, source, filename, line) {
+def parse(builder, source, filename, line):
     tokenizer = new Tokenizer(source, filename, line)
     compilerContext = new CompilerContext(False, builder)
     node = Script(tokenizer, compilerContext)
