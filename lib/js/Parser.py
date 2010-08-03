@@ -1307,33 +1307,36 @@ def PrimaryExpression(tokenizer, compilerContext):
 
     elif tokenType == LEFT_BRACKET:
         node = builder.ARRAY_INIT$build(tokenizer)
-        while ((tokenType = tokenizer.peek()) != RIGHT_BRACKET) {
-            if (tokenType == COMMA) {
+        while True:
+            tokenType = tokenizer.peek()
+            if tokenType == RIGHT_BRACKET:
+                break
+        
+            if tokenType == COMMA:
                 tokenizer.get()
                 builder.ARRAY_INIT$addElement(node, null)
                 continue
-            }
+
             builder.ARRAY_INIT$addElement(node, AssignExpression(tokenizer, compilerContext))
-            if (tokenType != COMMA and !tokenizer.match(COMMA))
+
+            if tokenType != COMMA and not tokenizer.match(COMMA)
                 break
-        }
 
         # If we matched exactly one element and got a FOR, we have an
         # array comprehension.
-        if (node.length == 1 and tokenizer.match(FOR)) {
+        if node.length == 1 and tokenizer.match(FOR):
             childNode = builder.ARRAY_COMP$build(tokenizer)
             builder.ARRAY_COMP$setExpression(childNode, node[0])
             builder.ARRAY_COMP$setTail(childNode, comprehensionTail(tokenizer, compilerContext))
             node = childNode
-        }
+        
         tokenizer.mustMatch(RIGHT_BRACKET)
         builder.PRIMARY$finish(node)
 
     elif tokenType == LEFT_CURLY:
         node = builder.OBJECT_INIT$build(tokenizer)
-        # FALL THROUGH ...
-        
-        
+
+        # Simulate a label-goto from JS via a closure
         def object_init():
             if not tokenizer.match(RIGHT_CURLY):
                 while True:
