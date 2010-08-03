@@ -76,16 +76,16 @@ def Statements(tokenizer, compilerContext):
     """Parses a list of Statements."""
 
     builder = compilerContext.builder
-    node = builder.BLOCK$build(tokenizer, compilerContext.blockId++)
+    node = builder.BLOCK__build(tokenizer, compilerContext.blockId++)
 
-    builder.BLOCK$hoistLets(node)
+    builder.BLOCK__hoistLets(node)
     compilerContext.stmtStack.push(node)
 
     while !tokenizer.done and tokenizer.peek(True) != RIGHT_CURLY:
-        builder.BLOCK$addStatement(node, Statement(tokenizer, compilerContext))
+        builder.BLOCK__addStatement(node, Statement(tokenizer, compilerContext))
 
     compilerContext.stmtStack.pop()
-    builder.BLOCK$finish(node)
+    builder.BLOCK__finish(node)
 
     if node.needsHoisting:
         builder.setHoists(node.id, node.varDecls)
@@ -135,24 +135,24 @@ def Statement(tokenizer, compilerContext):
         
         
     elif tokenType == IF:
-        node = builder.IF$build(tokenizer)
-        builder.IF$setCondition(node, ParenExpression(tokenizer, compilerContext))
+        node = builder.IF__build(tokenizer)
+        builder.IF__setCondition(node, ParenExpression(tokenizer, compilerContext))
         compilerContext.stmtStack.push(node)
-        builder.IF$setThenPart(node, Statement(tokenizer, compilerContext))
+        builder.IF__setThenPart(node, Statement(tokenizer, compilerContext))
 
         if tokenizer.match(ELSE):
-            builder.IF$setElsePart(node, Statement(tokenizer, compilerContext))
+            builder.IF__setElsePart(node, Statement(tokenizer, compilerContext))
 
         compilerContext.stmtStack.pop()
-        builder.IF$finish(node)
+        builder.IF__finish(node)
         
         return node
         
         
     elif tokenType == SWITCH:
         # This allows CASEs after a DEFAULT, which is in the standard.
-        node = builder.SWITCH$build(tokenizer)
-        builder.SWITCH$setDiscriminant(node, ParenExpression(tokenizer, compilerContext))
+        node = builder.SWITCH__build(tokenizer)
+        builder.SWITCH__setDiscriminant(node, ParenExpression(tokenizer, compilerContext))
         compilerContext.stmtStack.push(node)
 
         tokenizer.mustMatch(LEFT_CURLY)
@@ -163,46 +163,46 @@ def Statement(tokenizer, compilerContext):
                 if node.defaultIndex >= 0:
                     raise SyntaxError("More than one switch default", tokenizer)
                     
-                childNode = builder.DEFAULT$build(tokenizer)
-                builder.SWITCH$setDefaultIndex(node, node.cases.length)
+                childNode = builder.DEFAULT__build(tokenizer)
+                builder.SWITCH__setDefaultIndex(node, node.cases.length)
                 tokenizer.mustMatch(COLON)
-                builder.DEFAULT$initializeStatements(childNode, tokenizer)
+                builder.DEFAULT__initializeStatements(childNode, tokenizer)
                 
                 while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT and tokenType != RIGHT_CURLY)
-                    builder.DEFAULT$addStatement(childNode, Statement(tokenizer, compilerContext))
+                    builder.DEFAULT__addStatement(childNode, Statement(tokenizer, compilerContext))
                     
-                builder.DEFAULT$finish(childNode)
+                builder.DEFAULT__finish(childNode)
                 break
 
             elif tokenType == CASE:
-                childNode = builder.CASE$build(tokenizer)
-                builder.CASE$setLabel(childNode, Expression(tokenizer, compilerContext, COLON))
+                childNode = builder.CASE__build(tokenizer)
+                builder.CASE__setLabel(childNode, Expression(tokenizer, compilerContext, COLON))
                 tokenizer.mustMatch(COLON)
-                builder.CASE$initializeStatements(childNode, tokenizer)
+                builder.CASE__initializeStatements(childNode, tokenizer)
                 
                 while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT and tokenType != RIGHT_CURLY)
-                    builder.CASE$addStatement(childNode, Statement(tokenizer, compilerContext))
+                    builder.CASE__addStatement(childNode, Statement(tokenizer, compilerContext))
                 
-                builder.CASE$finish(childNode)
+                builder.CASE__finish(childNode)
                 break
 
             else:
                 raise SyntaxError("Invalid switch case", tokenizer)
 
-            builder.SWITCH$addCase(node, childNode)
+            builder.SWITCH__addCase(node, childNode)
             tokenType = tokenizer.get()
 
         compilerContext.stmtStack.pop()
-        builder.SWITCH$finish(node)
+        builder.SWITCH__finish(node)
 
         return node
         
 
     elif tokenType == FOR:
-        node = builder.FOR$build(tokenizer)
+        node = builder.FOR__build(tokenizer)
         
         if tokenizer.match(IDENTIFIER) and tokenizer.token.value == "each":
-            builder.FOR$rebuildForEach(node)
+            builder.FOR__rebuildForEach(node)
             
         tokenizer.mustMatch(LEFT_PAREN)
         tokenType = tokenizer.peek()
@@ -223,7 +223,7 @@ def Statement(tokenizer, compilerContext):
                 else:
                     # Let in for head, we need to add an implicit block
                     # around the rest of the for.
-                    forBlock = builder.BLOCK$build(tokenizer, compilerContext.blockId++)
+                    forBlock = builder.BLOCK__build(tokenizer, compilerContext.blockId++)
                     compilerContext.stmtStack.push(forBlock)
                     childNode = Variables(tokenizer, compilerContext, forBlock)
                 
@@ -233,56 +233,56 @@ def Statement(tokenizer, compilerContext):
             compilerContext.inForLoopInit = False
 
         if childNode and tokenizer.match(IN):
-            builder.FOR$rebuildForIn(node)
-            builder.FOR$setObject(node, Expression(tokenizer, compilerContext), forBlock)
+            builder.FOR__rebuildForIn(node)
+            builder.FOR__setObject(node, Expression(tokenizer, compilerContext), forBlock)
             
             if childNode.type == VAR or childNode.type == LET:
                 if len(childNode) != 1:
                     raise SyntaxError("Invalid for..in left-hand side", tokenizer)
 
-                builder.FOR$setIterator(node, childNode[0], childNode, forBlock)
+                builder.FOR__setIterator(node, childNode[0], childNode, forBlock)
                 
             else:
-                builder.FOR$setIterator(node, childNode, null, forBlock)
+                builder.FOR__setIterator(node, childNode, null, forBlock)
 
         else:
-            builder.FOR$setSetup(node, childNode)
+            builder.FOR__setSetup(node, childNode)
             tokenizer.mustMatch(SEMICOLON)
             
             if node.isEach:
                 raise SyntaxError("Invalid for each..in loop")
                 
-            builder.FOR$setCondition(node, (tokenizer.peek() == SEMICOLON) ? null : Expression(tokenizer, compilerContext))
+            builder.FOR__setCondition(node, (tokenizer.peek() == SEMICOLON) ? null : Expression(tokenizer, compilerContext))
             tokenizer.mustMatch(SEMICOLON)
-            builder.FOR$setUpdate(node, (tokenizer.peek() == RIGHT_PAREN) ? null : Expression(tokenizer, compilerContext))
+            builder.FOR__setUpdate(node, (tokenizer.peek() == RIGHT_PAREN) ? null : Expression(tokenizer, compilerContext))
         
         tokenizer.mustMatch(RIGHT_PAREN)
-        builder.FOR$setBody(node, nest(tokenizer, compilerContext, node, Statement))
+        builder.FOR__setBody(node, nest(tokenizer, compilerContext, node, Statement))
         
         if forBlock:
-            builder.BLOCK$finish(forBlock)
+            builder.BLOCK__finish(forBlock)
             compilerContext.stmtStack.pop()
     
-        builder.FOR$finish(node)
+        builder.FOR__finish(node)
         return node
         
         
     elif tokenType == WHILE:
-        node = builder.WHILE$build(tokenizer)
+        node = builder.WHILE__build(tokenizer)
         
-        builder.WHILE$setCondition(node, ParenExpression(tokenizer, compilerContext))
-        builder.WHILE$setBody(node, nest(tokenizer, compilerContext, node, Statement))
-        builder.WHILE$finish(node)
+        builder.WHILE__setCondition(node, ParenExpression(tokenizer, compilerContext))
+        builder.WHILE__setBody(node, nest(tokenizer, compilerContext, node, Statement))
+        builder.WHILE__finish(node)
         
         return node                                    
         
         
     elif tokenType == DO:
-        node = builder.DO$build(tokenizer)
+        node = builder.DO__build(tokenizer)
         
-        builder.DO$setBody(node, nest(tokenizer, compilerContext, node, Statement, WHILE))
-        builder.DO$setCondition(node, ParenExpression(tokenizer, compilerContext))
-        builder.DO$finish(node)
+        builder.DO__setBody(node, nest(tokenizer, compilerContext, node, Statement, WHILE))
+        builder.DO__setCondition(node, ParenExpression(tokenizer, compilerContext))
+        builder.DO__finish(node)
         
         if not compilerContext.ecmaStrictMode:
             # <script language="JavaScript"> (without version hints) may need
@@ -296,17 +296,17 @@ def Statement(tokenizer, compilerContext):
       
     elif tokenType == BREAK or tokenType == CONTINUE:
         if tokenType == BREAK:
-            node = builder.BREAK$build(tokenizer) 
+            node = builder.BREAK__build(tokenizer) 
         else:
-            node = builder.CONTINUE$build(tokenizer)
+            node = builder.CONTINUE__build(tokenizer)
 
         if tokenizer.peekOnSameLine() == IDENTIFIER:
             tokenizer.get()
             
             if tokenType == BREAK:
-                builder.BREAK$setLabel(node, tokenizer.token.value)
+                builder.BREAK__setLabel(node, tokenizer.token.value)
             else:
-                builder.CONTINUE$setLabel(node, tokenizer.token.value)
+                builder.CONTINUE__setLabel(node, tokenizer.token.value)
 
         ss = compilerContext.stmtStack
         i = ss.length
@@ -344,32 +344,32 @@ def Statement(tokenizer, compilerContext):
                     break
         
         if tokenType == BREAK:
-            builder.BREAK$setTarget(node, ss[i])
-            builder.BREAK$finish(node)
+            builder.BREAK__setTarget(node, ss[i])
+            builder.BREAK__finish(node)
 
         else:
-            builder.CONTINUE$setTarget(node, ss[i])
-            builder.CONTINUE$finish(node)
+            builder.CONTINUE__setTarget(node, ss[i])
+            builder.CONTINUE__finish(node)
         
         # NO RETURN        
 
 
     elif tokenType == TRY:
-        node = builder.TRY$build(tokenizer)
-        builder.TRY$setTryBlock(node, Block(tokenizer, compilerContext))
+        node = builder.TRY__build(tokenizer)
+        builder.TRY__setTryBlock(node, Block(tokenizer, compilerContext))
         
         while tokenizer.match(CATCH):
-            childNode = builder.CATCH$build(tokenizer)
+            childNode = builder.CATCH__build(tokenizer)
             tokenizer.mustMatch(LEFT_PAREN)
             nextTokenType = tokenizer.get()
             
             if nextTokenType == LEFT_BRACKET or nextTokenType == LEFT_CURLY:
                 # Destructured catch identifiers.
                 tokenizer.unget()
-                builder.CATCH$setVarName(childNode, DestructuringExpression(tokenizer, compilerContext, True))
+                builder.CATCH__setVarName(childNode, DestructuringExpression(tokenizer, compilerContext, True))
             
             elif nextTokenType == IDENTIFIER:
-                builder.CATCH$setVarName(childNode, tokenizer.token.value)
+                builder.CATCH__setVarName(childNode, tokenizer.token.value)
             
             else:
                 raise SyntaxError("Missing identifier in catch", tokenizer)
@@ -381,27 +381,27 @@ def Statement(tokenizer, compilerContext):
                 if node.catchClauses.length and not node.catchClauses.top().guard:
                     raise SyntaxError("Guarded catch after unguarded", tokenizer)
                     
-                builder.CATCH$setGuard(childNode, Expression(tokenizer, compilerContext))
+                builder.CATCH__setGuard(childNode, Expression(tokenizer, compilerContext))
                 
             else:
-                builder.CATCH$setGuard(childNode, null)
+                builder.CATCH__setGuard(childNode, null)
             
             tokenizer.mustMatch(RIGHT_PAREN)
             
-            builder.CATCH$setBlock(childNode, Block(tokenizer, compilerContext))
-            builder.CATCH$finish(childNode)
+            builder.CATCH__setBlock(childNode, Block(tokenizer, compilerContext))
+            builder.CATCH__finish(childNode)
             
-            builder.TRY$addCatch(node, childNode)
+            builder.TRY__addCatch(node, childNode)
         
-        builder.TRY$finishCatches(node)
+        builder.TRY__finishCatches(node)
         
         if tokenizer.match(FINALLY):
-            builder.TRY$setFinallyBlock(node, Block(tokenizer, compilerContext))
+            builder.TRY__setFinallyBlock(node, Block(tokenizer, compilerContext))
             
         if not node.catchClauses.length and not node.finallyBlock:
             raise SyntaxError("Invalid try statement", tokenizer)
             
-        builder.TRY$finish(node)
+        builder.TRY__finish(node)
         return node
         
 
@@ -410,10 +410,10 @@ def Statement(tokenizer, compilerContext):
 
 
     elif tokenType == THROW:
-        node = builder.THROW$build(tokenizer)
+        node = builder.THROW__build(tokenizer)
         
-        builder.THROW$setException(node, Expression(tokenizer, compilerContext))
-        builder.THROW$finish(node)
+        builder.THROW__setException(node, Expression(tokenizer, compilerContext))
+        builder.THROW__finish(node)
         
         # NO RETURN
 
@@ -425,11 +425,11 @@ def Statement(tokenizer, compilerContext):
 
 
     elif tokenType == WITH:
-        node = builder.WITH$build(tokenizer)
+        node = builder.WITH__build(tokenizer)
 
-        builder.WITH$setObject(node, ParenExpression(tokenizer, compilerContext))
-        builder.WITH$setBody(node, nest(tokenizer, compilerContext, node, Statement))
-        builder.WITH$finish(node)
+        builder.WITH__setObject(node, ParenExpression(tokenizer, compilerContext))
+        builder.WITH__setBody(node, nest(tokenizer, compilerContext, node, Statement))
+        builder.WITH__finish(node)
 
         return node
 
@@ -450,16 +450,16 @@ def Statement(tokenizer, compilerContext):
         
 
     elif tokenType == DEBUGGER:
-        node = builder.DEBUGGER$build(tokenizer)
+        node = builder.DEBUGGER__build(tokenizer)
         
         # NO RETURN
         
 
     elif tokenType == NEWLINE or tokenType == SEMICOLON:
-        node = builder.SEMICOLON$build(tokenizer)
+        node = builder.SEMICOLON__build(tokenizer)
         
-        builder.SEMICOLON$setExpression(node, null)
-        builder.SEMICOLON$finish(tokenizer)
+        builder.SEMICOLON__setExpression(node, null)
+        builder.SEMICOLON__finish(tokenizer)
         
         return node
 
@@ -479,21 +479,21 @@ def Statement(tokenizer, compilerContext):
                 }
                 
                 tokenizer.get()
-                node = builder.LABEL$build(tokenizer)
+                node = builder.LABEL__build(tokenizer)
                 
-                builder.LABEL$setLabel(node, label)
-                builder.LABEL$setStatement(node, nest(tokenizer, compilerContext, node, Statement))
-                builder.LABEL$finish(node)
+                builder.LABEL__setLabel(node, label)
+                builder.LABEL__setStatement(node, nest(tokenizer, compilerContext, node, Statement))
+                builder.LABEL__finish(node)
                 
                 return node
 
         # Expression statement.
         # We unget the current token to parse the expression as a whole.
-        node = builder.SEMICOLON$build(tokenizer)
+        node = builder.SEMICOLON__build(tokenizer)
         tokenizer.unget()
-        builder.SEMICOLON$setExpression(node, Expression(tokenizer, compilerContext))
+        builder.SEMICOLON__setExpression(node, Expression(tokenizer, compilerContext))
         node.end = node.expression.end
-        builder.SEMICOLON$finish(node)
+        builder.SEMICOLON__finish(node)
         
         # NO RETURN
         
@@ -522,22 +522,22 @@ def returnOrYield(tokenizer, compilerContext):
         if not compilerContext.inFunction:
             raise SyntaxError("Return not in function", tokenizer)
             
-        node = builder.RETURN$build(tokenizer)
+        node = builder.RETURN__build(tokenizer)
         
     else:
         if !compilerContext.inFunction:
             raise SyntaxError("Yield not in function", tokenizer)
             
         compilerContext.isGenerator = True
-        node = builder.YIELD$build(tokenizer)
+        node = builder.YIELD__build(tokenizer)
 
     nextTokenType = tokenizer.peek(True)
     if nextTokenType != END and nextTokenType != NEWLINE and nextTokenType != SEMICOLON and nextTokenType != RIGHT_CURLY and (tokenType != YIELD or (nextTokenType != tokenType and nextTokenType != RIGHT_BRACKET and nextTokenType != RIGHT_PAREN and nextTokenType != COLON and nextTokenType != COMMA))):
         if tokenType == RETURN:
-            builder.RETURN$setValue(node, Expression(tokenizer, compilerContext))
+            builder.RETURN__setValue(node, Expression(tokenizer, compilerContext))
             compilerContext.hasReturnWithValue = True
         else:
-            builder.YIELD$setValue(node, AssignExpression(tokenizer, compilerContext))
+            builder.YIELD__setValue(node, AssignExpression(tokenizer, compilerContext))
         
     elif tokenType == RETURN:
         compilerContext.hasEmptyReturn = True
@@ -547,9 +547,9 @@ def returnOrYield(tokenizer, compilerContext):
         raise SyntaxError("Generator returns a value", tokenizer)
 
     if tokenType == RETURN:
-        builder.RETURN$finish(node)
+        builder.RETURN__finish(node)
     else:
-        builder.YIELD$finish(node)
+        builder.YIELD__finish(node)
 
     return node
 
@@ -557,10 +557,10 @@ def returnOrYield(tokenizer, compilerContext):
 
 def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     builder = compilerContext.builder
-    f = builder.FUNCTION$build(tokenizer)
+    f = builder.FUNCTION__build(tokenizer)
     
     if tokenizer.match(IDENTIFIER):
-        builder.FUNCTION$setName(f, tokenizer.token.value)
+        builder.FUNCTION__setName(f, tokenizer.token.value)
     elif requireName:
         raise SyntaxError("Missing def identifier", tokenizer)
 
@@ -572,10 +572,10 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
             if tokenType == LEFT_BRACKET or tokenType == LEFT_CURLY:
                 # Destructured formal parameters.
                 tokenizer.unget()
-                builder.FUNCTION$addParam(f, DestructuringExpression(tokenizer, compilerContext))
+                builder.FUNCTION__addParam(f, DestructuringExpression(tokenizer, compilerContext))
                 
             elif tokenType == IDENTIFIER:
-                builder.FUNCTION$addParam(f, tokenizer.token.value)
+                builder.FUNCTION__addParam(f, tokenizer.token.value)
                 
             else:
                 raise SyntaxError("Missing formal parameter", tokenizer)
@@ -602,13 +602,13 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
         x2.blockId = compilerContext.blockId
 
     if tokenType != LEFT_CURLY:
-        builder.FUNCTION$setBody(f, AssignExpression(tokenizer, compilerContext))
+        builder.FUNCTION__setBody(f, AssignExpression(tokenizer, compilerContext))
         if compilerContext.isGenerator:
             raise SyntaxError("Generator returns a value", tokenizer)
             
     else:
-        builder.FUNCTION$hoistVars(x2.blockId)
-        builder.FUNCTION$setBody(f, Script(tokenizer, x2))
+        builder.FUNCTION__hoistVars(x2.blockId)
+        builder.FUNCTION__setBody(f, Script(tokenizer, x2))
 
     # 
     # To linearize hoisting with nested blocks needing hoists, if a toplevel
@@ -652,8 +652,8 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
             # Set a flag in case the builder wants to have different behavior
             # on the second pass.
             builder.secondPass = True
-            builder.FUNCTION$hoistVars(f.body.id, True)
-            builder.FUNCTION$setBody(f, Script(tokenizer, x2))
+            builder.FUNCTION__hoistVars(f.body.id, True)
+            builder.FUNCTION__setBody(f, Script(tokenizer, x2))
             builder.secondPass = False
 
     if tokenType == LEFT_CURLY:
@@ -665,7 +665,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     if functionForm == DECLARED_FORM:
         compilerContext.funDecls.push(f)
         
-    builder.FUNCTION$finish(f, compilerContext)
+    builder.FUNCTION__finish(f, compilerContext)
     
     return f
 
@@ -676,21 +676,21 @@ def Variables(tokenizer, compilerContext, letBlock):
     
     builder = compilerContext.builder
     if tokenizer.token.type == VAR:
-        build = builder.VAR$build
-        addDecl = builder.VAR$addDecl
-        finish = builder.VAR$finish
+        build = builder.VAR__build
+        addDecl = builder.VAR__addDecl
+        finish = builder.VAR__finish
         s = compilerContext
             
     elif tokenizer.token.type == CONST:
-        build = builder.CONST$build
-        addDecl = builder.CONST$addDecl
-        finish = builder.CONST$finish
+        build = builder.CONST__build
+        addDecl = builder.CONST__addDecl
+        finish = builder.CONST__finish
         s = compilerContext
         
     elif tokenizer.token.type == LET or tokenizer.token.type == LEFT_PAREN:
-        build = builder.LET$build
-        addDecl = builder.LET$addDecl
-        finish = builder.LET$finish
+        build = builder.LET__build
+        addDecl = builder.LET__addDecl
+        finish = builder.LET__finish
         
         if not letBlock:
             ss = compilerContext.stmtStack
@@ -702,9 +702,9 @@ def Variables(tokenizer, compilerContext, letBlock):
 
             # Lets at the def toplevel are just vars, at least in SpiderMonkey.
             if i == 0:
-                build = builder.VAR$build
-                addDecl = builder.VAR$addDecl
-                finish = builder.VAR$finish
+                build = builder.VAR__build
+                addDecl = builder.VAR__addDecl
+                finish = builder.VAR__finish
                 s = compilerContext
 
             else:
@@ -722,7 +722,7 @@ def Variables(tokenizer, compilerContext, letBlock):
         # FIXME Should have a special DECLARATION node instead of overloading
         # IDENTIFIER to mean both identifier declarations and destructured
         # declarations.
-        childNode = builder.DECL$build(tokenizer)
+        childNode = builder.DECL__build(tokenizer)
         
         if tokenType == LEFT_BRACKET or tokenType == LEFT_CURLY:
             # Pass in s if we need to add each pattern matched into
@@ -731,7 +731,7 @@ def Variables(tokenizer, compilerContext, letBlock):
 
             # Need to unget to parse the full destructured expression.
             tokenizer.unget()
-            builder.DECL$setName(childNode, DestructuringExpression(tokenizer, compilerContext, True, s))
+            builder.DECL__setName(childNode, DestructuringExpression(tokenizer, compilerContext, True, s))
 
             if compilerContext.inForLoopInit and tokenizer.peek() == IN:
                 addDecl.call(builder, node, childNode, s)
@@ -742,22 +742,22 @@ def Variables(tokenizer, compilerContext, letBlock):
                 raise SyntaxError("Invalid variable initialization", tokenizer)
 
             # Parse the init as a normal assignment.
-            n3 = builder.ASSIGN$build(tokenizer)
-            builder.ASSIGN$addOperand(n3, childNode.name)
-            builder.ASSIGN$addOperand(n3, AssignExpression(tokenizer, compilerContext))
-            builder.ASSIGN$finish(n3)
+            n3 = builder.ASSIGN__build(tokenizer)
+            builder.ASSIGN__addOperand(n3, childNode.name)
+            builder.ASSIGN__addOperand(n3, AssignExpression(tokenizer, compilerContext))
+            builder.ASSIGN__finish(n3)
 
             # But only add the rhs as the initializer.
-            builder.DECL$setInitializer(childNode, n3[1])
-            builder.DECL$finish(childNode)
+            builder.DECL__setInitializer(childNode, n3[1])
+            builder.DECL__finish(childNode)
             addDecl.call(builder, node, childNode, s)
             continue
 
         if tokenType != IDENTIFIER:
             raise SyntaxError("Missing variable name", tokenizer)
 
-        builder.DECL$setName(childNode, tokenizer.token.value)
-        builder.DECL$setReadOnly(childNode, node.type == CONST)
+        builder.DECL__setName(childNode, tokenizer.token.value)
+        builder.DECL__setReadOnly(childNode, node.type == CONST)
         addDecl.call(builder, node, childNode, s)
 
         if tokenizer.match(ASSIGN):
@@ -766,18 +766,18 @@ def Variables(tokenizer, compilerContext, letBlock):
 
             # Parse the init as a normal assignment.
             id = mkIdentifier(childNode.tokenizer, childNode.name, True)
-            n3 = builder.ASSIGN$build(tokenizer)
+            n3 = builder.ASSIGN__build(tokenizer)
             
-            builder.ASSIGN$addOperand(n3, id)
-            builder.ASSIGN$addOperand(n3, AssignExpression(tokenizer, compilerContext))
-            builder.ASSIGN$finish(n3)
+            builder.ASSIGN__addOperand(n3, id)
+            builder.ASSIGN__addOperand(n3, AssignExpression(tokenizer, compilerContext))
+            builder.ASSIGN__finish(n3)
             
             initializers.push(n3)
 
             # But only add the rhs as the initializer.
-            builder.DECL$setInitializer(childNode, n3[1])
+            builder.DECL__setInitializer(childNode, n3[1])
 
-        builder.DECL$finish(childNode)
+        builder.DECL__finish(childNode)
         s.varDecls.push(childNode)
         
         if not tokenizer.match(COMMA):
@@ -793,29 +793,29 @@ def LetBlock(tokenizer, compilerContext, isStatement):
     builder = compilerContext.builder
 
     # tokenizer.token.type must be LET
-    node = builder.LET_BLOCK$build(tokenizer)
+    node = builder.LET_BLOCK__build(tokenizer)
     tokenizer.mustMatch(LEFT_PAREN)
-    builder.LET_BLOCK$setVariables(node, Variables(tokenizer, compilerContext, node))
+    builder.LET_BLOCK__setVariables(node, Variables(tokenizer, compilerContext, node))
     tokenizer.mustMatch(RIGHT_PAREN)
 
     if isStatement and tokenizer.peek() != LEFT_CURLY:
         # If this is really an expression in let statement guise, then we
         # need to wrap the LET_BLOCK node in a SEMICOLON node so that we pop
         # the return value of the expression.
-        childNode = builder.SEMICOLON$build(tokenizer)
-        builder.SEMICOLON$setExpression(childNode, node)
-        builder.SEMICOLON$finish(childNode)
+        childNode = builder.SEMICOLON__build(tokenizer)
+        builder.SEMICOLON__setExpression(childNode, node)
+        builder.SEMICOLON__finish(childNode)
         isStatement = False
 
     if isStatement:
         childNode = Block(tokenizer, compilerContext)
-        builder.LET_BLOCK$setBlock(node, childNode)
+        builder.LET_BLOCK__setBlock(node, childNode)
         
     else:
         childNode = AssignExpression(tokenizer, compilerContext)
-        builder.LET_BLOCK$setExpression(node, childNode)
+        builder.LET_BLOCK__setExpression(node, childNode)
 
-    builder.LET_BLOCK$finish(node)
+    builder.LET_BLOCK__finish(node)
     return node
 
 
@@ -849,12 +849,12 @@ def checkDestructuring(tokenizer, compilerContext, node, simpleNamesOnly, data):
                 raise SyntaxError("Missing name in pattern")
                 
             elif data:
-                childNode = builder.DECL$build(tokenizer)
-                builder.DECL$setName(childNode, lhs.value)
+                childNode = builder.DECL__build(tokenizer)
+                builder.DECL__setName(childNode, lhs.value)
 
                 # Don't need to set initializer because it's just for
                 # hoisting anyways.
-                builder.DECL$finish(childNode)
+                builder.DECL__finish(childNode)
 
                 # Each pattern needs to be added to varDecls.
                 data.varDecls.push(childNode)
@@ -868,11 +868,11 @@ def DestructuringExpression(tokenizer, compilerContext, simpleNamesOnly, data):
 
 
 def GeneratorExpression(tokenizer, compilerContext, e):
-    node = builder.GENERATOR$build(tokenizer)
+    node = builder.GENERATOR__build(tokenizer)
 
-    builder.GENERATOR$setExpression(node, e)
-    builder.GENERATOR$setTail(node, comprehensionTail(tokenizer, compilerContext))
-    builder.GENERATOR$finish(node)
+    builder.GENERATOR__setExpression(node, e)
+    builder.GENERATOR__setTail(node, comprehensionTail(tokenizer, compilerContext))
+    builder.GENERATOR__finish(node)
 
     return node
 
@@ -881,17 +881,17 @@ def comprehensionTail(tokenizer, compilerContext):
     builder = compilerContext.builder
     
     # tokenizer.token.type must be FOR
-    body = builder.COMP_TAIL$build(tokenizer)
+    body = builder.COMP_TAIL__build(tokenizer)
 
     while True:
-        node = builder.FOR$build(tokenizer)
+        node = builder.FOR__build(tokenizer)
         
         # Comprehension tails are always for..in loops.
-        builder.FOR$rebuildForIn(node)
+        builder.FOR__rebuildForIn(node)
         if tokenizer.match(IDENTIFIER):
             # But sometimes they're for each..in.
             if tokenizer.token.value == "each":
-                builder.FOR$rebuildForEach(node)
+                builder.FOR__rebuildForEach(node)
             else:
                 tokenizer.unget()
 
@@ -901,20 +901,20 @@ def comprehensionTail(tokenizer, compilerContext):
         if tokenType == LEFT_BRACKET or tokenType == LEFT_CURLY:
             tokenizer.unget()
             # Destructured left side of for in comprehension tails.
-            builder.FOR$setIterator(node, DestructuringExpression(tokenizer, compilerContext), null)
+            builder.FOR__setIterator(node, DestructuringExpression(tokenizer, compilerContext), null)
             break
 
         elif tokenType == IDENTIFIER:
-            n3 = builder.DECL$build(tokenizer)
+            n3 = builder.DECL__build(tokenizer)
             
-            builder.DECL$setName(n3, n3.value)
-            builder.DECL$finish(n3)
+            builder.DECL__setName(n3, n3.value)
+            builder.DECL__finish(n3)
             
-            childNode = builder.VAR$build(tokenizer)
+            childNode = builder.VAR__build(tokenizer)
             
-            builder.VAR$addDecl(childNode, n3)
-            builder.VAR$finish(childNode)
-            builder.FOR$setIterator(node, n3, childNode)
+            builder.VAR__addDecl(childNode, n3)
+            builder.VAR__finish(childNode)
+            builder.FOR__setIterator(node, n3, childNode)
             
             # Don't add to varDecls since the semantics of comprehensions is
             # such that the variables are in their own def when
@@ -925,18 +925,18 @@ def comprehensionTail(tokenizer, compilerContext):
             raise SyntaxError("Missing identifier")
         
         tokenizer.mustMatch(IN)
-        builder.FOR$setObject(node, Expression(tokenizer, compilerContext))
+        builder.FOR__setObject(node, Expression(tokenizer, compilerContext))
         tokenizer.mustMatch(RIGHT_PAREN)
-        builder.COMP_TAIL$addFor(body, node)
+        builder.COMP_TAIL__addFor(body, node)
         
         if not tokenizer.match(FOR):
             break
 
     # Optional guard.
     if (tokenizer.match(IF))
-        builder.COMP_TAIL$setGuard(body, ParenExpression(tokenizer, compilerContext))
+        builder.COMP_TAIL__setGuard(body, ParenExpression(tokenizer, compilerContext))
 
-    builder.COMP_TAIL$finish(body)
+    builder.COMP_TAIL__finish(body)
 
     return body
 
@@ -973,19 +973,19 @@ def Expression(tokenizer, compilerContext):
     node = AssignExpression(tokenizer, compilerContext)
 
     if tokenizer.match(COMMA):
-        childNode = builder.COMMA$build(tokenizer)
-        builder.COMMA$addOperand(childNode, node)
+        childNode = builder.COMMA__build(tokenizer)
+        builder.COMMA__addOperand(childNode, node)
         node = childNode
         while True:
             childNode = node[node.length-1]
             if childNode.type == YIELD and not childNode.parenthesized:
                 raise SyntaxError("Yield expression must be parenthesized")
-            builder.COMMA$addOperand(node, AssignExpression(tokenizer, compilerContext))
+            builder.COMMA__addOperand(node, AssignExpression(tokenizer, compilerContext))
             
             if not tokenizer.match(COMMA):
                 break
                 
-        builder.COMMA$finish(node)
+        builder.COMMA__finish(node)
 
     return node
 
@@ -998,11 +998,11 @@ def AssignExpression(tokenizer, compilerContext):
     if tokenizer.match(YIELD, True):
         return returnOrYield(tokenizer, compilerContext)
 
-    node = builder.ASSIGN$build(tokenizer)
+    node = builder.ASSIGN__build(tokenizer)
     lhs = ConditionalExpression(tokenizer, compilerContext)
 
     if not tokenizer.match(ASSIGN):
-        builder.ASSIGN$finish(node)
+        builder.ASSIGN__finish(node)
         return lhs
 
     if lhs.type == OBJECT_INIT or lhs.type == ARRAY_INIT:
@@ -1012,10 +1012,10 @@ def AssignExpression(tokenizer, compilerContext):
     else:
         raise SyntaxError("Bad left-hand side of assignment", tokenizer)
         
-    builder.ASSIGN$setAssignOp(node, tokenizer.token.assignOp)
-    builder.ASSIGN$addOperand(node, lhs)
-    builder.ASSIGN$addOperand(node, AssignExpression(tokenizer, compilerContext))
-    builder.ASSIGN$finish(node)
+    builder.ASSIGN__setAssignOp(node, tokenizer.token.assignOp)
+    builder.ASSIGN__addOperand(node, lhs)
+    builder.ASSIGN__addOperand(node, AssignExpression(tokenizer, compilerContext))
+    builder.ASSIGN__finish(node)
 
     return node
 
@@ -1026,22 +1026,22 @@ def ConditionalExpression(tokenizer, compilerContext):
 
     if tokenizer.match(HOOK):
         childNode = node
-        node = builder.HOOK$build(tokenizer)
-        builder.HOOK$setCondition(node, childNode)
+        node = builder.HOOK__build(tokenizer)
+        builder.HOOK__setCondition(node, childNode)
 
         # Always accept the 'in' operator in the middle clause of a ternary,
         # where it's unambiguous, even if we might be parsing the init of a
         # for statement.
         oldLoopInit = compilerContext.inForLoopInit
         compilerContext.inForLoopInit = False
-        builder.HOOK$setThenPart(node, AssignExpression(tokenizer, compilerContext))
+        builder.HOOK__setThenPart(node, AssignExpression(tokenizer, compilerContext))
         compilerContext.inForLoopInit = oldLoopInit
         
         if not tokenizer.match(COLON):
             raise SyntaxError("Missing : after ?", tokenizer)
             
-        builder.HOOK$setElsePart(node, AssignExpression(tokenizer, compilerContext))
-        builder.HOOK$finish(node)
+        builder.HOOK__setElsePart(node, AssignExpression(tokenizer, compilerContext))
+        builder.HOOK__finish(node)
 
     return node
     
@@ -1051,10 +1051,10 @@ def OrExpression(tokenizer, compilerContext):
     node = AndExpression(tokenizer, compilerContext)
     
     while tokenizer.match(OR):
-        childNode = builder.OR$build(tokenizer)
-        builder.OR$addOperand(childNode, node)
-        builder.OR$addOperand(childNode, AndExpression(tokenizer, compilerContext))
-        builder.OR$finish(childNode)
+        childNode = builder.OR__build(tokenizer)
+        builder.OR__addOperand(childNode, node)
+        builder.OR__addOperand(childNode, AndExpression(tokenizer, compilerContext))
+        builder.OR__finish(childNode)
         node = childNode
 
     return node
@@ -1065,10 +1065,10 @@ def AndExpression(tokenizer, compilerContext):
     node = BitwiseOrExpression(tokenizer, compilerContext)
 
     while tokenizer.match(AND):
-        childNode = builder.AND$build(tokenizer)
-        builder.AND$addOperand(childNode, node)
-        builder.AND$addOperand(childNode, BitwiseOrExpression(tokenizer, compilerContext))
-        builder.AND$finish(childNode)
+        childNode = builder.AND__build(tokenizer)
+        builder.AND__addOperand(childNode, node)
+        builder.AND__addOperand(childNode, BitwiseOrExpression(tokenizer, compilerContext))
+        builder.AND__finish(childNode)
         node = childNode
 
     return node
@@ -1079,10 +1079,10 @@ def BitwiseOrExpression(tokenizer, compilerContext):
     node = BitwiseXorExpression(tokenizer, compilerContext)
     
     while tokenizer.match(BITWISE_OR):
-        childNode = builder.BITWISE_OR$build(tokenizer)
-        builder.BITWISE_OR$addOperand(childNode, node)
-        builder.BITWISE_OR$addOperand(childNode, BitwiseXorExpression(tokenizer, compilerContext))
-        builder.BITWISE_OR$finish(childNode)
+        childNode = builder.BITWISE_OR__build(tokenizer)
+        builder.BITWISE_OR__addOperand(childNode, node)
+        builder.BITWISE_OR__addOperand(childNode, BitwiseXorExpression(tokenizer, compilerContext))
+        builder.BITWISE_OR__finish(childNode)
         node = childNode
 
     return node
@@ -1093,10 +1093,10 @@ def BitwiseXorExpression(tokenizer, compilerContext):
     node = BitwiseAndExpression(tokenizer, compilerContext)
     
     while tokenizer.match(BITWISE_XOR):
-        childNode = builder.BITWISE_XOR$build(tokenizer)
-        builder.BITWISE_XOR$addOperand(childNode, node)
-        builder.BITWISE_XOR$addOperand(childNode, BitwiseAndExpression(tokenizer, compilerContext))
-        builder.BITWISE_XOR$finish(childNode)
+        childNode = builder.BITWISE_XOR__build(tokenizer)
+        builder.BITWISE_XOR__addOperand(childNode, node)
+        builder.BITWISE_XOR__addOperand(childNode, BitwiseAndExpression(tokenizer, compilerContext))
+        builder.BITWISE_XOR__finish(childNode)
         node = childNode
 
     return node
@@ -1107,10 +1107,10 @@ def BitwiseAndExpression(tokenizer, compilerContext):
     node = EqualityExpression(tokenizer, compilerContext)
 
     while tokenizer.match(BITWISE_AND):
-        childNode = builder.BITWISE_AND$build(tokenizer)
-        builder.BITWISE_AND$addOperand(childNode, node)
-        builder.BITWISE_AND$addOperand(childNode, EqualityExpression(tokenizer, compilerContext))
-        builder.BITWISE_AND$finish(childNode)
+        childNode = builder.BITWISE_AND__build(tokenizer)
+        builder.BITWISE_AND__addOperand(childNode, node)
+        builder.BITWISE_AND__addOperand(childNode, EqualityExpression(tokenizer, compilerContext))
+        builder.BITWISE_AND__finish(childNode)
         node = childNode
 
     return node
@@ -1121,10 +1121,10 @@ def EqualityExpression(tokenizer, compilerContext):
     node = RelationalExpression(tokenizer, compilerContext)
     
     while tokenizer.match(EQ) or tokenizer.match(NE) or tokenizer.match(STRICT_EQ) or tokenizer.match(STRICT_NE):
-        childNode = builder.EQUALITY$build(tokenizer)
-        builder.EQUALITY$addOperand(childNode, node)
-        builder.EQUALITY$addOperand(childNode, RelationalExpression(tokenizer, compilerContext))
-        builder.EQUALITY$finish(childNode)
+        childNode = builder.EQUALITY__build(tokenizer)
+        builder.EQUALITY__addOperand(childNode, node)
+        builder.EQUALITY__addOperand(childNode, RelationalExpression(tokenizer, compilerContext))
+        builder.EQUALITY__finish(childNode)
         node = childNode
 
     return node
@@ -1140,10 +1140,10 @@ def RelationalExpression(tokenizer, compilerContext):
     node = ShiftExpression(tokenizer, compilerContext)
 
     while tokenizer.match(LT) or tokenizer.match(LE) or tokenizer.match(GE) or tokenizer.match(GT) or (oldLoopInit == False and tokenizer.match(IN)) or tokenizer.match(INSTANCEOF):
-        childNode = builder.RELATIONAL$build(tokenizer)
-        builder.RELATIONAL$addOperand(childNode, node)
-        builder.RELATIONAL$addOperand(childNode, ShiftExpression(tokenizer, compilerContext))
-        builder.RELATIONAL$finish(childNode)
+        childNode = builder.RELATIONAL__build(tokenizer)
+        builder.RELATIONAL__addOperand(childNode, node)
+        builder.RELATIONAL__addOperand(childNode, ShiftExpression(tokenizer, compilerContext))
+        builder.RELATIONAL__finish(childNode)
         node = childNode
     
     compilerContext.inForLoopInit = oldLoopInit
@@ -1156,10 +1156,10 @@ def ShiftExpression(tokenizer, compilerContext):
     node = AddExpression(tokenizer, compilerContext)
     
     while tokenizer.match(LSH) or tokenizer.match(RSH) or tokenizer.match(URSH):
-        childNode = builder.SHIFT$build(tokenizer)
-        builder.SHIFT$addOperand(childNode, node)
-        builder.SHIFT$addOperand(childNode, AddExpression(tokenizer, compilerContext))
-        builder.SHIFT$finish(childNode)
+        childNode = builder.SHIFT__build(tokenizer)
+        builder.SHIFT__addOperand(childNode, node)
+        builder.SHIFT__addOperand(childNode, AddExpression(tokenizer, compilerContext))
+        builder.SHIFT__finish(childNode)
         node = childNode
 
     return node
@@ -1170,10 +1170,10 @@ def AddExpression(tokenizer, compilerContext):
     node = MultiplyExpression(tokenizer, compilerContext)
     
     while tokenizer.match(PLUS) or tokenizer.match(MINUS):
-        childNode = builder.ADD$build(tokenizer)
-        builder.ADD$addOperand(childNode, node)
-        builder.ADD$addOperand(childNode, MultiplyExpression(tokenizer, compilerContext))
-        builder.ADD$finish(childNode)
+        childNode = builder.ADD__build(tokenizer)
+        builder.ADD__addOperand(childNode, node)
+        builder.ADD__addOperand(childNode, MultiplyExpression(tokenizer, compilerContext))
+        builder.ADD__finish(childNode)
         node = childNode
 
     return node
@@ -1184,10 +1184,10 @@ def MultiplyExpression(tokenizer, compilerContext):
     node = UnaryExpression(tokenizer, compilerContext)
     
     while tokenizer.match(MUL) or tokenizer.match(DIV) or tokenizer.match(MOD):
-        childNode = builder.MULTIPLY$build(tokenizer)
-        builder.MULTIPLY$addOperand(childNode, node)
-        builder.MULTIPLY$addOperand(childNode, UnaryExpression(tokenizer, compilerContext))
-        builder.MULTIPLY$finish(childNode)
+        childNode = builder.MULTIPLY__build(tokenizer)
+        builder.MULTIPLY__addOperand(childNode, node)
+        builder.MULTIPLY__addOperand(childNode, UnaryExpression(tokenizer, compilerContext))
+        builder.MULTIPLY__finish(childNode)
         node = childNode
 
     return node
@@ -1198,13 +1198,13 @@ def UnaryExpression(tokenizer, compilerContext):
     tokenType = tokenizer.get(True)
 
     if tokenType in [DELETE, VOID, TYPEOF, NOT, BITWISE_NOT, PLUS, MINUS]:
-        node = builder.UNARY$build(tokenizer)
-        builder.UNARY$addOperand(node, UnaryExpression(tokenizer, compilerContext))
+        node = builder.UNARY__build(tokenizer)
+        builder.UNARY__addOperand(node, UnaryExpression(tokenizer, compilerContext))
     
     elif tokenType == INCREMENT or tokenType == DECREMENT:
         # Prefix increment/decrement.
-        node = builder.UNARY$build(tokenizer)
-        builder.UNARY$addOperand(node, MemberExpression(tokenizer, compilerContext, True))
+        node = builder.UNARY__build(tokenizer)
+        builder.UNARY__addOperand(node, MemberExpression(tokenizer, compilerContext, True))
 
     else:
         tokenizer.unget()
@@ -1213,13 +1213,13 @@ def UnaryExpression(tokenizer, compilerContext):
         # Don't look across a newline boundary for a postfix {in,de}crement.
         if tokenizer.tokens[(tokenizer.tokenIndex + tokenizer.lookahead - 1) & 3].lineno == tokenizer.lineno:
             if tokenizer.match(INCREMENT) or tokenizer.match(DECREMENT):
-                childNode = builder.UNARY$build(tokenizer)
-                builder.UNARY$setPostfix(childNode)
-                builder.UNARY$finish(node)
-                builder.UNARY$addOperand(childNode, node)
+                childNode = builder.UNARY__build(tokenizer)
+                builder.UNARY__setPostfix(childNode)
+                builder.UNARY__finish(node)
+                builder.UNARY__addOperand(childNode, node)
                 node = childNode
 
-    builder.UNARY$finish(node)
+    builder.UNARY__finish(node)
     return node
 
 
@@ -1227,14 +1227,14 @@ def MemberExpression(tokenizer, compilerContext, allowCallSyntax):
     builder = compilerContext.builder
 
     if tokenizer.match(NEW):
-        node = builder.MEMBER$build(tokenizer)
-        builder.MEMBER$addOperand(node, MemberExpression(tokenizer, compilerContext, False))
+        node = builder.MEMBER__build(tokenizer)
+        builder.MEMBER__addOperand(node, MemberExpression(tokenizer, compilerContext, False))
         
         if tokenizer.match(LEFT_PAREN):
-            builder.MEMBER$rebuildNewWithArgs(node)
-            builder.MEMBER$addOperand(node, ArgumentList(tokenizer, compilerContext))
+            builder.MEMBER__rebuildNewWithArgs(node)
+            builder.MEMBER__addOperand(node, ArgumentList(tokenizer, compilerContext))
         
-        builder.MEMBER$finish(node)
+        builder.MEMBER__finish(node)
     
     else:
         node = PrimaryExpression(tokenizer, compilerContext)
@@ -1245,27 +1245,27 @@ def MemberExpression(tokenizer, compilerContext, allowCallSyntax):
             break
         
         if tokenType == DOT:
-            childNode = builder.MEMBER$build(tokenizer)
-            builder.MEMBER$addOperand(childNode, node)
+            childNode = builder.MEMBER__build(tokenizer)
+            builder.MEMBER__addOperand(childNode, node)
             tokenizer.mustMatch(IDENTIFIER)
-            builder.MEMBER$addOperand(childNode, builder.MEMBER$build(tokenizer))
+            builder.MEMBER__addOperand(childNode, builder.MEMBER__build(tokenizer))
 
         elif tokenType == LEFT_BRACKET:
-            childNode = builder.MEMBER$build(tokenizer, INDEX)
-            builder.MEMBER$addOperand(childNode, node)
-            builder.MEMBER$addOperand(childNode, Expression(tokenizer, compilerContext))
+            childNode = builder.MEMBER__build(tokenizer, INDEX)
+            builder.MEMBER__addOperand(childNode, node)
+            builder.MEMBER__addOperand(childNode, Expression(tokenizer, compilerContext))
             tokenizer.mustMatch(RIGHT_BRACKET)
 
         elif tokenType == LEFT_PAREN and allowCallSyntax:
-            childNode = builder.MEMBER$build(tokenizer, CALL)
-            builder.MEMBER$addOperand(childNode, node)
-            builder.MEMBER$addOperand(childNode, ArgumentList(tokenizer, compilerContext))
+            childNode = builder.MEMBER__build(tokenizer, CALL)
+            builder.MEMBER__addOperand(childNode, node)
+            builder.MEMBER__addOperand(childNode, ArgumentList(tokenizer, compilerContext))
 
         else:
             tokenizer.unget()
             return node
 
-        builder.MEMBER$finish(childNode)
+        builder.MEMBER__finish(childNode)
         node = childNode
 
     return node
@@ -1273,7 +1273,7 @@ def MemberExpression(tokenizer, compilerContext, allowCallSyntax):
 
 def ArgumentList(tokenizer, compilerContext):
     builder = compilerContext.builder
-    node = builder.LIST$build(tokenizer)
+    node = builder.LIST__build(tokenizer)
     
     if tokenizer.match(RIGHT_PAREN, True):
         return node
@@ -1288,12 +1288,12 @@ def ArgumentList(tokenizer, compilerContext):
             if node.length > 1 or tokenizer.peek(True) == COMMA:
                 raise SyntaxError("Generator expression must be parenthesized", tokenizer)
         
-        builder.LIST$addOperand(node, childNode)
+        builder.LIST__addOperand(node, childNode)
         if not tokenizer.match(COMMA):
             break
 
     tokenizer.mustMatch(RIGHT_PAREN)
-    builder.LIST$finish(node)
+    builder.LIST__finish(node)
 
     return node
 
@@ -1306,7 +1306,7 @@ def PrimaryExpression(tokenizer, compilerContext):
         node = FunctionDefinition(tokenizer, compilerContext, False, EXPRESSED_FORM)
 
     elif tokenType == LEFT_BRACKET:
-        node = builder.ARRAY_INIT$build(tokenizer)
+        node = builder.ARRAY_INIT__build(tokenizer)
         while True:
             tokenType = tokenizer.peek()
             if tokenType == RIGHT_BRACKET:
@@ -1314,10 +1314,10 @@ def PrimaryExpression(tokenizer, compilerContext):
         
             if tokenType == COMMA:
                 tokenizer.get()
-                builder.ARRAY_INIT$addElement(node, null)
+                builder.ARRAY_INIT__addElement(node, null)
                 continue
 
-            builder.ARRAY_INIT$addElement(node, AssignExpression(tokenizer, compilerContext))
+            builder.ARRAY_INIT__addElement(node, AssignExpression(tokenizer, compilerContext))
 
             if tokenType != COMMA and not tokenizer.match(COMMA)
                 break
@@ -1325,16 +1325,16 @@ def PrimaryExpression(tokenizer, compilerContext):
         # If we matched exactly one element and got a FOR, we have an
         # array comprehension.
         if node.length == 1 and tokenizer.match(FOR):
-            childNode = builder.ARRAY_COMP$build(tokenizer)
-            builder.ARRAY_COMP$setExpression(childNode, node[0])
-            builder.ARRAY_COMP$setTail(childNode, comprehensionTail(tokenizer, compilerContext))
+            childNode = builder.ARRAY_COMP__build(tokenizer)
+            builder.ARRAY_COMP__setExpression(childNode, node[0])
+            builder.ARRAY_COMP__setTail(childNode, comprehensionTail(tokenizer, compilerContext))
             node = childNode
         
         tokenizer.mustMatch(RIGHT_BRACKET)
-        builder.PRIMARY$finish(node)
+        builder.PRIMARY__finish(node)
 
     elif tokenType == LEFT_CURLY:
-        node = builder.OBJECT_INIT$build(tokenizer)
+        node = builder.OBJECT_INIT__build(tokenizer)
 
         # Simulate a label-goto from JS via a closure
         def object_init():
@@ -1347,12 +1347,12 @@ def PrimaryExpression(tokenizer, compilerContext):
                             raise SyntaxError("Illegal property accessor", tokenizer)
                             
                         fd = FunctionDefinition(tokenizer, compilerContext, True, EXPRESSED_FORM)
-                        builder.OBJECT_INIT$addProperty(node, fd)
+                        builder.OBJECT_INIT__addProperty(node, fd)
                         
                     else:
                         if tokenType == IDENTIFIER or tokenType == NUMBER or tokenType == STRING:
-                            id = builder.PRIMARY$build(tokenizer, IDENTIFIER)
-                            builder.PRIMARY$finish(id)
+                            id = builder.PRIMARY__build(tokenizer, IDENTIFIER)
+                            builder.PRIMARY__finish(id)
                             
                         elif tokenType == RIGHT_CURLY:
                             if compilerContext.ecma3OnlyMode:
@@ -1363,31 +1363,31 @@ def PrimaryExpression(tokenizer, compilerContext):
                             
                         else:
                             if tokenizer.token.value in keywords:
-                                id = builder.PRIMARY$build(tokenizer, IDENTIFIER)
-                                builder.PRIMARY$finish(id)
+                                id = builder.PRIMARY__build(tokenizer, IDENTIFIER)
+                                builder.PRIMARY__finish(id)
                             else:
                                 raise SyntaxError("Invalid property name", tokenizer)
                         
                         if tokenizer.match(COLON):
-                            childNode = builder.PROPERTY_INIT$build(tokenizer)
-                            builder.PROPERTY_INIT$addOperand(childNode, id)
-                            builder.PROPERTY_INIT$addOperand(childNode, AssignExpression(tokenizer, compilerContext))
-                            builder.PROPERTY_INIT$finish(childNode)
-                            builder.OBJECT_INIT$addProperty(node, childNode)
+                            childNode = builder.PROPERTY_INIT__build(tokenizer)
+                            builder.PROPERTY_INIT__addOperand(childNode, id)
+                            builder.PROPERTY_INIT__addOperand(childNode, AssignExpression(tokenizer, compilerContext))
+                            builder.PROPERTY_INIT__finish(childNode)
+                            builder.OBJECT_INIT__addProperty(node, childNode)
                             
                         else:
                             # Support, e.g., |var {compilerContext, y} = o| as destructuring shorthand
                             # for |var {compilerContext: compilerContext, y: y} = o|, per proposed JS2/ES4 for JS1.8.
                             if tokenizer.peek() != COMMA and tokenizer.peek() != RIGHT_CURLY:
                                 raise SyntaxError("Missing : after property", tokenizer)
-                            builder.OBJECT_INIT$addProperty(node, id)
+                            builder.OBJECT_INIT__addProperty(node, id)
                         
                     if not tokenizer.match(COMMA):
                         break
 
                 tokenizer.mustMatch(RIGHT_CURLY)
 
-            builder.OBJECT_INIT$finish(node)
+            builder.OBJECT_INIT__finish(node)
         
         # Initial call
         object_init()        
@@ -1402,8 +1402,8 @@ def PrimaryExpression(tokenizer, compilerContext):
         node = LetBlock(tokenizer, compilerContext, False)
 
     elif tokenType in [NULL, THIS, TRUE, FALSE, IDENTIFIER, NUMBER, STRING, REGEXP]:
-        node = builder.PRIMARY$build(tokenizer)
-        builder.PRIMARY$finish(node)
+        node = builder.PRIMARY__build(tokenizer)
+        builder.PRIMARY__finish(node)
 
     else:
         raise SyntaxError("Missing operand", tokenizer)
