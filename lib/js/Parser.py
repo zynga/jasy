@@ -169,9 +169,12 @@ def Statement(tokenizer, compilerContext):
                 tokenizer.mustMatch(COLON)
                 builder.DEFAULT__initializeStatements(childNode, tokenizer)
                 
-                while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT and tokenType != RIGHT_CURLY)
+                while True:
+                    tokenType=tokenizer.peek(True)
+                    if tokenType == CASE or tokenType == DEFAULT or tokenType == RIGHT_CURLY:
+                        break
                     builder.DEFAULT__addStatement(childNode, Statement(tokenizer, compilerContext))
-                    
+                
                 builder.DEFAULT__finish(childNode)
                 break
 
@@ -180,8 +183,11 @@ def Statement(tokenizer, compilerContext):
                 builder.CASE__setLabel(childNode, Expression(tokenizer, compilerContext, COLON))
                 tokenizer.mustMatch(COLON)
                 builder.CASE__initializeStatements(childNode, tokenizer)
-                
-                while ((tokenType=tokenizer.peek(True)) != CASE and tokenType != DEFAULT and tokenType != RIGHT_CURLY)
+
+                while True:
+                    tokenType=tokenizer.peek(True)
+                    if tokenType == CASE or tokenType == DEFAULT or tokenType == RIGHT_CURLY:
+                        break
                     builder.CASE__addStatement(childNode, Statement(tokenizer, compilerContext))
                 
                 builder.CASE__finish(childNode)
