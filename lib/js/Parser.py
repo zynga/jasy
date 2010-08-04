@@ -8,6 +8,7 @@
 
 from js.Node import Node
 from js.Tokenizer import Token
+from js.Tokenizer import Tokenizer
 from js.VanillaBuilder import VanillaBuilder
 
 #__all__ = [ "parse", "parseExpression" ]
