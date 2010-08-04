@@ -8,7 +8,7 @@
 
 from js.Node import Node
 from js.Tokenizer import Token
-from js.Builder import Builder
+from js.VanillaBuilder import VanillaBuilder
 
 #__all__ = [ "parse", "parseExpression" ]
 __all__ = [ "parse" ]
@@ -1433,7 +1433,10 @@ def PrimaryExpression(tokenizer, compilerContext):
     return node
 
 
-def parse(builder, source, filename, line):
+def parse(source, filename=None, line=0, builder=None):
+    if builder == None:
+        builder = VanillaBuilder()
+    
     tokenizer = Tokenizer(source, filename, line)
     compilerContext = CompilerContext(False, builder)
     node = Script(tokenizer, compilerContext)

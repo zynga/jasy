@@ -5,12 +5,11 @@ import sys, os
 # Extend PYTHONPATH with 'lib'
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
-from js.Tokenizer import Tokenizer
 from js.Parser import parse
 
 
 def jstree(source, filename=None):
-    root = parse(Tokenizer(source, filename))
+    root = parse(source, filename)
     return root.toXml()
 
 if __name__ == "__main__":

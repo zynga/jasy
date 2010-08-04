@@ -22,7 +22,7 @@ def jsoptimize(source, filename=None):
         "js.Variant.LOCALE" : '"de_DE"'
     }
     
-    tree = parse(Tokenizer(source, filename))
+    tree = parse(source, filename)
     print tree
     Variants.replace(tree, variantData)
     Variants.optimize(tree)

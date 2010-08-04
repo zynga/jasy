@@ -11,7 +11,7 @@ from js.Compressor import compress
 
 
 def jscompress(source, filename=None):
-    return compress(parse(Tokenizer(source, filename)))
+    return compress(parse(source, filename))
 
 
 if __name__ == "__main__":
