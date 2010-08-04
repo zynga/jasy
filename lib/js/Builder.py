@@ -25,7 +25,7 @@ class VanillaBuilder:
         pass
 
     def SWITCH__build(t):
-        var n = new Node(t, SWITCH)
+        n = new Node(t, SWITCH)
         n.cases = []
         n.defaultIndex = -1
         return n
@@ -70,7 +70,7 @@ class VanillaBuilder:
         pass
 
     def FOR__build(t):
-        var n = new Node(t, FOR)
+        n = new Node(t, FOR)
         n.isLoop = true
         n.isEach = false
         return n
@@ -78,8 +78,7 @@ class VanillaBuilder:
     def FOR__rebuildForEach(n):
         n.isEach = true
 
-    # NB. This function is called after rebuildForEach, if that's called
-    # at all.
+    # NB. This function is called after rebuildForEach, if that's called at all.
     def FOR__rebuildForIn(n):
         n.type = FOR_IN
 
@@ -106,7 +105,7 @@ class VanillaBuilder:
         pass
 
     def WHILE__build(t):
-        var n = new Node(t, WHILE)
+        n = new Node(t, WHILE)
         n.isLoop = true
         return n
 
@@ -120,7 +119,7 @@ class VanillaBuilder:
         pass
 
     def DO__build(t):
-        var n = new Node(t, DO)
+        n = new Node(t, DO)
         n.isLoop = true
         return n
 
@@ -158,7 +157,7 @@ class VanillaBuilder:
         pass
 
     def TRY__build(t):
-        var n = new Node(t, TRY)
+        n = new Node(t, TRY)
         n.catchClauses = []
         return n
 
@@ -178,7 +177,7 @@ class VanillaBuilder:
         pass
 
     def CATCH__build(t):
-        var n = new Node(t, CATCH)
+        n = new Node(t, CATCH)
         n.guard = null
         return n
 
@@ -270,9 +269,13 @@ class VanillaBuilder:
         pass
 
     def FUNCTION__build(t):
-        var n = new Node(t)
-        if (n.type != FUNCTION)
-            n.type = (n.value == "get") ? GETTER : SETTER
+        n = new Node(t)
+        if n.type != FUNCTION:
+            if n.value == "get":
+                n.type = GETTER
+            else:
+                n.type = SETTER
+
         n.params = []
         return n
 
@@ -334,7 +337,7 @@ class VanillaBuilder:
         pass
 
     def LET_BLOCK__build(t):
-        var n = Node(t, LET_BLOCK)
+        n = Node(t, LET_BLOCK)
         n.varDecls = []
         return n
 
@@ -351,7 +354,7 @@ class VanillaBuilder:
         pass
 
     def BLOCK__build(t, id):
-        var n = new Node(t, BLOCK)
+        n = new Node(t, BLOCK)
         n.varDecls = []
         n.id = id
         return n
@@ -476,7 +479,7 @@ class VanillaBuilder:
     def SHIFT__finish(n):
         pass
 
-    ADD__build(t):
+    def ADD__build(t):
         # NB t.token.type must be PLUS or MINUS.
         return new Node(t)
 
@@ -486,7 +489,7 @@ class VanillaBuilder:
     def ADD__finish(n):
         pass
 
-    MULTIPLY__build(t):
+    def MULTIPLY__build(t):
         # NB t.token.type must be MUL, DIV, or MOD.
         return new Node(t)
 
@@ -499,10 +502,11 @@ class VanillaBuilder:
     def UNARY__build(t):
         # NB t.token.type must be DELETE, VOID, TYPEOF, NOT, BITWISE_NOT,
         # UNARY_PLUS, UNARY_MINUS, INCREMENT, or DECREMENT.
-        if (t.token.type == PLUS)
+        if t.token.type == PLUS:
             t.token.type = UNARY_PLUS
-        else if (t.token.type == MINUS)
+        elif t.token.type == MINUS:
             t.token.type = UNARY_MINUS
+            
         return new Node(t)
 
     def UNARY__addOperand(n, n2):
@@ -544,18 +548,17 @@ class VanillaBuilder:
     def ARRAY_INIT__finish(n):
         pass
 
-    def ARRAY_COMP::
-        build(t):
-            return new Node(t, ARRAY_COMP)
+    def ARRAY_COMP__build(t):
+        return new Node(t, ARRAY_COMP)
     
-        setExpression(n, e):
-            n.expression = e
+    def ARRAY_COMP__setExpression(n, e):
+        n.expression = e
     
-        setTail(n, n2):
-            n.tail = n2
+    def ARRAY_COMP__setTail(n, n2):
+        n.tail = n2
     
-        finish(n):
-        }
+    def ARRAY_COMP__finish(n):
+        pass
 
     def COMP_TAIL__build(t):
         return new Node(t, COMP_TAIL)
@@ -605,5 +608,6 @@ class VanillaBuilder:
     def LIST__finish(n):
         pass
 
-    def setHoists(id, vds) {
-    }
+    def setHoists(id, vds):
+        pass
+        
