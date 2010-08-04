@@ -355,7 +355,11 @@ def Statement(tokenizer, compilerContext):
             while True:
                 i -= 1
                 if i < 0:
-                    raise SyntaxError("Invalid " + ((tokenType == BREAK) ? "break" : "continue"))
+                    if tokenType == BREAK:
+                        raise SyntaxError("Invalid break")
+                    else:
+                        raise SyntaxError("Invalid continue")
+
                 if ss[i].isLoop or (tokenType == BREAK and ss[i].type == SWITCH):
                     break
         
@@ -459,7 +463,7 @@ def Statement(tokenizer, compilerContext):
     elif tokenType == LET:
         if tokenizer.peek() == LEFT_PAREN:
             node = LetBlock(tokenizer, compilerContext, True)
-        else
+        else:
             node = Variables(tokenizer, compilerContext)
         
         # NO RETURN
