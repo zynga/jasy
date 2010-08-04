@@ -82,7 +82,7 @@ def Statements(tokenizer, compilerContext):
     builder.BLOCK__hoistLets(node)
     compilerContext.stmtStack.push(node)
 
-    while !tokenizer.done and tokenizer.peek(True) != RIGHT_CURLY:
+    while not tokenizer.done and tokenizer.peek(True) != RIGHT_CURLY:
         builder.BLOCK__addStatement(node, Statement(tokenizer, compilerContext))
 
     compilerContext.stmtStack.pop()
@@ -529,7 +529,7 @@ def returnOrYield(tokenizer, compilerContext):
         node = builder.RETURN__build(tokenizer)
         
     else:
-        if !compilerContext.inFunction:
+        if not compilerContext.inFunction:
             raise SyntaxError("Yield not in function", tokenizer)
             
         compilerContext.isGenerator = True
@@ -701,7 +701,7 @@ def Variables(tokenizer, compilerContext, letBlock):
             i = len(ss) - 1
             
             # a BLOCK *must* be found.
-            while ss[i].type !== BLOCK:
+            while ss[i].type != BLOCK:
                 i -= 1
 
             # Lets at the def toplevel are just vars, at least in SpiderMonkey.
@@ -1284,7 +1284,7 @@ def ArgumentList(tokenizer, compilerContext):
     
     while True:    
         childNode = AssignExpression(tokenizer, compilerContext)
-        if childNode.type == YIELD and !childNode.parenthesized and tokenizer.peek() == COMMA:
+        if childNode.type == YIELD and not childNode.parenthesized and tokenizer.peek() == COMMA:
             raise SyntaxError("Yield expression must be parenthesized", tokenizer)
             
         if tokenizer.match(FOR):
