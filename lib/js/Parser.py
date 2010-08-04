@@ -76,7 +76,8 @@ def Statements(tokenizer, compilerContext):
     """Parses a list of Statements."""
 
     builder = compilerContext.builder
-    node = builder.BLOCK__build(tokenizer, compilerContext.blockId++)
+    node = builder.BLOCK__build(tokenizer, compilerContext.blockId)
+    compilerContext.blockId += 1
 
     builder.BLOCK__hoistLets(node)
     compilerContext.stmtStack.push(node)
@@ -119,7 +120,7 @@ def Statement(tokenizer, compilerContext):
     
     if tokenType == FUNCTION:
         # DECLARED_FORM extends funDecls of compilerContext, STATEMENT_FORM doesn'tokenizer.
-        if compilerContext.stmtStack.length > 1:
+        if len(compilerContext.stmtStack) > 1:
             kind = STATEMENT_FORM
         else:
             kind = DECLARED_FORM
@@ -164,7 +165,7 @@ def Statement(tokenizer, compilerContext):
                     raise SyntaxError("More than one switch default", tokenizer)
                     
                 childNode = builder.DEFAULT__build(tokenizer)
-                builder.SWITCH__setDefaultIndex(node, node.cases.length)
+                builder.SWITCH__setDefaultIndex(node, len(node.cases))
                 tokenizer.mustMatch(COLON)
                 builder.DEFAULT__initializeStatements(childNode, tokenizer)
                 
@@ -223,7 +224,8 @@ def Statement(tokenizer, compilerContext):
                 else:
                     # Let in for head, we need to add an implicit block
                     # around the rest of the for.
-                    forBlock = builder.BLOCK__build(tokenizer, compilerContext.blockId++)
+                    forBlock = builder.BLOCK__build(tokenizer, compilerContext.blockId)
+                    compilerContext.blockId += 1
                     compilerContext.stmtStack.push(forBlock)
                     childNode = Variables(tokenizer, compilerContext, forBlock)
                 
@@ -309,7 +311,7 @@ def Statement(tokenizer, compilerContext):
                 builder.CONTINUE__setLabel(node, tokenizer.token.value)
 
         ss = compilerContext.stmtStack
-        i = ss.length
+        i = len(ss)
         label = node.label
 
         if label:
@@ -327,11 +329,11 @@ def Statement(tokenizer, compilerContext):
             # nested so we skip all labels immediately enclosing the nearest
             # non-label statement.
             # 
-            while i < ss.length - 1 and ss[i+1].type == LABEL:
-                i++
+            while i < len(ss) - 1 and ss[i+1].type == LABEL:
+                i += 1
                 
-            if i < ss.length - 1 and ss[i+1].isLoop:
-                i++
+            if i < len(ss) - 1 and ss[i+1].isLoop:
+                i += 1
             elif tokenType == CONTINUE:
                 raise SyntaxError("Invalid continue", tokenizer)
                 
@@ -378,7 +380,7 @@ def Statement(tokenizer, compilerContext):
                 if compilerContext.ecma3OnlyMode:
                     raise SyntaxError("Illegal catch guard", tokenizer)
                     
-                if node.catchClauses.length and not node.catchClauses.top().guard:
+                if len(node.catchClauses) and not node.catchClauses.top().guard:
                     raise SyntaxError("Guarded catch after unguarded", tokenizer)
                     
                 builder.CATCH__setGuard(childNode, Expression(tokenizer, compilerContext))
@@ -398,7 +400,7 @@ def Statement(tokenizer, compilerContext):
         if tokenizer.match(FINALLY):
             builder.TRY__setFinallyBlock(node, Block(tokenizer, compilerContext))
             
-        if not node.catchClauses.length and not node.finallyBlock:
+        if not len(node.catchClauses) and not node.finallyBlock:
             raise SyntaxError("Invalid try statement", tokenizer)
             
         builder.TRY__finish(node)
@@ -473,11 +475,13 @@ def Statement(tokenizer, compilerContext):
                 label = tokenizer.token.value
                 ss = compilerContext.stmtStack
                
-                for (i = ss.length-1; i >= 0; --i) {
-                    if (ss[i].label == label)
+                i = len(ss)-1
+                while i >= 0:
+                    if ss[i].label == label:
                         raise SyntaxError("Duplicate label")
-                }
-                
+                    
+                    i -= 1
+               
                 tokenizer.get()
                 node = builder.LABEL__build(tokenizer)
                 
@@ -694,11 +698,11 @@ def Variables(tokenizer, compilerContext, letBlock):
         
         if not letBlock:
             ss = compilerContext.stmtStack
-            i = ss.length
+            i = len(ss) - 1
             
             # a BLOCK *must* be found.
-            while ss[--i].type !== BLOCK:
-                pass
+            while ss[i].type !== BLOCK:
+                i -= 1
 
             # Lets at the def toplevel are just vars, at least in SpiderMonkey.
             if i == 0:
@@ -977,7 +981,7 @@ def Expression(tokenizer, compilerContext):
         builder.COMMA__addOperand(childNode, node)
         node = childNode
         while True:
-            childNode = node[node.length-1]
+            childNode = node[len(node)-1]
             if childNode.type == YIELD and not childNode.parenthesized:
                 raise SyntaxError("Yield expression must be parenthesized")
             builder.COMMA__addOperand(node, AssignExpression(tokenizer, compilerContext))
@@ -1285,7 +1289,7 @@ def ArgumentList(tokenizer, compilerContext):
             
         if tokenizer.match(FOR):
             childNode = GeneratorExpression(tokenizer, compilerContext, childNode)
-            if node.length > 1 or tokenizer.peek(True) == COMMA:
+            if len(node) > 1 or tokenizer.peek(True) == COMMA:
                 raise SyntaxError("Generator expression must be parenthesized", tokenizer)
         
         builder.LIST__addOperand(node, childNode)
@@ -1324,7 +1328,7 @@ def PrimaryExpression(tokenizer, compilerContext):
 
         # If we matched exactly one element and got a FOR, we have an
         # array comprehension.
-        if node.length == 1 and tokenizer.match(FOR):
+        if len(node) == 1 and tokenizer.match(FOR):
             childNode = builder.ARRAY_COMP__build(tokenizer)
             builder.ARRAY_COMP__setExpression(childNode, node[0])
             builder.ARRAY_COMP__setTail(childNode, comprehensionTail(tokenizer, compilerContext))
