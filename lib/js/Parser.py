@@ -260,9 +260,17 @@ def Statement(tokenizer, compilerContext):
             if node.isEach:
                 raise SyntaxError("Invalid for each..in loop")
                 
-            builder.FOR__setCondition(node, (tokenizer.peek() == SEMICOLON) ? null : Expression(tokenizer, compilerContext))
+            if tokenizer.peek() == SEMICOLON:
+                builder.FOR__setCondition(node, None)
+            else:
+                builder.FOR__setCondition(node, Expression(tokenizer, compilerContext))
+            
             tokenizer.mustMatch(SEMICOLON)
-            builder.FOR__setUpdate(node, (tokenizer.peek() == RIGHT_PAREN) ? null : Expression(tokenizer, compilerContext))
+            
+            if tokenizer.peek() == RIGHT_PAREN:
+                builder.FOR__setUpdate(node, None)
+            else:    
+                builder.FOR__setUpdate(node, Expression(tokenizer, compilerContext))
         
         tokenizer.mustMatch(RIGHT_PAREN)
         builder.FOR__setBody(node, nest(tokenizer, compilerContext, node, Statement))
