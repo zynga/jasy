@@ -554,7 +554,7 @@ def returnOrYield(tokenizer, compilerContext):
         node = builder.YIELD__build(tokenizer)
 
     nextTokenType = tokenizer.peek(True)
-    if nextTokenType != END and nextTokenType != NEWLINE and nextTokenType != SEMICOLON and nextTokenType != RIGHT_CURLY and (tokenType != YIELD or (nextTokenType != tokenType and nextTokenType != RIGHT_BRACKET and nextTokenType != RIGHT_PAREN and nextTokenType != COLON and nextTokenType != COMMA))):
+    if nextTokenType != END and nextTokenType != NEWLINE and nextTokenType != SEMICOLON and nextTokenType != RIGHT_CURLY and (tokenType != YIELD or (nextTokenType != tokenType and nextTokenType != RIGHT_BRACKET and nextTokenType != RIGHT_PAREN and nextTokenType != COLON and nextTokenType != COMMA)):
         if tokenType == RETURN:
             builder.RETURN__setValue(node, Expression(tokenizer, compilerContext))
             compilerContext.hasReturnWithValue = True
@@ -612,7 +612,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
     if tokenType != LEFT_CURLY:
         tokenizer.unget()
 
-    x2 = new CompilerContext(True, builder)
+    x2 = CompilerContext(True, builder)
     rp = tokenizer.save()
     
     if compilerContext.inFunction:
@@ -668,7 +668,7 @@ def FunctionDefinition(tokenizer, compilerContext, requireName, functionForm):
         else:
             # Only re-parse toplevel functions.
             x3 = x2
-            x2 = new CompilerContext(True, builder)
+            x2 = CompilerContext(True, builder)
             tokenizer.rewind(rp)
             
             # Set a flag in case the builder wants to have different behavior
@@ -760,7 +760,7 @@ def Variables(tokenizer, compilerContext, letBlock):
                 continue
 
             tokenizer.mustMatch(ASSIGN)
-            if (tokenizer.token.assignOp)
+            if (tokenizer.token.assignOp):
                 raise SyntaxError("Invalid variable initialization", tokenizer)
 
             # Parse the init as a normal assignment.
@@ -955,7 +955,7 @@ def comprehensionTail(tokenizer, compilerContext):
             break
 
     # Optional guard.
-    if (tokenizer.match(IF))
+    if tokenizer.match(IF):
         builder.COMP_TAIL__setGuard(body, ParenExpression(tokenizer, compilerContext))
 
     builder.COMP_TAIL__finish(body)
@@ -1341,7 +1341,7 @@ def PrimaryExpression(tokenizer, compilerContext):
 
             builder.ARRAY_INIT__addElement(node, AssignExpression(tokenizer, compilerContext))
 
-            if tokenType != COMMA and not tokenizer.match(COMMA)
+            if tokenType != COMMA and not tokenizer.match(COMMA):
                 break
 
         # If we matched exactly one element and got a FOR, we have an
@@ -1434,8 +1434,8 @@ def PrimaryExpression(tokenizer, compilerContext):
 
 
 def parse(builder, source, filename, line):
-    tokenizer = new Tokenizer(source, filename, line)
-    compilerContext = new CompilerContext(False, builder)
+    tokenizer = Tokenizer(source, filename, line)
+    compilerContext = CompilerContext(False, builder)
     node = Script(tokenizer, compilerContext)
     
     if not tokenizer.done:
