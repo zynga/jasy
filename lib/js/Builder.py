@@ -10,7 +10,7 @@ from Node import Node
 
 class VanillaBuilder:
     def IF__build(t):
-        return new Node(t, IF)
+        return Node(t, IF)
 
     def IF__setCondition(n, e):
         n.condition = e
@@ -25,7 +25,7 @@ class VanillaBuilder:
         pass
 
     def SWITCH__build(t):
-        n = new Node(t, SWITCH)
+        n = Node(t, SWITCH)
         n.cases = []
         n.defaultIndex = -1
         return n
@@ -43,13 +43,13 @@ class VanillaBuilder:
         pass
 
     def CASE__build(t):
-        return new Node(t, CASE)
+        return Node(t, CASE)
 
     def CASE__setLabel(n, e):
         n.caseLabel = e
 
     def CASE__initializeStatements(n, t):
-        n.statements = new Node(t, BLOCK)
+        n.statements = Node(t, BLOCK)
 
     def CASE__addStatement(n, s):
         n.statements.push(s)
@@ -58,10 +58,10 @@ class VanillaBuilder:
         pass
 
     def DEFAULT__build(t, p):
-        return new Node(t, DEFAULT)
+        return Node(t, DEFAULT)
 
     def DEFAULT__initializeStatements(n, t):
-        n.statements = new Node(t, BLOCK)
+        n.statements = Node(t, BLOCK)
 
     def DEFAULT__addStatement(n, s):
         n.statements.push(s)
@@ -70,7 +70,7 @@ class VanillaBuilder:
         pass
 
     def FOR__build(t):
-        n = new Node(t, FOR)
+        n = Node(t, FOR)
         n.isLoop = true
         n.isEach = false
         return n
@@ -86,7 +86,7 @@ class VanillaBuilder:
         n.condition = e
 
     def FOR__setSetup(n, e):
-        n.setup = e || null
+        n.setup = e if e else None
 
     def FOR__setUpdate(n, e):
         n.update = e
@@ -105,7 +105,7 @@ class VanillaBuilder:
         pass
 
     def WHILE__build(t):
-        n = new Node(t, WHILE)
+        n = Node(t, WHILE)
         n.isLoop = true
         return n
 
@@ -119,7 +119,7 @@ class VanillaBuilder:
         pass
 
     def DO__build(t):
-        n = new Node(t, DO)
+        n = Node(t, DO)
         n.isLoop = true
         return n
 
@@ -133,7 +133,7 @@ class VanillaBuilder:
         pass
 
     def BREAK__build(t):
-        return new Node(t, BREAK)
+        return Node(t, BREAK)
 
     def BREAK__setLabel(n, v):
         n.label = v
@@ -145,7 +145,7 @@ class VanillaBuilder:
         pass
 
     def CONTINUE__build(t):
-        return new Node(t, CONTINUE)
+        return Node(t, CONTINUE)
 
     def CONTINUE__setLabel(n, v):
         n.label = v
@@ -157,7 +157,7 @@ class VanillaBuilder:
         pass
 
     def TRY__build(t):
-        n = new Node(t, TRY)
+        n = Node(t, TRY)
         n.catchClauses = []
         return n
 
@@ -177,8 +177,8 @@ class VanillaBuilder:
         pass
 
     def CATCH__build(t):
-        n = new Node(t, CATCH)
-        n.guard = null
+        n = Node(t, CATCH)
+        n.guard = None
         return n
 
     def CATCH__setVarName(n, v):
@@ -194,7 +194,7 @@ class VanillaBuilder:
         pass
 
     def THROW__build(t):
-        return new Node(t, THROW)
+        return Node(t, THROW)
 
     def THROW__setException(n, e):
         n.exception = e
@@ -203,7 +203,7 @@ class VanillaBuilder:
         pass
 
     def RETURN__build(t):
-        return new Node(t, RETURN)
+        return Node(t, RETURN)
 
     def RETURN__setValue(n, e):
         n.value = e
@@ -212,7 +212,7 @@ class VanillaBuilder:
         pass
 
     def YIELD__build(t):
-        return new Node(t, YIELD)
+        return Node(t, YIELD)
 
     def YIELD__setValue(n, e):
         n.value = e
@@ -221,7 +221,7 @@ class VanillaBuilder:
         pass
 
     def GENERATOR__build(t):
-        return new Node(t, GENERATOR)
+        return Node(t, GENERATOR)
 
     def GENERATOR__setExpression(n, e):
         n.expression = e
@@ -233,7 +233,7 @@ class VanillaBuilder:
         pass
 
     def WITH__build(t):
-        return new Node(t, WITH)
+        return Node(t, WITH)
 
     def WITH__setObject(n, e):
         n.object = e
@@ -245,10 +245,10 @@ class VanillaBuilder:
         pass
 
     def DEBUGGER__build(t):
-        return new Node(t, DEBUGGER)
+        return Node(t, DEBUGGER)
 
     def SEMICOLON__build(t):
-        return new Node(t, SEMICOLON)
+        return Node(t, SEMICOLON)
 
     def SEMICOLON__setExpression(n, e):
         n.expression = e
@@ -257,7 +257,7 @@ class VanillaBuilder:
         pass
 
     def LABEL__build(t):
-        return new Node(t, LABEL)
+        return Node(t, LABEL)
 
     def LABEL__setLabel(n, e):
         n.label = e
@@ -269,7 +269,7 @@ class VanillaBuilder:
         pass
 
     def FUNCTION__build(t):
-        n = new Node(t)
+        n = Node(t)
         if n.type != FUNCTION:
             if n.value == "get":
                 n.type = GETTER
@@ -295,7 +295,7 @@ class VanillaBuilder:
         pass
 
     def VAR__build(t):
-        return new Node(t, VAR)
+        return Node(t, VAR)
 
     def VAR__addDecl(n, n2, x):
         n.push(n2)
@@ -304,7 +304,7 @@ class VanillaBuilder:
         pass
 
     def CONST__build(t):
-        return new Node(t, VAR)
+        return Node(t, VAR)
 
     def CONST__addDecl(n, n2, x):
         n.push(n2)
@@ -313,7 +313,7 @@ class VanillaBuilder:
         pass
 
     def LET__build(t):
-        return new Node(t, LET)
+        return Node(t, LET)
 
     def LET__addDecl(n, n2, x):
         n.push(n2)
@@ -322,7 +322,7 @@ class VanillaBuilder:
         pass
 
     def DECL__build(t):
-        return new Node(t, IDENTIFIER)
+        return Node(t, IDENTIFIER)
 
     def DECL__setName(n, v):
         n.name = v
@@ -354,7 +354,7 @@ class VanillaBuilder:
         pass
 
     def BLOCK__build(t, id):
-        n = new Node(t, BLOCK)
+        n = Node(t, BLOCK)
         n.varDecls = []
         n.id = id
         return n
@@ -369,7 +369,7 @@ class VanillaBuilder:
         pass
 
     def EXPRESSION__build(t, tt):
-        return new Node(t, tt)
+        return Node(t, tt)
 
     def EXPRESSION__addOperand(n, n2):
         n.push(n2)
@@ -378,7 +378,7 @@ class VanillaBuilder:
         pass
 
     def ASSIGN__build(t):
-        return new Node(t, ASSIGN)
+        return Node(t, ASSIGN)
 
     def ASSIGN__addOperand(n, n2):
         n.push(n2)
@@ -390,7 +390,7 @@ class VanillaBuilder:
         pass
 
     def HOOK__build(t):
-        return new Node(t, HOOK)
+        return Node(t, HOOK)
 
     def HOOK__setCondition(n, e):
         n[0] = e
@@ -405,7 +405,7 @@ class VanillaBuilder:
         pass
 
     def OR__build(t):
-        return new Node(t, OR)
+        return Node(t, OR)
 
     def OR__addOperand(n, n2):
         n.push(n2)
@@ -414,7 +414,7 @@ class VanillaBuilder:
         pass
 
     def AND__build(t):
-        return new Node(t, AND)
+        return Node(t, AND)
 
     def AND__addOperand(n, n2):
         n.push(n2)
@@ -423,7 +423,7 @@ class VanillaBuilder:
         pass
 
     def BITWISE_OR__build(t):
-        return new Node(t, BITWISE_OR)
+        return Node(t, BITWISE_OR)
 
     def BITWISE_OR__addOperand(n, n2):
         n.push(n2)
@@ -432,7 +432,7 @@ class VanillaBuilder:
         pass
 
     def BITWISE_XOR__build(t):
-        return new Node(t, BITWISE_XOR)
+        return Node(t, BITWISE_XOR)
 
     def BITWISE_XOR__addOperand(n, n2):
         n.push(n2)
@@ -441,7 +441,7 @@ class VanillaBuilder:
         pass
 
     def BITWISE_AND__build(t):
-        return new Node(t, BITWISE_AND)
+        return Node(t, BITWISE_AND)
 
     def BITWISE_AND__addOperand(n, n2):
         n.push(n2)
@@ -451,7 +451,7 @@ class VanillaBuilder:
 
     def EQUALITY__build(t):
         # NB t.token.type must be EQ, NE, STRICT_EQ, or STRICT_NE.
-        return new Node(t)
+        return Node(t)
 
     def EQUALITY__addOperand(n, n2):
         n.push(n2)
@@ -461,7 +461,7 @@ class VanillaBuilder:
 
     def RELATIONAL__build(t):
         # NB t.token.type must be LT, LE, GE, or GT.
-        return new Node(t)
+        return Node(t)
 
     def RELATIONAL__addOperand(n, n2):
         n.push(n2)
@@ -471,7 +471,7 @@ class VanillaBuilder:
 
     def SHIFT__build(t):
         # NB t.token.type must be LSH, RSH, or URSH.
-        return new Node(t)
+        return Node(t)
 
     def SHIFT__addOperand(n, n2):
         n.push(n2)
@@ -481,7 +481,7 @@ class VanillaBuilder:
 
     def ADD__build(t):
         # NB t.token.type must be PLUS or MINUS.
-        return new Node(t)
+        return Node(t)
 
     def ADD__addOperand(n, n2):
         n.push(n2)
@@ -491,7 +491,7 @@ class VanillaBuilder:
 
     def MULTIPLY__build(t):
         # NB t.token.type must be MUL, DIV, or MOD.
-        return new Node(t)
+        return Node(t)
 
     def MULTIPLY__addOperand(n, n2):
         n.push(n2)
@@ -507,7 +507,7 @@ class VanillaBuilder:
         elif t.token.type == MINUS:
             t.token.type = UNARY_MINUS
             
-        return new Node(t)
+        return Node(t)
 
     def UNARY__addOperand(n, n2):
         n.push(n2)
@@ -520,7 +520,7 @@ class VanillaBuilder:
 
     def MEMBER__build(t, tt):
         # NB t.token.type must be NEW, DOT, or INDEX.
-        return new Node(t, tt)
+        return Node(t, tt)
 
     def MEMBER__rebuildNewWithArgs(n):
         n.type = NEW_WITH_ARGS
@@ -534,13 +534,13 @@ class VanillaBuilder:
     def PRIMARY__build(t, tt):
         # NB t.token.type must be NULL, THIS, TRUIE, FALSE, IDENTIFIER,
         # NUMBER, STRING, or REGEXP.
-        return new Node(t, tt)
+        return Node(t, tt)
 
     def PRIMARY__finish(n):
         pass
 
     def ARRAY_INIT__build(t):
-        return new Node(t, ARRAY_INIT)
+        return Node(t, ARRAY_INIT)
 
     def ARRAY_INIT__addElement(n, n2):
         n.push(n2)
@@ -549,7 +549,7 @@ class VanillaBuilder:
         pass
 
     def ARRAY_COMP__build(t):
-        return new Node(t, ARRAY_COMP)
+        return Node(t, ARRAY_COMP)
     
     def ARRAY_COMP__setExpression(n, e):
         n.expression = e
@@ -561,7 +561,7 @@ class VanillaBuilder:
         pass
 
     def COMP_TAIL__build(t):
-        return new Node(t, COMP_TAIL)
+        return Node(t, COMP_TAIL)
 
     def COMP_TAIL__setGuard(n, e):
         n.guard = e
@@ -573,7 +573,7 @@ class VanillaBuilder:
         pass
 
     def OBJECT_INIT__build(t):
-        return new Node(t, OBJECT_INIT)
+        return Node(t, OBJECT_INIT)
 
     def OBJECT_INIT__addProperty(n, n2):
         n.push(n2)
@@ -582,7 +582,7 @@ class VanillaBuilder:
         pass
 
     def PROPERTY_INIT__build(t):
-        return new Node(t, PROPERTY_INIT)
+        return Node(t, PROPERTY_INIT)
 
     def PROPERTY_INIT__addOperand(n, n2):
         n.push(n2)
@@ -591,7 +591,7 @@ class VanillaBuilder:
         pass
 
     def COMMA__build(t):
-        return new Node(t, COMMA)
+        return Node(t, COMMA)
 
     def COMMA__addOperand(n, n2):
         n.push(n2)
@@ -600,7 +600,7 @@ class VanillaBuilder:
         pass
 
     def LIST__build(t):
-        return new Node(t, LIST)
+        return Node(t, LIST)
 
     def LIST__addOperand(n, n2):
         n.push(n2)
