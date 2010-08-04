@@ -8,742 +8,602 @@
 
 from Node import Node
 
+class VanillaBuilder:
+    def IF__build(t):
+        return new Node(t, IF)
 
-function VanillaBuilder() {
-}
+    def IF__setCondition(n, e):
+        n.condition = e
 
-VanillaBuilder.prototype = {
-    IF__build: function(t) {
-        return new Node(t, IF);
-    },
+    def IF__setThenPart(n, s):
+        n.thenPart = s
 
-    IF__setCondition: function(n, e) {
-        n.condition = e;
-    },
+    def IF__setElsePart(n, s):
+        n.elsePart = s
 
-    IF__setThenPart: function(n, s) {
-        n.thenPart = s;
-    },
+    def IF__finish(n):
+        pass
 
-    IF__setElsePart: function(n, s) {
-        n.elsePart = s;
-    },
+    def SWITCH__build(t):
+        var n = new Node(t, SWITCH)
+        n.cases = []
+        n.defaultIndex = -1
+        return n
 
-    IF__finish: function(n) {
-    },
+    def SWITCH__setDiscriminant(n, e):
+        n.discriminant = e
 
-    SWITCH__build: function(t) {
-        var n = new Node(t, SWITCH);
-        n.cases = [];
-        n.defaultIndex = -1;
-        return n;
-    },
+    def SWITCH__setDefaultIndex(n, i):
+        n.defaultIndex = i
 
-    SWITCH__setDiscriminant: function(n, e) {
-        n.discriminant = e;
-    },
+    def SWITCH__addCase(n, n2):
+        n.cases.push(n2)
 
-    SWITCH__setDefaultIndex: function(n, i) {
-        n.defaultIndex = i;
-    },
+    def SWITCH__finish(n):
+        pass
 
-    SWITCH__addCase: function(n, n2) {
-        n.cases.push(n2);
-    },
+    def CASE__build(t):
+        return new Node(t, CASE)
 
-    SWITCH__finish: function(n) {
-    },
+    def CASE__setLabel(n, e):
+        n.caseLabel = e
 
-    CASE__build: function(t) {
-        return new Node(t, CASE);
-    },
+    def CASE__initializeStatements(n, t):
+        n.statements = new Node(t, BLOCK)
 
-    CASE__setLabel: function(n, e) {
-        n.caseLabel = e;
-    },
+    def CASE__addStatement(n, s):
+        n.statements.push(s)
 
-    CASE__initializeStatements: function(n, t) {
-        n.statements = new Node(t, BLOCK);
-    },
+    def CASE__finish(n):
+        pass
 
-    CASE__addStatement: function(n, s) {
-        n.statements.push(s);
-    },
+    def DEFAULT__build(t, p):
+        return new Node(t, DEFAULT)
 
-    CASE__finish: function(n) {
-    },
+    def DEFAULT__initializeStatements(n, t):
+        n.statements = new Node(t, BLOCK)
 
-    DEFAULT__build: function(t, p) {
-        return new Node(t, DEFAULT);
-    },
+    def DEFAULT__addStatement(n, s):
+        n.statements.push(s)
 
-    DEFAULT__initializeStatements: function(n, t) {
-        n.statements = new Node(t, BLOCK);
-    },
+    def DEFAULT__finish(n):
+        pass
 
-    DEFAULT__addStatement: function(n, s) {
-        n.statements.push(s);
-    },
+    def FOR__build(t):
+        var n = new Node(t, FOR)
+        n.isLoop = true
+        n.isEach = false
+        return n
 
-    DEFAULT__finish: function(n) {
-    },
-
-    FOR__build: function(t) {
-        var n = new Node(t, FOR);
-        n.isLoop = true;
-        n.isEach = false;
-        return n;
-    },
-
-    FOR__rebuildForEach: function(n) {
-        n.isEach = true;
-    },
+    def FOR__rebuildForEach(n):
+        n.isEach = true
 
     # NB. This function is called after rebuildForEach, if that's called
     # at all.
-    FOR__rebuildForIn: function(n) {
-        n.type = FOR_IN;
-    },
+    def FOR__rebuildForIn(n):
+        n.type = FOR_IN
 
-    FOR__setCondition: function(n, e) {
-        n.condition = e;
-    },
+    def FOR__setCondition(n, e):
+        n.condition = e
 
-    FOR__setSetup: function(n, e) {
-        n.setup = e || null;
-    },
+    def FOR__setSetup(n, e):
+        n.setup = e || null
 
-    FOR__setUpdate: function(n, e) {
-        n.update = e;
-    },
+    def FOR__setUpdate(n, e):
+        n.update = e
 
-    FOR__setObject: function(n, e) {
-        n.object = e;
-    },
+    def FOR__setObject(n, e):
+        n.object = e
 
-    FOR__setIterator: function(n, e, e2) {
-        n.iterator = e;
-        n.varDecl = e2;
-    },
+    def FOR__setIterator(n, e, e2):
+        n.iterator = e
+        n.varDecl = e2
 
-    FOR__setBody: function(n, s) {
-        n.body = s;
-    },
+    def FOR__setBody(n, s):
+        n.body = s
 
-    FOR__finish: function(n) {
-    },
+    def FOR__finish(n):
+        pass
 
-    WHILE__build: function(t) {
-        var n = new Node(t, WHILE);
-        n.isLoop = true;
-        return n;
-    },
+    def WHILE__build(t):
+        var n = new Node(t, WHILE)
+        n.isLoop = true
+        return n
 
-    WHILE__setCondition: function(n, e) {
-        n.condition = e;
-    },
+    def WHILE__setCondition(n, e):
+        n.condition = e
 
-    WHILE__setBody: function(n, s) {
-        n.body = s;
-    },
+    def WHILE__setBody(n, s):
+        n.body = s
 
-    WHILE__finish: function(n) {
-    },
+    def WHILE__finish(n):
+        pass
 
-    DO__build: function(t) {
-        var n = new Node(t, DO);
-        n.isLoop = true;
-        return n;
-    },
+    def DO__build(t):
+        var n = new Node(t, DO)
+        n.isLoop = true
+        return n
 
-    DO__setCondition: function(n, e) {
-        n.condition = e;
-    },
+    def DO__setCondition(n, e):
+        n.condition = e
 
-    DO__setBody: function(n, s) {
-        n.body = s;
-    },
+    def DO__setBody(n, s):
+        n.body = s
 
-    DO__finish: function(n) {
-    },
+    def DO__finish(n):
+        pass
 
-    BREAK__build: function(t) {
-        return new Node(t, BREAK);
-    },
+    def BREAK__build(t):
+        return new Node(t, BREAK)
 
-    BREAK__setLabel: function(n, v) {
-        n.label = v;
-    },
+    def BREAK__setLabel(n, v):
+        n.label = v
 
-    BREAK__setTarget: function(n, n2) {
-        n.target = n2;
-    },
+    def BREAK__setTarget(n, n2):
+        n.target = n2
 
-    BREAK__finish: function(n) {
-    },
+    def BREAK__finish(n):
+        pass
 
-    CONTINUE__build: function(t) {
-        return new Node(t, CONTINUE);
-    },
+    def CONTINUE__build(t):
+        return new Node(t, CONTINUE)
 
-    CONTINUE__setLabel: function(n, v) {
-        n.label = v;
-    },
+    def CONTINUE__setLabel(n, v):
+        n.label = v
 
-    CONTINUE__setTarget: function(n, n2) {
-        n.target = n2;
-    },
+    def CONTINUE__setTarget(n, n2):
+        n.target = n2
 
-    CONTINUE__finish: function(n) {
-    },
+    def CONTINUE__finish(n):
+        pass
 
-    TRY__build: function(t) {
-        var n = new Node(t, TRY);
-        n.catchClauses = [];
-        return n;
-    },
+    def TRY__build(t):
+        var n = new Node(t, TRY)
+        n.catchClauses = []
+        return n
 
-    TRY__setTryBlock: function(n, s) {
-        n.tryBlock = s;
-    },
+    def TRY__setTryBlock(n, s):
+        n.tryBlock = s
 
-    TRY__addCatch: function(n, n2) {
-        n.catchClauses.push(n2);
-    },
+    def TRY__addCatch(n, n2):
+        n.catchClauses.push(n2)
 
-    TRY__finishCatches: function(n) {
-    },
+    def TRY__finishCatches(n):
+        pass
 
-    TRY__setFinallyBlock: function(n, s) {
-        n.finallyBlock = s;
-    },
+    def TRY__setFinallyBlock(n, s):
+        n.finallyBlock = s
 
-    TRY__finish: function(n) {
-    },
+    def TRY__finish(n):
+        pass
 
-    CATCH__build: function(t) {
-        var n = new Node(t, CATCH);
-        n.guard = null;
-        return n;
-    },
+    def CATCH__build(t):
+        var n = new Node(t, CATCH)
+        n.guard = null
+        return n
 
-    CATCH__setVarName: function(n, v) {
-        n.varName = v;
-    },
+    def CATCH__setVarName(n, v):
+        n.varName = v
 
-    CATCH__setGuard: function(n, e) {
-        n.guard = e;
-    },
+    def CATCH__setGuard(n, e):
+        n.guard = e
 
-    CATCH__setBlock: function(n, s) {
-        n.block = s;
-    },
+    def CATCH__setBlock(n, s):
+        n.block = s
 
-    CATCH__finish: function(n) {
-    },
+    def CATCH__finish(n):
+        pass
 
-    THROW__build: function(t) {
-        return new Node(t, THROW);
-    },
+    def THROW__build(t):
+        return new Node(t, THROW)
 
-    THROW__setException: function(n, e) {
-        n.exception = e;
-    },
+    def THROW__setException(n, e):
+        n.exception = e
 
-    THROW__finish: function(n) {
-    },
+    def THROW__finish(n):
+        pass
 
-    RETURN__build: function(t) {
-        return new Node(t, RETURN);
-    },
+    def RETURN__build(t):
+        return new Node(t, RETURN)
 
-    RETURN__setValue: function(n, e) {
-        n.value = e;
-    },
+    def RETURN__setValue(n, e):
+        n.value = e
 
-    RETURN__finish: function(n) {
-    },
+    def RETURN__finish(n):
+        pass
 
-    YIELD__build: function(t) {
-        return new Node(t, YIELD);
-    },
+    def YIELD__build(t):
+        return new Node(t, YIELD)
 
-    YIELD__setValue: function(n, e) {
-        n.value = e;
-    },
+    def YIELD__setValue(n, e):
+        n.value = e
 
-    YIELD__finish: function(n) {
-    },
+    def YIELD__finish(n):
+        pass
 
-    GENERATOR__build: function(t) {
-        return new Node(t, GENERATOR);
-    },
+    def GENERATOR__build(t):
+        return new Node(t, GENERATOR)
 
-    GENERATOR__setExpression: function(n, e) {
-        n.expression = e;
-    },
+    def GENERATOR__setExpression(n, e):
+        n.expression = e
 
-    GENERATOR__setTail: function(n, n2) {
-        n.tail = n2;
-    },
+    def GENERATOR__setTail(n, n2):
+        n.tail = n2
 
-    GENERATOR__finish: function(n) {
-    },
+    def GENERATOR__finish(n):
+        pass
 
-    WITH__build: function(t) {
-        return new Node(t, WITH);
-    },
+    def WITH__build(t):
+        return new Node(t, WITH)
 
-    WITH__setObject: function(n, e) {
-        n.object = e;
-    },
+    def WITH__setObject(n, e):
+        n.object = e
 
-    WITH__setBody: function(n, s) {
-        n.body = s;
-    },
+    def WITH__setBody(n, s):
+        n.body = s
 
-    WITH__finish: function(n) {
-    },
+    def WITH__finish(n):
+        pass
 
-    DEBUGGER__build: function(t) {
-        return new Node(t, DEBUGGER);
-    },
+    def DEBUGGER__build(t):
+        return new Node(t, DEBUGGER)
 
-    SEMICOLON__build: function(t) {
-        return new Node(t, SEMICOLON);
-    },
+    def SEMICOLON__build(t):
+        return new Node(t, SEMICOLON)
 
-    SEMICOLON__setExpression: function(n, e) {
-        n.expression = e;
-    },
+    def SEMICOLON__setExpression(n, e):
+        n.expression = e
 
-    SEMICOLON__finish: function(n) {
-    },
+    def SEMICOLON__finish(n):
+        pass
 
-    LABEL__build: function(t) {
-        return new Node(t, LABEL);
-    },
+    def LABEL__build(t):
+        return new Node(t, LABEL)
 
-    LABEL__setLabel: function(n, e) {
-        n.label = e;
-    },
+    def LABEL__setLabel(n, e):
+        n.label = e
 
-    LABEL__setStatement: function(n, s) {
-        n.statement = s;
-    },
+    def LABEL__setStatement(n, s):
+        n.statement = s
 
-    LABEL__finish: function(n) {
-    },
+    def LABEL__finish(n):
+        pass
 
-    FUNCTION__build: function(t) {
-        var n = new Node(t);
+    def FUNCTION__build(t):
+        var n = new Node(t)
         if (n.type != FUNCTION)
-            n.type = (n.value == "get") ? GETTER : SETTER;
-        n.params = [];
-        return n;
-    },
+            n.type = (n.value == "get") ? GETTER : SETTER
+        n.params = []
+        return n
 
-    FUNCTION__setName: function(n, v) {
-        n.name = v;
-    },
+    def FUNCTION__setName(n, v):
+        n.name = v
 
-    FUNCTION__addParam: function(n, v) {
-        n.params.push(v);
-    },
+    def FUNCTION__addParam(n, v):
+        n.params.push(v)
 
-    FUNCTION__setBody: function(n, s) {
-        n.body = s;
-    },
+    def FUNCTION__setBody(n, s):
+        n.body = s
 
-    FUNCTION__hoistVars: function(x) {
-    },
+    def FUNCTION__hoistVars(x):
+        pass
 
-    FUNCTION__finish: function(n, x) {
-    },
+    def FUNCTION__finish(n, x):
+        pass
 
-    VAR__build: function(t) {
-        return new Node(t, VAR);
-    },
+    def VAR__build(t):
+        return new Node(t, VAR)
 
-    VAR__addDecl: function(n, n2, x) {
-        n.push(n2);
-    },
+    def VAR__addDecl(n, n2, x):
+        n.push(n2)
 
-    VAR__finish: function(n) {
-    },
+    def VAR__finish(n):
+        pass
 
-    CONST__build: function(t) {
-        return new Node(t, VAR);
-    },
+    def CONST__build(t):
+        return new Node(t, VAR)
 
-    CONST__addDecl: function(n, n2, x) {
-        n.push(n2);
-    },
+    def CONST__addDecl(n, n2, x):
+        n.push(n2)
 
-    CONST__finish: function(n) {
-    },
+    def CONST__finish(n):
+        pass
 
-    LET__build: function(t) {
-        return new Node(t, LET);
-    },
+    def LET__build(t):
+        return new Node(t, LET)
 
-    LET__addDecl: function(n, n2, x) {
-        n.push(n2);
-    },
+    def LET__addDecl(n, n2, x):
+        n.push(n2)
 
-    LET__finish: function(n) {
-    },
+    def LET__finish(n):
+        pass
 
-    DECL__build: function(t) {
-        return new Node(t, IDENTIFIER);
-    },
+    def DECL__build(t):
+        return new Node(t, IDENTIFIER)
 
-    DECL__setName: function(n, v) {
-        n.name = v;
-    },
+    def DECL__setName(n, v):
+        n.name = v
 
-    DECL__setInitializer: function(n, e) {
-        n.initializer = e;
-    },
+    def DECL__setInitializer(n, e):
+        n.initializer = e
 
-    DECL__setReadOnly: function(n, b) {
-        n.readOnly = b;
-    },
+    def DECL__setReadOnly(n, b):
+        n.readOnly = b
 
-    DECL__finish: function(n) {
-    },
+    def DECL__finish(n):
+        pass
 
-    LET_BLOCK__build: function(t) {
-        var n = Node(t, LET_BLOCK);
-        n.varDecls = [];
-        return n;
-    },
+    def LET_BLOCK__build(t):
+        var n = Node(t, LET_BLOCK)
+        n.varDecls = []
+        return n
 
-    LET_BLOCK__setVariables: function(n, n2) {
-        n.variables = n2;
-    },
+    def LET_BLOCK__setVariables(n, n2):
+        n.variables = n2
 
-    LET_BLOCK__setExpression: function(n, e) {
-        n.expression = e;
-    },
+    def LET_BLOCK__setExpression(n, e):
+        n.expression = e
 
-    LET_BLOCK__setBlock: function(n, s) {
-        n.block = s;
-    },
+    def LET_BLOCK__setBlock(n, s):
+        n.block = s
 
-    LET_BLOCK__finish: function(n) {
-    },
+    def LET_BLOCK__finish(n):
+        pass
 
-    BLOCK__build: function(t, id) {
-        var n = new Node(t, BLOCK);
-        n.varDecls = [];
-        n.id = id;
-        return n;
-    },
+    def BLOCK__build(t, id):
+        var n = new Node(t, BLOCK)
+        n.varDecls = []
+        n.id = id
+        return n
 
-    BLOCK__hoistLets: function(n) {
-    },
+    def BLOCK__hoistLets(n):
+        pass
 
-    BLOCK__addStatement: function(n, n2) {
-        n.push(n2);
-    },
+    def BLOCK__addStatement(n, n2):
+        n.push(n2)
 
-    BLOCK__finish: function(n) {
-    },
+    def BLOCK__finish(n):
+        pass
 
-    EXPRESSION__build: function(t, tt) {
-        return new Node(t, tt);
-    },
+    def EXPRESSION__build(t, tt):
+        return new Node(t, tt)
 
-    EXPRESSION__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def EXPRESSION__addOperand(n, n2):
+        n.push(n2)
 
-    EXPRESSION__finish: function(n) {
-    },
+    def EXPRESSION__finish(n):
+        pass
 
-    ASSIGN__build: function(t) {
-        return new Node(t, ASSIGN);
-    },
+    def ASSIGN__build(t):
+        return new Node(t, ASSIGN)
 
-    ASSIGN__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def ASSIGN__addOperand(n, n2):
+        n.push(n2)
 
-    ASSIGN__setAssignOp: function(n, o) {
-        n.assignOp = o;
-    },
+    def ASSIGN__setAssignOp(n, o):
+        n.assignOp = o
 
-    ASSIGN__finish: function(n) {
-    },
+    def ASSIGN__finish(n):
+        pass
 
-    HOOK__build: function(t) {
-        return new Node(t, HOOK);
-    },
+    def HOOK__build(t):
+        return new Node(t, HOOK)
 
-    HOOK__setCondition: function(n, e) {
-        n[0] = e;
-    },
+    def HOOK__setCondition(n, e):
+        n[0] = e
 
-    HOOK__setThenPart: function(n, n2) {
-        n[1] = n2;
-    },
+    def HOOK__setThenPart(n, n2):
+        n[1] = n2
 
-    HOOK__setElsePart: function(n, n2) {
-        n[2] = n2;
-    },
+    def HOOK__setElsePart(n, n2):
+        n[2] = n2
 
-    HOOK__finish: function(n) {
-    },
+    def HOOK__finish(n):
+        pass
 
-    OR__build: function(t) {
-        return new Node(t, OR);
-    },
+    def OR__build(t):
+        return new Node(t, OR)
 
-    OR__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def OR__addOperand(n, n2):
+        n.push(n2)
 
-    OR__finish: function(n) {
-    },
+    def OR__finish(n):
+        pass
 
-    AND__build: function(t) {
-        return new Node(t, AND);
-    },
+    def AND__build(t):
+        return new Node(t, AND)
 
-    AND__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def AND__addOperand(n, n2):
+        n.push(n2)
 
-    AND__finish: function(n) {
-    },
+    def AND__finish(n):
+        pass
 
-    BITWISE_OR__build: function(t) {
-        return new Node(t, BITWISE_OR);
-    },
+    def BITWISE_OR__build(t):
+        return new Node(t, BITWISE_OR)
 
-    BITWISE_OR__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def BITWISE_OR__addOperand(n, n2):
+        n.push(n2)
 
-    BITWISE_OR__finish: function(n) {
-    },
+    def BITWISE_OR__finish(n):
+        pass
 
-    BITWISE_XOR__build: function(t) {
-        return new Node(t, BITWISE_XOR);
-    },
+    def BITWISE_XOR__build(t):
+        return new Node(t, BITWISE_XOR)
 
-    BITWISE_XOR__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def BITWISE_XOR__addOperand(n, n2):
+        n.push(n2)
 
-    BITWISE_XOR__finish: function(n) {
-    },
+    def BITWISE_XOR__finish(n):
+        pass
 
-    BITWISE_AND__build: function(t) {
-        return new Node(t, BITWISE_AND);
-    },
+    def BITWISE_AND__build(t):
+        return new Node(t, BITWISE_AND)
 
-    BITWISE_AND__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def BITWISE_AND__addOperand(n, n2):
+        n.push(n2)
 
-    BITWISE_AND__finish: function(n) {
-    },
+    def BITWISE_AND__finish(n):
+        pass
 
-    EQUALITY__build: function(t) {
+    def EQUALITY__build(t):
         # NB t.token.type must be EQ, NE, STRICT_EQ, or STRICT_NE.
-        return new Node(t);
-    },
+        return new Node(t)
 
-    EQUALITY__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def EQUALITY__addOperand(n, n2):
+        n.push(n2)
 
-    EQUALITY__finish: function(n) {
-    },
+    def EQUALITY__finish(n):
+        pass
 
-    RELATIONAL__build: function(t) {
+    def RELATIONAL__build(t):
         # NB t.token.type must be LT, LE, GE, or GT.
-        return new Node(t);
-    },
+        return new Node(t)
 
-    RELATIONAL__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def RELATIONAL__addOperand(n, n2):
+        n.push(n2)
 
-    RELATIONAL__finish: function(n) {
-    },
+    def RELATIONAL__finish(n):
+        pass
 
-    SHIFT__build: function(t) {
+    def SHIFT__build(t):
         # NB t.token.type must be LSH, RSH, or URSH.
-        return new Node(t);
-    },
+        return new Node(t)
 
-    SHIFT__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def SHIFT__addOperand(n, n2):
+        n.push(n2)
 
-    SHIFT__finish: function(n) {
-    },
+    def SHIFT__finish(n):
+        pass
 
-    ADD__build: function(t) {
+    ADD__build(t):
         # NB t.token.type must be PLUS or MINUS.
-        return new Node(t);
-    },
+        return new Node(t)
 
-    ADD__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def ADD__addOperand(n, n2):
+        n.push(n2)
 
-    ADD__finish: function(n) {
-    },
+    def ADD__finish(n):
+        pass
 
-    MULTIPLY__build: function(t) {
+    MULTIPLY__build(t):
         # NB t.token.type must be MUL, DIV, or MOD.
-        return new Node(t);
-    },
+        return new Node(t)
 
-    MULTIPLY__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def MULTIPLY__addOperand(n, n2):
+        n.push(n2)
 
-    MULTIPLY__finish: function(n) {
-    },
+    def MULTIPLY__finish(n):
+        pass
 
-    UNARY__build: function(t) {
+    def UNARY__build(t):
         # NB t.token.type must be DELETE, VOID, TYPEOF, NOT, BITWISE_NOT,
         # UNARY_PLUS, UNARY_MINUS, INCREMENT, or DECREMENT.
         if (t.token.type == PLUS)
-            t.token.type = UNARY_PLUS;
+            t.token.type = UNARY_PLUS
         else if (t.token.type == MINUS)
-            t.token.type = UNARY_MINUS;
-        return new Node(t);
-    },
+            t.token.type = UNARY_MINUS
+        return new Node(t)
 
-    UNARY__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def UNARY__addOperand(n, n2):
+        n.push(n2)
 
-    UNARY__setPostfix: function(n) {
-        n.postfix = true;
-    },
+    def UNARY__setPostfix(n):
+        n.postfix = true
 
-    UNARY__finish: function(n) {
-    },
+    def UNARY__finish(n):
+        pass
 
-    MEMBER__build: function(t, tt) {
+    def MEMBER__build(t, tt):
         # NB t.token.type must be NEW, DOT, or INDEX.
-        return new Node(t, tt);
-    },
+        return new Node(t, tt)
 
-    MEMBER__rebuildNewWithArgs: function(n) {
-        n.type = NEW_WITH_ARGS;
-    },
+    def MEMBER__rebuildNewWithArgs(n):
+        n.type = NEW_WITH_ARGS
 
-    MEMBER__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def MEMBER__addOperand(n, n2):
+        n.push(n2)
 
-    MEMBER__finish: function(n) {
-    },
+    def MEMBER__finish(n):
+        pass
 
-    PRIMARY__build: function(t, tt) {
+    def PRIMARY__build(t, tt):
         # NB t.token.type must be NULL, THIS, TRUIE, FALSE, IDENTIFIER,
         # NUMBER, STRING, or REGEXP.
-        return new Node(t, tt);
-    },
+        return new Node(t, tt)
 
-    PRIMARY__finish: function(n) {
-    },
+    def PRIMARY__finish(n):
+        pass
 
-    ARRAY_INIT__build: function(t) {
-        return new Node(t, ARRAY_INIT);
-    },
+    def ARRAY_INIT__build(t):
+        return new Node(t, ARRAY_INIT)
 
-    ARRAY_INIT__addElement: function(n, n2) {
-        n.push(n2);
-    },
+    def ARRAY_INIT__addElement(n, n2):
+        n.push(n2)
 
-    ARRAY_INIT__finish: function(n) {
-    },
+    def ARRAY_INIT__finish(n):
+        pass
 
-    ARRAY_COMP: {
-        build: function(t) {
-            return new Node(t, ARRAY_COMP);
-        },
-
-        setExpression: function(n, e) {
+    def ARRAY_COMP::
+        build(t):
+            return new Node(t, ARRAY_COMP)
+    
+        setExpression(n, e):
             n.expression = e
-        },
-
-        setTail: function(n, n2) {
-            n.tail = n2;
-        },
-
-        finish: function(n) {
+    
+        setTail(n, n2):
+            n.tail = n2
+    
+        finish(n):
         }
-    },
 
-    COMP_TAIL__build: function(t) {
-        return new Node(t, COMP_TAIL);
-    },
+    def COMP_TAIL__build(t):
+        return new Node(t, COMP_TAIL)
 
-    COMP_TAIL__setGuard: function(n, e) {
-        n.guard = e;
-    },
+    def COMP_TAIL__setGuard(n, e):
+        n.guard = e
 
-    COMP_TAIL__addFor: function(n, n2) {
-        n.push(n2);
-    },
+    def COMP_TAIL__addFor(n, n2):
+        n.push(n2)
 
-    COMP_TAIL__finish: function(n) {
-    },
+    def COMP_TAIL__finish(n):
+        pass
 
-    OBJECT_INIT__build: function(t) {
-        return new Node(t, OBJECT_INIT);
-    },
+    def OBJECT_INIT__build(t):
+        return new Node(t, OBJECT_INIT)
 
-    OBJECT_INIT__addProperty: function(n, n2) {
-        n.push(n2);
-    },
+    def OBJECT_INIT__addProperty(n, n2):
+        n.push(n2)
 
-    OBJECT_INIT__finish: function(n) {
-    },
+    def OBJECT_INIT__finish(n):
+        pass
 
-    PROPERTY_INIT__build: function(t) {
-        return new Node(t, PROPERTY_INIT);
-    },
+    def PROPERTY_INIT__build(t):
+        return new Node(t, PROPERTY_INIT)
 
-    PROPERTY_INIT__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def PROPERTY_INIT__addOperand(n, n2):
+        n.push(n2)
 
-    PROPERTY_INIT__finish: function(n) {
-    },
+    def PROPERTY_INIT__finish(n):
+        pass
 
-    COMMA__build: function(t) {
-        return new Node(t, COMMA);
-    },
+    def COMMA__build(t):
+        return new Node(t, COMMA)
 
-    COMMA__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def COMMA__addOperand(n, n2):
+        n.push(n2)
 
-    COMMA__finish: function(n) {
-    },
+    def COMMA__finish(n):
+        pass
 
-    LIST__build: function(t) {
-        return new Node(t, LIST);
-    },
+    def LIST__build(t):
+        return new Node(t, LIST)
 
-    LIST__addOperand: function(n, n2) {
-        n.push(n2);
-    },
+    def LIST__addOperand(n, n2):
+        n.push(n2)
 
-    LIST__finish: function(n) {
-    },
+    def LIST__finish(n):
+        pass
 
-    setHoists: function(id, vds) {
+    def setHoists(id, vds) {
     }
-};
