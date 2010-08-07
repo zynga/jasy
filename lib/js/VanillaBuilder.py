@@ -42,7 +42,7 @@ class VanillaBuilder:
         node.defaultIndex = index
 
     def SWITCH_addCase(self, node, childNode):
-        node.cases.push(childNode)
+        node.cases.append(childNode)
 
     def SWITCH_finish(self, node):
         pass
@@ -57,7 +57,7 @@ class VanillaBuilder:
         node.statements = Node(tokenizer, "block")
 
     def CASE_addStatement(self, node, statement):
-        node.statements.push(statement)
+        node.statements.append(statement)
 
     def CASE_finish(self, node):
         pass
@@ -69,7 +69,7 @@ class VanillaBuilder:
         node.statements = Node(tokenizer, "block")
 
     def DEFAULT_addStatement(self, node, statement):
-        node.statements.push(statement)
+        node.statements.append(statement)
 
     def DEFAULT_finish(self, node):
         pass
@@ -170,7 +170,7 @@ class VanillaBuilder:
         node.tryBlock = statement
 
     def TRY_addCatch(self, node, childNode):
-        node.catchClauses.push(childNode)
+        node.catchClauses.append(childNode)
 
     def TRY_finishCatches(self, node):
         pass
@@ -288,7 +288,7 @@ class VanillaBuilder:
         node.name = identifier
 
     def FUNCTION_addParam(self, node, identifier):
-        node.params.push(identifier)
+        node.params.append(identifier)
 
     def FUNCTION_setBody(self, node, statement):
         node.body = statement
@@ -303,7 +303,7 @@ class VanillaBuilder:
         return Node(tokenizer, "var")
 
     def VAR_addDecl(self, node, childNode, x):
-        node.push(childNode)
+        node.append(childNode)
 
     def VAR_finish(self, node):
         pass
@@ -312,7 +312,7 @@ class VanillaBuilder:
         return Node(tokenizer, "var")
 
     def CONST_addDecl(self, node, childNode, x):
-        node.push(childNode)
+        node.append(childNode)
 
     def CONST_finish(self, node):
         pass
@@ -321,7 +321,7 @@ class VanillaBuilder:
         return Node(tokenizer, "let")
 
     def LET_addDecl(self, node, childNode, x):
-        node.push(childNode)
+        node.append(childNode)
 
     def LET_finish(self, node):
         pass
@@ -368,7 +368,7 @@ class VanillaBuilder:
         pass
 
     def BLOCK_addStatement(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def BLOCK_finish(self, node):
         pass
@@ -377,7 +377,7 @@ class VanillaBuilder:
         return Node(tokenizer, tokenType)
 
     def EXPRESSION_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def EXPRESSION_finish(self, node):
         pass
@@ -386,7 +386,7 @@ class VanillaBuilder:
         return Node(tokenizer, "assign")
 
     def ASSIGN_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def ASSIGN_setAssignOp(self, node, operator):
         node.assignOp = operator
@@ -413,7 +413,7 @@ class VanillaBuilder:
         return Node(tokenizer, "or")
 
     def OR_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def OR_finish(self, node):
         pass
@@ -422,7 +422,7 @@ class VanillaBuilder:
         return Node(tokenizer, "and")
 
     def AND_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def AND_finish(self, node):
         pass
@@ -431,7 +431,7 @@ class VanillaBuilder:
         return Node(tokenizer, "bitwise_or")
 
     def BITWISEOR_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def BITWISEOR_finish(self, node):
         pass
@@ -440,7 +440,7 @@ class VanillaBuilder:
         return Node(tokenizer, "bitwise_xor")
 
     def BITWISEXOR_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def BITWISEXOR_finish(self, node):
         pass
@@ -449,7 +449,7 @@ class VanillaBuilder:
         return Node(tokenizer, "bitwise_and")
 
     def BITWISEAND_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def BITWISEAND_finish(self, node):
         pass
@@ -459,7 +459,7 @@ class VanillaBuilder:
         return Node(tokenizer)
 
     def EQUALITY_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def EQUALITY_finish(self, node):
         pass
@@ -469,7 +469,7 @@ class VanillaBuilder:
         return Node(tokenizer)
 
     def RELATIONAL_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def RELATIONAL_finish(self, node):
         pass
@@ -479,7 +479,7 @@ class VanillaBuilder:
         return Node(tokenizer)
 
     def SHIFT_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def SHIFT_finish(self, node):
         pass
@@ -489,7 +489,7 @@ class VanillaBuilder:
         return Node(tokenizer)
 
     def ADD_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def ADD_finish(self, node):
         pass
@@ -499,7 +499,7 @@ class VanillaBuilder:
         return Node(tokenizer)
 
     def MULTIPLY_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def MULTIPLY_finish(self, node):
         pass
@@ -515,7 +515,7 @@ class VanillaBuilder:
         return Node(tokenizer)
 
     def UNARY_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def UNARY_setPostfix(self, node):
         node.postfix = true
@@ -531,7 +531,7 @@ class VanillaBuilder:
         node.type = "new_with_args"
 
     def MEMBER_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def MEMBER_finish(self, node):
         pass
@@ -548,7 +548,7 @@ class VanillaBuilder:
         return Node(tokenizer, "array_init")
 
     def ARRAYINIT_addElement(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def ARRAYINIT_finish(self, node):
         pass
@@ -572,7 +572,7 @@ class VanillaBuilder:
         node.guard = expression
 
     def COMPTAIL_addFor(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def COMPTAIL_finish(self, node):
         pass
@@ -581,7 +581,7 @@ class VanillaBuilder:
         return Node(tokenizer, "object_init")
 
     def OBJECTINIT_addProperty(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def OBJECTINIT_finish(self, node):
         pass
@@ -590,7 +590,7 @@ class VanillaBuilder:
         return Node(tokenizer, "property_init")
 
     def PROPERTYINIT_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def PROPERTYINIT_finish(self, node):
         pass
@@ -599,7 +599,7 @@ class VanillaBuilder:
         return Node(tokenizer, "comma")
 
     def COMMA_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def COMMA_finish(self, node):
         pass
@@ -608,7 +608,7 @@ class VanillaBuilder:
         return Node(tokenizer, "list")
 
     def LIST_addOperand(self, node, childNode):
-        node.push(childNode)
+        node.append(childNode)
 
     def LIST_finish(self, node):
         pass

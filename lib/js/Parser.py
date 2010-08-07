@@ -65,7 +65,7 @@ def Script(tokenizer, staticContext):
 
 def nest(tokenizer, staticContext, node, func, end):
     """Statement stack and nested statement handler."""
-    staticContext.statementStack.push(node)
+    staticContext.statementStack.append(node)
     node = func(tokenizer, staticContext)
     staticContext.statementStack.pop()
     end and tokenizer.mustMatch(end)
@@ -81,7 +81,7 @@ def Statements(tokenizer, staticContext):
     staticContext.blockId += 1
 
     builder.BLOCK_hoistLets(node)
-    staticContext.statementStack.push(node)
+    staticContext.statementStack.append(node)
 
     while not tokenizer.done and tokenizer.peek(True) != "right_curly":
         builder.BLOCK_addStatement(node, Statement(tokenizer, staticContext))
@@ -134,7 +134,7 @@ def Statement(tokenizer, staticContext):
     elif tokenType == "if":
         node = builder.IF_build(tokenizer)
         builder.IF_setCondition(node, ParenExpression(tokenizer, staticContext))
-        staticContext.statementStack.push(node)
+        staticContext.statementStack.append(node)
         builder.IF_setThenPart(node, Statement(tokenizer, staticContext))
 
         if tokenizer.match("else"):
@@ -150,7 +150,7 @@ def Statement(tokenizer, staticContext):
         # This allows CASEs after a "default", which is in the standard.
         node = builder.SWITCH_build(tokenizer)
         builder.SWITCH_setDiscriminant(node, ParenExpression(tokenizer, staticContext))
-        staticContext.statementStack.push(node)
+        staticContext.statementStack.append(node)
 
         tokenizer.mustMatch("left_curly")
         tokenType = tokenizer.get()
@@ -228,7 +228,7 @@ def Statement(tokenizer, staticContext):
                     # around the rest of the for.
                     forBlock = builder.BLOCK_build(tokenizer, staticContext.blockId)
                     staticContext.blockId += 1
-                    staticContext.statementStack.push(forBlock)
+                    staticContext.statementStack.append(forBlock)
                     childNode = Variables(tokenizer, staticContext, forBlock)
                 
             else:
@@ -681,7 +681,7 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     functionNode.functionForm = functionForm
     
     if functionForm == "declared_form":
-        staticContext.funDecls.push(functionNode)
+        staticContext.funDecls.append(functionNode)
         
     builder.FUNCTION_finish(functionNode, staticContext)
     
@@ -790,13 +790,13 @@ def Variables(tokenizer, staticContext, letBlock):
             builder.ASSIGN_addOperand(n3, AssignExpression(tokenizer, staticContext))
             builder.ASSIGN_finish(n3)
             
-            initializers.push(n3)
+            initializers.append(n3)
 
             # But only add the rhs as the initializer.
             builder.DECL_setInitializer(childNode, n3[1])
 
         builder.DECL_finish(childNode)
-        childContext.varDecls.push(childNode)
+        childContext.varDecls.append(childNode)
         
         if not tokenizer.match("comma"):
             break
@@ -875,7 +875,7 @@ def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly, data):
                 builder.DECL_finish(childNode)
 
                 # Each pattern needs to be added to varDecls.
-                data.varDecls.push(childNode)
+                data.varDecls.append(childNode)
 
 
 def DestructuringExpression(tokenizer, staticContext, simpleNamesOnly, data):
