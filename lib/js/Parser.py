@@ -65,9 +65,9 @@ def Script(tokenizer, staticContext):
 
 def nest(tokenizer, staticContext, node, func, end):
     """Statement stack and nested statement handler."""
-    staticContext.stmtStack.push(node)
+    staticContext.statementStack.push(node)
     node = func(tokenizer, staticContext)
-    staticContext.stmtStack.pop()
+    staticContext.statementStack.pop()
     end and tokenizer.mustMatch(end)
     
     return node
@@ -81,12 +81,12 @@ def Statements(tokenizer, staticContext):
     staticContext.blockId += 1
 
     builder.BLOCK_hoistLets(node)
-    staticContext.stmtStack.push(node)
+    staticContext.statementStack.push(node)
 
     while not tokenizer.done and tokenizer.peek(True) != "right_curly":
         builder.BLOCK_addStatement(node, Statement(tokenizer, staticContext))
 
-    staticContext.stmtStack.pop()
+    staticContext.statementStack.pop()
     builder.BLOCK_finish(node)
 
     if node.needsHoisting:
@@ -116,7 +116,7 @@ def Statement(tokenizer, staticContext):
     
     if tokenType == "function":
         # "declared_form" extends funDecls of staticContext, "statement_form" doesn'tokenizer.
-        if len(staticContext.stmtStack) > 1:
+        if len(staticContext.statementStack) > 1:
             kind = "statement_form"
         else:
             kind = "declared_form"
@@ -134,13 +134,13 @@ def Statement(tokenizer, staticContext):
     elif tokenType == "if":
         node = builder.IF_build(tokenizer)
         builder.IF_setCondition(node, ParenExpression(tokenizer, staticContext))
-        staticContext.stmtStack.push(node)
+        staticContext.statementStack.push(node)
         builder.IF_setThenPart(node, Statement(tokenizer, staticContext))
 
         if tokenizer.match("else"):
             builder.IF_setElsePart(node, Statement(tokenizer, staticContext))
 
-        staticContext.stmtStack.pop()
+        staticContext.statementStack.pop()
         builder.IF_finish(node)
         
         return node
@@ -150,7 +150,7 @@ def Statement(tokenizer, staticContext):
         # This allows CASEs after a "default", which is in the standard.
         node = builder.SWITCH_build(tokenizer)
         builder.SWITCH_setDiscriminant(node, ParenExpression(tokenizer, staticContext))
-        staticContext.stmtStack.push(node)
+        staticContext.statementStack.push(node)
 
         tokenizer.mustMatch("left_curly")
         tokenType = tokenizer.get()
@@ -195,7 +195,7 @@ def Statement(tokenizer, staticContext):
             builder.SWITCH_addCase(node, childNode)
             tokenType = tokenizer.get()
 
-        staticContext.stmtStack.pop()
+        staticContext.statementStack.pop()
         builder.SWITCH_finish(node)
 
         return node
@@ -228,7 +228,7 @@ def Statement(tokenizer, staticContext):
                     # around the rest of the for.
                     forBlock = builder.BLOCK_build(tokenizer, staticContext.blockId)
                     staticContext.blockId += 1
-                    staticContext.stmtStack.push(forBlock)
+                    staticContext.statementStack.push(forBlock)
                     childNode = Variables(tokenizer, staticContext, forBlock)
                 
             else:
@@ -273,7 +273,7 @@ def Statement(tokenizer, staticContext):
         
         if forBlock:
             builder.BLOCK_finish(forBlock)
-            staticContext.stmtStack.pop()
+            staticContext.statementStack.pop()
     
         builder.FOR_finish(node)
         return node
@@ -320,7 +320,7 @@ def Statement(tokenizer, staticContext):
             else:
                 builder.CONTINUE_setLabel(node, tokenizer.token.value)
 
-        statementStack = staticContext.stmtStack
+        statementStack = staticContext.statementStack
         i = len(statementStack)
         label = node.label
 
@@ -487,7 +487,7 @@ def Statement(tokenizer, staticContext):
             # Labeled statement.
             if tokenType == "colon":
                 label = tokenizer.token.value
-                statementStack = staticContext.stmtStack
+                statementStack = staticContext.statementStack
                
                 i = len(statementStack)-1
                 while i >= 0:
@@ -711,7 +711,7 @@ def Variables(tokenizer, staticContext, letBlock):
         finish = builder.LET_finish
         
         if not letBlock:
-            statementStack = staticContext.stmtStack
+            statementStack = staticContext.statementStack
             i = len(statementStack) - 1
             
             # a "block" *must* be found.
