@@ -1,5 +1,5 @@
 #
-# JavaScript Tools - Parser Module
+# JavaScript Tools - Tokenizer
 # License: MPL 1.1/GPL 2.0/LGPL 2.1
 # Authors: 
 #   - Brendan Eich <brendan@mozilla.org> (Original JavaScript) (2004-2010)

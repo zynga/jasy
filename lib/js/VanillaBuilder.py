@@ -15,7 +15,7 @@ class VanillaBuilder:
     """The vanilla AST builder."""
     
     def IF_build(self, tokenizer):
-        return Node(tokenizer, IF)
+        return Node(tokenizer, "if")
 
     def IF_setCondition(self, node, expression):
         node.condition = expression
@@ -30,7 +30,7 @@ class VanillaBuilder:
         pass
 
     def SWITCH_build(self, tokenizer):
-        node = Node(tokenizer, SWITCH)
+        node = Node(tokenizer, "switch")
         node.cases = []
         node.defaultIndex = -1
         return node
@@ -48,13 +48,13 @@ class VanillaBuilder:
         pass
 
     def CASE_build(self, tokenizer):
-        return Node(tokenizer, CASE)
+        return Node(tokenizer, "case")
 
     def CASE_setLabel(self, node, expression):
         node.caseLabel = expression
 
     def CASE_initializeStatements(self, node, tokenizer):
-        node.statements = Node(tokenizer, BLOCK)
+        node.statements = Node(tokenizer, "block")
 
     def CASE_addStatement(self, node, statement):
         node.statements.push(statement)
@@ -63,10 +63,10 @@ class VanillaBuilder:
         pass
 
     def DEFAULT_build(self, tokenizer, p):
-        return Node(tokenizer, DEFAULT)
+        return Node(tokenizer, "default")
 
     def DEFAULT_initializeStatements(self, node, tokenizer):
-        node.statements = Node(tokenizer, BLOCK)
+        node.statements = Node(tokenizer, "block")
 
     def DEFAULT_addStatement(self, node, statement):
         node.statements.push(statement)
@@ -75,7 +75,7 @@ class VanillaBuilder:
         pass
 
     def FOR_build(self, tokenizer):
-        node = Node(tokenizer, FOR)
+        node = Node(tokenizer, "for")
         node.isLoop = true
         node.isEach = false
         return node
@@ -83,9 +83,9 @@ class VanillaBuilder:
     def FOR_rebuildForEach(self, node):
         node.isEach = true
 
-    # NB. This function is called after rebuildForEach, if that'statement called at all.
+    # "nb". This function is called after rebuildForEach, if that'statement called at all.
     def FOR_rebuildForIn(self, node):
-        node.type = FOR_IN
+        node.type = "for_in"
 
     def FOR_setCondition(self, node, expression):
         node.condition = expression
@@ -110,7 +110,7 @@ class VanillaBuilder:
         pass
 
     def WHILE_build(self, tokenizer):
-        node = Node(tokenizer, WHILE)
+        node = Node(tokenizer, "while")
         node.isLoop = true
         return node
 
@@ -124,7 +124,7 @@ class VanillaBuilder:
         pass
 
     def DO_build(self, tokenizer):
-        node = Node(tokenizer, DO)
+        node = Node(tokenizer, "do")
         node.isLoop = true
         return node
 
@@ -138,7 +138,7 @@ class VanillaBuilder:
         pass
 
     def BREAK_build(self, tokenizer):
-        return Node(tokenizer, BREAK)
+        return Node(tokenizer, "break")
 
     def BREAK_setLabel(self, node, identifier):
         node.label = identifier
@@ -150,7 +150,7 @@ class VanillaBuilder:
         pass
 
     def CONTINUE_build(self, tokenizer):
-        return Node(tokenizer, CONTINUE)
+        return Node(tokenizer, "continue")
 
     def CONTINUE_setLabel(self, node, identifier):
         node.label = identifier
@@ -162,7 +162,7 @@ class VanillaBuilder:
         pass
 
     def TRY_build(self, tokenizer):
-        node = Node(tokenizer, TRY)
+        node = Node(tokenizer, "try")
         node.catchClauses = []
         return node
 
@@ -182,7 +182,7 @@ class VanillaBuilder:
         pass
 
     def CATCH_build(self, tokenizer):
-        node = Node(tokenizer, CATCH)
+        node = Node(tokenizer, "catch")
         node.guard = None
         return node
 
@@ -199,7 +199,7 @@ class VanillaBuilder:
         pass
 
     def THROW_build(self, tokenizer):
-        return Node(tokenizer, THROW)
+        return Node(tokenizer, "throw")
 
     def THROW_setException(self, node, expression):
         node.exception = expression
@@ -208,7 +208,7 @@ class VanillaBuilder:
         pass
 
     def RETURN_build(self, tokenizer):
-        return Node(tokenizer, RETURN)
+        return Node(tokenizer, "return")
 
     def RETURN_setValue(self, node, expression):
         node.value = expression
@@ -217,7 +217,7 @@ class VanillaBuilder:
         pass
 
     def YIELD_build(self, tokenizer):
-        return Node(tokenizer, YIELD)
+        return Node(tokenizer, "yield")
 
     def YIELD_setValue(self, node, expression):
         node.value = expression
@@ -226,7 +226,7 @@ class VanillaBuilder:
         pass
 
     def GENERATOR_build(self, tokenizer):
-        return Node(tokenizer, GENERATOR)
+        return Node(tokenizer, "generator")
 
     def GENERATOR_setExpression(self, node, expression):
         node.expression = expression
@@ -238,7 +238,7 @@ class VanillaBuilder:
         pass
 
     def WITH_build(self, tokenizer):
-        return Node(tokenizer, WITH)
+        return Node(tokenizer, "with")
 
     def WITH_setObject(self, node, expression):
         node.object = expression
@@ -250,10 +250,10 @@ class VanillaBuilder:
         pass
 
     def DEBUGGER_build(self, tokenizer):
-        return Node(tokenizer, DEBUGGER)
+        return Node(tokenizer, "debugger")
 
     def SEMICOLON_build(self, tokenizer):
-        return Node(tokenizer, SEMICOLON)
+        return Node(tokenizer, "semicolon")
 
     def SEMICOLON_setExpression(self, node, expression):
         node.expression = expression
@@ -262,7 +262,7 @@ class VanillaBuilder:
         pass
 
     def LABEL_build(self, tokenizer):
-        return Node(tokenizer, LABEL)
+        return Node(tokenizer, "label")
 
     def LABEL_setLabel(self, node, expression):
         node.label = expression
@@ -275,11 +275,11 @@ class VanillaBuilder:
 
     def FUNCTION_build(self, tokenizer):
         node = Node(tokenizer)
-        if node.type != FUNCTION:
+        if node.type != "function":
             if node.value == "get":
-                node.type = GETTER
+                node.type = "getter"
             else:
-                node.type = SETTER
+                node.type = "setter"
 
         node.params = []
         return node
@@ -300,7 +300,7 @@ class VanillaBuilder:
         pass
 
     def VAR_build(self, tokenizer):
-        return Node(tokenizer, VAR)
+        return Node(tokenizer, "var")
 
     def VAR_addDecl(self, node, childNode, x):
         node.push(childNode)
@@ -309,7 +309,7 @@ class VanillaBuilder:
         pass
 
     def CONST_build(self, tokenizer):
-        return Node(tokenizer, VAR)
+        return Node(tokenizer, "var")
 
     def CONST_addDecl(self, node, childNode, x):
         node.push(childNode)
@@ -318,7 +318,7 @@ class VanillaBuilder:
         pass
 
     def LET_build(self, tokenizer):
-        return Node(tokenizer, LET)
+        return Node(tokenizer, "let")
 
     def LET_addDecl(self, node, childNode, x):
         node.push(childNode)
@@ -327,7 +327,7 @@ class VanillaBuilder:
         pass
 
     def DECL_build(self, tokenizer):
-        return Node(tokenizer, IDENTIFIER)
+        return Node(tokenizer, "identifier")
 
     def DECL_setName(self, node, identifier):
         node.name = identifier
@@ -342,7 +342,7 @@ class VanillaBuilder:
         pass
 
     def LETBLOCK_build(self, tokenizer):
-        node = Node(tokenizer, LET_BLOCK)
+        node = Node(tokenizer, "let_block")
         node.varDecls = []
         return node
 
@@ -359,7 +359,7 @@ class VanillaBuilder:
         pass
 
     def BLOCK_build(self, tokenizer, id):
-        node = Node(tokenizer, BLOCK)
+        node = Node(tokenizer, "block")
         node.varDecls = []
         node.id = id
         return node
@@ -383,7 +383,7 @@ class VanillaBuilder:
         pass
 
     def ASSIGN_build(self, tokenizer):
-        return Node(tokenizer, ASSIGN)
+        return Node(tokenizer, "assign")
 
     def ASSIGN_addOperand(self, node, childNode):
         node.push(childNode)
@@ -395,7 +395,7 @@ class VanillaBuilder:
         pass
 
     def HOOK_build(self, tokenizer):
-        return Node(tokenizer, HOOK)
+        return Node(tokenizer, "hook")
 
     def HOOK_setCondition(self, node, expression):
         node[0] = expression
@@ -410,7 +410,7 @@ class VanillaBuilder:
         pass
 
     def OR_build(self, tokenizer):
-        return Node(tokenizer, OR)
+        return Node(tokenizer, "or")
 
     def OR_addOperand(self, node, childNode):
         node.push(childNode)
@@ -419,7 +419,7 @@ class VanillaBuilder:
         pass
 
     def AND_build(self, tokenizer):
-        return Node(tokenizer, AND)
+        return Node(tokenizer, "and")
 
     def AND_addOperand(self, node, childNode):
         node.push(childNode)
@@ -428,7 +428,7 @@ class VanillaBuilder:
         pass
 
     def BITWISEOR_build(self, tokenizer):
-        return Node(tokenizer, BITWISE_OR)
+        return Node(tokenizer, "bitwise_or")
 
     def BITWISEOR_addOperand(self, node, childNode):
         node.push(childNode)
@@ -437,7 +437,7 @@ class VanillaBuilder:
         pass
 
     def BITWISEXOR_build(self, tokenizer):
-        return Node(tokenizer, BITWISE_XOR)
+        return Node(tokenizer, "bitwise_xor")
 
     def BITWISEXOR_addOperand(self, node, childNode):
         node.push(childNode)
@@ -446,7 +446,7 @@ class VanillaBuilder:
         pass
 
     def BITWISEAND_build(self, tokenizer):
-        return Node(tokenizer, BITWISE_AND)
+        return Node(tokenizer, "bitwise_and")
 
     def BITWISEAND_addOperand(self, node, childNode):
         node.push(childNode)
@@ -455,7 +455,7 @@ class VanillaBuilder:
         pass
 
     def EQUALITY_build(self, tokenizer):
-        # NB tokenizer.token.type must be EQ, NE, STRICT_EQ, or STRICT_NE.
+        # "nb" tokenizer.token.type must be "eq", "ne", "strict_eq", or "strict_ne".
         return Node(tokenizer)
 
     def EQUALITY_addOperand(self, node, childNode):
@@ -465,7 +465,7 @@ class VanillaBuilder:
         pass
 
     def RELATIONAL_build(self, tokenizer):
-        # NB tokenizer.token.type must be LT, LE, GE, or GT.
+        # "nb" tokenizer.token.type must be "lt", "le", "ge", or "gt".
         return Node(tokenizer)
 
     def RELATIONAL_addOperand(self, node, childNode):
@@ -475,7 +475,7 @@ class VanillaBuilder:
         pass
 
     def SHIFT_build(self, tokenizer):
-        # NB tokenizer.token.type must be LSH, RSH, or URSH.
+        # "nb" tokenizer.token.type must be "lsh", "rsh", or "ursh".
         return Node(tokenizer)
 
     def SHIFT_addOperand(self, node, childNode):
@@ -485,7 +485,7 @@ class VanillaBuilder:
         pass
 
     def ADD_build(self, tokenizer):
-        # NB tokenizer.token.type must be PLUS or MINUS.
+        # "nb" tokenizer.token.type must be "plus" or "minus".
         return Node(tokenizer)
 
     def ADD_addOperand(self, node, childNode):
@@ -495,7 +495,7 @@ class VanillaBuilder:
         pass
 
     def MULTIPLY_build(self, tokenizer):
-        # NB tokenizer.token.type must be MUL, DIV, or MOD.
+        # "nb" tokenizer.token.type must be "mul", "div", or "mod".
         return Node(tokenizer)
 
     def MULTIPLY_addOperand(self, node, childNode):
@@ -505,12 +505,12 @@ class VanillaBuilder:
         pass
 
     def UNARY_build(self, tokenizer):
-        # NB tokenizer.token.type must be DELETE, VOID, TYPEOF, NOT, BITWISE_NOT,
-        # UNARY_PLUS, UNARY_MINUS, INCREMENT, or DECREMENT.
-        if tokenizer.token.type == PLUS:
-            tokenizer.token.type = UNARY_PLUS
-        elif tokenizer.token.type == MINUS:
-            tokenizer.token.type = UNARY_MINUS
+        # "nb" tokenizer.token.type must be "delete", "void", "typeof", "not", "bitwise_not",
+        # "unary_plus", "unary_minus", "increment", or "decrement".
+        if tokenizer.token.type == "plus":
+            tokenizer.token.type = "unary_plus"
+        elif tokenizer.token.type == "minus":
+            tokenizer.token.type = "unary_minus"
             
         return Node(tokenizer)
 
@@ -524,11 +524,11 @@ class VanillaBuilder:
         pass
 
     def MEMBER_build(self, tokenizer, tokenType):
-        # NB tokenizer.token.type must be NEW, DOT, or INDEX.
+        # "nb" tokenizer.token.type must be "new", "dot", or "index".
         return Node(tokenizer, tokenType)
 
     def MEMBER_rebuildNewWithArgs(self, node):
-        node.type = NEW_WITH_ARGS
+        node.type = "new_with_args"
 
     def MEMBER_addOperand(self, node, childNode):
         node.push(childNode)
@@ -537,15 +537,15 @@ class VanillaBuilder:
         pass
 
     def PRIMARY_build(self, tokenizer, tokenType):
-        # NB tokenizer.token.type must be NULL, THIS, TRUIE, FALSE, IDENTIFIER,
-        # NUMBER, STRING, or REGEXP.
+        # "nb" tokenizer.token.type must be "null", "this", "truie", "false", "identifier",
+        # "number", "string", or "regexp".
         return Node(tokenizer, tokenType)
 
     def PRIMARY_finish(self, node):
         pass
 
     def ARRAYINIT_build(self, tokenizer):
-        return Node(tokenizer, ARRAY_INIT)
+        return Node(tokenizer, "array_init")
 
     def ARRAYINIT_addElement(self, node, childNode):
         node.push(childNode)
@@ -554,7 +554,7 @@ class VanillaBuilder:
         pass
 
     def ARRAYCOMP_build(self, tokenizer):
-        return Node(tokenizer, ARRAY_COMP)
+        return Node(tokenizer, "array_comp")
     
     def ARRAYCOMP_setExpression(self, node, expression):
         node.expression = expression
@@ -566,7 +566,7 @@ class VanillaBuilder:
         pass
 
     def COMPTAIL_build(self, tokenizer):
-        return Node(tokenizer, COMP_TAIL)
+        return Node(tokenizer, "comp_tail")
 
     def COMPTAIL_setGuard(self, node, expression):
         node.guard = expression
@@ -578,7 +578,7 @@ class VanillaBuilder:
         pass
 
     def OBJECTINIT_build(self, tokenizer):
-        return Node(tokenizer, OBJECT_INIT)
+        return Node(tokenizer, "object_init")
 
     def OBJECTINIT_addProperty(self, node, childNode):
         node.push(childNode)
@@ -587,7 +587,7 @@ class VanillaBuilder:
         pass
 
     def PROPERTYINIT_build(self, tokenizer):
-        return Node(tokenizer, PROPERTY_INIT)
+        return Node(tokenizer, "property_init")
 
     def PROPERTYINIT_addOperand(self, node, childNode):
         node.push(childNode)
@@ -596,7 +596,7 @@ class VanillaBuilder:
         pass
 
     def COMMA_build(self, tokenizer):
-        return Node(tokenizer, COMMA)
+        return Node(tokenizer, "comma")
 
     def COMMA_addOperand(self, node, childNode):
         node.push(childNode)
@@ -605,7 +605,7 @@ class VanillaBuilder:
         pass
 
     def LIST_build(self, tokenizer):
-        return Node(tokenizer, LIST)
+        return Node(tokenizer, "list")
 
     def LIST_addOperand(self, node, childNode):
         node.push(childNode)
