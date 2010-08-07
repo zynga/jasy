@@ -18,13 +18,13 @@ class VanillaBuilder:
         return Node(tokenizer, "if")
 
     def IF_setCondition(self, node, expression):
-        node.condition = expression
+        node.append(expression, "condition")
 
     def IF_setThenPart(self, node, statement):
-        node.thenPart = statement
+        node.append(statement, "thenPart")
 
     def IF_setElsePart(self, node, statement):
-        node.elsePart = statement
+        node.append(statement, "elsePart")
 
     def IF_finish(self, node):
         pass
@@ -36,7 +36,7 @@ class VanillaBuilder:
         return node
 
     def SWITCH_setDiscriminant(self, node, expression):
-        node.discriminant = expression
+        node.append(expression, "discriminant")
 
     def SWITCH_setDefaultIndex(self, node, index):
         node.defaultIndex = index
@@ -51,10 +51,10 @@ class VanillaBuilder:
         return Node(tokenizer, "case")
 
     def CASE_setLabel(self, node, expression):
-        node.caseLabel = expression
+        node.append(expression, "caseLabel")
 
     def CASE_initializeStatements(self, node, tokenizer):
-        node.statements = Node(tokenizer, "block")
+        node.append(Node(tokenizer, "block"), "statements")
 
     def CASE_addStatement(self, node, statement):
         node.statements.append(statement)
@@ -66,7 +66,7 @@ class VanillaBuilder:
         return Node(tokenizer, "default")
 
     def DEFAULT_initializeStatements(self, node, tokenizer):
-        node.statements = Node(tokenizer, "block")
+        node.append(Node(tokenizer, "block"), "statements")
 
     def DEFAULT_addStatement(self, node, statement):
         node.statements.append(statement)
@@ -88,23 +88,24 @@ class VanillaBuilder:
         node.type = "for_in"
 
     def FOR_setCondition(self, node, expression):
-        node.condition = expression
+        node.append(expression, "condition")
 
     def FOR_setSetup(self, node, expression):
-        node.setup = expression if expression else None
+        if expression:
+            node.append(expression, "setup")
 
     def FOR_setUpdate(self, node, expression):
-        node.update = expression
+        node.append(expression, "update")
 
     def FOR_setObject(self, node, expression):
-        node.object = expression
+        node.append(expression, "object")
 
     def FOR_setIterator(self, node, expression, expression2):
-        node.iterator = expression
-        node.varDecl = expression2
+        node.append(expression, "iterator")
+        node.append(expression2, "varDecl")
 
     def FOR_setBody(self, node, statement):
-        node.body = statement
+        node.append(statement, "body")
 
     def FOR_finish(self, node):
         pass
@@ -115,10 +116,10 @@ class VanillaBuilder:
         return node
 
     def WHILE_setCondition(self, node, expression):
-        node.condition = expression
+        node.append(expression, "condition")
 
     def WHILE_setBody(self, node, statement):
-        node.body = statement
+        node.append(statement, "body")
 
     def WHILE_finish(self, node):
         pass
@@ -129,10 +130,10 @@ class VanillaBuilder:
         return node
 
     def DO_setCondition(self, node, expression):
-        node.condition = expression
+        node.append(expression, "condition")
 
     def DO_setBody(self, node, statement):
-        node.body = statement
+        node.append(statement, "body")
 
     def DO_finish(self, node):
         pass
@@ -141,9 +142,10 @@ class VanillaBuilder:
         return Node(tokenizer, "break")
 
     def BREAK_setLabel(self, node, identifier):
-        node.label = identifier
+        node.append(identifier, "label")
 
     def BREAK_setTarget(self, node, childNode):
+        # Hint, no append() - relation, but not a child
         node.target = childNode
 
     def BREAK_finish(self, node):
@@ -153,9 +155,10 @@ class VanillaBuilder:
         return Node(tokenizer, "continue")
 
     def CONTINUE_setLabel(self, node, identifier):
-        node.label = identifier
+        node.append(identifier, "label")
 
     def CONTINUE_setTarget(self, node, childNode):
+        # Hint, no append() - relation, but not a child
         node.target = childNode
 
     def CONTINUE_finish(self, node):
