@@ -9,6 +9,8 @@
 from Node import Node
 
 class VanillaBuilder:
+    """The vanilla AST builder."""
+    
     def IF__build(self, t):
         return Node(t, IF)
 
