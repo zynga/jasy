@@ -332,8 +332,8 @@ class VanillaBuilder:
     def DECL__setInitializer(self, node, expression):
         node.initializer = expression
 
-    def DECL__setReadOnly(self, node, b):
-        node.readOnly = b
+    def DECL__setReadOnly(self, node, readOnly):
+        node.readOnly = readOnly
 
     def DECL__finish(self, node):
         pass
@@ -385,8 +385,8 @@ class VanillaBuilder:
     def ASSIGN__addOperand(self, node, childNode):
         node.push(childNode)
 
-    def ASSIGN__setAssignOp(self, node, o):
-        node.assignOp = o
+    def ASSIGN__setAssignOp(self, node, operator):
+        node.assignOp = operator
 
     def ASSIGN__finish(self, node):
         pass

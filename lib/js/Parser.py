@@ -325,8 +325,8 @@ def Statement(tokenizer, staticContext):
             else:
                 builder.CONTINUE__setLabel(node, tokenizer.token.value)
 
-        ss = staticContext.stmtStack
-        i = len(ss)
+        statementStack = staticContext.stmtStack
+        i = len(statementStack)
         label = node.label
 
         if label:
@@ -334,7 +334,7 @@ def Statement(tokenizer, staticContext):
                 i -= 1
                 if i < 0:
                     raise SyntaxError("Label not found", tokenizer)
-                if ss[i].label == label:
+                if statementStack[i].label == label:
                     break
 
             # 
@@ -344,10 +344,10 @@ def Statement(tokenizer, staticContext):
             # nested so we skip all labels immediately enclosing the nearest
             # non-label statement.
             # 
-            while i < len(ss) - 1 and ss[i+1].type == LABEL:
+            while i < len(statementStack) - 1 and statementStack[i+1].type == LABEL:
                 i += 1
                 
-            if i < len(ss) - 1 and ss[i+1].isLoop:
+            if i < len(statementStack) - 1 and statementStack[i+1].isLoop:
                 i += 1
             elif tokenType == CONTINUE:
                 raise SyntaxError("Invalid continue", tokenizer)
@@ -361,15 +361,15 @@ def Statement(tokenizer, staticContext):
                     else:
                         raise SyntaxError("Invalid continue")
 
-                if ss[i].isLoop or (tokenType == BREAK and ss[i].type == SWITCH):
+                if statementStack[i].isLoop or (tokenType == BREAK and statementStack[i].type == SWITCH):
                     break
         
         if tokenType == BREAK:
-            builder.BREAK__setTarget(node, ss[i])
+            builder.BREAK__setTarget(node, statementStack[i])
             builder.BREAK__finish(node)
 
         else:
-            builder.CONTINUE__setTarget(node, ss[i])
+            builder.CONTINUE__setTarget(node, statementStack[i])
             builder.CONTINUE__finish(node)
         
         # NO RETURN        
@@ -492,11 +492,11 @@ def Statement(tokenizer, staticContext):
             # Labeled statement.
             if tokenType == COLON:
                 label = tokenizer.token.value
-                ss = staticContext.stmtStack
+                statementStack = staticContext.stmtStack
                
-                i = len(ss)-1
+                i = len(statementStack)-1
                 while i >= 0:
-                    if ss[i].label == label:
+                    if statementStack[i].label == label:
                         raise SyntaxError("Duplicate label")
                     
                     i -= 1
@@ -716,11 +716,11 @@ def Variables(tokenizer, staticContext, letBlock):
         finish = builder.LET__finish
         
         if not letBlock:
-            ss = staticContext.stmtStack
-            i = len(ss) - 1
+            statementStack = staticContext.stmtStack
+            i = len(statementStack) - 1
             
             # a BLOCK *must* be found.
-            while ss[i].type != BLOCK:
+            while statementStack[i].type != BLOCK:
                 i -= 1
 
             # Lets at the def toplevel are just vars, at least in SpiderMonkey.
@@ -731,7 +731,7 @@ def Variables(tokenizer, staticContext, letBlock):
                 s = staticContext
 
             else:
-                s = ss[i]
+                s = statementStack[i]
             
         else:
             s = letBlock
