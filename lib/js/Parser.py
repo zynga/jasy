@@ -580,10 +580,10 @@ def returnOrYield(tokenizer, staticContext):
 
 def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     builder = staticContext.builder
-    f = builder.FUNCTION__build(tokenizer)
+    functionNode = builder.FUNCTION__build(tokenizer)
     
     if tokenizer.match(IDENTIFIER):
-        builder.FUNCTION__setName(f, tokenizer.token.value)
+        builder.FUNCTION__setName(functionNode, tokenizer.token.value)
     elif requireName:
         raise SyntaxError("Missing def identifier", tokenizer)
 
@@ -595,10 +595,10 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
             if tokenType == LEFT_BRACKET or tokenType == LEFT_CURLY:
                 # Destructured formal parameters.
                 tokenizer.unget()
-                builder.FUNCTION__addParam(f, DestructuringExpression(tokenizer, staticContext))
+                builder.FUNCTION__addParam(functionNode, DestructuringExpression(tokenizer, staticContext))
                 
             elif tokenType == IDENTIFIER:
-                builder.FUNCTION__addParam(f, tokenizer.token.value)
+                builder.FUNCTION__addParam(functionNode, tokenizer.token.value)
                 
             else:
                 raise SyntaxError("Missing formal parameter", tokenizer)
@@ -613,7 +613,7 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     if tokenType != LEFT_CURLY:
         tokenizer.unget()
 
-    x2 = StaticContext(True, builder)
+    childContext = StaticContext(True, builder)
     rp = tokenizer.save()
     
     if staticContext.inFunction:
@@ -622,16 +622,16 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
         # remember which block they were parsed in for hoisting (see comment
         # below).
         # 
-        x2.blockId = staticContext.blockId
+        childContext.blockId = staticContext.blockId
 
     if tokenType != LEFT_CURLY:
-        builder.FUNCTION__setBody(f, AssignExpression(tokenizer, staticContext))
+        builder.FUNCTION__setBody(functionNode, AssignExpression(tokenizer, staticContext))
         if staticContext.isGenerator:
             raise SyntaxError("Generator returns a value", tokenizer)
             
     else:
-        builder.FUNCTION__hoistVars(x2.blockId)
-        builder.FUNCTION__setBody(f, Script(tokenizer, x2))
+        builder.FUNCTION__hoistVars(childContext.blockId)
+        builder.FUNCTION__setBody(functionNode, Script(tokenizer, childContext))
 
     # 
     # To linearize hoisting with nested blocks needing hoists, if a toplevel
@@ -658,9 +658,9 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     # (since the def body is _not_ hoisted, only the declaration) and
     # upon hoisting, needs to recalculate all its upvars up front.
     # 
-    if x2.needsHoisting:
+    if childContext.needsHoisting:
         # Order is important here! funDecls must come _after_ varDecls!
-        builder.setHoists(f.body.id, x2.varDecls.concat(x2.funDecls))
+        builder.setHoists(functionNode.body.id, childContext.varDecls.concat(childContext.funDecls))
 
         if staticContext.inFunction:
             # Propagate up to the parent def if we're an inner function.
@@ -668,29 +668,29 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
         
         else:
             # Only re-parse toplevel functions.
-            x3 = x2
-            x2 = StaticContext(True, builder)
+            x3 = childContext
+            childContext = StaticContext(True, builder)
             tokenizer.rewind(rp)
             
             # Set a flag in case the builder wants to have different behavior
             # on the second pass.
             builder.secondPass = True
-            builder.FUNCTION__hoistVars(f.body.id, True)
-            builder.FUNCTION__setBody(f, Script(tokenizer, x2))
+            builder.FUNCTION__hoistVars(functionNode.body.id, True)
+            builder.FUNCTION__setBody(functionNode, Script(tokenizer, childContext))
             builder.secondPass = False
 
     if tokenType == LEFT_CURLY:
         tokenizer.mustMatch(RIGHT_CURLY)
 
-    f.end = tokenizer.token.end
-    f.functionForm = functionForm
+    functionNode.end = tokenizer.token.end
+    functionNode.functionForm = functionForm
     
     if functionForm == DECLARED_FORM:
-        staticContext.funDecls.push(f)
+        staticContext.funDecls.push(functionNode)
         
-    builder.FUNCTION__finish(f, staticContext)
+    builder.FUNCTION__finish(functionNode, staticContext)
     
-    return f
+    return functionNode
 
 
 
@@ -702,13 +702,13 @@ def Variables(tokenizer, staticContext, letBlock):
         build = builder.VAR__build
         addDecl = builder.VAR__addDecl
         finish = builder.VAR__finish
-        s = staticContext
+        childContext = staticContext
             
     elif tokenizer.token.type == CONST:
         build = builder.CONST__build
         addDecl = builder.CONST__addDecl
         finish = builder.CONST__finish
-        s = staticContext
+        childContext = staticContext
         
     elif tokenizer.token.type == LET or tokenizer.token.type == LEFT_PAREN:
         build = builder.LET__build
@@ -728,13 +728,13 @@ def Variables(tokenizer, staticContext, letBlock):
                 build = builder.VAR__build
                 addDecl = builder.VAR__addDecl
                 finish = builder.VAR__finish
-                s = staticContext
+                childContext = staticContext
 
             else:
-                s = statementStack[i]
+                childContext = statementStack[i]
             
         else:
-            s = letBlock
+            childContext = letBlock
 
     node = build.call(builder, tokenizer)
     initializers = []
@@ -748,16 +748,16 @@ def Variables(tokenizer, staticContext, letBlock):
         childNode = builder.DECL__build(tokenizer)
         
         if tokenType == LEFT_BRACKET or tokenType == LEFT_CURLY:
-            # Pass in s if we need to add each pattern matched into
+            # Pass in childContext if we need to add each pattern matched into
             # its varDecls, else pass in staticContext.
             data = null
 
             # Need to unget to parse the full destructured expression.
             tokenizer.unget()
-            builder.DECL__setName(childNode, DestructuringExpression(tokenizer, staticContext, True, s))
+            builder.DECL__setName(childNode, DestructuringExpression(tokenizer, staticContext, True, childContext))
 
             if staticContext.inForLoopInit and tokenizer.peek() == IN:
-                addDecl.call(builder, node, childNode, s)
+                addDecl.call(builder, node, childNode, childContext)
                 continue
 
             tokenizer.mustMatch(ASSIGN)
@@ -773,7 +773,7 @@ def Variables(tokenizer, staticContext, letBlock):
             # But only add the rhs as the initializer.
             builder.DECL__setInitializer(childNode, n3[1])
             builder.DECL__finish(childNode)
-            addDecl.call(builder, node, childNode, s)
+            addDecl.call(builder, node, childNode, childContext)
             continue
 
         if tokenType != IDENTIFIER:
@@ -781,7 +781,7 @@ def Variables(tokenizer, staticContext, letBlock):
 
         builder.DECL__setName(childNode, tokenizer.token.value)
         builder.DECL__setReadOnly(childNode, node.type == CONST)
-        addDecl.call(builder, node, childNode, s)
+        addDecl.call(builder, node, childNode, childContext)
 
         if tokenizer.match(ASSIGN):
             if tokenizer.token.assignOp:
@@ -801,7 +801,7 @@ def Variables(tokenizer, staticContext, letBlock):
             builder.DECL__setInitializer(childNode, n3[1])
 
         builder.DECL__finish(childNode)
-        s.varDecls.push(childNode)
+        childContext.varDecls.push(childNode)
         
         if not tokenizer.match(COMMA):
             break
@@ -890,10 +890,10 @@ def DestructuringExpression(tokenizer, staticContext, simpleNamesOnly, data):
     return node
 
 
-def GeneratorExpression(tokenizer, staticContext, e):
+def GeneratorExpression(tokenizer, staticContext, expression):
     node = builder.GENERATOR__build(tokenizer)
 
-    builder.GENERATOR__setExpression(node, e)
+    builder.GENERATOR__setExpression(node, expression)
     builder.GENERATOR__setTail(node, comprehensionTail(tokenizer, staticContext))
     builder.GENERATOR__finish(node)
 
