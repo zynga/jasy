@@ -89,7 +89,7 @@ def Statements(tokenizer, staticContext):
     staticContext.statementStack.pop()
     builder.BLOCK_finish(node)
 
-    if node.needsHoisting:
+    if getattr(node, "needsHoisting", False):
         builder.setHoists(node.id, node.varDecls)
         # Propagate up to the function.
         staticContext.needsHoisting = True
