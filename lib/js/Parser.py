@@ -813,7 +813,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.DECL_setInitializer(childNode, n3[1])
 
         builder.DECL_finish(childNode)
-        childContext.varDecls.append(childNode)
+        childContext.varDecls.append(childNode.value)
         
         if not tokenizer.match("comma"):
             break
@@ -891,7 +891,7 @@ def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly, data):
                 builder.DECL_finish(childNode)
 
                 # Each pattern needs to be added to varDecls.
-                data.varDecls.append(childNode)
+                data.varDecls.append(childNode.value)
 
 
 # JavaScript 1.7
