@@ -539,14 +539,6 @@ def Statement(tokenizer, staticContext):
 
 
 def MagicalSemicolon(tokenizer):
-    print "MAGIC"
-    print tokenizer.token
-    print tokenizer.line
-    print "X1"
-    print tokenizer.token.type
-    print tokenizer.token.line
-    print "X2"
-    
     if tokenizer.line == tokenizer.token.line:
         tokenType = tokenizer.peekOnSameLine()
     
