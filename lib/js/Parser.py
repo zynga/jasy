@@ -265,7 +265,7 @@ def Statement(tokenizer, staticContext):
                 builder.FOR_setIterator(node, childNode[0], childNode, forBlock)
                 
             else:
-                builder.FOR_setIterator(node, childNode, null, forBlock)
+                builder.FOR_setIterator(node, childNode, None, forBlock)
 
         else:
             builder.FOR_setSetup(node, childNode)
@@ -418,7 +418,7 @@ def Statement(tokenizer, staticContext):
                 builder.CATCH_setGuard(childNode, Expression(tokenizer, staticContext))
                 
             else:
-                builder.CATCH_setGuard(childNode, null)
+                builder.CATCH_setGuard(childNode, None)
             
             tokenizer.mustMatch("right_paren")
             
@@ -492,7 +492,7 @@ def Statement(tokenizer, staticContext):
     elif tokenType == "newline" or tokenType == "semicolon":
         node = builder.SEMICOLON_build(tokenizer)
         
-        builder.SEMICOLON_setExpression(node, null)
+        builder.SEMICOLON_setExpression(node, None)
         builder.SEMICOLON_finish(tokenizer)
         
         return node
@@ -762,7 +762,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
         if tokenType == "left_bracket" or tokenType == "left_curly":
             # Pass in childContext if we need to add each pattern matched into
             # its varDecls, else pass in staticContext.
-            data = null
+            data = None
 
             # Need to unget to parse the full destructured expression.
             tokenizer.unget()
@@ -783,6 +783,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.ASSIGN_finish(assignmentNode)
 
             # But only add the rhs as the initializer.
+            # TODO: But why create the whole assignment then?
             builder.DECL_setInitializer(childNode, assignmentNode[1])
             builder.DECL_finish(childNode)
             addDecl(node, childNode, childContext)
@@ -934,7 +935,7 @@ def comprehensionTail(tokenizer, staticContext):
         if tokenType == "left_bracket" or tokenType == "left_curly":
             tokenizer.unget()
             # Destructured left side of for in comprehension tails.
-            builder.FOR_setIterator(node, DestructuringExpression(tokenizer, staticContext), null)
+            builder.FOR_setIterator(node, DestructuringExpression(tokenizer, staticContext), None)
             break
 
         elif tokenType == "identifier":
@@ -1347,7 +1348,7 @@ def PrimaryExpression(tokenizer, staticContext):
         
             if tokenType == "comma":
                 tokenizer.get()
-                builder.ARRAYINIT_addElement(node, null)
+                builder.ARRAYINIT_addElement(node, None)
                 continue
 
             builder.ARRAYINIT_addElement(node, AssignExpression(tokenizer, staticContext))
