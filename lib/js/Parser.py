@@ -783,7 +783,6 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.ASSIGN_finish(assignmentNode)
 
             # But only add the rhs as the initializer.
-            print "ASSIGN MODE 1"            
             builder.DECL_setInitializer(childNode, assignmentNode[1])
             builder.DECL_finish(childNode)
             addDecl(node, childNode, childContext)
@@ -808,7 +807,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.ASSIGN_finish(assignmentNode)
             
             # But only add the rhs as the initializer.
-            print "ASSIGN MODE 2"
+            # TODO: But why create the whole assignment then?
             builder.DECL_setInitializer(childNode, assignmentNode[1])
 
         builder.DECL_finish(childNode)

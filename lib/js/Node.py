@@ -96,21 +96,20 @@ class Node(list):
         for name in dir(self):
             if name not in ("type", "parent", "rel", "start", "end") and name[0] != "_":
                 value = getattr(self, name)
-                if type(value) in (bool, int, long, float, basestring, str, unicode, list):
+                if isinstance(value, Node):
+                    if hasattr(value, "rel"):
+                        relatedChildren.append(value)
+
+                elif type(value) in (bool, int, long, float, basestring, str, unicode, list):
                     if type(value) == bool:
                         value = "true" if value else "false" 
                     elif type(value) in (int, long, float):
                         value = str(value)
                     elif type(value) == list:
-                        if isinstance(value, Node):
-                            if hasattr(value, "rel"):
-                                relatedChildren.append(value)
-                            continue
-                        else:
-                            try:
-                                value = ",".join(value)
-                            except TypeError:
-                                raise Exception("Invalid non related child at: %s" % name)
+                        try:
+                            value = ",".join(value)
+                        except TypeError:
+                            raise Exception("Invalid non related child at: %s" % name)
                                 
                     attrsCollection.append('%s=%s' % (name, json.dumps(value)))
 
@@ -125,7 +124,7 @@ class Node(list):
             for child in self:
                 if not hasattr(child, "rel"):
                     result += child.toXml(format, indent+1)
-                else:
+                elif not child in relatedChildren:
                     raise Exception("Oops, irritated by non related: %s in %s - child says it is related as %s" % (child.type, self.type, child.rel))
 
             for child in relatedChildren:
