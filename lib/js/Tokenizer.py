@@ -523,19 +523,19 @@ class Tokenizer(object):
     
     def save(self):
         return {
-            cursor: this.cursor,
-            tokenIndex: this.tokenIndex,
-            tokens: this.tokens.slice(),
-            lookahead: this.lookahead,
-            scanNewlines: this.scanNewlines,
-            lineno: this.lineno
+            cursor: self.cursor,
+            tokenIndex: self.tokenIndex,
+            tokens: self.tokens.slice(),
+            lookahead: self.lookahead,
+            scanNewlines: self.scanNewlines,
+            line: self.line
         }
 
     
     def rewind(self, point):
-        this.cursor = point.cursor
-        this.tokenIndex = point.tokenIndex
-        this.tokens = point.tokens.slice()
-        this.lookahead = point.lookahead
-        this.scanNewline = point.scanNewline
-        this.lineno = point.lineno
+        self.cursor = point.cursor
+        self.tokenIndex = point.tokenIndex
+        self.tokens = point.tokens.slice()
+        self.lookahead = point.lookahead
+        self.scanNewline = point.scanNewline
+        self.line = point.line

@@ -15,6 +15,23 @@ from js.VanillaBuilder import VanillaBuilder
 __all__ = [ "parse" ]
 
 
+
+
+def parse(source, filename=None, line=0, builder=None):
+    if builder == None:
+        builder = VanillaBuilder()
+    
+    tokenizer = Tokenizer(source, filename, line)
+    staticContext = StaticContext(False, builder)
+    node = Script(tokenizer, staticContext)
+    
+    if not tokenizer.done():
+        raise SyntaxError("Syntax error", tokenizer)
+
+    return node
+
+
+
 class SyntaxError(Exception):
     def __init__(self, message, tokenizer):
         Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, tokenizer.filename, tokenizer.line))
@@ -83,7 +100,7 @@ def Statements(tokenizer, staticContext):
     builder.BLOCK_hoistLets(node)
     staticContext.statementStack.append(node)
 
-    while not tokenizer.done and tokenizer.peek(True) != "right_curly":
+    while not tokenizer.done() and tokenizer.peek(True) != "right_curly":
         builder.BLOCK_addStatement(node, Statement(tokenizer, staticContext))
 
     staticContext.statementStack.pop()
@@ -522,7 +539,7 @@ def Statement(tokenizer, staticContext):
 
 
 def MagicalSemicolon(tokenizer):
-    if tokenizer.lineno == tokenizer.token.lineno:
+    if tokenizer.line == tokenizer.token.line:
         tokenType = tokenizer.peekOnSameLine()
     
         if tokenType != "end" and tokenType != "newline" and tokenType != "semicolon" and tokenType != "right_curly":
@@ -1229,7 +1246,7 @@ def UnaryExpression(tokenizer, staticContext):
         node = MemberExpression(tokenizer, staticContext, True)
 
         # Don't look across a newline boundary for a postfix {in,de}crement.
-        if tokenizer.tokens[(tokenizer.tokenIndex + tokenizer.lookahead - 1) & 3].lineno == tokenizer.lineno:
+        if tokenizer.tokens[(tokenizer.tokenIndex + tokenizer.lookahead - 1) & 3].line == tokenizer.line:
             if tokenizer.match("increment") or tokenizer.match("decrement"):
                 childNode = builder.UNARY_build(tokenizer)
                 builder.UNARY_setPostfix(childNode)
@@ -1420,24 +1437,10 @@ def PrimaryExpression(tokenizer, staticContext):
         node = LetBlock(tokenizer, staticContext, False)
 
     elif tokenType in ["null", "this", "true", "false", "identifier", "number", "string", "regexp"]:
-        node = builder.PRIMARY_build(tokenizer)
+        node = builder.PRIMARY_build(tokenizer, tokenType)
         builder.PRIMARY_finish(node)
 
     else:
         raise SyntaxError("Missing operand", tokenizer)
-
-    return node
-
-
-def parse(source, filename=None, line=0, builder=None):
-    if builder == None:
-        builder = VanillaBuilder()
-    
-    tokenizer = Tokenizer(source, filename, line)
-    staticContext = StaticContext(False, builder)
-    node = Script(tokenizer, staticContext)
-    
-    if not tokenizer.done:
-        raise SyntaxError("Syntax error", tokenizer)
 
     return node

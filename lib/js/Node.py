@@ -47,6 +47,8 @@ class Node(list):
         elif type:
             self.type = type
 
+        # print "CREATE: %s" % self.type
+
         for arg in args:
             self.append(arg)
 
