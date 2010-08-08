@@ -778,13 +778,13 @@ def Variables(tokenizer, staticContext, letBlock=None):
                 raise SyntaxError("Invalid variable initialization", tokenizer)
 
             # Parse the init as a normal assignment.
-            n3 = builder.ASSIGN_build(tokenizer)
-            builder.ASSIGN_addOperand(n3, childNode.name)
-            builder.ASSIGN_addOperand(n3, AssignExpression(tokenizer, staticContext))
-            builder.ASSIGN_finish(n3)
+            assignmentNode = builder.ASSIGN_build(tokenizer)
+            builder.ASSIGN_addOperand(assignmentNode, childNode.name)
+            builder.ASSIGN_addOperand(assignmentNode, AssignExpression(tokenizer, staticContext))
+            builder.ASSIGN_finish(assignmentNode)
 
             # But only add the rhs as the initializer.
-            builder.DECL_setInitializer(childNode, n3[1])
+            builder.DECL_setInitializer(childNode, assignmentNode[1])
             builder.DECL_finish(childNode)
             addDecl(node, childNode, childContext)
             continue
@@ -802,15 +802,15 @@ def Variables(tokenizer, staticContext, letBlock=None):
 
             # Parse the init as a normal assignment.
             id = Node(childNode.tokenizer, "identifier")
-            n3 = builder.ASSIGN_build(tokenizer)
-            builder.ASSIGN_addOperand(n3, id)
-            builder.ASSIGN_addOperand(n3, AssignExpression(tokenizer, staticContext))
-            builder.ASSIGN_finish(n3)
+            assignmentNode = builder.ASSIGN_build(tokenizer)
+            builder.ASSIGN_addOperand(assignmentNode, id)
+            builder.ASSIGN_addOperand(assignmentNode, AssignExpression(tokenizer, staticContext))
+            builder.ASSIGN_finish(assignmentNode)
             
-            initializers.append(n3)
+            initializers.append(assignmentNode)
 
             # But only add the rhs as the initializer.
-            builder.DECL_setInitializer(childNode, n3[1])
+            builder.DECL_setInitializer(childNode, assignmentNode[1])
 
         builder.DECL_finish(childNode)
         childContext.varDecls.append(childNode.value)
@@ -940,16 +940,16 @@ def comprehensionTail(tokenizer, staticContext):
             break
 
         elif tokenType == "identifier":
-            n3 = builder.DECL_build(tokenizer)
+            declaration = builder.DECL_build(tokenizer)
             
-            builder.DECL_setName(n3, n3.value)
-            builder.DECL_finish(n3)
+            builder.DECL_setName(declaration, declaration.value)
+            builder.DECL_finish(declaration)
             
             childNode = builder.VAR_build(tokenizer)
             
-            builder.VAR_addDecl(childNode, n3)
+            builder.VAR_addDecl(childNode, declaration)
             builder.VAR_finish(childNode)
-            builder.FOR_setIterator(node, n3, childNode)
+            builder.FOR_setIterator(node, declaration, childNode)
             
             # Don't add to varDecls since the semantics of comprehensions is
             # such that the variables are in their own def when
