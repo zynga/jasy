@@ -388,7 +388,7 @@ class VanillaBuilder:
         node.append(childNode)
 
     def ASSIGN_setAssignOp(self, node, operator):
-        node.append(operator, "assignOp")
+        node.assignOp = operator
 
     def ASSIGN_finish(self, node):
         pass
