@@ -750,7 +750,6 @@ def Variables(tokenizer, staticContext, letBlock=None):
             childContext = letBlock
 
     node = build(tokenizer)
-    initializers = []
 
     while True:
         tokenType = tokenizer.get()
@@ -784,6 +783,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.ASSIGN_finish(assignmentNode)
 
             # But only add the rhs as the initializer.
+            print "ASSIGN MODE 1"            
             builder.DECL_setInitializer(childNode, assignmentNode[1])
             builder.DECL_finish(childNode)
             addDecl(node, childNode, childContext)
@@ -807,9 +807,8 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.ASSIGN_addOperand(assignmentNode, AssignExpression(tokenizer, staticContext))
             builder.ASSIGN_finish(assignmentNode)
             
-            initializers.append(assignmentNode)
-
             # But only add the rhs as the initializer.
+            print "ASSIGN MODE 2"
             builder.DECL_setInitializer(childNode, assignmentNode[1])
 
         builder.DECL_finish(childNode)
