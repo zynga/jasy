@@ -8,9 +8,6 @@
 
 from Node import Node
 
-class SubBuilder:
-    pass
-
 class VanillaBuilder:
     """The vanilla AST builder."""
     
@@ -170,7 +167,7 @@ class VanillaBuilder:
         return node
 
     def TRY_setTryBlock(self, node, statement):
-        node.tryBlock = statement
+        node.append(statement, "tryBlock")
 
     def TRY_addCatch(self, node, childNode):
         node.catchClauses.append(childNode)
@@ -179,24 +176,23 @@ class VanillaBuilder:
         pass
 
     def TRY_setFinallyBlock(self, node, statement):
-        node.finallyBlock = statement
+        node.append(statement, "finallyBlock")
 
     def TRY_finish(self, node):
         pass
 
     def CATCH_build(self, tokenizer):
         node = Node(tokenizer, "catch")
-        node.guard = None
         return node
 
     def CATCH_setVarName(self, node, identifier):
-        node.varName = identifier
+        node.append(identifier, "varName")
 
     def CATCH_setGuard(self, node, expression):
-        node.guard = expression
+        node.append(expression, "guard")
 
     def CATCH_setBlock(self, node, statement):
-        node.block = statement
+        node.append(statement, "block")
 
     def CATCH_finish(self, node):
         pass
@@ -205,7 +201,7 @@ class VanillaBuilder:
         return Node(tokenizer, "throw")
 
     def THROW_setException(self, node, expression):
-        node.exception = expression
+        node.append(expression, "exception")
 
     def THROW_finish(self, node):
         pass
@@ -214,7 +210,7 @@ class VanillaBuilder:
         return Node(tokenizer, "return")
 
     def RETURN_setValue(self, node, expression):
-        node.value = expression
+        node.append(expression, "value")
 
     def RETURN_finish(self, node):
         pass
@@ -223,7 +219,7 @@ class VanillaBuilder:
         return Node(tokenizer, "yield")
 
     def YIELD_setValue(self, node, expression):
-        node.value = expression
+        node.append(expression, "value")
 
     def YIELD_finish(self, node):
         pass
@@ -232,10 +228,10 @@ class VanillaBuilder:
         return Node(tokenizer, "generator")
 
     def GENERATOR_setExpression(self, node, expression):
-        node.expression = expression
+        node.append(expression, "expression")
 
     def GENERATOR_setTail(self, node, childNode):
-        node.tail = childNode
+        node.append(childNode, "tail")
 
     def GENERATOR_finish(self, node):
         pass
@@ -244,10 +240,10 @@ class VanillaBuilder:
         return Node(tokenizer, "with")
 
     def WITH_setObject(self, node, expression):
-        node.object = expression
+        node.append(expression, "object")
 
     def WITH_setBody(self, node, statement):
-        node.body = statement
+        node.append(statement, "body")
 
     def WITH_finish(self, node):
         pass
@@ -259,7 +255,7 @@ class VanillaBuilder:
         return Node(tokenizer, "semicolon")
 
     def SEMICOLON_setExpression(self, node, expression):
-        node.expression = expression
+        node.append(expression, "expression")
 
     def SEMICOLON_finish(self, node):
         pass
@@ -268,10 +264,10 @@ class VanillaBuilder:
         return Node(tokenizer, "label")
 
     def LABEL_setLabel(self, node, expression):
-        node.label = expression
+        node.append(expression, "label")
 
     def LABEL_setStatement(self, node, statement):
-        node.statement = statement
+        node.append(statement, "statement")
 
     def LABEL_finish(self, node):
         pass
@@ -294,7 +290,7 @@ class VanillaBuilder:
         node.params.append(identifier)
 
     def FUNCTION_setBody(self, node, statement):
-        node.body = statement
+        node.append(statement, "body")
 
     def FUNCTION_hoistVars(self, x):
         pass
@@ -336,7 +332,7 @@ class VanillaBuilder:
         node.name = identifier
 
     def DECL_setInitializer(self, node, expression):
-        node.initializer = expression
+        node.append(expression, "initializer")
 
     def DECL_setReadOnly(self, node, readOnly):
         node.readOnly = readOnly
@@ -350,13 +346,13 @@ class VanillaBuilder:
         return node
 
     def LETBLOCK_setVariables(self, node, childNode):
-        node.variables = childNode
+        node.append(childNode, "variables")
 
     def LETBLOCK_setExpression(self, node, expression):
-        node.expression = expression
+        node.append(expression, "expression")
 
     def LETBLOCK_setBlock(self, node, statement):
-        node.block = statement
+        node.append(statement, "block")
 
     def LETBLOCK_finish(self, node):
         pass
@@ -392,7 +388,7 @@ class VanillaBuilder:
         node.append(childNode)
 
     def ASSIGN_setAssignOp(self, node, operator):
-        node.assignOp = operator
+        node.append(operator, "assignOp")
 
     def ASSIGN_finish(self, node):
         pass
@@ -401,13 +397,13 @@ class VanillaBuilder:
         return Node(tokenizer, "hook")
 
     def HOOK_setCondition(self, node, expression):
-        node[0] = expression
+        node.append(expression, "condition")
 
     def HOOK_setThenPart(self, node, childNode):
-        node[1] = childNode
+        node.append(childNode, "thenPart")
 
     def HOOK_setElsePart(self, node, childNode):
-        node[2] = childNode
+        node.append(childNode, "elsePart")
 
     def HOOK_finish(self, node):
         pass
@@ -521,7 +517,7 @@ class VanillaBuilder:
         node.append(childNode)
 
     def UNARY_setPostfix(self, node):
-        node.postfix = true
+        node.postfix = True
 
     def UNARY_finish(self, node):
         pass
@@ -560,10 +556,10 @@ class VanillaBuilder:
         return Node(tokenizer, "array_comp")
     
     def ARRAYCOMP_setExpression(self, node, expression):
-        node.expression = expression
+        node.append(expression, "expression")
     
     def ARRAYCOMP_setTail(self, node, childNode):
-        node.tail = childNode
+        node.append(childNode, "tail")
     
     def ARRAYCOMP_finish(self, node):
         pass
@@ -572,10 +568,10 @@ class VanillaBuilder:
         return Node(tokenizer, "comp_tail")
 
     def COMPTAIL_setGuard(self, node, expression):
-        node.guard = expression
+        node.append(expression, "guard")
 
     def COMPTAIL_addFor(self, node, childNode):
-        node.append(childNode)
+        node.append(childNode, "append")
 
     def COMPTAIL_finish(self, node):
         pass
