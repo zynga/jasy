@@ -748,7 +748,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
         else:
             childContext = letBlock
 
-    node = build.call(builder, tokenizer)
+    node = build(tokenizer)
     initializers = []
 
     while True:
@@ -769,7 +769,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.DECL_setName(childNode, DestructuringExpression(tokenizer, staticContext, True, childContext))
 
             if staticContext.inForLoopInit and tokenizer.peek() == "in":
-                addDecl.call(builder, node, childNode, childContext)
+                addDecl(node, childNode, childContext)
                 continue
 
             tokenizer.mustMatch("assign")
@@ -785,7 +785,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             # But only add the rhs as the initializer.
             builder.DECL_setInitializer(childNode, n3[1])
             builder.DECL_finish(childNode)
-            addDecl.call(builder, node, childNode, childContext)
+            addDecl(node, childNode, childContext)
             continue
 
         if tokenType != "identifier":
@@ -793,7 +793,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
 
         builder.DECL_setName(childNode, tokenizer.token.value)
         builder.DECL_setReadOnly(childNode, node.type == "const")
-        addDecl.call(builder, node, childNode, childContext)
+        addDecl(node, childNode, childContext)
 
         if tokenizer.match("assign"):
             if tokenizer.token.assignOp:
@@ -818,7 +818,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
         if not tokenizer.match("comma"):
             break
         
-    finish.call(builder, node)
+    finish(node)
     return node
 
 
