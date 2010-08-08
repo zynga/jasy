@@ -54,6 +54,10 @@ class Node(list):
     def append(self, kid, rel=None):
         # kid can be null e.g. [1, , 2].
         if kid:
+            # Debug
+            if not isinstance(kid, Node):
+                raise Exception("Invalid kid: %s" % kid)
+            
             if hasattr(self, "start") and kid.start < self.start:
                 self.start = kid.start
 

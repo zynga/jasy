@@ -706,7 +706,7 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
 
 
 
-def Variables(tokenizer, staticContext, letBlock):
+def Variables(tokenizer, staticContext, letBlock=None):
     """Parses a comma-separated list of var declarations (and maybe initializations)."""
     
     builder = staticContext.builder
