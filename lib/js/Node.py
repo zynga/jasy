@@ -25,9 +25,6 @@ class Node(list):
                 else:
                     self.type = getattr(token, "type", None)
                 
-                    if hasattr(token, "value"):
-                        self.value = token.value
-            
                 if hasattr(token, "comments"):
                     self.comments = token.comments
                 

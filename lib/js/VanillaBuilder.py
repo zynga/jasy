@@ -536,9 +536,12 @@ class VanillaBuilder:
         pass
 
     def PRIMARY_build(self, tokenizer, tokenType):
-        # "nb" tokenizer.token.type must be "null", "this", "truie", "false", "identifier",
+        # "nb" tokenizer.token.type must be "null", "this", "true", "false", "identifier",
         # "number", "string", or "regexp".
-        return Node(tokenizer, tokenType)
+        node = Node(tokenizer, tokenType)
+        if tokenType in ("identifier", "number", "string", "regexp"):
+            node.value = tokenizer.token.value
+        return node
 
     def PRIMARY_finish(self, node):
         pass
