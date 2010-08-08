@@ -468,13 +468,13 @@ class Tokenizer(object):
         self.tokenIndex = (self.tokenIndex + 1) & 3
         self.tokens[self.tokenIndex] = token = Token()
 
+        token.start = self.cursor
+        token.line = self.line
+
         input = self.source
         if self.cursor == len(input):
             token.type = "end"
             return token.type
-            
-        token.start = self.cursor
-        token.line = self.line
 
         ch = input[self.cursor]
         self.cursor += 1
