@@ -107,6 +107,7 @@ def Statements(tokenizer, staticContext):
     builder.BLOCK_finish(node)
 
     if getattr(node, "needsHoisting", False):
+        raise Exception("Needs hoisting went true!!!")
         builder.setHoists(node.id, node.varDecls)
         # Propagate up to the function.
         staticContext.needsHoisting = True
@@ -800,9 +801,8 @@ def Variables(tokenizer, staticContext, letBlock=None):
                 raise SyntaxError("Invalid variable initialization", tokenizer)
 
             # Parse the init as a normal assignment.
-            id = mkIdentifier(childNode.tokenizer, childNode.name, True)
+            id = Node(childNode.tokenizer, "identifier")
             n3 = builder.ASSIGN_build(tokenizer)
-            
             builder.ASSIGN_addOperand(n3, id)
             builder.ASSIGN_addOperand(n3, AssignExpression(tokenizer, staticContext))
             builder.ASSIGN_finish(n3)
@@ -854,7 +854,6 @@ def LetBlock(tokenizer, staticContext, isStatement):
     return node
 
 
-
 def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly, data):
     if node.type == "array_comp":
         raise SyntaxError("Invalid array comprehension left-hand side")
@@ -895,6 +894,7 @@ def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly, data):
                 data.varDecls.append(childNode)
 
 
+# JavaScript 1.7
 def DestructuringExpression(tokenizer, staticContext, simpleNamesOnly, data):
     node = PrimaryExpression(tokenizer, staticContext)
     checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly, data)

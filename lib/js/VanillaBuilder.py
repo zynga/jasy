@@ -284,7 +284,7 @@ class VanillaBuilder:
         return node
 
     def FUNCTION_setName(self, node, identifier):
-        node.name = identifier
+        node.value = identifier
 
     def FUNCTION_addParam(self, node, identifier):
         node.params.append(identifier)
@@ -329,7 +329,7 @@ class VanillaBuilder:
         return Node(tokenizer, "identifier")
 
     def DECL_setName(self, node, identifier):
-        node.name = identifier
+        node.value = identifier
 
     def DECL_setInitializer(self, node, expression):
         node.append(expression, "initializer")

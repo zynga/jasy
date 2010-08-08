@@ -96,15 +96,22 @@ class Node(list):
         for name in dir(self):
             if name not in ("type", "parent", "rel", "start", "end") and name[0] != "_":
                 value = getattr(self, name)
-                if isinstance(value, Node) and hasattr(value, "rel"):
-                    relatedChildren.append(value)
-                elif type(value) in (bool, int, long, float, basestring, str, unicode, list):
+                if type(value) in (bool, int, long, float, basestring, str, unicode, list):
                     if type(value) == bool:
                         value = "true" if value else "false" 
                     elif type(value) in (int, long, float):
                         value = str(value)
                     elif type(value) == list:
-                        value = ",".join(value)
+                        if isinstance(value, Node):
+                            if hasattr(value, "rel"):
+                                relatedChildren.append(value)
+                            continue
+                        else:
+                            try:
+                                value = ",".join(value)
+                            except TypeError:
+                                raise Exception("Invalid non related child at: %s" % name)
+                                
                     attrsCollection.append('%s=%s' % (name, json.dumps(value)))
 
         attrs = (" " + " ".join(attrsCollection)) if len(attrsCollection) > 0 else ""
@@ -118,6 +125,8 @@ class Node(list):
             for child in self:
                 if not hasattr(child, "rel"):
                     result += child.toXml(format, indent+1)
+                else:
+                    raise Exception("Oops, irritated by non related: %s in %s - child says it is related as %s" % (child.type, self.type, child.rel))
 
             for child in relatedChildren:
                 result += "%s<%s>%s" % (innerLead, child.rel, lineBreak)
