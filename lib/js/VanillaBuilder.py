@@ -522,7 +522,7 @@ class VanillaBuilder:
     def UNARY_finish(self, node):
         pass
 
-    def MEMBER_build(self, tokenizer, tokenType):
+    def MEMBER_build(self, tokenizer, tokenType=None):
         # "nb" tokenizer.token.type must be "new", "dot", or "index".
         return Node(tokenizer, tokenType)
 
