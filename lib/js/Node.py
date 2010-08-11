@@ -124,7 +124,9 @@ class Node(list):
             result = "%s<%s%s>%s" % (lead, self.type, attrs, lineBreak)
 
             for child in self:
-                if not hasattr(child, "rel"):
+                if not child:
+                    pass
+                elif not hasattr(child, "rel"):
                     result += child.toXml(format, indent+1)
                 elif not child in relatedChildren:
                     raise Exception("Oops, irritated by non related: %s in %s - child says it is related as %s" % (child.type, self.type, child.rel))
