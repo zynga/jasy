@@ -315,7 +315,7 @@ def Statement(tokenizer, staticContext):
         builder.DO_setCondition(node, ParenExpression(tokenizer, staticContext))
         builder.DO_finish(node)
         
-        if not staticContext.ecmaStrictMode:
+        if not staticContext.ecma3OnlyMode:
             # <script language="JavaScript"> (without version hints) may need
             # automatic semicolon insertion without a newline after do-while.
             # See http://bugzilla.mozilla.org/show_bug.cgi?id=238945.
