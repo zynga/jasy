@@ -35,6 +35,8 @@ class Node(list):
                 self.end = token.end
             
             else:
+                self.start = None
+                self.end = None
                 self.type = type
                 self.line = tokenizer.line
 
@@ -58,10 +60,10 @@ class Node(list):
             if not isinstance(kid, Node):
                 raise Exception("Invalid kid: %s" % kid)
             
-            if hasattr(self, "start") and kid.start < self.start:
+            if kid.start < self.start:
                 self.start = kid.start
 
-            if hasattr(self, "end") and self.end < kid.end:
+            if self.end < kid.end:
                 self.end = kid.end
                 
             kid.parent = self
