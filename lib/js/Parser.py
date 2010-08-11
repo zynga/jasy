@@ -81,7 +81,7 @@ def Script(tokenizer, staticContext):
     return node
     
 
-def nest(tokenizer, staticContext, node, func, end):
+def nest(tokenizer, staticContext, node, func, end=None):
     """Statement stack and nested statement handler."""
     staticContext.statementStack.append(node)
     node = func(tokenizer, staticContext)
