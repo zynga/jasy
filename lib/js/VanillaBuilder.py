@@ -141,9 +141,9 @@ class VanillaBuilder:
     def BREAK_setLabel(self, node, identifier):
         node.append(identifier, "label")
 
-    def BREAK_setTarget(self, node, childNode):
+    def BREAK_setTarget(self, node, target):
         # Hint, no append() - relation, but not a child
-        node.target = childNode
+        node.target = target
 
     def BREAK_finish(self, node):
         pass
@@ -154,9 +154,9 @@ class VanillaBuilder:
     def CONTINUE_setLabel(self, node, label):
         node.label = label
 
-    def CONTINUE_setTarget(self, node, childNode):
+    def CONTINUE_setTarget(self, node, target):
         # Hint, no append() - relation, but not a child
-        node.target = childNode
+        node.target = target
 
     def CONTINUE_finish(self, node):
         pass

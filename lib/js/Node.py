@@ -92,7 +92,11 @@ class Node(list):
         relatedChildren = []
         attrsCollection = []
         for name in dir(self):
-            if name not in ("type", "parent", "rel", "start", "end") and name[0] != "_":
+            # "type" is used as node name - no need to repeat it as an attribute
+            # "parent" and "target" are relations to other nodes which are not children - for serialization we ignore them at the moment
+            # "rel" is used internally to keep the relation to the parent - used by nodes which need to keep track of specific children
+            # "start" and "end" are for debugging only
+            if name not in ("type", "parent", "target", "rel", "start", "end") and name[0] != "_":
                 value = getattr(self, name)
                 if isinstance(value, Node):
                     if hasattr(value, "rel"):
@@ -139,7 +143,7 @@ class Node(list):
     def export(self):
         attrs = {}
         for name in dir(self):
-            if name not in ("parent", "rel", "start", "end") and name[0] != "_":
+            if name not in ("parent", "target", "rel", "start", "end") and name[0] != "_":
                 value = getattr(self, name)
                 if isinstance(value, Node) and hasattr(value, "rel"):
                     attrs[name] = value.export()
