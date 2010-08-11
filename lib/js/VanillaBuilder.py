@@ -80,7 +80,7 @@ class VanillaBuilder:
     def FOR_rebuildForEach(self, node):
         node.isEach = True
 
-    # "nb". This function is called after rebuildForEach, if that'statement called at all.
+    # NB: This function is called after rebuildForEach, if that'statement called at all.
     def FOR_rebuildForIn(self, node):
         node.type = "for_in"
 
@@ -454,7 +454,7 @@ class VanillaBuilder:
         pass
 
     def EQUALITY_build(self, tokenizer):
-        # "nb" tokenizer.token.type must be "eq", "ne", "strict_eq", or "strict_ne".
+        # NB: tokenizer.token.type must be "eq", "ne", "strict_eq", or "strict_ne".
         return Node(tokenizer)
 
     def EQUALITY_addOperand(self, node, childNode):
@@ -464,7 +464,7 @@ class VanillaBuilder:
         pass
 
     def RELATIONAL_build(self, tokenizer):
-        # "nb" tokenizer.token.type must be "lt", "le", "ge", or "gt".
+        # NB: tokenizer.token.type must be "lt", "le", "ge", or "gt".
         return Node(tokenizer)
 
     def RELATIONAL_addOperand(self, node, childNode):
@@ -474,7 +474,7 @@ class VanillaBuilder:
         pass
 
     def SHIFT_build(self, tokenizer):
-        # "nb" tokenizer.token.type must be "lsh", "rsh", or "ursh".
+        # NB: tokenizer.token.type must be "lsh", "rsh", or "ursh".
         return Node(tokenizer)
 
     def SHIFT_addOperand(self, node, childNode):
@@ -484,7 +484,7 @@ class VanillaBuilder:
         pass
 
     def ADD_build(self, tokenizer):
-        # "nb" tokenizer.token.type must be "plus" or "minus".
+        # NB: tokenizer.token.type must be "plus" or "minus".
         return Node(tokenizer)
 
     def ADD_addOperand(self, node, childNode):
@@ -494,7 +494,7 @@ class VanillaBuilder:
         pass
 
     def MULTIPLY_build(self, tokenizer):
-        # "nb" tokenizer.token.type must be "mul", "div", or "mod".
+        # NB: tokenizer.token.type must be "mul", "div", or "mod".
         return Node(tokenizer)
 
     def MULTIPLY_addOperand(self, node, childNode):
@@ -504,7 +504,7 @@ class VanillaBuilder:
         pass
 
     def UNARY_build(self, tokenizer):
-        # "nb" tokenizer.token.type must be "delete", "void", "typeof", "not", "bitwise_not",
+        # NB: tokenizer.token.type must be "delete", "void", "typeof", "not", "bitwise_not",
         # "unary_plus", "unary_minus", "increment", or "decrement".
         if tokenizer.token.type == "plus":
             tokenizer.token.type = "unary_plus"
@@ -523,8 +523,10 @@ class VanillaBuilder:
         pass
 
     def MEMBER_build(self, tokenizer, tokenType=None):
-        # "nb" tokenizer.token.type must be "new", "dot", or "index".
-        return Node(tokenizer, tokenType)
+        node = Node(tokenizer, tokenType)
+        if node.type == "identifier":
+            node.value = tokenizer.token.value
+        return node
 
     def MEMBER_rebuildNewWithArgs(self, node):
         node.type = "new_with_args"
@@ -536,8 +538,7 @@ class VanillaBuilder:
         pass
 
     def PRIMARY_build(self, tokenizer, tokenType):
-        # "nb" tokenizer.token.type must be "null", "this", "true", "false", "identifier",
-        # "number", "string", or "regexp".
+        # NB: tokenizer.token.type must be "null", "this", "true", "false", "identifier", "number", "string", or "regexp".
         node = Node(tokenizer, tokenType)
         if tokenType in ("identifier", "number", "string", "regexp"):
             node.value = tokenizer.token.value
