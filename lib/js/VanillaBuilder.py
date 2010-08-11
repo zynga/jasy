@@ -151,8 +151,8 @@ class VanillaBuilder:
     def CONTINUE_build(self, tokenizer):
         return Node(tokenizer, "continue")
 
-    def CONTINUE_setLabel(self, node, identifier):
-        node.append(identifier, "label")
+    def CONTINUE_setLabel(self, node, label):
+        node.label = label
 
     def CONTINUE_setTarget(self, node, childNode):
         # Hint, no append() - relation, but not a child
@@ -263,8 +263,8 @@ class VanillaBuilder:
     def LABEL_build(self, tokenizer):
         return Node(tokenizer, "label")
 
-    def LABEL_setLabel(self, node, expression):
-        node.append(expression, "label")
+    def LABEL_setLabel(self, node, label):
+        node.label = label
 
     def LABEL_setStatement(self, node, statement):
         node.append(statement, "statement")
