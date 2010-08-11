@@ -7,6 +7,7 @@
 #
 
 import re
+from copy import copy
 
 __all__ = [ "Lexer", "keywords" ]
 
@@ -523,19 +524,19 @@ class Tokenizer(object):
     
     def save(self):
         return {
-            cursor: self.cursor,
-            tokenIndex: self.tokenIndex,
-            tokens: self.tokens.slice(),
-            lookahead: self.lookahead,
-            scanNewlines: self.scanNewlines,
-            line: self.line
+            "cursor" : self.cursor,
+            "tokenIndex": self.tokenIndex,
+            "tokens": copy(self.tokens),
+            "lookahead": self.lookahead,
+            "scanNewlines": self.scanNewlines,
+            "line": self.line
         }
 
     
     def rewind(self, point):
-        self.cursor = point.cursor
-        self.tokenIndex = point.tokenIndex
-        self.tokens = point.tokens.slice()
-        self.lookahead = point.lookahead
-        self.scanNewline = point.scanNewline
-        self.line = point.line
+        self.cursor = point["cursor"]
+        self.tokenIndex = point["tokenIndex"]
+        self.tokens = copy(point["tokens"])
+        self.lookahead = point["lookahead"]
+        self.scanNewline = point["scanNewline"]
+        self.line = point["line"]
