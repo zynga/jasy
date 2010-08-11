@@ -52,6 +52,7 @@ class StaticContext(object):
         self.statementStack = []
         self.funDecls = []
         self.varDecls = []
+        self.needsHoisting = False
          
         # Status
         self.bracketLevel = 0
