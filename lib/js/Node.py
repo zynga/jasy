@@ -19,11 +19,7 @@ class Node(list):
             if token:
                 # We may define a custom type but use the same positioning as another token
                 # e.g. transform curlys in block nodes, etc.
-                if type:
-                    self.type = type
-                
-                else:
-                    self.type = getattr(token, "type", None)
+                self.type = type if type else getattr(token, "type", None)
                 
                 if hasattr(token, "comments"):
                     self.comments = token.comments
