@@ -341,14 +341,14 @@ def Statement(tokenizer, staticContext):
 
         statementStack = staticContext.statementStack
         i = len(statementStack)
-        label = node.label
+        label = node.label if hasattr(node, "label") else None
 
         if label:
             while True:
                 i -= 1
                 if i < 0:
                     raise SyntaxError("Label not found", tokenizer)
-                if statementStack[i].label == label:
+                if getattr(statementStack[i], "label", None) == label:
                     break
 
             # 
@@ -361,7 +361,7 @@ def Statement(tokenizer, staticContext):
             while i < len(statementStack) - 1 and statementStack[i+1].type == "label":
                 i += 1
                 
-            if i < len(statementStack) - 1 and statementStack[i+1].isLoop:
+            if i < len(statementStack) - 1 and getattr(statementStack[i+1], "isLoop", False):
                 i += 1
             elif tokenType == "continue":
                 raise SyntaxError("Invalid continue", tokenizer)
@@ -375,7 +375,7 @@ def Statement(tokenizer, staticContext):
                     else:
                         raise SyntaxError("Invalid continue")
 
-                if statementStack[i].isLoop or (tokenType == "break" and statementStack[i].type == "switch"):
+                if getattr(statementStack[i], "isLoop", False) or (tokenType == "break" and statementStack[i].type == "switch"):
                     break
         
         if tokenType == "break":
@@ -510,7 +510,7 @@ def Statement(tokenizer, staticContext):
                
                 i = len(statementStack)-1
                 while i >= 0:
-                    if statementStack[i].label == label:
+                    if getattr(statementStack[i], "label", None) == label:
                         raise SyntaxError("Duplicate label")
                     
                     i -= 1

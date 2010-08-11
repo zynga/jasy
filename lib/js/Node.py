@@ -31,10 +31,10 @@ class Node(list):
                 self.end = token.end
             
             else:
-                self.start = None
-                self.end = None
                 self.type = type
                 self.line = tokenizer.line
+                self.start = None
+                self.end = None
 
             # nodes use a tokenizer for debugging (getSource, filename getter)
             self.tokenizer = tokenizer
