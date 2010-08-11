@@ -474,6 +474,7 @@ class Tokenizer(object):
 
         input = self.source
         if self.cursor == len(input):
+            token.end = token.start
             token.type = "end"
             return token.type
 
