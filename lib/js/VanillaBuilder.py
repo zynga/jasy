@@ -73,12 +73,12 @@ class VanillaBuilder:
 
     def FOR_build(self, tokenizer):
         node = Node(tokenizer, "for")
-        node.isLoop = true
-        node.isEach = false
+        node.isLoop = True
+        node.isEach = False
         return node
 
     def FOR_rebuildForEach(self, node):
-        node.isEach = true
+        node.isEach = True
 
     # "nb". This function is called after rebuildForEach, if that'statement called at all.
     def FOR_rebuildForIn(self, node):
@@ -109,7 +109,7 @@ class VanillaBuilder:
 
     def WHILE_build(self, tokenizer):
         node = Node(tokenizer, "while")
-        node.isLoop = true
+        node.isLoop = True
         return node
 
     def WHILE_setCondition(self, node, expression):
@@ -123,7 +123,7 @@ class VanillaBuilder:
 
     def DO_build(self, tokenizer):
         node = Node(tokenizer, "do")
-        node.isLoop = true
+        node.isLoop = True
         return node
 
     def DO_setCondition(self, node, expression):
