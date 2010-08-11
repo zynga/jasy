@@ -222,6 +222,7 @@ def Statement(tokenizer, staticContext):
 
     elif tokenType == "for":
         node = builder.FOR_build(tokenizer)
+        forBlock = None
         
         if tokenizer.match("identifier") and tokenizer.token.value == "each":
             builder.FOR_rebuildForEach(node)
