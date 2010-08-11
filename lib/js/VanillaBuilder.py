@@ -94,10 +94,14 @@ class VanillaBuilder:
     def FOR_setUpdate(self, node, expression):
         node.append(expression, "update")
 
-    def FOR_setObject(self, node, expression):
+    def FOR_setObject(self, node, expression, forBlock=None):
+        # wpbasti: not sure what forBlock stands for but it is used in the parser
+        # JS tolerates the optinal unused parameter, but not so Python.
         node.append(expression, "object")
 
-    def FOR_setIterator(self, node, expression, expression2):
+    def FOR_setIterator(self, node, expression, expression2, forBlock=None):
+        # wpbasti: not sure what forBlock stands for but it is used in the parser
+        # JS tolerates the optinal unused parameter, but not so Python.
         node.append(expression, "iterator")
         node.append(expression2, "varDecl")
 
