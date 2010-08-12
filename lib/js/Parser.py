@@ -412,7 +412,7 @@ def Statement(tokenizer, staticContext):
                 if staticContext.ecma3OnlyMode:
                     raise SyntaxError("Illegal catch guard", tokenizer)
                     
-                if len(node.catchClauses) and not node.catchClauses.top().guard:
+                if node.getChildrenLength() > 0 and not node.getUnrelatedChildren()[0].guard:
                     raise SyntaxError("Guarded catch after unguarded", tokenizer)
                     
                 builder.CATCH_setGuard(childNode, Expression(tokenizer, staticContext))
@@ -432,7 +432,7 @@ def Statement(tokenizer, staticContext):
         if tokenizer.match("finally"):
             builder.TRY_setFinallyBlock(node, Block(tokenizer, staticContext))
             
-        if not len(node.catchClauses) and not node.finallyBlock:
+        if node.getChildrenLength() == 0 and not hasattr(node, "finallyBlock"):
             raise SyntaxError("Invalid try statement", tokenizer)
             
         builder.TRY_finish(node)

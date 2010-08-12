@@ -48,6 +48,25 @@ class Node(list):
             self.append(arg)
 
 
+    def getUnrelatedChildren(self):
+        """Collects all unrelated children"""
+        collection = []
+        for child in self:
+            if not hasattr(child, "rel"):
+                collection.append(child)
+            
+        return collection
+        
+
+    def getChildrenLength(self, filter=True):
+        """Number of (per default unrelated) children"""
+        count = 0
+        for child in self:
+            if not filter or not hasattr(child, "rel"):
+                count += 1
+        return count
+            
+
     # Always use push to add operands to an expression, to update start and end.
     def append(self, kid, rel=None):
         # kid can be null e.g. [1, , 2].

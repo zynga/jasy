@@ -166,14 +166,13 @@ class VanillaBuilder:
 
     def TRY_build(self, tokenizer):
         node = Node(tokenizer, "try")
-        node.catchClauses = []
         return node
 
     def TRY_setTryBlock(self, node, statement):
         node.append(statement, "tryBlock")
 
     def TRY_addCatch(self, node, childNode):
-        node.catchClauses.append(childNode)
+        node.append(childNode)
 
     def TRY_finishCatches(self, node):
         pass
