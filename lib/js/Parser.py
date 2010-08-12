@@ -180,7 +180,7 @@ def Statement(tokenizer, staticContext):
                     raise SyntaxError("More than one switch default", tokenizer)
                     
                 childNode = builder.DEFAULT_build(tokenizer)
-                builder.SWITCH_setDefaultIndex(node, len(node.cases))
+                builder.SWITCH_setDefaultIndex(node, len(node)-1)
                 tokenizer.mustMatch("colon")
                 builder.DEFAULT_initializeStatements(childNode, tokenizer)
                 

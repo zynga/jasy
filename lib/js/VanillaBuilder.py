@@ -28,7 +28,6 @@ class VanillaBuilder:
 
     def SWITCH_build(self, tokenizer):
         node = Node(tokenizer, "switch")
-        node.cases = []
         node.defaultIndex = -1
         return node
 
@@ -39,7 +38,7 @@ class VanillaBuilder:
         node.defaultIndex = index
 
     def SWITCH_addCase(self, node, childNode):
-        node.cases.append(childNode)
+        node.append(childNode)
 
     def SWITCH_finish(self, node):
         pass
@@ -48,7 +47,7 @@ class VanillaBuilder:
         return Node(tokenizer, "case")
 
     def CASE_setLabel(self, node, expression):
-        node.append(expression, "caseLabel")
+        node.append(expression, "label")
 
     def CASE_initializeStatements(self, node, tokenizer):
         node.append(Node(tokenizer, "block"), "statements")
