@@ -59,7 +59,7 @@ class VanillaBuilder:
     def CASE_finish(self, node):
         pass
 
-    def DEFAULT_build(self, tokenizer, p):
+    def DEFAULT_build(self, tokenizer):
         return Node(tokenizer, "default")
 
     def DEFAULT_initializeStatements(self, node, tokenizer):
