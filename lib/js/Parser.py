@@ -191,11 +191,10 @@ def Statement(tokenizer, staticContext):
                     builder.DEFAULT_addStatement(childNode, Statement(tokenizer, staticContext))
                 
                 builder.DEFAULT_finish(childNode)
-                break
 
             elif tokenType == "case":
                 childNode = builder.CASE_build(tokenizer)
-                builder.CASE_setLabel(childNode, Expression(tokenizer, staticContext, "colon"))
+                builder.CASE_setLabel(childNode, Expression(tokenizer, staticContext))
                 tokenizer.mustMatch("colon")
                 builder.CASE_initializeStatements(childNode, tokenizer)
 
@@ -206,7 +205,6 @@ def Statement(tokenizer, staticContext):
                     builder.CASE_addStatement(childNode, Statement(tokenizer, staticContext))
                 
                 builder.CASE_finish(childNode)
-                break
 
             else:
                 raise SyntaxError("Invalid switch case", tokenizer)
@@ -1442,6 +1440,6 @@ def PrimaryExpression(tokenizer, staticContext):
         builder.PRIMARY_finish(node)
 
     else:
-        raise SyntaxError("Missing operand", tokenizer)
+        raise SyntaxError("Missing operand. Found type: %s" % tokenType, tokenizer)
 
     return node
