@@ -189,7 +189,7 @@ class VanillaBuilder:
         return node
 
     def CATCH_setVarName(self, node, identifier):
-        node.append(identifier, "varName")
+        node.varName = identifier
 
     def CATCH_setGuard(self, node, expression):
         node.append(expression, "guard")
