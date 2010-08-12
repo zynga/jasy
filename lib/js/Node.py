@@ -108,10 +108,14 @@ class Node(list):
                     elif type(value) in (int, long, float):
                         value = str(value)
                     elif type(value) == list:
+                        if len(value) == 0:
+                            continue
+                        if name in ["varDecls","funDecls"]:
+                            value = map(lambda node: node.value, value)
                         try:
                             value = ",".join(value)
                         except TypeError:
-                            raise Exception("Invalid non related child at: %s" % name)
+                            raise Exception("Invalid attribute list child at: %s" % name)
                                 
                     attrsCollection.append('%s=%s' % (name, json.dumps(value)))
 
