@@ -257,7 +257,7 @@ class Tokenizer(object):
                 
             self.cursor -= 1
             self.lexExponent()
-            token.value = parseFloat(token.start, self.cursor)
+            token.value = float(input[token.start:self.cursor])
             
         elif ch == "x" or ch == "X":
             while(True):
@@ -267,7 +267,7 @@ class Tokenizer(object):
                     break
                     
             self.cursor -= 1
-            token.value = parseInt(input[token.start:self.cursor])
+            token.value = int(input[token.start:self.cursor])
 
         elif ch >= "0" and ch <= "7":
             while(True):
@@ -277,7 +277,7 @@ class Tokenizer(object):
                     break
                     
             self.cursor -= 1
-            token.value = parseInt(input[token.start:self.cursor])
+            token.value = int(input[token.start:self.cursor])
 
         else:
             self.cursor -= 1
