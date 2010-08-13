@@ -131,7 +131,6 @@ def __let_block(node):
     
     return begin + end
     
-
 def __group(node):
     return "(%s)" % compress(node[0])
 
@@ -140,6 +139,9 @@ def __const(node):
 
 def __var(node):
     return u"var %s" % u",".join(map(compress, node))
+
+def __let(node):
+    return u"let %s" % u",".join(map(compress, node))
 
 def __list(node):
     return ",".join(map(compress, node))
