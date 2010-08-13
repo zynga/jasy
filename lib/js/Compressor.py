@@ -296,12 +296,14 @@ def __if(node):
     result = "if(%s)" % compress(node.condition)
     
     # Micro optimization: Omit block curly braces when it only contains one child
-    if node.thenPart.type == "block":
-        result += __block(node.thenPart, True)
+    thenPart = node.thenPart
+    if thenPart.type == "block":
+        result += __block(thenPart, True)
     else:
-        result += compress(node.thenPart)
+        result += compress(thenPart)
     
-    if hasattr(node, "elsePart"):
+    elsePart = getattr(node, "elsePart", None)
+    if elsePart:
         # if-blocks without braces require a semicolon here
         if not result.endswith((";","}")): 
             result += ";"            
@@ -309,10 +311,10 @@ def __if(node):
         result += "else" 
         
         # Micro optimization: Omit curly braces when block contains only one child
-        if node.elsePart.type == "block":
-            elseCode = __block(node.elsePart, True)
+        if elsePart.type == "block":
+            elseCode = __block(elsePart, True)
         else:
-            elseCode = compress(node.elsePart)
+            elseCode = compress(elsePart)
         
         # Micro optimization: Don't need a space when the child is a block/map/array/group
         if not elseCode.startswith(("(","[","{")): 
