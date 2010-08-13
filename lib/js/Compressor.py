@@ -302,8 +302,9 @@ def __if(node):
         result += compress(node.thenPart)
     
     if hasattr(node, "elsePart"):
-        # if-blocks with braces
-        if not result.endswith((";","}")): result += ";"            
+        # if-blocks without braces require a semicolon here
+        if not result.endswith((";","}")): 
+            result += ";"            
         
         result += "else" 
         
