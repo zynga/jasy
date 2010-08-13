@@ -205,7 +205,8 @@ def __function(node):
     
     result += "(%s)" % (",".join(node.params))
     
-    if node.functionForm == "expressed_form":
+    # keep expression closure format (may be micro-optimized for other code, too)
+    if getattr(node, "expressionClosure", False):
         result += compress(node.body)
     else:
         result += "{%s}" % compress(node.body)

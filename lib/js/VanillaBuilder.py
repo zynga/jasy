@@ -290,6 +290,9 @@ class VanillaBuilder:
 
     def FUNCTION_addParam(self, node, identifier):
         node.params.append(identifier)
+        
+    def FUNCTION_setExpressionClosure(self, node, expressionClosure):
+        node.expressionClosure = expressionClosure
 
     def FUNCTION_setBody(self, node, statement):
         node.append(statement, "body")

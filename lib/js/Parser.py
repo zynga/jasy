@@ -624,6 +624,7 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     # Do we have an expression closure or a normal body?
     tokenType = tokenizer.get()
     if tokenType != "left_curly":
+        builder.FUNCTION_setExpressionClosure(functionNode, True)
         tokenizer.unget()
 
     childContext = StaticContext(True, builder)
