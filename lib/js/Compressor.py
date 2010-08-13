@@ -38,6 +38,18 @@ def block_unwrap(node):
     else:
         return compress(node)
         
+        
+def statements(node):
+    result = u""
+    for child in node:
+        result += compress(child)
+        
+        # omit double semicolons
+        # omit semicolon when blocks ends with curly brace 
+        if not result[-1] in (";", "}"):
+            result += ";"
+        
+    return result[:-1] if result[-1] == ";" else result
 
 
 #
@@ -117,18 +129,16 @@ def __array_init(node):
 #
 
 def __script(node):
-    result = u""
-    for child in node:
-        result += compress(child)
-        
-        # don't double semicolons, but also 
-        if not result[-1] in (";", "}"):
-            result += ";"
-        
+    result = statements(node)
+    
+    # add file separator semicolon
+    if not hasattr(node, "parent"):
+        result += ";"
+    
     return result
 
 def __block(node):
-    return u"{%s}" % u";".join(map(compress, node))
+    return "{%s}" % statements(node)
     
 def __let_block(node):
     begin = u"let(%s)" % u",".join(map(compress, node.variables))
