@@ -123,12 +123,15 @@ def __block(node):
     return u"{%s}" % u";".join(map(compress, node))
     
 def __let_block(node):
-    vars = u"let(%s)" % u",".join(map(compress, node.variables))
-    return vars + compress(node.block)
+    begin = u"let(%s)" % u",".join(map(compress, node.variables))
+    if hasattr(node, "block"):
+        end = compress(node.block)
+    elif hasattr(node, "expression"):
+        end = compress(node.expression)    
     
-def __let(node):
-    return u"let %s" % u",".join(map(compress, node))
+    return begin + end
     
+
 def __group(node):
     return "(%s)" % compress(node[0])
 
