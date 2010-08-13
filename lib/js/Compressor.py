@@ -185,7 +185,13 @@ def __function(node):
     if hasattr(node, "name"):
         result += " %s" % node.name
     
-    result += "(%s){%s}" % (",".join(node.params), ";".join(map(compress, node.body)))    
+    result += "(%s)" % (",".join(node.params))
+    
+    if node.functionForm == "expressed_form":
+        result += compress(node.body)
+    else:
+        result += "{%s}" % (";".join(map(compress, node.body)))    
+        
     return result
     
 def __return(node):
