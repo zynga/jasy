@@ -32,6 +32,13 @@ def compress(node):
             sys.exit(1)
 
 
+def block_unwrap(node):
+    if node.type == "block" and len(node) == 1:
+        return compress(node[0])
+    else:
+        return compress(node)
+        
+
 
 #
 # Data
@@ -119,11 +126,8 @@ def __script(node):
         
     return result
 
-def __block(node, simplify=False):
-    if simplify and len(node) == 1:
-        return compress(node[0])
-    else:
-        return u"{%s}" % u";".join(map(compress, node))
+def __block(node):
+    return u"{%s}" % u";".join(map(compress, node))
     
 def __let_block(node):
     begin = u"let(%s)" % u",".join(map(compress, node.variables))
@@ -296,11 +300,7 @@ def __if(node):
     result = "if(%s)" % compress(node.condition)
     
     # Micro optimization: Omit block curly braces when it only contains one child
-    thenPart = node.thenPart
-    if thenPart.type == "block":
-        result += __block(thenPart, True)
-    else:
-        result += compress(thenPart)
+    result += block_unwrap(node.thenPart)
     
     elsePart = getattr(node, "elsePart", None)
     if elsePart:
@@ -311,10 +311,7 @@ def __if(node):
         result += "else" 
         
         # Micro optimization: Omit curly braces when block contains only one child
-        if elsePart.type == "block":
-            elseCode = __block(elsePart, True)
-        else:
-            elseCode = compress(elsePart)
+        elseCode = block_unwrap(elsePart)
         
         # Micro optimization: Don't need a space when the child is a block/map/array/group
         if not elseCode.startswith(("(","[","{")): 
