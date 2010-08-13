@@ -286,15 +286,7 @@ def __for(node):
 
 def __hook(node):
     """aka ternary operator"""
-    result = ""
-    for pos, child in enumerate(node):
-        result += compress(child)
-        if pos == 0:
-            result += "?"
-        elif pos == 1:
-            result += ":"
-
-    return result
+    return "%s?%s:%s" % (compress(node.condition), compress(node.thenPart), compress(node.elsePart))
     
 
 def __if(node):
