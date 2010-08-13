@@ -119,8 +119,11 @@ def __script(node):
         
     return result
 
-def __block(node):
-    return u"{%s}" % u";".join(map(compress, node))
+def __block(node, simplify=False):
+    if simplify and len(node) == 1:
+        return compress(node[0])
+    else:
+        return u"{%s}" % u";".join(map(compress, node))
     
 def __let_block(node):
     begin = u"let(%s)" % u",".join(map(compress, node.variables))
@@ -199,8 +202,10 @@ def __return(node):
     if hasattr(node, "value"):
         valueCode = compress(node.value)
 
-        # Micro optimization, don't need a space when a block/map/array is returned
-        if not valueCode.startswith(("[","{")): result += " "
+        # Micro optimization: Don't need a space when a block/map/array/group is returned
+        if not valueCode.startswith(("(","[","{")): 
+            result += " "
+            
         result += valueCode
         
     return result
@@ -288,16 +293,30 @@ def __hook(node):
     
 
 def __if(node):
-    result = "if(%s)%s" % (compress(node.condition), compress(node.thenPart))
+    result = "if(%s)" % compress(node.condition)
+    
+    # Micro optimization: Omit block curly braces when it only contains one child
+    if node.thenPart.type == "block":
+        result += __block(node.thenPart, True)
+    else:
+        result += compress(node.thenPart)
+    
     if hasattr(node, "elsePart"):
         # if-blocks with braces
         if not result.endswith((";","}")): result += ";"            
         
         result += "else" 
-        elseCode = compress(node.elsePart)
         
-        # Micro optimization, don't need a space when the child is a block/map/array
-        if not elseCode.startswith(("[","{")): result += " "        
+        # Micro optimization: Omit curly braces when block contains only one child
+        if node.elsePart.type == "block":
+            elseCode = __block(node.elsePart, True)
+        else:
+            elseCode = compress(node.elsePart)
+        
+        # Micro optimization: Don't need a space when the child is a block/map/array/group
+        if not elseCode.startswith(("(","[","{")): 
+            result += " "        
+            
         result += elseCode
         
     return result
