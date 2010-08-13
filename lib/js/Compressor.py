@@ -121,7 +121,8 @@ def __script(node):
     for child in node:
         result += compress(child)
         
-        if result[-1] != ";":
+        # don't double semicolons, but also 
+        if not result[-1] in (";", "}"):
             result += ";"
         
     return result
@@ -197,7 +198,7 @@ def __function(node):
     if node.functionForm == "expressed_form":
         result += compress(node.body)
     else:
-        result += "{%s}" % (";".join(map(compress, node.body)))    
+        result += "{%s}" % compress(node.body)
         
     return result
     

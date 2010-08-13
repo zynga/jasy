@@ -853,7 +853,7 @@ def LetBlock(tokenizer, staticContext, isStatement):
     return node
 
 
-def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly, data):
+def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly=None, data=None):
     if node.type == "array_comp":
         raise SyntaxError("Invalid array comprehension left-hand side")
         
