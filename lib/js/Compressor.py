@@ -122,6 +122,13 @@ def __script(node):
 def __block(node):
     return u"{%s}" % u";".join(map(compress, node))
     
+def __let_block(node):
+    vars = u"let(%s)" % u",".join(map(compress, node.variables))
+    return vars + compress(node.block)
+    
+def __let(node):
+    return u"let %s" % u",".join(map(compress, node))
+    
 def __group(node):
     return "(%s)" % compress(node[0])
 

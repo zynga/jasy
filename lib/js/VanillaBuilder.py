@@ -310,7 +310,7 @@ class VanillaBuilder:
         pass
 
     def CONST_build(self, tokenizer):
-        return Node(tokenizer, "var")
+        return Node(tokenizer, "const")
 
     def CONST_addDecl(self, node, childNode, x):
         node.append(childNode)
