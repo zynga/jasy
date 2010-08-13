@@ -41,16 +41,34 @@ def block_unwrap(node):
         
 def statements(node):
     result = u""
-    for child in node:
-        result += compress(child)
+    length = len(node)-1
+    for pos, child in enumerate(node):
+        code = compress(child)
+        if code == "":
+            continue
+            
+        result += code
         
-        # omit double semicolons
-        # omit semicolon when blocks ends with curly brace 
-        if not result[-1] in (";", "}"):
+        # Micro-Optimization: Omit semicolon in places where not required
+        # Rule: Closing brace of the original child make a semicolon optional        
+        
+        # Functions might be defined as a modern expression closure without braces
+        if child.type == "function" and not getattr(child, "expressionClosure", False):
+            continue
+            
+        # Switch/Try statements must have braces
+        if child.type in ("switch", "try"):
+            continue
+            
+        # Loops and Ifs might have braces => check body
+        if child.type in ("if", "while", "for_in", "for") and len(child.body) != 1:
+            continue
+            
+        # Micro-Optimization: Omit semicolon on last statement
+        if pos != length:
             result += ";"
-        
-    return result[:-1] if result[-1] == ";" else result
 
+    return result
 
 #
 # Data
@@ -168,7 +186,8 @@ def __index(node):
     return "%s[%s]" % (compress(node[0]), compress(node[1]))
 
 def __semicolon(node):
-    return "" if not node.expression else compress(node.expression)
+    expr = getattr(node, "expression", None)
+    return "" if not expr else compress(expr)
 
 def __identifier(node):
     result = node.value
