@@ -182,8 +182,8 @@ def __new_with_args(node):
 
 def __function(node):
     result = "function"
-    if hasattr(node, "name"):
-        result += " %s" % node.name
+    if hasattr(node, "value"):
+        result += " %s" % node.value
     
     result += "(%s)" % (",".join(node.params))
     
