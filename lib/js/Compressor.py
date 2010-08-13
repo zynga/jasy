@@ -256,13 +256,13 @@ def __continue(node):
 #    
     
 def __while(node):
-    return "while(%s)%s" % (compress(node.condition), compress(node.body))
+    return "while(%s)%s" % (compress(node.condition), block_unwrap(node.body))
 
 def __do(node):
-    return "do%swhile(%s)" % (compress(node.body), compress(node.condition))
+    return "do%swhile(%s)" % (block_unwrap(node.body), compress(node.condition))
 
 def __for_in(node):
-    return "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), compress(node.body))
+    return "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), block_unwrap(node.body))
     
 def __for(node):
     result = "for("
@@ -273,7 +273,7 @@ def __for(node):
     result += ";"
     if node.update: result += compress(node.update)
         
-    result += ")%s" % compress(node.body)
+    result += ")%s" % block_unwrap(node.body)
     
     return result
     
