@@ -161,9 +161,13 @@ def Statement(tokenizer, staticContext):
         builder.IF_setCondition(node, ParenExpression(tokenizer, staticContext))
         staticContext.statementStack.append(node)
         builder.IF_setThenPart(node, Statement(tokenizer, staticContext))
+        tokenizer.clearComments()
 
         if tokenizer.match("else"):
-            builder.IF_setElsePart(node, Statement(tokenizer, staticContext))
+            comments = tokenizer.getComments()
+            elsePart = Statement(tokenizer, staticContext)
+            builder.COMMENTS_add(elsePart, comments)
+            builder.IF_setElsePart(node, elsePart)
 
         staticContext.statementStack.pop()
         builder.IF_finish(node)
