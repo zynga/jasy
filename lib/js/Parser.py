@@ -1336,7 +1336,6 @@ def ArgumentList(tokenizer, staticContext):
 def PrimaryExpression(tokenizer, staticContext):
     builder = staticContext.builder
     tokenType = tokenizer.get(True)
-    comments = tokenizer.getComments()
 
     if tokenType == "function":
         node = FunctionDefinition(tokenizer, staticContext, False, "expressed_form")
@@ -1377,6 +1376,8 @@ def PrimaryExpression(tokenizer, staticContext):
             if not tokenizer.match("right_curly"):
                 while True:
                     tokenType = tokenizer.get()
+                    comments = tokenizer.getComments()
+                    print "LEN:%s" % len(comments)
                     
                     if (tokenizer.token.value == "get" or tokenizer.token.value == "set") and tokenizer.peek() == "identifier":
                         if staticContext.ecma3OnlyMode:
@@ -1406,10 +1407,12 @@ def PrimaryExpression(tokenizer, staticContext):
                         
                         if tokenizer.match("colon"):
                             childNode = builder.PROPERTYINIT_build(tokenizer)
+                            builder.COMMENTS_add(childNode, comments)
                             builder.PROPERTYINIT_addOperand(childNode, id)
                             builder.PROPERTYINIT_addOperand(childNode, AssignExpression(tokenizer, staticContext))
                             builder.PROPERTYINIT_finish(childNode)
                             builder.OBJECTINIT_addProperty(node, childNode)
+                            tokenizer.clearComments()
                             
                         else:
                             # Support, e.g., |var {staticContext, y} = o| as destructuring shorthand
@@ -1444,7 +1447,4 @@ def PrimaryExpression(tokenizer, staticContext):
     else:
         raise SyntaxError("Missing operand. Found type: %s" % tokenType, tokenizer)
 
-    builder.COMMENTS_add(node, comments)
-    tokenizer.clearComments()
-    
     return node
