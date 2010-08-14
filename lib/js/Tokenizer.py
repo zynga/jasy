@@ -101,6 +101,13 @@ class ParseError(Exception):
         Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, filename, line))
 
 
+class Comment():
+    def __init__(self, text, style, inline=False):
+        self.text = text
+        self.style = style
+        self.inline = inline
+
+
 class Tokenizer(object):
     def __init__(self, source, filename="", line=1):
         # source: JavaScript source
@@ -163,17 +170,44 @@ class Tokenizer(object):
         return len(self.comments) > 0
         
     def clearComments(self):
-        del self.comments[:]
+        if len(self.comments) > 0:
+            print "Clearing %s comments..." % len(self.comments)
+            del self.comments[:]
     
     def getComments(self):
         comments = self.comments
         self.comments = []
         return comments
 
+    def cleanupComment(self, text):
+        style = "single" if text.startswith("//") else "multi"
+        text = text[2:] if style is "single" else text[2:-2]
+
+        if style == "multi":
+            # detect doc string
+            if text.startswith("*"):
+                style = "doc"
+
+            # outdent text blocks
+            splitted = text.split("\n")
+            for pos, line in enumerate(splitted):
+                # remove leading spaces
+                line = line.strip()
+
+                # remove leading star and first space
+                if style == "doc":
+                    line = line[2:]
+
+                splitted[pos] = line.strip()
+
+            text = "\n".join(splitted)
+
+        return text.strip(), style
 
     def skip(self):
         """Eats comments and whitespace."""
         input = self.source
+        startLine = self.line
         
         while (True):
             if len(input) > self.cursor:
@@ -194,6 +228,7 @@ class Tokenizer(object):
             elif ch == "/" and next == "*":
                 self.cursor += 1
                 text = "/*"
+                inline = startLine == self.line and startLine > 0
                 while (True):
                     try:
                         ch = input[self.cursor]
@@ -213,11 +248,14 @@ class Tokenizer(object):
                         
                     text += ch
                 
-                self.comments.append(text)
+                text, style = self.cleanupComment(text)
+                comment = Comment(text, style, inline)
+                self.comments.append(comment)
 
             elif ch == "/" and next == "/":
                 self.cursor += 1
                 text = "//"
+                inline = startLine == self.line
                 while (True):
                     try:
                         ch = input[self.cursor]
@@ -231,7 +269,9 @@ class Tokenizer(object):
                     
                     text += ch
                         
-                self.comments.append(text)
+                text, style = self.cleanupComment(text)
+                comment = Comment(text, style, inline)
+                self.comments.append(comment)
 
             elif ch != " " and ch != "\t":
                 self.cursor -= 1

@@ -8,6 +8,10 @@
 
 from Node import Node
 
+   
+
+
+
 class VanillaBuilder:
     """The vanilla AST builder."""
     
@@ -16,33 +20,12 @@ class VanillaBuilder:
             return
             
         coll = []
-        for text in comments:
-            style = "single" if text.startswith("//") else "multi"
-            text = text[2:] if style is "single" else text[2:-2]
-            
-            if style == "multi":
-                # detect doc string
-                if text.startswith("*"):
-                    style = "doc"
-
-                # outdent text blocks
-                splitted = text.split("\n")
-                for pos, line in enumerate(splitted):
-                    # remove leading spaces
-                    line = line.strip()
-                    
-                    # remove leading star and first space
-                    if style == "doc":
-                        line = line[2:]
-
-                    splitted[pos] = line.strip()
-                    
-                text = "\n".join(splitted)
-            
-            childNode = Node(None, "comment")
-            childNode.text = text 
-            childNode.style = style 
-            coll.append(childNode)
+        for item in comments:
+            if item.inline:
+                # TODO: attach to previous node
+                pass
+            else:
+                coll.append(item)
             
         node.comments = coll
     
