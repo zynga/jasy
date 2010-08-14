@@ -9,3 +9,16 @@ qx.Class.define("foo.Bar",
 {
 
 });
+
+while(true)
+{
+  /** if test */
+  if(true) {
+
+  }
+
+  /** else oops */
+  else {
+
+  }
+}
