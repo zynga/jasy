@@ -4,8 +4,5 @@ x =
   func1 : function() {},
 
   /** text func2 */
-  func2 : function() {},
-
-  /** text func3 */
-  func3 : function() {}
+  func2 : function() {}
 };

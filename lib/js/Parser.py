@@ -111,6 +111,7 @@ def Statements(tokenizer, staticContext):
 
     staticContext.statementStack.pop()
     builder.BLOCK_finish(node)
+    tokenizer.clearComments()    
 
     if getattr(node, "needsHoisting", False):
         raise Exception("Needs hoisting went true!!!")
