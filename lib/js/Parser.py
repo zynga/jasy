@@ -100,9 +100,14 @@ def Statements(tokenizer, staticContext):
 
     builder.BLOCK_hoistLets(node)
     staticContext.statementStack.append(node)
+    tokenizer.clearComments()
 
     while not tokenizer.done() and tokenizer.peek(True) != "right_curly":
-        builder.BLOCK_addStatement(node, Statement(tokenizer, staticContext))
+        comments = tokenizer.getComments()
+        childNode = Statement(tokenizer, staticContext)
+        builder.COMMENTS_add(childNode, comments)
+        builder.BLOCK_addStatement(node, childNode)
+        tokenizer.clearComments()
 
     staticContext.statementStack.pop()
     builder.BLOCK_finish(node)
