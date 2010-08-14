@@ -20,10 +20,6 @@ class Node(list):
                 # We may define a custom type but use the same positioning as another token
                 # e.g. transform curlys in block nodes, etc.
                 self.type = type if type else getattr(token, "type", None)
-                
-                if hasattr(token, "comments"):
-                    self.comments = token.comments
-                
                 self.line = token.line
                 
                 # Start & end are file positions for error handling.
@@ -75,11 +71,12 @@ class Node(list):
             if not isinstance(kid, Node):
                 raise Exception("Invalid kid: %s" % kid)
             
-            if kid.start < self.start:
-                self.start = kid.start
+            if hasattr(kid, "tokenizer"):
+                if kid.start < self.start:
+                    self.start = kid.start
 
-            if self.end < kid.end:
-                self.end = kid.end
+                if self.end < kid.end:
+                    self.end = kid.end
                 
             kid.parent = self
             
@@ -115,7 +112,7 @@ class Node(list):
             # "parent" and "target" are relations to other nodes which are not children - for serialization we ignore them at the moment
             # "rel" is used internally to keep the relation to the parent - used by nodes which need to keep track of specific children
             # "start" and "end" are for debugging only
-            if name not in ("type", "parent", "target", "rel", "start", "end") and name[0] != "_":
+            if name not in ("type", "parent", "comments", "target", "rel", "start", "end") and name[0] != "_":
                 value = getattr(self, name)
                 if isinstance(value, Node):
                     if hasattr(value, "rel"):
@@ -139,12 +136,18 @@ class Node(list):
                     attrsCollection.append('%s=%s' % (name, json.dumps(value)))
 
         attrs = (" " + " ".join(attrsCollection)) if len(attrsCollection) > 0 else ""
+        
+        comments = getattr(self, "comments", None)
 
-        if len(self) == 0 and len(relatedChildren) == 0:
+        if len(self) == 0 and len(relatedChildren) == 0 and (not comments or len(comments) == 0):
             result = "%s<%s%s/>%s" % (lead, self.type, attrs, lineBreak)
 
         else:
             result = "%s<%s%s>%s" % (lead, self.type, attrs, lineBreak)
+            
+            if comments:
+                for comment in comments:
+                    result += '%s<comment style="%s">%s</comment>%s' % (innerLead, comment.style, comment.text, lineBreak)
 
             for child in self:
                 if not child:

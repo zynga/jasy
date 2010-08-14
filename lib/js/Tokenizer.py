@@ -114,6 +114,7 @@ class Tokenizer(object):
         self.scanNewlines = False
         self.filename = filename
         self.line = line
+        self.comments = []
 
     input_ = property(lambda self: self.source[self.cursor:])
     token = property(lambda self: self.tokens.get(self.tokenIndex))
@@ -155,10 +156,23 @@ class Tokenizer(object):
         tokenType = self.peek(scanOperand)
         self.scanNewlines = False
         return tokenType
+        
+        
+    
+    def hasComments(self):
+        return len(self.comments) > 0
+        
+    def clearComments(self):
+        del self.comments[:]
+    
+    def getComments(self):
+        comments = self.comments
+        self.comments = []
+        return comments
 
 
-    # Eats comments and whitespace.
     def skip(self):
+        """Eats comments and whitespace."""
         input = self.source
         
         while (True):
@@ -179,6 +193,7 @@ class Tokenizer(object):
                 
             elif ch == "/" and next == "*":
                 self.cursor += 1
+                text = "/*"
                 while (True):
                     try:
                         ch = input[self.cursor]
@@ -189,14 +204,20 @@ class Tokenizer(object):
                     if ch == "*":
                         next = input[self.cursor]
                         if next == "/":
+                            text += "*/"
                             self.cursor += 1
                             break
                             
                     elif ch == "\n":
                         self.line += 1
+                        
+                    text += ch
+                
+                self.comments.append(text)
 
             elif ch == "/" and next == "/":
                 self.cursor += 1
+                text = "//"
                 while (True):
                     try:
                         ch = input[self.cursor]
@@ -207,6 +228,10 @@ class Tokenizer(object):
                     if ch == "\n":
                         self.line += 1
                         break
+                    
+                    text += ch
+                        
+                self.comments.append(text)
 
             elif ch != " " and ch != "\t":
                 self.cursor -= 1

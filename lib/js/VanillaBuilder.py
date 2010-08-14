@@ -11,6 +11,41 @@ from Node import Node
 class VanillaBuilder:
     """The vanilla AST builder."""
     
+    def COMMENTS_add(self, node, comments):
+        if len(comments) == 0:
+            return
+            
+        coll = []
+        for text in comments:
+            style = "single" if text.startswith("//") else "multi"
+            text = text[2:] if style is "single" else text[2:-2]
+            
+            if style == "multi":
+                # detect doc string
+                if text.startswith("*"):
+                    style = "doc"
+
+                # outdent text blocks
+                splitted = text.split("\n")
+                for pos, line in enumerate(splitted):
+                    # remove leading spaces
+                    line = line.strip()
+                    
+                    # remove leading star and first space
+                    if style == "doc":
+                        line = line[2:]
+
+                    splitted[pos] = line.strip()
+                    
+                text = "\n".join(splitted)
+            
+            childNode = Node(None, "comment")
+            childNode.text = text 
+            childNode.style = style 
+            coll.append(childNode)
+            
+        node.comments = coll
+    
     def IF_build(self, tokenizer):
         return Node(tokenizer, "if")
 

@@ -1336,6 +1336,7 @@ def ArgumentList(tokenizer, staticContext):
 def PrimaryExpression(tokenizer, staticContext):
     builder = staticContext.builder
     tokenType = tokenizer.get(True)
+    comments = tokenizer.getComments()
 
     if tokenType == "function":
         node = FunctionDefinition(tokenizer, staticContext, False, "expressed_form")
@@ -1443,4 +1444,7 @@ def PrimaryExpression(tokenizer, staticContext):
     else:
         raise SyntaxError("Missing operand. Found type: %s" % tokenType, tokenizer)
 
+    builder.COMMENTS_add(node, comments)
+    tokenizer.clearComments()
+    
     return node
