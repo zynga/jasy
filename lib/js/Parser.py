@@ -1383,7 +1383,6 @@ def PrimaryExpression(tokenizer, staticContext):
                 while True:
                     tokenType = tokenizer.get()
                     comments = tokenizer.getComments()
-                    print "LEN:%s" % len(comments)
                     
                     if (tokenizer.token.value == "get" or tokenizer.token.value == "set") and tokenizer.peek() == "identifier":
                         if staticContext.ecma3OnlyMode:
