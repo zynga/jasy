@@ -1,2 +1,1 @@
-var x=2/y[jsj]/g
-/[a-z]/g
+var x = /[a-z]/g.exec(foo)

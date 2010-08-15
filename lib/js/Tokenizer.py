@@ -472,7 +472,7 @@ class Tokenizer(object):
                 break
 
         self.cursor -= 1
-        token.value = eval(input[token.start:self.cursor])
+        token.value = input[token.start:self.cursor]
     
 
     def lexOp(self, ch):

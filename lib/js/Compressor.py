@@ -60,8 +60,12 @@ def statements(node):
         if child.type in ("switch", "try"):
             continue
             
-        # Loops and Ifs might have braces => check body
-        if child.type in ("if", "while", "for_in", "for") and len(child.body) != 1:
+        # If blocks might have braces for both, if and else
+        if child.type == "if" and len(child.thenPart) != 1:
+            continue        
+            
+        # Loops might have braces => check body
+        if child.type in ("while", "for_in", "for") and len(child.body) != 1:
             continue
             
         # Micro-Optimization: Omit semicolon on last statement
