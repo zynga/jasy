@@ -15,19 +15,27 @@ from Node import Node
 class VanillaBuilder:
     """The vanilla AST builder."""
     
-    def COMMENTS_add(self, node, comments):
-        if len(comments) == 0:
+    def COMMENTS_add(self, currNode, prevNode, comments):
+        if not comments:
             return
             
-        coll = []
-        for item in comments:
-            if item.inline:
-                # TODO: attach to previous node
-                pass
+        currComments = []
+        prevComments = []
+        for comment in comments:
+            # post comments - for previous node
+            if comment.mode == "inline" and comment.style == "single":
+                prevComments.append(comment)
+                
+            # all other comment styles are attached to the current one
             else:
-                coll.append(item)
-            
-        node.comments = coll
+                currComments.append(comment)
+                
+        currNode.comments = currComments
+        if prevNode:
+            if hasattr(prevNode, "comments"):
+                prevNode.comments.extend(prevComments)
+            else:
+                prevNode.comments = prevComments
     
     def IF_build(self, tokenizer):
         return Node(tokenizer, "if")

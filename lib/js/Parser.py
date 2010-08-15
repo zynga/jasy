@@ -100,18 +100,17 @@ def Statements(tokenizer, staticContext):
 
     builder.BLOCK_hoistLets(node)
     staticContext.statementStack.append(node)
-    tokenizer.clearComments()
 
+    prevNode = None
     while not tokenizer.done() and tokenizer.peek(True) != "right_curly":
         comments = tokenizer.getComments()
         childNode = Statement(tokenizer, staticContext)
-        builder.COMMENTS_add(childNode, comments)
+        builder.COMMENTS_add(childNode, prevNode, comments)
         builder.BLOCK_addStatement(node, childNode)
-        tokenizer.clearComments()
+        prevNode = childNode
 
     staticContext.statementStack.pop()
     builder.BLOCK_finish(node)
-    tokenizer.clearComments()    
 
     if getattr(node, "needsHoisting", False):
         raise Exception("Needs hoisting went true!!!")
@@ -161,12 +160,11 @@ def Statement(tokenizer, staticContext):
         builder.IF_setCondition(node, ParenExpression(tokenizer, staticContext))
         staticContext.statementStack.append(node)
         builder.IF_setThenPart(node, Statement(tokenizer, staticContext))
-        tokenizer.clearComments()
 
         if tokenizer.match("else"):
             comments = tokenizer.getComments()
             elsePart = Statement(tokenizer, staticContext)
-            builder.COMMENTS_add(elsePart, comments)
+            builder.COMMENTS_add(elsePart, node, comments)
             builder.IF_setElsePart(node, elsePart)
 
         staticContext.statementStack.pop()
@@ -1416,12 +1414,11 @@ def PrimaryExpression(tokenizer, staticContext):
                         
                         if tokenizer.match("colon"):
                             childNode = builder.PROPERTYINIT_build(tokenizer)
-                            builder.COMMENTS_add(childNode, comments)
+                            builder.COMMENTS_add(childNode, node, comments)
                             builder.PROPERTYINIT_addOperand(childNode, id)
                             builder.PROPERTYINIT_addOperand(childNode, AssignExpression(tokenizer, staticContext))
                             builder.PROPERTYINIT_finish(childNode)
                             builder.OBJECTINIT_addProperty(node, childNode)
-                            tokenizer.clearComments()
                             
                         else:
                             # Support, e.g., |var {staticContext, y} = o| as destructuring shorthand

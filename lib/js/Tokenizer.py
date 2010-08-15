@@ -102,10 +102,10 @@ class ParseError(Exception):
 
 
 class Comment():
-    def __init__(self, text, style, inline=False):
+    def __init__(self, text, style, mode):
         self.text = text
         self.style = style
-        self.inline = inline
+        self.mode = mode
 
 
 class Tokenizer(object):
@@ -164,20 +164,15 @@ class Tokenizer(object):
         self.scanNewlines = False
         return tokenType
         
-        
-    
-    def hasComments(self):
-        return len(self.comments) > 0
-        
-    def clearComments(self):
-        if len(self.comments) > 0:
-            print "Clearing %s comments..." % len(self.comments)
-            del self.comments[:]
-    
+
     def getComments(self):
-        comments = self.comments
-        self.comments = []
-        return comments
+        if self.comments:
+            comments = self.comments
+            self.comments = []
+            return comments
+            
+        return None
+
 
     def cleanupComment(self, text):
         style = "single" if text.startswith("//") else "multi"
@@ -204,6 +199,7 @@ class Tokenizer(object):
 
         return text.strip(), style
 
+
     def skip(self):
         """Eats comments and whitespace."""
         input = self.source
@@ -229,6 +225,13 @@ class Tokenizer(object):
                 self.cursor += 1
                 text = "/*"
                 inline = startLine == self.line and startLine > 0
+                if startLine > 0 and startLine == self.line:
+                    mode = "inline"
+                elif (self.line-1) > startLine:
+                    mode = "section"
+                else:
+                    mode = "block"
+                                        
                 while (True):
                     try:
                         ch = input[self.cursor]
@@ -249,13 +252,19 @@ class Tokenizer(object):
                     text += ch
                 
                 text, style = self.cleanupComment(text)
-                comment = Comment(text, style, inline)
+                comment = Comment(text, style, mode)
                 self.comments.append(comment)
 
             elif ch == "/" and next == "/":
                 self.cursor += 1
                 text = "//"
-                inline = startLine == self.line
+                if startLine > 0 and startLine == self.line:
+                    mode = "inline"
+                elif (self.line-1) > startLine:
+                    mode = "section"
+                else:
+                    mode = "block"
+                    
                 while (True):
                     try:
                         ch = input[self.cursor]
@@ -270,7 +279,7 @@ class Tokenizer(object):
                     text += ch
                         
                 text, style = self.cleanupComment(text)
-                comment = Comment(text, style, inline)
+                comment = Comment(text, style, mode)
                 self.comments.append(comment)
 
             elif ch != " " and ch != "\t":

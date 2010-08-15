@@ -147,7 +147,7 @@ class Node(list):
             
             if comments:
                 for comment in comments:
-                    result += '%s<comment style="%s">%s</comment>%s' % (innerLead, comment.style, comment.text, lineBreak)
+                    result += '%s<comment style="%s" mode="%s">%s</comment>%s' % (innerLead, comment.style, comment.mode, comment.text, lineBreak)
 
             for child in self:
                 if not child:
