@@ -481,14 +481,23 @@ class Tokenizer(object):
 
         op = ch
         while(True):
-            next = input[self.cursor]
+            try:
+                next = input[self.cursor]
+            except IndexError:
+                break
+                
             if (op + next) in operatorNames:
                 self.cursor += 1
                 op += next
             else:
                 break
         
-        if input[self.cursor] == "=" and op in assignOperators:
+        try:
+            next = input[self.cursor]
+        except IndexError:
+            next = None
+
+        if next == "=" and op in assignOperators:
             self.cursor += 1
             token.type = "assign"
             token.assignOp = operatorNames[op]

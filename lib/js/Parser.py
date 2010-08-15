@@ -26,7 +26,7 @@ def parse(source, filename=None, line=0, builder=None):
     node = Script(tokenizer, staticContext)
     
     if not tokenizer.done():
-        raise SyntaxError("Syntax error", tokenizer)
+        raise SyntaxError("Unexpected end of file", tokenizer)
 
     return node
 
