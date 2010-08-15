@@ -354,14 +354,19 @@ def __if(node):
         
 def __switch(node):
     result = "switch(%s){" % compress(node.discriminant)
-    for case in node.cases:
-        if hasattr(case, "label"):
+    for case in node:
+        if case.type == "case":
             result += "case %s:" % compress(case.label)
-        else:
+        elif case.type == "default":
             result += "default:"
+        else:
+            continue
         
         for statement in case.statements:
             result += compress(statement) + ";"
+        
+    if result.endswith(";"):
+        result = result[:-1]
         
     result += "}"
     return result
