@@ -263,8 +263,9 @@ def __throw(node):
 def __try(node):
     result = "try%s" % compress(node.tryBlock)
     
-    for catch in node.catches:
-        result += "catch(%s)%s" % (catch.varName, compress(catch.block))
+    for catch in node:
+        if catch.type == "catch":
+            result += "catch(%s)%s" % (catch.varName, compress(catch.block))
 
     if hasattr(node, "finallyBlock"):
         result += "finally%s" % compress(node.finallyBlock)
