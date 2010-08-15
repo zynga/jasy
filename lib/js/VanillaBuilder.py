@@ -310,7 +310,7 @@ class VanillaBuilder:
         node.value = identifier
 
     def FUNCTION_initParams(self, node, tokenizer):
-        node.append(Node(tokenizer, "params"), "params")
+        node.append(Node(tokenizer, "list"), "params")
         
     def FUNCTION_wrapParam(self, tokenizer):
         param = Node(tokenizer)

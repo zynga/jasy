@@ -219,10 +219,12 @@ def __new_with_args(node):
 
 def __function(node):
     result = "function"
-    if hasattr(node, "value"):
-        result += " %s" % node.value
+    name = getattr(node, "value", None)
+    if name:
+        result += " %s" % name
     
-    result += "(%s)" % (",".join(node.params))
+    params = getattr(node, "params", None)
+    result += "(%s)" % compress(params) if params else ""
     
     # keep expression closure format (may be micro-optimized for other code, too)
     if getattr(node, "expressionClosure", False):
