@@ -134,7 +134,15 @@ def __regexp(node):
     return node.value
 
 def __number(node):
-    return u"%s" % node.value
+    value = node.value
+    if int(value) == value:
+        value = int(value)
+    else:
+        conv = str(value)
+        if conv.startswith("0."):
+            value = conv[1:]
+            
+    return u"%s" % value
 
 def __string(node):
     return json.JSONEncoder().encode(node.value)
