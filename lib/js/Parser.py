@@ -235,6 +235,7 @@ def Statement(tokenizer, staticContext):
             
         tokenizer.mustMatch("left_paren")
         tokenType = tokenizer.peek()
+        childNode = None
         
         if tokenType != "semicolon":
             staticContext.inForLoopInit = True

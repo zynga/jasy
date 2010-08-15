@@ -332,11 +332,15 @@ def __for_in(node):
 def __for(node):
     result = "for("
     
-    if node.setup: result += compress(node.setup)
+    setup = getattr(node, "setup", None)
+    condition = getattr(node, "condition", None)
+    update = getattr(node, "update", None)
+    
+    if setup: result += compress(setup)
     result += ";"
-    if node.condition: result += compress(node.condition)
+    if condition: result += compress(condition)
     result += ";"
-    if node.update: result += compress(node.update)
+    if update: result += compress(update)
         
     result += ")%s" % block_unwrap(node.body)
     
