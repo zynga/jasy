@@ -646,11 +646,8 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     rp = tokenizer.save()
     
     if staticContext.inFunction:
-        # 
-        # Inner functions don'tokenizer reset block numbering. They also need to
-        # remember which block they were parsed in for hoisting (see comment
-        # below).
-        # 
+        # Inner functions don't reset block numbering, only functions at
+        # the top level of the program do.
         childContext.blockId = staticContext.blockId
 
     if tokenType != "left_curly":
@@ -663,41 +660,65 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
         builder.FUNCTION_setBody(functionNode, Script(tokenizer, childContext))
 
     # 
-    # To linearize hoisting with nested blocks needing hoists, if a toplevel
-    # def has any hoists we reparse the entire thing. Each toplevel
-    # def is parsed at most twice.
+    # Hoisting makes parse-time binding analysis tricky. A taxonomy of hoists:
     # 
-    # Pass 1: If there needs to be hoisting at any child block or inner
-    # function, the entire def gets reparsed.
+    # 1. vars hoist to the top of their function:
     # 
-    # Pass 2: It's possible that hoisting has changed the upvars of
-    # functions. That is, consider:
+    #    var x = 'global';
+    #    function f() {
+    #      x = 'f';
+    #      if (false)
+    #        var x;
+    #    }
+    #    f();
+    #    print(x); // "global"
     # 
-    # def f() {
-    #   staticContext = 0
-    #   g()
-    #   staticContext; # staticContext's forward pointer should be invalidated!
-    #   def g() {
-    #     staticContext = 'g'
-    #   }
-    #   var staticContext
-    # }
+    # 2. lets hoist to the top of their block:
     # 
-    # So, a def needs to remember in which block it is parsed under
-    # (since the def body is _not_ hoisted, only the declaration) and
-    # upon hoisting, needs to recalculate all its upvars up front.
+    #    function f() { // id: 0
+    #      var x = 'f';
+    #      {
+    #        {
+    #          print(x); // "undefined"
+    #        }
+    #        let x;
+    #      }
+    #    }
+    #    f();
+    # 
+    # 3. inner functions at function top-level hoist to the beginning
+    #    of the function.
+    # 
+    # If the builder used is doing parse-time analyses, hoisting may
+    # invalidate earlier conclusions it makes about variable scope.
+    # 
+    # The builder can opt to set the needsHoisting flag in a
+    # CompilerContext (in the case of var and function hoisting) or in a
+    # node of type BLOCK (in the case of let hoisting). This signals for
+    # the parser to reparse sections of code.
+    # 
+    # To avoid exponential blowup, if a function at the program top-level
+    # has any hoists in its child blocks or inner functions, we reparse
+    # the entire toplevel function. Each toplevel function is parsed at
+    # most twice.
+    # 
+    # The list of declarations can be tied to block ids to aid talking
+    # about declarations of blocks that have not yet been fully parsed.
+    # 
+    # Blocks are already uniquely numbered; see the comment in
+    # Statements.
     # 
     if childContext.needsHoisting:
-        # Order is important here! funDecls must come _after_ varDecls!
+        # Order is important here! Builders expect funDecls to come after varDecls!
         builder.setHoists(functionNode.body.id, childContext.varDecls.concat(childContext.funDecls))
 
         if staticContext.inFunction:
-            # Propagate up to the parent def if we're an inner function.
+            # If an inner function needs hoisting, we need to propagate
+            # this flag up to the parent function.
             staticContext.needsHoisting = True
         
         else:
-            # Only re-parse toplevel functions.
-            x3 = childContext
+            # Only re-parse functions at the top level of the program.
             childContext = StaticContext(True, builder)
             tokenizer.rewind(rp)
             
