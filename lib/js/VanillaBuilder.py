@@ -307,15 +307,31 @@ class VanillaBuilder:
                 node.type = "getter"
             else:
                 node.type = "setter"
-
-        node.params = []
+                
         return node
 
     def FUNCTION_setName(self, node, identifier):
         node.value = identifier
 
-    def FUNCTION_addParam(self, node, identifier):
-        node.params.append(identifier)
+    def FUNCTION_initParams(self, node, tokenizer):
+        node.append(Node(tokenizer, "params"), "params")
+        
+    def FUNCTION_wrapParam(self, tokenizer):
+        param = Node(tokenizer)
+        param.value = tokenizer.token.value
+        return param
+        
+    def FUNCTION_addParam(self, node, tokenizer, identifierOrExpression):
+        # Destructing expression
+        if isinstance(identifierOrExpression, Node):
+            childNode = identifierOrExpression
+            
+        # Or simple identifier
+        else:
+            childNode = Node(tokenizer, "identifier")
+            childNode.value = identifierOrExpression
+
+        node.params.append(childNode)
         
     def FUNCTION_setExpressionClosure(self, node, expressionClosure):
         node.expressionClosure = expressionClosure

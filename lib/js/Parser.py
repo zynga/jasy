@@ -611,21 +611,28 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     tokenizer.mustMatch("left_paren")
     
     if not tokenizer.match("right_paren"):
+        builder.FUNCTION_initParams(functionNode, tokenizer)
+        prevParamNode = None
         while True:
             tokenType = tokenizer.get()
             if tokenType == "left_bracket" or tokenType == "left_curly":
                 # Destructured formal parameters.
                 tokenizer.unget()
-                builder.FUNCTION_addParam(functionNode, DestructuringExpression(tokenizer, staticContext))
+                paramNode = DestructuringExpression(tokenizer, staticContext)
                 
             elif tokenType == "identifier":
-                builder.FUNCTION_addParam(functionNode, tokenizer.token.value)
+                paramNode = builder.FUNCTION_wrapParam(tokenizer)
                 
             else:
                 raise SyntaxError("Missing formal parameter", tokenizer)
+                
+            builder.FUNCTION_addParam(functionNode, tokenizer, paramNode)
+            builder.COMMENTS_add(paramNode, prevParamNode, tokenizer.getComments())
         
             if not tokenizer.match("comma"):
                 break
+                
+            prevParamNode = paramNode
         
         tokenizer.mustMatch("right_paren")
 
