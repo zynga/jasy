@@ -8,10 +8,6 @@
 
 from Node import Node
 
-   
-
-
-
 class VanillaBuilder:
     """The vanilla AST builder."""
     
