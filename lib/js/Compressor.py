@@ -7,6 +7,8 @@ import re, sys, json
 
 __all__ = [ "compress" ]
 
+COMBINE_DECLARATION = True
+
 
 #
 # Main
@@ -159,10 +161,17 @@ def __array_init(node):
 #
 
 def __script(node):
-    result = statements(node)
+    result = ""
+
+    if COMBINE_DECLARATION:
+        varList = node.varDecls
+        if varList:
+            result += "var %s;" % ",".join(map(lambda node: node.value, varList))
+    
+    result += statements(node)
     
     # add file separator semicolon
-    if not hasattr(node, "parent"):
+    if not hasattr(node, "parent") and not result.endswith(";"):
         result += ";"
     
     return result
@@ -186,7 +195,16 @@ def __const(node):
     return u"const %s" % u",".join(map(compress, node))
 
 def __var(node):
-    return u"var %s" % u",".join(map(compress, node))
+    if COMBINE_DECLARATION:
+        result = []
+        for child in node:
+            initializer = getattr(child, "initializer", None)
+            if initializer:
+                result.append(u"%s=%s" % (child.value, compress(initializer)))
+        return u",".join(result)
+        
+    else:
+        return u"var %s" % u",".join(map(compress, node))
 
 def __let(node):
     return u"let %s" % u",".join(map(compress, node))
