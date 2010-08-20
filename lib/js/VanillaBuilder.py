@@ -299,7 +299,7 @@ class VanillaBuilder:
     def FUNCTION_build(self, tokenizer):
         node = Node(tokenizer)
         if node.type != "function":
-            if node.value == "get":
+            if tokenizer.token.value == "get":
                 node.type = "getter"
             else:
                 node.type = "setter"
