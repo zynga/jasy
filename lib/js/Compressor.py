@@ -248,7 +248,13 @@ def __new_with_args(node):
     return "new %s(%s)" % (compress(node[0]), compress(node[1]))    
 
 def __function(node):
-    result = "function"
+    if node.type == "setter":
+        result = "set"
+    elif node.type == "getter":
+        result = "get"
+    else:
+        result = "function"
+        
     name = getattr(node, "value", None)
     if name:
         result += " %s" % name
@@ -263,6 +269,12 @@ def __function(node):
         result += "{%s}" % compress(node.body)
         
     return result
+    
+def __getter(node):
+    return __function(node)
+    
+def __setter(node):
+    return __function(node)
     
 def __return(node):
     result = "return"
