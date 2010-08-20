@@ -291,7 +291,10 @@ def __try(node):
     
     for catch in node:
         if catch.type == "catch":
-            result += "catch(%s)%s" % (catch.varName, compress(catch.block))
+            if hasattr(catch, "guard"):
+                result += "catch(%s if %s)%s" % (catch.varName, compress(catch.guard), compress(catch.block))
+            else:
+                result += "catch(%s)%s" % (catch.varName, compress(catch.block))
 
     if hasattr(node, "finallyBlock"):
         result += "finally%s" % compress(node.finallyBlock)
