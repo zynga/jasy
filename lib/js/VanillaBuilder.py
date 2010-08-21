@@ -617,7 +617,7 @@ class VanillaBuilder:
         node.append(expression, "guard")
 
     def COMPTAIL_addFor(self, node, childNode):
-        node.append(childNode, "append")
+        node.append(childNode, "for")
 
     def COMPTAIL_finish(self, node):
         pass
