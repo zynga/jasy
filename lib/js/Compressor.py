@@ -233,6 +233,8 @@ def __semicolon(node):
 
 def __identifier(node):
     result = node.value
+    if isinstance(result, list):
+        result = compress(result)
 
     if hasattr(node, "initializer"):
         result += "=%s" % compress(node.initializer)
@@ -356,8 +358,6 @@ def __do(node):
 def __for_in(node):
     # Optional variable declarations
     varDecl = getattr(node, "varDecl", None)
-    
-    
     return "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), block_unwrap(node.body))
     
 def __for(node):

@@ -371,7 +371,10 @@ class VanillaBuilder:
         return Node(tokenizer, "identifier")
 
     def DECL_setName(self, node, identifier):
-        node.value = identifier
+        if isinstance(identifier, Node):
+            node.append(identifier, "value")
+        else:
+            node.value = identifier
 
     def DECL_setInitializer(self, node, expression):
         node.append(expression, "initializer")

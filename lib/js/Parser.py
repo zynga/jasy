@@ -801,18 +801,19 @@ def Variables(tokenizer, staticContext, letBlock=None):
         if tokenType == "left_bracket" or tokenType == "left_curly":
             # Pass in childContext if we need to add each pattern matched into
             # its varDecls, else pass in staticContext.
-            data = None
-
             # Need to unget to parse the full destructured expression.
             tokenizer.unget()
             builder.DECL_setName(childNode, DestructuringExpression(tokenizer, staticContext, True, childContext))
 
             if staticContext.inForLoopInit and tokenizer.peek() == "in":
                 addDecl(node, childNode, childContext)
-                continue
+                if tokenizer.match("comma"): 
+                    continue
+                else: 
+                    break            
 
             tokenizer.mustMatch("assign")
-            if (tokenizer.token.assignOp):
+            if tokenizer.token.assignOp:
                 raise SyntaxError("Invalid variable initialization", tokenizer)
 
             # Parse the init as a normal assignment.
@@ -822,11 +823,14 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.ASSIGN_finish(assignmentNode)
 
             # But only add the rhs as the initializer.
-            # TODO: But why create the whole assignment then?
             builder.DECL_setInitializer(childNode, assignmentNode[1])
             builder.DECL_finish(childNode)
             addDecl(node, childNode, childContext)
-            continue
+            
+            if tokenizer.match("comma"): 
+                continue
+            else: 
+                break            
 
         if tokenType != "identifier":
             raise SyntaxError("Missing variable name", tokenizer)
