@@ -71,9 +71,16 @@ def __optimizeNode(node, translate, first=False):
         node.name = translate[node.name]
 
     # declarations
-    elif nodeType == "declaration" and node.name in translate:
-        if debug: print " - Variable Declaration: %s => %s" % (node.name, translate[node.name])
-        node.name = translate[node.name]
+    elif nodeType == "declaration":
+        name = getattr(node, "name", None)
+        if name in translate:
+            if debug: print " - Variable Declaration: %s => %s" % (node.name, translate[node.name])
+            node.name = translate[node.name]
+        else:
+            names = getattr(node, "names", None)
+            for child in names:
+                if child.value in translate:
+                    child.value = translate[child.value]
 
     # every scope relevant identifier (e.g. first identifier for dot-operator, etc.)
     elif nodeType == "identifier" and node.value in translate and getattr(node, "scope", False):
