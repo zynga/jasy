@@ -243,17 +243,10 @@ def Statement(tokenizer, staticContext):
             
             if tokenType == "var" or tokenType == "const":
                 tokenizer.get()
-                if tokenType == "var":
-                    childNode = builder.VAR_build(tokenizer)
-                else:
-                    childNode = builder.CONST_build(tokenizer)
-                
-                variables = Variables(tokenizer, staticContext)
-                childNode.append(variables)
+                childNode = Variables(tokenizer, staticContext)
             
             elif tokenType == "let":
                 tokenizer.get()
-                childNode = builder.LET_build(tokenizer)
 
                 if tokenizer.peek() == "left_paren":
                     childNode = LetBlock(tokenizer, staticContext, False)
@@ -264,7 +257,7 @@ def Statement(tokenizer, staticContext):
                     forBlock = builder.BLOCK_build(tokenizer, staticContext.blockId)
                     staticContext.blockId += 1
                     staticContext.statementStack.append(forBlock)
-                    childNode.append(Variables(tokenizer, staticContext, forBlock))
+                    childNode = Variables(tokenizer, staticContext, forBlock)
                 
             else:
                 childNode = Expression(tokenizer, staticContext)
