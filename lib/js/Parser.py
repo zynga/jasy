@@ -793,8 +793,8 @@ def Variables(tokenizer, staticContext, letBlock=None):
     while True:
         tokenType = tokenizer.get()
 
-        # "fixme" Should have a special "declaration" node instead of overloading
-        # "identifier" to mean both identifier declarations and destructured
+        # FIXME Should have a special DECLARATION node instead of overloading
+        # IDENTIFIER to mean both identifier declarations and destructured
         # declarations.
         childNode = builder.DECL_build(tokenizer)
         
