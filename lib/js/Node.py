@@ -151,7 +151,7 @@ class Node(list):
 
             for child in self:
                 if not child:
-                    pass
+                    result += "%s<none/>%s" % (innerLead, lineBreak)
                 elif not hasattr(child, "rel"):
                     result += child.toXml(format, indent+1)
                 elif not child in relatedChildren:
