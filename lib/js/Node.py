@@ -130,8 +130,6 @@ class Node(list):
                     elif type(value) == list:
                         if len(value) == 0:
                             continue
-                        if name in ["variables","functions"]:
-                            value = map(lambda node: node.name, value)
                         try:
                             value = ",".join(value)
                         except TypeError:

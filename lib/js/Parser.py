@@ -740,7 +740,7 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     functionNode.functionForm = functionForm
     
     if functionForm == "declared_form":
-        staticContext.functions.append(functionNode)
+        staticContext.functions.append(functionNode.name)
         
     builder.FUNCTION_finish(functionNode, staticContext)
     
@@ -830,6 +830,10 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.DECL_finish(childNode)
             addDecl(node, childNode, childContext)
             
+            # Copy over names for variable list
+            for nameNode in childNode.names:
+                childContext.variables.append(nameNode.value)
+                
             if tokenizer.match("comma"): 
                 continue
             else: 
@@ -857,7 +861,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.DECL_setInitializer(childNode, assignmentNode[1])
 
         builder.DECL_finish(childNode)
-        childContext.variables.append(childNode)
+        childContext.variables.append(childNode.name)
         
         if not tokenizer.match("comma"):
             break
@@ -917,7 +921,8 @@ def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly=None, dat
         else:
             lhs = None
             rhs = None
-        
+            
+    
         if rhs and (rhs.type == "array_init" or rhs.type == "object_init"):
             checkDestructuring(tokenizer, staticContext, rhs, simpleNamesOnly, data)
             
@@ -935,8 +940,8 @@ def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly=None, dat
                 builder.DECL_finish(childNode)
 
                 # Each pattern needs to be added to variables.
-                data.variables.append(childNode)
-
+                data.variables.append(childNode.name)
+                
 
 # JavaScript 1.7
 def DestructuringExpression(tokenizer, staticContext, simpleNamesOnly, data):

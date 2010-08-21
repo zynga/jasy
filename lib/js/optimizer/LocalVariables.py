@@ -52,11 +52,9 @@ def __optimizeScope(node, translate, pos):
             pos, translate[param.value] = __encode(pos)
             param.value = translate[param.value]
 
-    for child in node.variables:
-        name = child.name
-        if not name in translate:
-            pos, translate[name] = __encode(pos)
-            print "Variable: %s => %s" % (name, translate[name])
+    for name in node.variables:
+        pos, translate[name] = __encode(pos)
+        print "Variable: %s => %s" % (name, translate[name])
         
     __optimizeNode(node, translate, True)
     return pos
@@ -80,6 +78,7 @@ def __optimizeNode(node, translate, first=False):
             names = getattr(node, "names", None)
             for child in names:
                 if child.value in translate:
+                    if debug: print " - Variable Destructed Declaration: %s => %s" % (child.value, translate[child.value])
                     child.value = translate[child.value]
 
     # every scope relevant identifier (e.g. first identifier for dot-operator, etc.)
