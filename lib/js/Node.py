@@ -85,6 +85,10 @@ class Node(list):
                 setattr(self, rel, kid)
                 setattr(kid, "rel", rel)
 
+        # Block None kids when they should be related
+        if not kid and rel:
+            return
+            
         return list.append(self, kid)
 
     
