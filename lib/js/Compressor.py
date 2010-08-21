@@ -203,6 +203,9 @@ def __let_block(node):
 def __group(node):
     return "(%s)" % compress(node[0])
 
+def __identifier(node):
+    return node.value
+        
 def __const(node):
     return u"const %s" % u",".join(map(compress, node))
 
@@ -231,14 +234,17 @@ def __semicolon(node):
     expr = getattr(node, "expression", None)
     return "" if not expr else compress(expr)
 
-def __identifier(node):
-    result = node.value
-    if isinstance(result, list):
-        result = compress(result)
-
-    if hasattr(node, "initializer"):
+def __declaration(node):
+    names = getattr(node, "names", None)
+    if names:
+        result = compress(names)
+    else:
+        result = node.name    
+    
+    initializer = getattr(node, "initializer", None)
+    if initializer:
         result += "=%s" % compress(node.initializer)
-
+        
     return result
     
 def __assign(node):
