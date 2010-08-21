@@ -16,9 +16,6 @@ COMBINE_DECLARATION = True
 #
 
 def compress(node):
-    if not node:
-        return ""
-        
     type = node.type
     
     if type in simple:
@@ -156,6 +153,9 @@ def __object_init(node):
     return u"{%s}" % u",".join(map(compress, node))
 
 def __array_init(node):
+    def helper(child):
+        return compress(child) if child != None else ""
+    
     return u"[%s]" % u",".join(map(compress, node))
             
 def __property_init(node):
