@@ -275,7 +275,7 @@ def __function(node):
     else:
         result = "function"
         
-    name = getattr(node, "value", None)
+    name = getattr(node, "name", None)
     if name:
         result += " %s" % name
     
