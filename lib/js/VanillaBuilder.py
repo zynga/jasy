@@ -306,7 +306,7 @@ class VanillaBuilder:
         return node
 
     def FUNCTION_setName(self, node, identifier):
-        node.value = identifier
+        node.name = identifier
 
     def FUNCTION_initParams(self, node, tokenizer):
         node.append(Node(tokenizer, "list"), "params")
@@ -368,13 +368,13 @@ class VanillaBuilder:
         pass
 
     def DECL_build(self, tokenizer):
-        return Node(tokenizer, "identifier")
+        return Node(tokenizer, "declaration")
+
+    def DECL_setNames(self, node, expression):
+        node.append(expression, "names")
 
     def DECL_setName(self, node, identifier):
-        if isinstance(identifier, Node):
-            node.append(identifier, "value")
-        else:
-            node.value = identifier
+        node.name = identifier
 
     def DECL_setInitializer(self, node, expression):
         node.append(expression, "initializer")

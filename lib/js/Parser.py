@@ -803,7 +803,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             # its varDecls, else pass in staticContext.
             # Need to unget to parse the full destructured expression.
             tokenizer.unget()
-            builder.DECL_setName(childNode, DestructuringExpression(tokenizer, staticContext, True, childContext))
+            builder.DECL_setNames(childNode, DestructuringExpression(tokenizer, staticContext, True, childContext))
 
             if staticContext.inForLoopInit and tokenizer.peek() == "in":
                 addDecl(node, childNode, childContext)
@@ -818,7 +818,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
 
             # Parse the init as a normal assignment.
             assignmentNode = builder.ASSIGN_build(tokenizer)
-            builder.ASSIGN_addOperand(assignmentNode, childNode.name)
+            builder.ASSIGN_addOperand(assignmentNode, childNode.names)
             builder.ASSIGN_addOperand(assignmentNode, AssignExpression(tokenizer, staticContext))
             builder.ASSIGN_finish(assignmentNode)
 

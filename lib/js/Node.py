@@ -131,7 +131,7 @@ class Node(list):
                         if len(value) == 0:
                             continue
                         if name in ["varDecls","funDecls"]:
-                            value = map(lambda node: node.value, value)
+                            value = map(lambda node: node.name, value)
                         try:
                             value = ",".join(value)
                         except TypeError:
