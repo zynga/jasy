@@ -793,6 +793,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
     while True:
         tokenType = tokenizer.get()
 
+        # Done in Python port!
         # FIXME Should have a special DECLARATION node instead of overloading
         # IDENTIFIER to mean both identifier declarations and destructured
         # declarations.
@@ -851,7 +852,6 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.ASSIGN_finish(assignmentNode)
             
             # But only add the rhs as the initializer.
-            # TODO: But why create the whole assignment then?
             builder.DECL_setInitializer(childNode, assignmentNode[1])
 
         builder.DECL_finish(childNode)
