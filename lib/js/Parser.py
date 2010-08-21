@@ -1000,7 +1000,9 @@ def comprehensionTail(tokenizer, staticContext):
             # Don't add to variables since the semantics of comprehensions is
             # such that the variables are in their own def when desugared.
             
-            builder.FOR_setIterator(node, builder.PRIMARY_build(tokenizer, "identifier"))
+            identifier = builder.PRIMARY_build(tokenizer, "identifier")
+            identifier.scope = True
+            builder.FOR_setIterator(node, identifier)
 
         else:
             raise SyntaxError("Missing identifier", tokenizer)
@@ -1487,6 +1489,7 @@ def PrimaryExpression(tokenizer, staticContext):
 
     elif tokenType in ["null", "this", "true", "false", "identifier", "number", "string", "regexp"]:
         node = builder.PRIMARY_build(tokenizer, tokenType)
+        node.scope = True
         builder.PRIMARY_finish(node)
 
     else:

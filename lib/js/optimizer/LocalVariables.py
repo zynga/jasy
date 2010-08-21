@@ -65,20 +65,20 @@ def __optimizeScope(node, translate, pos):
 def __optimizeNode(node, translate, first=False):
     nodeType = node.type
 
+    # function names
     if nodeType == "function" and hasattr(node, "name") and node.name in translate:
         if debug: print " - Function Name: %s => %s" % (node.name, translate[node.name])
         node.name = translate[node.name]
 
-    elif nodeType == "identifier" and node.value in translate:
-        # in a variable declaration
-        if hasattr(node, "name"):
-            if debug: print " - Variable Declaration: %s => %s" % (node.value, translate[node.value])
-            node.name = node.value = translate[node.value]
+    # declarations
+    elif nodeType == "declaration" and node.name in translate:
+        if debug: print " - Variable Declaration: %s => %s" % (node.name, translate[node.name])
+        node.name = translate[node.name]
 
-        # every scope relevant identifier (e.g. first identifier for dot-operator, etc.)
-        elif getattr(node, "scope", False):
-            if debug: print " - Scope Variable: %s => %s" % (node.value, translate[node.value])
-            node.value = translate[node.value]    
+    # every scope relevant identifier (e.g. first identifier for dot-operator, etc.)
+    elif nodeType == "identifier" and node.value in translate and getattr(node, "scope", False):
+        if debug: print " - Scope Variable: %s => %s" % (node.value, translate[node.value])
+        node.value = translate[node.value]    
 
     # Don't recurse into types which never have children
     # Don't recurse into closures. These are processed by __optimizeScope later
