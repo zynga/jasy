@@ -290,6 +290,22 @@ def __function(node):
         
     return result
     
+def __generator(node):
+    result = compress(getattr(node, "expression"))
+    tail = getattr(node, "tail", None)
+    if tail:
+        result += " %s" % compress(tail)
+        
+    return result
+
+def __comp_tail(node):
+    result = compress(getattr(node, "for"))
+    guard = getattr(node, "guard", None)
+    if guard:
+        result += "if(%s)" % compress(guard)
+        
+    return result
+
 def __getter(node):
     return __function(node)
     
@@ -364,7 +380,15 @@ def __do(node):
 def __for_in(node):
     # Optional variable declarations
     varDecl = getattr(node, "varDecl", None)
-    return "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), block_unwrap(node.body))
+
+    # Body is optional - at least in comprehensions tails
+    body = getattr(node, "body", None)
+    if body:
+        body = block_unwrap(body)
+    else:
+        body = ""
+    
+    return "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), body)
     
 def __for(node):
     result = "for("

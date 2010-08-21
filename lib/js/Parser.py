@@ -984,22 +984,24 @@ def comprehensionTail(tokenizer, staticContext):
             builder.FOR_setIterator(node, DestructuringExpression(tokenizer, staticContext))
 
         elif tokenType == "identifier":
-            declaration = builder.DECL_build(tokenizer)
+            # Removed variable/declaration substructure in Python port.
+            # Variable declarations are not allowed here. So why process them in such a way?
             
-            builder.DECL_setName(declaration, tokenizer.token.value)
-            builder.DECL_finish(declaration)
-            
-            childNode = builder.VAR_build(tokenizer)
-            
-            builder.VAR_addDecl(childNode, declaration)
-            builder.VAR_finish(childNode)
-            builder.FOR_setIterator(node, childNode)
-            
+            # declaration = builder.DECL_build(tokenizer)
+            # builder.DECL_setName(declaration, tokenizer.token.value)
+            # builder.DECL_finish(declaration)
+            # childNode = builder.VAR_build(tokenizer)
+            # builder.VAR_addDecl(childNode, declaration)
+            # builder.VAR_finish(childNode)
+            # builder.FOR_setIterator(node, declaration)
+
             # Don't add to varDecls since the semantics of comprehensions is
             # such that the variables are in their own def when desugared.
+            
+            builder.FOR_setIterator(node, builder.PRIMARY_build(tokenizer, "identifier"))
 
         else:
-            raise SyntaxError("Missing identifier")
+            raise SyntaxError("Missing identifier", tokenizer)
         
         tokenizer.mustMatch("in")
         builder.FOR_setObject(node, Expression(tokenizer, staticContext))
