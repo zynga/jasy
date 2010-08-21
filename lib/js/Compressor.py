@@ -15,6 +15,9 @@ COMBINE_DECLARATION = True
 #
 
 def compress(node):
+    if not node:
+        return ""
+        
     type = node.type
     
     if type in simple:
