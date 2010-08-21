@@ -106,28 +106,34 @@ class VanillaBuilder:
         node.type = "for_in"
 
     def FOR_setCondition(self, node, expression):
-        node.append(expression, "condition")
+        if expression:
+            node.append(expression, "condition")
 
     def FOR_setSetup(self, node, expression):
         if expression:
             node.append(expression, "setup")
 
     def FOR_setUpdate(self, node, expression):
-        node.append(expression, "update")
+        if expression:
+            node.append(expression, "update")
 
     def FOR_setObject(self, node, expression, forBlock=None):
         # wpbasti: not sure what forBlock stands for but it is used in the parser
         # JS tolerates the optinal unused parameter, but not so Python.
-        node.append(expression, "object")
+        if expression:
+            node.append(expression, "object")
 
     def FOR_setIterator(self, node, expression, expression2, forBlock=None):
         # wpbasti: not sure what forBlock stands for but it is used in the parser
         # JS tolerates the optinal unused parameter, but not so Python.
-        node.append(expression, "iterator")
-        node.append(expression2, "varDecl")
+        if expression:
+            node.append(expression, "iterator")
+        if expression2:
+            node.append(expression2, "varDecl")
 
     def FOR_setBody(self, node, statement):
-        node.append(statement, "body")
+        if statement:
+            node.append(statement, "body")
 
     def FOR_finish(self, node):
         pass
