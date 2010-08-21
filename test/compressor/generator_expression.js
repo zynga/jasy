@@ -1,1 +1,1 @@
-handleResults(i for (i in obj) if (i > 3));  
+handleResults(i for (i in obj));  

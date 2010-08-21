@@ -948,7 +948,7 @@ def GeneratorExpression(tokenizer, staticContext, expression):
     builder.GENERATOR_setExpression(node, expression)
     builder.GENERATOR_setTail(node, comprehensionTail(tokenizer, staticContext))
     builder.GENERATOR_finish(node)
-
+    
     return node
 
 
@@ -958,7 +958,7 @@ def comprehensionTail(tokenizer, staticContext):
     
     # tokenizer.token.type must be "for"
     body = builder.COMPTAIL_build(tokenizer)
-
+    
     while True:
         node = builder.FOR_build(tokenizer)
         
@@ -978,7 +978,6 @@ def comprehensionTail(tokenizer, staticContext):
             tokenizer.unget()
             # Destructured left side of for in comprehension tails.
             builder.FOR_setIterator(node, DestructuringExpression(tokenizer, staticContext))
-            break
 
         elif tokenType == "identifier":
             declaration = builder.DECL_build(tokenizer)
@@ -995,7 +994,6 @@ def comprehensionTail(tokenizer, staticContext):
             # Don't add to varDecls since the semantics of comprehensions is
             # such that the variables are in their own def when
             # desugared.
-            break
 
         else:
             raise SyntaxError("Missing identifier")
