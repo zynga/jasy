@@ -8,7 +8,7 @@ from js.Lang import keywords
 
 __all__ = [ "compress" ]
 
-COMBINE_DECLARATION = True
+COMBINE_DECLARATION = False
 
 
 #
@@ -354,6 +354,10 @@ def __do(node):
     return "do%swhile(%s)" % (compress(node.body), compress(node.condition))
 
 def __for_in(node):
+    # Optional variable declarations
+    varDecl = getattr(node, "varDecl", None)
+    
+    
     return "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), block_unwrap(node.body))
     
 def __for(node):

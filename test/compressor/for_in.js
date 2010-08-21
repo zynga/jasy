@@ -1,1 +1,1 @@
-for(key in map){}
+for(var key in map){}

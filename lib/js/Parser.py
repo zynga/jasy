@@ -940,7 +940,9 @@ def DestructuringExpression(tokenizer, staticContext, simpleNamesOnly, data):
     return node
 
 
+# JavsScript 1.7
 def GeneratorExpression(tokenizer, staticContext, expression):
+    builder = staticContext.builder
     node = builder.GENERATOR_build(tokenizer)
 
     builder.GENERATOR_setExpression(node, expression)
@@ -950,6 +952,7 @@ def GeneratorExpression(tokenizer, staticContext, expression):
     return node
 
 
+# JavaScript 1.7 Comprehensions Tails (Generatators / Arrays)
 def comprehensionTail(tokenizer, staticContext):
     builder = staticContext.builder
     
@@ -974,7 +977,7 @@ def comprehensionTail(tokenizer, staticContext):
         if tokenType == "left_bracket" or tokenType == "left_curly":
             tokenizer.unget()
             # Destructured left side of for in comprehension tails.
-            builder.FOR_setIterator(node, DestructuringExpression(tokenizer, staticContext), None)
+            builder.FOR_setIterator(node, DestructuringExpression(tokenizer, staticContext))
             break
 
         elif tokenType == "identifier":
