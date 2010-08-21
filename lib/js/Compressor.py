@@ -157,6 +157,9 @@ def __array_init(node):
         return compress(child) if child != None else ""
     
     return u"[%s]" % u",".join(map(helper, node))
+          
+def __array_comp(node):
+    return "[%s %s]" % (compress(node.expression), compress(node.tail))
             
 def __property_init(node):
     key = compress(node[0])
