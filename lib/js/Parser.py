@@ -16,7 +16,8 @@ from js.Lang import keywords
 __all__ = [ "parse" ]
 
 
-
+def parseExpression(source):
+    pass
 
 def parse(source, filename=None, line=0, builder=None):
     if builder == None:
@@ -51,8 +52,8 @@ class StaticContext(object):
         self.blockId = 0
         self.builder = builder
         self.statementStack = []
-        self.funDecls = []
-        self.varDecls = []
+        self.functions = []
+        self.variables = []
         self.needsHoisting = False
          
         # Status
@@ -76,8 +77,8 @@ def Script(tokenizer, staticContext):
     node.type = "script"
 
     # copy over data from compiler context
-    node.funDecls = staticContext.funDecls
-    node.varDecls = staticContext.varDecls
+    node.functions = staticContext.functions
+    node.variables = staticContext.variables
 
     return node
     
@@ -114,8 +115,9 @@ def Statements(tokenizer, staticContext):
     builder.BLOCK_finish(node)
 
     if getattr(node, "needsHoisting", False):
+        # TODO
         raise Exception("Needs hoisting went true!!!")
-        builder.setHoists(node.id, node.varDecls)
+        builder.setHoists(node.id, node.variables)
         # Propagate up to the function.
         staticContext.needsHoisting = True
 
@@ -140,7 +142,7 @@ def Statement(tokenizer, staticContext):
     # common semicolon insertion magic after this switch.
     
     if tokenType == "function":
-        # "declared_form" extends funDecls of staticContext, "statement_form" doesn'tokenizer.
+        # "declared_form" extends functions of staticContext, "statement_form" doesn'tokenizer.
         if len(staticContext.statementStack) > 1:
             kind = "statement_form"
         else:
@@ -711,8 +713,8 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     # Statements.
     # 
     if childContext.needsHoisting:
-        # Order is important here! Builders expect funDecls to come after varDecls!
-        builder.setHoists(functionNode.body.id, childContext.varDecls.concat(childContext.funDecls))
+        # Order is important here! Builders expect functions to come after variables!
+        builder.setHoists(functionNode.body.id, childContext.variables.concat(childContext.functions))
 
         if staticContext.inFunction:
             # If an inner function needs hoisting, we need to propagate
@@ -738,7 +740,7 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     functionNode.functionForm = functionForm
     
     if functionForm == "declared_form":
-        staticContext.funDecls.append(functionNode)
+        staticContext.functions.append(functionNode)
         
     builder.FUNCTION_finish(functionNode, staticContext)
     
@@ -801,7 +803,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
         
         if tokenType == "left_bracket" or tokenType == "left_curly":
             # Pass in childContext if we need to add each pattern matched into
-            # its varDecls, else pass in staticContext.
+            # its variables, else pass in staticContext.
             # Need to unget to parse the full destructured expression.
             tokenizer.unget()
             builder.DECL_setNames(childNode, DestructuringExpression(tokenizer, staticContext, True, childContext))
@@ -855,7 +857,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.DECL_setInitializer(childNode, assignmentNode[1])
 
         builder.DECL_finish(childNode)
-        childContext.varDecls.append(childNode)
+        childContext.variables.append(childNode)
         
         if not tokenizer.match("comma"):
             break
@@ -932,8 +934,8 @@ def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly=None, dat
                 # hoisting anyways.
                 builder.DECL_finish(childNode)
 
-                # Each pattern needs to be added to varDecls.
-                data.varDecls.append(childNode)
+                # Each pattern needs to be added to variables.
+                data.variables.append(childNode)
 
 
 # JavaScript 1.7
@@ -995,7 +997,7 @@ def comprehensionTail(tokenizer, staticContext):
             # builder.VAR_finish(childNode)
             # builder.FOR_setIterator(node, declaration)
 
-            # Don't add to varDecls since the semantics of comprehensions is
+            # Don't add to variables since the semantics of comprehensions is
             # such that the variables are in their own def when desugared.
             
             builder.FOR_setIterator(node, builder.PRIMARY_build(tokenizer, "identifier"))
