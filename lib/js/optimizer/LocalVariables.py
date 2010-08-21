@@ -10,7 +10,7 @@ from copy import copy
 __all__ = ["optimize"]
 
 empty = ("null", "this", "true", "false", "number", "string", "regexp")
-debug = False
+debug = True
 
 
 #
@@ -47,14 +47,16 @@ def __optimizeScope(node, translate, pos):
     if debug: print "Optimize scope at line: %s" % node.line
     
     parent = getattr(node, "parent", None)
-    if parent and parent.type == "function":
+    if parent and parent.type == "function" and hasattr(parent, "params"):
         for i, param in enumerate(parent.params):
-            pos, translate[param] = __encode(pos)
-            parent.params[i] = translate[param]
+            pos, translate[param.value] = __encode(pos)
+            param.value = translate[param.value]
 
-    for name in node.declares:
+    for child in node.variables:
+        name = child.name
         if not name in translate:
             pos, translate[name] = __encode(pos)
+            print "Variable: %s => %s" % (name, translate[name])
         
     __optimizeNode(node, translate, True)
     return pos
