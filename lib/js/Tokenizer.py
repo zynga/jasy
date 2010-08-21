@@ -8,27 +8,9 @@
 
 import re
 from copy import copy
+from Lang import keywords
 
-__all__ = [ "Lexer", "keywords" ]
-
-
-# JavaScript 1.7 keywords
-keywords = [
-    "break",
-    "case", "catch", "const", "continue",
-    "debugger", "default", "delete", "do",
-    "else",
-    "false", "finally", "for", "function",
-    "if", "in", "instanceof",
-    "let",
-    "new", "null",
-    "return",
-    "switch",
-    "this", "throw", "true", "try", "typeof",
-    "var", "void",
-    "yield",
-    "while", "with"
-]
+__all__ = [ "Tokenizer" ]
 
 
 # Operator and punctuator mapping from token to tree node type name.

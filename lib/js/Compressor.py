@@ -4,6 +4,7 @@
 # 
 
 import re, sys, json
+from js.Lang import keywords
 
 __all__ = [ "compress" ]
 
@@ -92,7 +93,6 @@ dividers = {
     "div"           : '/',    
     "mod"           : '%',
     "dot"           : '.',    
-    "property_init" : ":",
     "or"            : "||",
     "and"           : "&&",
     "strict_eq"     : '===',  
@@ -158,6 +158,15 @@ def __object_init(node):
 def __array_init(node):
     return u"[%s]" % u",".join(map(compress, node))
             
+def __property_init(node):
+    key = compress(node[0])
+    value = compress(node[1])
+    
+    # Protect keywords
+    if key in keywords:
+        key = '"%s"' % key
+    
+    return u"%s:%s" % (key, value)
 
 #
 # Core features

@@ -10,6 +10,7 @@ from js.Node import Node
 from js.Tokenizer import Token
 from js.Tokenizer import Tokenizer
 from js.VanillaBuilder import VanillaBuilder
+from js.Lang import keywords
 
 #__all__ = [ "parse", "parseExpression" ]
 __all__ = [ "parse" ]
@@ -1413,9 +1414,10 @@ def PrimaryExpression(tokenizer, staticContext):
             if not tokenizer.match("right_curly"):
                 while True:
                     tokenType = tokenizer.get()
+                    tokenValue = getattr(tokenizer.token, "value", None)
                     comments = tokenizer.getComments()
                     
-                    if (tokenizer.token.value == "get" or tokenizer.token.value == "set") and tokenizer.peek() == "identifier":
+                    if tokenValue in ("get", "set") and tokenizer.peek() == "identifier":
                         if staticContext.ecma3OnlyMode:
                             raise SyntaxError("Illegal property accessor", tokenizer)
                             
@@ -1435,7 +1437,7 @@ def PrimaryExpression(tokenizer, staticContext):
                             object_init()
                             
                         else:
-                            if tokenizer.token.value in keywords:
+                            if tokenValue in keywords:
                                 id = builder.PRIMARY_build(tokenizer, "identifier")
                                 builder.PRIMARY_finish(id)
                             else:
