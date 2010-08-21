@@ -272,10 +272,10 @@ def Statement(tokenizer, staticContext):
                 if len(childNode) != 1:
                     raise SyntaxError("Invalid for..in left-hand side", tokenizer)
 
-                builder.FOR_setIterator(node, childNode[0], childNode, forBlock)
+                builder.FOR_setIterator(node, childNode, forBlock)
                 
             else:
-                builder.FOR_setIterator(node, childNode, None, forBlock)
+                builder.FOR_setIterator(node, childNode, forBlock)
 
         else:
             builder.FOR_setSetup(node, childNode)
@@ -789,7 +789,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             childContext = letBlock
 
     node = build(tokenizer)
-
+    
     while True:
         tokenType = tokenizer.get()
 
@@ -993,11 +993,10 @@ def comprehensionTail(tokenizer, staticContext):
             
             builder.VAR_addDecl(childNode, declaration)
             builder.VAR_finish(childNode)
-            builder.FOR_setIterator(node, declaration, childNode)
+            builder.FOR_setIterator(node, childNode)
             
             # Don't add to varDecls since the semantics of comprehensions is
-            # such that the variables are in their own def when
-            # desugared.
+            # such that the variables are in their own def when desugared.
 
         else:
             raise SyntaxError("Missing identifier")
