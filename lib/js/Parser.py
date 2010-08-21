@@ -983,7 +983,7 @@ def comprehensionTail(tokenizer, staticContext):
         elif tokenType == "identifier":
             declaration = builder.DECL_build(tokenizer)
             
-            builder.DECL_setName(declaration, declaration.value)
+            builder.DECL_setName(declaration, tokenizer.token.value)
             builder.DECL_finish(declaration)
             
             childNode = builder.VAR_build(tokenizer)

@@ -343,7 +343,7 @@ class VanillaBuilder:
     def VAR_build(self, tokenizer):
         return Node(tokenizer, "var")
 
-    def VAR_addDecl(self, node, childNode, x):
+    def VAR_addDecl(self, node, childNode, childContext=None):
         node.append(childNode)
 
     def VAR_finish(self, node):
@@ -352,7 +352,7 @@ class VanillaBuilder:
     def CONST_build(self, tokenizer):
         return Node(tokenizer, "const")
 
-    def CONST_addDecl(self, node, childNode, x):
+    def CONST_addDecl(self, node, childNode, childContext=None):
         node.append(childNode)
 
     def CONST_finish(self, node):
@@ -361,7 +361,7 @@ class VanillaBuilder:
     def LET_build(self, tokenizer):
         return Node(tokenizer, "let")
 
-    def LET_addDecl(self, node, childNode, x):
+    def LET_addDecl(self, node, childNode, childContext=None):
         node.append(childNode)
 
     def LET_finish(self, node):
