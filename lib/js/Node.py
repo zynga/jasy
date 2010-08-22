@@ -64,6 +64,9 @@ class Node(list):
             
     
     def remove(self, kid):
+        if not kid in self:
+            raise Exception("Given node is no child!")
+        
         if hasattr(kid, "rel"):
             delattr(self, kid.rel)
             del kid.rel

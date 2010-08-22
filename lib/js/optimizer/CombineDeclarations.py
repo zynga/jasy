@@ -32,13 +32,25 @@ def __combineSiblings(node):
     while pos > 0:
         child = node[pos]
         prevChild = node[pos-1]
+
+        # Special FOR loop optimization, emulate faked VAR
+        if child.type == "for" and prevChild.type == "var":
+            setup = getattr(child, "setup", None)
+            if setup and setup.type == "var":
+                child.remove(setup)
+                child = setup    
+
+        # Combine declarations of VAR statements
         if child.type == "var" and prevChild.type == "var":
             for variable in child:
                 prevChild.append(variable)
-            node.remove(child)
-  
+                
+            if child in node:
+                node.remove(child)
+            
         pos -= 1
-  
+        
+        
       
     
 #
