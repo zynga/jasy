@@ -62,11 +62,22 @@ class Node(list):
                 count += 1
         return count
             
+    
+    def remove(self, kid):
+        if hasattr(kid, "rel"):
+            delattr(self, kid.rel)
+            del kid.rel
+            
+        list.remove(self, kid)
+            
 
     # Always use push to add operands to an expression, to update start and end.
     def append(self, kid, rel=None):
         # kid can be null e.g. [1, , 2].
         if kid:
+            if hasattr(kid, "parent"):
+                kid.parent.remove(kid)
+            
             # Debug
             if not isinstance(kid, Node):
                 raise Exception("Invalid kid: %s" % kid)
