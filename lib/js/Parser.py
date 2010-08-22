@@ -832,7 +832,8 @@ def Variables(tokenizer, staticContext, letBlock=None):
             
             # Copy over names for variable list
             for nameNode in childNode.names:
-                childContext.variables.append(nameNode.value)
+                if not nameNode.value in childContext.variables:
+                    childContext.variables.append(nameNode.value)
                 
             if tokenizer.match("comma"): 
                 continue
@@ -861,7 +862,9 @@ def Variables(tokenizer, staticContext, letBlock=None):
             builder.DECL_setInitializer(childNode, assignmentNode[1])
 
         builder.DECL_finish(childNode)
-        childContext.variables.append(childNode.name)
+        
+        if not childNode.name in childContext.variables:
+            childContext.variables.append(childNode.name)
         
         if not tokenizer.match("comma"):
             break
@@ -940,7 +943,8 @@ def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly=None, dat
                 builder.DECL_finish(childNode)
 
                 # Each pattern needs to be added to variables.
-                data.variables.append(childNode.name)
+                if not childNode.name in data.variables:
+                    data.variables.append(childNode.name)
                 
 
 # JavaScript 1.7

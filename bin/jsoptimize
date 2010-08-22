@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 
 from js.Parser import parse
 from js.Compressor import compress
+from js.optimizer import CombineDeclarations
 from js.optimizer import LocalVariables
 from js.optimizer import Variants
 
@@ -25,6 +26,7 @@ def jsoptimize(source, filename=None):
     print tree
     Variants.replace(tree, variantData)
     Variants.optimize(tree)
+    CombineDeclarations.optimize(tree)
     LocalVariables.optimize(tree)
     return compress(tree)
 
