@@ -42,7 +42,8 @@ def __combineSiblings(node):
 
         # Combine declarations of VAR statements
         if child.type == "var" and prevChild.type == "var":
-            for variable in child:
+            # Fix loop through casting node to list()
+            for variable in list(child):
                 prevChild.append(variable)
                 
             if child in node:
