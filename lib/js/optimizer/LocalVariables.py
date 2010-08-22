@@ -18,7 +18,7 @@ debug = False
 #
 
 def optimize(node, translate=None, pos=0):
-    if node.type == "script":
+    if node.type == "script" and hasattr(node, "parent"):
         # before going into a function scope, make a copy of the parent scope
         # to not modify the parent scope and badly influence the variable length
         # of other child scopes
