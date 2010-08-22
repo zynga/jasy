@@ -283,7 +283,7 @@ def __function(node):
         result += " %s" % name
     
     params = getattr(node, "params", None)
-    result += "(%s)" % compress(params) if params else ""
+    result += "(%s)" % compress(params) if params else "()"
     
     # keep expression closure format (may be micro-optimized for other code, too)
     if getattr(node, "expressionClosure", False):

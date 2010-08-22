@@ -27,9 +27,8 @@ def jsoptimize(source, filename=None):
     Variants.replace(tree, variantData)
     Variants.optimize(tree)
     CombineDeclarations.optimize(tree)
-    
     print tree
-    #LocalVariables.optimize(tree)
+    LocalVariables.optimize(tree)
     return compress(tree)
 
 
