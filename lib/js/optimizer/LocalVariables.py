@@ -10,7 +10,7 @@ from copy import copy
 __all__ = ["optimize"]
 
 empty = ("null", "this", "true", "false", "number", "string", "regexp")
-debug = True
+debug = False
 
 
 #
@@ -54,7 +54,6 @@ def __optimizeScope(node, translate, pos):
 
     for name in node.variables:
         pos, translate[name] = __encode(pos)
-        print "Variable: %s => %s" % (name, translate[name])
         
     __optimizeNode(node, translate, True)
     return pos
