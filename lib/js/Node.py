@@ -110,6 +110,9 @@ class Node(list):
         if hasattr(kid, "rel"):
             repl.rel = kid.rel
             setattr(self, kid.rel, repl)
+            delattr(kid, "rel")
+            delattr(kid, "parent")
+            repl.parent = self
         
         return kid
         
