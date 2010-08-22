@@ -5,81 +5,114 @@
 
 from js.Node import Node
 
-
 #
 # Public API
 #
 
 def optimize(node):
+    for child in node:
+        optimize(child)
+
     if node.type in ("script", "block"):
         __combineSiblings(node)
-
-    if hasattr(node, "variables"):
-        __combineVarStatements(node)
-
         
+    if node.type == "script":
+        __combineVarStatements(node)
     
     
+
 #
-# Private API
+# Merge direct variable siblings
 #
 
 def __combineSiblings(node):
-    # Backwards processing and insertion into previous sibling
+    """Backwards processing and insertion into previous sibling if both a var declarations""" 
     length = len(node)
     pos = length-1
     while pos > 0:
         child = node[pos]
         prevChild = node[pos-1]
-        
         if child.type == "var" and prevChild.type == "var":
             for variable in child:
                 prevChild.append(variable)
             node.remove(child)
-        
+  
         pos -= 1
-        
-        
-def __combineVarStatements(node):
-    variables = node.variables
-    length = len(node)
+  
+      
+    
+#
+# Merge var statements, convert in-place to assignments in other locations (quite complex)
+#
 
-    firstVarStatement = None
-    for pos, child in enumerate(node):
-        if child.type == "var":
-            firstVarStatement = child
-            pos += 1
-            break
-            
-    if not firstVarStatement:
+def __combineVarStatements(node):
+    """Top level method called to optimize a script node"""
+    __patchVarStatements(node, __findFirstVarStatement(node))
+
+        
+def __findFirstVarStatement(node):
+    """Returns the first var statement of the given node. Ignores inner functions."""
+    if node.type == "var":
+        return node
+        
+    for child in node:
+        if child.type == "function":
+            continue
+        
+        result = __findFirstVarStatement(child)
+        if result:
+            return result
+    
+    return None
+        
+
+def __patchVarStatements(node, firstVarStatement):
+    """Patches all variable statements in the given node (works recursively) and replace them with assignments."""
+    if node == firstVarStatement:
         return
         
-    while pos < length:
-        if node[pos].type == "var":
-            node[pos] = __rebuildAsAssignment(node[pos], firstVarStatement)
+    elif node.type == "function":
+        # Don't process inner functions/scopes
+        return
         
-        pos += 1
+    elif node.type == "var":
+        __rebuildAsAssignment(node, firstVarStatement)
         
-    
-def __rebuildAsAssignment(node, target):
+    else:
+        # Recursion into children
+        # Create a cast to list() to keep loop stable during modification
+        for child in list(node):
+            __patchVarStatements(child, firstVarStatement)
+
+
+def __rebuildAsAssignment(node, firstVarStatement):
+    """Rebuilds the items of a var statement into a assignment list and moves declarations to the given var statement"""
     replacement = Node(node.tokenizer, "semicolon")
     comma = Node(node.tokenizer, "comma")
     replacement.append(comma, "expression")
     
-    for child in node:
+    # Casting two list() creates a copy during the process (keeps loop stable)
+    for child in list(node):
+        # Cleanup initializer and move to assignment
         if hasattr(child, "initializer"):
             assign = Node(node.tokenizer, "assign")
-            comma.append(assign)
+
+            # Converted from declarations is always the first one => in scope
             identifier = Node(node.tokenizer, "identifier")
+            identifier.scope = True
+            identifier.value = child.name
+            
             assign.append(identifier)
             assign.append(child.initializer)
 
-            # Converted from declarations is always the first one => in scope
-            identifier.scope = True
-            identifier.value = child.name
+            comma.append(assign)
 
-            # Now move cleaned-up declaration around
-            target.append(child)
+        # Now move declaration without initializer around
+        firstVarStatement.append(child)
             
-    return replacement
+    # Patch parent node to contain replacement statement instead of declaration
+    if len(comma) > 0:
+        node.parent.replace(node, replacement)
+    else:
+        node.parent.remove(node)
     
