@@ -54,6 +54,7 @@ class StaticContext(object):
         self.statementStack = []
         self.functions = []
         self.variables = []
+        self.uses = []
         self.needsHoisting = False
          
         # Status
@@ -79,6 +80,7 @@ def Script(tokenizer, staticContext):
     # copy over data from compiler context
     node.functions = staticContext.functions
     node.variables = staticContext.variables
+    node.uses = staticContext.uses
 
     return node
     
@@ -1498,7 +1500,11 @@ def PrimaryExpression(tokenizer, staticContext):
 
     elif tokenType in ["null", "this", "true", "false", "identifier", "number", "string", "regexp"]:
         node = builder.PRIMARY_build(tokenizer, tokenType)
-        node.scope = True
+        
+        if tokenType == "identifier":
+            node.scope = True
+            staticContext.uses.append(node.value)
+            
         builder.PRIMARY_finish(node)
 
     else:
