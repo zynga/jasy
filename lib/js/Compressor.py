@@ -36,10 +36,13 @@ def compress(node):
 
 
 def block_unwrap(node):
-    if node.type == "block" and len(node) == 1:
-        return compress(node[0])
-    else:
-        return compress(node)
+    if node.type == "block":
+        if len(node) == 1:
+            return compress(node[0])
+        elif len(node) == 0:
+            return ";"
+            
+    return compress(node)
         
         
 def statements(node):
