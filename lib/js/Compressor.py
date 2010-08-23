@@ -8,7 +8,6 @@ from js.Lang import keywords
 
 __all__ = [ "compress" ]
 
-COMBINE_DECLARATION = False
 
 
 #
@@ -179,14 +178,7 @@ def __property_init(node):
 #
 
 def __script(node):
-    result = ""
-
-    if COMBINE_DECLARATION:
-        varList = node.varDecls
-        if varList:
-            result += "var %s;" % ",".join(map(lambda node: node.value, varList))
-    
-    result += statements(node)
+    result = statements(node)
     
     # add file separator semicolon
     if not hasattr(node, "parent") and not result.endswith(";"):
@@ -216,16 +208,7 @@ def __const(node):
     return u"const %s" % u",".join(map(compress, node))
 
 def __var(node):
-    if COMBINE_DECLARATION:
-        result = []
-        for child in node:
-            initializer = getattr(child, "initializer", None)
-            if initializer:
-                result.append(u"%s=%s" % (child.value, compress(initializer)))
-        return u",".join(result)
-        
-    else:
-        return u"var %s" % u",".join(map(compress, node))
+    return u"var %s" % u",".join(map(compress, node))
 
 def __let(node):
     return u"let %s" % u",".join(map(compress, node))
@@ -379,9 +362,11 @@ def __continue(node):
 def __while(node):
     return "while(%s)%s" % (compress(node.condition), block_unwrap(node.body))
 
+
 def __do(node):
     # block unwrapping don't help to reduce size on this loop type
     return "do%swhile(%s)" % (compress(node.body), compress(node.condition))
+
 
 def __for_in(node):
     # Optional variable declarations
@@ -395,6 +380,7 @@ def __for_in(node):
         body = ""
     
     return "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), body)
+    
     
 def __for(node):
     result = "for("
