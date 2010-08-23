@@ -3,7 +3,6 @@
 # License: MPL 1.1/GPL 2.0/LGPL 2.1
 # Authors: 
 #   - Brendan Eich <brendan@mozilla.org> (Original JavaScript) (2004)
-#   - JT Olds <jtolds@xnet5.com> (Python Translation) (2009)
 #   - Sebastian Werner <info@sebastian-werner.net> (Refactoring Python) (2010)
 #
 
