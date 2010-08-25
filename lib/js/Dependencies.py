@@ -20,28 +20,28 @@ def __inspect(node, declared, names, namespaced):
         functions = getattr(node, "functions", None)
         params = getattr(node, "params", None)
 
-        # Protect outer from changes
         if variables or functions or params:
+            # Protect outer from changes
             declared = declared.copy()
 
             if variables: declared.update(variables)
             if functions: declared.update(functions)
             if params: declared.update(params)
 
+        # Filter uses by known items
+        uses = getattr(node, "uses", None)
+        if uses:
+            for item in uses:
+                if not item in declared:
+                    names.add(item)
+                        
     # Detect namespaced identifiers
     if node.type == "identifier" and not node.value in declared and getattr(node, "scope", False) and node.parent.type == "dot":
         name = __combineDot(node)
         if "." in name:
             namespaced.add(name)
 
-    # Filter uses by known items
-    uses = getattr(node, "uses", None)
-    if uses:
-        for item in uses:
-            if not item in declared:
-                names.add(item)
-        
-    # Go into recursion
+    # Process children
     for child in node:
         __inspect(child, declared, names, namespaced)
         
