@@ -25,14 +25,16 @@ def __inspect(node, declared, toplevel, namespaced):
     if node.type == "script":
         variables = getattr(node, "variables", None)
         functions = getattr(node, "functions", None)
+        exceptions = getattr(node, "exceptions", None)
         params = getattr(node, "params", None)
 
-        if variables or functions or params:
+        if variables or functions or exceptions or params:
             # Protect outer from changes
             declared = declared.copy()
 
             if variables: declared.update(variables)
             if functions: declared.update(functions)
+            if exceptions: declared.update(exceptions)
             if params: declared.update(params)
 
         # Filter uses by known items
