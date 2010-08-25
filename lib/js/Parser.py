@@ -414,10 +414,10 @@ def Statement(tokenizer, staticContext):
             if nextTokenType == "left_bracket" or nextTokenType == "left_curly":
                 # Destructured catch identifiers.
                 tokenizer.unget()
-                builder.CATCH_setVarName(childNode, DestructuringExpression(tokenizer, staticContext, True))
+                builder.CATCH_setException(childNode, DestructuringExpression(tokenizer, staticContext, True))
             
             elif nextTokenType == "identifier":
-                builder.CATCH_setVarName(childNode, tokenizer.token.value)
+                builder.CATCH_setException(childNode, builder.CATCH_wrapException(tokenizer))
             
             else:
                 raise SyntaxError("Missing identifier in catch", tokenizer)

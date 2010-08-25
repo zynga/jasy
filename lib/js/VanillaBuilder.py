@@ -206,9 +206,14 @@ class VanillaBuilder:
     def CATCH_build(self, tokenizer):
         node = Node(tokenizer, "catch")
         return node
+        
+    def CATCH_wrapException(self, tokenizer):
+        node = Node(tokenizer, "exception")
+        node.value = tokenizer.token.value
+        return node
 
-    def CATCH_setVarName(self, node, identifier):
-        node.varName = identifier
+    def CATCH_setException(self, node, exception):
+        node.append(exception, "exception")
 
     def CATCH_setGuard(self, node, expression):
         node.append(expression, "guard")
