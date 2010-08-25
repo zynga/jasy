@@ -1507,7 +1507,7 @@ def PrimaryExpression(tokenizer, staticContext):
     elif tokenType in ["null", "this", "true", "false", "identifier", "number", "string", "regexp"]:
         node = builder.PRIMARY_build(tokenizer, tokenType)
         
-        if tokenType == "identifier":
+        if tokenType == "identifier" and node.value != "arguments":
             node.scope = True
             staticContext.uses.add(node.value)
             

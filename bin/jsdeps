@@ -10,14 +10,14 @@ from js.Dependencies import deps
 
 def jsdeps(source, filename=None):
     root = parse(source, filename)
-    (names, namespaced) = deps(root)
+    (toplevel, namespaced) = deps(root)
     
-    print "Uses:"
-    for name in names:
+    print "Toplevel:"
+    for name in sorted(toplevel):
         print "  - %s" % name
     
-    print "Classes:"
-    for name in namespaced:
+    print "Namespaced:"
+    for name in sorted(namespaced):
         print "  - %s" % name
     
 

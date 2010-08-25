@@ -4,6 +4,8 @@
 #
 
 from js.Util import combineVariable
+from js.Lang import globalFunctions
+from js.Lang import globalObjects
 
 def deps(node):
     # All declared variables (is copied at every function scope)
@@ -40,20 +42,23 @@ def __inspect(node, declared, toplevel, namespaced):
         # Filter uses by known items
         uses = getattr(node, "uses", None)
         if uses:
-            for item in uses:
-                if not item in declared:
-                    toplevel.add(item)
+            for value in uses:
+                if not (value in declared or value in globalFunctions or value in globalObjects):
+                    toplevel.add(value)
                     
     # Detect namespaced identifiers
-    elif node.type == "identifier" and not node.value in declared:
-        name = combineVariable(node)
-        if name:
-            namespaced.add(name)
+    elif node.type == "identifier":
+        value = node.value 
+        
+        if not (value in declared or value in globalFunctions or value in globalObjects):
+            name = combineVariable(node)
+            if name:
+                namespaced.add(name)
 
     # Process children
     for child in node:
         __inspect(child, declared, toplevel, namespaced)
-        
+
     
 
     
