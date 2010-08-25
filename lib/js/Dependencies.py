@@ -6,42 +6,40 @@
 from copy import copy
 
 def deps(node):
-    names = {}
-    declared = {}
-    namespaced = {}
+    names = set()
+    declared = set()
+    namespaced = set()
     __inspect(node, declared, names, namespaced)
     
     return names, namespaced
     
     
 def __inspect(node, declared, names, namespaced):
-    variables = getattr(node, "variables", None)
-    functions = getattr(node, "functions", None)
-    
-    # Protect outer from changes
-    if variables or functions:
-        declared = copy(declared)
+    if node.type == "script":
+        variables = getattr(node, "variables", None)
+        functions = getattr(node, "functions", None)
+        params = getattr(node, "params", None)
 
-        if variables:
-            for item in variables:
-                declared[item] = True
-    
-        if functions:
-            for item in functions:
-                declared[item] = True
+        # Protect outer from changes
+        if variables or functions or params:
+            declared = declared.copy()
+
+            if variables: declared.update(variables)
+            if functions: declared.update(functions)
+            if params: declared.update(params)
 
     # Detect namespaced identifiers
     if node.type == "identifier" and not node.value in declared and getattr(node, "scope", False) and node.parent.type == "dot":
         name = __combineDot(node)
         if "." in name:
-            namespaced[name] = True
+            namespaced.add(name)
 
     # Filter uses by known items
     uses = getattr(node, "uses", None)
     if uses:
         for item in uses:
             if not item in declared:
-                names[item] = True
+                names.add(item)
         
     # Go into recursion
     for child in node:

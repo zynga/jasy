@@ -315,22 +315,18 @@ class VanillaBuilder:
         param.value = tokenizer.token.value
         return param
         
-    def FUNCTION_addParam(self, node, tokenizer, identifierOrExpression):
-        # Destructing expression
-        if isinstance(identifierOrExpression, Node):
-            childNode = identifierOrExpression
-            
-        # Or simple identifier
-        else:
-            childNode = Node(tokenizer, "identifier")
-            childNode.value = identifierOrExpression
-
-        node.params.append(childNode)
+    def FUNCTION_addParam(self, node, tokenizer, expression):
+        node.params.append(expression)
         
     def FUNCTION_setExpressionClosure(self, node, expressionClosure):
         node.expressionClosure = expressionClosure
 
     def FUNCTION_setBody(self, node, statement):
+        # copy over function parameters to function body
+        params = getattr(node, "params", None)
+        if params:
+            statement.params = map(lambda param: param.value, params)
+            
         node.append(statement, "body")
 
     def FUNCTION_hoistVars(self, x):
