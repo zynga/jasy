@@ -52,12 +52,15 @@ class StaticContext(object):
         self.blockId = 0
         self.builder = builder
         self.statementStack = []
-        self.functions = []
-        self.variables = []
-        self.uses = []
-        self.needsHoisting = False
-         
+        
+        # Sets to store variable uses
+        self.functions = set()
+        self.exceptions = set()
+        self.variables = set()
+        self.uses = set()
+        
         # Status
+        self.needsHoisting = False
         self.bracketLevel = 0
         self.curlyLevel = 0
         self.parenLevel = 0
@@ -742,7 +745,7 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     functionNode.functionForm = functionForm
     
     if functionForm == "declared_form":
-        staticContext.functions.append(functionNode.name)
+        staticContext.functions.add(functionNode.name)
         
     builder.FUNCTION_finish(functionNode, staticContext)
     
@@ -834,8 +837,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             
             # Copy over names for variable list
             for nameNode in childNode.names:
-                if not nameNode.value in childContext.variables:
-                    childContext.variables.append(nameNode.value)
+                childContext.variables.add(nameNode.value)
                 
             if tokenizer.match("comma"): 
                 continue
@@ -865,8 +867,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
 
         builder.DECL_finish(childNode)
         
-        if not childNode.name in childContext.variables:
-            childContext.variables.append(childNode.name)
+        childContext.variables.add(childNode.name)
         
         if not tokenizer.match("comma"):
             break
@@ -945,8 +946,7 @@ def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly=None, dat
                 builder.DECL_finish(childNode)
 
                 # Each pattern needs to be added to variables.
-                if not childNode.name in data.variables:
-                    data.variables.append(childNode.name)
+                data.variables.add(childNode.name)
                 
 
 # JavaScript 1.7
@@ -1503,7 +1503,7 @@ def PrimaryExpression(tokenizer, staticContext):
         
         if tokenType == "identifier":
             node.scope = True
-            staticContext.uses.append(node.value)
+            staticContext.uses.add(node.value)
             
         builder.PRIMARY_finish(node)
 

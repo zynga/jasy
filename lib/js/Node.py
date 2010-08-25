@@ -138,12 +138,12 @@ class Node(list):
                     if hasattr(value, "rel"):
                         relatedChildren.append(value)
 
-                elif type(value) in (bool, int, long, float, basestring, str, unicode, list):
+                elif type(value) in (bool, int, long, float, basestring, str, unicode, list, set):
                     if type(value) == bool:
                         value = "true" if value else "false" 
                     elif type(value) in (int, long, float):
                         value = str(value)
-                    elif type(value) == list:
+                    elif type(value) == list or type(value) == set:
                         if len(value) == 0:
                             continue
                         try:
