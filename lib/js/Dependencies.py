@@ -6,15 +6,22 @@
 from js.Util import combineVariable
 
 def deps(node):
-    names = set()
+    # All declared variables (is copied at every function scope)
     declared = set()
+    
+    # All top level variables accessed (e.g. browser objects like "window" or top-level namespaces)
+    toplevel = set()
+    
+    # All namespaced variables accessed (e.g. class names like qx.ui.core.Widget)
     namespaced = set()
-    __inspect(node, declared, names, namespaced)
     
-    return names, namespaced
+    # Start inspection
+    __inspect(node, declared, toplevel, namespaced)
+    
+    return toplevel, namespaced
     
     
-def __inspect(node, declared, names, namespaced):
+def __inspect(node, declared, toplevel, namespaced):
     if node.type == "script":
         variables = getattr(node, "variables", None)
         functions = getattr(node, "functions", None)
@@ -33,17 +40,17 @@ def __inspect(node, declared, names, namespaced):
         if uses:
             for item in uses:
                 if not item in declared:
-                    names.add(item)
-                        
+                    toplevel.add(item)
+                    
     # Detect namespaced identifiers
-    if node.type == "identifier" and not node.value in declared:
+    elif node.type == "identifier" and not node.value in declared:
         name = combineVariable(node)
         if name:
             namespaced.add(name)
 
     # Process children
     for child in node:
-        __inspect(child, declared, names, namespaced)
+        __inspect(child, declared, toplevel, namespaced)
         
     
 
