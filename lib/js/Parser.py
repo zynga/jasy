@@ -83,6 +83,7 @@ def Script(tokenizer, staticContext):
     # copy over data from compiler context
     node.functions = staticContext.functions
     node.variables = staticContext.variables
+    node.exceptions = staticContext.exceptions 
     node.uses = staticContext.uses
 
     return node
@@ -417,14 +418,19 @@ def Statement(tokenizer, staticContext):
             if nextTokenType == "left_bracket" or nextTokenType == "left_curly":
                 # Destructured catch identifiers.
                 tokenizer.unget()
-                builder.CATCH_setException(childNode, DestructuringExpression(tokenizer, staticContext, True))
+                exception = DestructuringExpression(tokenizer, staticContext, True)
+                for exceptionChild in exception:
+                    staticContext.exceptions.add(exceptionChild.value)
             
             elif nextTokenType == "identifier":
-                builder.CATCH_setException(childNode, builder.CATCH_wrapException(tokenizer))
+                exception = builder.CATCH_wrapException(tokenizer)
+                staticContext.exceptions.add(exception.value)
             
             else:
                 raise SyntaxError("Missing identifier in catch", tokenizer)
-
+                
+            builder.CATCH_setException(childNode, exception)
+            
             if tokenizer.match("if"):
                 if staticContext.ecma3OnlyMode:
                     raise SyntaxError("Illegal catch guard", tokenizer)
@@ -950,7 +956,7 @@ def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly=None, dat
                 
 
 # JavaScript 1.7
-def DestructuringExpression(tokenizer, staticContext, simpleNamesOnly, data):
+def DestructuringExpression(tokenizer, staticContext, simpleNamesOnly=None, data=None):
     node = PrimaryExpression(tokenizer, staticContext)
     checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly, data)
 
