@@ -13,13 +13,41 @@ from js import *
 projects = [
   "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/framework",
   "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/apiviewer",
-  "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/testrunner"
+  #"/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/testrunner"
 ]
 
-deps = [ "apiviewer.Application" ]
+deps = [ "qx.html.Input" ]
+
+
+
+classes = {}
+resources = {}
+translations = {}
 
 for folder in projects:
-    config = jsmanifest(folder)
+    info = jsproject(folder)
 
+    classes.update(info[0])
+    resources.update(info[1])
+    translations.update(info[2])
+  
+print  
+print "Project Index Complete"
+print "Indexed: %s classes, %s resources, %s translations" % (len(classes), len(resources), len(translations))
+
+print 
+print "Resolving dependencies..."
+requiredClasses = set()
+for className in deps:
+    jsresolve(className, classes, requiredClasses)
     
-        
+print "Compiling %s classes..." % len(requiredClasses)
+    
+compressed = []
+for className in requiredClasses:
+    classPath = classes[className]
+    classContent = open(classPath).read()
+    
+    compressed.append(jscompress(jsparse(classContent, classPath)))
+    
+print compressed

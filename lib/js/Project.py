@@ -6,7 +6,8 @@
 import os
 from ConfigParser import SafeConfigParser
 
-def manifest(folder):
+
+def project(folder):
     parser = SafeConfigParser()
     parser.read(os.path.join(folder, "manifest.cfg"))
 
@@ -16,16 +17,15 @@ def manifest(folder):
     
     print "Project: %s (%s)" % (title, namespace)
     classes, resources, translations = globals()["__" + profile](folder, namespace)
-    print "Indexed: %s classes, %s resources, %s translations" % (len(classes), len(resources), len(translations))
+    print "  - %s classes, %s resources, %s translations" % (len(classes), len(resources), len(translations))
 
-    return dict(parser.items("main"))
+    return classes, resources, translations
     
     
 
 def __qooxdoo(folder, namespace):
-    classPath = os.path.join(folder, "source", "class", namespace)
-    resourcePath = os.path.join(folder, "source", "resource", namespace)
-    # TODO: Any chance to move translation into namespace as well?
+    classPath = os.path.join(folder, "source", "class")
+    resourcePath = os.path.join(folder, "source", "resource")
     translationPath = os.path.join(folder, "source", "translation") 
     
     # print "Class Modification: %s" % os.path.getmtime(classPath)
