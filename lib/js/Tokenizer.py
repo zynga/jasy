@@ -323,7 +323,7 @@ class Tokenizer(object):
                     break
                     
             self.cursor -= 1
-            token.value = int(input[token.start:self.cursor])
+            token.value = eval(input[token.start:self.cursor])
 
         elif ch >= "0" and ch <= "7":
             while(True):
