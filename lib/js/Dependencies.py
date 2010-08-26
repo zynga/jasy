@@ -4,10 +4,10 @@
 #
 
 from js.Util import combineVariable
-from js.Lang import globalFunctions
-from js.Lang import globalObjects
+
 
 def deps(node):
+    """ Computes and returns the dependencies of the given node """
     # All declared variables (is copied at every function scope)
     declared = set()
     
@@ -24,6 +24,7 @@ def deps(node):
     
     
 def __inspect(node, declared, toplevel, namespaced):
+    """ The internal inspection routine used to collect the data for deps() """
     if node.type == "script":
         variables = getattr(node, "variables", None)
         functions = getattr(node, "functions", None)
@@ -43,14 +44,14 @@ def __inspect(node, declared, toplevel, namespaced):
         uses = getattr(node, "uses", None)
         if uses:
             for value in uses:
-                if not (value in declared or value in globalFunctions or value in globalObjects):
+                if not value in declared:
                     toplevel.add(value)
                     
     # Detect namespaced identifiers
     elif node.type == "identifier":
         value = node.value 
         
-        if not (value in declared or value in globalFunctions or value in globalObjects):
+        if not value in declared:
             name = combineVariable(node)
             if name:
                 namespaced.add(name)
@@ -58,7 +59,3 @@ def __inspect(node, declared, toplevel, namespaced):
     # Process children
     for child in node:
         __inspect(child, declared, toplevel, namespaced)
-
-    
-
-    
