@@ -7,4 +7,19 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 
 from js import *
 
-print jstree("hello;")
+
+
+
+projects = [
+  "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/framework",
+  "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/apiviewer",
+  "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/testrunner"
+]
+
+deps = [ "apiviewer.Application" ]
+
+for folder in projects:
+    config = jsmanifest(folder)
+
+    
+        
