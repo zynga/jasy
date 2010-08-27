@@ -6,7 +6,7 @@
 #   - Sebastian Werner <info@sebastian-werner.net> (Python Port) (2010)
 #
 
-from Node import Node
+from .Node import Node
 
 class VanillaBuilder:
     """The vanilla AST builder."""
@@ -330,7 +330,7 @@ class VanillaBuilder:
         # copy over function parameters to function body
         params = getattr(node, "params", None)
         if params:
-            statement.params = map(lambda param: param.value, params)
+            statement.params = [param.value for param in params]
             
         node.append(statement, "body")
 

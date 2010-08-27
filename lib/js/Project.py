@@ -4,7 +4,7 @@
 #
 
 import os
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 
 
 def project(folder):
@@ -15,9 +15,9 @@ def project(folder):
     profile = parser.get("main", "profile")
     namespace = parser.get("main", "namespace")
     
-    print "Project: %s (%s)" % (title, namespace)
+    print("Project: %s (%s)" % (title, namespace))
     classes, resources, translations = globals()["__" + profile](folder, namespace)
-    print "  - %s classes, %s resources, %s translations" % (len(classes), len(resources), len(translations))
+    print("  - %s classes, %s resources, %s translations" % (len(classes), len(resources), len(translations)))
 
     return classes, resources, translations
     

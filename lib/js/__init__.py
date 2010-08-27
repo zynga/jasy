@@ -15,7 +15,7 @@ from js.optimizer import Variants
 
 
 def jsresolve(className, classes, result):
-    print "  - Add %s" % className
+    print("  - Add %s" % className)
     result.add(className)
     
     filePath = classes[className]

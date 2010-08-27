@@ -8,7 +8,7 @@
 
 import re
 from copy import copy
-from Lang import keywords
+from .Lang import keywords
 
 __all__ = [ "Tokenizer" ]
 

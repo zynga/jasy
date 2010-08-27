@@ -29,8 +29,8 @@ def compress(node):
         try:
             return globals()["__" + type](node)
         except KeyError:
-            print "Compressor does not support type '%s' from line %s in file %s" % (type, node.line, node.getFileName())
-            print node.toJson()
+            print("Compressor does not support type '%s' from line %s in file %s" % (type, node.line, node.getFileName()))
+            print(node.toJson())
             sys.exit(1)
 
 
@@ -45,7 +45,7 @@ def block_unwrap(node):
         
         
 def statements(node):
-    result = u""
+    result = ""
     length = len(node)-1
     for pos, child in enumerate(node):
         code = compress(child)
@@ -146,19 +146,19 @@ def __number(node):
         if conv.startswith("0."):
             value = conv[1:]
             
-    return u"%s" % value
+    return "%s" % value
 
 def __string(node):
     return json.JSONEncoder().encode(node.value)
 
 def __object_init(node):
-    return u"{%s}" % u",".join(map(compress, node))
+    return "{%s}" % ",".join(map(compress, node))
 
 def __array_init(node):
     def helper(child):
         return compress(child) if child != None else ""
     
-    return u"[%s]" % u",".join(map(helper, node))
+    return "[%s]" % ",".join(map(helper, node))
           
 def __array_comp(node):
     return "[%s %s]" % (compress(node.expression), compress(node.tail))
@@ -171,7 +171,7 @@ def __property_init(node):
     if key in keywords:
         key = '"%s"' % key
     
-    return u"%s:%s" % (key, value)
+    return "%s:%s" % (key, value)
 
 #
 # Core features
@@ -190,7 +190,7 @@ def __block(node):
     return "{%s}" % statements(node)
     
 def __let_block(node):
-    begin = u"let(%s)" % u",".join(map(compress, node.variables))
+    begin = "let(%s)" % ",".join(map(compress, node.variables))
     if hasattr(node, "block"):
         end = compress(node.block)
     elif hasattr(node, "expression"):
@@ -205,13 +205,13 @@ def __identifier(node):
     return node.value
         
 def __const(node):
-    return u"const %s" % u",".join(map(compress, node))
+    return "const %s" % ",".join(map(compress, node))
 
 def __var(node):
-    return u"var %s" % u",".join(map(compress, node))
+    return "var %s" % ",".join(map(compress, node))
 
 def __let(node):
-    return u"let %s" % u",".join(map(compress, node))
+    return "let %s" % ",".join(map(compress, node))
 
 def __list(node):
     return ",".join(map(compress, node))
