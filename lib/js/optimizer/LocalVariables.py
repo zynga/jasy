@@ -44,7 +44,7 @@ def __encode(pos):
         
       
 def __optimizeScope(node, translate, pos):
-    if debug: print "Optimize scope at line: %s" % node.line
+    if debug: print("Optimize scope at line: %s" % node.line)
     
     parent = getattr(node, "parent", None)
     if parent and parent.type == "function" and hasattr(parent, "params"):
@@ -64,25 +64,25 @@ def __optimizeNode(node, translate, first=False):
 
     # function names
     if nodeType == "function" and hasattr(node, "name") and node.name in translate:
-        if debug: print " - Function Name: %s => %s" % (node.name, translate[node.name])
+        if debug: print(" - Function Name: %s => %s" % (node.name, translate[node.name]))
         node.name = translate[node.name]
 
     # declarations
     elif nodeType == "declaration":
         name = getattr(node, "name", None)
         if name in translate:
-            if debug: print " - Variable Declaration: %s => %s" % (node.name, translate[node.name])
+            if debug: print(" - Variable Declaration: %s => %s" % (node.name, translate[node.name]))
             node.name = translate[node.name]
         else:
             names = getattr(node, "names", None)
             for child in names:
                 if child.value in translate:
-                    if debug: print " - Variable Destructed Declaration: %s => %s" % (child.value, translate[child.value])
+                    if debug: print(" - Variable Destructed Declaration: %s => %s" % (child.value, translate[child.value]))
                     child.value = translate[child.value]
 
     # every scope relevant identifier (e.g. first identifier for dot-operator, etc.)
     elif nodeType == "identifier" and node.value in translate and getattr(node, "scope", False):
-        if debug: print " - Scope Variable: %s => %s" % (node.value, translate[node.value])
+        if debug: print(" - Scope Variable: %s => %s" % (node.value, translate[node.value]))
         node.value = translate[node.value]    
 
     # Don't recurse into types which never have children

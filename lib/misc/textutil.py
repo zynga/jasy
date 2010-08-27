@@ -19,7 +19,7 @@
 ################################################################################
 
 import sys, string, re, optparse, codecs
-import filetool
+from . import filetool
 from js.input import lang
 
 
@@ -133,16 +133,16 @@ def main():
     (options, args) = parser.parse_args()
     
     if not options.command in allowed:
-        print "Unallowed command: %s" % options.command
+        print("Unallowed command: %s" % options.command)
         sys.exit(1)
 
     if len(args) == 0:
-        print "Needs one or more arguments (files) to modify!"
+        print("Needs one or more arguments (files) to modify!")
         sys.exit(1)
         
     for fileName in args:
         if options.verbose:
-            print "  * Running %s on: %s" % (options.command, fileName)
+            print("  * Running %s on: %s" % (options.command, fileName))
         
         ref = codecs.open(fileName, encoding=options.encoding, mode="r")
         origFileContent = ref.read()
@@ -152,7 +152,7 @@ def main():
         
         if patchedFileContent != origFileContent:
             if options.verbose:
-                print "  * Store modifications..."
+                print("  * Store modifications...")
                 
             filetool.save(fileName, patchedFileContent, options.encoding)
 
@@ -165,7 +165,7 @@ if __name__ == '__main__':
         main()
 
     except KeyboardInterrupt:
-        print
-        print "  * Keyboard Interrupt"
+        print()
+        print("  * Keyboard Interrupt")
         sys.exit(1)
         

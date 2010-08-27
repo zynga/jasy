@@ -18,9 +18,9 @@
 #
 ################################################################################
 
-import os, codecs, cPickle, sys, re, time
+import os, codecs, pickle, sys, re, time
 import gzip as sys_gzip
-import textutil
+from . import textutil
 
 VERSIONCONTROL_DIR_PATTS = (r'^\.svn$', r'^_svn$', r'^CVS$', r'^\.git$', r'^\.DS_Store$')
 
@@ -28,7 +28,7 @@ def gzip(filePath, content, encoding="utf-8"):
     if not filePath.endswith(".gz"):
         filePath = filePath + ".gz"
     
-    content = unicode(content).encode(encoding)
+    content = str(content).encode(encoding)
     
     outputFile = sys_gzip.open(filePath, "wb", 9)
     outputFile.write(content)
@@ -42,7 +42,7 @@ def gunzip(filePath, encoding="utf-8"):
     inputFile = sys_gzip.open(filePath, "rb")
     content = inputFile.read()
     
-    return textutil.any2Unix(unicode(content))
+    return textutil.any2Unix(str(content))
 
 
 def remove(filePath):
@@ -54,7 +54,9 @@ def remove(filePath):
         if os.path.exists(filePath):
             os.remove(filePath)
 
-    except IOError, (errno, strerror):
+    except IOError as xxx_todo_changeme:
+        #print "  * I/O error(%s): %s" % (errno, strerror)
+        (errno, strerror) = xxx_todo_changeme.args
         #print "  * I/O error(%s): %s" % (errno, strerror)
         raise
 
@@ -75,7 +77,9 @@ def save(filePath, content="", encoding="utf-8"):
         outputFile = codecs.open(filePath, encoding=encoding, mode="w", errors="replace")
         outputFile.write(content)
 
-    except IOError, (errno, strerror):
+    except IOError as xxx_todo_changeme1:
+        #print "  * I/O error(%s): %s" % (errno, strerror)
+        (errno, strerror) = xxx_todo_changeme1.args
         #print "  * I/O error(%s): %s" % (errno, strerror)
         raise
 
@@ -110,9 +114,11 @@ def read(filePath, encoding="utf_8"):
         content = ref.read()
         ref.close()
 
-        return textutil.any2Unix(unicode(content))
+        return textutil.any2Unix(str(content))
 
-    except IOError, (errno, strerror):
+    except IOError as xxx_todo_changeme2:
+        #print "  * I/O error(%s): %s (%s)" % (errno, strerror, filePath)
+        (errno, strerror) = xxx_todo_changeme2.args
         #print "  * I/O error(%s): %s (%s)" % (errno, strerror, filePath)
         raise
 
@@ -126,7 +132,7 @@ def read(filePath, encoding="utf_8"):
 
 
 def root():
-    modulepath = unicode(__file__)
+    modulepath = str(__file__)
     
     miscfolder = os.path.dirname(modulepath)
     toolfolder = os.path.dirname(miscfolder)
@@ -213,6 +219,6 @@ def unlock(path):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        raise RuntimeError, "Usage: %s <dirpath>" % sys.argv[0]
+        raise RuntimeError("Usage: %s <dirpath>" % sys.argv[0])
     for entry in find(*sys.argv[1:]):
-        print entry
+        print(entry)

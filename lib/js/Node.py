@@ -138,10 +138,10 @@ class Node(list):
                     if hasattr(value, "rel"):
                         relatedChildren.append(value)
 
-                elif type(value) in (bool, int, int, float, str, str, str, list, set):
+                elif type(value) in (bool, int, float, str, list, set):
                     if type(value) == bool:
                         value = "true" if value else "false" 
-                    elif type(value) in (int, int, float):
+                    elif type(value) in (int, float):
                         value = str(value)
                     elif type(value) == list or type(value) == set:
                         if len(value) == 0:
@@ -193,7 +193,7 @@ class Node(list):
                 value = getattr(self, name)
                 if isinstance(value, Node) and hasattr(value, "rel"):
                     attrs[name] = value.export()
-                elif type(value) in (bool, int, int, float, str, str, str, list):
+                elif type(value) in (bool, int, float, str, list):
                     attrs[name] = value
         
         for child in self:

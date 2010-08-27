@@ -107,7 +107,7 @@ def __assembleDot(node, result=None):
         elif child.type == "dot":
             __assembleDot(child, result)
         else:
-            print "Unsupported type: %s" % child.type
+            print("Unsupported type: %s" % child.type)
             
     return ".".join(result)
 

@@ -6,7 +6,7 @@
 import string
 
 
-def baseEncode(num, alphabet=string.letters):
+def baseEncode(num, alphabet=string.ascii_letters):
     if (num == 0):
         return alphabet[0]
     arr = []
