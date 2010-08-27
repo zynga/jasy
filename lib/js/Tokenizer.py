@@ -410,7 +410,7 @@ class Tokenizer(object):
             self.cursor += 1
 
         if hasEscapes:
-            token.value = eval("u" + input[token.start:self.cursor])
+            token.value = eval(input[token.start:self.cursor])
         else:
             token.value = input[token.start+1:self.cursor-1]
 

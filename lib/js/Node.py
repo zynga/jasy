@@ -85,10 +85,10 @@ class Node(list):
                 raise Exception("Invalid kid: %s" % kid)
             
             if hasattr(kid, "tokenizer"):
-                if kid.start < self.start:
+                if self.start == None or kid.start < self.start:
                     self.start = kid.start
 
-                if self.end < kid.end:
+                if self.end == None or self.end < kid.end:
                     self.end = kid.end
                 
             kid.parent = self
