@@ -13,22 +13,54 @@ from js.optimizer import LocalVariables
 from js.optimizer import Variants
 
 
+treeCache = {}
 
-def jsresolve(className, classes, result):
-    print("  - Add %s" % className)
-    result.add(className)
-    
-    filePath = classes[className]
-
-    fileContent = open(filePath).read()
-    fileTree = jsparse(fileContent, filePath)
-
-    depGlobals, depClassNames = jsdeps(fileTree)
-    
-    for depClassName in depClassNames:
-        if not depClassName in classes:
-            # print "  - Unknown: %s" % depClassName
-            pass
+def getTree(filePath):
+    tree = getattr(treeCache, filePath, None)
+    if not tree:
+        fileContent = open(filePath).read()
+        tree = jsparse(fileContent, filePath)
+        treeCache[filePath] = tree
         
+    return tree
+
+
+depsCache = {}
+
+def getDeps(filePath):
+    deps = getattr(depsCache, filePath, None)
+    if not deps:
+        tree = getTree(filePath)
+        deps = jsdeps(tree)
+        depsCache[filePath] = deps
+        
+    return deps
+
+
+def resolveDependencies(className, classes, result=None):
+    if result == None:
+        result = set()
+        
+    # Debug
+    print("Add: %s" % className)
+        
+    # Append current
+    result.add(className)
+
+    # Compute dependencies
+    depGlobals, depClassNames = getDeps(classes[className])
+    
+    # Process dependencies
+    for depClassName in depClassNames:
+        if depClassName == className or depClassName in result:
+            continue
+
+        elif not depClassName in classes:
+            #print("  - Unknown: %s" % depClassName)
+            continue
+
         elif not depClassName in result:
-            jsresolve(depClassName, classes, result)
+            resolveDependencies(depClassName, classes, result)
+    
+    
+

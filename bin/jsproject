@@ -16,7 +16,7 @@ projects = [
   #"/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/testrunner"
 ]
 
-deps = [ "qx.html.Input" ]
+deps = [ "qx.core.Object" ]
 
 
 
@@ -39,7 +39,16 @@ print()
 print("Resolving dependencies...")
 requiredClasses = set()
 for className in deps:
-    jsresolve(className, classes, requiredClasses)
+    resolveDependencies(className, classes, requiredClasses)
+    
+
+print() 
+print("Sorting classes...")
+sortClasses(requiredClasses)
+
+
+
+    
     
 print("Compiling %s classes..." % len(requiredClasses))
     
@@ -48,6 +57,6 @@ for className in requiredClasses:
     classPath = classes[className]
     classContent = open(classPath).read()
     
-    compressed.append(jscompress(jsparse(classContent, classPath)))
+    #compressed.append(jscompress(jsparse(classContent, classPath)))
     
 print(compressed)
