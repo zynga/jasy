@@ -31,17 +31,17 @@ for folder in projects:
     resources.update(info[1])
     translations.update(info[2])
   
-print  
-print "Project Index Complete"
-print "Indexed: %s classes, %s resources, %s translations" % (len(classes), len(resources), len(translations))
+print()  
+print("Project Index Complete")
+print("Indexed: %s classes, %s resources, %s translations" % (len(classes), len(resources), len(translations)))
 
-print 
-print "Resolving dependencies..."
+print() 
+print("Resolving dependencies...")
 requiredClasses = set()
 for className in deps:
     jsresolve(className, classes, requiredClasses)
     
-print "Compiling %s classes..." % len(requiredClasses)
+print("Compiling %s classes..." % len(requiredClasses))
     
 compressed = []
 for className in requiredClasses:
@@ -50,4 +50,4 @@ for className in requiredClasses:
     
     compressed.append(jscompress(jsparse(classContent, classPath)))
     
-print compressed
+print(compressed)

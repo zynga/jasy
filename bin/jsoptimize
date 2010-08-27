@@ -23,7 +23,7 @@ def jsoptimize(source, filename=None):
     }
     
     tree = parse(source, filename)
-    print tree
+    print(tree)
     Variants.replace(tree, variantData)
     Variants.optimize(tree)
     CombineDeclarations.optimize(tree)
@@ -32,4 +32,4 @@ def jsoptimize(source, filename=None):
 
 
 if __name__ == "__main__":
-    print jsoptimize(file(sys.argv[1]).read(), sys.argv[1])
+    print(jsoptimize(file(sys.argv[1]).read(), sys.argv[1]))

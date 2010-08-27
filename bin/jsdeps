@@ -12,13 +12,13 @@ def jsdeps(source, filename=None):
     root = parse(source, filename)
     (toplevel, namespaced) = deps(root)
     
-    print "Toplevel:"
+    print("Toplevel:")
     for name in sorted(toplevel):
-        print "  - %s" % name
+        print("  - %s" % name)
     
-    print "Namespaced:"
+    print("Namespaced:")
     for name in sorted(namespaced):
-        print "  - %s" % name
+        print("  - %s" % name)
     
 
 if __name__ == "__main__":
