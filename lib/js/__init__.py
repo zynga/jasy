@@ -161,7 +161,8 @@ class JsClass():
             dependencies = Dependencies.collect(self.getTree())
             self.dependencies = dependencies
             return dependencies
-        
+            
+            
     def __str__(self):
         return self.name
 

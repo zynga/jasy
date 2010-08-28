@@ -14,13 +14,35 @@ def collect(node):
     # All external variables/classes accessed
     dependencies = set()
     
+    # User defined flags for pre-processor (us)
+    flags = {}
+    
     # Start inspection
-    __inspect(node, declared, dependencies)
+    __inspect(node, declared, dependencies, flags)
+    
+
+    # Process flags
+    if "optional" in flags:
+        for className in flags["optional"]:
+            print("Delete optional %s" % className)
+            dependencies.discard(className)
+            
+    if "require" in flags:
+        for className in flags["require"]:
+            print("Add require %s" % className)
+            dependencies.add(className)
+            
+    if "use" in flags:
+        for className in flags["use"]:
+            print("Add use %s" % className)
+            dependencies.add(className)
+    
+    
     
     return dependencies
     
     
-def __inspect(node, declared, dependencies):
+def __inspect(node, declared, dependencies, flags):
     """ The internal inspection routine used to collect the data for deps() """
     if node.type == "script":
         variables = getattr(node, "variables", None)
@@ -52,7 +74,20 @@ def __inspect(node, declared, dependencies):
             name = combineVariable(node)
             if name:
                 dependencies.add(name)
+                
+    # Process comments
+    if not flags:
+        try:
+            comments = node.comments
+        except AttributeError:
+            comments = None
+        
+        if comments:
+            for comment in comments:
+                commentFlags = comment.getFlags()
+                if commentFlags:
+                    flags.update(commentFlags)
 
     # Process children
     for child in node:
-        __inspect(child, declared, dependencies)
+        __inspect(child, declared, dependencies, flags)
