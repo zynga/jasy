@@ -11,19 +11,16 @@ def deps(node):
     # All declared variables (is copied at every function scope)
     declared = set()
     
-    # All top level variables accessed (e.g. browser objects like "window" or top-level namespaces)
-    toplevel = set()
-    
-    # All namespaced variables accessed (e.g. class names like qx.ui.core.Widget)
-    namespaced = set()
+    # All external variables/classes accessed
+    dependencies = set()
     
     # Start inspection
-    __inspect(node, declared, toplevel, namespaced)
+    __inspect(node, declared, dependencies)
     
-    return toplevel, namespaced
+    return dependencies
     
     
-def __inspect(node, declared, toplevel, namespaced):
+def __inspect(node, declared, dependencies):
     """ The internal inspection routine used to collect the data for deps() """
     if node.type == "script":
         variables = getattr(node, "variables", None)
@@ -45,7 +42,7 @@ def __inspect(node, declared, toplevel, namespaced):
         if uses:
             for value in uses:
                 if not value in declared:
-                    toplevel.add(value)
+                    dependencies.add(value)
                     
     # Detect namespaced identifiers
     elif node.type == "identifier":
@@ -54,8 +51,8 @@ def __inspect(node, declared, toplevel, namespaced):
         if not value in declared:
             name = combineVariable(node)
             if name:
-                namespaced.add(name)
+                dependencies.add(name)
 
     # Process children
     for child in node:
-        __inspect(child, declared, toplevel, namespaced)
+        __inspect(child, declared, dependencies)

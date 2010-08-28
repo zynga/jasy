@@ -10,16 +10,11 @@ from js.Dependencies import deps
 
 def jsdeps(source, filename=None):
     root = parse(source, filename)
-    (toplevel, namespaced) = deps(root)
+    dependencies = deps(root)
     
-    print("Toplevel:")
-    for name in sorted(toplevel):
-        print("  - %s" % name)
-    
-    print("Namespaced:")
-    for name in sorted(namespaced):
-        print("  - %s" % name)
-    
+    for name in sorted(dependencies):
+        print("%s" % name)
+      
 
 if __name__ == "__main__":
-    jsdeps(file(sys.argv[1]).read(), sys.argv[1])
+    jsdeps(open(sys.argv[1]).read(), sys.argv[1])

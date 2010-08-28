@@ -3,10 +3,10 @@
 # Copyright 2010 Sebastian Werner
 #
 
-from js.Project import project as jsproject
-from js.Parser import parse as jsparse
-from js.Dependencies import deps as jsdeps
-from js.Compressor import compress as jscompress
+from js.Project import project
+from js.Parser import parse
+from js.Dependencies import deps
+from js.Compressor import compress
 
 from js.optimizer import CombineDeclarations
 from js.optimizer import LocalVariables
@@ -21,7 +21,7 @@ def getProjectFiles(projects):
     knownTranslations = {}
 
     for folder in projects:
-        info = jsproject(folder)
+        info = project(folder)
 
         knownClasses.update(info[0])
         knownResources.update(info[1])
@@ -42,7 +42,7 @@ def getTree(filePath):
         tree = treeCache[filePath]
     except KeyError:
         fileContent = open(filePath).read()
-        tree = jsparse(fileContent, filePath)
+        tree = parse(fileContent, filePath)
         treeCache[filePath] = tree
         
     return tree
@@ -52,48 +52,50 @@ depsCache = {}
 
 def getDeps(filePath):
     try:
-        deps = depsCache[filePath]
+        dependencies = depsCache[filePath]
     except KeyError:
         tree = getTree(filePath)
-        deps = jsdeps(tree)
-        depsCache[filePath] = deps
+        dependencies = deps(tree)
+        depsCache[filePath] = dependencies
         
-    return deps
+    return dependencies
 
 
-def resolveDependencies(className, classes, result=None):
-    if result == None:
-        result = set()
+def resolveDependencies(className, classes, requiredClasses=None):
+    if requiredClasses == None:
+        requiredClasses = set()
         
     # Debug
     print("  - Add: %s" % className)
         
     # Append current
-    result.add(className)
+    requiredClasses.add(className)
 
     # Compute dependencies
-    depGlobals, depClassNames = getDeps(classes[className])
+    dependencies = getDeps(classes[className])
     
     # Process dependencies
-    for depClassName in depClassNames:
-        if depClassName == className or depClassName in result:
+    for entry in dependencies:
+        if entry == className or entry in requiredClasses:
             continue
 
-        elif not depClassName in classes:
+        elif not entry in classes:
             #print("  - Unknown: %s" % depClassName)
             continue
 
-        elif not depClassName in result:
-            resolveDependencies(depClassName, classes, result)
+        elif not entry in requiredClasses:
+            resolveDependencies(entry, classes, requiredClasses)
+            
+    return requiredClasses
     
     
 def sortClasses(requiredClasses, knownClasses):
     def classComparator(classNameA, classNameB):
-        depGlobals, depClassNames = getDeps(knownClasses[classNameA])
-        if classNameB in depClassNames:
+        dependencies = getDeps(knownClasses[classNameA])
+        if classNameB in dependencies:
             return 1
-        depGlobals, depClassNames = getDeps(knownClasses[classNameB])
-        if classNameA in depClassNames:
+        dependencies = getDeps(knownClasses[classNameB])
+        if classNameA in dependencies:
             return -1
         return 0    
         
