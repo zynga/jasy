@@ -160,6 +160,7 @@ class JsClass():
         except AttributeError:
             dependencies = Dependencies.collect(self.getTree())
             self.dependencies = dependencies
+            print("%s: %s", (self.name, dependencies))
             return dependencies
             
             
