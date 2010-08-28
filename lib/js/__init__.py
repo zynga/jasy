@@ -165,6 +165,9 @@ class JsClass():
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return self.name
+
 
 
 class JsResolver():
@@ -197,13 +200,15 @@ class JsResolver():
             print("Require: %s" % requiredClass)
             self.__resolveDependencies(requiredClass, available, result)
             
-        print("List contains %i classes" % len(result))
-        print(result)
+        sortedResult = self.__sortClasses(result.values())
+            
+        print("List contains %i classes" % len(sortedResult))
+        print(sortedResult)
             
             
     def __resolveDependencies(self, classObj, available, result=None):
         if result == None:
-            result = set()
+            result = {}
 
         # Add current
         className = classObj.getName()
@@ -212,11 +217,10 @@ class JsResolver():
         # Process dependencies
         dependencies = classObj.getDependencies()
         for depClassName in dependencies:
-            if depClassName == className or depClassName in result:
+            if not depClassName in available:
                 continue
 
-            elif not depClassName in available:
-                #print("  - Unknown: %s" % entry)
+            elif depClassName == className or depClassName in result:
                 continue
 
             elif not depClassName in result:
@@ -226,21 +230,18 @@ class JsResolver():
         return result
 
 
-    def __sortClasses(self, requiredClasses, knownClasses):
-        def classComparator(classNameA, classNameB):
-            dependencies = getDeps(knownClasses[classNameA])
-            if classNameB in dependencies:
-                print("%s requires %s" % (classNameA, classNameB))
+    def __sortClasses(self, classes):
+        def classComparator(classObjA, classObjB):
+            dependencies = classObjA.getDependencies()
+            if classObjB.getName() in dependencies:
                 return 1
-            dependencies = getDeps(knownClasses[classNameB])
-            if classNameA in dependencies:
-                print("%s requires %s" % (classNameB, classNameA))
+            dependencies = classObjB.getDependencies()
+            if classObjA.getName() in dependencies:
                 return -1
 
-            print("None between: %s and %s" % (classNameA, classNameB))
             return 0    
 
-        return sorted(requiredClasses, key=compareToKey(classComparator))            
+        return sorted(classes, key=compareToKey(classComparator))            
             
 
 
