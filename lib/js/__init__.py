@@ -200,9 +200,10 @@ class JsResolver():
             print("Require: %s" % requiredClass)
             self.__resolveDependencies(requiredClass, available, result)
             
-        sortedResult = self.__sortClasses(result.values())
-            
-        print("List contains %i classes" % len(sortedResult))
+        print("List contains %i classes" % len(result))
+        print("Sorting...")
+
+        sortedResult = self.__sortClasses(result)
         print(sortedResult)
             
             
@@ -230,7 +231,7 @@ class JsResolver():
         return result
 
 
-    def __sortClasses(self, classes):
+    def __sortClassesOld(self, classes):
         def classComparator(classObjA, classObjB):
             dependencies = classObjA.getDependencies()
             if classObjB.getName() in dependencies:
@@ -242,6 +243,60 @@ class JsResolver():
             return 0    
 
         return sorted(classes, key=compareToKey(classComparator))            
+            
+
+
+    def __sortClasses(self, classes):
+        result = []
+        
+        
+
+        def recurser(classObj, stack):
+            prefix = "  " * len(stack)
+
+            className = classObj.getName()
+            if className in stack:
+                stackPos = stack.index(className)
+                stack.append(className)
+                print("%sStack: %s" % (prefix, "=>".join(stack[stackPos:])))
+                raise Exception("Recursion detected!")
+                
+            
+            stack.append(className)
+
+            print("%sDeps: %s" % (prefix, className))
+            dependencies = classObj.getDependencies()
+            for dependentName in dependencies:
+                try:
+                    dependentObj = classes[dependentName]
+                except KeyError:
+                    continue
+                    
+                if dependentObj is classObj:
+                    continue
+                    
+                if dependentObj in result:
+                    continue
+                    
+                print("%sRecurse: %s" % (prefix, dependentName))
+                recurser(dependentObj, stack)
+                
+            if not classObj in result:
+                print("%sAdd: %s" % (prefix, className))
+                result.append(classObj)
+        
+        for className in classes:
+            stack = []
+            classObj = classes[className]
+            if not classObj in result:
+                print("Start with: %s" % className)
+                recurser(classObj, stack)
+                print("Done with: %s" % className)
+            
+        return result
+            
+            
+
             
 
 
