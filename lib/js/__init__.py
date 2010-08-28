@@ -54,11 +54,10 @@ class JsProject():
 
 
     def getClassByName(self, className):
-        for classObj in self.getClasses():
-            if str(classObj) == className:
-                return classObj
-                
-        return None            
+        try:
+            return self.getClasses()[className]
+        except KeyError:
+            return None            
 
 
     def getClasses(self):
@@ -67,7 +66,7 @@ class JsProject():
             
         except AttributeError:
             classPath = os.path.join(self.path, "source", "class")
-            classes = []
+            classes = {}
             classPathLen = len(classPath) + 1
             for dirPath, dirNames, fileNames in os.walk(classPath):
                 for dirName in dirNames:
@@ -81,7 +80,10 @@ class JsProject():
                     filePath = os.path.join(dirPath, fileName)
                     relPath = filePath[classPathLen:]
 
-                    classes.append(JsClass(filePath, relPath, self.session))
+                    classObj = JsClass(filePath, relPath, self.session)
+                    className = classObj.getName()
+
+                    classes[className] = classObj
                 
             self.classes = classes
             return classes
@@ -186,40 +188,40 @@ class JsResolver():
 
     def getClassList(self):
         projects = self.session.getProjects()
-        available = []
+        available = {}
         for project in projects:
-            available.extend(project.getClasses())
+            available.update(project.getClasses())
 
-        result = set()
+        result = {}
         for requiredClass in self.required:
             print("Require: %s" % requiredClass)
-            requiredClass.getDependencies()
+            self.__resolveDependencies(requiredClass, available, result)
+            
+        print("List contains %i classes" % len(result))
+        print(result)
             
             
-    def __resolveDependencies(self, className, available, result=None):
+    def __resolveDependencies(self, classObj, available, result=None):
         if result == None:
             result = set()
 
-        # Debug
-        print("  - Add: %s" % className)
-
-        # Append current
-        result.add(className)
-
-        # Compute dependencies
-        dependencies = getDeps(classes[className])
+        # Add current
+        className = classObj.getName()
+        result[className] = classObj
 
         # Process dependencies
-        for entry in dependencies:
-            if entry == className or entry in result:
+        dependencies = classObj.getDependencies()
+        for depClassName in dependencies:
+            if depClassName == className or depClassName in result:
                 continue
 
-            elif not entry in classes:
-                #print("  - Unknown: %s" % depClassName)
+            elif not depClassName in available:
+                #print("  - Unknown: %s" % entry)
                 continue
 
-            elif not entry in result:
-                self.__resolveDependencies(entry, available, result)
+            elif not depClassName in result:
+                depClassObj = available[depClassName]
+                self.__resolveDependencies(depClassObj, available, result)
 
         return result
 
