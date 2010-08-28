@@ -15,7 +15,7 @@ session.addProject(JsProject("/Users/Sebastian/Repositories/qooxdoo.unify/qooxdo
 
 resolver = JsResolver(session)
 
-resolver.addClass("qx.core.Object")
+resolver.addClassName("qx.core.Object")
 classList = resolver.getClassList()
 
 print(classList)

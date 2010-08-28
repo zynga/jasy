@@ -27,6 +27,8 @@ class JsSession():
         
     def getProjects(self):
         return self.projects
+        
+
 
         
 import os
@@ -48,30 +50,41 @@ class JsProject():
         self.session = session
         
     def getSession(self):
-        return self.session        
+        return self.session
+
+
+    def getClassByName(self, className):
+        for classObj in self.getClasses():
+            if str(classObj) == className:
+                return classObj
+                
+        return None            
 
 
     def getClasses(self):
-        classPath = os.path.join(self.path, "source", "class")
+        try:
+            return self.classes
+            
+        except AttributeError:
+            classPath = os.path.join(self.path, "source", "class")
+            classes = []
+            classPathLen = len(classPath) + 1
+            for dirPath, dirNames, fileNames in os.walk(classPath):
+                for dirName in dirNames:
+                    if dirName in self.dirFilter:
+                        dirNames.remove(dirName)
 
-        # List classes
-        classes = []
-        classPathLen = len(classPath) + 1
-        for dirPath, dirNames, fileNames in os.walk(classPath):
-            for dirName in dirNames:
-                if dirName in self.dirFilter:
-                    dirNames.remove(dirName)
+                for fileName in fileNames:
+                    if fileName[0] == "." or "_" in fileName or not fileName.endswith(".js"):
+                        continue
 
-            for fileName in fileNames:
-                if fileName[0] == "." or "_" in fileName or not fileName.endswith(".js"):
-                    continue
+                    filePath = os.path.join(dirPath, fileName)
+                    relPath = filePath[classPathLen:]
 
-                filePath = os.path.join(dirPath, fileName)
-                relPath = filePath[classPathLen:]
-
-                classes.append(JsClass(filePath, relPath, self.session))
+                    classes.append(JsClass(filePath, relPath, self.session))
                 
-        return classes
+            self.classes = classes
+            return classes
 
 
     def getResources(self):
@@ -124,7 +137,6 @@ class JsClass():
         self.rel = rel
         self.session = session
         self.name = os.path.splitext(self.rel)[0].replace("/", ".")
-        print("Class: %s" % self.name)
 
     def getName(self):
         return self.name
@@ -134,16 +146,30 @@ class JsClass():
 
     def getDependencies(self):
         return deps(self.path)
+        
+    def __str__(self):
+        return self.name
 
 
 
 class JsResolver():
     def __init__(self, session):
-        self.classes = []
+        self.required = []
         self.session = session
         
-    def addClass(self, classObj):
-        self.classes.append(classObj)
+        
+    def addClassName(self, className):
+        projects = self.session.getProjects()
+        for project in projects:
+            classObj = project.getClassByName(className)
+            if classObj:
+                break
+
+        if not classObj:
+            raise Exception("Unknown Class: %s" % className)
+            
+        self.required.append(classObj)
+        
 
     def getClassList(self):
         projects = self.session.getProjects()
@@ -152,7 +178,10 @@ class JsResolver():
         for project in projects:
             available.extend(project.getClasses())
         
-        return available
+        for requiredClass in self.required:
+            print("Require: %s" % requiredClass)
+            requiredClass.getDependencies()
+            
 
 
 
