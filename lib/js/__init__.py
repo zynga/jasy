@@ -141,11 +141,24 @@ class JsClass():
     def getName(self):
         return self.name
 
+    def getText(self):
+        return open(self.path).read()
+
     def getTree(self):
-        return parse(self.path)
+        try:
+            return self.tree
+        except AttributeError:
+            tree = parse(self.getText(), self.path)
+            self.tree = tree
+            return tree
 
     def getDependencies(self):
-        return deps(self.path)
+        try:
+            return self.dependencies
+        except AttributeError:
+            dependencies = deps(self.getTree())
+            self.dependencies = dependencies
+            return dependencies
         
     def __str__(self):
         return self.name
