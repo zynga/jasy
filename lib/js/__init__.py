@@ -231,26 +231,10 @@ class JsResolver():
         return result
 
 
-    def __sortClassesOld(self, classes):
-        def classComparator(classObjA, classObjB):
-            dependencies = classObjA.getDependencies()
-            if classObjB.getName() in dependencies:
-                return 1
-            dependencies = classObjB.getDependencies()
-            if classObjA.getName() in dependencies:
-                return -1
-
-            return 0    
-
-        return sorted(classes, key=compareToKey(classComparator))            
-            
-
 
     def __sortClasses(self, classes):
         result = []
         
-        
-
         def recurser(classObj, stack):
             prefix = "  " * len(stack)
 
