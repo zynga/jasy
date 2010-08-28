@@ -9,16 +9,14 @@ from js import *
 
 
 session = JsSession()
-
 session.addProject(JsProject("/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/framework"))
 session.addProject(JsProject("/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/apiviewer"))
 
 resolver = JsResolver(session)
-
 resolver.addClassName("qx.core.Object")
-classList = resolver.getClassList()
 
-print(classList)
+classes = resolver.getClassList()
+print(classes)
 
 
 
@@ -30,22 +28,6 @@ print(classList)
 
 
 sys.exit(0)
-
-projects = [
-  "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/framework",
-  "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/apiviewer"
-]
-
-deps = [ "qx.core.Object" ]
-
-knownClasses, knownResources, knownTranslations = getProjectFiles(projects)
-
-print() 
-print("Resolving dependencies...")
-requiredClasses = set()
-for className in deps:
-    resolveDependencies(className, knownClasses, requiredClasses)
-    
 
 print() 
 print("Sorting classes...")
