@@ -3,13 +3,13 @@
 # Copyright 2010 Sebastian Werner
 #
 
-from js.Parser import parse
-from js.Dependencies import deps
-from js.Compressor import compress
+import js.Parser
+import js.Dependencies
+import js.Compressor
 
-from js.optimizer import CombineDeclarations
-from js.optimizer import LocalVariables
-from js.optimizer import Variants
+import js.optimizer.CombineDeclarations
+import js.optimizer.LocalVariables
+import js.optimizer.Variants
 
 from js.Util import compareToKey
 
@@ -148,7 +148,7 @@ class JsClass():
         try:
             return self.tree
         except AttributeError:
-            tree = parse(self.getText(), self.path)
+            tree = Parser.parse(self.getText(), self.path)
             self.tree = tree
             return tree
 
@@ -156,7 +156,7 @@ class JsClass():
         try:
             return self.dependencies
         except AttributeError:
-            dependencies = deps(self.getTree())
+            dependencies = Dependencies.collect(self.getTree())
             self.dependencies = dependencies
             return dependencies
         
@@ -186,14 +186,60 @@ class JsResolver():
 
     def getClassList(self):
         projects = self.session.getProjects()
+
         available = []
-        
         for project in projects:
             available.extend(project.getClasses())
-        
+
+        result = set()
         for requiredClass in self.required:
             print("Require: %s" % requiredClass)
-            print requiredClass.getDependencies()
+            requiredClass.getDependencies()
+            
+            
+    def resolveDependencies(self, className, classes, requiredClasses=None):
+        if requiredClasses == None:
+            requiredClasses = set()
+
+        # Debug
+        print("  - Add: %s" % className)
+
+        # Append current
+        requiredClasses.add(className)
+
+        # Compute dependencies
+        dependencies = getDeps(classes[className])
+
+        # Process dependencies
+        for entry in dependencies:
+            if entry == className or entry in requiredClasses:
+                continue
+
+            elif not entry in classes:
+                #print("  - Unknown: %s" % depClassName)
+                continue
+
+            elif not entry in requiredClasses:
+                self.resolveDependencies(entry, classes, requiredClasses)
+
+        return requiredClasses
+
+
+    def sortClasses(self, requiredClasses, knownClasses):
+        def classComparator(classNameA, classNameB):
+            dependencies = getDeps(knownClasses[classNameA])
+            if classNameB in dependencies:
+                print("%s requires %s" % (classNameA, classNameB))
+                return 1
+            dependencies = getDeps(knownClasses[classNameB])
+            if classNameA in dependencies:
+                print("%s requires %s" % (classNameB, classNameA))
+                return -1
+
+            print("None between: %s and %s" % (classNameA, classNameB))
+            return 0    
+
+        return sorted(requiredClasses, key=compareToKey(classComparator))            
             
 
 
@@ -211,105 +257,4 @@ class JsCompiler():
             result.append(compressed)
             
         return "\n".join(result)
-        
-        
-        
 
-
-
-        
-
-
-
-
-def getProjectFiles(projects):
-    knownClasses = {}
-    knownResources = {}
-    knownTranslations = {}
-
-    for folder in projects:
-        info = project(folder)
-
-        knownClasses.update(info[0])
-        knownResources.update(info[1])
-        knownTranslations.update(info[2])
-        
-    print()  
-    print("Project Index Complete")
-    print("Indexed: %s classes, %s resources, %s translations" % (len(knownClasses), len(knownResources), len(knownTranslations)))
-
-    return knownClasses, knownResources, knownTranslations
-
-
-
-treeCache = {}
-
-def getTree(filePath):
-    try:
-        tree = treeCache[filePath]
-    except KeyError:
-        fileContent = open(filePath).read()
-        tree = parse(fileContent, filePath)
-        treeCache[filePath] = tree
-        
-    return tree
-
-
-depsCache = {}
-
-def getDeps(filePath):
-    try:
-        dependencies = depsCache[filePath]
-    except KeyError:
-        tree = getTree(filePath)
-        dependencies = deps(tree)
-        depsCache[filePath] = dependencies
-        
-    return dependencies
-
-
-def resolveDependencies(className, classes, requiredClasses=None):
-    if requiredClasses == None:
-        requiredClasses = set()
-        
-    # Debug
-    print("  - Add: %s" % className)
-        
-    # Append current
-    requiredClasses.add(className)
-
-    # Compute dependencies
-    dependencies = getDeps(classes[className])
-    
-    # Process dependencies
-    for entry in dependencies:
-        if entry == className or entry in requiredClasses:
-            continue
-
-        elif not entry in classes:
-            #print("  - Unknown: %s" % depClassName)
-            continue
-
-        elif not entry in requiredClasses:
-            resolveDependencies(entry, classes, requiredClasses)
-            
-    return requiredClasses
-    
-    
-def sortClasses(requiredClasses, knownClasses):
-    def classComparator(classNameA, classNameB):
-        dependencies = getDeps(knownClasses[classNameA])
-        if classNameB in dependencies:
-            print("%s requires %s" % (classNameA, classNameB))
-            return 1
-        dependencies = getDeps(knownClasses[classNameB])
-        if classNameA in dependencies:
-            print("%s requires %s" % (classNameB, classNameA))
-            return -1
-            
-        print("None between: %s and %s" % (classNameA, classNameB))
-        return 0    
-        
-    return sorted(requiredClasses, key=compareToKey(classComparator))
-    
-    

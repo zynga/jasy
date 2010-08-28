@@ -6,7 +6,7 @@
 from js.Util import combineVariable
 
 
-def deps(node):
+def collect(node):
     """ Computes and returns the dependencies of the given node """
     # All declared variables (is copied at every function scope)
     declared = set()
