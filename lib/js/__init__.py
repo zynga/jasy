@@ -279,7 +279,7 @@ class JsResolver():
                     continue
                     
                 print("%sRecurse: %s" % (prefix, dependentName))
-                recurser(dependentObj, stack)
+                recurser(dependentObj, list(stack))
                 
             if not classObj in result:
                 print("%sAdd: %s" % (prefix, className))
