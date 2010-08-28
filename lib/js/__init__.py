@@ -158,9 +158,12 @@ class JsClass():
         try:
             return self.dependencies
         except AttributeError:
-            dependencies = Dependencies.collect(self.getTree())
+            try:
+                dependencies = Dependencies.collect(self.getTree())
+            except Exception as ex:
+                raise Exception("Could not collect dependencies of %s: %s" % (self.name, ex))
+                
             self.dependencies = dependencies
-            print("%s: %s", (self.name, dependencies))
             return dependencies
             
             

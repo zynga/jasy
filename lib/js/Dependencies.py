@@ -24,16 +24,27 @@ def collect(node):
     # Process flags
     if "optional" in flags:
         for className in flags["optional"]:
-            print("Delete optional %s" % className)
-            dependencies.discard(className)
+            try:
+                print("Delete optional %s" % className)
+                dependencies.remove(className)
+            except KeyError:
+                raise Exception("Invalid #optional pre-processor hint: %s" % className)
             
     if "require" in flags:
         for className in flags["require"]:
+            if className in dependencies:
+                #raise Exception("Auto detected #require pre-processor hint: %s" % className)
+                pass
+                
             print("Add require %s" % className)
             dependencies.add(className)
             
     if "use" in flags:
         for className in flags["use"]:
+            if className in dependencies:
+                #raise Exception("Auto detected #use pre-processor hint: %s" % className)
+                pass
+
             print("Add use %s" % className)
             dependencies.add(className)
     
