@@ -193,7 +193,7 @@ class JsResolver():
         
         for requiredClass in self.required:
             print("Require: %s" % requiredClass)
-            requiredClass.getDependencies()
+            print requiredClass.getDependencies()
             
 
 
