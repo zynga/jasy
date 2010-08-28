@@ -7,54 +7,35 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 
 from js import *
 
-
-
-
 projects = [
   "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/framework",
-  "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/apiviewer",
-  #"/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/testrunner"
+  "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/apiviewer"
 ]
 
 deps = [ "qx.core.Object" ]
 
-
-
-classes = {}
-resources = {}
-translations = {}
-
-for folder in projects:
-    info = jsproject(folder)
-
-    classes.update(info[0])
-    resources.update(info[1])
-    translations.update(info[2])
-  
-print()  
-print("Project Index Complete")
-print("Indexed: %s classes, %s resources, %s translations" % (len(classes), len(resources), len(translations)))
+knownClasses, knownResources, knownTranslations = getProjectFiles(projects)
 
 print() 
 print("Resolving dependencies...")
 requiredClasses = set()
 for className in deps:
-    resolveDependencies(className, classes, requiredClasses)
+    resolveDependencies(className, knownClasses, requiredClasses)
     
 
 print() 
 print("Sorting classes...")
-sortClasses(requiredClasses)
+sortedClasses = sortClasses(requiredClasses, knownClasses)
+print(sortedClasses)
 
 
 
-    
     
 print("Compiling %s classes..." % len(requiredClasses))
     
 compressed = []
 for className in requiredClasses:
-    classPath = classes[className]
+    classPath = knownClasses[className]
     classContent = open(classPath).read()
     
     #compressed.append(jscompress(jsparse(classContent, classPath)))

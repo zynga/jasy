@@ -12,12 +12,35 @@ from js.optimizer import CombineDeclarations
 from js.optimizer import LocalVariables
 from js.optimizer import Variants
 
+from js.Util import compareToKey
+
+
+def getProjectFiles(projects):
+    knownClasses = {}
+    knownResources = {}
+    knownTranslations = {}
+
+    for folder in projects:
+        info = jsproject(folder)
+
+        knownClasses.update(info[0])
+        knownResources.update(info[1])
+        knownTranslations.update(info[2])
+        
+    print()  
+    print("Project Index Complete")
+    print("Indexed: %s classes, %s resources, %s translations" % (len(knownClasses), len(knownResources), len(knownTranslations)))
+
+    return knownClasses, knownResources, knownTranslations
+
+
 
 treeCache = {}
 
 def getTree(filePath):
-    tree = getattr(treeCache, filePath, None)
-    if not tree:
+    try:
+        tree = treeCache[filePath]
+    except KeyError:
         fileContent = open(filePath).read()
         tree = jsparse(fileContent, filePath)
         treeCache[filePath] = tree
@@ -28,8 +51,9 @@ def getTree(filePath):
 depsCache = {}
 
 def getDeps(filePath):
-    deps = getattr(depsCache, filePath, None)
-    if not deps:
+    try:
+        deps = depsCache[filePath]
+    except KeyError:
         tree = getTree(filePath)
         deps = jsdeps(tree)
         depsCache[filePath] = deps
@@ -42,7 +66,7 @@ def resolveDependencies(className, classes, result=None):
         result = set()
         
     # Debug
-    print("Add: %s" % className)
+    print("  - Add: %s" % className)
         
     # Append current
     result.add(className)
@@ -63,4 +87,16 @@ def resolveDependencies(className, classes, result=None):
             resolveDependencies(depClassName, classes, result)
     
     
-
+def sortClasses(requiredClasses, knownClasses):
+    def classComparator(classNameA, classNameB):
+        depGlobals, depClassNames = getDeps(knownClasses[classNameA])
+        if classNameB in depClassNames:
+            return 1
+        depGlobals, depClassNames = getDeps(knownClasses[classNameB])
+        if classNameA in depClassNames:
+            return -1
+        return 0    
+        
+    return sorted(requiredClasses, key=compareToKey(classComparator))
+    
+    
