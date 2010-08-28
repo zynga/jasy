@@ -186,7 +186,6 @@ class JsResolver():
 
     def getClassList(self):
         projects = self.session.getProjects()
-
         available = []
         for project in projects:
             available.extend(project.getClasses())
@@ -197,35 +196,35 @@ class JsResolver():
             requiredClass.getDependencies()
             
             
-    def resolveDependencies(self, className, classes, requiredClasses=None):
-        if requiredClasses == None:
-            requiredClasses = set()
+    def __resolveDependencies(self, className, available, result=None):
+        if result == None:
+            result = set()
 
         # Debug
         print("  - Add: %s" % className)
 
         # Append current
-        requiredClasses.add(className)
+        result.add(className)
 
         # Compute dependencies
         dependencies = getDeps(classes[className])
 
         # Process dependencies
         for entry in dependencies:
-            if entry == className or entry in requiredClasses:
+            if entry == className or entry in result:
                 continue
 
             elif not entry in classes:
                 #print("  - Unknown: %s" % depClassName)
                 continue
 
-            elif not entry in requiredClasses:
-                self.resolveDependencies(entry, classes, requiredClasses)
+            elif not entry in result:
+                self.__resolveDependencies(entry, available, result)
 
-        return requiredClasses
+        return result
 
 
-    def sortClasses(self, requiredClasses, knownClasses):
+    def __sortClasses(self, requiredClasses, knownClasses):
         def classComparator(classNameA, classNameB):
             dependencies = getDeps(knownClasses[classNameA])
             if classNameB in dependencies:
