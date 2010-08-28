@@ -3,7 +3,6 @@
 # Copyright 2010 Sebastian Werner
 #
 
-from js.Project import project
 from js.Parser import parse
 from js.Dependencies import deps
 from js.Compressor import compress
@@ -13,6 +12,172 @@ from js.optimizer import LocalVariables
 from js.optimizer import Variants
 
 from js.Util import compareToKey
+
+
+__all__ = ["JsSession", "JsProject", "JsClass", "JsResolver", "JsCompiler"]
+
+class JsSession():
+    def __init__(self):
+        self.projects = []
+        pass
+        
+    def addProject(self, project):
+        self.projects.append(project)
+        project.setSession(self)
+        
+    def getProjects(self):
+        return self.projects
+
+        
+import os
+from configparser import SafeConfigParser
+        
+class JsProject():
+    def __init__(self, path):
+        self.path = path
+        self.dirFilter = [".svn",".git",".hg"]
+        
+        parser = SafeConfigParser()
+        parser.read(os.path.join(path, "manifest.cfg"))
+
+        namespace = parser.get("main", "namespace")
+        print("Project: %s" % namespace)
+        
+        
+    def setSession(self, session):
+        self.session = session
+        
+    def getSession(self):
+        return self.session        
+
+
+    def getClasses(self):
+        classPath = os.path.join(self.path, "source", "class")
+
+        # List classes
+        classes = []
+        classPathLen = len(classPath) + 1
+        for dirPath, dirNames, fileNames in os.walk(classPath):
+            for dirName in dirNames:
+                if dirName in self.dirFilter:
+                    dirNames.remove(dirName)
+
+            for fileName in fileNames:
+                if fileName[0] == "." or "_" in fileName or not fileName.endswith(".js"):
+                    continue
+
+                filePath = os.path.join(dirPath, fileName)
+                relPath = filePath[classPathLen:]
+
+                classes.append(JsClass(filePath, relPath, self.session))
+                
+        return classes
+
+
+    def getResources(self):
+        resourcePath = os.path.join(path, "source", "resource")
+
+        # List resources
+        resources = {}
+        resourcePathLen = len(resourcePath) + 1
+        for dirPath, dirNames, fileNames in os.walk(resourcePath):
+            for dirName in dirNames:
+                if dirName in self.dirFilter:
+                    dirNames.remove(dirName)
+
+            for fileName in fileNames:    
+                if fileName[0] == ".":
+                    continue
+
+                filePath = os.path.join(dirPath, fileName)
+                relPath = filePath[resourcePathLen:]            
+
+                resources[relPath] = filePath
+                
+        return resources
+
+
+    def getTranslations(self):
+        translationPath = os.path.join(path, "source", "translation")
+        
+        # List translations    
+        translations = {}
+        for dirPath, dirNames, fileNames in os.walk(translationPath):
+            for dirName in dirNames:
+                if dirName in self.dirFilter:
+                    dirNames.remove(dirName)
+
+            for fileName in fileNames:    
+                if fileName[0] == "." or not fileName.endswith(".po"):
+                    continue
+
+                translations[os.path.splitext(fileName)[0]] = os.path.join(dirPath, fileName)
+                
+        return translations
+        
+        
+
+
+class JsClass():
+    def __init__(self, path, rel, session):
+        self.path = path
+        self.rel = rel
+        self.session = session
+        self.name = os.path.splitext(self.rel)[0].replace("/", ".")
+        print("Class: %s" % self.name)
+
+    def getName(self):
+        return self.name
+
+    def getTree(self):
+        return parse(self.path)
+
+    def getDependencies(self):
+        return deps(self.path)
+
+
+
+class JsResolver():
+    def __init__(self, session):
+        self.classes = []
+        self.session = session
+        
+    def addClass(self, classObj):
+        self.classes.append(classObj)
+
+    def getClassList(self):
+        projects = self.session.getProjects()
+        available = []
+        
+        for project in projects:
+            available.extend(project.getClasses())
+        
+        return available
+
+
+
+class JsCompiler():
+    def __init__(self, classList):
+        self.classList = classList
+        
+    def compile(self):
+        result = []
+        
+        for classObj in self.classList:
+            tree = classObj.getTree()
+            compressed = compress(tree)
+            result.append(compressed)
+            
+        return "\n".join(result)
+        
+        
+        
+
+
+
+        
+
+
 
 
 def getProjectFiles(projects):
@@ -93,10 +258,14 @@ def sortClasses(requiredClasses, knownClasses):
     def classComparator(classNameA, classNameB):
         dependencies = getDeps(knownClasses[classNameA])
         if classNameB in dependencies:
+            print("%s requires %s" % (classNameA, classNameB))
             return 1
         dependencies = getDeps(knownClasses[classNameB])
         if classNameA in dependencies:
+            print("%s requires %s" % (classNameB, classNameA))
             return -1
+            
+        print("None between: %s and %s" % (classNameA, classNameB))
         return 0    
         
     return sorted(requiredClasses, key=compareToKey(classComparator))

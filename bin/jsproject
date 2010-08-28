@@ -7,6 +7,30 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 
 from js import *
 
+
+session = JsSession()
+
+session.addProject(JsProject("/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/framework"))
+session.addProject(JsProject("/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/apiviewer"))
+
+resolver = JsResolver(session)
+
+resolver.addClass("qx.core.Object")
+classList = resolver.getClassList()
+
+print(classList)
+
+
+
+
+
+
+
+
+
+
+sys.exit(0)
+
 projects = [
   "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/framework",
   "/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/apiviewer"
