@@ -22,12 +22,17 @@ class Comment():
             print("Tags: %s" % tags)
         
         
+    hasName = ["param"]
+    hasType = ["return", "type", "enum", "implements", "require", "optional", "break"]
+    hasDescription = ["deprecated", "license", "preserve", "param", "return"]        
+        
     def getTags(self):
         """
         Parses JavaDoc style tags (inspired by Google Compiler)
         
         BlockDescription
         
+        # Flags
         @const
         @constructor
         @interface
@@ -42,9 +47,11 @@ class Comment():
         @enum {Type}
         @implements {Type}
 
+        # functions
         @param name {Type} Description
         @return {Type} Description
         
+        # pre-compiler
         @require {Type}
         @optional {Type}
         @break {Type}        
@@ -66,14 +73,17 @@ class Comment():
                     tag = self.__parseLine(line)
                     identifier = tag["identifier"]
                     if identifier in result:
-                        if identifier == "param":
-                            result[identifier].append(tag)
+                        if identifier in self.hasName:
+                            result[identifier][tag["name"]] = tag
+                            del tag["name"]
                         else:
                             raise CommentException("Duplicated tag found", identifier)
                         
                     else:
-                        if identifier == "param":
-                            result[identifier] = [tag]
+                        if identifier in self.hasName:
+                            result[identifier] = {}
+                            result[identifier][tag["name"]] = tag
+                            del tag["name"]
                         else:
                             result[identifier] = tag
                         
@@ -107,8 +117,6 @@ class Comment():
         name = ""
         
         for char in line:
-            print("Char: %s (%s - %s)" % (char, mode, identifier))
-            
             if mode == "done":
                 break
                 
@@ -117,18 +125,20 @@ class Comment():
                 
             elif char == " ":
                 if mode == "identifier":
-                    if identifier == "param":
+                    if identifier in self.hasName:
                         mode = "name"
-                    elif identifier in ["return", "type", "enum", "implements"]:
+                    elif identifier in self.hasType:
                         mode = "type"
-                    elif identifier in ["deprecated", "license", "preserve"]:
+                    elif identifier in self.hasDescription:
                         mode = "description"
                     else:
                         mode = "done"
+                        
                 elif mode == "name":
                     mode = "type"
+                    
                 elif mode == "type":
-                    if identifier in ["param", "return"]:
+                    if identifier in self.hasDescription:
                         mode = "description"
                     else:
                         mode = "done"
