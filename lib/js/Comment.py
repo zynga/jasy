@@ -229,16 +229,16 @@ class Comment():
                     tagName += char
                  
         if tagIdentifier == "param" and not tagName:
-            raise CommentError("Parameter tag is missing name!")
+            raise CommentException("Parameter tag is missing name!")
 
         if tagType:
             # Cut out leading "{" and trailing "}"
             if tagType[0] != "{" or tagType[-1] != "}":
-                raise CommentError("Invalid type string in tag!", tagIdentifier)
+                raise CommentException("Invalid type string in tag!", tagIdentifier)
             tagType = tagType[1:-1]
             
         elif tagIdentifier in ["param", "return", "type", "enum", "implements"]:
-            raise CommentError("Type information missing in tag!", tagIdentifier)
+            raise CommentException("Type information missing in tag!", tagIdentifier)
 
         # Build return value
         tagData = None
