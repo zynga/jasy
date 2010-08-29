@@ -15,6 +15,10 @@ class CommentException(Exception):
 
 class Comment():
     def __init__(self, text, variant, context, indent=""):
+        self.variant = variant
+        self.context = context
+        self.tags = None
+        
         if variant == "single":
             text = text[2:].strip()
             
@@ -23,57 +27,17 @@ class Comment():
             if text.startswith("/**"):
                 variant = "doc"
                 text = self.__processDoc(text)
+                text = self.__extractTags(text)
             else:
                 text = text[2:-2]
 
         self.text = text
-        self.variant = variant
-        self.context = context
         
-        tags = None
-        #tags = self.getTags()
-        if tags:
-            print("Tags: %s" % tags)
+    
+    def getTags(self):
+        return self.tags
         
-    hasName = ["param"]
-    hasType = ["return", "type", "enum", "implements", "require", "optional", "break"]
-    hasDescription = ["deprecated", "license", "preserve", "param", "return"]        
-        
-        
-        
-    def __processDoc(self, text):
-        if not "\n" in text:
-            return text[3:-2].strip()
-            
-        splitted = text.split("\n")[1:-1]
-        first = splitted[0]
-        
-        indent = ""
-        for char in first:
-            if char == " ":
-                indent += char
-            elif char == "*":
-                if "*" in indent:
-                    break
-                else:
-                    indent += char
-            else:
-                break
-        
-        indentLength = len(indent)
-        result = []
-        for line in splitted:
-            if len(line) <= indentLength:
-                line = ""
-            elif not line.startswith(indent):
-                raise CommentException("Invalid indention in docstring: '%s'" % line)
-            
-            result.append(line[indentLength:])
-        
-        return "\n".join(result)
-            
-        
-        
+
     def __outdent(self, text, indent):
         # outdent multi line comment text
         if "\n" in text and indent != "":
@@ -88,17 +52,57 @@ class Comment():
                     
             text = "\n".join(result)        
         
-        return text
-        
-   
+        return text            
         
         
-    def getTags(self):
+    def __processDoc(self, text):
+        if not "\n" in text:
+            return text[3:-2].strip()
+            
+        splitted = text.split("\n")[1:-1]
+        first = splitted[0]
+        
+        # first line is the master line which defines the indent of the following lines
+        indent = ""
+        for char in first:
+            if char == " ":
+                indent += char
+            elif char == "*":
+                if "*" in indent:
+                    break
+                else:
+                    indent += char
+            else:
+                break
+        
+        # cut out indent from all following lines
+        indentLength = len(indent)
+        result = []
+        for line in splitted:
+            if len(line) <= indentLength:
+                line = ""
+            elif not line.startswith(indent):
+                raise CommentException("Invalid indention in docstring: '%s'" % line)
+            
+            result.append(line[indentLength:])
+        
+        # build new text
+        return "\n".join(result)
+            
+
+            
+    hasName = ["param"]
+    hasType = ["return", "param", "type", "enum", "implements", "require", "optional", "break"]
+    hasDescription = ["deprecated", "license", "preserve", "param", "return"]        
+    isList = ["require", "optional", "break"]
+        
+        
+    def __extractTags(self, text):
         """
         Parses JavaDoc style tags (inspired by Google Compiler)
-        
+
         BlockDescription
-        
+
         # Flags
         @const
         @constructor
@@ -109,7 +113,7 @@ class Comment():
         @deprecated Description
         @license Description
         @preserve Description
-        
+
         @type {Type}
         @enum {Type}
         @implements {Type}
@@ -117,95 +121,97 @@ class Comment():
         # functions
         @param name {Type} Description
         @return {Type} Description
-        
-        # pre-compiler
+
+        # pre-compiler (lists)
         @require {Type}
         @optional {Type}
         @break {Type}        
-        """
-        
-        try:
-            return self.tags
-        except AttributeError:
-            description = ""
-            tag = None
-            result = {}
-            
-            for line in self.text.split("\n"):
-                if len(line) == 0:
-                    continue
-                    
-                elif line[0] == "@":
-                    # Create new tag, move identifier to results
-                    tag = self.__parseLine(line)
-                    identifier = tag["identifier"]
-                    if identifier in result:
-                        if identifier in self.hasName:
-                            result[identifier][tag["name"]] = tag
-                            del tag["name"]
-                        else:
-                            raise CommentException("Duplicated tag found", identifier)
-                        
+        """        
+
+        description = []
+        tagData = None
+        result = {}
+
+        for line in text.split("\n"):
+            if len(line) == 0:
+                continue
+
+            elif line[0] == "@":
+                # Create new tag, move identifier to results
+                tagIdentifier, tagName, tagData = self.__parseTagLine(line)
+                if tagIdentifier in result:
+                    if tagIdentifier in self.hasName:
+                        result[tagIdentifier][tagName] = tagData
+                    elif tagIdentifier in self.isList:
+                        result[tagIdentifier].append(tagData)
                     else:
-                        if identifier in self.hasName:
-                            result[identifier] = {}
-                            result[identifier][tag["name"]] = tag
-                            del tag["name"]
-                        else:
-                            result[identifier] = tag
-                        
-                    del tag["identifier"]
-                    
-                elif tag:
-                    tag["description"] += " %s" % line
-                    
+                        raise CommentException("Duplicated tag found", identifier)
+
                 else:
-                    description += " %s" % line
-                    
-            # Cleanup empty descriptions in all tags
-            for tag in result:
-                if description in tag and not tag["description"]:
-                    del tag["description"]
-                    
-            # Store overall description
-            result["description"] = description
-            
+                    if tagIdentifier in self.hasName:
+                        result[tagIdentifier] = {}
+                        result[tagIdentifier][tagName] = tagData
+                    elif tagIdentifier in self.isList:
+                        result[tagIdentifier] = []
+                        result[tagIdentifier].append(tagData)
+                    else:
+                        result[tagIdentifier] = tagData
+
+            elif tagData:
+                if isinstance(tagData, dict):
+                    tagData["description"] += "\n%s" % line
+                else:
+                    tagData += "\n%s" % line
+
+            else:
+                description.append(line)
+
+        # Store tags
+        if result:
             self.tags = result
-            return result
+            print(result)
+
+        # Overall description as final comment text
+        return "\n".join(description)        
+        
+        
                 
-                
-                
-    def __parseLine(self, line):
-        data = {}
-        identifier = ""
+    def __parseTagLine(self, line):
+        """ Parses a single tag line aka @foo """
         mode = "identifier"
-        description = ""
-        type = ""
-        name = ""
+
+        # Result data
+        tagIdentifier = ""
+        tagName = ""
+        tagType = ""
+        tagDescription = ""
         
         for char in line:
             if mode == "done":
                 break
                 
             elif mode == "description":
-                description += char
+                tagDescription += char
                 
             elif char == " ":
                 if mode == "identifier":
-                    if identifier in self.hasName:
+                    if tagIdentifier in self.hasName:
                         mode = "name"
-                    elif identifier in self.hasType:
+                    elif tagIdentifier in self.hasType:
                         mode = "type"
-                    elif identifier in self.hasDescription:
+                    elif tagIdentifier in self.hasDescription:
                         mode = "description"
                     else:
                         mode = "done"
                         
                 elif mode == "name":
-                    mode = "type"
+                    if tagIdentifier in self.hasType:
+                        mode = "type"
+                    else:
+                        mode = "done"
                     
                 elif mode == "type":
-                    if identifier in self.hasDescription:
+                    if tagIdentifier in self.hasDescription:
                         mode = "description"
                     else:
                         mode = "done"
@@ -213,31 +219,39 @@ class Comment():
             else:
                 if mode == "identifier":
                     # omit first "@" symbol
-                    if identifier or char != "@":
-                        identifier += char
+                    if tagIdentifier or char != "@":
+                        tagIdentifier += char
                 elif mode == "description":
-                    description += char
+                    tagDescription += char
                 elif mode == "type":
-                    type += char
+                    tagType += char
                 elif mode == "name":
-                    name += char
+                    tagName += char
                  
-        data["identifier"] = identifier
-        
-        if name:
-            data["name"] = name
-        elif identifier == "param":
+        if tagIdentifier == "param" and not tagName:
             raise CommentError("Parameter tag is missing name!")
 
-        if type:
+        if tagType:
             # Cut out leading "{" and trailing "}"
-            if type[0] != "{" or type[-1] != "}":
-                raise CommentError("Invalid type string in tag!", identifier)
-            data["type"] = type[1:-1]
+            if tagType[0] != "{" or tagType[-1] != "}":
+                raise CommentError("Invalid type string in tag!", tagIdentifier)
+            tagType = tagType[1:-1]
             
-        elif identifier in ["param", "return", "type", "enum", "implements"]:
-            raise CommentError("Doc: Type information missing in tag!", identifier)
+        elif tagIdentifier in ["param", "return", "type", "enum", "implements"]:
+            raise CommentError("Type information missing in tag!", tagIdentifier)
 
-        data["description"] = description
+        # Build return value
+        tagData = None
+        if tagIdentifier in self.hasType:
+            tagData = tagType
+            
+        if tagIdentifier in self.hasDescription:
+            if tagData == None:
+                tagData = tagDescription
+            else:
+                tagData = {
+                    "type" : tagType, 
+                    "description" : tagDescription
+                }
                         
-        return data
+        return tagIdentifier, tagName, tagData
