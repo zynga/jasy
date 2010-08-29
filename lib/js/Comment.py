@@ -3,6 +3,8 @@
 # Copyright 2010 Sebastian Werner
 #
 
+import markdown2
+
 class CommentException(Exception):
     def __init__(self, message, tag=None):
         if tag:
@@ -12,19 +14,84 @@ class CommentException(Exception):
             
 
 class Comment():
-    def __init__(self, text, style, mode):
+    def __init__(self, text, variant, context, indent=""):
+        if variant == "single":
+            text = text[2:].strip()
+            
+        elif variant == "multi":
+            text = self.__outdent(text, indent)
+            if text.startswith("/**"):
+                variant = "doc"
+                text = self.__processDoc(text)
+            else:
+                text = text[2:-2]
+
         self.text = text
-        self.style = style
-        self.mode = mode
+        self.variant = variant
+        self.context = context
         
-        tags = self.getTags()
+        tags = None
+        #tags = self.getTags()
         if tags:
             print("Tags: %s" % tags)
-        
         
     hasName = ["param"]
     hasType = ["return", "type", "enum", "implements", "require", "optional", "break"]
     hasDescription = ["deprecated", "license", "preserve", "param", "return"]        
+        
+        
+        
+    def __processDoc(self, text):
+        if not "\n" in text:
+            return text[3:-2].strip()
+            
+        splitted = text.split("\n")[1:-1]
+        first = splitted[0]
+        
+        indent = ""
+        for char in first:
+            if char == " ":
+                indent += char
+            elif char == "*":
+                if "*" in indent:
+                    break
+                else:
+                    indent += char
+            else:
+                break
+        
+        indentLength = len(indent)
+        result = []
+        for line in splitted:
+            if len(line) <= indentLength:
+                line = ""
+            elif not line.startswith(indent):
+                raise CommentException("Invalid indention in docstring: '%s'" % line)
+            
+            result.append(line[indentLength:])
+        
+        return "\n".join(result)
+            
+        
+        
+    def __outdent(self, text, indent):
+        # outdent multi line comment text
+        if "\n" in text and indent != "":
+            result = []
+            text = indent + text
+            for pos, line in enumerate(text.split("\n")):
+                if line.startswith(indent):
+                    result.append(line[len(indent):])
+                else:
+                    raise CommentException("Invalid indention in comment: %s" % text)
+                    result.append(line)
+                    
+            text = "\n".join(result)        
+        
+        return text
+        
+   
+        
         
     def getTags(self):
         """

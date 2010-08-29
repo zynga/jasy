@@ -150,36 +150,12 @@ class Tokenizer(object):
         return None
 
 
-    def cleanupComment(self, text):
-        style = "single" if text.startswith("//") else "multi"
-        text = text[2:] if style is "single" else text[2:-2]
-
-        if style == "multi":
-            # detect doc string
-            if text.startswith("*"):
-                style = "doc"
-
-            # outdent text blocks
-            splitted = text.split("\n")
-            for pos, line in enumerate(splitted):
-                # remove leading spaces
-                line = line.strip()
-
-                # remove leading star and first space
-                if style == "doc":
-                    line = line[2:]
-
-                splitted[pos] = line.strip()
-
-            text = "\n".join(splitted)
-
-        return text.strip(), style
-
-
     def skip(self):
         """Eats comments and whitespace."""
         input = self.source
         startLine = self.line
+        
+        indent = ""
         
         while (True):
             if len(input) > self.cursor:
@@ -196,6 +172,7 @@ class Tokenizer(object):
 
             if ch == "\n" and not self.scanNewlines:
                 self.line += 1
+                indent = ""
                 
             elif ch == "/" and next == "*":
                 self.cursor += 1
@@ -226,10 +203,8 @@ class Tokenizer(object):
                         self.line += 1
                         
                     text += ch
-                
-                text, style = self.cleanupComment(text)
-                comment = Comment(text, style, mode)
-                self.comments.append(comment)
+                    
+                self.comments.append(Comment(text, "multi", mode, indent))
 
             elif ch == "/" and next == "/":
                 self.cursor += 1
@@ -254,11 +229,12 @@ class Tokenizer(object):
                     
                     text += ch
                         
-                text, style = self.cleanupComment(text)
-                comment = Comment(text, style, mode)
-                self.comments.append(comment)
+                self.comments.append(Comment(text, "single", mode))
 
-            elif ch != " " and ch != "\t":
+            elif ch == " " or ch == "\t":
+                indent += ch
+
+            else:
                 self.cursor -= 1
                 return
 

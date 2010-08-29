@@ -19,7 +19,7 @@ class VanillaBuilder:
         prevComments = []
         for comment in comments:
             # post comments - for previous node
-            if comment.mode == "inline" and comment.style == "single":
+            if comment.context == "inline":
                 prevComments.append(comment)
                 
             # all other comment styles are attached to the current one
