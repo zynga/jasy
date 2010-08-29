@@ -85,7 +85,7 @@ class Comment():
             if len(line) <= indentLength:
                 line = ""
             elif not line.startswith(indent):
-                raise CommentException("Invalid indention in documentation string at line %s" % startLineNo+lineNo)
+                raise CommentException("Invalid indention in documentation string.", None, startLineNo+lineNo)
             
             result.append(line[indentLength:])
         
@@ -102,7 +102,8 @@ class Comment():
         
     def __extractTags(self, text, startLineNo):
         """
-        Parses JavaDoc style tags (inspired by Google Compiler)
+        Parses JavaDoc style tags, stores them on the instance 
+        and returns the tag-free description text
 
         BlockDescription
 
