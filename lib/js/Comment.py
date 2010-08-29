@@ -6,7 +6,7 @@
 import markdown2
 
 class CommentException(Exception):
-    def __init__(self, message, tag=None, lineNo=0):
+    def __init__(self, message, lineNo=0, tag=None):
         if tag:
             Exception.__init__(self, "Comment error in tag %s: %s (line: %s)" % (tag, message, lineNo+1))
         else:
@@ -23,7 +23,7 @@ class Comment():
             text = text[2:].strip()
             
         elif variant == "multi":
-            text = self.__outdent(text, indent)
+            text = self.__outdent(text, indent, lineNo)
             if text.startswith("/**"):
                 variant = "doc"
                 text = self.__processDoc(text, lineNo)
@@ -41,7 +41,7 @@ class Comment():
         return self.tags
         
 
-    def __outdent(self, text, indent):
+    def __outdent(self, text, indent, lineNo):
         # outdent multi line comment text
         if "\n" in text and indent != "":
             result = []
@@ -50,8 +50,7 @@ class Comment():
                 if line.startswith(indent):
                     result.append(line[len(indent):])
                 else:
-                    raise CommentException("Invalid indention in comment: %s" % text)
-                    result.append(line)
+                    raise CommentException("Invalid indention in comment", lineNo)
                     
             text = "\n".join(result)        
         
@@ -85,7 +84,7 @@ class Comment():
             if len(line) <= indentLength:
                 line = ""
             elif not line.startswith(indent):
-                raise CommentException("Invalid indention in documentation string.", None, startLineNo+lineNo)
+                raise CommentException("Invalid indention in documentation string.", startLineNo+lineNo)
             
             result.append(line[indentLength:])
         
@@ -149,7 +148,7 @@ class Comment():
                     elif tagIdentifier in self.isList:
                         result[tagIdentifier].append(tagData)
                     else:
-                        raise CommentException("Duplicated tag found", identifier, startLineNo+lineNo)
+                        raise CommentException("Duplicated tag found", startLineNo+lineNo, identifier)
 
                 else:
                     if tagIdentifier in self.hasName:
@@ -234,16 +233,16 @@ class Comment():
                     tagName += char
                  
         if tagIdentifier == "param" and not tagName:
-            raise CommentException("Parameter tag is missing name!", tagIdentifier, lineNo)
+            raise CommentException("Parameter tag is missing name!", lineNo, tagIdentifier)
 
         if tagType:
             # Cut out leading "{" and trailing "}"
             if tagType[0] != "{" or tagType[-1] != "}":
-                raise CommentException("Invalid type was used!", tagIdentifier, lineNo)
+                raise CommentException("Invalid type was used!", lineNo, tagIdentifier)
             tagType = tagType[1:-1]
             
         elif tagIdentifier in ["param", "return", "type", "enum", "implements"]:
-            raise CommentException("Type information is missing in tag!", tagIdentifier, lineNo)
+            raise CommentException("Type information is missing in tag!", lineNo, tagIdentifier)
 
         # Build return value
         tagData = None
