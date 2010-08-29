@@ -250,7 +250,6 @@ class JsResolver():
                 print("%sStack: %s" % (prefix, "=>".join(stack[stackPos:])))
                 raise Exception("Recursion detected!")
                 
-            
             stack.append(className)
 
             print("%sDeps: %s" % (prefix, className))
@@ -280,7 +279,6 @@ class JsResolver():
             if not classObj in result:
                 print("Start with: %s" % className)
                 recurser(classObj, stack)
-                print("Done with: %s" % className)
             
         return result
             
