@@ -8,7 +8,8 @@
 
 import re
 from copy import copy
-from .Lang import keywords
+from js.Lang import keywords
+from js.Comment import Comment
 
 __all__ = [ "Tokenizer" ]
 
@@ -81,49 +82,6 @@ class Token:
 class ParseError(Exception):
     def __init__(self, message, filename, line):
         Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, filename, line))
-
-
-class Comment():
-    IDENTIFIER_CHARS = r'(?u)[\.\w$]'
-    
-    HEAD = {
-        "require"  : re.compile(r"^\s* \#require  \(\s* (%s+)     \s*\)" % IDENTIFIER_CHARS, re.M|re.X),
-        "use"      : re.compile(r"^\s* \#use      \(\s* (%s+)     \s*\)" % IDENTIFIER_CHARS, re.M|re.X),
-        "optional" : re.compile(r"^\s* \#optional \(\s* (%s+)     \s*\)" % IDENTIFIER_CHARS, re.M|re.X),
-        "ignore"   : re.compile(r"^\s* \#ignore   \(\s* (%s+)     \s*\)" % IDENTIFIER_CHARS, re.M|re.X),
-        "asset"    : re.compile(r"^\s* \#asset    \(\s* ([^)]+?)  \s*\)"                   , re.M|re.X),
-        "cldr"     : re.compile(r"^\s*(\#cldr) (?:\(\s* ([^)]+?)  \s*\))?"                 , re.M|re.X),
-    }
-        
-    def __init__(self, text, style, mode):
-        self.text = text
-        self.style = style
-        self.mode = mode
-        
-        
-    def getFlags(self):
-        """ Returns a map of all known build system flags """
-        try:
-            return self.flags
-        except AttributeError:
-            if self.mode == "inline" or self.style != "multi":
-                result = None
-            else:
-                result = {}
-                for key in self.HEAD:
-                    regexp = self.HEAD[key]
-                    for entry in regexp.findall(self.text):
-                        if not key in result:
-                            result[key] = []
-                        result[key].append(entry)
-        
-                if len(result) == 0:
-                    result = None
-            
-            self.flags = result
-            return self.flags
-        
-        
 
 
 class Tokenizer(object):

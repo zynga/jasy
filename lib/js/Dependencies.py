@@ -36,13 +36,6 @@ def collect(node):
                 
             dependencies.add(className)
             
-    if "use" in flags:
-        for className in flags["use"]:
-            if className in dependencies:
-                print("Auto detected #use pre-processor hint: %s" % className)
-
-            dependencies.add(className)
-    
     return dependencies
     
     
