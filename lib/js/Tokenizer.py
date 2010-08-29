@@ -9,7 +9,7 @@
 import re
 from copy import copy
 from js.Lang import keywords
-from js.Comment import Comment
+from js.Comment import Comment, CommentException
 
 __all__ = [ "Tokenizer" ]
 
@@ -178,13 +178,14 @@ class Tokenizer(object):
                 self.cursor += 1
                 text = "/*"
                 inline = startLine == self.line and startLine > 0
+                commentStartLine = self.line
                 if startLine > 0 and startLine == self.line:
                     mode = "inline"
                 elif (self.line-1) > startLine:
                     mode = "section"
                 else:
                     mode = "block"
-                                        
+                    
                 while (True):
                     try:
                         ch = input[self.cursor]
@@ -204,7 +205,11 @@ class Tokenizer(object):
                         
                     text += ch
                     
-                self.comments.append(Comment(text, "multi", mode, indent))
+                try:
+                    self.comments.append(Comment(text, "multi", mode, commentStartLine, indent))
+                except CommentException as commentError:
+                    print("Ignoring comment (in %s): %s" % (self.filename, commentError))
+                    
 
             elif ch == "/" and next == "/":
                 self.cursor += 1
@@ -229,7 +234,10 @@ class Tokenizer(object):
                     
                     text += ch
                         
-                self.comments.append(Comment(text, "single", mode))
+                try:
+                    self.comments.append(Comment(text, "single", mode, self.line-1))
+                except CommentException:
+                    print("Ignoring comment (in %s): %s" % (self.filename, commentError))
 
             elif ch == " " or ch == "\t":
                 indent += ch
