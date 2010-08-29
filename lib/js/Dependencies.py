@@ -14,32 +14,39 @@ def collect(node):
     # All external variables/classes accessed
     dependencies = set()
     
-    # User defined flags for pre-processor (us)
-    flags = {}
+    # User defined tags for pre-processor (us)
+    tags = {
+        "require" : set(),
+        "optional" : set(),
+        "break" : set()
+    }
     
     # Start inspection
-    __inspect(node, declared, dependencies, flags)
+    __inspect(node, declared, dependencies, tags)
     
-
-    # Process flags
-    if "optional" in flags:
-        for className in flags["optional"]:
-            try:
-                dependencies.remove(className)
-            except KeyError:
-                print("Invalid #optional pre-processor hint: %s" % className)
+    # Process tags
+    for className in tags["optional"]:
+        try:
+            dependencies.remove(className)
+        except KeyError:
+            print("Invalid #optional pre-processor hint: %s" % className)
             
-    if "require" in flags:
-        for className in flags["require"]:
-            if className in dependencies:
-                print("Auto detected #require pre-processor hint: %s" % className)
-                
-            dependencies.add(className)
+    for className in tags["require"]:
+        if className in dependencies:
+            print("Auto detected #require pre-processor hint: %s" % className)
+            
+        dependencies.add(className)
+        
+    for className in tags["break"]:
+        if not className in dependencies:
+            print("Could not break non existing dependency to: %s" % className)
+
+        #dependencies.add(className)        
             
     return dependencies
     
     
-def __inspect(node, declared, dependencies, flags):
+def __inspect(node, declared, dependencies, tags):
     """ The internal inspection routine used to collect the data for deps() """
     if node.type == "script":
         variables = getattr(node, "variables", None)
@@ -73,18 +80,22 @@ def __inspect(node, declared, dependencies, flags):
                 dependencies.add(name)
                 
     # Process comments
-    if not flags:
-        try:
-            comments = node.comments
-        except AttributeError:
-            comments = None
-        
-        if comments:
-            for comment in comments:
-                commentFlags = comment.getFlags()
-                if commentFlags:
-                    flags.update(commentFlags)
+    try:
+        comments = node.comments
+    except AttributeError:
+        comments = None
+    
+    if comments:
+        for comment in comments:
+            commentTags = comment.getTags()
+            if commentTags:
+                if "require" in commentTags:
+                    tags["require"].update(set(commentTags["require"]))
+                if "optional" in commentTags:
+                    tags["optional"].update(set(commentTags["optional"]))
+                if "break" in commentTags:
+                    tags["break"].update(set(commentTags["break"]))
 
     # Process children
     for child in node:
-        __inspect(child, declared, dependencies, flags)
+        __inspect(child, declared, dependencies, tags)

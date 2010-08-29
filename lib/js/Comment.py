@@ -173,7 +173,6 @@ class Comment():
         # Store tags
         if result:
             self.tags = result
-            print(result)
 
         # Overall description as final comment text
         return "\n".join(description)        
