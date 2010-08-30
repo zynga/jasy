@@ -183,15 +183,17 @@ class JsClass():
 
 
 class BreakDependency(Exception):
-    def __init__(self, className, message):
+    def __init__(self, message, broken=None):
         Exception.__init__(self, message)
         
-        self.className = className
+        self.broken = broken
         
 
 
 
 class JsResolver():
+    debug = False
+    
     def __init__(self, session):
         self.required = []
         self.session = session
@@ -252,135 +254,98 @@ class JsResolver():
         return result
 
 
-
-
     def __sortClasses(self, classes):
         result = []
         stack = []
-        
-        self.__sortRecurser(classes, classes, stack, result)
-        
-        
-    
-    def __sortRecurser(self, todo, classes, stack, result):
-        prefix = "  " * (len(stack)+1)
-        priorize = []
-        
-        for className in todo:
-            if not className in classes:
-                continue
-            
-            print("%sProcess: %s" % (prefix, className))
-            
-            try:
-                classObj = classes[className]
-            except KeyError:
-                continue
 
-            if classObj in result:
-                continue
-
-            if className in stack:
-                stackPos = stack.index(className)
-                stack.append(className)
-                raise BreakDependency(className, "Recursion detected: Stack: %s" % ("=>".join(stack[stackPos:])))
-                            
-            print("%sDeps: %s" % (prefix, className))
-            dependencies = classObj.getDependencies()
-            breaks = classObj.getBreakDependencies()
-            broken = None
-            
-            try:
-                self.__sortRecurser(dependencies, classes, stack+[className], result)
-            except BreakDependency as ex:
-                broken = ex.className
-                print("%sBroken at class name: %s" % (prefix, broken))
-            
-            print("%sAdd: %s" % (prefix, className))
-            result.append(classObj)
-            
-            if broken:
-                print("%sRetry with: %s" % (prefix, broken))
-                try:
-                    self.__sortRecurser(dependencies, [classes[broken]], stack+[className], result)
-                except BreakDependency as ex:
-                    print("%sDependency problem at: %s" % (prefix, ex.className))
-                else:
-                    print("%sDependency problem fixed: %s" % (prefix, broken))
-                    
-            
-            
-    
-    
-
-
-    def __sortClassesOld(self, classes):
-        result = []
-        
-        def recurser(classObj, stack):
-            prefix = "  " * (len(stack)+1)
-
-            className = classObj.getName()
-            if className in stack:
-                stackPos = stack.index(className)
-                stack.append(className)
-                print("%sStack: %s" % (prefix, "=>".join(stack[stackPos:])))
-                raise BreakDependency("Recursion detected!")
-                
-            stack.append(className)
-
-            print("%sDeps: %s" % (prefix, className))
-            dependencies = classObj.getDependencies()
-            breaks = classObj.getBreakDependencies()
-            priorize = []
-            
-            for dependentName in dependencies:
-                try:
-                    dependentObj = classes[dependentName]
-                except KeyError:
-                    continue
-                    
-                if dependentObj is classObj:
-                    continue
-                    
-                if dependentObj in result:
-                    continue
-                    
-                print("%sRecurse: %s" % (prefix, dependentName))
-                try:
-                    priorizeLocal = recurser(dependentObj, list(stack))
-                    if priorizeLocal:
-                        print("Got back local priorize list: %s" % priorizeLocal)
-                        priorize.extend(priorizeLocal)
-                except BreakDependency:
-                    if dependentName in breaks:
-                        print("Break at: %s => schedule for next loop" % dependentName)
-                        priorize.append(dependentName)
-                    else:
-                        raise BreakDependency("Recursion detected!")
-                    
-                
-            if not classObj in result:
-                print("%sAdd: %s" % (prefix, className))
-                result.append(classObj)
-                
-            return priorize
-        
         for className in classes:
-            stack = []
             classObj = classes[className]
-            if not classObj in result:
-                print("")
-                print("Start with: %s" % className)
-                priorize = recurser(classObj, stack)
+            
+            self.__sortRecurser(classObj, classes, [], result)
+        
+        print("Sorted class list:")
+        for item in result:
+            print("- %s" % item)
 
+        
+    #
+    # PRE-FLIGHT CHECK???
+    # Erst alles deps überprüfen, bevor es los geht?
+    #
+    #
+        
+        
+    
+    def __sortRecurser(self, current, classes, stack, result):
+        if current in result:
+            return
+            
+        indent = "| " * (len(stack))
+        if self.debug: print("%sProcess: %s" % (indent, current))
+
+        if current in stack:
+            stackPos = stack.index(current)
+            stack.append(current)
+            raise BreakDependency("Recursion detected: Stack: %s" % ("=>".join(map(lambda item: item.getName(), stack[stackPos:]))))
+            
+        stack.append(current)
+        
+        dependencies = current.getDependencies()
+        breaks = current.getBreakDependencies()
+        
+        # Contains all dependencies which could not be solved at this level
+        # Typical reason is a circular dependency. This can be fixed
+        # using the @break keyword in API doc. This leads to break the dependency
+        # chain at this class and re-try it after the dependend class has been
+        # loaded. Breaks only modify the order slightly as they directly trying to
+        # add a dependency afterwards.
+        broken = []
+        
+        for depName in dependencies:
+            if not depName in classes:
+                continue
+            
+            depObj = classes[depName]
+            if depObj in result:
+                continue
                 
-                        
-            
-        return result
-            
-            
+            try:
+                self.__sortRecurser(depObj, classes, list(stack), result)
+            except BreakDependency as ex:
+                if depName in breaks:
+                    if self.debug: print("%sClass %s has break for: %s" % (indent, current.getName(), depName))
+                    broken.append(depName)
+                    if ex.broken:
+                        if self.debug: print("%sExtend broken list by brokens of inner failure!" % indent)
+                        broken.extend(ex.broken)
+                else:
+                    raise ex
 
+        # Add self
+        if self.debug: print("%sAdd: %s" % (indent, current))
+        result.append(current)
+        
+        # Try to add broken out dependencies immediately after the current class
+        # If this again fails, then there must be another depedency issue on top
+        # which we are solving there (hopefully).
+        if broken:
+            rebroken = []
+            
+            if self.debug: print("%sAdd brokens: %s" % (indent, broken))
+            for depName in broken:
+                depObj = classes[depName]
+
+                if self.debug: print("%sProcess broken: %s" % (indent, depName))
+                try:
+                    self.__sortRecurser(depObj, classes, list(stack), result)
+                except BreakDependency as ex:
+                    rebroken.append(depName)
+        
+            if rebroken:
+                if self.debug: print("%sIssues with re-trying to add broken items: %s" % (indent, rebroken))
+                raise BreakDependency("Retrying broken items failed as well. Out of scope to fix here.", rebroken)
+        
+            if self.debug: print("%sDone with brokens: %s" % (indent, broken))
             
 
 

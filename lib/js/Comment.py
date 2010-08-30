@@ -62,6 +62,11 @@ class Comment():
             return text[3:-2].strip()
             
         splitted = text.split("\n")[1:-1]
+        
+        # empty check
+        if not splitted:
+            raise CommentException("Empty documentation string.", startLineNo)
+        
         first = splitted[0]
         
         # first line is the master line which defines the indent of the following lines
@@ -94,9 +99,9 @@ class Comment():
 
             
     hasName = ["param"]
-    hasType = ["return", "param", "type", "enum", "implements", "require", "optional", "break"]
-    hasDescription = ["deprecated", "license", "preserve", "param", "return"]        
-    isList = ["require", "optional", "break"]
+    hasType = ["return", "param", "type", "enum", "implements", "require", "optional", "break", "throws"]
+    hasDescription = ["deprecated", "license", "preserve", "param", "return", "throws"]        
+    isList = ["require", "optional", "break", "throws"]
         
         
     def __extractTags(self, text, startLineNo):
@@ -124,6 +129,9 @@ class Comment():
         # functions
         @param name {Type} Description
         @return {Type} Description
+        
+        # lists
+        @throws {Type} Description
 
         # pre-compiler (lists)
         @require {Type}
@@ -148,7 +156,7 @@ class Comment():
                     elif tagIdentifier in self.isList:
                         result[tagIdentifier].append(tagData)
                     else:
-                        raise CommentException("Duplicated tag found", startLineNo+lineNo, identifier)
+                        raise CommentException("Duplicated tag found", startLineNo+lineNo, tagIdentifier)
 
                 else:
                     if tagIdentifier in self.hasName:
