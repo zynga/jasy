@@ -159,19 +159,35 @@ class JsClass():
             return self.dependencies
         except AttributeError:
             try:
-                dependencies = Dependencies.collect(self.getTree())
+                dependencies, breaks = Dependencies.collect(self.getTree(), self.getName())
             except Exception as ex:
                 raise Exception("Could not collect dependencies of %s: %s" % (self.name, ex))
                 
             self.dependencies = dependencies
+            self.breaks = breaks
             return dependencies
             
+    def getBreakDependencies(self):
+        try:
+            return self.breaks
+        except AttributeError:
+            self.getDependencies()
+            return self.breaks
             
     def __str__(self):
         return self.name
 
     def __repr__(self):
         return self.name
+
+
+
+class BreakDependency(Exception):
+    def __init__(self, className, message):
+        Exception.__init__(self, message)
+        
+        self.className = className
+        
 
 
 
@@ -237,23 +253,87 @@ class JsResolver():
 
 
 
+
     def __sortClasses(self, classes):
+        result = []
+        stack = []
+        
+        self.__sortRecurser(classes, classes, stack, result)
+        
+        
+    
+    def __sortRecurser(self, todo, classes, stack, result):
+        prefix = "  " * (len(stack)+1)
+        priorize = []
+        
+        for className in todo:
+            if not className in classes:
+                continue
+            
+            print("%sProcess: %s" % (prefix, className))
+            
+            try:
+                classObj = classes[className]
+            except KeyError:
+                continue
+
+            if classObj in result:
+                continue
+
+            if className in stack:
+                stackPos = stack.index(className)
+                stack.append(className)
+                raise BreakDependency(className, "Recursion detected: Stack: %s" % ("=>".join(stack[stackPos:])))
+                            
+            print("%sDeps: %s" % (prefix, className))
+            dependencies = classObj.getDependencies()
+            breaks = classObj.getBreakDependencies()
+            broken = None
+            
+            try:
+                self.__sortRecurser(dependencies, classes, stack+[className], result)
+            except BreakDependency as ex:
+                broken = ex.className
+                print("%sBroken at class name: %s" % (prefix, broken))
+            
+            print("%sAdd: %s" % (prefix, className))
+            result.append(classObj)
+            
+            if broken:
+                print("%sRetry with: %s" % (prefix, broken))
+                try:
+                    self.__sortRecurser(dependencies, [classes[broken]], stack+[className], result)
+                except BreakDependency as ex:
+                    print("%sDependency problem at: %s" % (prefix, ex.className))
+                else:
+                    print("%sDependency problem fixed: %s" % (prefix, broken))
+                    
+            
+            
+    
+    
+
+
+    def __sortClassesOld(self, classes):
         result = []
         
         def recurser(classObj, stack):
-            prefix = "  " * len(stack)
+            prefix = "  " * (len(stack)+1)
 
             className = classObj.getName()
             if className in stack:
                 stackPos = stack.index(className)
                 stack.append(className)
                 print("%sStack: %s" % (prefix, "=>".join(stack[stackPos:])))
-                raise Exception("Recursion detected!")
+                raise BreakDependency("Recursion detected!")
                 
             stack.append(className)
 
             print("%sDeps: %s" % (prefix, className))
             dependencies = classObj.getDependencies()
+            breaks = classObj.getBreakDependencies()
+            priorize = []
+            
             for dependentName in dependencies:
                 try:
                     dependentObj = classes[dependentName]
@@ -267,18 +347,35 @@ class JsResolver():
                     continue
                     
                 print("%sRecurse: %s" % (prefix, dependentName))
-                recurser(dependentObj, list(stack))
+                try:
+                    priorizeLocal = recurser(dependentObj, list(stack))
+                    if priorizeLocal:
+                        print("Got back local priorize list: %s" % priorizeLocal)
+                        priorize.extend(priorizeLocal)
+                except BreakDependency:
+                    if dependentName in breaks:
+                        print("Break at: %s => schedule for next loop" % dependentName)
+                        priorize.append(dependentName)
+                    else:
+                        raise BreakDependency("Recursion detected!")
+                    
                 
             if not classObj in result:
                 print("%sAdd: %s" % (prefix, className))
                 result.append(classObj)
+                
+            return priorize
         
         for className in classes:
             stack = []
             classObj = classes[className]
             if not classObj in result:
+                print("")
                 print("Start with: %s" % className)
-                recurser(classObj, stack)
+                priorize = recurser(classObj, stack)
+
+                
+                        
             
         return result
             

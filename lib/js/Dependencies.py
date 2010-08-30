@@ -6,13 +6,16 @@
 from js.Util import combineVariable
 
 
-def collect(node):
+def collect(node, ownName):
     """ Computes and returns the dependencies of the given node """
     # All declared variables (is copied at every function scope)
     declared = set()
     
     # All external variables/classes accessed
     dependencies = set()
+    
+    # Register breaks (depencies with lower priority)
+    breaks = set()
     
     # User defined tags for pre-processor (us)
     tags = {
@@ -23,6 +26,11 @@ def collect(node):
     
     # Start inspection
     __inspect(node, declared, dependencies, tags)
+    
+    # Filter own name
+    if ownName in dependencies:
+        print("Remove own name: %s" % ownName)
+        dependencies.remove(ownName)
     
     # Process tags
     for className in tags["optional"]:
@@ -41,9 +49,9 @@ def collect(node):
         if not className in dependencies:
             print("Could not break non existing dependency to: %s" % className)
 
-        #dependencies.add(className)        
+        breaks.add(className)        
             
-    return dependencies
+    return dependencies, breaks
     
     
 def __inspect(node, declared, dependencies, tags):
