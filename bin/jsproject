@@ -9,8 +9,8 @@ from js import *
 
 
 session = JsSession()
-session.addProject(JsProject("/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/framework"))
-session.addProject(JsProject("/Users/Sebastian/Repositories/qooxdoo.unify/qooxdoo/component/apiviewer"))
+session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/framework"))
+session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/component/apiviewer"))
 
 resolver = JsResolver(session)
 resolver.addClassName("qx.ui.core.Widget")

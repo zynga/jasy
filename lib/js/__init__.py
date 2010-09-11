@@ -39,8 +39,12 @@ class JsProject():
         self.path = path
         self.dirFilter = [".svn",".git",".hg"]
         
+        manifestPath = os.path.join(path, "manifest.cfg")
+        if not os.path.exists(manifestPath):
+            raise Exception("Invalid manifest configuration: %s" % manifestPath)
+        
         parser = SafeConfigParser()
-        parser.read(os.path.join(path, "manifest.cfg"))
+        parser.read(manifestPath)
 
         namespace = parser.get("main", "namespace")
         print("Project: %s" % namespace)
