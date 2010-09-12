@@ -195,6 +195,14 @@ class BreakDependency(Exception):
 
 
 
+def sort_by_value(d):
+    """ Returns the keys of dictionary d sorted by their values """
+    items=d.items()
+    backitems=[ [v[1],v[0]] for v in items]
+    backitems.sort()
+    return [ backitems[i][1] for i in range(0,len(backitems))]
+
+
 class JsResolver():
     debug = False
     
@@ -228,10 +236,7 @@ class JsResolver():
             self.__resolveDependencies(requiredClass, available, result)
             
         print("List contains %i classes" % len(result))
-        print("Sorting...")
-
-        sortedResult = self.__sortClasses(result)
-        print(sortedResult)
+        self.__sortClasses(result)
             
             
     def __resolveDependencies(self, classObj, available, result=None):
@@ -259,23 +264,50 @@ class JsResolver():
 
 
     def __sortClasses(self, classes):
-        result = []            
-        self.__sortRecurser(classes, [], result)
-        
-        print("Sorted class list:")
-        for item in result:
-            print("- %s" % item)
-
-
-
-    def __sortRecurser(self, classes, stack, result):
-        pass
-
-        
-        
-    
-
+        print("Computing full class dependencies...")
+        fullDeps = {}
+        for className in classes:
+            self.__fullDeps(className, classes, [], fullDeps)
             
+        # create another dictionary which just contain the number of dependency as values
+        # the idea is basically that no class can depend on another class which has the
+        # identical number of full dependencies. So sorting by them is quite safe as
+        # long as the user defines enough breaks to break-up circular dependencies.
+        fullDepsNo = {}
+        for className in fullDeps:
+            fullDepsNo[className] = len(fullDeps[className])
+        
+        print("Sorting class list...")
+        fullDepsSorted = sort_by_value(fullDepsNo)
+        for className in fullDepsSorted:
+            print("Class: %s: %s" % (className, fullDepsNo[className]))
+            
+            
+            
+    def __fullDeps(self, className, classes, stack, cache):
+        if className in stack:
+            return set()
+        
+        result = set()
+        stack.append(className)
+        
+        classObj = classes[className]
+        classDeps = classObj.getDependencies()
+        classBreaks = classObj.getBreakDependencies()
+                
+        for depName in classDeps:
+            if depName in classBreaks:
+                continue
+                
+            if depName in classes:
+                result.add(depName)
+                if depName in cache:
+                    result.update(cache[depName])
+                else:
+                    result.update(self.__fullDeps(depName, classes, list(stack), cache))
+
+        cache[className] = result
+        return result
 
 
 

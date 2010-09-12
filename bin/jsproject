@@ -13,7 +13,7 @@ session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/f
 session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/component/apiviewer"))
 
 resolver = JsResolver(session)
-resolver.addClassName("qx.ui.core.Widget")
+resolver.addClassName("qx.core.Object")
 
 classes = resolver.getClassList()
 print(classes)
