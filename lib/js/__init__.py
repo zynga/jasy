@@ -285,10 +285,13 @@ class JsResolver():
             
             
     def __fullDeps(self, className, classes, stack, cache):
-        if className in stack:
-            return set()
-        
         result = set()
+        
+        if className in stack:
+            stack.append(className)
+            print("Warn: Circular dependency: %s" % " => ".join(stack[stack.index(className):]))
+            return result
+        
         stack.append(className)
         
         classObj = classes[className]
