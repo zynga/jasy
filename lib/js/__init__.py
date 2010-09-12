@@ -264,7 +264,8 @@ class JsResolver():
 
     def __sortClasses(self, classes):
         """Sorts classes by their dependecies"""
-        print("Computing full class dependencies...")
+        print("Sorting classes...")
+        
         fullDeps = {}
         for className in classes:
             self.__fullDeps(className, classes, [], fullDeps)
@@ -277,14 +278,13 @@ class JsResolver():
         for className in fullDeps:
             fullDepsNo[className] = len(fullDeps[className])
         
-        print("Sorting class list...")
-        fullDepsSorted = sort_by_value(fullDepsNo)
+        # Finally sort classes by their number of full dependencies
         result = []
+        fullDepsSorted = sort_by_value(fullDepsNo)
         for className in fullDepsSorted:
             result.append(className)
             
         return result
-            
             
             
     def __fullDeps(self, className, classes, stack, cache):
