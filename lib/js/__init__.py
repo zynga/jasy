@@ -212,6 +212,7 @@ class JsResolver():
         
         
     def addClassName(self, className):
+        """Adds a class to the initial dependencies"""
         projects = self.session.getProjects()
         for project in projects:
             classObj = project.getClassByName(className)
@@ -225,6 +226,7 @@ class JsResolver():
         
 
     def getClassList(self):
+        """Returns the class list (with dependencies), sorted by their required load order"""
         projects = self.session.getProjects()
         available = {}
         for project in projects:
@@ -236,13 +238,10 @@ class JsResolver():
             self.__resolveDependencies(requiredClass, available, result)
             
         print("List contains %i classes" % len(result))
-        self.__sortClasses(result)
+        return self.__sortClasses(result)
             
             
-    def __resolveDependencies(self, classObj, available, result=None):
-        if result == None:
-            result = {}
-
+    def __resolveDependencies(self, classObj, available, result):
         # Add current
         className = classObj.getName()
         result[className] = classObj
@@ -264,6 +263,7 @@ class JsResolver():
 
 
     def __sortClasses(self, classes):
+        """Sorts classes by their dependecies"""
         print("Computing full class dependencies...")
         fullDeps = {}
         for className in classes:
@@ -279,12 +279,16 @@ class JsResolver():
         
         print("Sorting class list...")
         fullDepsSorted = sort_by_value(fullDepsNo)
+        result = []
         for className in fullDepsSorted:
-            print("Class: %s: %s" % (className, fullDepsNo[className]))
+            result.append(className)
+            
+        return result
             
             
             
     def __fullDeps(self, className, classes, stack, cache):
+        """Compute all (recursive) depdencies of the given class"""
         result = set()
         
         if className in stack:
