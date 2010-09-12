@@ -289,6 +289,9 @@ class JsResolver():
             
     def __fullDeps(self, className, classes, stack, cache):
         """Compute all (recursive) depdencies of the given class"""
+        if className in cache:
+            return cache[className]
+
         result = set()
         
         if className in stack:
@@ -303,15 +306,14 @@ class JsResolver():
         classBreaks = classObj.getBreakDependencies()
                 
         for depName in classDeps:
-            if depName in classBreaks:
-                continue
-                
-            if depName in classes:
+            # 1. Ignore unknown stuff
+            # 2. Ignore breaks in class order logic
+            #    Normally low-prio dependencies are added quite early, but these
+            #    recursive dependencies are always a problem - at least when one
+            #    uses instances of classes during load time.
+            if depName in classes and not depName in classBreaks:
                 result.add(depName)
-                if depName in cache:
-                    result.update(cache[depName])
-                else:
-                    result.update(self.__fullDeps(depName, classes, list(stack), cache))
+                result.update(self.__fullDeps(depName, classes, list(stack), cache))
 
         cache[className] = result
         return result
