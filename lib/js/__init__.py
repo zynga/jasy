@@ -259,97 +259,22 @@ class JsResolver():
 
 
     def __sortClasses(self, classes):
-        result = []
-        stack = []
-
-        for className in classes:
-            classObj = classes[className]
-            
-            self.__sortRecurser(classObj, classes, [], result)
+        result = []            
+        self.__sortRecurser(classes, [], result)
         
         print("Sorted class list:")
         for item in result:
             print("- %s" % item)
 
-        
-    #
-    # PRE-FLIGHT CHECK???
-    # Erst alles deps überprüfen, bevor es los geht?
-    #
-    #
+
+
+    def __sortRecurser(self, classes, stack, result):
+        pass
+
         
         
     
-    def __sortRecurser(self, current, classes, stack, result):
-        if current in result:
-            return
-            
-        indent = "| " * (len(stack))
-        if self.debug: print("%sProcess: %s" % (indent, current))
 
-        if current in stack:
-            stackPos = stack.index(current)
-            stack.append(current)
-            raise BreakDependency("Recursion detected: Stack: %s" % ("=>".join(map(lambda item: item.getName(), stack[stackPos:]))))
-            
-        stack.append(current)
-        
-        dependencies = current.getDependencies()
-        breaks = current.getBreakDependencies()
-        
-        # Contains all dependencies which could not be solved at this level
-        # Typical reason is a circular dependency. This can be fixed
-        # using the @break keyword in API doc. This leads to break the dependency
-        # chain at this class and re-try it after the dependend class has been
-        # loaded. Breaks only modify the order slightly as they directly trying to
-        # add a dependency afterwards.
-        broken = []
-        
-        for depName in dependencies:
-            if not depName in classes:
-                continue
-            
-            depObj = classes[depName]
-            if depObj in result:
-                continue
-                
-            try:
-                self.__sortRecurser(depObj, classes, list(stack), result)
-            except BreakDependency as ex:
-                if depName in breaks:
-                    if self.debug: print("%sClass %s has break for: %s" % (indent, current.getName(), depName))
-                    broken.append(depName)
-                    if ex.broken:
-                        if self.debug: print("%sExtend broken list by brokens of inner failure!" % indent)
-                        broken.extend(ex.broken)
-                else:
-                    raise ex
-
-        # Add self
-        if self.debug: print("%sAdd: %s" % (indent, current))
-        result.append(current)
-        
-        # Try to add broken out dependencies immediately after the current class
-        # If this again fails, then there must be another depedency issue on top
-        # which we are solving there (hopefully).
-        if broken:
-            rebroken = []
-            
-            if self.debug: print("%sAdd brokens: %s" % (indent, broken))
-            for depName in broken:
-                depObj = classes[depName]
-
-                if self.debug: print("%sProcess broken: %s" % (indent, depName))
-                try:
-                    self.__sortRecurser(depObj, classes, list(stack), result)
-                except BreakDependency as ex:
-                    rebroken.append(depName)
-        
-            if rebroken:
-                if self.debug: print("%sIssues with re-trying to add broken items: %s" % (indent, rebroken))
-                raise BreakDependency("Retrying broken items failed as well. Out of scope to fix here.", rebroken)
-        
-            if self.debug: print("%sDone with brokens: %s" % (indent, broken))
             
 
 

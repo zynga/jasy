@@ -208,7 +208,8 @@ class Tokenizer(object):
                 try:
                     self.comments.append(Comment(text, "multi", mode, commentStartLine, indent))
                 except CommentException as commentError:
-                    print("Ignoring comment in %s: %s" % (self.filename, commentError))
+                    #print("Ignoring comment in %s: %s" % (self.filename, commentError))
+                    pass
                     
 
             elif ch == "/" and next == "/":
@@ -237,7 +238,8 @@ class Tokenizer(object):
                 try:
                     self.comments.append(Comment(text, "single", mode, self.line-1))
                 except CommentException:
-                    print("Ignoring comment in %s: %s" % (self.filename, commentError))
+                    #print("Ignoring comment in %s: %s" % (self.filename, commentError))
+                    pass
 
             elif ch == " " or ch == "\t":
                 indent += ch
