@@ -186,12 +186,7 @@ class JsClass():
 
 
 
-class BreakDependency(Exception):
-    def __init__(self, message, broken=None):
-        Exception.__init__(self, message)
-        
-        self.broken = broken
-        
+
 
 
 
@@ -221,6 +216,9 @@ class JsResolver():
         
         # Recursively resolved dependencies of every class
         self.recursiveDeps = {}
+        
+        # Circular dependencies detected during recursive collection
+        self.circularDeps = {}
 
         # Sorted included classes
         self.sorted = []
@@ -279,102 +277,125 @@ class JsResolver():
                 self.__resolveDependencies(depClassObj, collection)
 
 
+    def getRecursiveDeps(self, className):
+        """ Returns recursively resolved dependencies of given class """
+        if not className in self.recursiveDeps:
+            self.__recursiveDepsRecurser(className, [])
+            
+        return self.recursiveDeps[className]
+            
+            
+    def __recursiveDepsRecurser(self, className, stack):
+        """ Compute all (recursive) depdencies of the given class """
+        if className in self.recursiveDeps:
+            return self.recursiveDeps[className]
 
+        result = set()
+        
+        if className in stack:
+            through = stack[stack.index(className)+1]
 
+            if not className in self.circularDeps:
+                self.circularDeps[className] = set()
+
+            if not through in self.circularDeps:
+                self.circularDeps[through] = set()
+                    
+            if not through in self.circularDeps[className]:
+                print("Circular dependency: %s <=> %s" % (className, through))
+                self.circularDeps[className].add(through)
+
+            # Store alternative way as well
+            if not className in self.circularDeps[through]:
+                self.circularDeps[through].add(className)
+            
+            # More informative debugging
+            # stack.append(className)
+            # print("Circular dependency: %s" % " => ".join(stack[stack.index(className):]) + " via " + stack[stack.index(className)+1])
+            return result
+        
+        stack.append(className)
+        
+        classObj = self.classes[className]
+        classDeps = classObj.getDependencies()
+                
+        for depName in classDeps:
+            if depName == className:
+                continue
+
+            if not depName in self.classes:
+                continue
+                
+            result.add(depName)
+            result.update(self.__recursiveDepsRecurser(depName, list(stack)))
+
+        self.recursiveDeps[className] = result
+        return result
+    
+    
+
+    def __addClassToSort(self, classObj, mode):
+        if classObj in self.sorted:
+            return
+        
+        print("__addClassToSort_1: %s (mode: %s)" % (classObj.getName(), mode))
+        
+        classDeps = classObj.getDependencies()
+        sortedDeps = {}
+    
+        # Process dependencies and sort them by their recursive dependencies
+        # Idea: Solving is easier when we are starting with the dependencies 
+        # which itself have less dependencies.
+        depCounts = {}
+        for depName in classDeps:
+            if not depName in self.classes:
+                continue
+                
+            depObj = self.classes[depName]
+            depCounts[depName] = len(self.getRecursiveDeps(depName))
+            
+        # Convert to sorted list
+        sortedDeps = sort_by_value(depCounts)
+        # print("Sorted Deps: %s: %s" % (classObj.getName(), sortedDeps))
+
+        # Next step is to add every class to the sorted list as well
+        for depName in sortedDeps:
+            # Omit recursive dependencies, add them later
+            if depName in self.circularDeps and classObj.getName() in self.circularDeps[depName]:
+                continue
+
+            self.__addClassToSort(self.classes[depName], "pre")
+            
+        print("__addClassToSort_2: %s (mode: %s)" % (classObj.getName(), mode))
+            
+            
+        # Add current obj to list
+        if not classObj in self.sorted:
+            self.sorted.append(classObj)
+
+        # Next step is to add every class to the sorted list which is part of a circular dependency
+        # This way they get added as fast as possible (read: increased priority) to make the current
+        # class runable
+        for depName in sortedDeps:
+            # Omit recursive dependencies, add them later
+            #if depName in self.circularDeps and classObj.getName() in self.circularDeps[depName]:
+            #    self.__addClassToSort(self.classes[depName], "post")
+            pass
+            
+        print("__addClassToSort_3: %s (mode: %s)" % (classObj.getName(), mode))
+            
+
+        
+    
     def getSortedClasses(self):
         """ Returns the sorted class list """
 
         if self.sorted:
             return self.sorted
 
-        # Sorting...
-            
-            
-    def __sortClasses(self, classes):
-        """Sorts classes by their dependecies"""
-        print("Sorting classes...")
-        
-        recursiveDeps = {}
-        for className in classes:
-            self.__recursiveDeps(className, classes, [], recursiveDeps)
-         
-         
-         
-         
-         # TODO: Auto break classes (circular dependencies - any chance?)
-         # break at the first class... normally a class should not make use of other classes which requires itself.
-         
-         
-        return
-         
-            
-        # create another dictionary which just contain the number of dependency as values
-        # the idea is basically that no class can depend on another class which has the
-        # identical number of full dependencies. So sorting by them is quite safe as
-        # long as the user defines enough breaks to break-up circular dependencies.
-        recursiveDepsNo = {}
-        for className in recursiveDeps:
-            recursiveDepsNo[className] = len(recursiveDeps[className])
-        
-        # Finally sort classes by their number of full dependencies
-        result = []
-        recursiveDepsSorted = sort_by_value(recursiveDepsNo)
-        for className in recursiveDepsSorted:
-            result.append(className)
-            
-        return result
-        
-        
-        
-        
-    def sortByDependenciesLength(self):
-        pass
-            
-    
-    
 
-    
-            
-    def getRecursiveDeps(self, className):
-        """ Returns recursively resolved dependencies of given class """
-        if not className in recursiveDeps:
-            self.__recursiveDepsRecurser(className, classes, [])
-            
-        return recursiveDeps[className]
-            
-            
-    def __recursiveDepsRecurser(self, className, classes, stack):
-        """Compute all (recursive) depdencies of the given class"""
-        if className in recursiveDeps:
-            return recursiveDeps[className]
-
-        result = set()
-        
-        if className in stack:
-            stack.append(className)
-            print("Warn: Circular dependency: %s" % " => ".join(stack[stack.index(className):]))
-            return result
-        
-        stack.append(className)
-        
-        classObj = classes[className]
-        classDeps = classObj.getDependencies()
-        classBreaks = classObj.getBreakDependencies()
-        classBreaks = set()
-                
-        for depName in classDeps:
-            # 1. Ignore unknown stuff
-            # 2. Ignore breaks in class order logic
-            #    Normally low-prio dependencies are added quite early, but these
-            #    recursive dependencies are always a problem - at least when one
-            #    uses instances of classes during load time.
-            if depName in classes and not depName in classBreaks:
-                result.add(depName)
-                result.update(self.__recursiveDepsRecurser(depName, classes, list(stack)))
-
-        recursiveDeps[className] = result
-        return result
-
+        for classObj in self.getIncludedClasses():
+            self.__addClassToSort(classObj, "init")
 
 
 
