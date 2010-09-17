@@ -204,11 +204,26 @@ def sort_by_value(d):
 
 
 class JsResolver():
-    debug = False
-    
     def __init__(self, session):
+        # Required classes by the user
         self.required = []
+        
+        # Keep session reference
         self.session = session
+        
+        # Collecting all available classes
+        self.classes = {}
+        for project in session.getProjects():
+            self.classes.update(project.getClasses())      
+
+        # Included classes after dependency calculation
+        self.included = []
+        
+        # Recursively resolved dependencies of every class
+        self.recursiveDeps = {}
+
+        # Sorted included classes
+        self.sorted = []
         
         
     def addClassName(self, className):
@@ -224,73 +239,114 @@ class JsResolver():
             
         self.required.append(classObj)
         
+        
+        
+        
 
-    def getClassList(self):
-        """Returns the class list (with dependencies), sorted by their required load order"""
-        projects = self.session.getProjects()
-        available = {}
-        for project in projects:
-            available.update(project.getClasses())
+    def getIncludedClasses(self):
+        """ Returns the unsorted list of classes with resolved dependencies """
 
-        result = {}
-        for requiredClass in self.required:
-            print("Require: %s" % requiredClass)
-            self.__resolveDependencies(requiredClass, available, result)
+        if self.included:
+            return self.included
+        
+        collection = {}
+        for classObj in self.required:
+            print("Require: %s" % classObj)
+            self.__resolveDependencies(classObj, collection)
             
-        print("List contains %i classes" % len(result))
-        return self.__sortClasses(result)
+        self.included = list(collection.values())
+        print("Included classes: %s" % len(self.included))      
+        
+        return self.included
+        
             
-            
-    def __resolveDependencies(self, classObj, available, result):
+    def __resolveDependencies(self, classObj, collection):
         # Add current
         className = classObj.getName()
-        result[className] = classObj
+        collection[className] = classObj
 
         # Process dependencies
         dependencies = classObj.getDependencies()
         for depClassName in dependencies:
-            if not depClassName in available:
+            if not depClassName in self.classes:
                 continue
 
-            elif depClassName == className or depClassName in result:
+            elif depClassName == className or depClassName in collection:
                 continue
 
-            elif not depClassName in result:
-                depClassObj = available[depClassName]
-                self.__resolveDependencies(depClassObj, available, result)
-
-        return result
+            elif not depClassName in collection:
+                depClassObj = self.classes[depClassName]
+                self.__resolveDependencies(depClassObj, collection)
 
 
+
+
+    def getSortedClasses(self):
+        """ Returns the sorted class list """
+
+        if self.sorted:
+            return self.sorted
+
+        # Sorting...
+            
+            
     def __sortClasses(self, classes):
         """Sorts classes by their dependecies"""
         print("Sorting classes...")
         
-        fullDeps = {}
+        recursiveDeps = {}
         for className in classes:
-            self.__fullDeps(className, classes, [], fullDeps)
+            self.__recursiveDeps(className, classes, [], recursiveDeps)
+         
+         
+         
+         
+         # TODO: Auto break classes (circular dependencies - any chance?)
+         # break at the first class... normally a class should not make use of other classes which requires itself.
+         
+         
+        return
+         
             
         # create another dictionary which just contain the number of dependency as values
         # the idea is basically that no class can depend on another class which has the
         # identical number of full dependencies. So sorting by them is quite safe as
         # long as the user defines enough breaks to break-up circular dependencies.
-        fullDepsNo = {}
-        for className in fullDeps:
-            fullDepsNo[className] = len(fullDeps[className])
+        recursiveDepsNo = {}
+        for className in recursiveDeps:
+            recursiveDepsNo[className] = len(recursiveDeps[className])
         
         # Finally sort classes by their number of full dependencies
         result = []
-        fullDepsSorted = sort_by_value(fullDepsNo)
-        for className in fullDepsSorted:
+        recursiveDepsSorted = sort_by_value(recursiveDepsNo)
+        for className in recursiveDepsSorted:
             result.append(className)
             
         return result
+        
+        
+        
+        
+    def sortByDependenciesLength(self):
+        pass
+            
+    
+    
+
+    
+            
+    def getRecursiveDeps(self, className):
+        """ Returns recursively resolved dependencies of given class """
+        if not className in recursiveDeps:
+            self.__recursiveDepsRecurser(className, classes, [])
+            
+        return recursiveDeps[className]
             
             
-    def __fullDeps(self, className, classes, stack, cache):
+    def __recursiveDepsRecurser(self, className, classes, stack):
         """Compute all (recursive) depdencies of the given class"""
-        if className in cache:
-            return cache[className]
+        if className in recursiveDeps:
+            return recursiveDeps[className]
 
         result = set()
         
@@ -304,6 +360,7 @@ class JsResolver():
         classObj = classes[className]
         classDeps = classObj.getDependencies()
         classBreaks = classObj.getBreakDependencies()
+        classBreaks = set()
                 
         for depName in classDeps:
             # 1. Ignore unknown stuff
@@ -313,10 +370,12 @@ class JsResolver():
             #    uses instances of classes during load time.
             if depName in classes and not depName in classBreaks:
                 result.add(depName)
-                result.update(self.__fullDeps(depName, classes, list(stack), cache))
+                result.update(self.__recursiveDepsRecurser(depName, classes, list(stack)))
 
-        cache[className] = result
+        recursiveDeps[className] = result
         return result
+
+
 
 
 
