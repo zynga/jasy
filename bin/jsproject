@@ -12,14 +12,19 @@ session = JsSession()
 session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/framework"))
 session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/component/apiviewer"))
 
+# Resolving dependencies
+print("Resolving dependencies...")
 resolver = JsResolver(session)
 resolver.addClassName("qx.ui.core.Widget")
-
-print("Resolving dependencies...")
 classes = resolver.getIncludedClasses()
 
+# Sorting classes
 print("Sorting classes...")
 sortedClasses = resolver.getSortedClasses()
-print("Sorted: %s" % sortedClasses)
 
+# Compiling classes
+print("Compiling classes...")
+compiler = JsCompiler(session, sortedClasses)
+result = compiler.compile()
+print(result)
 
