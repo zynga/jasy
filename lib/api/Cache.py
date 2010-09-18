@@ -3,5 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import cPickle
+import pickle
 
+class Cache:
+    pass
