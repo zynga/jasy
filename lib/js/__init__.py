@@ -219,10 +219,8 @@ class JsResolver():
         
         # Recursively resolved dependencies of every class
         self.recursiveDeps = {}
+        self.ignoredDeps = {}
         
-        # Circular dependencies detected during recursive collection
-        self.circularDeps = {}
-
         # Sorted included classes
         self.sorted = []
         
@@ -312,6 +310,7 @@ class JsResolver():
         indent = "  " * len(stack)
 
         result = set()
+        ignored = set()
         
         classObj = self.classes[className]
         classDeps = self.__getDeps(classObj)
@@ -332,6 +331,7 @@ class JsResolver():
                     if circularError.breakAt == className:
                         # print("%sRaise matching: %s == %s because of %s" % (indent, circularError.breakAt, className, depName))
                         print("%sIgnoring %s (because of circular dependency)" % (indent, depName))
+                        ignored.add(depName)
                         continue  
                     else:
                         # print("%sRaise bubble: %s != %s because of %s" % (indent, circularError.breakAt, className, depName))
@@ -342,7 +342,9 @@ class JsResolver():
          
          
         self.recursiveDeps[className] = result
+        self.ignoredDeps[className] = ignored
         print("%sSuccessful at %s: %s" % (indent1, className, result))
+        print("%sIgnored: %s" % (indent1, ignored))
         return result      
             
 
@@ -356,43 +358,21 @@ class JsResolver():
                 
         return result
     
-    
-
-    def __addClassToSort(self, classObj, stack):
-        if classObj in self.sorted:
-            return
             
-        stack.append(classObj)
         
-        
-        #deps = self.__getDeps(classObj)
-        #print("Deps: %s" % deps)
-        
-        deps = self.getRecursiveDeps(classObj)
-        print(deps)
-        
-        
-        
-        print("Add: %s" % classObj)
-        self.sorted.append(classObj)
+
             
         
         
 
-
-            
-
-        
-    
     def getSortedClasses(self):
         """ Returns the sorted class list """
 
-        if self.sorted:
-            return self.sorted
-
-
-        for classObj in self.getIncludedClasses():
-            self.__addClassToSort(classObj, [])
+        if not self.sorted:
+            for classObj in self.getIncludedClasses():
+                self.getRecursiveDeps(classObj)
+            
+        return self.sorted
 
 
 
