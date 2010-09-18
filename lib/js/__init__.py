@@ -219,9 +219,9 @@ class JsResolver():
         # Included classes after dependency calculation
         self.included = []
         
-        # Recursively resolved dependencies of every class
-        self.recursiveDeps = {}
-        self.ignoredDeps = {}
+        # Load time dependencies of every class
+        self.loadDeps = {}
+        self.circularDeps = {}
         
         # Sorted included classes
         self.sorted = []
@@ -288,20 +288,17 @@ class JsResolver():
                 self.__resolveDependencies(depClassObj, collection)
 
 
-    def getRecursiveDeps(self, classObj):
-        """ Returns recursively resolved dependencies of given class """
+    def getLoadDeps(self, classObj):
+        """ Returns load time dependencies of given class """
         
         className = classObj.getName()
-        if not className in self.recursiveDeps:
+        if not className in self.loadDeps:
             print("------------------------------------------------------------------------------------------------")
-            print("Computing recursive deps of: %s" % className)
+            print("Computing load time deps of: %s" % className)
             print("------------------------------------------------------------------------------------------------")
             result = self.__recursivelyCollect(className, [])
-            #self.recursiveDeps[className] = result
-                        
-
         
-        return self.recursiveDeps[className]
+        return self.loadDeps[className]
             
             
     def __recursivelyCollect(self, className, stack):
@@ -315,40 +312,36 @@ class JsResolver():
         indent = "  " * len(stack)
 
         result = set()
-        ignored = set()
+        circular = set()
         
         classObj = self.classes[className]
         classDeps = self.__getDeps(classObj)
         
         for depName in classDeps:
-            if depName in self.recursiveDeps:
+            if depName in self.loadDeps:
                 print("%sFast: %s" % (indent, depName))
-                if className in self.recursiveDeps[depName]:
-                    print("%sOOOOOOPS Ignore dependency %s of %s because of being circular" % (indent, depName, className))
-                else:
-                    result.update(self.recursiveDeps[depName])
-                    result.add(depName)
+                result.update(self.loadDeps[depName])
+                result.add(depName)
                 
             else:
                 try:
                     current = self.__recursivelyCollect(depName, list(stack))
                 except JsCircularDependencyBreaker as circularError:
                     if circularError.breakAt == className:
-                        # print("%sRaise matching: %s == %s because of %s" % (indent, circularError.breakAt, className, depName))
                         print("%sIgnoring circular %s" % (indent, depName))
-                        ignored.add(depName)
+                        circular.add(depName)
                         continue  
                     else:
-                        print("%sCircular: %s" % (indent, circularError.breakAt))
+                        print("%sBubble circular: %s" % (indent, circularError.breakAt))
                         raise circularError
                 
                 result.update(current)
                 result.add(depName)
          
          
-        self.recursiveDeps[className] = result
-        self.ignoredDeps[className] = ignored
-        print("%sSuccessful %s: %s (ignored: %s)" % (indent1, className, result, ignored))
+        self.loadDeps[className] = result
+        self.circularDeps[className] = circular
+        print("%sSuccessful %s: %s (circular: %s)" % (indent1, className, result, circular))
         return result      
             
         
@@ -360,7 +353,7 @@ class JsResolver():
 
         if not self.sorted:
             for classObj in self.getIncludedClasses():
-                self.getRecursiveDeps(classObj)
+                self.getLoadDeps(classObj)
             
         return self.sorted
 
