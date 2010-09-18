@@ -3,6 +3,8 @@
 # Copyright 2010 Sebastian Werner
 #
 
+from api.Cache import Cache
+
 class JsSession():
     def __init__(self):
         self.projects = []
