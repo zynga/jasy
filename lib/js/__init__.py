@@ -351,16 +351,66 @@ class JsResolver():
             
         
 
+    def getRuntimeDeps(self, classObj):
+        """ Returns user defined """
+        runtimeDeps = set()
+
+        className = classObj.getName()
+        if className in self.circularDeps:
+            circular = self.circularDeps[className]
+            if circular:
+                print("Auto Circular Break: %s to %s" % (classObj, circular))
+                runtimeDeps.update(circular)
     
+        breakDeps = classObj.getBreakDependencies()
+        runtimeDeps.update(breakDeps)
+        
+        return runtimeDeps
+
+
+    
+              
+        
+
 
     def getSortedClasses(self):
         """ Returns the sorted class list """
 
         if not self.sorted:
+            result = []
             for classObj in self.getIncludedClasses():
-                self.getLoadDeps(classObj)
+                self.__addSorted(classObj, result)
+                
+            self.sorted = result
             
         return self.sorted
+        
+        
+    def __addSorted(self, classObj, result):
+        """ Adds a single class and its dependencies to the given sorted result list """
+        
+        if classObj in result:
+            return
+                    
+        loadDeps = self.getLoadDeps(classObj)
+        runDeps = self.getRuntimeDeps(classObj)
+
+        for depName in loadDeps:
+            depObj = self.classes[depName]
+            if not depObj in result:
+                self.__addSorted(depObj, result)
+
+        if classObj in result:
+            return
+
+        result.append(classObj)
+
+        # Insert runtime dependencies as soon as possible
+        if runDeps:
+            for depName in runDeps:
+                depObj = self.classes[depName]
+                if not depObj in result:
+                    self.__addSorted(depObj, result)        
 
 
 

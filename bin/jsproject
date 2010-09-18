@@ -20,6 +20,6 @@ classes = resolver.getIncludedClasses()
 
 print("Sorting classes...")
 sortedClasses = resolver.getSortedClasses()
-
+print("Sorted: %s" % sortedClasses)
 
 
