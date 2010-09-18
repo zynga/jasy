@@ -249,7 +249,6 @@ class JsResolver():
         
         collection = {}
         for classObj in self.required:
-            print("Require: %s" % classObj)
             self.__resolveDependencies(classObj, collection)
             
         self.included = list(collection.values())
@@ -359,7 +358,7 @@ class JsResolver():
         if className in self.circularDeps:
             circular = self.circularDeps[className]
             if circular:
-                print("Auto Circular Break: %s to %s" % (classObj, circular))
+                print("Auto break: %s to %s" % (classObj, ", ".join(list(circular))))
                 runtimeDeps.update(circular)
     
         breakDeps = classObj.getBreakDependencies()
