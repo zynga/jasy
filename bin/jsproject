@@ -14,30 +14,12 @@ session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/c
 
 resolver = JsResolver(session)
 resolver.addClassName("qx.core.Object")
+
+print("Resolving dependencies...")
 classes = resolver.getIncludedClasses()
+
+print("Sorting classes...")
 sortedClasses = resolver.getSortedClasses()
 
 
 
-
-
-
-
-
-
-
-sys.exit(0)
-
-
-
-    
-print("Compiling %s classes..." % len(requiredClasses))
-    
-compressed = []
-for className in requiredClasses:
-    classPath = knownClasses[className]
-    classContent = open(classPath).read()
-    
-    #compressed.append(jscompress(jsparse(classContent, classPath)))
-    
-print(compressed)

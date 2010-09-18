@@ -288,25 +288,24 @@ class JsResolver():
                 self.__resolveDependencies(depClassObj, collection)
 
 
-    def getLoadDeps(self, classObj):
+    def getLoadDeps(self, classObj, debug=False):
         """ Returns load time dependencies of given class """
         
         className = classObj.getName()
         if not className in self.loadDeps:
-            print("------------------------------------------------------------------------------------------------")
-            print("Computing load time deps of: %s" % className)
-            print("------------------------------------------------------------------------------------------------")
-            result = self.__recursivelyCollect(className, [])
+            result = self.__recursivelyCollect(className, [], debug)
         
         return self.loadDeps[className]
             
             
-    def __recursivelyCollect(self, className, stack):
+    def __recursivelyCollect(self, className, stack, debug=False):
         if className in stack:
             raise JsCircularDependencyBreaker(className)
             
         indent1 = "  " * len(stack)
-        print("%sBegin: %s" % (indent1, className))
+        
+        if debug:
+            print("%sBegin: %s" % (indent1, className))
             
         stack.append(className)
         indent = "  " * len(stack)
@@ -319,7 +318,8 @@ class JsResolver():
         
         for depName in classDeps:
             if depName in self.loadDeps:
-                print("%sFast: %s" % (indent, depName))
+                if debug:
+                    print("%sFast: %s" % (indent, depName))
                 result.update(self.loadDeps[depName])
                 result.add(depName)
                 
@@ -328,11 +328,13 @@ class JsResolver():
                     current = self.__recursivelyCollect(depName, list(stack))
                 except JsCircularDependencyBreaker as circularError:
                     if circularError.breakAt == className:
-                        print("%sIgnoring circular %s" % (indent, depName))
+                        if debug:
+                            print("%sIgnoring circular %s" % (indent, depName))
                         circular.add(depName)
                         continue  
                     else:
-                        print("%sBubble circular: %s" % (indent, circularError.breakAt))
+                        if debug:
+                            print("%sBubble circular: %s" % (indent, circularError.breakAt))
                         raise circularError
                 
                 result.update(current)
@@ -341,7 +343,10 @@ class JsResolver():
          
         self.loadDeps[className] = result
         self.circularDeps[className] = circular
-        print("%sSuccessful %s: %s (circular: %s)" % (indent1, className, result, circular))
+        
+        if debug:
+            print("%sSuccessful %s: %s (circular: %s)" % (indent1, className, result, circular))
+        
         return result      
             
         
