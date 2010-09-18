@@ -15,8 +15,7 @@ session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/c
 resolver = JsResolver(session)
 resolver.addClassName("qx.core.Object")
 classes = resolver.getIncludedClasses()
-print("DEPS1: %s" % resolver.getRecursiveDeps("qx.Class"))
-#sortedClasses = resolver.getSortedClasses()
+sortedClasses = resolver.getSortedClasses()
 
 
 

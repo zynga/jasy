@@ -186,7 +186,10 @@ class JsClass():
 
 
 
-
+class JsCircularDependencyBreaker(Exception):
+    def __init__(self, className):
+        self.breakAt = className
+        Exception.__init__(self, "Circular dependency to: %s" % className)
 
 
 
@@ -264,7 +267,7 @@ class JsResolver():
         collection[className] = classObj
 
         # Process dependencies
-        dependencies = classObj.getDependencies()
+        dependencies = self.__getDeps(classObj)
         for depClassName in dependencies:
             if not depClassName in self.classes:
                 continue
@@ -277,112 +280,106 @@ class JsResolver():
                 self.__resolveDependencies(depClassObj, collection)
 
 
-    def getRecursiveDeps(self, className):
+
+
+
+
+
+
+
+    def getRecursiveDeps(self, classObj):
         """ Returns recursively resolved dependencies of given class """
+        
+        className = classObj.getName()
         if not className in self.recursiveDeps:
-            self.__recursiveDepsRecurser(className, [])
-            
+            print("Computing recursive deps of: %s" % className)
+            result = self.__recursivelyCollect(className, [])
+            #self.recursiveDeps[className] = result
+                        
+
+        
         return self.recursiveDeps[className]
             
             
-    def __recursiveDepsRecurser(self, className, stack):
-        """ Compute all (recursive) depdencies of the given class """
-        if className in self.recursiveDeps:
-            return self.recursiveDeps[className]
+    def __recursivelyCollect(self, className, stack):
+        if className in stack:
+            raise JsCircularDependencyBreaker(className)
+            
+        indent1 = "  " * len(stack)
+        print("%sBegin: %s" % (indent1, className))
+            
+        stack.append(className)
+        indent = "  " * len(stack)
 
         result = set()
         
-        if className in stack:
-            through = stack[stack.index(className)+1]
-
-            if not className in self.circularDeps:
-                self.circularDeps[className] = set()
-
-            if not through in self.circularDeps:
-                self.circularDeps[through] = set()
-                    
-            if not through in self.circularDeps[className]:
-                print("Circular dependency: %s <=> %s" % (className, through))
-                self.circularDeps[className].add(through)
-
-            # Store alternative way as well
-            if not className in self.circularDeps[through]:
-                self.circularDeps[through].add(className)
-            
-            # More informative debugging
-            # stack.append(className)
-            # print("Circular dependency: %s" % " => ".join(stack[stack.index(className):]) + " via " + stack[stack.index(className)+1])
-            return result
-        
-        stack.append(className)
-        
         classObj = self.classes[className]
-        classDeps = classObj.getDependencies()
-                
+        classDeps = self.__getDeps(classObj)
+        
         for depName in classDeps:
-            if depName == className:
-                continue
-
-            if not depName in self.classes:
-                continue
+            if depName in self.recursiveDeps:
+                print("%sFast-path: %s" % (indent, depName))
+                if className in self.recursiveDeps[depName]:
+                    print("%sIgnore dependency %s of %s because of being circular" % (indent, depName, className))
+                else:
+                    result.update(self.recursiveDeps[depName])
+                    result.add(depName)
                 
-            result.add(depName)
-            result.update(self.__recursiveDepsRecurser(depName, list(stack)))
-
+            else:
+                try:
+                    current = self.__recursivelyCollect(depName, list(stack))
+                except JsCircularDependencyBreaker as circularError:
+                    if circularError.breakAt == className:
+                        # print("%sRaise matching: %s == %s because of %s" % (indent, circularError.breakAt, className, depName))
+                        print("%sIgnoring %s (because of circular dependency)" % (indent, depName))
+                        continue  
+                    else:
+                        # print("%sRaise bubble: %s != %s because of %s" % (indent, circularError.breakAt, className, depName))
+                        raise circularError
+                
+                result.update(current)
+                result.add(depName)
+         
+         
         self.recursiveDeps[className] = result
+        print("%sSuccessful at %s: %s" % (indent1, className, result))
+        return result      
+            
+
+        
+        
+    def __getDeps(self, classObj):
+        result = []
+        for key in classObj.getDependencies():
+            if key in self.classes:
+                result.append(key)
+                
         return result
     
     
 
-    def __addClassToSort(self, classObj, mode):
+    def __addClassToSort(self, classObj, stack):
         if classObj in self.sorted:
             return
+            
+        stack.append(classObj)
         
-        print("__addClassToSort_1: %s (mode: %s)" % (classObj.getName(), mode))
         
-        classDeps = classObj.getDependencies()
-        sortedDeps = {}
-    
-        # Process dependencies and sort them by their recursive dependencies
-        # Idea: Solving is easier when we are starting with the dependencies 
-        # which itself have less dependencies.
-        depCounts = {}
-        for depName in classDeps:
-            if not depName in self.classes:
-                continue
-                
-            depObj = self.classes[depName]
-            depCounts[depName] = len(self.getRecursiveDeps(depName))
+        #deps = self.__getDeps(classObj)
+        #print("Deps: %s" % deps)
+        
+        deps = self.getRecursiveDeps(classObj)
+        print(deps)
+        
+        
+        
+        print("Add: %s" % classObj)
+        self.sorted.append(classObj)
             
-        # Convert to sorted list
-        sortedDeps = sort_by_value(depCounts)
-        # print("Sorted Deps: %s: %s" % (classObj.getName(), sortedDeps))
+        
+        
 
-        # Next step is to add every class to the sorted list as well
-        for depName in sortedDeps:
-            # Omit recursive dependencies, add them later
-            if depName in self.circularDeps and classObj.getName() in self.circularDeps[depName]:
-                continue
 
-            self.__addClassToSort(self.classes[depName], "pre")
-            
-        print("__addClassToSort_2: %s (mode: %s)" % (classObj.getName(), mode))
-            
-            
-        # Add current obj to list
-        if not classObj in self.sorted:
-            self.sorted.append(classObj)
-
-        # Next step is to add every class to the sorted list which is part of a circular dependency
-        # This way they get added as fast as possible (read: increased priority) to make the current
-        # class runable
-        for depName in sortedDeps:
-            # Omit recursive dependencies, add them later
-            #if depName in self.circularDeps and classObj.getName() in self.circularDeps[depName]:
-            #    self.__addClassToSort(self.classes[depName], "post")
-            pass
-            
-        print("__addClassToSort_3: %s (mode: %s)" % (classObj.getName(), mode))
             
 
         
@@ -395,7 +392,7 @@ class JsResolver():
 
 
         for classObj in self.getIncludedClasses():
-            self.__addClassToSort(classObj, "init")
+            self.__addClassToSort(classObj, [])
 
 
 
