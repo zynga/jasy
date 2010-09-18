@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-import sys, os
-
 # Extend PYTHONPATH with 'lib'
+import sys, os
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
+# Import JavaScript tooling
 from api import *
 
-
+# Application specific code
 session = JsSession()
 session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/framework"))
 session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/component/apiviewer"))
