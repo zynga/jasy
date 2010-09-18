@@ -202,6 +202,8 @@ def sort_by_value(d):
 
 
 class JsResolver():
+    debug = False
+    
     def __init__(self, session):
         # Required classes by the user
         self.required = []
@@ -226,7 +228,7 @@ class JsResolver():
         
         
     def addClassName(self, className):
-        """Adds a class to the initial dependencies"""
+        """ Adds a class to the initial dependencies """
         projects = self.session.getProjects()
         for project in projects:
             classObj = project.getClassByName(className)
@@ -237,9 +239,6 @@ class JsResolver():
             raise Exception("Unknown Class: %s" % className)
             
         self.required.append(classObj)
-        
-        
-        
         
 
     def getIncludedClasses(self):
@@ -257,7 +256,18 @@ class JsResolver():
         print("Included classes: %s" % len(self.included))      
         
         return self.included
-        
+
+
+    def __getDeps(self, classObj):
+        """ Returns dependencies of the given class to other classes """
+        result = []
+        breakDeps = classObj.getBreakDependencies()
+        for key in classObj.getDependencies():
+            if key in self.classes and not key in breakDeps:
+                result.append(key)
+
+        return result
+                    
             
     def __resolveDependencies(self, classObj, collection):
         # Add current
@@ -278,19 +288,14 @@ class JsResolver():
                 self.__resolveDependencies(depClassObj, collection)
 
 
-
-
-
-
-
-
-
     def getRecursiveDeps(self, classObj):
         """ Returns recursively resolved dependencies of given class """
         
         className = classObj.getName()
         if not className in self.recursiveDeps:
+            print("------------------------------------------------------------------------------------------------")
             print("Computing recursive deps of: %s" % className)
+            print("------------------------------------------------------------------------------------------------")
             result = self.__recursivelyCollect(className, [])
             #self.recursiveDeps[className] = result
                         
@@ -317,9 +322,9 @@ class JsResolver():
         
         for depName in classDeps:
             if depName in self.recursiveDeps:
-                print("%sFast-path: %s" % (indent, depName))
+                print("%sFast: %s" % (indent, depName))
                 if className in self.recursiveDeps[depName]:
-                    print("%sIgnore dependency %s of %s because of being circular" % (indent, depName, className))
+                    print("%sOOOOOOPS Ignore dependency %s of %s because of being circular" % (indent, depName, className))
                 else:
                     result.update(self.recursiveDeps[depName])
                     result.add(depName)
@@ -330,11 +335,11 @@ class JsResolver():
                 except JsCircularDependencyBreaker as circularError:
                     if circularError.breakAt == className:
                         # print("%sRaise matching: %s == %s because of %s" % (indent, circularError.breakAt, className, depName))
-                        print("%sIgnoring %s (because of circular dependency)" % (indent, depName))
+                        print("%sIgnoring circular %s" % (indent, depName))
                         ignored.add(depName)
                         continue  
                     else:
-                        # print("%sRaise bubble: %s != %s because of %s" % (indent, circularError.breakAt, className, depName))
+                        print("%sCircular: %s" % (indent, circularError.breakAt))
                         raise circularError
                 
                 result.update(current)
@@ -343,27 +348,12 @@ class JsResolver():
          
         self.recursiveDeps[className] = result
         self.ignoredDeps[className] = ignored
-        print("%sSuccessful at %s: %s" % (indent1, className, result))
-        print("%sIgnored: %s" % (indent1, ignored))
+        print("%sSuccessful %s: %s (ignored: %s)" % (indent1, className, result, ignored))
         return result      
             
+        
 
-        
-        
-    def __getDeps(self, classObj):
-        result = []
-        for key in classObj.getDependencies():
-            if key in self.classes:
-                result.append(key)
-                
-        return result
     
-            
-        
-
-            
-        
-        
 
     def getSortedClasses(self):
         """ Returns the sorted class list """
