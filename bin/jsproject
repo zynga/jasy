@@ -18,6 +18,11 @@ resolver = JsResolver(session)
 resolver.addClassName("qx.ui.core.Widget")
 classes = resolver.getIncludedClasses()
 
+
+# Close session
+session.close()
+
+"""
 # Sorting classes
 print("Sorting classes...")
 sortedClasses = resolver.getSortedClasses()
@@ -26,6 +31,8 @@ sortedClasses = resolver.getSortedClasses()
 print("Compiling classes...")
 compiler = JsCompiler(session, sortedClasses)
 result = compiler.compile()
+"""
+
 
 
 
