@@ -6,6 +6,9 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 
 # Import JavaScript tooling
 from api import *
+import time
+
+start = time.time()
 
 # Application specific code
 session = JsSession()
@@ -21,6 +24,9 @@ classes = resolver.getIncludedClasses()
 
 # Close session
 session.close()
+
+# Debug
+print("Runtime: %ims" % ((time.time()-start)*1000))
 
 """
 # Sorting classes
