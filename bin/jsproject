@@ -18,7 +18,8 @@ session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/c
 # Resolving dependencies
 print("Resolving dependencies...")
 resolver = JsResolver(session)
-resolver.addClassName("qx.ui.core.Widget")
+#resolver.addClassName("qx.core.Object")
+resolver.addClassName("qx.ui.window.Window")
 classes = resolver.getIncludedClasses()
 
 

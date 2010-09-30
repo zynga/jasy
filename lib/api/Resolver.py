@@ -3,12 +3,12 @@
 # Copyright 2010 Sebastian Werner
 #
 
+import threading
+
 class JsCircularDependencyBreaker(Exception):
     def __init__(self, className):
         self.breakAt = className
         Exception.__init__(self, "Circular dependency to: %s" % className)
-
-
 
 
 class JsResolver():
@@ -58,8 +58,24 @@ class JsResolver():
             return self.included
         
         collection = {}
+        threads = {}
         for classObj in self.required:
-            self.__resolveDependencies(classObj, collection)
+            self.__resolveDependencies(classObj, collection, threads)
+
+        
+        while len(threads) > 0:
+            copy = dict(threads)
+            for className in copy:
+                if className in threads:
+                    if threads[className]:
+                        try:
+                            if threads[className].is_alive():
+                                threads[className].join()
+                        except KeyError:
+                            pass
+                    
+        print("All done")
+            
             
         self.included = list(collection.values())
         print("Included classes: %s" % len(self.included))      
@@ -74,11 +90,13 @@ class JsResolver():
         for key in classObj.getDependencies():
             if key in self.classes and not key in breakDeps:
                 result.append(key)
+                
+        
 
         return result
                     
             
-    def __resolveDependencies(self, classObj, collection):
+    def __resolveDependencies(self, classObj, collection, threads):
         # Add current
         className = classObj.getName()
         collection[className] = classObj
@@ -92,9 +110,17 @@ class JsResolver():
             elif depClassName == className or depClassName in collection:
                 continue
 
-            elif not depClassName in collection:
+            elif not depClassName in collection and not depClassName in threads:
+                threads[depClassName] = None
+                # print("Start: %s" % depClassName)
                 depClassObj = self.classes[depClassName]
-                self.__resolveDependencies(depClassObj, collection)
+                t = threading.Thread(name=depClassName, target=self.__resolveDependencies, args=(depClassObj, collection, threads))
+                threads[depClassName] = t
+                t.start()
+                
+        if className in threads:
+            del threads[className]
+
 
 
     def getLoadDeps(self, classObj, debug=False):
