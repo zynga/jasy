@@ -23,7 +23,8 @@ class Cache:
             if not timestamp or timestamp <= self.__times[key]:
                 # print("From Cache: %s" % key) 
                 return self.__data[key]
-        
+
+        #print("None: %s" % key)
         return None
         
     
