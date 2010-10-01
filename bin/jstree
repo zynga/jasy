@@ -13,4 +13,4 @@ def jstree(source, filename=None):
     return root.toXml()
 
 if __name__ == "__main__":
-    print(jstree(open(sys.argv[1]).read(), sys.argv[1]))
+    print(jstree(open(sys.argv[1], "utf-8").read(), sys.argv[1]))

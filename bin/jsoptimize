@@ -32,4 +32,4 @@ def jsoptimize(source, filename=None):
 
 
 if __name__ == "__main__":
-    print(jsoptimize(open(sys.argv[1]).read(), sys.argv[1]))
+    print(jsoptimize(open(sys.argv[1], "utf-8").read(), sys.argv[1]))
