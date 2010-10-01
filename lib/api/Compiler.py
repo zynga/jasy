@@ -4,6 +4,7 @@
 #
 
 from datetime import datetime
+import logging
 
 class JsCompiler():
     def __init__(self, session, classList):
@@ -15,8 +16,11 @@ class JsCompiler():
     def compile(self, fileName=None):
         result = []
         
+        logging.info("Compiling %s classes..." % len(self.classList))
+        
         for classObj in self.classList:
             compressed = classObj.getCompressed()
+            logging.debug("Adding %s: %s bytes", classObj, len(compressed))
             
             if self.addHeaders:
                 result.append("")

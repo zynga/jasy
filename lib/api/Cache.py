@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import shelve, time
+import shelve, time, logging
 
 class Cache:
     def __init__(self):

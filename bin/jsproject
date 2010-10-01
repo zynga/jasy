@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 
 # Import JavaScript tooling
 from api import *
-import time
+import time, logging
 
 start = time.time()
 
@@ -16,7 +16,6 @@ session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/f
 session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/component/apiviewer"))
 
 # Resolving dependencies
-print("Resolving dependencies...")
 resolver = JsResolver(session)
 #resolver.addClassName("qx.core.Object")
 #resolver.addClassName("qx.ui.window.Window")
@@ -24,18 +23,14 @@ resolver.addClassName("apiviewer.Application")
 classes = resolver.getIncludedClasses()
 
 # Sorting classes
-print("Sorting classes...")
 sortedClasses = resolver.getSortedClasses()
 
 # Compiling classes
-print("Compiling classes...")
 compiler = JsCompiler(session, sortedClasses)
 compiler.compile("main.js")
 
-# Debug
-print("Runtime: %ims" % ((time.time()-start)*1000))
-
-
+# Info
+logging.info("Runtime: %ims" % ((time.time()-start)*1000))
 
 # Close session
 session.close()

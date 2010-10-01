@@ -4,6 +4,8 @@
 #
 
 import os
+import logging
+
 from js.Dependencies import collect
 from js.Parser import parse
 from js.Compressor import compress
@@ -35,6 +37,7 @@ class JsClass():
     def getTree(self):
         tree = self.__cache.read(self.__treeKey, self.__mtime)
         if tree == None:
+            logging.debug("%s: Generating tree..." % self.name)
             tree = parse(self.getText(), self.path)
             self.__cache.store(self.__treeKey, tree, self.__mtime)
             
@@ -43,6 +46,7 @@ class JsClass():
     def getDependencies(self):
         deps = self.__cache.read(self.__depKey, self.__mtime)
         if deps == None:
+            logging.debug("%s: Collecting dependencies..." % self.name)
             deps, breaks = collect(self.getTree(), self.getName())
             self.__cache.store(self.__depKey, deps, self.__mtime)
             self.__cache.store(self.__breakKey, breaks, self.__mtime)
@@ -60,6 +64,7 @@ class JsClass():
     def getCompressed(self):
         compressed = self.__cache.read(self.__compressedKey, self.__mtime)
         if compressed == None:
+            logging.debug("%s: Compressing tree..." % self.name)
             tree = self.getTree()
             compressed = compress(tree)
             self.__cache.store(self.__compressedKey, compressed, self.__mtime)

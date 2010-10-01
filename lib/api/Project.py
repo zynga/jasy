@@ -19,8 +19,8 @@ class JsProject():
         parser = SafeConfigParser()
         parser.read(manifestPath)
 
-        namespace = parser.get("main", "namespace")
-        print("Project: %s" % namespace)
+        self.namespace = parser.get("main", "namespace")
+        logging.info("Initialized project '%s'" % self.namespace)
         
         
     def setSession(self, session):
@@ -62,6 +62,7 @@ class JsProject():
 
                     classes[className] = classObj
                 
+            logging.info("Project '%s' has %s classes", self.namespace, len(classes))
             self.classes = classes
             return classes
 

@@ -4,6 +4,7 @@
 #
 
 import threading
+import logging
 
 class JsCircularDependencyBreaker(Exception):
     def __init__(self, className):
@@ -49,6 +50,7 @@ class JsResolver():
         if not classObj:
             raise Exception("Unknown Class: %s" % className)
             
+        logging.info("Add class: %s" % className)
         self.required.append(classObj)
 
 
@@ -58,6 +60,8 @@ class JsResolver():
 
         if self.included:
             return self.included
+        
+        logging.info("Collecting included classes...")
         
         collection = {}
         threads = {}
@@ -77,7 +81,7 @@ class JsResolver():
                             pass
                     
         self.included = list(collection.values())
-        print("Included classes: %s" % len(self.included))      
+        logging.info("Included classes: %s" % len(self.included))      
         
         return self.included
 
@@ -101,6 +105,8 @@ class JsResolver():
         # Add current
         className = classObj.getName()
         collection[className] = classObj
+        
+        logging.debug("Resolve Dependencies: %s" % classObj)
 
         # Process dependencies
         dependencies = self.__getDeps(classObj)
@@ -113,7 +119,7 @@ class JsResolver():
 
             elif not depClassName in collection and not depClassName in threads:
                 threads[depClassName] = None
-                # print("Start: %s" % depClassName)
+                logging.debug("Start: %s", depClassName)
                 depClassObj = self.classes[depClassName]
                 t = threading.Thread(name=depClassName, target=self.__resolveDependencies, args=(depClassObj, collection, threads))
                 threads[depClassName] = t
@@ -124,25 +130,24 @@ class JsResolver():
 
 
 
-    def getLoadDeps(self, classObj, debug=False):
+    def getLoadDeps(self, classObj):
         """ Returns load time dependencies of given class """
         
         className = classObj.getName()
         if not className in self.loadDeps:
-            result = self.__recursivelyCollect(className, [], debug)
+            result = self.__recursivelyCollect(className, [])
         
         return self.loadDeps[className]
 
 
 
-    def __recursivelyCollect(self, className, stack, debug=False):
+    def __recursivelyCollect(self, className, stack):
         if className in stack:
             raise JsCircularDependencyBreaker(className)
             
         indent1 = "  " * len(stack)
         
-        if debug:
-            print("%sBegin: %s" % (indent1, className))
+        #logging.debug("%sBegin: %s", indent1, className)
             
         stack.append(className)
         indent = "  " * len(stack)
@@ -155,8 +160,7 @@ class JsResolver():
         
         for depName in classDeps:
             if depName in self.loadDeps:
-                if debug:
-                    print("%sFast: %s" % (indent, depName))
+                #logging.debug("%sFast: %s", indent, depName)
                 result.update(self.loadDeps[depName])
                 result.add(depName)
                 
@@ -165,13 +169,11 @@ class JsResolver():
                     current = self.__recursivelyCollect(depName, list(stack))
                 except JsCircularDependencyBreaker as circularError:
                     if circularError.breakAt == className:
-                        if debug:
-                            print("%sIgnoring circular %s" % (indent, depName))
+                        #logging.debug("%sIgnoring circular %s", indent, depName)
                         circular.add(depName)
                         continue  
                     else:
-                        if debug:
-                            print("%sBubble circular: %s" % (indent, circularError.breakAt))
+                        #logging.debug("%sBubble circular: %s", indent, circularError.breakAt)
                         raise circularError
                 
                 result.update(current)
@@ -181,8 +183,7 @@ class JsResolver():
         self.loadDeps[className] = result
         self.circularDeps[className] = circular
         
-        if debug:
-            print("%sSuccessful %s: %s (circular: %s)" % (indent1, className, result, circular))
+        #logging.debug("%sSuccessful %s: %s (circular: %s)", indent1, className, result, circular)
         
         return result      
 
@@ -196,7 +197,7 @@ class JsResolver():
         if className in self.circularDeps:
             circular = self.circularDeps[className]
             if circular:
-                # print("Auto break: %s to %s" % (classObj, ", ".join(list(circular))))
+                logging.debug("Auto break: %s to %s" % (classObj, ", ".join(list(circular))))
                 runtimeDeps.update(circular)
     
         breakDeps = classObj.getBreakDependencies()
@@ -210,6 +211,8 @@ class JsResolver():
         """ Returns the sorted class list """
 
         if not self.sorted:
+            logging.info("Sorting classes...")
+            
             result = []
             for classObj in self.getIncludedClasses():
                 self.__addSorted(classObj, result)

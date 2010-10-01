@@ -3,13 +3,26 @@
 # Copyright 2010 Sebastian Werner
 #
 
+import logging
 from api.Cache import Cache
 
 class JsSession():
     def __init__(self):
         self.projects = []
         self.cache = Cache()
-        pass
+        
+        logging.basicConfig(filename="log.txt", level=logging.DEBUG, format="%(asctime)s - %(threadName)s - %(levelname)s - %(message)s")
+        
+        # define a Handler which writes INFO messages or higher to the sys.stderr
+        console = logging.StreamHandler()
+        console.setLevel(logging.INFO)
+        # set a format which is simpler for console use
+        formatter = logging.Formatter('>>> %(asctime)s %(message)s', '%H:%M:%S')
+        
+        # tell the handler to use this format
+        console.setFormatter(formatter)
+        # add the handler to the root logger
+        logging.getLogger('').addHandler(console)        
         
     def addProject(self, project):
         self.projects.append(project)
@@ -19,6 +32,6 @@ class JsSession():
         return self.projects
         
     def close(self):
-        print("Syncing cache...")
+        logging.debug("Syncing cache...")
         self.cache.close()
         
