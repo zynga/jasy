@@ -30,7 +30,7 @@ class JsClass():
         return self.__mtime
 
     def getText(self):
-        return open(self.path, "utf-8").read()
+        return open(self.path, mode="r", encoding="utf-8").read()
 
     def getTree(self):
         tree = self.__cache.read(self.__treeKey, self.__mtime)
