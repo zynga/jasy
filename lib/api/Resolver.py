@@ -74,9 +74,6 @@ class JsResolver():
                         except KeyError:
                             pass
                     
-        print("All done")
-            
-            
         self.included = list(collection.values())
         print("Included classes: %s" % len(self.included))      
         

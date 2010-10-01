@@ -28,31 +28,28 @@ class JsClass():
 
     def getTree(self):
         tree = self.cache.read(self.__treeKey)
-        if not tree:
+        if tree == None:
             tree = parse(self.getText(), self.path)
             self.cache.store(self.__treeKey, tree)
             
         return tree
 
     def getDependencies(self):
-        try:
-            return self.dependencies
-        except AttributeError:
-            try:
-                dependencies, breaks = collect(self.getTree(), self.getName())
-            except Exception as ex:
-                raise Exception("Could not collect dependencies of %s: %s" % (self.name, ex))
-                
-            self.dependencies = dependencies
-            self.breaks = breaks
-            return dependencies
+        deps = self.cache.read(self.__depKey)
+        if deps == None:
+            deps, breaks = collect(self.getTree(), self.getName())
+            self.cache.store(self.__depKey, deps)
+            self.cache.store(self.__breakKey, breaks)
+        
+        return deps
             
     def getBreakDependencies(self):
-        try:
-            return self.breaks
-        except AttributeError:
+        breaks = self.cache.read(self.__breakKey)
+        if breaks == None:
             self.getDependencies()
-            return self.breaks
+            breaks = self.cache.read(self.__breakKey)
+            
+        return breaks
             
     def __str__(self):
         return self.name

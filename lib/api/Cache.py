@@ -21,6 +21,7 @@ class Cache:
         
         if key in self.__data:
             if not timestamp or timestamp <= self.__times[key]:
+                # print("From Cache: %s" % key) 
                 return self.__data[key]
         
         return None
@@ -39,7 +40,6 @@ class Cache:
         
         self.__times[key] = timestamp
         self.__data[key] = value
-        
         
         
     def sync(self):
