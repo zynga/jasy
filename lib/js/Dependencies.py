@@ -30,11 +30,8 @@ def collect(node, ownName):
     # Filter own name
     if ownName in dependencies:
         dependencies.remove(ownName)
-
-    # Filter own name
     if ownName in breaks:
         breaks.remove(ownName)
-
     
     # Process tags
     for className in tags["optional"]:
