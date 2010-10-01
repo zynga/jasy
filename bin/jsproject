@@ -29,7 +29,7 @@ sortedClasses = resolver.getSortedClasses()
 # Compiling classes
 print("Compiling classes...")
 compiler = JsCompiler(session, sortedClasses)
-result = compiler.compile()
+compiler.compile("main.js")
 
 # Debug
 print("Runtime: %ims" % ((time.time()-start)*1000))

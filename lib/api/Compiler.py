@@ -8,12 +8,19 @@ class JsCompiler():
         self.session = session
         self.classList = classList
         
-    def compile(self):
+    def compile(self, fileName=None):
         result = []
         
         for classObj in self.classList:
             compressed = classObj.getCompressed()
             result.append(compressed)
             
-        return "\n".join(result)
+        result = "\n".join(result)
+        if fileName:
+            output = open(fileName, mode="w", encoding="utf-8")
+            output.write(result)
+            output.close()
+            
+        else:
+            return result
 
