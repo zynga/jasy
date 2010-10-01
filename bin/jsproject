@@ -19,7 +19,8 @@ session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/c
 print("Resolving dependencies...")
 resolver = JsResolver(session)
 #resolver.addClassName("qx.core.Object")
-resolver.addClassName("qx.ui.window.Window")
+#resolver.addClassName("qx.ui.window.Window")
+resolver.addClassName("apiviewer.Application")
 classes = resolver.getIncludedClasses()
 
 # Sorting classes

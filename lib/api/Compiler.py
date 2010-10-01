@@ -3,16 +3,28 @@
 # Copyright 2010 Sebastian Werner
 #
 
+from datetime import datetime
+
 class JsCompiler():
     def __init__(self, session, classList):
         self.session = session
         self.classList = classList
+        
+        self.addHeaders = True
         
     def compile(self, fileName=None):
         result = []
         
         for classObj in self.classList:
             compressed = classObj.getCompressed()
+            
+            if self.addHeaders:
+                result.append("")
+                result.append("// %s" % classObj.getName())
+                result.append("//   - size: %s bytes" % len(compressed))
+                result.append("//   - modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
+                result.append("//   - dependencies: \n//       %s" % "\n//       ".join(sorted(classObj.getDependencies())))
+            
             result.append(compressed)
             
         result = "\n".join(result)

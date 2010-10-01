@@ -25,6 +25,9 @@ class JsClass():
 
     def getName(self):
         return self.name
+        
+    def getModificationTime(self):
+        return self.__mtime
 
     def getText(self):
         return open(self.path, "utf-8").read()
