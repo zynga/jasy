@@ -119,9 +119,9 @@ class JsResolver():
 
             elif not depClassName in collection and not depClassName in threads:
                 threads[depClassName] = None
-                logging.debug("Start: %s", depClassName)
+                # logging.debug("Start: %s", depClassName)
                 depClassObj = self.classes[depClassName]
-                t = threading.Thread(name=depClassName, target=self.__resolveDependencies, args=(depClassObj, collection, threads))
+                t = threading.Thread(name="DepsClass%s" % depClassObj.id, target=self.__resolveDependencies, args=(depClassObj, collection, threads))
                 threads[depClassName] = t
                 t.start()
                 

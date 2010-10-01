@@ -10,12 +10,19 @@ from js.Dependencies import collect
 from js.Parser import parse
 from js.Compressor import compress
 
+uniqueId = 0
+
 class JsClass():
     def __init__(self, path, rel, session):
+        global uniqueId
+        
         self.path = path
         self.rel = rel
         self.session = session
         self.name = os.path.splitext(self.rel)[0].replace("/", ".")
+        self.id = uniqueId
+        
+        uniqueId += 1
 
         self.__cache = self.session.cache
         self.__mtime = os.stat(path).st_mtime
