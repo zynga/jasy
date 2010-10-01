@@ -196,7 +196,7 @@ class JsResolver():
         if className in self.circularDeps:
             circular = self.circularDeps[className]
             if circular:
-                print("Auto break: %s to %s" % (classObj, ", ".join(list(circular))))
+                # print("Auto break: %s to %s" % (classObj, ", ".join(list(circular))))
                 runtimeDeps.update(circular)
     
         breakDeps = classObj.getBreakDependencies()
