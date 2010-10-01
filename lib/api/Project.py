@@ -6,11 +6,13 @@
 import os
 from configparser import SafeConfigParser
 from api.Class import *
+from api.Cache import Cache
         
 class JsProject():
     def __init__(self, path):
         self.path = path
         self.dirFilter = [".svn",".git",".hg"]
+        self.cache = Cache(self.path)
         
         manifestPath = os.path.join(path, "manifest.cfg")
         if not os.path.exists(manifestPath):
@@ -21,6 +23,14 @@ class JsProject():
 
         self.namespace = parser.get("main", "namespace")
         logging.info("Initialized project '%s'" % self.namespace)
+        
+        
+    def clearCache(self):
+        self.cache.clear()
+        
+        
+    def close(self):
+        self.cache.close()
         
         
     def setSession(self, session):
@@ -57,7 +67,7 @@ class JsProject():
                     filePath = os.path.join(dirPath, fileName)
                     relPath = filePath[classPathLen:]
 
-                    classObj = JsClass(filePath, relPath, self.session)
+                    classObj = JsClass(filePath, relPath, self)
                     className = classObj.getName()
 
                     classes[className] = classObj

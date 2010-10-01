@@ -4,12 +4,10 @@
 #
 
 import logging
-from api.Cache import Cache
 
 class JsSession():
     def __init__(self):
         self.projects = []
-        self.cache = Cache()
         
         logging.basicConfig(filename="log.txt", level=logging.DEBUG, format="%(asctime)s - %(threadName)s - %(levelname)s - %(message)s")
         
@@ -31,7 +29,11 @@ class JsSession():
     def getProjects(self):
         return self.projects
         
+    def clearCache(self):
+        for project in self.projects:
+            project.clearCache()
+        
     def close(self):
-        logging.debug("Syncing cache...")
-        self.cache.close()
+        for project in self.projects:
+            project.close()
         

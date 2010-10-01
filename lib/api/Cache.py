@@ -3,13 +3,26 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import shelve, time, logging
+import shelve, time, logging, os, os.path
 
 class Cache:
-    def __init__(self):
-        self.__times = shelve.open("times")
-        self.__data = shelve.open("data")
+    def __init__(self, path, clear=False):
+        self.__timesFile = os.path.join(path, ".times")
+        self.__dataFile = os.path.join(path, ".data")
         
+        try:
+            self.__times = shelve.open(self.__timesFile)
+            self.__data = shelve.open(self.__dataFile)
+        except:
+            logging.warn("Invalid cache files. Clearing...")
+            self.clear()
+    
+    
+    def clear(self):
+        logging.info("Rebuilding cache files...")
+        self.__times = shelve.open(self.__timesFile, flag="n")
+        self.__data = shelve.open(self.__dataFile, flag="n")
+    
     
     def read(self, key, timestamp=None):
         """ 
@@ -19,7 +32,7 @@ class Cache:
         after the given time to be valid.
         """
         
-        if key in self.__data:
+        if key in self.__data and key in self.__times:
             if not timestamp or timestamp <= self.__times[key]:
                 # print("From Cache: %s" % key) 
                 return self.__data[key]

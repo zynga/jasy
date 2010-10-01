@@ -13,24 +13,25 @@ from js.Compressor import compress
 uniqueId = 0
 
 class JsClass():
-    def __init__(self, path, rel, session):
+    def __init__(self, path, rel, project):
         global uniqueId
         
         self.path = path
         self.rel = rel
-        self.session = session
+        self.project = project
         self.name = os.path.splitext(self.rel)[0].replace("/", ".")
         self.id = uniqueId
         
         uniqueId += 1
 
-        self.__cache = self.session.cache
+        self.__cache = self.project.cache
         self.__mtime = os.stat(path).st_mtime
 
-        self.__treeKey = "tree[%s]" % self.path
-        self.__depKey = "deps[%s]" % self.path
-        self.__breakKey = "breaks[%s]" % self.path
-        self.__compressedKey = "compressed[%s]" % self.path
+        self.__treeKey = "tree[%s]" % self.rel
+        self.__depKey = "deps[%s]" % self.rel
+        self.__breakKey = "breaks[%s]" % self.rel
+        self.__compressedKey = "compressed[%s]" % self.rel
+
 
     def getName(self):
         return self.name
