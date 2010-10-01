@@ -3,8 +3,6 @@
 # Copyright 2010 Sebastian Werner
 #
 
-from js.Compressor import compress
-
 class JsCompiler():
     def __init__(self, session, classList):
         self.session = session
@@ -14,9 +12,7 @@ class JsCompiler():
         result = []
         
         for classObj in self.classList:
-            print("Compile: %s" % classObj)
-            tree = classObj.getTree()
-            compressed = compress(tree)
+            compressed = classObj.getCompressed()
             result.append(compressed)
             
         return "\n".join(result)

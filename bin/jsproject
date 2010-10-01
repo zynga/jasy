@@ -22,14 +22,6 @@ resolver = JsResolver(session)
 resolver.addClassName("qx.ui.window.Window")
 classes = resolver.getIncludedClasses()
 
-
-# Close session
-session.close()
-
-# Debug
-print("Runtime: %ims" % ((time.time()-start)*1000))
-
-"""
 # Sorting classes
 print("Sorting classes...")
 sortedClasses = resolver.getSortedClasses()
@@ -38,8 +30,11 @@ sortedClasses = resolver.getSortedClasses()
 print("Compiling classes...")
 compiler = JsCompiler(session, sortedClasses)
 result = compiler.compile()
-"""
+
+# Debug
+print("Runtime: %ims" % ((time.time()-start)*1000))
 
 
 
-
+# Close session
+session.close()
