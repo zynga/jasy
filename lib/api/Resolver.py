@@ -37,6 +37,7 @@ class JsResolver():
         self.sorted = []
         
         
+        
     def addClassName(self, className):
         """ Adds a class to the initial dependencies """
         projects = self.session.getProjects()
@@ -49,7 +50,8 @@ class JsResolver():
             raise Exception("Unknown Class: %s" % className)
             
         self.required.append(classObj)
-        
+
+
 
     def getIncludedClasses(self):
         """ Returns the unsorted list of classes with resolved dependencies """
@@ -62,7 +64,7 @@ class JsResolver():
         for classObj in self.required:
             self.__resolveDependencies(classObj, collection, threads)
 
-        
+
         while len(threads) > 0:
             copy = dict(threads)
             for className in copy:
@@ -80,6 +82,7 @@ class JsResolver():
         return self.included
 
 
+
     def __getDeps(self, classObj):
         """ Returns dependencies of the given class to other classes """
         result = []
@@ -91,8 +94,9 @@ class JsResolver():
         
 
         return result
-                    
-            
+
+
+
     def __resolveDependencies(self, classObj, collection, threads):
         # Add current
         className = classObj.getName()
@@ -128,8 +132,9 @@ class JsResolver():
             result = self.__recursivelyCollect(className, [], debug)
         
         return self.loadDeps[className]
-            
-            
+
+
+
     def __recursivelyCollect(self, className, stack, debug=False):
         if className in stack:
             raise JsCircularDependencyBreaker(className)
@@ -180,8 +185,8 @@ class JsResolver():
             print("%sSuccessful %s: %s (circular: %s)" % (indent1, className, result, circular))
         
         return result      
-            
-        
+
+
 
     def getRuntimeDeps(self, classObj):
         """ Returns user defined """
@@ -212,9 +217,9 @@ class JsResolver():
             self.sorted = result
             
         return self.sorted
-        
-        
-        
+
+
+
     def __addSorted(self, classObj, result):
         """ Adds a single class and its dependencies to the given sorted result list """
         
@@ -240,5 +245,5 @@ class JsResolver():
                 depObj = self.classes[depName]
                 if not depObj in result:
                     self.__addSorted(depObj, result)
-                    
+
                     
