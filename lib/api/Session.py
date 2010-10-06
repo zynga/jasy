@@ -4,10 +4,13 @@
 #
 
 import logging
+import itertools
 
 class JsSession():
     def __init__(self):
         self.projects = []
+        self.variants = {}
+        self.variants["locales"] = set()
         
         logging.basicConfig(filename="log.txt", level=logging.DEBUG, format="%(asctime)s - %(threadName)s - %(levelname)s - %(message)s")
         
@@ -36,4 +39,18 @@ class JsSession():
     def close(self):
         for project in self.projects:
             project.close()
+            
+    def getPermutations(self):
+        return []
         
+        
+    def addLocale(self, id):
+        self.variants["locales"].add(id)
+            
+    def addVariant(self, name, values):
+        if type(values) != list:
+            values = [values]
+            
+        self.variants[name] = set(values)
+        
+    

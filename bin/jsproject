@@ -15,6 +15,22 @@ session = JsSession()
 session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/framework"))
 session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/component/apiviewer"))
 
+# Locale data
+session.addLocale("en_US")
+session.addLocale("de_DE")
+
+# Variant data
+session.addVariant("qx.debug", [ "on", "off" ])
+session.addVariant("qx.client", [ "webkit", "gecko", "mshtml" ])
+
+
+print("Permutations:")
+permut = session.getPermutations()
+for entry in permut:
+    print(entry)
+
+
+
 # Resolving dependencies
 resolver = JsResolver(session)
 #resolver.addClassName("qx.core.Object")

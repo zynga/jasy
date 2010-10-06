@@ -67,4 +67,6 @@ class Cache:
         """ Closes the internal storage database """
 
         self.__times.close()
-        self.__data.close()               
+        self.__data.close()         
+        
+      
