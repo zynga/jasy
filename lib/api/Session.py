@@ -43,7 +43,15 @@ class JsSession():
         for project in self.projects:
             project.close()
             
+            
+            
+            
     def getPermutations(self):
+        """
+        Combines all variants and locales to a set of permutations.
+        These define all possible combinations of the configured settings
+        """
+        
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         variants = self.variants
         
@@ -52,7 +60,13 @@ class JsSession():
         
         return combinations
         
-    def getPermutationKey(self, permutation, timed=True):
+    def getPermutationKey(self, permutation, timed=False):
+        """
+        Returns a key which can be used to identifier the permutation.
+        This key is read and parsable to restore the set of permutations.
+        Might be used for transfering the permutation for string-only communications etc.
+        """
+        
         result = []
         for key in sorted(permutation):
             result.append("%s:%s" % (key, permutation[key]))
@@ -62,9 +76,18 @@ class JsSession():
         
         return ";".join(result)
         
-    def getPermutationHash(self, permutation, timed=True):
-        key = self.getPermutationKey(permutation)
+    def getPermutationHash(self, permutation, timed=False):
+        """
+        Returns a 32 character long identifier for the permutation.
+        May optionally be timed aka includes the build runtime which
+        might be useful for correct invalidation (server caching)
+        """
+        
+        key = self.getPermutationKey(permutation, timed)
         return hashlib.md5(key.encode("utf-8")).hexdigest()
+        
+        
+        
         
     def addLocale(self, id):
         self.variants["locale"].add(id)
@@ -74,5 +97,13 @@ class JsSession():
             values = [values]
             
         self.variants[name] = set(values)
+        
+    def clearLocales(self):
+        self.variants["locale"] = set()
+        
+    def clearVariants(self):
+        for key in self.variants.keys():
+            if key != "locale":
+                del self.variants[key]
         
     
