@@ -15,12 +15,13 @@ class JsCircularDependencyBreaker(Exception):
 class JsResolver():
     debug = False
     
-    def __init__(self, session):
+    def __init__(self, session, permutation=None):
         # Required classes by the user
         self.required = []
         
-        # Keep session reference
+        # Keep session/permutation reference
         self.session = session
+        self.permutation = permutation
         
         # Collecting all available classes
         self.classes = {}
