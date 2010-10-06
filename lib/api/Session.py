@@ -41,8 +41,13 @@ class JsSession():
             project.close()
             
     def getPermutations(self):
-        return []
+        # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
+        variants = self.variants
         
+        varNames = sorted(variants)
+        combinations = [dict(zip(varNames, prod)) for prod in itertools.product(*(variants[varName] for varName in varNames))]
+        
+        return combinations
         
     def addLocale(self, id):
         self.variants["locales"].add(id)
