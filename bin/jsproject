@@ -25,7 +25,7 @@ session.addVariant("qx.debug", [ "on", "off" ])
 
 for permutation in session.getPermutations():
     hashed = session.getPermutationHash(permutation)
-    print("Permutation: %s (%s)" % (permutation, hashed))
+    print("Permutation: %s (%s)" % (permutation, hashed[0:6]))
     
     
     # Resolving dependencies

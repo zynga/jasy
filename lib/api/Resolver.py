@@ -91,13 +91,11 @@ class JsResolver():
     def __getDeps(self, classObj):
         """ Returns dependencies of the given class to other classes """
         result = []
-        breakDeps = classObj.getBreakDependencies()
-        for key in classObj.getDependencies():
+        breakDeps = classObj.getBreakDependencies(self.permutation)
+        for key in classObj.getDependencies(self.permutation):
             if key in self.classes and not key in breakDeps:
                 result.append(key)
-                
         
-
         return result
 
 
