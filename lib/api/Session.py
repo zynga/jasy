@@ -5,12 +5,15 @@
 
 import logging
 import itertools
+import hashlib
+import time
 
 class JsSession():
     def __init__(self):
         self.projects = []
         self.variants = {}
-        self.variants["locales"] = set()
+        self.variants["locale"] = set()
+        self.timestamp = time.time()
         
         logging.basicConfig(filename="log.txt", level=logging.DEBUG, format="%(asctime)s - %(threadName)s - %(levelname)s - %(message)s")
         
@@ -49,8 +52,22 @@ class JsSession():
         
         return combinations
         
+    def getPermutationKey(self, permutation, timed=True):
+        result = []
+        for key in sorted(permutation):
+            result.append("%s:%s" % (key, permutation[key]))
+        
+        if timed:
+            result.append("time:%s" % self.timestamp)
+        
+        return ";".join(result)
+        
+    def getPermutationHash(self, permutation, timed=True):
+        key = self.getPermutationKey(permutation)
+        return hashlib.md5(key.encode("utf-8")).hexdigest()
+        
     def addLocale(self, id):
-        self.variants["locales"].add(id)
+        self.variants["locale"].add(id)
             
     def addVariant(self, name, values):
         if type(values) != list:

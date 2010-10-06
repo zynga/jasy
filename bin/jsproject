@@ -17,33 +17,33 @@ session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/c
 
 # Locale data
 session.addLocale("en_US")
-session.addLocale("de_DE")
+#session.addLocale("de_DE")
 
 # Variant data
 session.addVariant("qx.debug", [ "on", "off" ])
-session.addVariant("qx.client", [ "webkit", "gecko", "mshtml" ])
+#session.addVariant("qx.client", [ "webkit", "gecko", "mshtml" ])
+
+for permutation in session.getPermutations():
+    hashed = session.getPermutationHash(permutation)
+    print("Permutation: %s (%s)" % (permutation, hashed))
+    
+    
+    # Resolving dependencies
+    resolver = JsResolver(session)
+    #resolver.addClassName("qx.core.Object")
+    #resolver.addClassName("qx.ui.window.Window")
+    resolver.addClassName("apiviewer.Application")
+    classes = resolver.getIncludedClasses()
+
+    # Sorting classes
+    sortedClasses = resolver.getSortedClasses()
+
+    # Compiling classes
+    compiler = JsCompiler(session, sortedClasses)
+    compiler.compile("main.js")
 
 
-print("Permutations:")
-permut = session.getPermutations()
-for entry in permut:
-    print(entry)
 
-
-
-# Resolving dependencies
-resolver = JsResolver(session)
-#resolver.addClassName("qx.core.Object")
-#resolver.addClassName("qx.ui.window.Window")
-resolver.addClassName("apiviewer.Application")
-classes = resolver.getIncludedClasses()
-
-# Sorting classes
-sortedClasses = resolver.getSortedClasses()
-
-# Compiling classes
-compiler = JsCompiler(session, sortedClasses)
-compiler.compile("main.js")
 
 # Info
 logging.info("Runtime: %ims" % ((time.time()-start)*1000))
