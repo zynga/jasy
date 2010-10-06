@@ -1,2 +1,4 @@
 *.pyc
 *.db
+log.txt
+*.js
