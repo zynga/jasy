@@ -5,6 +5,7 @@
 
 from api.Session import *
 from api.Project import *
-from api.Class import *
-from api.Resolver import *
-from api.Compiler import *
+from api.Permutation import *
+from api.JsClass import *
+from api.JsResolver import *
+from api.JsCompiler import *

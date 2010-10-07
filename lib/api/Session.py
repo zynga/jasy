@@ -42,10 +42,10 @@ class Session():
     def close(self):
         for project in self.projects:
             project.close()
-            
-            
-            
-            
+
+
+
+
     def getPermutations(self):
         """
         Combines all variants and locales to a set of permutations.
@@ -60,11 +60,10 @@ class Session():
         permutations = [Permutation(combi, self.timestamp) for combi in combinations]
         
         return permutations
-        
 
-        
-        
-        
+
+
+
     def addLocale(self, id):
         self.variants["locale"].add(id)
             

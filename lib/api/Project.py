@@ -3,9 +3,9 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import os
+import os, logging
 from configparser import SafeConfigParser
-from api.Class import *
+from api.JsClass import JsClass
 from api.Cache import Cache
         
 class Project():
