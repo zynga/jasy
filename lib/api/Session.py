@@ -55,8 +55,8 @@ class JsSession():
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         variants = self.variants
         
-        varNames = sorted(variants)
-        combinations = [dict(zip(varNames, prod)) for prod in itertools.product(*(variants[varName] for varName in varNames))]
+        names = sorted(variants)
+        combinations = [dict(zip(names, prod)) for prod in itertools.product(*(variants[name] for name in names))]
         
         return combinations
         
