@@ -15,6 +15,12 @@ session = Session()
 session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/framework"))
 session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/component/apiviewer"))
 
+# Simple command line support
+if len(sys.argv) > 1:
+    if sys.argv[1] == "-c":
+        print("Clearing cache...")
+        session.clearCache()
+
 # Locale data
 session.addLocale("en_US")
 #session.addLocale("de_DE")

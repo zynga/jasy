@@ -10,6 +10,8 @@ class Cache:
         self.__timesFile = os.path.join(path, ".times")
         self.__dataFile = os.path.join(path, ".data")
         
+        print("Cache: %s" % self.__dataFile)
+        
         try:
             self.__times = shelve.open(self.__timesFile)
             self.__data = shelve.open(self.__dataFile)
@@ -52,8 +54,12 @@ class Cache:
         if not timestamp:
             timestamp = time.time()
         
-        self.__times[key] = timestamp
-        self.__data[key] = value
+        try:
+            self.__times[key] = timestamp
+            self.__data[key] = value
+        except:
+            # Ignore cache store errors
+            pass
         
         
     def sync(self):

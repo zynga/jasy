@@ -27,9 +27,9 @@ class JsClass():
         self.__cache = self.project.cache
         self.__mtime = os.stat(path).st_mtime
 
-        self.__treeKey = "tree[%s]" % self.rel
-        self.__depKey = "deps[%s]" % self.rel
-        self.__breakKey = "breaks[%s]" % self.rel
+        self.__treeKey = "tree[%s]-" % self.rel
+        self.__depKey = "deps[%s]-" % self.rel
+        self.__breakKey = "breaks[%s]-" % self.rel
         self.__compressedKey = "compressed[%s]" % self.rel
 
 
@@ -43,29 +43,34 @@ class JsClass():
         return open(self.path, mode="r", encoding="utf-8").read()
 
     def getTree(self, permutation=None):
-        tree = self.__cache.read(self.__treeKey, self.__mtime)
+        field = "tree[%s]-%s" % (self.rel, permutation)
+        tree = self.__cache.read(field, self.__mtime)
         if tree == None:
             logging.debug("%s: Generating tree..." % self.name)
             tree = parse(self.getText(), self.path)
-            self.__cache.store(self.__treeKey, tree, self.__mtime)
+            self.__cache.store(field, tree, self.__mtime)
             
         return tree
 
     def getDependencies(self, permutation=None):
-        deps = self.__cache.read(self.__depKey, self.__mtime)
+        field = "deps[%s]-%s" % (self.rel, permutation)
+        deps = self.__cache.read(field, self.__mtime)
         if deps == None:
             logging.debug("%s: Collecting dependencies..." % self.name)
             deps, breaks = collect(self.getTree(permutation), self.getName())
-            self.__cache.store(self.__depKey, deps, self.__mtime)
-            self.__cache.store(self.__breakKey, breaks, self.__mtime)
+            self.__cache.store(field, deps, self.__mtime)
+            
+            field = "breaks[%s]-%s" % (self.rel, permutation)
+            self.__cache.store(field, breaks, self.__mtime)
         
         return deps
             
     def getBreakDependencies(self, permutation=None):
-        breaks = self.__cache.read(self.__breakKey, self.__mtime)
+        field = "breaks[%s]-%s" % (self.rel, permutation)
+        breaks = self.__cache.read(field, self.__mtime)
         if breaks == None:
             self.getDependencies()
-            breaks = self.__cache.read(self.__breakKey, self.__mtime)
+            breaks = self.__cache.read(field, self.__mtime)
             
         return breaks
         
