@@ -11,9 +11,9 @@ import time, logging
 start = time.time()
 
 # Application specific code
-session = JsSession()
-session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/framework"))
-session.addProject(JsProject("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/component/apiviewer"))
+session = Session()
+session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/framework"))
+session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/component/apiviewer"))
 
 # Locale data
 session.addLocale("en_US")
@@ -24,7 +24,7 @@ session.addVariant("qx.debug", [ "on", "off" ])
 #session.addVariant("qx.client", [ "webkit", "gecko", "mshtml" ])
 
 for permutation in session.getPermutations():
-    hashed = session.getPermutationHash(permutation)
+    hashed = permutation.getHash()
     print("Permutation: %s (%s)" % (permutation, hashed[0:6]))
     
     

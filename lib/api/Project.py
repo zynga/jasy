@@ -8,7 +8,7 @@ from configparser import SafeConfigParser
 from api.Class import *
 from api.Cache import Cache
         
-class JsProject():
+class Project():
     def __init__(self, path):
         self.path = path
         self.dirFilter = [".svn",".git",".hg"]

@@ -95,7 +95,7 @@ class JsResolver():
         for key in classObj.getDependencies(self.permutation):
             if key in self.classes and not key in breakDeps:
                 result.append(key)
-        
+            
         return result
 
 

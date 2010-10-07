@@ -5,10 +5,10 @@
 
 import logging
 import itertools
-import hashlib
 import time
+from api.Permutation import Permutation
 
-class JsSession():
+class Session():
     def __init__(self):
         self.projects = []
         self.variants = {}
@@ -57,35 +57,11 @@ class JsSession():
         
         names = sorted(variants)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(variants[name] for name in names))]
+        permutations = [Permutation(combi, self.timestamp) for combi in combinations]
         
-        return combinations
+        return permutations
         
-    def getPermutationKey(self, permutation, timed=False):
-        """
-        Returns a key which can be used to identifier the permutation.
-        This key is read and parsable to restore the set of permutations.
-        Might be used for transfering the permutation for string-only communications etc.
-        """
-        
-        result = []
-        for key in sorted(permutation):
-            result.append("%s:%s" % (key, permutation[key]))
-        
-        if timed:
-            result.append("time:%s" % self.timestamp)
-        
-        return ";".join(result)
-        
-    def getPermutationHash(self, permutation, timed=False):
-        """
-        Returns a 32 character long identifier for the permutation.
-        May optionally be timed aka includes the build runtime which
-        might be useful for correct invalidation (server caching)
-        """
-        
-        key = self.getPermutationKey(permutation, timed)
-        return hashlib.md5(key.encode("utf-8")).hexdigest()
-        
+
         
         
         
