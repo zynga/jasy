@@ -7,23 +7,19 @@ import shelve, time, logging, os, os.path
 
 class Cache:
     def __init__(self, path, clear=False):
-        self.__timesFile = os.path.join(path, ".times")
-        self.__dataFile = os.path.join(path, ".data")
-        
-        print("Cache: %s" % self.__dataFile)
+        self.__file = os.path.join(path, "cache")
+        logging.debug("Cache File: %s" % self.__file)
         
         try:
-            self.__times = shelve.open(self.__timesFile)
-            self.__data = shelve.open(self.__dataFile)
+            self.__db = shelve.open(self.__file)
         except:
-            logging.warn("Invalid cache files. Clearing...")
+            logging.warn("Detected faulty cache files. Rebuilding...")
             self.clear()
     
     
     def clear(self):
         logging.info("Rebuilding cache files...")
-        self.__times = shelve.open(self.__timesFile, flag="n")
-        self.__data = shelve.open(self.__dataFile, flag="n")
+        self.__db = shelve.open(self.__file, flag="n")
     
     
     def read(self, key, timestamp=None):
@@ -34,10 +30,11 @@ class Cache:
         after the given time to be valid.
         """
         
-        if key in self.__data and key in self.__times:
-            if not timestamp or timestamp <= self.__times[key]:
+        timeKey = key + "-timestamp"
+        if key in self.__db and timeKey in self.__db:
+            if not timestamp or timestamp <= self.__db[timeKey]:
                 # print("From Cache: %s" % key) 
-                return self.__data[key]
+                return self.__db[key]
 
         #print("None: %s" % key)
         return None
@@ -55,8 +52,8 @@ class Cache:
             timestamp = time.time()
         
         try:
-            self.__times[key] = timestamp
-            self.__data[key] = value
+            self.__db[key+"-timestamp"] = timestamp
+            self.__db[key] = value
         except:
             # Ignore cache store errors
             pass
@@ -64,15 +61,11 @@ class Cache:
         
     def sync(self):
         """ Syncs the internal storage database """
-        
-        self.__times.sync()
-        self.__data.sync() 
+        self.__db.sync() 
       
       
     def close(self):
         """ Closes the internal storage database """
-
-        self.__times.close()
-        self.__data.close()         
+        self.__db.close()         
         
       
