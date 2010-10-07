@@ -20,8 +20,8 @@ class Cache:
     def clear(self):
         logging.info("Rebuilding cache files...")
         self.__db = shelve.open(self.__file, flag="n")
-    
-    
+        
+        
     def read(self, key, timestamp=None):
         """ 
         Reads the given value from cache.

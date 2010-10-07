@@ -17,9 +17,13 @@ session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/com
 
 # Simple command line support
 if len(sys.argv) > 1:
-    if sys.argv[1] == "-c":
+    cmd = sys.argv[1]
+    
+    if cmd == "-c":
         print("Clearing cache...")
         session.clearCache()
+
+            
 
 # Locale data
 session.addLocale("en_US")

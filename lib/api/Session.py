@@ -38,7 +38,7 @@ class Session():
     def clearCache(self):
         for project in self.projects:
             project.clearCache()
-        
+
     def close(self):
         for project in self.projects:
             project.close()
