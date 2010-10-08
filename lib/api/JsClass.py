@@ -50,17 +50,19 @@ class JsClass():
             if not permutation:
                 logging.debug("%s: Generating tree..." % self.name)
                 tree = parse(self.getText(), self.path)
-                self.__cache.store(field, tree, self.__mtime)
                 
             # otherwise: read unmodified tree, copy it, modify it, cache it, return it
             else:
                 tree = copy.copy(self.getTree())
                 
-                logging.info("%s: Optimizing tree..." % self.name)
-                Variants.replace(tree, permutation)
-                Variants.optimize(tree)
-            
-            
+                #logging.info("%s: Optimizing tree..." % self.name)
+                
+                modified = Variants.replace(tree, permutation)
+                optimized = Variants.optimize(tree)
+                
+                logging.info("%s: Applied Permutation: %s + %s" % (self.name, modified, optimized))
+                
+            self.__cache.store(field, tree, self.__mtime)
             
         return tree
 
