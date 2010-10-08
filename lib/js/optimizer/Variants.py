@@ -11,8 +11,8 @@ from js.Parser import parseExpression
 # Public API
 #
 
-# First step: replaces all occourences with incoming values
 def replace(node, permutation):
+    """ Replaces all occourences with incoming values """
     modified = False
     
     if node.type == "dot":
@@ -32,49 +32,6 @@ def replace(node, permutation):
     return modified
         
 
-# Second step: Reprocesses JavaScript to remove dead paths
-def optimize(node):
-    optimized = False
-    
-    # Process from inside to outside
-    for child in node:
-        if optimize(child):
-            optimized = True
-        
-    # Optimize if cases
-    if node.type == "if":
-        check = __checkCondition(node.condition)
-        if check is not None:
-            optimized = True
-            
-            if check is True:
-                node.parent.replace(node, node.thenPart)
-            elif check is False:
-                if hasattr(node, "elsePart"):
-                    node.parent.replace(node, node.elsePart)
-                else:
-                    node.parent.remove(node)
-    
-    # Optimize hook statement
-    if node.type == "hook":
-        check = __checkCondition(node[0])
-        if check is not None:
-            optimized = True
-        
-            if check is True:
-                node.parent.replace(node, node[1])
-            elif check is False:
-                node.parent.replace(node, node[2])
-            
-    # Optimize block statements
-    if node.type == "block" and len(node) == 1:
-        optimized = True
-        node.parent.replace(node, node[0])
-    
-    return optimized
-    
-    
-    
     
 #
 # Implementation
