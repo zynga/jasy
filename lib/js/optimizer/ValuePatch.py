@@ -37,41 +37,6 @@ def patch(node, permutation):
 # Implementation
 #
 
-def __checkCondition(node):
-    if node.type == "false":
-        return False
-    elif node.type == "true":
-        return True
-    elif node.type == "eq":
-        return __compareNodes(node[0], node[1])
-    elif node.type == "ne":
-        return __invertResult(__compareNodes(node[0], node[1]))
-    elif node.type == "not":
-        return __invertResult(__checkCondition(node[0]))
-
-    return None
-    
-    
-def __invertResult(result):
-    if type(result) == bool:
-        return not result
-    return result
-    
-    
-def __compareNodes(a, b):
-    if a.type == b.type:
-        if a.type in ("string","number"):
-            return a.value == b.value
-        elif a.type == "true":
-            return True
-        elif b.type == "false":
-            return False    
-    elif a.type in ("true","false") and b.type in ("true","false"):
-        return False
-        
-    return None
-
-
 def __assembleDot(node, result=None):
     if result == None:
         result = []
