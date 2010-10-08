@@ -11,6 +11,17 @@ class Permutation:
         self.__timestamp = timestamp
         
         
+    def has(self, variant):
+        return variant in self.__combination
+        
+        
+    def get(self, variant):
+        if variant in self.__combination:
+            return self.__combination[variant]
+            
+        return None
+        
+        
     def getKey(self, timed=False):
         """
         Returns a key which can be used to identifier the permutation.
