@@ -69,18 +69,13 @@ class JsResolver():
         for classObj in self.required:
             self.__resolveDependencies(classObj, collection, threads)
 
-
-        while len(threads) > 0:
-            copy = dict(threads)
-            for className in copy:
-                if className in threads:
-                    if threads[className]:
-                        try:
-                            if threads[className].is_alive():
-                                threads[className].join()
-                        except KeyError:
-                            pass
-                    
+        main = threading.current_thread()
+        
+        while threading.active_count() > 1:
+            for thread in threading.enumerate():
+                if thread is not main:
+                    thread.join()
+        
         self.included = list(collection.values())
         logging.info("Included classes: %s" % len(self.included))      
         
@@ -109,7 +104,7 @@ class JsResolver():
         className = classObj.getName()
         collection[className] = classObj
         
-        logging.debug("Resolve Dependencies: %s" % classObj)
+        logging.debug("%s: Resolving dependencies..." % classObj)
 
         # Process dependencies
         dependencies = self.__getDeps(classObj)
@@ -122,7 +117,7 @@ class JsResolver():
 
             elif not depClassName in collection and not depClassName in threads:
                 threads[depClassName] = None
-                # logging.debug("Start: %s", depClassName)
+                # logging.info("Start: %s", depClassName)
                 depClassObj = self.classes[depClassName]
                 t = threading.Thread(name="DepsClass%s" % depClassObj.id, target=self.__resolveDependencies, args=(depClassObj, collection, threads))
                 threads[depClassName] = t
@@ -214,7 +209,7 @@ class JsResolver():
         """ Returns the sorted class list """
 
         if not self.sorted:
-            logging.info("Sorting classes...")
+            logging.info("Sorting %s classes..." % len(self.getIncludedClasses()))
             
             result = []
             for classObj in self.getIncludedClasses():
