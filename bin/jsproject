@@ -37,7 +37,6 @@ for permutation in session.getPermutations():
     hashed = permutation.getHash()
     logging.info("Permutation: %s" % permutation)
     
-    
     # Resolving dependencies
     resolver = JsResolver(session, permutation)
     resolver.addClassName("qx.core.Object")
@@ -46,7 +45,8 @@ for permutation in session.getPermutations():
     classes = resolver.getIncludedClasses()
 
     # Sorting classes
-    sortedClasses = resolver.getSortedClasses()
+    sorter = JsSorter(session, permutation)
+    sortedClasses = sorter.getSortedClasses(classes)
 
     # Compiling classes
     compiler = JsCompiler(session, sortedClasses)
