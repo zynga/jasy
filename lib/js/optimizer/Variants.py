@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import json
+import json, logging
 from js.Tokenizer import Tokenizer
 from js.Parser import parseExpression
 
@@ -12,48 +12,66 @@ from js.Parser import parseExpression
 #
 
 # First step: replaces all occourences with incoming values
-def replace(node, data):
+def replace(node, permutation):
+    modified = False
+    
     if node.type == "dot":
         assembled = __assembleDot(node)
-        if assembled and assembled in data:
-            # print "Replace %s => %s" % (assembled, data[assembled])
-            repl = parseExpression(Tokenizer(data[assembled], None))
-            node.parent.replace(node, repl)            
+        if assembled:
+            replacement = permutation.get(assembled)
+            if replacement:
+                print("Replace %s => %s" % (assembled, replacement))
+                repl = parseExpression(Tokenizer(replacement, None))
+                node.parent.replace(node, repl)            
+                modified = True
     
     for child in node:
-        replace(child, data)
+        if replace(child, permutation):
+            modified = True
+            
+    return modified
         
 
 # Second step: Reprocesses JavaScript to remove dead paths
 def optimize(node):
+    optimized = False
+    
     # Process from inside to outside
     for child in node:
-        optimize(child)
+        if optimize(child):
+            optimized = True
         
     # Optimize if cases
     if node.type == "if":
         check = __checkCondition(node.condition)
-        if check is True:
-            node.parent.replace(node, node.thenPart)
-        elif check is False:
-            if hasattr(node, "elsePart"):
-                node.parent.replace(node, node.elsePart)
-            else:
-                node.parent.remove(node)
+        if check is not None:
+            optimized = True
+            
+            if check is True:
+                node.parent.replace(node, node.thenPart)
+            elif check is False:
+                if hasattr(node, "elsePart"):
+                    node.parent.replace(node, node.elsePart)
+                else:
+                    node.parent.remove(node)
     
     # Optimize hook statement
     if node.type == "hook":
         check = __checkCondition(node[0])
-        if check is True:
-            node.parent.replace(node, node[1])
-        elif check is False:
-            node.parent.replace(node, node[2])
+        if check is not None:
+            optimized = True
+        
+            if check is True:
+                node.parent.replace(node, node[1])
+            elif check is False:
+                node.parent.replace(node, node[2])
             
     # Optimize block statements
     if node.type == "block" and len(node) == 1:
+        optimized = True
         node.parent.replace(node, node[0])
     
-    
+    return optimized
     
     
     
@@ -107,7 +125,7 @@ def __assembleDot(node, result=None):
         elif child.type == "dot":
             __assembleDot(child, result)
         else:
-            print("Unsupported type: %s" % child.type)
+            return None
             
     return ".".join(result)
 
