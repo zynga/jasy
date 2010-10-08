@@ -12,6 +12,9 @@ import json
 class Node(list):
     def __init__(self, tokenizer=None, type=None, args=[]):
         list.__init__(self)
+        
+        self.start = 0
+        self.end = 0
 
         if tokenizer:
             token = tokenizer.token
@@ -85,10 +88,10 @@ class Node(list):
                 raise Exception("Invalid kid: %s" % kid)
             
             if hasattr(kid, "tokenizer"):
-                if self.start == None or kid.start < self.start:
+                if not hasattr(self, "start") or self.start == None or kid.start < self.start:
                     self.start = kid.start
 
-                if self.end == None or self.end < kid.end:
+                if not hasattr(self, "end") or self.end == None or self.end < kid.end:
                     self.end = kid.end
                 
             kid.parent = self
