@@ -6,6 +6,7 @@
 from js.Tokenizer import keywords
 from js.Util import baseEncode
 from copy import copy
+import string
 
 __all__ = ["optimize"]
 
@@ -33,6 +34,19 @@ def optimize(node, translate=None, pos=0):
 #
 # Implementation
 #
+
+def baseEncode(num, alphabet=string.ascii_letters):
+    if (num == 0):
+        return alphabet[0]
+    arr = []
+    base = len(alphabet)
+    while num:
+        rem = num % base
+        num = num // base
+        arr.append(alphabet[rem])
+    arr.reverse()
+    return "".join(arr)
+    
 
 def __encode(pos):
     repl = None

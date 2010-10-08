@@ -1,5 +1,5 @@
 #
-# JavaScript Tools - Optimizer for variants (pre-compiler directives)
+# JavaScript Tools - Patches dynamic values as static values into the code
 # Copyright 2010 Sebastian Werner
 #
 
