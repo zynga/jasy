@@ -20,7 +20,7 @@ if len(sys.argv) > 1:
     cmd = sys.argv[1]
     
     if cmd == "-c":
-        print("Clearing cache...")
+        logging.info("Clearing cache...")
         session.clearCache()
 
             
