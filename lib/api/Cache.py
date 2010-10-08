@@ -11,6 +11,7 @@ class Cache:
         logging.debug("Cache File: %s" % self.__file)
         
         try:
+            logging.debug("Open cache file %s..." % self.__file)
             self.__db = shelve.open(self.__file)
         except:
             logging.warn("Detected faulty cache files. Rebuilding...")
@@ -18,7 +19,7 @@ class Cache:
     
     
     def clear(self):
-        logging.info("Rebuilding cache files...")
+        logging.debug("Initialize cache file %s..." % self.__file)
         self.__db = shelve.open(self.__file, flag="n")
         
         
