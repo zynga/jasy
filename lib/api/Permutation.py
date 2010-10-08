@@ -37,7 +37,7 @@ class Permutation:
         if timed:
             result.append("time:%s" % self.__timestamp)
 
-        return ";".join(result)
+        return "; ".join(result)
 
     def getHash(self, timed=False):
         """

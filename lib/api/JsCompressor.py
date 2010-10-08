@@ -6,17 +6,17 @@
 from datetime import datetime
 import logging
 
-class JsCompiler():
+class JsCompressor():
     def __init__(self, session, classList):
         self.session = session
         self.classList = classList
         
         self.addHeaders = True
         
-    def compile(self, fileName=None):
+    def compress(self, fileName=None):
         result = []
         
-        logging.info("Compiling %s classes..." % len(self.classList))
+        logging.info("Compressing classes...")
         
         for classObj in self.classList:
             compressed = classObj.getCompressed()

@@ -9,4 +9,4 @@ from api.Permutation import *
 from api.JsClass import *
 from api.JsResolver import *
 from api.JsSorter import *
-from api.JsCompiler import *
+from api.JsCompressor import *

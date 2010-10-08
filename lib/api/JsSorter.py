@@ -14,19 +14,20 @@ class JsCircularDependencyBreaker(Exception):
 
 
 class JsSorter:
-    def __init__(self, session, permutation=None):
-        # Keep session/permutation reference
+    def __init__(self, classes, session, permutation=None):
+        # Keep classes/session/permutation reference
+        self.__classes = classes
         self.session = session
         self.permutation = permutation
+        
+        # Building map for name-based lookup
+        self.__nameToClass = {}
+        for classObj in classes:
+            self.__nameToClass[classObj.getName()] = classObj
         
         # Load time dependencies of every class
         self.loadDeps = {}
         self.circularDeps = {}       
-        
-        # Collecting all available classes
-        self.classes = {}
-        for project in session.getProjects():
-            self.classes.update(project.getClasses())
         
         # Sorted included classes
         self.sorted = []        
@@ -41,7 +42,7 @@ class JsSorter:
 
         result = []
         for key in deps:
-            if key in self.classes and not key in breakDeps:
+            if key in self.__nameToClass and not key in breakDeps:
                 result.append(key)
 
         return result        
@@ -72,7 +73,7 @@ class JsSorter:
         result = set()
         circular = set()
 
-        classObj = self.classes[className]
+        classObj = self.__nameToClass[className]
         classDeps = self.__getFilteredDeps(classObj)
 
         for depName in classDeps:
@@ -124,14 +125,14 @@ class JsSorter:
 
 
 
-    def getSortedClasses(self, classes):
+    def getSortedClasses(self):
         """ Returns the sorted class list """
 
         if not self.sorted:
-            logging.info("Sorting %s classes..." % len(classes))
+            logging.info("Sorting classes...")
     
             result = []
-            for classObj in classes:
+            for classObj in self.__classes:
                 self.__addSorted(classObj, result)
         
             self.sorted = result
@@ -150,7 +151,7 @@ class JsSorter:
         runDeps = self.getRuntimeDeps(classObj)
 
         for depName in loadDeps:
-            depObj = self.classes[depName]
+            depObj = self.__nameToClass[depName]
             if not depObj in result:
                 self.__addSorted(depObj, result)
 
@@ -162,6 +163,6 @@ class JsSorter:
         # Insert runtime dependencies as soon as possible
         if runDeps:
             for depName in runDeps:
-                depObj = self.classes[depName]
+                depObj = self.__nameToClass[depName]
                 if not depObj in result:
                     self.__addSorted(depObj, result)
