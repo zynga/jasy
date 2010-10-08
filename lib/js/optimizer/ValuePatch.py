@@ -4,14 +4,14 @@
 #
 
 import json, logging
-from js.Tokenizer import Tokenizer
-from js.Parser import parseExpression
+from js.tokenizer.Tokenizer import Tokenizer
+from js.parser.Parser import parseExpression
 
 #
 # Public API
 #
 
-def replace(node, permutation):
+def patch(node, permutation):
     """ Replaces all occourences with incoming values """
     modified = False
     
@@ -26,7 +26,7 @@ def replace(node, permutation):
                 modified = True
     
     for child in node:
-        if replace(child, permutation):
+        if patch(child, permutation):
             modified = True
             
     return modified

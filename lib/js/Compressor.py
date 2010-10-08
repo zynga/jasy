@@ -4,7 +4,7 @@
 # 
 
 import re, sys, json
-from js.Lang import keywords
+from js.tokenizer.Lang import keywords
 
 __all__ = [ "compress" ]
 

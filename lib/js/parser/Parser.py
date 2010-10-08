@@ -6,11 +6,11 @@
 #   - Sebastian Werner <info@sebastian-werner.net> (Python Port) (2010)
 #
 
-from js.Node import Node
-from js.Tokenizer import Token
-from js.Tokenizer import Tokenizer
-from js.VanillaBuilder import VanillaBuilder
-from js.Lang import keywords
+from js.tokenizer.Tokenizer import Token
+from js.tokenizer.Tokenizer import Tokenizer
+from js.tokenizer.Lang import keywords
+from js.parser.Node import Node
+from js.parser.VanillaBuilder import VanillaBuilder
 
 #__all__ = [ "parse", "parseExpression" ]
 __all__ = [ "parse" ]

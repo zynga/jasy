@@ -8,8 +8,8 @@
 
 import re
 from copy import copy
-from js.Lang import keywords
-from js.Comment import Comment, CommentException
+from js.tokenizer.Lang import keywords
+from js.tokenizer.Comment import Comment, CommentException
 
 __all__ = [ "Tokenizer" ]
 

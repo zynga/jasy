@@ -8,9 +8,10 @@ import logging
 import copy
 
 from js.Dependencies import collect
-from js.Parser import parse
+from js.parser.Parser import parse
 from js.Compressor import compress
-from js.optimizer import Variants
+from js.optimizer.ValuePatch import patch
+from js.optimizer.DeadCode import optimize
 
 uniqueId = 0
 
@@ -57,10 +58,10 @@ class JsClass():
                 
                 #logging.info("%s: Optimizing tree..." % self.name)
                 
-                modified = Variants.replace(tree, permutation)
-                optimized = Variants.optimize(tree)
+                patched = patch(tree, permutation)
+                optimized = optimize(tree)
                 
-                logging.info("%s: Applied Permutation: %s + %s" % (self.name, modified, optimized))
+                logging.info("%s: Applied Permutation: %s + %s" % (self.name, patched, optimized))
                 
             self.__cache.store(field, tree, self.__mtime)
             
