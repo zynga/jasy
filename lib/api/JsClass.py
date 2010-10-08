@@ -5,10 +5,12 @@
 
 import os
 import logging
+import copy
 
 from js.Dependencies import collect
 from js.Parser import parse
 from js.Compressor import compress
+from js.optimizer import Variants
 
 uniqueId = 0
 
@@ -27,11 +29,6 @@ class JsClass():
         self.__cache = self.project.cache
         self.__mtime = os.stat(path).st_mtime
 
-        self.__treeKey = "tree[%s]-" % self.rel
-        self.__depKey = "deps[%s]-" % self.rel
-        self.__breakKey = "breaks[%s]-" % self.rel
-        self.__compressedKey = "compressed[%s]" % self.rel
-
 
     def getName(self):
         return self.name
@@ -41,14 +38,29 @@ class JsClass():
 
     def getText(self):
         return open(self.path, mode="r", encoding="utf-8").read()
+        
+        
+
 
     def getTree(self, permutation=None):
         field = "tree[%s]-%s" % (self.rel, permutation)
         tree = self.__cache.read(field, self.__mtime)
         if tree == None:
-            logging.debug("%s: Generating tree..." % self.name)
-            tree = parse(self.getText(), self.path)
-            self.__cache.store(field, tree, self.__mtime)
+            # generate the tree, cache it and return it
+            if not permutation:
+                logging.debug("%s: Generating tree..." % self.name)
+                tree = parse(self.getText(), self.path)
+                self.__cache.store(field, tree, self.__mtime)
+                
+            # otherwise: read unmodified tree, copy it, modify it, cache it, return it
+            else:
+                tree = copy.copy(self.getTree())
+                
+                logging.info("%s: Optimizing tree..." % self.name)
+                Variants.replace(tree, permutation)
+                Variants.optimize(tree)
+            
+            
             
         return tree
 
@@ -69,18 +81,19 @@ class JsClass():
         field = "breaks[%s]-%s" % (self.rel, permutation)
         breaks = self.__cache.read(field, self.__mtime)
         if breaks == None:
-            self.getDependencies()
+            self.getDependencies(permutation)
             breaks = self.__cache.read(field, self.__mtime)
             
         return breaks
         
     def getCompressed(self, permutation=None):
-        compressed = self.__cache.read(self.__compressedKey, self.__mtime)
+        field = "compressed[%s]-%s" % (self.rel, permutation)
+        compressed = self.__cache.read(field, self.__mtime)
         if compressed == None:
             logging.debug("%s: Compressing tree..." % self.name)
             tree = self.getTree(permutation)
             compressed = compress(tree)
-            self.__cache.store(self.__compressedKey, compressed, self.__mtime)
+            self.__cache.store(field, compressed, self.__mtime)
             
         return compressed
             
