@@ -38,9 +38,9 @@ def optimize(node):
                 node.parent.replace(node, node[2])
             
     # Optimize block statements
-    if node.type == "block" and len(node) == 1:
-        optimized = True
-        node.parent.replace(node, node[0])
+    #if node.type == "block" and len(node) == 1:
+    #    optimized = True
+    #    node.parent.replace(node, node[0])
     
     return optimized
     

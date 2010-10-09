@@ -17,8 +17,8 @@ class JsSorter:
     def __init__(self, classes, session, permutation=None):
         # Keep classes/session/permutation reference
         self.__classes = classes
-        self.session = session
-        self.permutation = permutation
+        self.__session = session
+        self.__permutation = permutation
         
         # Building map for name-based lookup
         self.__nameToClass = {}
@@ -26,17 +26,17 @@ class JsSorter:
             self.__nameToClass[classObj.getName()] = classObj
         
         # Load time dependencies of every class
-        self.loadDeps = {}
-        self.circularDeps = {}       
+        self.__loadDeps = {}
+        self.__circularDeps = {}       
         
         # Sorted included classes
-        self.sorted = []        
+        self.__sortedClasses = []        
         
         
     def __getFilteredDeps(self, classObj):
         """ Returns dependencies of the given class to other classes """
 
-        permutation = self.permutation
+        permutation = self.__permutation
         deps = classObj.getDependencies(permutation)
         breakDeps = classObj.getBreakDependencies(permutation)
 
@@ -48,14 +48,14 @@ class JsSorter:
         return result        
         
 
-    def getLoadDeps(self, classObj):
+    def __getLoadDeps(self, classObj):
         """ Returns load time dependencies of given class """
 
         className = classObj.getName()
-        if not className in self.loadDeps:
+        if not className in self.__loadDeps:
             result = self.__recursivelyCollect(className, [])
 
-        return self.loadDeps[className]
+        return self.__loadDeps[className]
 
 
 
@@ -77,9 +77,9 @@ class JsSorter:
         classDeps = self.__getFilteredDeps(classObj)
 
         for depName in classDeps:
-            if depName in self.loadDeps:
+            if depName in self.__loadDeps:
                 #logging.debug("%sFast: %s", indent, depName)
-                result.update(self.loadDeps[depName])
+                result.update(self.__loadDeps[depName])
                 result.add(depName)
         
             else:
@@ -98,8 +98,8 @@ class JsSorter:
                 result.add(depName)
  
  
-        self.loadDeps[className] = result
-        self.circularDeps[className] = circular
+        self.__loadDeps[className] = result
+        self.__circularDeps[className] = circular
 
         #logging.debug("%sSuccessful %s: %s (circular: %s)", indent1, className, result, circular)
 
@@ -107,18 +107,18 @@ class JsSorter:
 
 
 
-    def getRuntimeDeps(self, classObj):
+    def __getRuntimeDeps(self, classObj):
         """ Returns user defined """
         runtimeDeps = set()
 
         className = classObj.getName()
-        if className in self.circularDeps:
-            circular = self.circularDeps[className]
+        if className in self.__circularDeps:
+            circular = self.__circularDeps[className]
             if circular:
                 logging.debug("Auto break: %s to %s" % (classObj, ", ".join(list(circular))))
                 runtimeDeps.update(circular)
 
-        breakDeps = classObj.getBreakDependencies(self.permutation)
+        breakDeps = classObj.getBreakDependencies(self.__permutation)
         runtimeDeps.update(breakDeps)
 
         return runtimeDeps
@@ -128,16 +128,16 @@ class JsSorter:
     def getSortedClasses(self):
         """ Returns the sorted class list """
 
-        if not self.sorted:
+        if not self.__sortedClasses:
             logging.info("Sorting classes...")
     
             result = []
             for classObj in self.__classes:
                 self.__addSorted(classObj, result)
         
-            self.sorted = result
+            self.__sortedClasses = result
     
-        return self.sorted
+        return self.__sortedClasses
 
 
 
@@ -147,8 +147,8 @@ class JsSorter:
         if classObj in result:
             return
             
-        loadDeps = self.getLoadDeps(classObj)
-        runDeps = self.getRuntimeDeps(classObj)
+        loadDeps = self.__getLoadDeps(classObj)
+        runDeps = self.__getRuntimeDeps(classObj)
 
         for depName in loadDeps:
             depObj = self.__nameToClass[depName]
