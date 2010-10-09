@@ -20,12 +20,15 @@ def jsoptimize(source, filename=None):
         "js.Variant.LOCAL_STORAGE" : "true",
         "js.Variant.NATIVE_JSON" : "true",
         "js.Variant.THEME" : '"blueish"',
-        "js.Variant.LOCALE" : '"de_DE"'
+        "js.Variant.LOCALE" : '"de_DE"',
+        
+        "qx.debug" : "on"
     }
     
     tree = parse(source, filename)
     print(tree)
     ValuePatch.patch(tree, variantData)
+    print(tree)    
     DeadCode.optimize(tree)
     CombineDeclarations.optimize(tree)
     LocalVariables.optimize(tree)

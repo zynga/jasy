@@ -12,12 +12,19 @@ from js.tokenizer.Lang import keywords
 from js.parser.Node import Node
 from js.parser.VanillaBuilder import VanillaBuilder
 
-#__all__ = [ "parse", "parseExpression" ]
-__all__ = [ "parse" ]
+__all__ = [ "parse", "parseExpression" ]
 
 
-def parseExpression(source):
-    pass
+def parseExpression(source, filename=None, line=0, builder=None):
+    if builder == None:
+        builder = VanillaBuilder()
+    
+    tokenizer = Tokenizer(source, filename, line)
+    staticContext = StaticContext(False, builder)
+
+    return Expression(tokenizer, staticContext)
+
+
 
 def parse(source, filename=None, line=0, builder=None):
     if builder == None:
