@@ -5,11 +5,12 @@ import sys, os
 # Extend PYTHONPATH with 'lib'
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
-from js.Parser import parse
-from js.Compressor import compress
+from js.parser.Parser import parse
 from js.optimizer import CombineDeclarations
 from js.optimizer import LocalVariables
-from js.optimizer import Variants
+from js.optimizer import ValuePatch
+from js.optimizer import DeadCode
+from js.Compressor import compress
 
 
 def jsoptimize(source, filename=None):
@@ -24,12 +25,12 @@ def jsoptimize(source, filename=None):
     
     tree = parse(source, filename)
     print(tree)
-    Variants.replace(tree, variantData)
-    Variants.optimize(tree)
+    ValuePatch.patch(tree, variantData)
+    DeadCode.optimize(tree)
     CombineDeclarations.optimize(tree)
     LocalVariables.optimize(tree)
     return compress(tree)
 
 
 if __name__ == "__main__":
-    print(jsoptimize(open(sys.argv[1], "utf-8").read(), sys.argv[1]))
+    print(jsoptimize(open(sys.argv[1], encoding="utf-8").read(), sys.argv[1]))

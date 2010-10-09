@@ -3,8 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-from js.Tokenizer import keywords
-from js.Util import baseEncode
+from js.tokenizer.Tokenizer import keywords
 from copy import copy
 import string
 

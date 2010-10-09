@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-from js.Node import Node
+from js.parser.Node import Node
 
 #
 # Public API
