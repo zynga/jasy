@@ -12,8 +12,8 @@ start = time.time()
 
 # Application specific code
 session = Session()
-session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/framework"))
-session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo.unify/qooxdoo/component/apiviewer"))
+session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo/qooxdoo/framework"))
+session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo/qooxdoo/component/apiviewer"))
 
 # Simple command line support
 if len(sys.argv) > 1:
