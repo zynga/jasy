@@ -15,7 +15,7 @@ from js.Compressor import compress
 
 def jsoptimize(source, filename=None):
     variantData = {
-        "js.Variant.VERSION" : 0.3,
+        "js.Variant.VERSION" : "0.3",
         "js.Variant.DEBUG" : "true",
         "js.Variant.LOCAL_STORAGE" : "true",
         "js.Variant.NATIVE_JSON" : "true",
