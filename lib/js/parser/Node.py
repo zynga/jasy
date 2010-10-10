@@ -115,9 +115,17 @@ class Node(list):
         if hasattr(kid, "rel"):
             repl.rel = kid.rel
             setattr(self, kid.rel, repl)
+            
+            # cleanup old kid
             delattr(kid, "rel")
             delattr(kid, "parent")
-            repl.parent = self
+            
+        elif hasattr(repl, "rel"):
+            # delete old relation on new child
+            delattr(repl, "rel")
+
+
+        repl.parent = self
         
         return kid
         
@@ -237,6 +245,9 @@ class Node(list):
     # Map Python built-ins
     __repr__ = toXml
     __str__ = toXml
+    
+    def __eq__(self, other):
+        return self is other
 
     def __bool__(self): 
         return True
