@@ -22,7 +22,8 @@ def jsoptimize(source, filename=None):
         "js.Variant.THEME" : '"blueish"',
         "js.Variant.LOCALE" : '"de_DE"',
         
-        "qx.debug" : "off"
+        "qx.debug" : '"on"',
+        "qx.client" : '"mshtml"'
     }
     
     tree = parse(source, filename)
