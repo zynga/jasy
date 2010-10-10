@@ -52,9 +52,17 @@ def patch(node, permutation):
                     objectInit = params[1]
                     if objectInit.type == "object_init":
                         for propertyInit in objectInit:
-                            if propertyInit[0].value == targetIdentifier:
+                            if propertyInit[0].value == "default":
+                                fallbackNode = propertyInit[1]
+
+                            elif propertyInit[0].value == targetIdentifier:
                                 callNode.parent.replace(callNode, propertyInit[1])
+                                modified = True
                                 break
+                                
+                        if not modified and fallbackNode:
+                            callNode.parent.replace(callNode, fallbackNode)
+                            modified = True
     
     
     for child in node:

@@ -23,7 +23,7 @@ def jsoptimize(source, filename=None):
         "js.Variant.LOCALE" : '"de_DE"',
         
         "qx.debug" : '"on"',
-        "qx.client" : '"mshtml"'
+        "qx.client" : '"webkit"'
     }
     
     tree = parse(source, filename)
