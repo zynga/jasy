@@ -7,7 +7,7 @@ switch(js.Variant.LOCALE)
   case "en_US":
     alert("Howdy!");
     break;
-
+    
   default:
     alert("Hi!");
 }

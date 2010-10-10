@@ -3,6 +3,8 @@
 # Copyright 2010 Sebastian Werner
 #
 
+import logging
+
 def optimize(node):
     """ Reprocesses JavaScript to remove dead paths """
     optimized = False
@@ -37,6 +39,37 @@ def optimize(node):
                 node.parent.replace(node, node[1])
             elif check is False:
                 node.parent.replace(node, node[2])
+                
+    # Optimize switch statement
+    if node.type == "switch" and node.discriminant.type in ("string", "number"):
+        discriminant = node.discriminant.value
+        fallback = None
+        matcher = None
+        allowed = ["default", "case"]
+        
+        for child in node:
+            # Require that every case block ends with a break (no fall-throughs)
+            if child.type == "case":
+                block = child[len(child)-1]
+                if len(block) == 0 or block[len(block)-1].type != "break":
+                    logging.warn("Could not optimize switch statement (at line %s) because of fallthrough break statement." % node.line)
+                    return False
+
+            if child.type == "default":
+                fallback = child.statements
+
+            elif child.type == "case" and child.label.value == discriminant:
+                matcher = child.statements
+                
+                # Remove break statement
+                matcher.pop()
+            
+        if matcher or fallback:
+            if not matcher:
+                matcher = fallback
+                
+            node.parent.replace(node, matcher)
+            optimized = True
     
     return optimized
 
