@@ -20,6 +20,7 @@ def optimize(node):
             
             if check is True:
                 node.parent.replace(node, node.thenPart)
+                
             elif check is False:
                 if hasattr(node, "elsePart"):
                     node.parent.replace(node, node.elsePart)
@@ -56,6 +57,10 @@ def __checkCondition(node):
         return __invertResult(__compareNodes(node[0], node[1]))
     elif node.type == "not":
         return __invertResult(__checkCondition(node[0]))
+    elif node.type == "and":
+        return __checkCondition(node[0]) and __checkCondition(node[1])
+    elif node.type == "or":
+        return __checkCondition(node[0]) or __checkCondition(node[1])
 
     return None
 
