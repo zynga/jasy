@@ -19,9 +19,13 @@ def parseExpression(source, filename=None, line=0, builder=None):
     if builder == None:
         builder = VanillaBuilder()
     
+    # Convert source into expression statement to be friendly to the Tokenizer
+    if not source.endswith(";"):
+        source = source + ";"
+    
     tokenizer = Tokenizer(source, filename, line)
     staticContext = StaticContext(False, builder)
-
+    
     return Expression(tokenizer, staticContext)
 
 
