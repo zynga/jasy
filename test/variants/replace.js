@@ -1,17 +1,5 @@
 alert("Loaded version: " + js.Variant.VERSION);
 
-if (js.Variant.LOCAL_STORAGE){
-  alert("Has local storage");
-}
-
-if (js.Variant.LOCAL_STORAGE && js.Variant.DEBUG){
-  alert("Debugs local storage");
-}
-
-if (js.Variant.THEME == "blueish") {
-  alert("Nice style!");
-}
-
 if (js.Variant.NATIVE_JSON && !isCool()) {
   alert("Would activate native json, but you are not cool!");
 }
