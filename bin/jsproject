@@ -32,7 +32,7 @@ session.addLocale("en_US")
 
 # Variant data
 session.addVariant("qx.debug", [ "off" ])
-#session.addVariant("qx.client", [ "webkit", "gecko", "mshtml" ])
+session.addVariant("qx.client", [ "webkit" ])
 
 for permutation in session.getPermutations():
     hashed = permutation.getHash()
