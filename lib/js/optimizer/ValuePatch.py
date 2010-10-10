@@ -20,8 +20,7 @@ def patch(node, permutation):
         if assembled:
             replacement = permutation.get(assembled)
             if replacement:
-                print("Replace %s => %s" % (assembled, replacement))
-                repl = parseExpression(Tokenizer(replacement, None))
+                repl = parseExpression(replacement)
                 node.parent.replace(node, repl)            
                 modified = True
                 
