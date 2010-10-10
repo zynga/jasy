@@ -14,10 +14,9 @@ class JsCircularDependencyBreaker(Exception):
 
 
 class JsSorter:
-    def __init__(self, classes, session, permutation=None):
+    def __init__(self, classes, permutation=None):
         # Keep classes/session/permutation reference
         self.__classes = classes
-        self.__session = session
         self.__permutation = permutation
         
         # Building map for name-based lookup

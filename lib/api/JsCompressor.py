@@ -7,19 +7,20 @@ from datetime import datetime
 import logging
 
 class JsCompressor():
-    def __init__(self, session, classList):
-        self.session = session
-        self.classList = classList
+    def __init__(self, classList, permutation):
+        self.__classList = classList
+        self.__permutation = permutation
         
         self.addHeaders = True
         
     def compress(self, fileName=None):
         result = []
+        permutation = self.__permutation
         
         logging.info("Compressing classes...")
         
-        for classObj in self.classList:
-            compressed = classObj.getCompressed()
+        for classObj in self.__classList:
+            compressed = classObj.getCompressed(permutation)
             logging.debug("Adding %s: %s bytes", classObj, len(compressed))
             
             if self.addHeaders:
