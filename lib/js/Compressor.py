@@ -187,6 +187,9 @@ def __script(node):
     return result
 
 def __block(node):
+    if len(node) == 1:
+        return compress(node[0])
+    
     return "{%s}" % statements(node)
     
 def __let_block(node):
