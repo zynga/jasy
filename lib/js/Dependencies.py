@@ -3,6 +3,8 @@
 # Copyright 2010 Sebastian Werner
 #
 
+import logging
+
 def collect(node, ownName):
     """ Computes and returns the dependencies of the given node """
     # All declared variables (is copied at every function scope)
@@ -35,17 +37,17 @@ def collect(node, ownName):
         try:
             dependencies.remove(className)
         except KeyError:
-            print("Invalid #optional pre-processor hint: %s" % className)
+            logging.warn("Useless #optional pre-processor hint %s in %s" % (className, ownName))
             
     for className in tags["require"]:
         if className in dependencies:
-            print("Auto detected #require pre-processor hint: %s" % className)
+            logging.warn("Auto detected #require pre-processor hint %s in %s" % (className, ownName))
             
         dependencies.add(className)
         
     for className in tags["break"]:
         if not className in dependencies:
-            print("Could not break non existing dependency to: %s" % className)
+            logging.warn("Could not break non existing dependency to %s in %s" % (className, ownName))
 
         breaks.add(className)        
             
