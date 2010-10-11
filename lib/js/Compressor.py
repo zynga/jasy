@@ -32,23 +32,6 @@ def compress(node):
             print("Compressor does not support type '%s' from line %s in file %s" % (type, node.line, node.getFileName()))
             print(node.toJson())
             sys.exit(1)
-
-
-def block_unwrap(node):
-    hasBlock = False
-    
-    if node.type == "block":
-        if len(node) == 0:
-            result = ";"
-        elif len(node) == 1:
-            result = compress(node[0])
-        else:
-            result = compress(node)
-            hasBlock = True
-    else:
-        result = compress(node)
-            
-    return result, hasBlock
         
         
 def statements(node):
@@ -197,8 +180,8 @@ def __script(node):
     return result
 
 def __block(node):
-    if len(node) == 1:
-        return compress(node[0])
+    #if len(node) == 1:
+    #    return compress(node[0])
     
     return "{%s}" % statements(node)
     
@@ -376,7 +359,7 @@ def __continue(node):
 #    
     
 def __while(node):
-    body, hasBlock = block_unwrap(node.body)
+    body = compress(node.body)
     return "while(%s)%s" % (compress(node.condition), body)
 
 
@@ -392,7 +375,7 @@ def __for_in(node):
     # Body is optional - at least in comprehensions tails
     body = getattr(node, "body", None)
     if body:
-        body, hasBlock = block_unwrap(body)
+        body = compress(body)
     else:
         body = ""
     
@@ -412,7 +395,7 @@ def __for(node):
     result += ";"
     if update: result += compress(update)
         
-    body, hasBlock = block_unwrap(node.body)
+    body = compress(node.body)
     result += ")%s" % body
     
     return result
@@ -432,28 +415,21 @@ def __if(node):
     result = "if(%s)" % compress(node.condition)
     
     # Micro optimization: Omit block curly braces when it only contains one child
-    thenPart, hasBlock = block_unwrap(node.thenPart)
-    result += thenPart
+    result += compress(node.thenPart)
     
     elsePart = getattr(node, "elsePart", None)
     if elsePart:
-        # if-blocks without braces require a semicolon here
-        if not (hasBlock or result.endswith(";")):
-            result += ";"            
-        
-        result += "else" 
+        result += "else"
         
         # Micro optimization: Omit curly braces when block contains only one child
-        elseCode, hasBlock = block_unwrap(elsePart)
+        elseCode = compress(elsePart)
         
         # Micro optimization: Don't need a space when the child is a block
-        if not hasBlock:
+        # At this time the brace could not be part of a map declaration (would be a syntax error)
+        if not elseCode.startswith("{"):
             result += " "        
             
         result += elseCode
-        
-        if not hasBlock and not elseCode.endswith(";"):
-            result += ";"
         
     return result
     
