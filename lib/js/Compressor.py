@@ -452,6 +452,9 @@ def __if(node):
             
         result += elseCode
         
+        if not hasBlock and not elseCode.endswith(";"):
+            result += ";"
+        
     return result
     
         
