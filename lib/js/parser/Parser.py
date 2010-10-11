@@ -301,7 +301,7 @@ def Statement(tokenizer, staticContext):
             tokenizer.mustMatch("semicolon")
             
             if node.isEach:
-                raise SyntaxError("Invalid for each..in loop")
+                raise SyntaxError("Invalid for each..in loop", tokenizer)
                 
             if tokenizer.peek() == "semicolon":
                 builder.FOR_setCondition(node, None)
@@ -399,9 +399,9 @@ def Statement(tokenizer, staticContext):
                 i -= 1
                 if i < 0:
                     if tokenType == "break":
-                        raise SyntaxError("Invalid break")
+                        raise SyntaxError("Invalid break", tokenizer)
                     else:
-                        raise SyntaxError("Invalid continue")
+                        raise SyntaxError("Invalid continue", tokenizer)
 
                 if getattr(statementStack[i], "isLoop", False) or (tokenType == "break" and statementStack[i].type == "switch"):
                     break
@@ -474,7 +474,7 @@ def Statement(tokenizer, staticContext):
         
 
     elif tokenType == "catch" or tokenType == "finally":
-        raise SyntaxError(tokens[tokenType] + " without preceding try")
+        raise SyntaxError(tokens[tokenType] + " without preceding try", tokenizer)
 
 
     elif tokenType == "throw":
@@ -544,7 +544,7 @@ def Statement(tokenizer, staticContext):
                 i = len(statementStack)-1
                 while i >= 0:
                     if getattr(statementStack[i], "label", None) == label:
-                        raise SyntaxError("Duplicate label")
+                        raise SyntaxError("Duplicate label", tokenizer)
                     
                     i -= 1
                
@@ -927,7 +927,7 @@ def LetBlock(tokenizer, staticContext, isStatement):
 
 def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly=None, data=None):
     if node.type == "array_comp":
-        raise SyntaxError("Invalid array comprehension left-hand side")
+        raise SyntaxError("Invalid array comprehension left-hand side", tokenizer)
         
     if node.type != "array_init" and node.type != "object_init":
         return
@@ -952,7 +952,7 @@ def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly=None, dat
         if lhs and simpleNamesOnly:
             # In declarations, lhs must be simple names
             if lhs.type != "identifier":
-                raise SyntaxError("Missing name in pattern")
+                raise SyntaxError("Missing name in pattern", tokenizer)
                 
             elif data:
                 childNode = builder.DECL_build(tokenizer)
@@ -1090,7 +1090,7 @@ def Expression(tokenizer, staticContext):
         while True:
             childNode = node[len(node)-1]
             if childNode.type == "yield" and not childNode.parenthesized:
-                raise SyntaxError("Yield expression must be parenthesized")
+                raise SyntaxError("Yield expression must be parenthesized", tokenizer)
             builder.COMMA_addOperand(node, AssignExpression(tokenizer, staticContext))
             
             if not tokenizer.match("comma"):
