@@ -413,7 +413,7 @@ def __for(node):
     if update: result += compress(update)
         
     body, hasBlock = block_unwrap(node.body)
-    result += ")%s" % hasBlock
+    result += ")%s" % body
     
     return result
     
