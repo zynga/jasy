@@ -55,13 +55,12 @@ class JsClass():
             # otherwise: read unmodified tree, copy it, modify it, cache it, return it
             else:
                 tree = copy.copy(self.getTree())
-                
-                #logging.info("%s: Optimizing tree..." % self.name)
-                
                 patched = patch(tree, permutation)
                 optimized = optimize(tree)
                 
-                logging.info("%s: Applied Permutation: %s + %s" % (self.name, patched, optimized))
+                if patched or optimized:
+                    # TODO: Do not store if none has happened
+                    pass
                 
             self.__cache.store(field, tree, self.__mtime)
             
