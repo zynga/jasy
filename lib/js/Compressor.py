@@ -337,17 +337,17 @@ def __throw(node):
     return "throw %s" % compress(node.exception)
 
 def __try(node):
-    result = "try%s" % compress(node.tryBlock)
+    result = "try{%s}" % statements(node.tryBlock)
     
     for catch in node:
         if catch.type == "catch":
             if hasattr(catch, "guard"):
-                result += "catch(%s if %s)%s" % (compress(catch.exception), compress(catch.guard), compress(catch.block))
+                result += "catch(%s if %s){%s}" % (compress(catch.exception), compress(catch.guard), statements(catch.block))
             else:
-                result += "catch(%s)%s" % (compress(catch.exception), compress(catch.block))
+                result += "catch(%s){%s}" % (compress(catch.exception), statements(catch.block))
 
     if hasattr(node, "finallyBlock"):
-        result += "finally%s" % compress(node.finallyBlock)
+        result += "finally{%s}" % statements(node.finallyBlock)
 
     return result
 
