@@ -16,21 +16,23 @@ It should also offers some kind of project handling with tools one might use in 
 Usage
 -----
 
-    $ jstree filename.js => outputs syntax tree
-    $ jscompress filename.js => outputs compressed (whitespaces, comments) file
-    $ jsoptimize filename.js => outputs optimized and compressed file
+    $ jstree filename.js => syntax tree
+    $ jsdeps filename.js => dependencies of file
+    $ jscompress filename.js => compressed (whitespaces, comments) file
+    $ jsoptimize filename.js => optimized and compressed file
 
 Done
 ----
 
 - Parser (based on Narcissus JavaScript Parser)
+- Rework parser for better child handling (easier to traverse tree compared to original)
 - Support for JavaScript 1.8 (Generators, Block Scope, Function Expressions, Array Comprehensions, ...)
 - Compressor (generate JavaScript code without white-spaces, etc.)
 - Local Variable Optimizer
 - Comment processing (Parse and attach to nodes)
 - Project Support (Bundling multiple projects)
 - Permutation Support (Removing debug blocks, alternative code, qooxdoo variants, hasjs statements, etc.)
-- Permutation hashes with timestamp support (permanent caching of files)
+- Permutation hashes with timestamp support (for permanent caching of files)
 - Dependency Analysis (with support for permutations)
 
 Todo
@@ -38,11 +40,9 @@ Todo
 
 - Auto Closure Wrapping for string optimizations, keyword optimization, etc.
 - String optimizations
-
 - API data
 - Unicode Data Merge (CLDR)
 - PO-File Translations
-
 - Lint Checks
 - Pretty Printer
 - ...

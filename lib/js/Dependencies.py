@@ -5,7 +5,7 @@
 
 import logging
 
-def collect(node, ownName):
+def collect(node, ownName=None):
     """ Computes and returns the dependencies of the given node """
     # All declared variables (is copied at every function scope)
     declared = set()
@@ -27,9 +27,9 @@ def collect(node, ownName):
     __inspect(node, declared, dependencies, tags)
     
     # Filter own name
-    if ownName in dependencies:
+    if ownName and ownName in dependencies:
         dependencies.remove(ownName)
-    if ownName in breaks:
+    if ownName and ownName in breaks:
         breaks.remove(ownName)
     
     # Process tags
