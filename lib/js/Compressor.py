@@ -8,7 +8,7 @@ from js.tokenizer.Lang import keywords
 
 __all__ = [ "compress" ]
 
-
+__simpleProperty = re.compile("^[a-zA-Z_$][a-zA-Z0-9_$]*$")
 
 #
 # Main
@@ -35,13 +35,20 @@ def compress(node):
 
 
 def block_unwrap(node):
+    hasBlock = False
+    
     if node.type == "block":
         if len(node) == 0:
-            return ";"
+            result = ";"
         elif len(node) == 1:
-            return compress(node[0])
+            result = compress(node[0])
+        else:
+            result = compress(node)
+            hasBlock = True
+    else:
+        result = compress(node)
             
-    return compress(node)
+    return result, hasBlock
         
         
 def statements(node):
@@ -75,7 +82,7 @@ def statements(node):
             
         # Micro-Optimization: Omit semicolon on last statement
         if pos != length:
-            result += ";"
+            result += ";\n"
 
     return result
 
@@ -167,8 +174,11 @@ def __property_init(node):
     key = compress(node[0])
     value = compress(node[1])
     
-    # Protect keywords
-    if key in keywords:
+    if type(key) in [int,float]:
+        pass
+        
+    # Protect keywords and special characters
+    elif key in keywords or not __simpleProperty.match(key):
         key = '"%s"' % key
     
     return "%s:%s" % (key, value)
@@ -366,7 +376,8 @@ def __continue(node):
 #    
     
 def __while(node):
-    return "while(%s)%s" % (compress(node.condition), block_unwrap(node.body))
+    body, hasBlock = block_unwrap(node.body)
+    return "while(%s)%s" % (compress(node.condition), body)
 
 
 def __do(node):
@@ -381,7 +392,7 @@ def __for_in(node):
     # Body is optional - at least in comprehensions tails
     body = getattr(node, "body", None)
     if body:
-        body = block_unwrap(body)
+        body, hasBlock = block_unwrap(body)
     else:
         body = ""
     
@@ -401,7 +412,8 @@ def __for(node):
     result += ";"
     if update: result += compress(update)
         
-    result += ")%s" % block_unwrap(node.body)
+    body, hasBlock = block_unwrap(node.body)
+    result += ")%s" % hasBlock
     
     return result
     
@@ -420,21 +432,22 @@ def __if(node):
     result = "if(%s)" % compress(node.condition)
     
     # Micro optimization: Omit block curly braces when it only contains one child
-    result += block_unwrap(node.thenPart)
+    thenPart, hasBlock = block_unwrap(node.thenPart)
+    result += thenPart
     
     elsePart = getattr(node, "elsePart", None)
     if elsePart:
         # if-blocks without braces require a semicolon here
-        if not result.endswith((";","}")): 
+        if not (hasBlock or result.endswith(";")):
             result += ";"            
         
         result += "else" 
         
         # Micro optimization: Omit curly braces when block contains only one child
-        elseCode = block_unwrap(elsePart)
+        elseCode, hasBlock = block_unwrap(elsePart)
         
-        # Micro optimization: Don't need a space when the child is a block/map/array/group
-        if not elseCode.startswith(("(","[","{")): 
+        # Micro optimization: Don't need a space when the child is a block
+        if not hasBlock:
             result += " "        
             
         result += elseCode
