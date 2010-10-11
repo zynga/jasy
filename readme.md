@@ -1,17 +1,9 @@
-JS Tools
-========
+JS Tools - Tools for JavaScript
+===============================
 
-Fresh tool chain for JavaScript based on narcissus tree generator. Should support all kind of processing for JavaScript:
+Not only tools to process single files but also a Python-based API to write build scripts for complete projects. Take a look at bin/jsproject for a example.
 
-- Dependency Calculation
-- Automatic Class Sorting
-- Support for LabJS Loading
-- Code Optimization (Variables Names, Dead Code Removal, ...)
-- Documentation Generation
-- Pretty Printing 
-- Code Quality Checks (Lint)
-
-It should also offers some kind of project handling with tools one might use in a Python script. See bin/jsproject for an example. Not yet sure about how exactly this will look in the future.
+Licensed under a dual license MIT + Apache V2.
 
 Usage
 -----
@@ -38,11 +30,12 @@ Done
 Todo
 ----
 
+- Support for LabJS Loading
 - Auto Closure Wrapping for string optimizations, keyword optimization, etc.
 - String optimizations
 - API data
 - Unicode Data Merge (CLDR)
 - PO-File Translations
-- Lint Checks
+- Code Quality Checks (Lint)
 - Pretty Printer
 - ...
