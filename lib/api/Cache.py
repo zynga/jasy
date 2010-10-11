@@ -19,6 +19,9 @@ class Cache:
     
     
     def clear(self):
+        if hasattr(self, "__db"):
+            self.__db.close()
+
         logging.debug("Initialize cache file %s..." % self.__file)
         self.__db = shelve.open(self.__file, flag="n")
         
