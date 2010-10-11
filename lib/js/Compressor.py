@@ -8,7 +8,21 @@ from js.tokenizer.Lang import keywords
 
 __all__ = [ "compress" ]
 
+
+#
+# Shared data
+#
+
 __simpleProperty = re.compile("^[a-zA-Z_$][a-zA-Z0-9_$]*$")
+__semicolonSymbol = ";\n"
+
+
+#
+# Status flags
+#
+
+__endsBlock = False
+
 
 #
 # Main
@@ -65,7 +79,7 @@ def statements(node):
             
         # Micro-Optimization: Omit semicolon on last statement
         if pos != length:
-            result += ";\n"
+            result += __semicolonSymbol
 
     return result
 
@@ -174,16 +188,30 @@ def __script(node):
     result = statements(node)
     
     # add file separator semicolon
-    if not hasattr(node, "parent") and not result.endswith(";"):
-        result += ";"
+    if not hasattr(node, "parent") and not result.endswith(__semicolonSymbol):
+        result += __semicolonSymbol
     
     return result
 
 def __block(node):
-    #if len(node) == 1:
-    #    return compress(node[0])
+    global __endsBlock
     
-    return "{%s}" % statements(node)
+    if len(node) == 1:
+        result = compress(node[0])
+        
+        # Need to add a semicolon
+        # when the last character in the result string
+        # was not created by an ending block (pretty magic)
+        if not __endsBlock and not result.endswith(__semicolonSymbol) :
+            result = result + __semicolonSymbol
+            
+        endsblock = False
+        return result
+    
+    result = "{%s}" % statements(node)
+    __endsBlock = True
+    
+    return result
     
 def __let_block(node):
     begin = "let(%s)" % ",".join(map(compress, node.variables))
@@ -253,6 +281,8 @@ def __new_with_args(node):
     return "new %s(%s)" % (compress(node[0]), compress(node[1]))    
 
 def __function(node):
+    global __endsBlock
+    
     if node.type == "setter":
         result = "set"
     elif node.type == "getter":
@@ -272,6 +302,7 @@ def __function(node):
         result += compress(node.body)
     else:
         result += "{%s}" % compress(node.body)
+        __endsBlock = True
         
     return result
     
@@ -320,6 +351,8 @@ def __throw(node):
     return "throw %s" % compress(node.exception)
 
 def __try(node):
+    global __endsBlock
+    
     result = "try{%s}" % statements(node.tryBlock)
     
     for catch in node:
@@ -331,6 +364,9 @@ def __try(node):
 
     if hasattr(node, "finallyBlock"):
         result += "finally{%s}" % statements(node.finallyBlock)
+
+    # Try statement is like a block
+    __endsBlock = True
 
     return result
 
@@ -365,7 +401,13 @@ def __while(node):
 
 def __do(node):
     # block unwrapping don't help to reduce size on this loop type
-    return "do%swhile(%s)" % (compress(node.body), compress(node.condition))
+    # but if it happens (don't like to modify a global function to fix a local issue), we
+    # need to fix the body and re-add braces around the statement
+    body = compress(node.body)
+    if not body.startswith("{"):
+        body = "{%s}" % body
+        
+    return "do%swhile(%s)" % (body, compress(node.condition))
 
 
 def __for_in(node):
@@ -390,9 +432,9 @@ def __for(node):
     update = getattr(node, "update", None)
     
     if setup: result += compress(setup)
-    result += ";"
+    result += __semicolonSymbol
     if condition: result += compress(condition)
-    result += ";"
+    result += __semicolonSymbol
     if update: result += compress(update)
         
     body = compress(node.body)
@@ -413,15 +455,12 @@ def __hook(node):
 
 def __if(node):
     result = "if(%s)" % compress(node.condition)
-    
-    # Micro optimization: Omit block curly braces when it only contains one child
     result += compress(node.thenPart)
     
     elsePart = getattr(node, "elsePart", None)
     if elsePart:
         result += "else"
-        
-        # Micro optimization: Omit curly braces when block contains only one child
+
         elseCode = compress(elsePart)
         
         # Micro optimization: Don't need a space when the child is a block
@@ -435,6 +474,8 @@ def __if(node):
     
         
 def __switch(node):
+    global __endsBlock
+    
     result = "switch(%s){" % compress(node.discriminant)
     for case in node:
         if case.type == "case":
@@ -445,11 +486,15 @@ def __switch(node):
             continue
         
         for statement in case.statements:
-            result += compress(statement) + ";"
+            result += compress(statement) + __semicolonSymbol
         
-    if result.endswith(";"):
-        result = result[:-1]
+    if result.endswith(__semicolonSymbol):
+        result = result[:-len(__semicolonSymbol)]
         
     result += "}"
+    
+    # Switch statement is like a block
+    __endsBlock = True
+    
     return result
         
