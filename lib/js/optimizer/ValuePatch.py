@@ -15,7 +15,8 @@ def patch(node, permutation):
     """ Replaces all occourences with incoming values """
     modified = False
     
-    if node.type == "dot":
+    # Assemble dot operators
+    if node.type == "dot" and node.parent.type != "dot":
         assembled = __assembleDot(node)
         if assembled:
             replacement = permutation.get(assembled)
@@ -51,6 +52,7 @@ def patch(node, permutation):
                     # Directly try to find matching identifier in second param (map)
                     objectInit = params[1]
                     if objectInit.type == "object_init":
+                        fallbackNode = None
                         for propertyInit in objectInit:
                             if propertyInit[0].value == "default":
                                 fallbackNode = propertyInit[1]
@@ -64,7 +66,23 @@ def patch(node, permutation):
                             callNode.parent.replace(callNode, fallbackNode)
                             modified = True
     
-    
+    # Global function calls
+    elif node.type == "call" and node[0].type == "identifier":
+        
+        # has.js specific: has("function-bind")
+        if node[0].value == "has":
+            params = node[1]
+            
+            # has.js requires that there is exactly one param with a string value
+            if len(params) == 1 and params[0].type == "string":
+                replacement = permutation.get(params[0].value)
+                
+                # Only boolean replacements allowed
+                if replacement in ("true","false"):
+                    replacementNode = parseExpression(replacement)
+                    node.parent.replace(node, replacementNode)
+
+    # Process children
     for child in node:
         if patch(child, permutation):
             modified = True

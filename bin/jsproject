@@ -31,8 +31,9 @@ session.addLocale("en_US")
 #session.addLocale("de_DE")
 
 # Variant data
-session.addVariant("qx.debug", [ "off" ])
+session.addVariant("qx.debug", [ "on", "off" ])
 session.addVariant("qx.client", [ "webkit" ])
+session.addVariant("string-trim", [ "true" ])
 
 for permutation in session.getPermutations():
     hashed = permutation.getHash()

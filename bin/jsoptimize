@@ -22,8 +22,13 @@ def jsoptimize(source, filename=None):
         "js.Variant.THEME" : '"blueish"',
         "js.Variant.LOCALE" : '"de_DE"',
         
+        # qooxdoo specific
         "qx.debug" : '"on"',
-        "qx.client" : '"webkit"'
+        "qx.client" : '"webkit"',
+        
+        # has.js specific
+        "string-trim" : "true",
+        "function-bind" : "true"
     }
     
     tree = parse(source, filename)
