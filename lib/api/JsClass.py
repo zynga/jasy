@@ -54,7 +54,7 @@ class JsClass():
                 
             # otherwise: read unmodified tree, copy it, modify it, cache it, return it
             else:
-                tree = copy.copy(self.getTree())
+                tree = copy.deepcopy(self.getTree())
                 patched = patch(tree, permutation)
                 optimized = optimize(tree)
                 
