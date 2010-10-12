@@ -15,6 +15,7 @@ __all__ = [ "compress" ]
 
 __simpleProperty = re.compile("^[a-zA-Z_$][a-zA-Z0-9_$]*$")
 __semicolonSymbol = ";\n"
+__commaSymbol = ",\n"
 
 
 #
@@ -78,7 +79,7 @@ def statements(node):
             continue
             
         # Micro-Optimization: Omit semicolon on last statement
-        if pos != length:
+        if pos != length and not result.endswith(__semicolonSymbol):
             result += __semicolonSymbol
 
     return result
@@ -156,7 +157,7 @@ def __string(node):
     return json.JSONEncoder().encode(node.value)
 
 def __object_init(node):
-    return "{%s}" % ",".join(map(compress, node))
+    return "{%s}" % __commaSymbol.join(map(compress, node))
 
 def __array_init(node):
     def helper(child):
@@ -197,15 +198,18 @@ def __block(node):
     global __endsBlock
     
     if len(node) == 1:
+        # Reset endsBlock first, and wait for change in compression
+        __endsBlock = False
+        
         result = compress(node[0])
         
         # Need to add a semicolon
         # when the last character in the result string
         # was not created by an ending block (pretty magic)
-        if not __endsBlock and not result.endswith(__semicolonSymbol) :
+        if not __endsBlock and not result.endswith(__semicolonSymbol):
             result = result + __semicolonSymbol
             
-        endsblock = False
+        __endsBlock = False
         return result
     
     result = "{%s}" % statements(node)
@@ -301,7 +305,12 @@ def __function(node):
     if getattr(node, "expressionClosure", False):
         result += compress(node.body)
     else:
-        result += "{%s}" % compress(node.body)
+        body = compress(node.body)
+        
+        if body.endswith(__semicolonSymbol):
+            body = body[:-len(__semicolonSymbol)]
+        
+        result += "{%s}" % body
         __endsBlock = True
         
     return result
