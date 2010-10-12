@@ -9,12 +9,20 @@
 import json
 import copy
 
+nodeId = 0
+
 class Node(list):
     def __init__(self, tokenizer=None, type=None, args=[]):
+        global nodeId 
+        
         list.__init__(self)
         
         self.start = 0
         self.end = 0
+        self.filename = None
+        self.id = nodeId
+        
+        nodeId += 1
 
         if tokenizer:
             token = tokenizer.token
@@ -36,6 +44,7 @@ class Node(list):
 
             # nodes use a tokenizer for debugging (getSource, filename getter)
             self.tokenizer = tokenizer
+            self.filename = tokenizer.filename
             
         elif type:
             self.type = type
@@ -230,15 +239,21 @@ class Node(list):
         
         # Sync attributes
         for name in dir(self):
-            if not name in ("parent", "target") and name[0] != "_":
-                setattr(result, name, getattr(self, name))
+            if not name in ("parent", "target", "filename") and name[0] != "_":
+                value = getattr(self, name)
+                if type(value) in (bool, int, float, str, list):
+                    setattr(result, name, value)
             
+        # Note: "target" attribute is ignored because if recursion error
+        #       This is used by "break" and "continue" statements only and refers
+        #       to the parent block where the jump should go to. This is not typically
+        #       good style in JS and is not used quite often.
         # Sync target
-        if hasattr(self, "target"):
-            result.target = copy.deepcopy(self.target)
+        # if hasattr(self, "target"):
+        #   result.target = copy.deepcopy(self.target, memo)
         
         # Note: "parent" attribute is handled by append() already
-        
+
         return result
         
         
@@ -265,7 +280,7 @@ class Node(list):
     
     # Returns the file name
     def getFileName(self):
-        return self.tokenizer.filename
+        return self.filename
 
 
     # Map Python built-ins
