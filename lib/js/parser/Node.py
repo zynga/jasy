@@ -7,7 +7,7 @@
 #
 
 import json
-
+import copy
 
 class Node(list):
     def __init__(self, tokenizer=None, type=None, args=[]):
@@ -44,8 +44,8 @@ class Node(list):
 
         for arg in args:
             self.append(arg)
-
-
+            
+            
     def getUnrelatedChildren(self):
         """Collects all unrelated children"""
         collection = []
@@ -214,6 +214,32 @@ class Node(list):
                 attrs["children"].append(child.export())
         
         return attrs    
+        
+        
+    def __deepcopy__(self, memo):
+        # Create copy
+        if hasattr(self, "tokenizer"):
+            result = Node(self.tokenizer)
+        else:
+            result = Node(None, self.type)
+        
+        # Copy children
+        for child in self:
+            rel = getattr(child, "rel", None)
+            result.append(copy.deepcopy(child, memo), rel)
+        
+        # Sync attributes
+        for name in dir(self):
+            if not name in ("parent", "target") and name[0] != "_":
+                setattr(result, name, getattr(self, name))
+            
+        # Sync target
+        if hasattr(self, "target"):
+            result.target = copy.deepcopy(self.target)
+        
+        # Note: "parent" attribute is handled by append() already
+        
+        return result
         
         
     # Converts the node to JSON
