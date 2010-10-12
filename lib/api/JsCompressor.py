@@ -19,7 +19,8 @@ class JsCompressor():
         
         logging.info("Compressing classes...")
         result.append("// Permutation: %s" % permutation)
-        result.append("// Hash: %s" % permutation.getHash())
+        if permutation:
+            result.append("// Hash: %s" % permutation.getHash())
         
         for classObj in self.__classList:
             compressed = classObj.getCompressed(permutation)
