@@ -290,6 +290,8 @@ def __assign(node):
 #
 
 def __call(node):
+    global __endsBlock
+    
     # self-executing functions needs to be wrapped to be valid JS
     funcChild = node[0]
     if funcChild.type == "function":
@@ -297,10 +299,17 @@ def __call(node):
     else:
         func = compress(funcChild)
     
-    return "%s(%s)" % (func, compress(node[1]))
+    result = "%s(%s)" % (func, compress(node[1]))
+    __endsBlock = False
+    return result
     
 def __new_with_args(node):
-    return "new %s(%s)" % (compress(node[0]), compress(node[1]))    
+    global __endsBlock
+
+    result = "new %s(%s)" % (compress(node[0]), compress(node[1]))
+    __endsBlock = False
+    return result
+    
 
 def __function(node):
     global __endsBlock
