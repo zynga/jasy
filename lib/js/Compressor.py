@@ -192,7 +192,11 @@ def __property_init(node):
 #
 
 def __script(node):
-    return statements(node)
+    result = statements(node)
+    if not result.endswith(__semicolonSymbol):
+        result = result + __semicolonSymbol
+        
+    return result
 
 def __block(node):
     global __endsBlock
