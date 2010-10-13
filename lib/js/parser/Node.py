@@ -43,10 +43,10 @@ class Node(list):
                 self.start = None
                 self.end = None
 
-            # Debug
-            # nodes use a tokenizer for debugging (getSource, filename getter)
-            #self.tokenizer = tokenizer
-            #self.filename = tokenizer.filename
+            self.tokenizer = tokenizer
+            
+            if self.type == "script":
+                self.filename = tokenizer.filename
             
         elif type:
             self.type = type
