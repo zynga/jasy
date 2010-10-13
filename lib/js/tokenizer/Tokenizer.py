@@ -80,14 +80,14 @@ class Token:
 
 
 class ParseError(Exception):
-    def __init__(self, message, filename, line):
-        Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, filename, line))
+    def __init__(self, message, fileId, line):
+        Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, fileId, line))
 
 
 class Tokenizer(object):
-    def __init__(self, source, filename="", line=1):
+    def __init__(self, source, fileId="", line=1):
         # source: JavaScript source
-        # filename: Filename (for debugging proposes)
+        # fileId: Filename (for debugging proposes)
         # line: Line number (for debugging proposes)
         self.cursor = 0
         self.source = str(source)
@@ -95,7 +95,7 @@ class Tokenizer(object):
         self.tokenIndex = 0
         self.lookahead = 0
         self.scanNewlines = False
-        self.filename = filename
+        self.fileId = fileId
         self.line = line
         self.comments = []
 
@@ -115,7 +115,7 @@ class Tokenizer(object):
 
     def mustMatch(self, tokenType):
         if not self.match(tokenType):
-            raise ParseError("Missing " + tokenType, self.filename, self.line)
+            raise ParseError("Missing " + tokenType, self.fileId, self.line)
             
         return self.token
 
@@ -191,7 +191,7 @@ class Tokenizer(object):
                         ch = input[self.cursor]
                         self.cursor += 1
                     except IndexError:
-                        raise ParseError("Unterminated comment", self.filename, self.line)
+                        raise ParseError("Unterminated comment", self.fileId, self.line)
                         
                     if ch == "*":
                         next = input[self.cursor]
@@ -208,7 +208,7 @@ class Tokenizer(object):
                 try:
                     self.comments.append(Comment(text, "multi", mode, commentStartLine, indent))
                 except CommentException as commentError:
-                    #print("Ignoring comment in %s: %s" % (self.filename, commentError))
+                    #print("Ignoring comment in %s: %s" % (self.fileId, commentError))
                     pass
                     
 
@@ -238,7 +238,7 @@ class Tokenizer(object):
                 try:
                     self.comments.append(Comment(text, "single", mode, self.line-1))
                 except CommentException:
-                    #print("Ignoring comment in %s: %s" % (self.filename, commentError))
+                    #print("Ignoring comment in %s: %s" % (self.fileId, commentError))
                     pass
 
             elif ch == " " or ch == "\t":
@@ -263,7 +263,7 @@ class Tokenizer(object):
                 self.cursor += 1
 
             if ch < "0" or ch > "9":
-                raise ParseError("Missing exponent", self.filename, self.line)
+                raise ParseError("Missing exponent", self.fileId, self.line)
 
             while(True):
                 ch = input[self.cursor]
@@ -405,7 +405,7 @@ class Tokenizer(object):
                 ch = input[self.cursor]
                 self.cursor += 1
             except IndexError:
-                raise ParseError("Unterminated regex", self.filename, self.line)
+                raise ParseError("Unterminated regex", self.fileId, self.line)
 
             if ch == "\\":
                 self.cursor += 1
@@ -419,7 +419,7 @@ class Tokenizer(object):
                         ch = input[self.cursor]
                         self.cursor += 1
                     except IndexError:
-                        raise ParseError("Unterminated character class", self.filename, self.line)
+                        raise ParseError("Unterminated character class", self.fileId, self.line)
                     
                     if ch == "]":
                         break
@@ -552,7 +552,7 @@ class Tokenizer(object):
             self.lexString(ch)
         
         else:
-            raise ParseError("Illegal token: %s" % ch, self.filename, self.line)
+            raise ParseError("Illegal token: %s" % ch, self.fileId, self.line)
 
         token.end = self.cursor
         return token.type
@@ -563,7 +563,7 @@ class Tokenizer(object):
         self.lookahead += 1
         
         if self.lookahead == 4: 
-            raise ParseError("PANIC: too much lookahead!", self.filename, self.line)
+            raise ParseError("PANIC: too much lookahead!", self.fileId, self.line)
         
         self.tokenIndex = (self.tokenIndex - 1) & 3
         
