@@ -15,7 +15,7 @@ from js.parser.VanillaBuilder import VanillaBuilder
 __all__ = [ "parse", "parseExpression" ]
 
 
-def parseExpression(source, filename=None, line=0, builder=None):
+def parseExpression(source, fileId=None, line=0, builder=None):
     if builder == None:
         builder = VanillaBuilder()
     
@@ -23,23 +23,23 @@ def parseExpression(source, filename=None, line=0, builder=None):
     if not source.endswith(";"):
         source = source + ";"
     
-    tokenizer = Tokenizer(source, filename, line)
+    tokenizer = Tokenizer(source, fileId, line)
     staticContext = StaticContext(False, builder)
     
     return Expression(tokenizer, staticContext)
 
 
 
-def parse(source, filename=None, line=0, builder=None):
+def parse(source, fileId=None, line=0, builder=None):
     if builder == None:
         builder = VanillaBuilder()
     
-    tokenizer = Tokenizer(source, filename, line)
+    tokenizer = Tokenizer(source, fileId, line)
     staticContext = StaticContext(False, builder)
     node = Script(tokenizer, staticContext)
     
-    # store filename on top-level node
-    node.filename = tokenizer.filename
+    # store fileId on top-level node
+    node.fileId = tokenizer.fileId
     
     if not tokenizer.done():
         raise SyntaxError("Unexpected end of file", tokenizer)
@@ -50,7 +50,7 @@ def parse(source, filename=None, line=0, builder=None):
 
 class SyntaxError(Exception):
     def __init__(self, message, tokenizer):
-        Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, tokenizer.filename, tokenizer.line))
+        Exception.__init__(self, "Syntax error: %s\n%s:%s" % (message, tokenizer.fileId, tokenizer.line))
 
 
 # Used as a status container during tree-building for every def body and the global body
