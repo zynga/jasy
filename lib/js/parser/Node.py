@@ -238,7 +238,7 @@ class Node(list):
         
         # Sync attributes
         for name in dir(self):
-            if not name in ("parent", "target", "filename") and name[0] != "_":
+            if not name in ("parent", "target") and name[0] != "_":
                 value = getattr(self, name)
                 if type(value) in (bool, int, float, str, list):
                     setattr(result, name, value)
