@@ -20,9 +20,10 @@ class Node(list):
         self.start = 0
         self.end = 0
         self.filename = None
-        self.id = nodeId
         
-        nodeId += 1
+        # Debug
+        # self.id = nodeId
+        # nodeId += 1
 
         if tokenizer:
             token = tokenizer.token
@@ -42,9 +43,10 @@ class Node(list):
                 self.start = None
                 self.end = None
 
+            # Debug
             # nodes use a tokenizer for debugging (getSource, filename getter)
-            self.tokenizer = tokenizer
-            self.filename = tokenizer.filename
+            #self.tokenizer = tokenizer
+            #self.filename = tokenizer.filename
             
         elif type:
             self.type = type
