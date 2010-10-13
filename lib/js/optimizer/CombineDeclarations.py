@@ -5,6 +5,10 @@
 
 from js.parser.Node import Node
 
+__all__ = ["optimize"]
+
+
+
 #
 # Public API
 #
