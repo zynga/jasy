@@ -192,13 +192,7 @@ def __property_init(node):
 #
 
 def __script(node):
-    result = statements(node)
-    
-    # add file separator semicolon
-    if not hasattr(node, "parent") and not result.endswith(__semicolonSymbol):
-        result += __semicolonSymbol
-    
-    return result
+    return statements(node)
 
 def __block(node):
     global __endsBlock
@@ -496,9 +490,24 @@ def __hook(node):
 
 def __if(node):
     result = "if(%s)" % compress(node.condition)
-    result += compress(node.thenPart)
-    
+    thenCode = compress(node.thenPart)
     elsePart = getattr(node, "elsePart", None)
+
+    if elsePart:
+        # Special handling for cascaded if-if cases where
+        # we need to wrap the thenPart to have a fixed binding
+        # of the else to this if-clause
+        if node.thenPart.type == "if" or (node.thenPart.type == "block" and len(node.thenPart) == 1 and node.thenPart[0].type == "if"):
+            # Wrap code
+            if thenCode.endswith(__semicolonSymbol):
+                thenCode = "{%s}" % thenCode[:-len(__semicolonSymbol)]
+            else:
+                thenCode = "{%s}" % thenCode
+    
+    # Finally append code
+    result += thenCode 
+
+    # Now process else part
     if elsePart:
         result += "else"
 
