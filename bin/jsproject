@@ -31,7 +31,7 @@ session.addLocale("en_US")
 #session.addLocale("de_DE")
 
 # Variant data
-session.addVariant("qx.debug", [ "on", "off" ])
+session.addVariant("qx.debug", [ "off" ])
 session.addVariant("qx.client", [ "webkit" ])
 
 for permutation in session.getPermutations():
