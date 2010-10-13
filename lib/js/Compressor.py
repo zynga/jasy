@@ -533,7 +533,10 @@ def __switch(node):
             continue
         
         for statement in case.statements:
-            result += compress(statement) + __semicolonSymbol
+            temp = compress(statement)
+            result += temp
+            if len(temp) > 0 and not temp.endswith(__semicolonSymbol):
+                result += __semicolonSymbol
         
     if result.endswith(__semicolonSymbol):
         result = result[:-len(__semicolonSymbol)]
