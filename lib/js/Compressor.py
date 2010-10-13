@@ -31,22 +31,28 @@ __endsBlock = False
 
 def compress(node):
     type = node.type
+    result = None
     
     if type in simple:
-        return type
+        result = type
     elif type in prefixes:
-        return prefixes[node.type] + compress(node[0])
+        result = prefixes[node.type] + compress(node[0])
     elif type in postfixes:
-        return compress(node[0]) + postfixes[node.type]
+        result = compress(node[0]) + postfixes[node.type]
     elif type in dividers:
-        return dividers[node.type].join(map(compress, node))
+        result = dividers[node.type].join(map(compress, node))
     else:
         try:
-            return globals()["__" + type](node)
+            result = globals()["__" + type](node)
         except KeyError:
             print("Compressor does not support type '%s' from line %s in file %s" % (type, node.line, node.getFileName()))
             print(node.toJson())
             sys.exit(1)
+            
+    if getattr(node, "parenthesized", None):
+        return "(%s)" % result
+    else:
+        return result
         
         
 def statements(node):
