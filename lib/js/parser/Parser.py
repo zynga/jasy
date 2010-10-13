@@ -90,6 +90,9 @@ def Script(tokenizer, staticContext):
     
     # change type from "block" to "script" for script root
     node.type = "script"
+    
+    # store filename on top-level node
+    node.filename = tokenizer.filename
 
     # copy over data from compiler context
     node.functions = staticContext.functions

@@ -45,9 +45,6 @@ class Node(list):
 
             self.tokenizer = tokenizer
             
-            if self.type == "script":
-                self.filename = tokenizer.filename
-            
         elif type:
             self.type = type
 
