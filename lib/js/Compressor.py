@@ -279,7 +279,14 @@ def __assign(node):
 #
 
 def __call(node):
-    return "%s(%s)" % (compress(node[0]), compress(node[1]))
+    # self-executing functions needs to be wrapped to be valid JS
+    funcChild = node[0]
+    if funcChild.type == "function":
+        func = "(%s)" % compress(funcChild)
+    else:
+        func = compress(funcChild)
+    
+    return "%s(%s)" % (func, compress(node[1]))
     
 def __new_with_args(node):
     return "new %s(%s)" % (compress(node[0]), compress(node[1]))    
