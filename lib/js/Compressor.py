@@ -271,13 +271,18 @@ def __declaration(node):
     return result
     
 def __assign(node):
+    global __endsBlock
+    
     dist = node[0]
     source = node[1]
 
     assignOp = getattr(node[0], "assignOp", None)
     oper = "=" if not assignOp else dividers[assignOp] + "="
 
-    return compress(node[0]) + oper + compress(node[1])
+    result = compress(node[0]) + oper + compress(node[1])
+    __endsBlock = False
+    
+    return result
 
 
 #
