@@ -84,16 +84,26 @@ def __checkCondition(node):
         return False
     elif node.type == "true":
         return True
+        
     elif node.type == "eq":
         return __compareNodes(node[0], node[1])
     elif node.type == "ne":
         return __invertResult(__compareNodes(node[0], node[1]))
+        
     elif node.type == "not":
         return __invertResult(__checkCondition(node[0]))
+        
     elif node.type == "and":
-        return __checkCondition(node[0]) and __checkCondition(node[1])
+        first = __checkCondition(node[0])
+        second = __checkCondition(node[1])
+        if first != None and second != None:
+            return first and second
+
     elif node.type == "or":
-        return __checkCondition(node[0]) or __checkCondition(node[1])
+        first = __checkCondition(node[0])
+        second = __checkCondition(node[1])
+        if first != None and second != None:
+            return first or second
 
     return None
 
@@ -101,6 +111,7 @@ def __checkCondition(node):
 def __invertResult(result):
     if type(result) == bool:
         return not result
+        
     return result
 
 
@@ -112,6 +123,7 @@ def __compareNodes(a, b):
             return True
         elif b.type == "false":
             return False    
+            
     elif a.type in ("true","false") and b.type in ("true","false"):
         return False
 
