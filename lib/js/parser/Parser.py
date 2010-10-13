@@ -38,6 +38,9 @@ def parse(source, filename=None, line=0, builder=None):
     staticContext = StaticContext(False, builder)
     node = Script(tokenizer, staticContext)
     
+    # store filename on top-level node
+    node.filename = tokenizer.filename
+    
     if not tokenizer.done():
         raise SyntaxError("Unexpected end of file", tokenizer)
 
@@ -91,9 +94,6 @@ def Script(tokenizer, staticContext):
     # change type from "block" to "script" for script root
     node.type = "script"
     
-    # store filename on top-level node
-    node.filename = tokenizer.filename
-
     # copy over data from compiler context
     node.functions = staticContext.functions
     node.variables = staticContext.variables
