@@ -177,7 +177,7 @@ def __property_init(node):
         
     # Protect keywords and special characters
     elif key in keywords or not __simpleProperty.match(key):
-        key = '"%s"' % key
+        key = __string(node[0])
     
     return "%s:%s" % (key, value)
 
