@@ -338,6 +338,8 @@ def __setter(node):
     return __function(node)
     
 def __return(node):
+    global __endsBlock
+    
     result = "return"
     if hasattr(node, "value"):
         valueCode = compress(node.value)
@@ -347,6 +349,9 @@ def __return(node):
             result += " "
             
         result += valueCode
+        
+    # In single statements we require a semicolon after a return
+    __endsBlock = False
         
     return result
     
