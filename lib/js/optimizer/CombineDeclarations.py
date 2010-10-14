@@ -87,7 +87,7 @@ def __findFirstVarStatement(node):
 
 def __patchVarStatements(node, firstVarStatement):
     """Patches all variable statements in the given node (works recursively) and replace them with assignments."""
-    if node == firstVarStatement:
+    if node is firstVarStatement:
         return
         
     elif node.type == "function":
@@ -109,7 +109,7 @@ def __rebuildAsAssignment(node, firstVarStatement):
     replacement = Node(node.tokenizer, "semicolon")
     comma = Node(node.tokenizer, "comma")
     replacement.append(comma, "expression")
-    
+
     # Casting to list() creates a copy during the process (keeps loop stable)
     for child in list(node):
         # Cleanup initializer and move to assignment
@@ -125,13 +125,18 @@ def __rebuildAsAssignment(node, firstVarStatement):
             assign.append(child.initializer)
 
             comma.append(assign)
-
+            
         # Now move declaration without initializer around
         firstVarStatement.append(child)
             
     # Patch parent node to contain replacement statement instead of declaration
     if len(comma) > 0:
         node.parent.replace(node, replacement)
+    elif getattr(node, "rel", "iterator"):
+        # copy name of declaration into value of new identifier node
+        identifier = Node(child.tokenizer, "identifier")
+        identifier.value = child.name
+        node.parent.replace(node, identifier)
     else:
         node.parent.remove(node)
     
