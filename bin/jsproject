@@ -34,6 +34,8 @@ session.addLocale("en_US")
 session.addVariant("qx.debug", [ "off" ])
 session.addVariant("qx.client", [ "webkit" ])
 
+optimization = set(["privates", "variables", "declarations"])
+
 for permutation in session.getPermutations():
     hashed = permutation.getHash()
     logging.info("Permutation: %s" % permutation)
@@ -51,7 +53,7 @@ for permutation in session.getPermutations():
     sortedClasses = sorter.getSortedClasses()
 
     # Compiling classes
-    compressor = JsCompressor(sortedClasses, permutation)
+    compressor = JsCompressor(sortedClasses, permutation, optimization)
     compressor.compress("main-%s.js" % hashed)
 
 

@@ -13,7 +13,7 @@ from js.Compressor import compress
 from js.optimizer.ValuePatch import patch
 from js.optimizer.DeadCode import optimize
 
-# Post optimizations
+# Post optimization
 import js.optimizer.CombineDeclarations as CombineDeclarations
 import js.optimizer.LocalVariables as LocalVariables
 import js.optimizer.CryptPrivates as CryptPrivates
@@ -70,26 +70,34 @@ class JsClass():
         allIds[classId] = self.rel
         return classId
 
-    def getTree(self, permutation=None):
-        field = "tree[%s]-%s" % (self.rel, permutation)
+    def getTree(self, permutation=None, optimization=None):
+        field = "tree[%s]" % self.rel
         tree = self.__cache.read(field, self.__mtime)
         if tree == None:
-            # generate the tree, cache it and return it
-            if not permutation:
-                logging.debug("%s: Generating tree...", self.name)
-                tree = parse(self.getText(), self.rel)
-                
-            # otherwise: read unmodified tree, copy it, modify it, cache it, return it
-            else:
-                tree = copy.deepcopy(self.getTree())
-                patched = patch(tree, permutation)
-                optimized = optimize(tree)
-                
-                if patched or optimized:
-                    # TODO: Do not store if none has happened
-                    pass
-                
+            tree = parse(self.getText(), self.rel)
             self.__cache.store(field, tree, self.__mtime)
+            
+        if permutation or optimization:
+            tree = copy.deepcopy(self.getTree())
+            
+            if permutation:
+                patch(tree, permutation)
+                optimize(tree)
+
+            if optimization:
+                if "privates" in optimization:
+                    CryptPrivates.optimize(tree, self.id)
+                
+                if "variables" in optimization:
+                    LocalVariables.optimize(tree)
+                    
+                if "x-declarations" in optimization:
+                    CombineDeclarations.optimize(tree)
+                
+                if "x-strings" in optimization:
+                    # Strings.optimize(tree)
+                    pass
+            
             
         return tree
 
@@ -97,7 +105,6 @@ class JsClass():
         field = "deps[%s]-%s" % (self.rel, permutation)
         deps = self.__cache.read(field, self.__mtime)
         if deps == None:
-            logging.debug("%s: Collecting dependencies...", self.name)
             deps, breaks = collect(self.getTree(permutation), self.getName())
             self.__cache.store(field, deps, self.__mtime)
             
@@ -115,18 +122,11 @@ class JsClass():
             
         return breaks
         
-    def getCompressed(self, permutation=None):
+    def getCompressed(self, permutation=None, optimization=None):
         field = "compressed[%s]-%s" % (self.rel, permutation)
         compressed = self.__cache.read(field, self.__mtime)
         if compressed == None:
-            logging.debug("%s: Compressing tree...", self.name)
-            tree = self.getTree(permutation)
-            
-            # post-optimization
-            CryptPrivates.optimize(tree, self.id)
-            
-            
-            # finally compressing
+            tree = self.getTree(permutation, optimization)
             compressed = compress(tree)
             self.__cache.store(field, compressed, self.__mtime)
             
