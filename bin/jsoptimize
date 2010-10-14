@@ -6,15 +6,18 @@ import sys, os
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
 from js.parser.Parser import parse
+
 from js.optimizer import CombineDeclarations
 from js.optimizer import LocalVariables
 from js.optimizer import ValuePatch
 from js.optimizer import DeadCode
+from js.optimizer import CryptPrivates
+
 from js.Compressor import compress
 
 
 def jsoptimize(source, filename=None):
-    variantData = {
+    values = {
         "js.Variant.VERSION" : "0.3",
         "js.Variant.DEBUG" : "true",
         "js.Variant.LOCAL_STORAGE" : "true",
@@ -32,9 +35,10 @@ def jsoptimize(source, filename=None):
     }
     
     tree = parse(source, filename)
-    ValuePatch.patch(tree, variantData)
+    ValuePatch.patch(tree, values)
     DeadCode.optimize(tree)
-    CombineDeclarations.optimize(tree)
+    CryptPrivates.optimize(tree, "xx")
+    #CombineDeclarations.optimize(tree)
     LocalVariables.optimize(tree)
 
     return compress(tree)
