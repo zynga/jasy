@@ -32,19 +32,11 @@ def jsoptimize(source, filename=None):
     }
     
     tree = parse(source, filename)
-    print("=== ORIGINAL TREE ===")
-    print(tree)
-    
     ValuePatch.patch(tree, variantData)
-    print("=== PATCHED TREE ===")
-    print(tree)    
-    
     DeadCode.optimize(tree)
-    print("=== OPTIMIZED TREE ===")
-    print(tree)
-    
     CombineDeclarations.optimize(tree)
     LocalVariables.optimize(tree)
+
     return compress(tree)
 
 
