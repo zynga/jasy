@@ -1,5 +1,5 @@
-var obj = get();
+var before = 1;
 for (var key in obj) {
   something(key);
 }
-var after = 4;
+var after = 2;

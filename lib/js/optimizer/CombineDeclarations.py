@@ -17,14 +17,15 @@ __all__ = ["optimize"]
 def optimize(node):
     for child in node:
         optimize(child)
-
+        
     if node.type in ("script", "block"):
         __combineSiblings(node)
         
     if node.type == "script":
         __combineVarStatements(node)
-    
-    
+
+
+
 
 #
 # Merge direct variable siblings
@@ -55,10 +56,10 @@ def __combineSiblings(node):
                 node.remove(child)
             
         pos -= 1
-        
-        
-      
-    
+
+
+
+
 #
 # Merge var statements, convert in-place to assignments in other locations (quite complex)
 #
@@ -66,13 +67,22 @@ def __combineSiblings(node):
 def __combineVarStatements(node):
     """Top level method called to optimize a script node"""
     first = __findFirstVarStatement(node)
+    
+    # Special case, when a node has variables, but no valid "var" block to hold them
+    if not first and node.variables:
+        first = Node(None, "var")
+        node.append(first)
+    
     if first:
         __patchVarStatements(node, first)
+        __cleanFirst(first)
 
         
 def __findFirstVarStatement(node):
     """Returns the first var statement of the given node. Ignores inner functions."""
-    if node.type == "var":
+    
+    # Ignore variable blocks which are used as an iterator in for-in loops
+    if node.type == "var" and getattr(node, "rel", None) != "iterator":
         return node
         
     for child in node:
@@ -85,6 +95,26 @@ def __findFirstVarStatement(node):
     
     return None
         
+
+def __cleanFirst(first):
+    known = set()
+    for child in list(first):
+        if not child.name in known:
+            known.add(child.name)
+        elif not hasattr(child, "initializer"):
+            first.remove(child)
+
+
+def __createSimpleAssignment(identifier, valueNode):
+    assignNode = Node(None, "assign")
+    identNode = Node(None, "identifier")
+    identNode.scope = True
+    identNode.value = identifier
+    assignNode.append(identNode)
+    assignNode.append(valueNode)
+
+    return assignNode
+
 
 def __patchVarStatements(node, firstVarStatement):
     """Patches all variable statements in the given node (works recursively) and replace them with assignments."""
@@ -103,8 +133,8 @@ def __patchVarStatements(node, firstVarStatement):
         # Create a cast to list() to keep loop stable during modification
         for child in list(node):
             __patchVarStatements(child, firstVarStatement)
-
-
+            
+            
 def __rebuildAsAssignment(node, firstVarStatement):
     """Rebuilds the items of a var statement into a assignment list and moves declarations to the given var statement"""
     assignment = Node(node.tokenizer, "semicolon")
@@ -115,16 +145,7 @@ def __rebuildAsAssignment(node, firstVarStatement):
     for child in list(node):
         # Cleanup initializer and move to assignment
         if hasattr(child, "initializer"):
-            assign = Node(node.tokenizer, "assign")
-
-            # Converted from declarations is always the first one => in scope
-            identifier = Node(node.tokenizer, "identifier")
-            identifier.scope = True
-            identifier.value = child.name
-            
-            assign.append(identifier)
-            assign.append(child.initializer)
-
+            assign = __createSimpleAssignment(child.name, child.initializer)
             assignmentList.append(assign)
             
         # Now move declaration without initializer around
@@ -138,7 +159,7 @@ def __rebuildAsAssignment(node, firstVarStatement):
         # is OK to be second because of assignments are not allowed at
         # all in for-in loops and so the first if basically does nothing
         # for these kind of statements.
-        identifier = Node(child.tokenizer, "identifier")
+        identifier = Node(None, "identifier")
         identifier.scope = True
 
         # copy name of declaration into value of new identifier node
@@ -150,4 +171,3 @@ def __rebuildAsAssignment(node, firstVarStatement):
             logging.warn("Remove related node (%s) from parent: %s" % (node.rel, node))
             
         node.parent.remove(node)
-    
