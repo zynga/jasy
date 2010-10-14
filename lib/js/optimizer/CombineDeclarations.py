@@ -15,7 +15,12 @@ __all__ = ["optimize"]
 #
 
 def optimize(node):
-    for child in node:
+    # stabilize list during processing modifyable stuff
+    copy = node
+    if node.type in ("script", "block"):
+        copy = list(node)
+    
+    for child in copy:
         optimize(child)
         
     if node.type in ("script", "block"):
@@ -76,6 +81,10 @@ def __combineVarStatements(node):
     if first:
         __patchVarStatements(node, first)
         __cleanFirst(first)
+        
+        if len(first) == 0:
+            first.parent.remove(first)
+        
 
         
 def __findFirstVarStatement(node):

@@ -35,12 +35,14 @@ def jsoptimize(source, filename=None):
     }
     
     tree = parse(source, filename)
+    
     ValuePatch.patch(tree, values)
     DeadCode.optimize(tree)
     CryptPrivates.optimize(tree, "xx")
-    #CombineDeclarations.optimize(tree)
+    CombineDeclarations.optimize(tree)
     LocalVariables.optimize(tree)
-
+    
+    print(tree)
     return compress(tree)
 
 
