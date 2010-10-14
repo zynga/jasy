@@ -13,7 +13,7 @@ nodeId = 0
 
 class Node(list):
     def __init__(self, tokenizer=None, type=None, args=[]):
-        global nodeId 
+        # global nodeId 
         
         list.__init__(self)
         
