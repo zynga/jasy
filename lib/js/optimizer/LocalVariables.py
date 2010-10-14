@@ -67,7 +67,9 @@ def __optimizeScope(node, translate, pos):
     variables = getattr(node, "variables", None)
     if variables:
         for name in variables:
-            pos, translate[name] = __encode(pos)
+            # Need to check whether a param with that name already exists
+            if not name in translate:
+                pos, translate[name] = __encode(pos)
         
     __optimizeNode(node, translate, True)
     return pos
