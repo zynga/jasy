@@ -30,7 +30,7 @@ def optimize(node):
 #
 
 def __combineSiblings(node):
-    """Backwards processing and insertion into previous sibling if both a var declarations""" 
+    """Backwards processing and insertion into previous sibling if both are declarations""" 
     length = len(node)
     pos = length-1
     while pos > 0:
@@ -64,7 +64,9 @@ def __combineSiblings(node):
 
 def __combineVarStatements(node):
     """Top level method called to optimize a script node"""
-    __patchVarStatements(node, __findFirstVarStatement(node))
+    first = __findFirstVarStatement(node)
+    if first:
+        __patchVarStatements(node, first)
 
         
 def __findFirstVarStatement(node):
@@ -108,7 +110,7 @@ def __rebuildAsAssignment(node, firstVarStatement):
     comma = Node(node.tokenizer, "comma")
     replacement.append(comma, "expression")
     
-    # Casting two list() creates a copy during the process (keeps loop stable)
+    # Casting to list() creates a copy during the process (keeps loop stable)
     for child in list(node):
         # Cleanup initializer and move to assignment
         if hasattr(child, "initializer"):
