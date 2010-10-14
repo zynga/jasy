@@ -4,6 +4,7 @@
 #
 
 from js.parser.Node import Node
+import logging
 
 __all__ = ["optimize"]
 
@@ -106,9 +107,9 @@ def __patchVarStatements(node, firstVarStatement):
 
 def __rebuildAsAssignment(node, firstVarStatement):
     """Rebuilds the items of a var statement into a assignment list and moves declarations to the given var statement"""
-    replacement = Node(node.tokenizer, "semicolon")
-    comma = Node(node.tokenizer, "comma")
-    replacement.append(comma, "expression")
+    assignment = Node(node.tokenizer, "semicolon")
+    assignmentList = Node(node.tokenizer, "comma")
+    assignment.append(assignmentList, "expression")
 
     # Casting to list() creates a copy during the process (keeps loop stable)
     for child in list(node):
@@ -124,19 +125,29 @@ def __rebuildAsAssignment(node, firstVarStatement):
             assign.append(identifier)
             assign.append(child.initializer)
 
-            comma.append(assign)
+            assignmentList.append(assign)
             
         # Now move declaration without initializer around
         firstVarStatement.append(child)
             
-    # Patch parent node to contain replacement statement instead of declaration
-    if len(comma) > 0:
-        node.parent.replace(node, replacement)
+    # Patch parent node to contain assignment instead of declaration
+    if len(assignmentList) > 0:
+        node.parent.replace(node, assignment)
+    
     elif getattr(node, "rel", "iterator"):
-        # copy name of declaration into value of new identifier node
+        # is OK to be second because of assignments are not allowed at
+        # all in for-in loops and so the first if basically does nothing
+        # for these kind of statements.
         identifier = Node(child.tokenizer, "identifier")
+        identifier.scope = True
+
+        # copy name of declaration into value of new identifier node
         identifier.value = child.name
         node.parent.replace(node, identifier)
+    
     else:
+        if hasattr(node, "rel"):
+            logging.warn("Remove related node (%s) from parent: %s" % (node.rel, node))
+            
         node.parent.remove(node)
     
