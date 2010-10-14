@@ -42,8 +42,8 @@ for permutation in session.getPermutations():
     
     # Resolving dependencies
     resolver = JsResolver(session, permutation)
-    #resolver.addClassName("qx.Bootstrap")
-    resolver.addClassName("qx.core.Object")
+    resolver.addClassName("qx.Bootstrap")
+    #resolver.addClassName("qx.core.Object")
     #resolver.addClassName("qx.ui.window.Window")
     #resolver.addClassName("apiviewer.Application")
     classes = resolver.getIncludedClasses()
