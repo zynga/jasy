@@ -91,7 +91,7 @@ class JsClass():
                 if "variables" in optimization:
                     LocalVariables.optimize(tree)
                     
-                if "x-declarations" in optimization:
+                if "declarations" in optimization:
                     CombineDeclarations.optimize(tree)
                 
                 if "x-strings" in optimization:
