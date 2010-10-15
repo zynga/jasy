@@ -484,6 +484,18 @@ def __hook(node):
     """aka ternary operator"""
     return "%s?%s:%s" % (compress(node.condition), compress(node.thenPart), compress(node.elsePart))
     
+    
+def __containsIf(node):
+    """ helper for __if handling """
+    if node.type == "if":
+        return True
+        
+    for child in node:
+        if __containsIf(child):
+            return True
+        
+    return False
+
 
 def __if(node):
     result = "if(%s)" % compress(node.condition)
@@ -491,11 +503,9 @@ def __if(node):
     elsePart = getattr(node, "elsePart", None)
 
     if elsePart:
-        # Special handling for cascaded if-if cases where
-        # we need to wrap the thenPart to have a fixed binding
-        # of the else to this if-clause
-        if node.thenPart.type == "if" or (node.thenPart.type == "block" and len(node.thenPart) == 1 and node.thenPart[0].type == "if"):
-            # Wrap code
+        # Special handling for cascaded if-else-if cases where the else might be 
+        # attached to the wrong if in cases where the braces are omitted.
+        if __containsIf(node.thenPart):
             if thenCode.endswith(__semicolonSymbol):
                 thenCode = "{%s}" % thenCode[:-len(__semicolonSymbol)]
             else:
