@@ -14,8 +14,8 @@ __all__ = [ "compress" ]
 #
 
 __simpleProperty = re.compile("^[a-zA-Z_$][a-zA-Z0-9_$]*$")
-__semicolonSymbol = ";\n"
-__commaSymbol = ",\n"
+__semicolonSymbol = ";"
+__commaSymbol = ","
 
 
 #
@@ -363,7 +363,7 @@ def __return(node):
         valueCode = compress(node.value)
 
         # Micro optimization: Don't need a space when a block/map/array/group is returned
-        if not valueCode.startswith(("(","[","{")): 
+        if not valueCode.startswith(("(","[","{","'",'"')): 
             result += " "
             
         result += valueCode
