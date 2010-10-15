@@ -505,7 +505,7 @@ def __if(node):
     if elsePart:
         # Special handling for cascaded if-else-if cases where the else might be 
         # attached to the wrong if in cases where the braces are omitted.
-        if __containsIf(node.thenPart):
+        if len(node.thenPart) == 1 and __containsIf(node.thenPart):
             if thenCode.endswith(__semicolonSymbol):
                 thenCode = "{%s}" % thenCode[:-len(__semicolonSymbol)]
             else:
