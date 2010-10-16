@@ -887,6 +887,10 @@ def Variables(tokenizer, staticContext, letBlock=None):
 
         builder.DECL_finish(childNode)
         
+        # If we directly use the node in "let" constructs
+        if not hasattr(childContext, "variables"):
+            childContext.variables = set()
+        
         childContext.variables.add(childNode.name)
         
         if not tokenizer.match("comma"):
