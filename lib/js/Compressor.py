@@ -467,18 +467,18 @@ def __if(node):
         if thenContent.type == elseContent.type:
             # Merge return statements
             if thenContent.type == "return":
-                return "return %s?%s:%s" % (compress(condition), compress(thenContent.value), compress(elseContent.value))
+                return addSemicolon("return %s?%s:%s" % (compress(condition), compress(thenContent.value), compress(elseContent.value)))
                 
             elif thenContent.type == "assign":
                 operator = assignOperator(thenContent)
                 if operator == assignOperator(elseContent):
                     firstTargetCode = compress(thenContent[0])
                     if firstTargetCode == compress(elseContent[0]):
-                        return "%s%s%s?%s:%s" % (firstTargetCode, operator, compress(condition), compress(thenContent[1]), compress(elseContent[1]))
+                        return addSemicolon("%s%s%s?%s:%s" % (firstTargetCode, operator, compress(condition), compress(thenContent[1]), compress(elseContent[1])))
         
         # Reached the original idea to use hook statements instead of if-else constructs
         if thenContent.type != "comma" and thenContent.type in expressions and elseContent.type != "comma" and elseContent.type in expressions:
-            return "%s?%s:%s" % (compress(condition), compress(thenContent), compress(elseContent))
+            return addSemicolon("%s?%s:%s" % (compress(condition), compress(thenContent), compress(elseContent)))
         
     else:
         pass
