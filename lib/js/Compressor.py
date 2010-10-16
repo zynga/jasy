@@ -142,11 +142,45 @@ prefixes = {
 
 
 #
-# Data types
+# Script Scope
 #
 
-def __regexp(node):
-    return node.value
+def __script(node):
+    return statements(node)
+
+
+
+#
+# Expressions
+#
+
+def __object_init(node):
+    return "{%s}" % __commaSymbol.join(map(compress, node))
+
+def __property_init(node):
+    key = compress(node[0])
+    value = compress(node[1])
+
+    if type(key) in [int,float]:
+        pass
+
+    # Protect keywords and special characters
+    elif key in keywords or not __simpleProperty.match(key):
+        key = __string(node[0])
+
+    return "%s:%s" % (key, value)
+        
+def __array_init(node):
+    def helper(child):
+        return compress(child) if child != None else ""
+    
+    return "[%s]" % ",".join(map(helper, node))
+
+def __array_comp(node):
+    return "[%s %s]" % (compress(node.expression), compress(node.tail))    
+
+def __string(node):
+    return json.JSONEncoder().encode(node.value)
 
 def __number(node):
     value = node.value
@@ -156,43 +190,69 @@ def __number(node):
         conv = str(value)
         if conv.startswith("0."):
             value = conv[1:]
-            
+
     return "%s" % value
 
-def __string(node):
-    return json.JSONEncoder().encode(node.value)
+def __regexp(node):
+    return node.value
 
-def __object_init(node):
-    return "{%s}" % __commaSymbol.join(map(compress, node))
+def __identifier(node):
+    return node.value
 
-def __array_init(node):
-    def helper(child):
-        return compress(child) if child != None else ""
+def __list(node):
+    return ",".join(map(compress, node))
+
+def __index(node):
+    return "%s[%s]" % (compress(node[0]), compress(node[1]))
+
+def __declaration(node):
+    names = getattr(node, "names", None)
+    if names:
+        result = compress(names)
+    else:
+        result = node.name    
+
+    initializer = getattr(node, "initializer", None)
+    if initializer:
+        result += "=%s" % compress(node.initializer)
+
+    return result
+
+def __assign(node):
+    return compress(node[0]) + assignOperator(node[0]) + compress(node[1])
+
+def __call(node):
+    return "%s(%s)" % (compress(node[0]), compress(node[1]))
+
+def __new_with_args(node):
+    return "new %s(%s)" % (compress(node[0]), compress(node[1]))
+
+def __exception(node):
+    return node.value
     
-    return "[%s]" % ",".join(map(helper, node))
-          
-def __array_comp(node):
-    return "[%s %s]" % (compress(node.expression), compress(node.tail))
-            
-def __property_init(node):
-    key = compress(node[0])
-    value = compress(node[1])
+def __generator(node):
+    """ Generator Expression """
+    result = compress(getattr(node, "expression"))
+    tail = getattr(node, "tail", None)
+    if tail:
+        result += " %s" % compress(tail)
+
+    return result
+
+def __comp_tail(node):
+    """  Comprehensions Tails """
+    result = compress(getattr(node, "for"))
+    guard = getattr(node, "guard", None)
+    if guard:
+        result += "if(%s)" % compress(guard)
+
+    return result    
     
-    if type(key) in [int,float]:
-        pass
-        
-    # Protect keywords and special characters
-    elif key in keywords or not __simpleProperty.match(key):
-        key = __string(node[0])
     
-    return "%s:%s" % (key, value)
 
 #
-# Core features
+# Statements :: Core
 #
-
-def __script(node):
-    return statements(node)
 
 def __block(node):
     if len(node) == 0:
@@ -216,9 +276,6 @@ def __let_block(node):
     
     return begin + end
 
-def __identifier(node):
-    return node.value
-    
 def __const(node):
     return "const %s%s" % (__list(node), __semicolonSymbol)
 
@@ -228,47 +285,25 @@ def __var(node):
 def __let(node):
     return "let %s%s" % (__list(node), __semicolonSymbol)
 
-def __list(node):
-    return ",".join(map(compress, node))
-        
-def __index(node):
-    return "%s[%s]" % (compress(node[0]), compress(node[1]))
-
 def __semicolon(node):
     expression = getattr(node, "expression", None)
     code = "%s" % compress(expression) if expression else ""
     
     return "%s%s" % (code, __semicolonSymbol)
 
-def __declaration(node):
-    names = getattr(node, "names", None)
-    if names:
-        result = compress(names)
-    else:
-        result = node.name    
-    
-    initializer = getattr(node, "initializer", None)
-    if initializer:
-        result += "=%s" % compress(node.initializer)
-        
-    return result
-    
-def __assign(node):
-    return compress(node[0]) + assignOperator(node[0]) + compress(node[1])
+def __label(node):
+    return "%s:%s" % (node.label, compress(node.statement))
+
+def __break(node):
+    return "break" if not hasattr(node, "label") else "break %s" % node.label
+
+def __continue(node):
+    return "continue" if not hasattr(node, "label") else "continue %s" % node.label
 
 
 #
-# Functions
+# Statements :: Functions
 #
-
-def __call(node):
-    result = "%s(%s)" % (compress(node[0]), compress(node[1]))
-    return result
-    
-def __new_with_args(node):
-    result = "new %s(%s)" % (compress(node[0]), compress(node[1]))
-    return result
-    
 
 def __function(node):
     if node.type == "setter":
@@ -297,22 +332,6 @@ def __function(node):
         result += "{%s}" % body
         
     return result
-    
-def __generator(node):
-    result = compress(getattr(node, "expression"))
-    tail = getattr(node, "tail", None)
-    if tail:
-        result += " %s" % compress(tail)
-        
-    return result
-
-def __comp_tail(node):
-    result = compress(getattr(node, "for"))
-    guard = getattr(node, "guard", None)
-    if guard:
-        result += "if(%s)" % compress(guard)
-        
-    return result
 
 def __getter(node):
     return __function(node)
@@ -328,19 +347,19 @@ def __return(node):
         # Micro optimization: Don't need a space when a block/map/array/group is returned
         if not valueCode.startswith(("(","[","{","'",'"')): 
             result += " "
-            
+
         result += valueCode
-                
-    return result
-    
-        
-      
+
+    return result    
+
+
+
 #
-# Exception Handling
+# Statements :: Exception Handling
 #            
     
 def __throw(node):
-    return "throw %s" % compress(node.exception)
+    return "throw %s%s" % (compress(node.exception), __semicolonSymbol)
 
 def __try(node):
     result = "try{%s}" % statements(node.tryBlock)
@@ -357,28 +376,10 @@ def __try(node):
 
     return result
 
-def __exception(node):
-    return node.value
 
-    
-    
-#
-# Flow
-#    
-    
-def __label(node):
-    return "%s:%s" % (node.label, compress(node.statement))
-    
-def __break(node):
-    return "break" if not hasattr(node, "label") else "break %s" % node.label
-
-def __continue(node):
-    return "continue" if not hasattr(node, "label") else "continue %s" % node.label
-
-    
 
 #
-# Loops
+# Statements :: Loops
 #    
     
 def __while(node):
@@ -394,7 +395,7 @@ def __do(node):
     if not body.startswith("{"):
         body = "{%s}" % body
         
-    return "do%swhile(%s)" % (body, compress(node.condition))
+    return "do%swhile(%s)%s" % (body, compress(node.condition), __semicolonSymbol)
 
 
 def __for_in(node):
@@ -432,7 +433,7 @@ def __for(node):
        
        
 #       
-# Conditionals
+# Statements :: Conditionals
 #
 
 def __hook(node):
@@ -445,7 +446,7 @@ def __hook(node):
         [thenPart,elsePart] = [elsePart,thenPart]
         condition = condition[0]
     
-    return "%s?%s:%s" % (compress(condition), compress(thenPart), compress(elsePart))
+    return "%s?%s:%s%s" % (compress(condition), compress(thenPart), compress(elsePart), __semicolonSymbol)
     
     
 def containsIf(node):
@@ -545,8 +546,8 @@ def __if(node):
         result += elseCode
         
     return result
-    
-        
+
+
 def __switch(node):
     result = "switch(%s){" % compress(node.discriminant)
     for case in node:
