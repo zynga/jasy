@@ -15,13 +15,3 @@ keywords = [
     "yield",
     "while", "with"
 ]
-
-# By Mozilla MDC
-# https://developer.mozilla.org/en/Core_JavaScript_1.5_Guide/Statements#Exception_Types
-ecmaExceptions = ["Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError"]
-domExceptions = ["DOMException", "EventException", "RangeException"]
-
-#
-# Small list of globally allowed values
-globalObjects = ["Math","Error","String","Array","Object","Function","RegExp"]
-globalFunctions = ["window","document","parseInt","parseFloat"]
