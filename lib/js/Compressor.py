@@ -497,8 +497,14 @@ def __containsIf(node):
 
 
 def __if(node):
-    thenPart = getattr(node, "thenPart", None)
+    thenPart = node.thenPart
+    conditionPart = node.condition
     elsePart = getattr(node, "elsePart", None)
+    
+    # Optimize "not" expression
+    if thenPart and elsePart and conditionPart.type == "not":
+        [thenPart,elsePart] = [elsePart,thenPart]
+        conditionPart = conditionPart[0]
     
     # Pre-checks for deeper optimization
     if thenPart and elsePart:
@@ -518,26 +524,22 @@ def __if(node):
         if elseContent.type == "semicolon":
             elseContent = elseContent.expression
         
-        
         # Merge equal types
         if thenContent.type == elseContent.type:
             # Merge return statements
             if thenContent.type == "return":
-                return "return %s?%s:%s" % (compress(node.condition), compress(thenContent.value), compress(elseContent.value))
+                return "return %s?%s:%s" % (compress(conditionPart), compress(thenContent.value), compress(elseContent.value))
                 
             elif thenContent.type == "assign":
                 operator = __assignOperator(thenContent)
                 if operator == __assignOperator(elseContent):
                     firstTargetCode = compress(thenContent[0])
                     if firstTargetCode == compress(elseContent[0]):
-                        return "%s%s%s?%s:%s" % (firstTargetCode, operator, compress(node.condition), compress(thenContent[1]), compress(elseContent[1]))
+                        return "%s%s%s?%s:%s" % (firstTargetCode, operator, compress(conditionPart), compress(thenContent[1]), compress(elseContent[1]))
         
         # Use hook statement for simple expressions
         if thenContent.type != "comma" and thenContent.type in expressions and elseContent.type != "comma" and elseContent.type in expressions:
-            if node.condition.type == "not":
-                return "%s?%s:%s" % (compress(node.condition[0]), compress(elseContent), compress(thenContent))
-            else:
-                return "%s?%s:%s" % (compress(node.condition), compress(thenContent), compress(elseContent))
+            return "%s?%s:%s" % (compress(conditionPart), compress(thenContent), compress(elseContent))
         
     else:
         pass
