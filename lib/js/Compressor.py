@@ -53,34 +53,7 @@ def statements(node):
     result = ""
     length = len(node)-1
     for pos, child in enumerate(node):
-        code = compress(child)
-        if code == "":
-            continue
-            
-        result += code
-        
-        # Micro-Optimization: Omit semicolon in places where not required
-        # Rule: Closing brace of the original child make a semicolon optional        
-        
-        # Functions might be defined as a modern expression closure without braces
-        if child.type == "function" and not getattr(child, "expressionClosure", False):
-            continue
-            
-        # Switch/Try statements must have braces
-        if child.type in ("switch", "try"):
-            continue
-            
-        # If blocks might have braces for both, if and else
-        if child.type == "if" and len(child.thenPart) != 1:
-            continue        
-            
-        # Loops might have braces => check body
-        if child.type in ("while", "for_in", "for") and len(child.body) != 1:
-            continue
-            
-        # Micro-Optimization: Omit semicolon on last statement
-        if pos != length and not result.endswith(__semicolonSymbol):
-            result += __semicolonSymbol
+        result += compress(child)
 
     return result
     
@@ -88,7 +61,20 @@ def statements(node):
 def assignOperator(node):
     assignOp = getattr(node, "assignOp", None)
     return "=" if not assignOp else dividers[assignOp] + "="
-            
+    
+
+def addSemicolon(result):
+    if not result.endswith(__semicolonSymbol):
+        return result + __semicolonSymbol
+    else:
+        return result
+
+def removeSemicolon(result):
+    if result.endswith(__semicolonSymbol):
+        return result[:-len(__semicolonSymbol)]
+    else:
+        return result
+
 
 #
 # Data
@@ -256,16 +242,12 @@ def __comp_tail(node):
 
 def __block(node):
     if len(node) == 0:
-        return __semicolonSymbol
+        return addSemicolon("")
     
     elif len(node) == 1:
         return compress(node[0])
     
-    compressed = statements(node)
-    if compressed.endswith(__semicolonSymbol):
-        compressed = compressed[:-len(__semicolonSymbol)]
-    
-    return "{%s}" % compressed
+    return "{%s}" % removeSemicolon(statements(node))
     
 def __let_block(node):
     begin = "let(%s)" % ",".join(map(compress, node.variables))
@@ -277,28 +259,25 @@ def __let_block(node):
     return begin + end
 
 def __const(node):
-    return "const %s%s" % (__list(node), __semicolonSymbol)
+    return addSemicolon("const %s" % __list(node))
 
 def __var(node):
-    return "var %s%s" % (__list(node), __semicolonSymbol)
+    return addSemicolon("var %s" % __list(node))
 
 def __let(node):
-    return "let %s%s" % (__list(node), __semicolonSymbol)
+    return addSemicolon("let %s" % __list(node))
 
 def __semicolon(node):
-    expression = getattr(node, "expression", None)
-    code = "%s" % compress(expression) if expression else ""
-    
-    return "%s%s" % (code, __semicolonSymbol)
+    return addSemicolon(compress(expression) if expression else "")
 
 def __label(node):
-    return "%s:%s" % (node.label, compress(node.statement))
+    return addSemicolon("%s:%s" % (node.label, compress(node.statement)))
 
 def __break(node):
-    return "break" if not hasattr(node, "label") else "break %s" % node.label
+    return addSemicolon("break" if not hasattr(node, "label") else "break %s" % node.label)
 
 def __continue(node):
-    return "continue" if not hasattr(node, "label") else "continue %s" % node.label
+    return addSemicolon("continue" if not hasattr(node, "label") else "continue %s" % node.label)
 
 
 #
@@ -324,12 +303,7 @@ def __function(node):
     if getattr(node, "expressionClosure", False):
         result += compress(node.body)
     else:
-        body = compress(node.body)
-        
-        if body.endswith(__semicolonSymbol):
-            body = body[:-len(__semicolonSymbol)]
-        
-        result += "{%s}" % body
+        result += "{%s}" % removeSemicolon(compress(node.body))
         
     return result
 
@@ -344,13 +318,13 @@ def __return(node):
     if hasattr(node, "value"):
         valueCode = compress(node.value)
 
-        # Micro optimization: Don't need a space when a block/map/array/group is returned
+        # Micro optimization: Don't need a space when a block/map/array/group/strings are returned
         if not valueCode.startswith(("(","[","{","'",'"')): 
             result += " "
 
         result += valueCode
 
-    return result    
+    return addSemicolon(result)
 
 
 
@@ -359,7 +333,7 @@ def __return(node):
 #            
     
 def __throw(node):
-    return "throw %s%s" % (compress(node.exception), __semicolonSymbol)
+    return addSemicolon("throw %s" % compress(node.exception))
 
 def __try(node):
     result = "try{%s}" % statements(node.tryBlock)
@@ -395,7 +369,7 @@ def __do(node):
     if not body.startswith("{"):
         body = "{%s}" % body
         
-    return "do%swhile(%s)%s" % (body, compress(node.condition), __semicolonSymbol)
+    return addSemicolon("do%swhile(%s)%s" % (body, compress(node.condition))
 
 
 def __for_in(node):
@@ -446,7 +420,7 @@ def __hook(node):
         [thenPart,elsePart] = [elsePart,thenPart]
         condition = condition[0]
     
-    return "%s?%s:%s%s" % (compress(condition), compress(thenPart), compress(elsePart), __semicolonSymbol)
+    return addSemicolon("%s?%s:%s" % (compress(condition), compress(thenPart), compress(elsePart))
     
     
 def containsIf(node):
@@ -524,10 +498,7 @@ def __if(node):
         # Special handling for cascaded if-else-if cases where the else might be 
         # attached to the wrong if in cases where the braces are omitted.
         if len(thenPart) == 1 and containsIf(thenPart):
-            if thenCode.endswith(__semicolonSymbol):
-                thenCode = "{%s}" % thenCode[:-len(__semicolonSymbol)]
-            else:
-                thenCode = "{%s}" % thenCode
+            thenCode = "{%s}" % removeSemicolon(thenCode)
     
     # Finally append code
     result += thenCode 
@@ -560,14 +531,8 @@ def __switch(node):
         
         for statement in case.statements:
             temp = compress(statement)
-            result += temp
-            if len(temp) > 0 and not temp.endswith(__semicolonSymbol):
-                result += __semicolonSymbol
+            if len(temp) > 0:
+                result += addSemicolon(temp)
         
-    if result.endswith(__semicolonSymbol):
-        result = result[:-len(__semicolonSymbol)]
-        
-    result += "}"
-    
-    return result
+    return "%s}" % removeSemicolon(result)
         
