@@ -395,7 +395,7 @@ def __for(node):
     result = "for("
     result += addSemicolon(compress(setup) if setup else "")
     result += addSemicolon(compress(condition) if condition else "")
-    result += compress(update) if setup else ""
+    result += compress(update) if update else ""
     result += ")%s" % compress(node.body)
     
     return result
