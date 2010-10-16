@@ -549,12 +549,13 @@ def __if(node):
             return "%s?%s:%s" % (compress(condition), compress(thenContent), compress(elseContent))
         
     else:
-        if condition.type == "not":
-            result = "%s||%s" % (compress(condition[0]), compress(thenPart))
-        else:
-            result = "%s&&%s" % (compress(condition), compress(thenPart))
-        
-        return result
+        pass
+        #if condition.type == "not":
+        #    result = "%s||%s" % (compress(condition[0]), compress(thenPart))
+        #else:
+        #    result = "%s&&%s" % (compress(condition), compress(thenPart))
+        #
+        #return result
         
     
     
