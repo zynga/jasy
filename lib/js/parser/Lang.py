@@ -47,6 +47,7 @@ expressions = [
     # Primary Expression - Part 2
     "object_init",
     "array_init",
+    "array_comp",
     
     # Primary Expression - Part 3
     "let",
