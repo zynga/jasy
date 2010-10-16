@@ -5,6 +5,7 @@
 
 import re, sys, json
 from js.tokenizer.Lang import keywords
+from js.parser.Lang import expressions
 
 __all__ = [ "compress" ]
 
@@ -502,35 +503,30 @@ def __if(node):
     elsePart = getattr(node, "elsePart", None)
     
     # Pre-checks for deeper optimization
-    
     if thenPart and elsePart:
         if thenPart.type == "block" and len(thenPart) == 1:
             thenContent = thenPart[0]
         else:
             thenContent = thenPart
             
+        if thenContent.type == "semicolon":
+            thenContent = thenContent.expression
+            
         if elsePart.type == "block" and len(elsePart) == 1:
             elseContent = elsePart[0]
         else:
             elseContent = elsePart
-        
-        
+
+        if elseContent.type == "semicolon":
+            elseContent = elseContent.expression
         
         # Merge return statements
         if thenContent.type == elseContent.type and thenContent.type == "return":
-            print("Merge return")
-            result = "return %s?%s:%s;" % (compress(node.condition), compress(thenContent.value), compress(elseContent.value))
-            print(result)
-            return result
+            return "return %s?%s:%s" % (compress(node.condition), compress(thenContent.value), compress(elseContent.value))
             
-            
-            
-        # These types are allowed to being used in a conditional/hook statement
-        elif thenContent.type in ("string", "number", "call", "return"):
-            if elseContent.type in ("string", "number", "call", "return"):
-                #print("May optimize: %s" % node)
-                pass
-        
+        # Use hook statement for simple expressions
+        elif thenContent.type != "comma" and thenContent.type in expressions and elseContent.type != "comma" and elseContent.type in expressions:
+            return "%s?%s:%s" % (compress(node.condition), compress(thenContent), compress(elseContent))
         
     else:
         pass
