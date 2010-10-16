@@ -481,7 +481,15 @@ def __for(node):
 
 def __hook(node):
     """aka ternary operator"""
-    return "%s?%s:%s" % (compress(node.condition), compress(node.thenPart), compress(node.elsePart))
+    condition = node.condition
+    thenPart = node.thenPart
+    elsePart = node.elsePart
+    
+    if condition.type == "not":
+        [thenPart,elsePart] = [elsePart,thenPart]
+        condition = condition[0]
+    
+    return "%s?%s:%s" % (compress(condition), compress(thenPart), compress(elsePart))
     
     
 def __containsIf(node):
@@ -498,13 +506,14 @@ def __containsIf(node):
 
 def __if(node):
     thenPart = node.thenPart
-    conditionPart = node.condition
+    condition = node.condition
     elsePart = getattr(node, "elsePart", None)
     
     # Optimize "not" expression
-    if thenPart and elsePart and conditionPart.type == "not":
+    if thenPart and elsePart and condition.type == "not":
         [thenPart,elsePart] = [elsePart,thenPart]
-        conditionPart = conditionPart[0]
+        condition = condition[0]
+    
     
     # Pre-checks for deeper optimization
     if thenPart and elsePart:
@@ -528,31 +537,26 @@ def __if(node):
         if thenContent.type == elseContent.type:
             # Merge return statements
             if thenContent.type == "return":
-                return "return %s?%s:%s" % (compress(conditionPart), compress(thenContent.value), compress(elseContent.value))
+                return "return %s?%s:%s" % (compress(condition), compress(thenContent.value), compress(elseContent.value))
                 
             elif thenContent.type == "assign":
                 operator = __assignOperator(thenContent)
                 if operator == __assignOperator(elseContent):
                     firstTargetCode = compress(thenContent[0])
                     if firstTargetCode == compress(elseContent[0]):
-                        return "%s%s%s?%s:%s" % (firstTargetCode, operator, compress(conditionPart), compress(thenContent[1]), compress(elseContent[1]))
+                        return "%s%s%s?%s:%s" % (firstTargetCode, operator, compress(condition), compress(thenContent[1]), compress(elseContent[1]))
         
         # Use hook statement for simple expressions
         if thenContent.type != "comma" and thenContent.type in expressions and elseContent.type != "comma" and elseContent.type in expressions:
-            return "%s?%s:%s" % (compress(conditionPart), compress(thenContent), compress(elseContent))
+            return "%s?%s:%s" % (compress(condition), compress(thenContent), compress(elseContent))
         
     else:
         pass
-        
-    
-    
     
     
     # The normal if-compression
-    
-    result = "if(%s)" % compress(node.condition)
+    result = "if(%s)" % compress(condition)
     thenCode = compress(thenPart)
-    elsePart = getattr(node, "elsePart", None)
 
     if elsePart:
         # Special handling for cascaded if-else-if cases where the else might be 
