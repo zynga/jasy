@@ -20,13 +20,6 @@ __commaSymbol = ",\n"
 
 
 #
-# Status flags
-#
-
-__endsBlock = False
-
-
-#
 # Main
 #
 
@@ -90,6 +83,12 @@ def statements(node):
             result += __semicolonSymbol
 
     return result
+    
+
+def assignOperator(node):
+    assignOp = getattr(node, "assignOp", None)
+    return "=" if not assignOp else dividers[assignOp] + "="
+            
 
 #
 # Data
@@ -200,25 +199,10 @@ def __script(node):
     return result
 
 def __block(node):
-    global __endsBlock
-    
     if len(node) == 1:
-        # Reset endsBlock first, and wait for change in compression
-        __endsBlock = False
-        
-        result = compress(node[0])
-        
-        # Need to add a semicolon
-        # when the last character in the result string
-        # was not created by an ending block (pretty magic)
-        if not __endsBlock and not result.endswith(__semicolonSymbol):
-            result = result + __semicolonSymbol
-            
-        __endsBlock = False
-        return result
+        return compress(node[0])
     
     result = "{%s}" % statements(node)
-    __endsBlock = True
     
     return result
     
@@ -230,21 +214,18 @@ def __let_block(node):
         end = compress(node.expression)    
     
     return begin + end
-    
-def __group(node):
-    return "(%s)" % compress(node[0])
 
 def __identifier(node):
     return node.value
-        
+    
 def __const(node):
-    return "const %s" % ",".join(map(compress, node))
+    return "const %s%s" % (__list(node), __semicolonSymbol)
 
 def __var(node):
-    return "var %s" % ",".join(map(compress, node))
+    return "var %s%s" % (__list(node), __semicolonSymbol)
 
 def __let(node):
-    return "let %s" % ",".join(map(compress, node))
+    return "let %s%s" % (__list(node), __semicolonSymbol)
 
 def __list(node):
     return ",".join(map(compress, node))
@@ -253,12 +234,10 @@ def __index(node):
     return "%s[%s]" % (compress(node[0]), compress(node[1]))
 
 def __semicolon(node):
-    # add a semicolon only if there is no outer block around which takes care on this
-    postfix = __semicolonSymbol if node.parent.type != "block" else ""
-    expr = getattr(node, "expression", None)
-    code = "%s" % compress(expr) if expr else ""
+    expression = getattr(node, "expression", None)
+    code = "%s" % compress(expression) if expr else ""
     
-    return "%s%s" % (code, postfix)
+    return "%s%s" % (code, __semicolonSymbol)
 
 def __declaration(node):
     names = getattr(node, "names", None)
@@ -273,15 +252,8 @@ def __declaration(node):
         
     return result
     
-def __assignOperator(node):
-    assignOp = getattr(node, "assignOp", None)
-    return "=" if not assignOp else dividers[assignOp] + "="
-    
 def __assign(node):
-    global __endsBlock
-    
-    result = compress(node[0]) + __assignOperator(node[0]) + compress(node[1])
-    __endsBlock = False
+    result = compress(node[0]) + assignOperator(node[0]) + compress(node[1])
     
     return result
 
@@ -291,23 +263,15 @@ def __assign(node):
 #
 
 def __call(node):
-    global __endsBlock
-    
     result = "%s(%s)" % (compress(node[0]), compress(node[1]))
-    __endsBlock = False
     return result
     
 def __new_with_args(node):
-    global __endsBlock
-
     result = "new %s(%s)" % (compress(node[0]), compress(node[1]))
-    __endsBlock = False
     return result
     
 
 def __function(node):
-    global __endsBlock
-    
     if node.type == "setter":
         result = "set"
     elif node.type == "getter":
@@ -332,7 +296,6 @@ def __function(node):
             body = body[:-len(__semicolonSymbol)]
         
         result += "{%s}" % body
-        __endsBlock = True
         
     return result
     
@@ -359,8 +322,6 @@ def __setter(node):
     return __function(node)
     
 def __return(node):
-    global __endsBlock
-    
     result = "return"
     if hasattr(node, "value"):
         valueCode = compress(node.value)
@@ -370,10 +331,7 @@ def __return(node):
             result += " "
             
         result += valueCode
-        
-    # In single statements we require a semicolon after a return
-    __endsBlock = False
-        
+                
     return result
     
         
@@ -386,8 +344,6 @@ def __throw(node):
     return "throw %s" % compress(node.exception)
 
 def __try(node):
-    global __endsBlock
-    
     result = "try{%s}" % statements(node.tryBlock)
     
     for catch in node:
@@ -399,9 +355,6 @@ def __try(node):
 
     if hasattr(node, "finallyBlock"):
         result += "finally{%s}" % statements(node.finallyBlock)
-
-    # Try statement is like a block
-    __endsBlock = True
 
     return result
 
@@ -496,13 +449,13 @@ def __hook(node):
     return "%s?%s:%s" % (compress(condition), compress(thenPart), compress(elsePart))
     
     
-def __containsIf(node):
+def containsIf(node):
     """ helper for __if handling """
     if node.type == "if":
         return True
         
     for child in node:
-        if __containsIf(child):
+        if containsIf(child):
             return True
         
     return False
@@ -542,8 +495,8 @@ def __if(node):
                 return "return %s?%s:%s" % (compress(condition), compress(thenContent.value), compress(elseContent.value))
                 
             elif thenContent.type == "assign":
-                operator = __assignOperator(thenContent)
-                if operator == __assignOperator(elseContent):
+                operator = assignOperator(thenContent)
+                if operator == assignOperator(elseContent):
                     firstTargetCode = compress(thenContent[0])
                     if firstTargetCode == compress(elseContent[0]):
                         return "%s%s%s?%s:%s" % (firstTargetCode, operator, compress(condition), compress(thenContent[1]), compress(elseContent[1]))
@@ -570,7 +523,7 @@ def __if(node):
     if elsePart:
         # Special handling for cascaded if-else-if cases where the else might be 
         # attached to the wrong if in cases where the braces are omitted.
-        if len(thenPart) == 1 and __containsIf(thenPart):
+        if len(thenPart) == 1 and containsIf(thenPart):
             if thenCode.endswith(__semicolonSymbol):
                 thenCode = "{%s}" % thenCode[:-len(__semicolonSymbol)]
             else:
@@ -596,8 +549,6 @@ def __if(node):
     
         
 def __switch(node):
-    global __endsBlock
-    
     result = "switch(%s){" % compress(node.discriminant)
     for case in node:
         if case.type == "case":
@@ -617,9 +568,6 @@ def __switch(node):
         result = result[:-len(__semicolonSymbol)]
         
     result += "}"
-    
-    # Switch statement is like a block
-    __endsBlock = True
     
     return result
         
