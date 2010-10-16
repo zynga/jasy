@@ -192,19 +192,20 @@ def __property_init(node):
 #
 
 def __script(node):
-    result = statements(node)
-    if not result.endswith(__semicolonSymbol):
-        result = result + __semicolonSymbol
-        
-    return result
+    return statements(node)
 
 def __block(node):
-    if len(node) == 1:
+    if len(node) == 0:
+        return __semicolonSymbol
+    
+    elif len(node) == 1:
         return compress(node[0])
     
-    result = "{%s}" % statements(node)
+    compressed = statements(node)
+    if compressed.endswith(__semicolonSymbol):
+        compressed = compressed[:-len(__semicolonSymbol)]
     
-    return result
+    return "{%s}" % compressed
     
 def __let_block(node):
     begin = "let(%s)" % ",".join(map(compress, node.variables))
@@ -235,7 +236,7 @@ def __index(node):
 
 def __semicolon(node):
     expression = getattr(node, "expression", None)
-    code = "%s" % compress(expression) if expr else ""
+    code = "%s" % compress(expression) if expression else ""
     
     return "%s%s" % (code, __semicolonSymbol)
 
