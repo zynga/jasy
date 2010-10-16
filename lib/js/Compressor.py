@@ -253,8 +253,12 @@ def __index(node):
     return "%s[%s]" % (compress(node[0]), compress(node[1]))
 
 def __semicolon(node):
+    # add a semicolon only if there is no outer block around which takes care on this
+    postfix = __semicolonSymbol if node.parent.type != "block" else ""
     expr = getattr(node, "expression", None)
-    return "" if not expr else compress(expr)
+    code = "%s" % compress(expr) if expr else ""
+    
+    return "%s%s" % (code, postfix)
 
 def __declaration(node):
     names = getattr(node, "names", None)
