@@ -498,14 +498,57 @@ def __containsIf(node):
 
 
 def __if(node):
+    thenPart = getattr(node, "thenPart", None)
+    elsePart = getattr(node, "elsePart", None)
+    
+    # Pre-checks for deeper optimization
+    
+    if thenPart and elsePart:
+        if thenPart.type == "block" and len(thenPart) == 1:
+            thenContent = thenPart[0]
+        else:
+            thenContent = thenPart
+            
+        if elsePart.type == "block" and len(elsePart) == 1:
+            elseContent = elsePart[0]
+        else:
+            elseContent = elsePart
+        
+        
+        
+        # Merge return statements
+        if thenContent.type == elseContent.type and thenContent.type == "return":
+            print("Merge return")
+            result = "return %s?%s:%s;" % (compress(node.condition), compress(thenContent.value), compress(elseContent.value))
+            print(result)
+            return result
+            
+            
+            
+        # These types are allowed to being used in a conditional/hook statement
+        elif thenContent.type in ("string", "number", "call", "return"):
+            if elseContent.type in ("string", "number", "call", "return"):
+                #print("May optimize: %s" % node)
+                pass
+        
+        
+    else:
+        pass
+        
+    
+    
+    
+    
+    # The normal if-compression
+    
     result = "if(%s)" % compress(node.condition)
-    thenCode = compress(node.thenPart)
+    thenCode = compress(thenPart)
     elsePart = getattr(node, "elsePart", None)
 
     if elsePart:
         # Special handling for cascaded if-else-if cases where the else might be 
         # attached to the wrong if in cases where the braces are omitted.
-        if len(node.thenPart) == 1 and __containsIf(node.thenPart):
+        if len(thenPart) == 1 and __containsIf(thenPart):
             if thenCode.endswith(__semicolonSymbol):
                 thenCode = "{%s}" % thenCode[:-len(__semicolonSymbol)]
             else:
