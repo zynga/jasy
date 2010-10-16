@@ -3,8 +3,10 @@
 # Copyright 2010 Sebastian Werner
 #
 
-expressions =
-[
+# All allowed expression types of JavaScript 1.7
+# They may be separated by "comma" which is quite of special 
+# and not allowed everywhere e.g. in conditional statements
+expressions = [
     # Primary Expression - Part 1
     "function",
 
