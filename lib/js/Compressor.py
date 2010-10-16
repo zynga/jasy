@@ -254,9 +254,7 @@ def __declaration(node):
     return result
     
 def __assign(node):
-    result = compress(node[0]) + assignOperator(node[0]) + compress(node[1])
-    
-    return result
+    return compress(node[0]) + assignOperator(node[0]) + compress(node[1])
 
 
 #
