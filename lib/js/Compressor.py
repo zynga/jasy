@@ -436,12 +436,6 @@ def __if(node):
     condition = node.condition
     elsePart = getattr(node, "elsePart", None)
     
-    # Optimize "not" expression
-    if thenPart and elsePart and condition.type == "not":
-        [thenPart,elsePart] = [elsePart,thenPart]
-        condition = condition[0]
-    
-    
     # Pre-checks for deeper optimization
     if thenPart and elsePart:
         thenContent = thenPart[0] if thenPart.type == "block" and len(thenPart) == 1 else thenPart
