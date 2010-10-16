@@ -517,23 +517,21 @@ def __if(node):
     
     # Pre-checks for deeper optimization
     if thenPart and elsePart:
-        if thenPart.type == "block" and len(thenPart) == 1:
-            thenContent = thenPart[0]
-        else:
-            thenContent = thenPart
-            
+        thenContent = thenPart[0] if thenPart.type == "block" and len(thenPart) == 1 else thenPart
+        elseContent = elsePart[0] if elsePart.type == "block" and len(elsePart) == 1 else elsePart
+
+        # Our strategy for if-else is to use hooks/ternary operators to create
+        # a more compact alternative to the classic if-else construction.
+        # There is only a little limitation that hooks only works with expressions 
+        # and not typical statements. Semicolon statements are typically wrappers
+        # around expression, so we directly filter them out here.
         if thenContent.type == "semicolon":
             thenContent = thenContent.expression
-            
-        if elsePart.type == "block" and len(elsePart) == 1:
-            elseContent = elsePart[0]
-        else:
-            elseContent = elsePart
-
         if elseContent.type == "semicolon":
             elseContent = elseContent.expression
         
-        # Merge equal types
+        # Merge equal types. This works very well for "return" and "assign" statements
+        # and creates even more compact versions than the normal hook translation.
         if thenContent.type == elseContent.type:
             # Merge return statements
             if thenContent.type == "return":
@@ -546,12 +544,18 @@ def __if(node):
                     if firstTargetCode == compress(elseContent[0]):
                         return "%s%s%s?%s:%s" % (firstTargetCode, operator, compress(condition), compress(thenContent[1]), compress(elseContent[1]))
         
-        # Use hook statement for simple expressions
+        # Reached the original idea to use hook statements instead of if-else constructs
         if thenContent.type != "comma" and thenContent.type in expressions and elseContent.type != "comma" and elseContent.type in expressions:
             return "%s?%s:%s" % (compress(condition), compress(thenContent), compress(elseContent))
         
     else:
-        pass
+        if condition.type == "not":
+            result = "%s||%s" % (compress(condition[0]), compress(thenPart))
+        else:
+            result = "%s&&%s" % (compress(condition), compress(thenPart))
+        
+        return result
+        
     
     
     # The normal if-compression
