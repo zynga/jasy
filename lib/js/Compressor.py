@@ -268,6 +268,7 @@ def __let(node):
     return addSemicolon("let %s" % __list(node))
 
 def __semicolon(node):
+    expression = getattr(node, "expression", None)
     return addSemicolon(compress(expression) if expression else "")
 
 def __label(node):
@@ -420,7 +421,7 @@ def __hook(node):
         [thenPart,elsePart] = [elsePart,thenPart]
         condition = condition[0]
     
-    return addSemicolon("%s?%s:%s" % (compress(condition), compress(thenPart), compress(elsePart))
+    return addSemicolon("%s?%s:%s" % (compress(condition), compress(thenPart), compress(elsePart)))
     
     
 def containsIf(node):
