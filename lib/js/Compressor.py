@@ -369,7 +369,7 @@ def __do(node):
     if not body.startswith("{"):
         body = "{%s}" % body
         
-    return addSemicolon("do%swhile(%s)%s" % (body, compress(node.condition))
+    return addSemicolon("do%swhile(%s)%s" % (body, compress(node.condition)))
 
 
 def __for_in(node):
