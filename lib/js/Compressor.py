@@ -189,7 +189,7 @@ def __list(node):
     return ",".join(map(compress, node))
 
 def __index(node):
-    return "%s[%s]" % (compress(node[0]), removeSemicolon(compress(node[1])))
+    return "%s[%s]" % (compress(node[0]), compress(node[1]))
 
 def __declaration(node):
     names = getattr(node, "names", None)
@@ -416,7 +416,7 @@ def __hook(node):
         [thenPart,elsePart] = [elsePart,thenPart]
         condition = condition[0]
     
-    return addSemicolon("%s?%s:%s" % (compress(condition), compress(thenPart), compress(elsePart)))
+    return "%s?%s:%s" % (compress(condition), compress(thenPart), compress(elsePart))
     
     
 def containsIf(node):
