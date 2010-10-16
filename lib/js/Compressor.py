@@ -189,7 +189,7 @@ def __list(node):
     return ",".join(map(compress, node))
 
 def __index(node):
-    return "%s[%s]" % (compress(node[0]), compress(node[1]))
+    return "%s[%s]" % (compress(node[0]), removeSemicolon(compress(node[1])))
 
 def __declaration(node):
     names = getattr(node, "names", None)
@@ -388,20 +388,15 @@ def __for_in(node):
     
     
 def __for(node):
-    result = "for("
-    
     setup = getattr(node, "setup", None)
     condition = getattr(node, "condition", None)
     update = getattr(node, "update", None)
-    
-    if setup: result += compress(setup)
-    result += __semicolonSymbol
-    if condition: result += compress(condition)
-    result += __semicolonSymbol
-    if update: result += compress(update)
-        
-    body = compress(node.body)
-    result += ")%s" % body
+
+    result = "for("
+    result += addSemicolon(compress(setup) if setup else "")
+    result += addSemicolon(compress(condition) if condition else "")
+    result += compress(update) if setup else ""
+    result += ")%s" % compress(node.body)
     
     return result
     
