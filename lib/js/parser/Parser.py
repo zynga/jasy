@@ -993,7 +993,7 @@ def GeneratorExpression(tokenizer, staticContext, expression):
     return node
 
 
-# JavaScript 1.7 Comprehensions Tails (Generatators / Arrays)
+# JavaScript 1.7 Comprehensions Tails (Generators / Arrays)
 def comprehensionTail(tokenizer, staticContext):
     builder = staticContext.builder
     
