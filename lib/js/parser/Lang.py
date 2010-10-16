@@ -3,6 +3,40 @@
 # Copyright 2010 Sebastian Werner
 #
 
+statements = [
+    "script",
+    "block",
+    "semicolon",
+
+    "while",
+    "do",
+    "for",
+    "for_in",
+
+    "if",
+    "switch",
+    "hook",
+
+    "call",
+    "new_with_args",
+    "new",
+
+    "function",
+    "setter",
+    "getter",
+
+    "return",
+    
+    "try",
+    "throw",
+    
+    "label",
+    "break",
+    "continue"
+]
+
+
+
 # All allowed expression types of JavaScript 1.7
 # They may be separated by "comma" which is quite of special 
 # and not allowed everywhere e.g. in conditional statements
