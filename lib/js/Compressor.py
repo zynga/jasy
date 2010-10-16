@@ -534,7 +534,10 @@ def __if(node):
         
         # Use hook statement for simple expressions
         if thenContent.type != "comma" and thenContent.type in expressions and elseContent.type != "comma" and elseContent.type in expressions:
-            return "%s?%s:%s" % (compress(node.condition), compress(thenContent), compress(elseContent))
+            if node.condition.type == "not":
+                return "%s?%s:%s" % (compress(node.condition[0]), compress(elseContent), compress(thenContent))
+            else:
+                return "%s?%s:%s" % (compress(node.condition), compress(thenContent), compress(elseContent))
         
     else:
         pass
