@@ -164,7 +164,7 @@ def __rebuildAsAssignment(node, firstVarStatement):
     if len(assignmentList) > 0:
         node.parent.replace(node, assignment)
     
-    elif getattr(node, "rel", "iterator"):
+    elif getattr(node, "rel", None) == "iterator":
         # is OK to be second because of assignments are not allowed at
         # all in for-in loops and so the first if basically does nothing
         # for these kind of statements.
