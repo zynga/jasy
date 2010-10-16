@@ -4,44 +4,44 @@
 #
 
 statements = [
-    "script",
-    "block",
+    # With semicolon at end
     "semicolon",
+    "return",
+    "throw",
+    "label",
+    "break",
+    "continue",
+    "var",
+    "const",
+    "debugger",
 
+    # Only semicolon when no-block braces are created
+    "block",
+    "let_block",
     "while",
     "do",
     "for",
     "for_in",
-
     "if",
     "switch",
     "hook",
+    "with",
 
-    "call",
-    "new_with_args",
-    "new",
-
-    "function",
+    # no semicolons
+    # function, setter and getter as statement_form or declared_form
+    "function", 
     "setter",
     "getter",
-
-    "return",
-    
     "try",
-    "throw",
-    
-    "label",
-    "break",
-    "continue"
+    "label"
 ]
-
 
 
 # All allowed expression types of JavaScript 1.7
 # They may be separated by "comma" which is quite of special 
 # and not allowed everywhere e.g. in conditional statements
 expressions = [
-    # Primary Expression - Part 1
+    # Primary Expression - Part 1 (expressed form)
     "function",
 
     # Primary Expression - Part 2
