@@ -1,3 +1,8 @@
+#
+# JavaScript Tools - Language Specification
+# Copyright 2010 Sebastian Werner
+#
+
 # JavaScript 1.7 keywords
 keywords = [
     "break",
