@@ -20,12 +20,16 @@ Done
 - Rework parser for better child handling (easier to traverse tree compared to original)
 - Support for JavaScript 1.8 (Generators, Block Scope, Function Expressions, Array Comprehensions, ...)
 - Compressor (generate JavaScript code without white-spaces, etc.)
+- Improved compression of if-statements (using &&, ||, or ternary operator)
+- Collects all "var" statement into one for each function. Converts remaining initialization into assignments.
 - Local Variable Optimizer
 - Comment processing (Parse and attach to nodes)
 - Project Support (Bundling multiple projects)
 - Permutation Support (Removing debug blocks, alternative code, qooxdoo variants, hasjs statements, etc.)
 - Permutation hashes with timestamp support (for permanent caching of files)
-- Dependency Analysis (with support for permutations)
+- Dependency Analysis (with support for permutations). 
+- All dependencies are regarded as load-time specific. No need to wait to use other classes.
+- Automatic and fine-tunable breaking of circular dependencies.
 
 Todo
 ----
