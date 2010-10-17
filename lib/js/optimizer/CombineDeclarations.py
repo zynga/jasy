@@ -180,3 +180,7 @@ def __rebuildAsAssignment(node, firstVarStatement):
             logging.warn("Remove related node (%s) from parent: %s" % (node.rel, node))
             
         node.parent.remove(node)
+        
+    # Minor post-cleanup. Remove useless comma statement when only one expression is the result
+    if len(assignmentList) == 1:
+        assignment.replace(assignmentList, assignmentList[0])
