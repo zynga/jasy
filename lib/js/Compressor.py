@@ -32,7 +32,11 @@ def compress(node):
     elif type in prefixes:
         result = prefixes[node.type] + compress(node[0])
     elif type in postfixes:
-        result = compress(node[0]) + postfixes[node.type]
+        if getattr(node, "postfix", False):
+            result = postfixes[node.type] + compress(node[0])
+        else:
+            result = compress(node[0]) + postfixes[node.type]
+            
     elif type in dividers:
         result = dividers[node.type].join(map(compress, node))
     else:
@@ -514,12 +518,14 @@ def __if(node):
                 # need to put the whole statement into parens - even at single 
                 # statement scenarios like here.
                 if thenContent.type in ("comma", "assign", "bitwise_and", "bitwise_xor", "bitwise_or", "and", "or"):
-                    # result = "(%s)" % result
+                    result = "(%s)" % result
                     
-                    # As this result in no benefit regarding compression size, we just keep
+                    # In positive condition expressions:
+                    # This result in no benefit regarding compression size, we just keep
                     # the default behavior so the original developer easier understand
                     # the code because it is more familiar to the orignal one.
-                    result = None
+                    if condition.type != "not":
+                        result = None
                 
             if result != None:
                 if condition.type == "not":
