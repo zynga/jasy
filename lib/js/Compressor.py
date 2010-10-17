@@ -469,14 +469,13 @@ def __if(node):
         if thenContent.type != "comma" and thenContent.type in expressions and elseContent.type != "comma" and elseContent.type in expressions:
             return addSemicolon("%s?%s:%s" % (compress(condition), compress(thenContent), compress(elseContent)))
         
-    else:
-        pass
-        #if condition.type == "not":
-        #    result = "%s||%s" % (compress(condition[0]), compress(thenPart))
-        #else:
-        #    result = "%s&&%s" % (compress(condition), compress(thenPart))
-        #
-        #return result
+    elif thenPart.type != "block" or len(thenPart) == 1:
+        if condition.type == "not":
+            result = "%s||%s" % (compress(condition[0]), compress(thenPart))
+        else:
+            result = "%s&&%s" % (compress(condition), compress(thenPart))
+        
+        return result
         
     
     
