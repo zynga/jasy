@@ -71,20 +71,31 @@ def __combineSiblings(node):
 
 def __combineVarStatements(node):
     """Top level method called to optimize a script node"""
-    first = __findFirstVarStatement(node)
+    firstVar = __findFirstVarStatement(node)
     
     # Special case, when a node has variables, but no valid "var" block to hold them
-    if not first and node.variables:
-        first = Node(None, "var")
-        node.append(first)
+    if not firstVar and node.variables:
+        firstVar = Node(None, "var")
+        node.append(firstVar)
     
-    if first:
-        __patchVarStatements(node, first)
-        __cleanFirst(first)
+    if firstVar:
+        __patchVarStatements(node, firstVar)
+        __cleanFirst(firstVar)
         
-        if len(first) == 0:
-            first.parent.remove(first)
+        if len(firstVar) == 0:
+            firstVar.parent.remove(firstVar)
+
+        else:
+            # When there is a classical for loop immediately after our 
+            # first var statement, then we try to move the var declaration
+            # into there as a setup expression
         
+            firstVarParent = firstVar.parent
+            firstVarPos = firstVarParent.index(firstVar)
+            if len(firstVarParent) > firstVarPos+1:
+                possibleForStatement = firstVarParent[firstVarPos+1]
+                if possibleForStatement.type == "for" and not hasattr(possibleForStatement, "setup"):
+                    possibleForStatement.append(firstVar, "setup")
 
         
 def __findFirstVarStatement(node):
