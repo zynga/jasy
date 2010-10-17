@@ -469,14 +469,65 @@ def __if(node):
         if thenContent.type != "comma" and thenContent.type in expressions and elseContent.type != "comma" and elseContent.type in expressions:
             return addSemicolon("%s?%s:%s" % (compress(condition), compress(thenContent), compress(elseContent)))
         
-    elif thenPart.type != "block" or len(thenPart) == 1:
-        if condition.type == "not":
-            result = "%s||%s" % (compress(condition[0]), compress(thenPart))
-        else:
-            result = "%s&&%s" % (compress(condition), compress(thenPart))
+    else:
+        # Check whether all children are semicolon statements. Their
+        # expressions can be modified safely into the target statement.
         
-        return result
+        thenContent = thenPart[0] if thenPart.type == "block" and len(thenPart) == 1 else thenPart
         
+        # Fast-path for empty block statements
+        if thenContent.type == "block" and len(thenContent) == 0:
+            return addSemicolon(compress(condition))
+        elif thenContent.type == "semicolon" and not hasattr(thenContent, "expression"):
+            return addSemicolon(compress(condition))
+        
+        # Pre-flight check to quickly analyse whether our children
+        # are just simple expressions which can be used here.
+        containsOnlyExpressions = True
+        if thenContent.type == "block":
+            for child in thenContent:
+                if child.type != "semicolon":
+                    containsOnlyExpressions = False
+                    break
+            
+        elif thenContent.type != "semicolon":
+            containsOnlyExpressions = False
+            
+        # If pre-flight check was OK, then continue with
+        # optimized compression.
+        if containsOnlyExpressions:
+            if thenContent.type == "block":
+                result = []
+                for child in thenContent:
+                    # Omit semicolon statements without an actual expression
+                    childExpression = getattr(child, "expression", None)
+                    if childExpression:
+                        result.append(compress(childExpression))
+                result = "(%s)" % ",".join(result)
+                
+            else:
+                thenContent = thenContent.expression
+                result = compress(thenContent) if thenContent else ""
+                
+                # We need to support the parser here in assing statements and we
+                # need to keep the priority of expressions correctly so we sometimes 
+                # need to put the whole statement into parens - even at single 
+                # statement scenarios like here.
+                if thenContent.type in ("comma", "assign", "bitwise_and", "bitwise_xor", "bitwise_or", "and", "or"):
+                    # result = "(%s)" % result
+                    
+                    # As this result in no benefit regarding compression size, we just keep
+                    # the default behavior so the original developer easier understand
+                    # the code because it is more familiar to the orignal one.
+                    result = None
+                
+            if result != None:
+                if condition.type == "not":
+                    result = "%s||%s" % (compress(condition[0]), result)
+                else:
+                    result = "%s&&%s" % (compress(condition), result)
+        
+                return addSemicolon(result)
     
     
     # The normal if-compression
