@@ -14,6 +14,16 @@ def optimize(node, level=0):
     for child in node:
         optimize(child, level+1)
         
+        
+    # Remove unneeded parens
+    if getattr(node, "parenthesized", False):
+        # If the direct parent is an assignment like:
+        # foo = (something + otherthing)
+        # the the parens are useless
+        if node.parent.type == "assign":
+            node.parenthesized = False
+    
+        
     # Unwrap blocks
     if node.type == "block":
         if node.parent.type in ("try", "catch", "finally"):
