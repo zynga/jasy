@@ -106,9 +106,12 @@ def fixParens(node):
     elif parent.type in expressions:
         prio = expressionOrder[node.type]
         parentPrio = expressionOrder[node.parent.type]
-        if prio > parentPrio:
+        if prio >= parentPrio:
             print("Remove parens around %s in %s" % (node.type, parent.type))
             node.parenthesized = False
+        else:
+            print("Add parens around %s in %s" % (node.type, parent.type))
+            node.parenthesized = True
 
 
     
@@ -126,10 +129,6 @@ def combineToCommaExpression(node, level):
     for child in node:
         # Ignore empty semicolons
         if hasattr(child, "expression"):
-            # Auto-protect inner comma expressions via parens
-            if child.expression.type == "comma":
-                child.expression.parenthesized = True
-                
             comma.append(child.expression)
             
     semicolon = Node(node.tokenizer, "semicolon")
@@ -169,11 +168,8 @@ def combineExpressions(condition, thenExpression, elseExpression):
     semicolon = Node(condition.tokenizer, "semicolon")
     semicolon.append(hook, "expression")
     
-    if thenExpression.type in ("comma"):
-        thenExpression.parenthesized = True
-        
-    if elseExpression.type in ("comma"):
-        elseExpression.parenthesized = True
+    fixParens(thenExpression)
+    fixParens(elseExpression)
     
     return semicolon
 
