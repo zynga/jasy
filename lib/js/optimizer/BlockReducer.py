@@ -67,8 +67,6 @@ def optimize(node, level=0):
                         node.parent.replace(node, replacement)
                         
         elif thenPart.type != "block":
-            print("Then-Part: %s" % thenPart.type)
-            
             if thenPart.type == "semicolon":
                 thenExpression = getattr(thenPart, "expression", None)
                 condition = node.condition
