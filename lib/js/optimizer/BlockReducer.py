@@ -22,6 +22,8 @@ def optimize(node, level=0):
         elif len(node) == 1:
             if node.parent.type == "if" and containsIf(node):
                 print("Omit unwrapping of block (cascaded if blocks) at #%s" % level)
+            elif node.parent.type in ("try", "catch", "finally"):
+                print("Omit unwrapping of block (try/catch/finally) at #%s" % level)
             else:
                 print("Unwrap block at #%s" % level)
                 node.parent.replace(node, node[0])
@@ -58,7 +60,7 @@ def optimize(node, level=0):
 
         
 def combineToCommaExpression(node):
-    if node.type != "block":
+    if node == None or node.type != "block":
         return node
         
     for child in node:
