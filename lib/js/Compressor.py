@@ -420,7 +420,7 @@ def __if(node):
         
         # Micro optimization: Don't need a space when the child is a block
         # At this time the brace could not be part of a map declaration (would be a syntax error)
-        if not elseCode.startswith("{"):
+        if not elseCode.startswith(("{", "(")):
             result += " "        
             
         result += elseCode
