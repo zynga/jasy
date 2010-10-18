@@ -65,18 +65,22 @@ def combineToCommaExpression(node):
         if child.type != "semicolon":
             return node
             
-    comma = Node(node.tokenizer, "comma")    
-    comma.parenthesized = True
+    comma = Node(node.tokenizer, "comma")
     
     for child in node:
         # Ignore empty semicolons
         if hasattr(child, "expression"):
+            # Auto-protect inner comma expressions via parens
+            if child.expression.type == "comma":
+                child.expression.parenthesized = True
+                
             comma.append(child.expression)
             
     semicolon = Node(node.tokenizer, "semicolon")
     semicolon.append(comma, "expression")
     
-    node.parent.replace(node, semicolon)
+    parent = node.parent
+    parent.replace(node, semicolon)
     
     return semicolon
         
@@ -107,6 +111,13 @@ def combineExpressions(condition, thenExpression, elseExpression):
     hook = createHook(condition, thenExpression, elseExpression)
     semicolon = Node(condition.tokenizer, "semicolon")
     semicolon.append(hook, "expression")
+    
+    if thenExpression.type in ("comma"):
+        thenExpression.parenthesized = True
+        
+    if elseExpression.type in ("comma"):
+        elseExpression.parenthesized = True
+    
     return semicolon
 
 
