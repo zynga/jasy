@@ -16,14 +16,15 @@ def optimize(node, level=0):
         
     # Unwrap blocks
     if node.type == "block":
-        if len(node) == 0:
+        if node.parent.type in ("try", "catch", "finally"):
+            #print("Omit unwrapping of block (try/catch/finally) at #%s" % level)
+            pass
+        elif len(node) == 0:
             print("Replace empty block #%s" % level)
             node.parent.replace(node, Node(node.tokenizer, "semicolon"))
         elif len(node) == 1:
             if node.parent.type == "if" and containsIf(node):
                 print("Omit unwrapping of block (cascaded if blocks) at #%s" % level)
-            elif node.parent.type in ("try", "catch", "finally"):
-                print("Omit unwrapping of block (try/catch/finally) at #%s" % level)
             else:
                 print("Unwrap block at #%s" % level)
                 node.parent.replace(node, node[0])
