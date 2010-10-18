@@ -7,48 +7,82 @@ from js.parser.Node import Node
 from js.Compressor import compress
 import logging
 
-def optimize(node):
+__all__ = ["optimize"]
+
+def optimize(node, level=0):
     # Process from inside to outside
     for child in node:
-        optimize(child)
+        optimize(child, level+1)
         
     # Unwrap blocks
     if node.type == "block":
         if len(node) == 0:
-            print("Replace empty block")
+            print("Replace empty block #%s" % level)
             node.parent.replace(node, Node(node.tokenizer, "semicolon"))
         elif len(node) == 1:
             if node.parent.type == "if" and containsIf(node):
-                print("Omit unwrapping of block (cascaded if blocks)")
+                print("Omit unwrapping of block (cascaded if blocks) at #%s" % level)
             else:
-                print("Unwrap block")
+                print("Unwrap block at #%s" % level)
                 node.parent.replace(node, node[0])
             
     # Process all if-statements
     if node.type == "if":
+        print("IF at #%s" % level)
+        
         thenPart = getattr(node, "thenPart", None)
         elsePart = getattr(node, "elsePart", None)
+
+        # Optimize using "AND" or "OR" operators
+        # Combine multiple semicolon statements into one semicolon statement using an "comma" expression
+        thenPart = combineToCommaExpression(thenPart)
+        elsePart = combineToCommaExpression(elsePart)
         
-        if thenPart.type == "return" and elsePart.type == "return":
-            # Combine return statement
-            replacement = createReturn(createHook(node.condition, thenPart.value, elsePart.value))
-            node.parent.replace(node, replacement)
+        # Optimize using hook operator
+        if thenPart and elsePart:
+            if thenPart.type == "return" and elsePart.type == "return":
+                # Combine return statement
+                replacement = createReturn(createHook(node.condition, thenPart.value, elsePart.value))
+                node.parent.replace(node, replacement)
         
-        elif thenPart.type == "semicolon" and elsePart.type == "semicolon":
-            # Combine two expressions
-            thenExpression = getattr(thenPart, "expression", None)
-            elseExpression = getattr(elsePart, "expression", None)
-            if thenExpression and elseExpression:
-                replacement = combineAssignments(node.condition, thenExpression, elseExpression) or combineExpressions(node.condition, thenExpression, elseExpression)
-                if replacement:
-                    node.parent.replace(node, replacement)
+            elif thenPart.type == "semicolon" and elsePart.type == "semicolon":
+                # Combine two assignments or expressions
+                thenExpression = getattr(thenPart, "expression", None)
+                elseExpression = getattr(elsePart, "expression", None)
+                if thenExpression and elseExpression:
+                    replacement = combineAssignments(node.condition, thenExpression, elseExpression) or combineExpressions(node.condition, thenExpression, elseExpression)
+                    if replacement:
+                        node.parent.replace(node, replacement)
 
 
 
+        
+def combineToCommaExpression(node):
+    if node.type != "block":
+        return node
+        
+    for child in node:
+        if child.type != "semicolon":
+            return node
+            
+    comma = Node(node.tokenizer, "comma")    
+    comma.parenthesized = True
+    
+    for child in node:
+        # Ignore empty semicolons
+        if hasattr(child, "expression"):
+            comma.append(child.expression)
+            
+    semicolon = Node(node.tokenizer, "semicolon")
+    semicolon.append(comma, "expression")
+    
+    node.parent.replace(node, semicolon)
+    
+    return semicolon
         
 
 def containsIf(node):
-    """ helper for __if handling """
+    """ helper for block removal optimization """
     if node.type == "if":
         return True
 
