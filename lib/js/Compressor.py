@@ -430,126 +430,13 @@ def containsIf(node):
     return False
 
 
-def containsOnlyExpressions(node):
-    # Pre-flight check to quickly analyse whether our children
-    # are just simple expressions which can be used here.
-    containsOnlyExpressions = True
-    if node.type == "block":
-        for child in node:
-            if child.type != "semicolon":
-                containsOnlyExpressions = False
-                break
-        
-    elif node.type != "semicolon":
-        containsOnlyExpressions = False  
-        
-    return containsOnlyExpressions
-    
-    
-def combineAssignExpressions(thenExpression, elseExpression, condition):
-    if thenExpression.type == "assign" and elseExpression.type == "assign":
-        operator = assignOperator(thenExpression)
-        if operator == assignOperator(thenExpression):
-            firstTargetCode = compress(thenExpression[0])
-            if firstTargetCode == compress(elseExpression[0]):
-                return addSemicolon("%s%s%s?%s:%s" % (firstTargetCode, operator, compress(condition), compress(thenExpression[1]), compress(elseExpression[1])))
-
-
-def combineReturns(thenContent, elseContent, condition):
-    """ Two returns can be combined into one return statement which returns a hook """
-    if thenContent.type == "return" and elseContent.type == "return":
-        return addSemicolon("return %s?%s:%s" % (compress(condition), compress(thenContent.value), compress(elseContent.value)))
-    
-    
-def combineExpressions(thenContent, elseContent, condition):
-    """ If we deal with two expressions, we could definitely use a hook alternative instead
-        of a classic if-else syntax. """
-    
-    if thenContent.type == "semicolon" and elseContent.type == "semicolon":
-        thenExpression = getattr(thenContent, "expression", None)
-        elseExpression = getattr(elseContent, "expression", None)
-        if thenExpression and elseExpression:
-            result = combineAssignExpressions(thenExpression, elseExpression, condition)
-            if not result:
-                result = addSemicolon("%s?%s:%s" % (compress(condition), compress(thenExpression), compress(elseExpression)))
-            return result
-
-
 def __if(node):
     thenPart = node.thenPart
-    condition = node.condition
-    elsePart = getattr(node, "elsePart", None)
-    
-    # Pre-checks for deeper optimization
-    if thenPart and elsePart:
-        # Unwrap block if it only contains one child
-        thenContent = thenPart[0] if thenPart.type == "block" and len(thenPart) == 1 else thenPart
-        elseContent = elsePart[0] if elsePart.type == "block" and len(elsePart) == 1 else elsePart
-        
-        # Try some effective statement combinations
-        result = combineReturns(thenContent, elseContent, condition) or combineExpressions(thenContent, elseContent, condition)
-        if result: return result
 
-        
-        # Reached the original idea to use hook statements instead of if-else constructs
-        # This part only cares about simple expressions
-        
-        
-        print("OPTIMIZED HOOK?")
-        #print(thenContent)
-        #print("---")
-        #print(elseContent)
-        
-        
-    else:
-        # Check whether all children are semicolon statements. Their
-        # expressions can be modified safely into the target statement.
-        
-        thenContent = thenPart[0] if thenPart.type == "block" and len(thenPart) == 1 else thenPart
-        
-        # Fast-path for empty block statements
-        if thenContent.type == "block" and len(thenContent) == 0:
-            return addSemicolon(compress(condition))
-        elif thenContent.type == "semicolon" and not hasattr(thenContent, "expression"):
-            return addSemicolon(compress(condition))
-        
-
-            
-        # If pre-flight check was OK, then continue with
-        # optimized compression.
-        if containsOnlyExpressions(thenContent):
-            if thenContent.type == "block":
-                result = []
-                for child in thenContent:
-                    # Omit semicolon statements without an actual expression
-                    childExpression = getattr(child, "expression", None)
-                    if childExpression:
-                        result.append(compress(childExpression))
-                result = "(%s)" % ",".join(result)
-                
-            else:
-                thenContent = thenContent.expression
-                result = compress(thenContent) if thenContent else ""
-                
-                # We need to support the parser here in assing statements and we
-                # need to keep the priority of expressions correctly so we sometimes 
-                # need to put the whole statement into parens - even at single 
-                # statement scenarios like here.
-                if thenContent.type in ("comma", "assign", "bitwise_and", "bitwise_xor", "bitwise_or", "and", "or"):
-                    result = "(%s)" % result
-                
-            if condition.type == "not":
-                result = "%s||%s" % (compress(condition[0]), result)
-            else:
-                result = "%s&&%s" % (compress(condition), result)
-    
-            return addSemicolon(result)
-    
-    
-    # The normal if-compression
-    result = "if(%s)" % compress(condition)
+    result = "if(%s)" % compress(node.condition)
     thenCode = compress(thenPart)
 
+    elsePart = getattr(node, "elsePart", None)
     if elsePart:
         # Special handling for cascaded if-else-if cases where the else might be 
         # attached to the wrong if in cases where the braces are omitted.
