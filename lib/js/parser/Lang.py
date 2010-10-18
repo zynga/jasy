@@ -134,3 +134,40 @@ expressions = [
     # Expression
     "comma"
 ]
+
+
+
+
+def __createOrder():
+    expressions = [
+        ["comma"],
+        ["assign"],
+        ["hook"],
+        ["or"],
+        ["and"],
+        ["bitwise_or"],
+        ["bitwise_xor",],
+        ["bitwise_and"],
+        ["eq","ne","strict_eq","strict_ne"],
+        ["lt","le","ge","gt","in","instanceof"],
+        ["lsh","rsh","ursh"],
+        ["plus","minus"],
+        ["mul","div","mod"],
+        ["unary_plus","unary_minus","delete","void","typeof","not","bitwise_not","increment","decrement"],
+        ["dot","call","index"],
+        ["new_with_args","new"],
+        ["null","this","true","false","identifier","number","string","regexp"],
+        ["let"],
+        ["object_init","array_init","array_comp"],
+        ["function"]
+    ]
+    
+    result = {}
+    for priority, itemList in enumerate(expressions):
+        for item in itemList:
+            result[item] = priority
+            
+    return result
+    
+expressionOrder = __createOrder()
+

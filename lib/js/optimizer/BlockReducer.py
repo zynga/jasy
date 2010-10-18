@@ -5,6 +5,7 @@
 
 from js.parser.Node import Node
 from js.Compressor import compress
+from js.parser.Lang import expressionOrder, expressions
 import logging
 
 __all__ = ["optimize"]
@@ -16,22 +17,17 @@ def optimize(node, level=0):
         
         
     # Remove unneeded parens
-    if getattr(node, "parenthesized", False):
-        # If the direct parent is an assignment like:
-        # foo = (something + otherthing)
-        # the the parens are not required
-        if node.parent.type == "assign":
-            print("Removing needless parens #%s" % level)
-            node.parenthesized = False
+    if getattr(node, "parenthesized", False) and node.type in expressions:
+        fixParens(node)
     
-        
+    
     # Unwrap blocks
     if node.type == "block":
         if node.parent.type in ("try", "catch", "finally"):
-            #print("Omit unwrapping of block (try/catch/finally) at #%s" % level)
+            # print("Omit unwrapping of block (try/catch/finally) at #%s" % level)
             pass
         elif len(node) == 0:
-            print("Replace empty block #%s" % level)
+            # print("Replace empty block #%s" % level)
             node.parent.replace(node, Node(node.tokenizer, "semicolon"))
         elif len(node) == 1:
             if node.parent.type == "if" and containsIf(node):
@@ -41,10 +37,9 @@ def optimize(node, level=0):
                 # print("Unwrap block at #%s" % level)
                 node.parent.replace(node, node[0])
             
+            
     # Process all if-statements
     if node.type == "if":
-        # print("IF at #%s" % level)
-        
         thenPart = getattr(node, "thenPart", None)
         elsePart = getattr(node, "elsePart", None)
 
@@ -57,7 +52,7 @@ def optimize(node, level=0):
         if thenPart and elsePart:
             if thenPart.type == "return" and elsePart.type == "return":
                 # Combine return statement
-                print("Merge return at #%s" % level)
+                # print("Merge return at #%s" % level)
                 replacement = createReturn(createHook(node.condition, thenPart.value, elsePart.value))
                 node.parent.replace(node, replacement)
         
@@ -68,11 +63,26 @@ def optimize(node, level=0):
                 if thenExpression and elseExpression:
                     replacement = combineAssignments(node.condition, thenExpression, elseExpression) or combineExpressions(node.condition, thenExpression, elseExpression)
                     if replacement:
-                        print("Merge assignment/expression at #%s" % level)
+                        # print("Merge assignment/expression at #%s" % level)
                         node.parent.replace(node, replacement)
 
 
 
+def fixParens(node):
+    parent = node.parent
+
+    if node.type == "function" and parent.type == "call":
+        # Ignore for direct execution functions
+        pass
+        
+    elif parent.type in expressions:
+        prio = expressionOrder[node.type]
+        parentPrio = expressionOrder[node.parent.type]
+        if prio > parentPrio:
+            node.parenthesized = False
+
+
+    
         
 def combineToCommaExpression(node, level):
     if node == None or node.type != "block":
@@ -99,7 +109,7 @@ def combineToCommaExpression(node, level):
     parent = node.parent
     parent.replace(node, semicolon)
     
-    print("Combine to comma expression at: #%s" % level)
+    # print("Combine to comma expression at: #%s" % level)
     return semicolon
         
 
