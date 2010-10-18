@@ -4,6 +4,7 @@
 #
 
 from js.parser.Node import Node
+from js.Compressor import compress
 import logging
 
 def optimize(node):
@@ -26,15 +27,41 @@ def optimize(node):
         elsePart = getattr(node, "elsePart", None)
         
         if thenPart.type == "return" and elsePart.type == "return":
-            ret = createReturn(createHook(node.condition, thenPart.value, elsePart.value))
-            node.parent.replace(node, ret)
+            # Combine return statement
+            replacement = createReturn(createHook(node.condition, thenPart.value, elsePart.value))
+            node.parent.replace(node, replacement)
+        
+        elif thenPart.type == "semicolon" and elsePart.type == "semicolon":
+            # Combine two expressions
+            thenExpression = getattr(thenPart, "expression", None)
+            elseExpression = getattr(elsePart, "expression", None)
+            if thenExpression and elseExpression:
+                replacement = combineAssignments(node.condition, thenExpression, elseExpression) or combineExpressions(node.condition, thenExpression, elseExpression)
+                if replacement:
+                    node.parent.replace(node, replacement)
+
+
+
+        
 
 
 
 
+def combineAssignments(condition, thenExpression, elseExpression):
+    if thenExpression.type == "assign" and elseExpression.type == "assign":
+        operator = getattr(thenExpression, "assignOp", None)
+        if operator == getattr(elseExpression, "assignOp", None):
+            if compress(thenExpression[0]) == compress(elseExpression[0]):
+                hook = createHook(condition, thenExpression[1], elseExpression[1])
+                thenExpression.append(hook)
+                return thenExpression.parent
 
 
-
+def combineExpressions(condition, thenExpression, elseExpression):
+    hook = createHook(condition, thenExpression, elseExpression)
+    semicolon = Node(condition.tokenizer, "semicolon")
+    semicolon.append(hook, "expression")
+    return semicolon
 
 
 def createReturn(value):
@@ -49,6 +76,4 @@ def createHook(condition, thenPart, elsePart):
     hook.append(thenPart, "thenPart")
     hook.append(elsePart, "elsePart")
     return hook
-            
-    
     
