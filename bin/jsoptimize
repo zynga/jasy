@@ -12,7 +12,7 @@ from js.optimizer import LocalVariables
 from js.optimizer import ValuePatch
 from js.optimizer import DeadCode
 from js.optimizer import CryptPrivates
-from js.optimizer import IfTranslator
+from js.optimizer import BlockReducer
 
 from js.Compressor import compress
 

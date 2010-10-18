@@ -34,7 +34,7 @@ session.addLocale("en_US")
 session.addVariant("qx.debug", [ "off" ])
 session.addVariant("qx.client", [ "webkit" ])
 
-optimization = set(["privates", "variables", "declarations"])
+optimization = set(["privates", "variables", "declarations", "blocks"])
 
 for permutation in session.getPermutations():
     hashed = permutation.getHash()

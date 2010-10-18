@@ -14,9 +14,10 @@ from js.optimizer.ValuePatch import patch
 from js.optimizer.DeadCode import optimize
 
 # Post optimization
-import js.optimizer.CombineDeclarations as CombineDeclarations
-import js.optimizer.LocalVariables as LocalVariables
-import js.optimizer.CryptPrivates as CryptPrivates
+import js.optimizer.CombineDeclarations
+import js.optimizer.LocalVariables
+import js.optimizer.CryptPrivates
+import js.optimizer.BlockReducer
 
 allIds = {}
 
@@ -90,6 +91,9 @@ class JsClass():
                 
                 if "variables" in optimization:
                     LocalVariables.optimize(tree)
+
+                if "blocks" in optimization:
+                    BlockReducer.optimize(tree)
                     
                 if "declarations" in optimization:
                     CombineDeclarations.optimize(tree)
