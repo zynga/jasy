@@ -12,6 +12,7 @@ from js.optimizer import LocalVariables
 from js.optimizer import ValuePatch
 from js.optimizer import DeadCode
 from js.optimizer import CryptPrivates
+from js.optimizer import IfTranslator
 
 from js.Compressor import compress
 
@@ -38,6 +39,7 @@ def jsoptimize(source, filename=None):
     
     #ValuePatch.patch(tree, values)
     DeadCode.optimize(tree)
+    IfTranslator.optimize(tree)
     #CryptPrivates.optimize(tree, "xx")
     CombineDeclarations.optimize(tree)
     LocalVariables.optimize(tree)
