@@ -19,8 +19,9 @@ def optimize(node, level=0):
     if getattr(node, "parenthesized", False):
         # If the direct parent is an assignment like:
         # foo = (something + otherthing)
-        # the the parens are useless
+        # the the parens are not required
         if node.parent.type == "assign":
+            print("Removing needless parens #%s" % level)
             node.parenthesized = False
     
         

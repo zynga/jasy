@@ -37,7 +37,7 @@ def collect(node, ownName=None):
         try:
             dependencies.remove(className)
         except KeyError:
-            logging.warn("Useless #optional pre-processor hint %s in %s" % (className, ownName))
+            logging.warn("Needless #optional pre-processor hint %s in %s" % (className, ownName))
             
     for className in tags["require"]:
         if className in dependencies:
