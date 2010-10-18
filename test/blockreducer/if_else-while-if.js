@@ -1,6 +1,6 @@
-if(true)
+if(first)
 {
-  while(true) 
+  while(second) 
   {
     if(x)
     {
