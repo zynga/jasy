@@ -30,12 +30,10 @@ def compress(node):
     if type in simple:
         result = type
     elif type in prefixes:
-        result = prefixes[node.type] + compress(node[0])
-    elif type in postfixes:
         if getattr(node, "postfix", False):
-            result = postfixes[node.type] + compress(node[0])
+            result = compress(node[0]) + prefixes[node.type]
         else:
-            result = compress(node[0]) + postfixes[node.type]
+            result = prefixes[node.type] + compress(node[0])
             
     elif type in dividers:
         result = dividers[node.type].join(map(compress, node))
@@ -114,12 +112,9 @@ dividers = {
     "in"            : ' in ',
 }
 
-postfixes = {
+prefixes = {
     "increment"     : "++",
     "decrement"     : "--",
-}
-
-prefixes = {
     "bitwise_not"   : '~',
     "not"           : "!",
     "unary_plus"    : "+",
