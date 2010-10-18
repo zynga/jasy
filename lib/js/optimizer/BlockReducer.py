@@ -69,6 +69,20 @@ def optimize(node, level=0):
         elif thenPart.type != "block":
             print("Then-Part: %s" % thenPart.type)
             
+            if thenPart.type == "semicolon":
+                thenExpression = getattr(thenPart, "expression", None)
+                if not thenExpression:
+                    # Empty semicolon statement => translate if into semicolon statement
+                    condition = node.condition
+                    node.remove(condition)
+                    node.remove(node.thenPart)
+                    node.append(condition, "expression")
+                    node.type = "semicolon"
+            
+                else:
+                    # Has expression => Translate IF using a AND or OR operator
+                    pass
+                    
 
 
 
