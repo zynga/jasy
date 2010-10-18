@@ -57,12 +57,7 @@ def statements(node):
         result.append(compress(child))
 
     return "".join(result)
-    
 
-def assignOperator(node):
-    assignOp = getattr(node, "assignOp", None)
-    return "=" if not assignOp else dividers[assignOp] + "="
-    
 
 def addSemicolon(result):
     if not result.endswith(__semicolonSymbol):
@@ -203,7 +198,10 @@ def __declaration(node):
     return result
 
 def __assign(node):
-    return compress(node[0]) + assignOperator(node[0]) + compress(node[1])
+    assignOp = getattr(node[0], "assignOp", None)
+    operator = "=" if not assignOp else dividers[assignOp] + "="
+    
+    return compress(node[0]) + operator + compress(node[1])
 
 def __call(node):
     return "%s(%s)" % (compress(node[0]), compress(node[1]))
