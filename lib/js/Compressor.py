@@ -430,6 +430,22 @@ def containsIf(node):
     return False
 
 
+def containsOnlyExpressions(node):
+    # Pre-flight check to quickly analyse whether our children
+    # are just simple expressions which can be used here.
+    containsOnlyExpressions = True
+    if node.type == "block":
+        for child in node:
+            if child.type != "semicolon":
+                containsOnlyExpressions = False
+                break
+        
+    elif node.type != "semicolon":
+        containsOnlyExpressions = False  
+        
+    return containsOnlyExpressions
+
+
 def __if(node):
     thenPart = node.thenPart
     condition = node.condition
@@ -465,8 +481,12 @@ def __if(node):
                         return addSemicolon("%s%s%s?%s:%s" % (firstTargetCode, operator, compress(condition), compress(thenContent[1]), compress(elseContent[1])))
         
         # Reached the original idea to use hook statements instead of if-else constructs
-        if thenContent.type != "comma" and thenContent.type in expressions and elseContent.type != "comma" and elseContent.type in expressions:
-            return addSemicolon("%s?%s:%s" % (compress(condition), compress(thenContent), compress(elseContent)))
+        #if thenContent.type != "comma" and thenContent.type in expressions and elseContent.type != "comma" and elseContent.type in expressions:
+        #    return addSemicolon("%s?%s:%s" % (compress(condition), compress(thenContent), compress(elseContent)))
+        
+        
+        print("OPTIMIZED HOOK?")
+        
         
     else:
         # Check whether all children are semicolon statements. Their
@@ -480,21 +500,11 @@ def __if(node):
         elif thenContent.type == "semicolon" and not hasattr(thenContent, "expression"):
             return addSemicolon(compress(condition))
         
-        # Pre-flight check to quickly analyse whether our children
-        # are just simple expressions which can be used here.
-        containsOnlyExpressions = True
-        if thenContent.type == "block":
-            for child in thenContent:
-                if child.type != "semicolon":
-                    containsOnlyExpressions = False
-                    break
-            
-        elif thenContent.type != "semicolon":
-            containsOnlyExpressions = False
+
             
         # If pre-flight check was OK, then continue with
         # optimized compression.
-        if containsOnlyExpressions:
+        if containsOnlyExpressions(thenContent):
             if thenContent.type == "block":
                 result = []
                 for child in thenContent:
@@ -514,21 +524,13 @@ def __if(node):
                 # statement scenarios like here.
                 if thenContent.type in ("comma", "assign", "bitwise_and", "bitwise_xor", "bitwise_or", "and", "or"):
                     result = "(%s)" % result
-                    
-                    # In positive condition expressions:
-                    # This result in no benefit regarding compression size, we just keep
-                    # the default behavior so the original developer easier understand
-                    # the code because it is more familiar to the orignal one.
-                    if condition.type != "not":
-                        result = None
                 
-            if result != None:
-                if condition.type == "not":
-                    result = "%s||%s" % (compress(condition[0]), result)
-                else:
-                    result = "%s&&%s" % (compress(condition), result)
-        
-                return addSemicolon(result)
+            if condition.type == "not":
+                result = "%s||%s" % (compress(condition[0]), result)
+            else:
+                result = "%s&&%s" % (compress(condition), result)
+    
+            return addSemicolon(result)
     
     
     # The normal if-compression
