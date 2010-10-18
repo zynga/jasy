@@ -79,6 +79,7 @@ def fixParens(node):
         prio = expressionOrder[node.type]
         parentPrio = expressionOrder[node.parent.type]
         if prio > parentPrio:
+            print("Remove parens around %s in %s" % (node.type, parent.type))
             node.parenthesized = False
 
 
