@@ -24,27 +24,29 @@ def optimize(node, level=0):
             node.parent.replace(node, Node(node.tokenizer, "semicolon"))
         elif len(node) == 1:
             if node.parent.type == "if" and containsIf(node):
-                print("Omit unwrapping of block (cascaded if blocks) at #%s" % level)
+                # print("Omit unwrapping of block (cascaded if blocks) at #%s" % level)
+                pass
             else:
-                print("Unwrap block at #%s" % level)
+                # print("Unwrap block at #%s" % level)
                 node.parent.replace(node, node[0])
             
     # Process all if-statements
     if node.type == "if":
-        print("IF at #%s" % level)
+        # print("IF at #%s" % level)
         
         thenPart = getattr(node, "thenPart", None)
         elsePart = getattr(node, "elsePart", None)
 
         # Optimize using "AND" or "OR" operators
         # Combine multiple semicolon statements into one semicolon statement using an "comma" expression
-        thenPart = combineToCommaExpression(thenPart)
-        elsePart = combineToCommaExpression(elsePart)
+        thenPart = combineToCommaExpression(thenPart, level)
+        elsePart = combineToCommaExpression(elsePart, level)
         
         # Optimize using hook operator
         if thenPart and elsePart:
             if thenPart.type == "return" and elsePart.type == "return":
                 # Combine return statement
+                print("Merge return at #%s" % level)
                 replacement = createReturn(createHook(node.condition, thenPart.value, elsePart.value))
                 node.parent.replace(node, replacement)
         
@@ -55,12 +57,13 @@ def optimize(node, level=0):
                 if thenExpression and elseExpression:
                     replacement = combineAssignments(node.condition, thenExpression, elseExpression) or combineExpressions(node.condition, thenExpression, elseExpression)
                     if replacement:
+                        print("Merge assignment/expression at #%s" % level)
                         node.parent.replace(node, replacement)
 
 
 
         
-def combineToCommaExpression(node):
+def combineToCommaExpression(node, level):
     if node == None or node.type != "block":
         return node
         
@@ -85,6 +88,7 @@ def combineToCommaExpression(node):
     parent = node.parent
     parent.replace(node, semicolon)
     
+    print("Combine to comma expression at: #%s" % level)
     return semicolon
         
 
