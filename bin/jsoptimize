@@ -39,7 +39,6 @@ def jsoptimize(source, filename=None):
     
     #ValuePatch.patch(tree, values)
     DeadCode.optimize(tree)
-    print(tree)
     BlockReducer.optimize(tree)
     print(tree)
     #CryptPrivates.optimize(tree, "xx")

@@ -65,6 +65,10 @@ def optimize(node, level=0):
                     if replacement:
                         # print("Merge assignment/expression at #%s" % level)
                         node.parent.replace(node, replacement)
+                        
+        elif thenPart.type != "block":
+            print("Then-Part: %s" % thenPart.type)
+            
 
 
 
