@@ -18,8 +18,11 @@ def optimize(node):
             print("Replace empty block")
             node.parent.replace(node, Node(node.tokenizer, "semicolon"))
         elif len(node) == 1:
-            print("Unwrap block")
-            node.parent.replace(node, node[0])
+            if node.parent.type == "if" and containsIf(node):
+                print("Omit unwrapping of block (cascaded if blocks)")
+            else:
+                print("Unwrap block")
+                node.parent.replace(node, node[0])
             
     # Process all if-statements
     if node.type == "if":
@@ -44,7 +47,16 @@ def optimize(node):
 
         
 
+def containsIf(node):
+    """ helper for __if handling """
+    if node.type == "if":
+        return True
 
+    for child in node:
+        if containsIf(child):
+            return True
+
+    return False
 
 
 def combineAssignments(condition, thenExpression, elseExpression):
