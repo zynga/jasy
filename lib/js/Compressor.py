@@ -52,12 +52,11 @@ def compress(node):
         
         
 def statements(node):
-    result = ""
-    length = len(node)-1
-    for pos, child in enumerate(node):
-        result += compress(child)
+    result = []
+    for child in node:
+        result.append(compress(child))
 
-    return result
+    return "".join(result)
     
 
 def assignOperator(node):
@@ -240,12 +239,6 @@ def __comp_tail(node):
 #
 
 def __block(node):
-    if len(node) == 0:
-        return addSemicolon("")
-    
-    elif len(node) == 1:
-        return compress(node[0])
-    
     return "{%s}" % removeSemicolon(statements(node))
     
 def __let_block(node):
@@ -418,35 +411,10 @@ def __hook(node):
     return "%s?%s:%s" % (compress(condition), compress(thenPart), compress(elsePart))
     
     
-def containsIf(node):
-    """ helper for __if handling """
-    if node.type == "if":
-        return True
-        
-    for child in node:
-        if containsIf(child):
-            return True
-        
-    return False
-
-
 def __if(node):
-    thenPart = node.thenPart
-
-    result = "if(%s)" % compress(node.condition)
-    thenCode = compress(thenPart)
+    result = "if(%s)%s" % (compress(node.condition), compress(node.thenPart))
 
     elsePart = getattr(node, "elsePart", None)
-    if elsePart:
-        # Special handling for cascaded if-else-if cases where the else might be 
-        # attached to the wrong if in cases where the braces are omitted.
-        if len(thenPart) == 1 and containsIf(thenPart):
-            thenCode = "{%s}" % removeSemicolon(thenCode)
-    
-    # Finally append code
-    result += thenCode 
-
-    # Now process else part
     if elsePart:
         result += "else"
 
