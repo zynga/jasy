@@ -444,6 +444,35 @@ def containsOnlyExpressions(node):
         containsOnlyExpressions = False  
         
     return containsOnlyExpressions
+    
+    
+def combineAssignExpressions(thenExpression, elseExpression, condition):
+    if thenExpression.type == "assign" and elseExpression.type == "assign":
+        operator = assignOperator(thenExpression)
+        if operator == assignOperator(thenExpression):
+            firstTargetCode = compress(thenExpression[0])
+            if firstTargetCode == compress(elseExpression[0]):
+                return addSemicolon("%s%s%s?%s:%s" % (firstTargetCode, operator, compress(condition), compress(thenExpression[1]), compress(elseExpression[1])))
+
+
+def combineReturns(thenContent, elseContent, condition):
+    """ Two returns can be combined into one return statement which returns a hook """
+    if thenContent.type == "return" and elseContent.type == "return":
+        return addSemicolon("return %s?%s:%s" % (compress(condition), compress(thenContent.value), compress(elseContent.value)))
+    
+    
+def combineExpressions(thenContent, elseContent, condition):
+    """ If we deal with two expressions, we could definitely use a hook alternative instead
+        of a classic if-else syntax. """
+    
+    if thenContent.type == "semicolon" and elseContent.type == "semicolon":
+        thenExpression = getattr(thenContent, "expression", None)
+        elseExpression = getattr(elseContent, "expression", None)
+        if thenExpression and elseExpression:
+            result = combineAssignExpressions(thenExpression, elseExpression, condition)
+            if not result:
+                result = addSemicolon("%s?%s:%s" % (compress(condition), compress(thenExpression), compress(elseExpression)))
+            return result
 
 
 def __if(node):
@@ -453,39 +482,23 @@ def __if(node):
     
     # Pre-checks for deeper optimization
     if thenPart and elsePart:
+        # Unwrap block if it only contains one child
         thenContent = thenPart[0] if thenPart.type == "block" and len(thenPart) == 1 else thenPart
         elseContent = elsePart[0] if elsePart.type == "block" and len(elsePart) == 1 else elsePart
-
-        # Our strategy for if-else is to use hooks/ternary operators to create
-        # a more compact alternative to the classic if-else construction.
-        # There is only a little limitation that hooks only works with expressions 
-        # and not typical statements. Semicolon statements are typically wrappers
-        # around expression, so we directly filter them out here.
-        if thenContent.type == "semicolon":
-            thenContent = thenContent.expression
-        if elseContent.type == "semicolon":
-            elseContent = elseContent.expression
         
-        # Merge equal types. This works very well for "return" and "assign" statements
-        # and creates even more compact versions than the normal hook translation.
-        if thenContent.type == elseContent.type:
-            # Merge return statements
-            if thenContent.type == "return":
-                return addSemicolon("return %s?%s:%s" % (compress(condition), compress(thenContent.value), compress(elseContent.value)))
-                
-            elif thenContent.type == "assign":
-                operator = assignOperator(thenContent)
-                if operator == assignOperator(elseContent):
-                    firstTargetCode = compress(thenContent[0])
-                    if firstTargetCode == compress(elseContent[0]):
-                        return addSemicolon("%s%s%s?%s:%s" % (firstTargetCode, operator, compress(condition), compress(thenContent[1]), compress(elseContent[1])))
+        # Try some effective statement combinations
+        result = combineReturns(thenContent, elseContent, condition) or combineExpressions(thenContent, elseContent, condition)
+        if result: return result
+
         
         # Reached the original idea to use hook statements instead of if-else constructs
-        #if thenContent.type != "comma" and thenContent.type in expressions and elseContent.type != "comma" and elseContent.type in expressions:
-        #    return addSemicolon("%s?%s:%s" % (compress(condition), compress(thenContent), compress(elseContent)))
+        # This part only cares about simple expressions
         
         
         print("OPTIMIZED HOOK?")
+        #print(thenContent)
+        #print("---")
+        #print(elseContent)
         
         
     else:
