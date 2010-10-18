@@ -40,7 +40,6 @@ def jsoptimize(source, filename=None):
     #ValuePatch.patch(tree, values)
     DeadCode.optimize(tree)
     BlockReducer.optimize(tree)
-    print(tree)
     #CryptPrivates.optimize(tree, "xx")
     CombineDeclarations.optimize(tree)
     LocalVariables.optimize(tree)
