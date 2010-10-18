@@ -80,6 +80,7 @@ class Node(list):
         if hasattr(kid, "rel"):
             delattr(self, kid.rel)
             del kid.rel
+            del kid.parent
             
         list.remove(self, kid)
             
