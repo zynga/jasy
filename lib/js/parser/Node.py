@@ -26,7 +26,7 @@ class Node(list):
         # nodeId += 1
 
         if tokenizer:
-            token = tokenizer.token
+            token = getattr(tokenizer, "token", None)
             if token:
                 # We may define a custom type but use the same positioning as another token
                 # e.g. transform curlys in block nodes, etc.
