@@ -87,9 +87,11 @@ def optimize(node, level=0):
                     
                     replacement.append(condition)
                     replacement.append(thenExpression)
-
+                    
                     thenPart.append(replacement, "expression")
                     node.parent.replace(node, thenPart)
+
+                    fixParens(thenExpression)
 
 
 

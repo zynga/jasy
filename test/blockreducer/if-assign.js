@@ -1,8 +1,3 @@
-if(foo)
-{
-  x = 5;
-}
-else
-{
-  x = 7;
+if (!window.qx) {
+  window.qx = {};
 }
