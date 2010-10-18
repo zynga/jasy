@@ -71,9 +71,9 @@ def optimize(node, level=0):
             
             if thenPart.type == "semicolon":
                 thenExpression = getattr(thenPart, "expression", None)
+                condition = node.condition
                 if not thenExpression:
                     # Empty semicolon statement => translate if into semicolon statement
-                    condition = node.condition
                     node.remove(condition)
                     node.remove(node.thenPart)
                     node.append(condition, "expression")
@@ -81,8 +81,18 @@ def optimize(node, level=0):
             
                 else:
                     # Has expression => Translate IF using a AND or OR operator
-                    pass
+                    if condition.type == "not":
+                        replacement = Node(thenPart.tokenizer, "or")
+                        condition = condition[0]
+                    else:
+                        replacement = Node(thenPart.tokenizer, "and")
                     
+                    replacement.append(condition)
+                    replacement.append(thenExpression)
+
+                    thenPart.append(replacement, "expression")
+                    node.parent.replace(node, thenPart)
+
 
 
 
