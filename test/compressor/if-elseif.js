@@ -1,2 +1,2 @@
-if(foo)hello();else if(true)quit();
-if(bar){hello()}else if(true){quit()}
+if(foo)hello();else if(x)quit();
+if(bar){hello()}else if(x){quit()}
