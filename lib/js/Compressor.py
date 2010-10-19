@@ -198,7 +198,7 @@ def __declaration(node):
     return result
 
 def __assign(node):
-    assignOp = getattr(node[0], "assignOp", None)
+    assignOp = getattr(node, "assignOp", None)
     operator = "=" if not assignOp else dividers[assignOp] + "="
     
     return compress(node[0]) + operator + compress(node[1])
