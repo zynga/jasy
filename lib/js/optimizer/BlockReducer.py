@@ -81,9 +81,21 @@ def optimize(node, level=0):
         # We do not need a else statement here and just can wrap the whole content
         # of the else block inside the parent
         if not rebuiltIf:
-            print("Another chance to optimize")
+            if elsePart and endsWithReturnOrThrow(thenPart):
+                ifIndex = node.parent.index(node)+1
+                for child in reversed(elsePart):
+                    node.parent.insert(ifIndex, child)
+                    
+                # Finally remove else from if statement
+                node.remove(elsePart)
+                
             
 
+
+
+def endsWithReturnOrThrow(node):
+    length = len(node)
+    return length > 0 and node[length-1].type in ("return", "throw")
 
 
 def fixParens(node):
