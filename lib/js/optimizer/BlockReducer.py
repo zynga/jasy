@@ -88,14 +88,13 @@ def optimize(node, level=0):
                     
                 # Finally remove else from if statement
                 node.remove(elsePart)
-                
-            
 
 
 
 def endsWithReturnOrThrow(node):
     length = len(node)
     return length > 0 and node[length-1].type in ("return", "throw")
+
 
 
 def fixParens(node):
