@@ -42,57 +42,47 @@ def optimize(node, level=0):
     if node.type == "if":
         thenPart = getattr(node, "thenPart", None)
         elsePart = getattr(node, "elsePart", None)
+        condition = node.condition
 
         # Optimize using "AND" or "OR" operators
         # Combine multiple semicolon statements into one semicolon statement using an "comma" expression
         thenPart = combineToCommaExpression(thenPart, level)
         elsePart = combineToCommaExpression(elsePart, level)
         
+        # Status flag to omit double reworks
+        rebuiltIf = False
+        
         # Optimize using hook operator
         if thenPart and elsePart:
             if thenPart.type == "return" and elsePart.type == "return":
                 # Combine return statement
                 # print("Merge return at #%s" % level)
-                replacement = createReturn(createHook(node.condition, thenPart.value, elsePart.value))
+                replacement = createReturn(createHook(condition, thenPart.value, elsePart.value))
                 node.parent.replace(node, replacement)
+                rebuiltIf = True
         
             elif thenPart.type == "semicolon" and elsePart.type == "semicolon":
                 # Combine two assignments or expressions
                 thenExpression = getattr(thenPart, "expression", None)
                 elseExpression = getattr(elsePart, "expression", None)
                 if thenExpression and elseExpression:
-                    replacement = combineAssignments(node.condition, thenExpression, elseExpression) or combineExpressions(node.condition, thenExpression, elseExpression)
+                    replacement = combineAssignments(condition, thenExpression, elseExpression) or combineExpressions(condition, thenExpression, elseExpression)
                     if replacement:
                         # print("Merge assignment/expression at #%s" % level)
                         node.parent.replace(node, replacement)
+                        rebuiltIf = True
                         
-        elif thenPart.type != "block":
-            if thenPart.type == "semicolon":
-                thenExpression = getattr(thenPart, "expression", None)
-                condition = node.condition
-                if not thenExpression:
-                    # Empty semicolon statement => translate if into semicolon statement
-                    node.remove(condition)
-                    node.remove(node.thenPart)
-                    node.append(condition, "expression")
-                    node.type = "semicolon"
+        elif thenPart.type == "semicolon":
+            compactIf(node, thenPart, condition)
+            rebuiltIf = True
+                    
+        
+        # Check whether if-part ends with a return statement. Then
+        # We do not need a else statement here and just can wrap the whole content
+        # of the else block inside the parent
+        if not rebuiltIf:
+            print("Another chance to optimize")
             
-                else:
-                    # Has expression => Translate IF using a AND or OR operator
-                    if condition.type == "not":
-                        replacement = Node(thenPart.tokenizer, "or")
-                        condition = condition[0]
-                    else:
-                        replacement = Node(thenPart.tokenizer, "and")
-                    
-                    replacement.append(condition)
-                    replacement.append(thenExpression)
-                    
-                    thenPart.append(replacement, "expression")
-                    node.parent.replace(node, thenPart)
-
-                    fixParens(thenExpression)
-                    fixParens(condition)
 
 
 
@@ -142,6 +132,35 @@ def combineToCommaExpression(node, level):
     # print("Combine to comma expression at: #%s" % level)
     return semicolon
         
+
+
+def compactIf(node, thenPart, condition):
+    thenExpression = getattr(thenPart, "expression", None)
+    if not thenExpression:
+        # Empty semicolon statement => translate if into semicolon statement
+        node.remove(condition)
+        node.remove(node.thenPart)
+        node.append(condition, "expression")
+        node.type = "semicolon"
+
+    else:
+        # Has expression => Translate IF using a AND or OR operator
+        if condition.type == "not":
+            replacement = Node(thenPart.tokenizer, "or")
+            condition = condition[0]
+        else:
+            replacement = Node(thenPart.tokenizer, "and")
+
+        replacement.append(condition)
+        replacement.append(thenExpression)
+
+        thenPart.append(replacement, "expression")
+
+        fixParens(thenExpression)
+        fixParens(condition)    
+        
+        node.parent.replace(node, thenPart)
+
 
 def containsIf(node):
     """ helper for block removal optimization """
