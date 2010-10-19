@@ -83,6 +83,18 @@ class Node(list):
             del kid.parent
             
         list.remove(self, kid)
+        
+        
+    def insert(self, index, kid):
+        if index is None:
+            return self.append(kid)
+            
+        if hasattr(kid, "parent"):
+            kid.parent.remove(kid)
+            
+        kid.parent = self
+
+        return list.insert(self, index, kid)
             
 
     # Always use push to add operands to an expression, to update start and end.
