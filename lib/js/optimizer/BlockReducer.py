@@ -92,7 +92,7 @@ def optimize(node, level=0):
                     node.parent.replace(node, thenPart)
 
                     fixParens(thenExpression)
-
+                    fixParens(condition)
 
 
 
@@ -106,16 +106,18 @@ def fixParens(node):
     elif parent.type in expressions:
         prio = expressionOrder[node.type]
         parentPrio = expressionOrder[node.parent.type]
-        if prio >= parentPrio:
-            # print("Remove parens around %s in %s" % (node.type, parent.type))
-            node.parenthesized = False
-        else:
-            # print("Add parens around %s in %s" % (node.type, parent.type))
-            node.parenthesized = True
-
-
-    
+        needsParens = prio < parentPrio
         
+        # Fix minor priority issue in hook statements. They are a little bit special. 
+        # In their condition part, assignments have lower priority than the hook, in 
+        # the action parts it's the other way around.
+        if parent.type == "hook" and node.type == "assign":
+            needsParens = node.rel == "condition"
+
+        node.parenthesized = needsParens
+
+
+
 def combineToCommaExpression(node, level):
     if node == None or node.type != "block":
         return node
@@ -159,6 +161,9 @@ def combineAssignments(condition, thenExpression, elseExpression):
         if operator == getattr(elseExpression, "assignOp", None):
             if compress(thenExpression[0]) == compress(elseExpression[0]):
                 hook = createHook(condition, thenExpression[1], elseExpression[1])
+                fixParens(condition)
+                fixParens(hook.thenPart)
+                fixParens(hook.elsePart)
                 thenExpression.append(hook)
                 return thenExpression.parent
 
@@ -168,6 +173,7 @@ def combineExpressions(condition, thenExpression, elseExpression):
     semicolon = Node(condition.tokenizer, "semicolon")
     semicolon.append(hook, "expression")
     
+    fixParens(condition)
     fixParens(thenExpression)
     fixParens(elseExpression)
     
