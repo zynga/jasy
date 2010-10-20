@@ -40,60 +40,70 @@ def optimize(node, level=0):
             
     # Process all if-statements
     if node.type == "if":
-        thenPart = getattr(node, "thenPart", None)
-        elsePart = getattr(node, "elsePart", None)
         condition = node.condition
+        thenPart = node.thenPart
+        elsePart = getattr(node, "elsePart", None)
+        
+        # Optimize using hook operator
+        if elsePart and thenPart.type == "return" and elsePart.type == "return":
+            # Combine return statement
+            # print("Merge return at #%s" % level)
+            replacement = createReturn(createHook(condition, thenPart.value, elsePart.value))
+            node.parent.replace(node, replacement)
+            return
+
+        # Check whether if-part ends with a return statement. Then
+        # We do not need a else statement here and just can wrap the whole content
+        # of the else block inside the parent
+        if elsePart and endsWithReturnOrThrow(thenPart):
+            print("ELSE OPTIMIZER: %s" % elsePart.type)
+            ifIndex = node.parent.index(node)+1
+            
+            if elsePart.type == "if":
+                node.parent.insert(ifIndex, elsePart)
+                
+            elif elsePart.type == "block":
+                for child in reversed(elsePart):
+                    print("MOVE: %s" % child.type)
+                    node.parent.insert(ifIndex, child)
+
+                # Remove else block from if statement
+                node.remove(elsePart)
+            
+            # Reset elsePart variable as it is now cleaned up
+            elsePart = None
 
         # Optimize using "AND" or "OR" operators
         # Combine multiple semicolon statements into one semicolon statement using an "comma" expression
         thenPart = combineToCommaExpression(thenPart, level)
         elsePart = combineToCommaExpression(elsePart, level)
         
-        # Status flag to omit double reworks
-        rebuiltIf = False
-        
         # Optimize using hook operator
-        if thenPart and elsePart:
-            if thenPart.type == "return" and elsePart.type == "return":
-                # Combine return statement
-                # print("Merge return at #%s" % level)
-                replacement = createReturn(createHook(condition, thenPart.value, elsePart.value))
-                node.parent.replace(node, replacement)
-                rebuiltIf = True
-        
-            elif thenPart.type == "semicolon" and elsePart.type == "semicolon":
-                # Combine two assignments or expressions
-                thenExpression = getattr(thenPart, "expression", None)
-                elseExpression = getattr(elsePart, "expression", None)
-                if thenExpression and elseExpression:
-                    replacement = combineAssignments(condition, thenExpression, elseExpression) or combineExpressions(condition, thenExpression, elseExpression)
-                    if replacement:
-                        # print("Merge assignment/expression at #%s" % level)
-                        node.parent.replace(node, replacement)
-                        rebuiltIf = True
+        if elsePart and thenPart.type == "semicolon" and elsePart.type == "semicolon":
+            # Combine two assignments or expressions
+            thenExpression = getattr(thenPart, "expression", None)
+            elseExpression = getattr(elsePart, "expression", None)
+            if thenExpression and elseExpression:
+                replacement = combineAssignments(condition, thenExpression, elseExpression) or combineExpressions(condition, thenExpression, elseExpression)
+                if replacement:
+                    # print("Merge assignment/expression at #%s" % level)
+                    node.parent.replace(node, replacement)
                         
         elif thenPart.type == "semicolon":
             compactIf(node, thenPart, condition)
-            rebuiltIf = True
-                    
-        
-        # Check whether if-part ends with a return statement. Then
-        # We do not need a else statement here and just can wrap the whole content
-        # of the else block inside the parent
-        if not rebuiltIf:
-            if elsePart and endsWithReturnOrThrow(thenPart):
-                ifIndex = node.parent.index(node)+1
-                for child in reversed(elsePart):
-                    node.parent.insert(ifIndex, child)
-                    
-                # Finally remove else from if statement
-                node.remove(elsePart)
+
 
 
 
 def endsWithReturnOrThrow(node):
-    length = len(node)
-    return length > 0 and node[length-1].type in ("return", "throw")
+    if node.type in ("return", "throw"):
+        return True
+        
+    elif node.type == "block":
+        length = len(node)
+        return length > 0 and node[length-1].type in ("return", "throw")
+        
+    return False
 
 
 
