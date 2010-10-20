@@ -15,8 +15,9 @@ __all__ = [ "compress" ]
 #
 
 __simpleProperty = re.compile("^[a-zA-Z_$][a-zA-Z0-9_$]*$")
-__semicolonSymbol = ";"
-__commaSymbol = ","
+__semicolonSymbol = ";\n"
+__commaSymbol = ",\n"
+__forcedSemicolon = False
 
 
 #
@@ -57,6 +58,12 @@ def statements(node):
         result.append(compress(child))
 
     return "".join(result)
+    
+
+def handleForcedSemicolon(node):
+    global __forcedSemicolon
+    if node.type == "semicolon":
+        __forcedSemicolon = True
 
 
 def addSemicolon(result):
@@ -66,6 +73,11 @@ def addSemicolon(result):
         return result
 
 def removeSemicolon(result):
+    global __forcedSemicolon
+    if __forcedSemicolon:
+        __forcedSemicolon = False
+        return result
+    
     if result.endswith(__semicolonSymbol):
         return result[:-len(__semicolonSymbol)]
     else:
@@ -348,8 +360,9 @@ def __try(node):
 #    
     
 def __while(node):
-    body = compress(node.body)
-    return "while(%s)%s" % (compress(node.condition), body)
+    result = "while(%s)%s" % (compress(node.condition), compress(node.body))
+    handleForcedSemicolon(node.body)
+    return result
 
 
 def __do(node):
@@ -373,8 +386,13 @@ def __for_in(node):
         body = compress(body)
     else:
         body = ""
+        
+    result = "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), body)
     
-    return "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), body)
+    if body:
+        handleForcedSemicolon(node.body)
+        
+    return result
     
     
 def __for(node):
@@ -387,7 +405,8 @@ def __for(node):
     result += addSemicolon(compress(condition) if condition else "")
     result += compress(update) if update else ""
     result += ")%s" % compress(node.body)
-    
+
+    handleForcedSemicolon(node.body)
     return result
     
        
