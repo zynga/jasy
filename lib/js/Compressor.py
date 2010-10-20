@@ -15,8 +15,8 @@ __all__ = [ "compress" ]
 #
 
 __simpleProperty = re.compile("^[a-zA-Z_$][a-zA-Z0-9_$]*$")
-__semicolonSymbol = ";\n"
-__commaSymbol = ",\n"
+__semicolonSymbol = ";"
+__commaSymbol = ","
 __forcedSemicolon = False
 
 
@@ -51,7 +51,6 @@ def compress(node):
     else:
         return result
         
-        
 def statements(node):
     result = []
     for child in node:
@@ -59,12 +58,10 @@ def statements(node):
 
     return "".join(result)
     
-
 def handleForcedSemicolon(node):
     global __forcedSemicolon
-    if node.type == "semicolon":
+    if node.type == "semicolon" and not hasattr(node, "expression"):
         __forcedSemicolon = True
-
 
 def addSemicolon(result):
     if not result.endswith(__semicolonSymbol):
