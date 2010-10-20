@@ -56,7 +56,6 @@ def optimize(node, level=0):
         # We do not need a else statement here and just can wrap the whole content
         # of the else block inside the parent
         if elsePart and endsWithReturnOrThrow(thenPart):
-            print("ELSE OPTIMIZER: %s" % elsePart.type)
             ifIndex = node.parent.index(node)+1
             
             if elsePart.type == "if":
@@ -64,7 +63,6 @@ def optimize(node, level=0):
                 
             elif elsePart.type == "block":
                 for child in reversed(elsePart):
-                    print("MOVE: %s" % child.type)
                     node.parent.insert(ifIndex, child)
 
                 # Remove else block from if statement
