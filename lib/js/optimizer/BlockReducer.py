@@ -57,10 +57,13 @@ def optimize(node, level=0):
         # of the else block inside the parent
         if elsePart and endsWithReturnOrThrow(thenPart):
             ifIndex = node.parent.index(node)+1
-            
+
             if elsePart.type == "if":
                 node.parent.insert(ifIndex, elsePart)
-                
+
+                # Reset elsePart variable as it is now cleaned up
+                elsePart = None
+                                
             elif elsePart.type == "block":
                 for child in reversed(elsePart):
                     node.parent.insert(ifIndex, child)
@@ -68,25 +71,27 @@ def optimize(node, level=0):
                 # Remove else block from if statement
                 node.remove(elsePart)
             
-            # Reset elsePart variable as it is now cleaned up
-            elsePart = None
+                # Reset elsePart variable as it is now cleaned up
+                elsePart = None
 
         # Optimize using "AND" or "OR" operators
         # Combine multiple semicolon statements into one semicolon statement using an "comma" expression
         thenPart = combineToCommaExpression(thenPart, level)
         elsePart = combineToCommaExpression(elsePart, level)
         
-        # Optimize using hook operator
-        if elsePart and thenPart.type == "semicolon" and elsePart.type == "semicolon":
-            # Combine two assignments or expressions
-            thenExpression = getattr(thenPart, "expression", None)
-            elseExpression = getattr(elsePart, "expression", None)
-            if thenExpression and elseExpression:
-                replacement = combineAssignments(condition, thenExpression, elseExpression) or combineExpressions(condition, thenExpression, elseExpression)
-                if replacement:
-                    # print("Merge assignment/expression at #%s" % level)
-                    node.parent.replace(node, replacement)
+        # Optimize else-if
+        if elsePart:
+            if thenPart.type == "semicolon" and elsePart.type == "semicolon":
+                # Combine two assignments or expressions
+                thenExpression = getattr(thenPart, "expression", None)
+                elseExpression = getattr(elsePart, "expression", None)
+                if thenExpression and elseExpression:
+                    replacement = combineAssignments(condition, thenExpression, elseExpression) or combineExpressions(condition, thenExpression, elseExpression)
+                    if replacement:
+                        # print("Merge assignment/expression at #%s" % level)
+                        node.parent.replace(node, replacement)
                         
+        # Optimize simple if
         elif thenPart.type == "semicolon":
             compactIf(node, thenPart, condition)
 
@@ -107,8 +112,11 @@ def endsWithReturnOrThrow(node):
 
 def fixParens(node):
     parent = node.parent
+    
+    if node.type in expressions and parent.type == "return":
+        node.parenthesized = False
 
-    if node.type == "function" and parent.type == "call":
+    elif node.type == "function" and parent.type == "call":
         # Ignore for direct execution functions
         pass
         
@@ -134,10 +142,10 @@ def combineToCommaExpression(node, level):
     for child in node:
         if child.type != "semicolon":
             return node
-            
+    
     comma = Node(node.tokenizer, "comma")
     
-    for child in node:
+    for child in list(node):
         # Ignore empty semicolons
         if hasattr(child, "expression"):
             comma.append(child.expression)
