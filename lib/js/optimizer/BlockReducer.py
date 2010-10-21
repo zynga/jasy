@@ -14,7 +14,7 @@ def optimize(node, level=0):
     # Process from inside to outside
     for child in node:
         optimize(child, level+1)
-        
+                    
         
     # Remove unneeded parens
     if getattr(node, "parenthesized", False) and node.type in expressions:
@@ -55,7 +55,7 @@ def optimize(node, level=0):
         # Check whether if-part ends with a return statement. Then
         # We do not need a else statement here and just can wrap the whole content
         # of the else block inside the parent
-        if elsePart and endsWithReturnOrThrow(thenPart):
+        if elsePart and endsWithReturnOrThrow(thenPart, level):
             ifIndex = node.parent.index(node)+1
 
             if elsePart.type == "if":
@@ -65,14 +65,37 @@ def optimize(node, level=0):
                 elsePart = None
                                 
             elif elsePart.type == "block":
-                for child in reversed(elsePart):
-                    node.parent.insert(ifIndex, child)
+                elseTarget = node.parent
+                
+                # A workaround for compact if-else blocks
+                if elseTarget.type != "block":
+                    if getattr(node, "rel", None) == "elsePart":
+                        # We are a elsePart of the if where we want to move our
+                        # content to. This cannot work. So we need to wrap ourself
+                        # into a block and move the else statements to this newly
+                        # established block
+                        
+                        newBlock = Node(None, "block")
+                        newBlock.wrapped = True
+                        
+                        # Replace node with newly created block and put ourself into it
+                        node.parent.replace(node, newBlock)
+                        newBlock.append(node)
+                        
+                        # Update the elseTarget and the index
+                        elseTarget = newBlock
+                        ifIndex = 1
+                    
+                # Can only move to block parents
+                if elseTarget.type == "block":
+                    for child in reversed(elsePart):
+                        elseTarget.insert(ifIndex, child)
 
-                # Remove else block from if statement
-                node.remove(elsePart)
-            
-                # Reset elsePart variable as it is now cleaned up
-                elsePart = None
+                    # Remove else block from if statement
+                    node.remove(elsePart)
+
+                    # Reset elsePart variable as it is now cleaned up
+                    elsePart = None
 
         # Optimize using "AND" or "OR" operators
         # Combine multiple semicolon statements into one semicolon statement using an "comma" expression
@@ -98,7 +121,7 @@ def optimize(node, level=0):
 
 
 
-def endsWithReturnOrThrow(node):
+def endsWithReturnOrThrow(node, level):
     if node.type in ("return", "throw"):
         return True
         
