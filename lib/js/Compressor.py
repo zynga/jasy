@@ -38,6 +38,7 @@ def compress(node):
             
     elif type in dividers:
         result = dividers[node.type].join(map(compress, node))
+
     else:
         try:
             result = globals()["__" + type](node)
@@ -110,9 +111,7 @@ dividers = {
     "bitwise_or"    : '|',    
     "bitwise_xor"   : '^',    
     "bitwise_and"   : '&',    
-    "comma"         : ',',
-    "instanceof"    : ' instanceof ',
-    "in"            : ' in ',
+    "comma"         : ','
 }
 
 prefixes = {
@@ -238,6 +237,23 @@ def __comp_tail(node):
         result += "if(%s)" % compress(guard)
 
     return result    
+    
+def __in(node):
+    first = compress(node[0])
+    second = compress(node[1])
+    
+    if first.endswith("'") or first.endswith('"'):
+        pattern = "%sin %s"
+    else:
+        pattern = "%s in %s"
+    
+    return pattern % (first, second)
+    
+def __instanceof(node):
+    first = compress(node[0])
+    second = compress(node[1])
+
+    return "%s in %s" % (first, second)    
     
     
 
