@@ -139,13 +139,13 @@ class Node(list):
             
             # cleanup old kid
             delattr(kid, "rel")
-            delattr(kid, "parent")
+            
             
         elif hasattr(repl, "rel"):
             # delete old relation on new child
             delattr(repl, "rel")
 
-
+        delattr(kid, "parent")
         repl.parent = self
         
         return kid
