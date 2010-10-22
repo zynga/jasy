@@ -35,11 +35,24 @@ Dependency Analysis
 - Automatic and fine-tunable breaking of circular dependencies.
 - Detects all objects which are not declared in the file itself e.g. window, document, my.namespaced.Class, etc.
 
+Dead Code Removal
+-----------------
+
+- Resolves conditions and removes blocks which could not be reached
+- Function part of the permutation support
+- Supports qx.core.Variant.isSet (from qooxdoo)
+- Supports switch statements
+- Supppors conditional statements (?:)
+- Resolves boolean, number and string compares
+- Supports AND and OR operators
+
 Permutation Features
 --------------------
 
-- Permutation Support (Removing debug blocks, alternative code, qooxdoo variants, hasjs statements, etc.)
-- Permutation hashes with timestamp support (for permanent caching of files)
+- Permutation Support (building different results from one code base)
+- Might be used to remove debug blocks or alternative code
+- At the moment is supports statics, qooxdoo variants, hasjs statements
+- Creates permutation hashes with timestamp support (for permanent caching of files)
 
 Compression Features
 --------------------
@@ -58,6 +71,8 @@ Optimizer Features
   - Translates if-statements without else using `&&` or `||` operators
   - Translates if-statements with else using conditional operator `? :` (especially impressive with returns/assignments)
 - Removes needless else (if previous if-block ends with a return/throw statement)
+- Removes needless parens based on priority analysis on the AST
+
 
 
 
