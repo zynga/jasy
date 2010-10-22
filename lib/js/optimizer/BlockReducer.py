@@ -82,6 +82,12 @@ def optimize(node, level=0):
 
 
 def reworkElse(node, elsePart):
+    """ 
+    If an if ends with a return/throw we are able to inline the content 
+    of the else to the same parent as the if resides into. This method
+    deals with all the nasty details of this operation.
+    """
+    
     ifIndex = node.parent.index(node)+1
 
     if elsePart.type == "if":
@@ -94,23 +100,22 @@ def reworkElse(node, elsePart):
         elseTarget = node.parent
         
         # A workaround for compact if-else blocks
-        if not elseTarget.type in ("block","script"):
-            if getattr(node, "rel", None) == "elsePart":
-                # We are a elsePart of the if where we want to move our
-                # content to. This cannot work. So we need to wrap ourself
-                # into a block and move the else statements to this newly
-                # established block
-                
-                newBlock = Node(None, "block")
-                newBlock.wrapped = True
-                
-                # Replace node with newly created block and put ourself into it
-                node.parent.replace(node, newBlock)
-                newBlock.append(node)
-                
-                # Update the elseTarget and the index
-                elseTarget = newBlock
-                ifIndex = 1
+        if not elseTarget.type in ("block","script") and getattr(node, "rel", None) == "elsePart":
+            # We are a elsePart of the if where we want to move our
+            # content to. This cannot work. So we need to wrap ourself
+            # into a block and move the else statements to this newly
+            # established block
+            
+            newBlock = Node(None, "block")
+            newBlock.wrapped = True
+            
+            # Replace node with newly created block and put ourself into it
+            node.parent.replace(node, newBlock)
+            newBlock.append(node)
+            
+            # Update the elseTarget and the index
+            elseTarget = newBlock
+            ifIndex = 1
             
         # Can only move to block parents
         if elseTarget.type in ("block","script"):
