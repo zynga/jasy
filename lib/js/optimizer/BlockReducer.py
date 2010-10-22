@@ -56,46 +56,7 @@ def optimize(node, level=0):
         # We do not need a else statement here and just can wrap the whole content
         # of the else block inside the parent
         if elsePart and endsWithReturnOrThrow(thenPart, level):
-            ifIndex = node.parent.index(node)+1
-
-            if elsePart.type == "if":
-                node.parent.insert(ifIndex, elsePart)
-
-                # Reset elsePart variable as it is now cleaned up
-                elsePart = None
-                                
-            elif elsePart.type == "block":
-                elseTarget = node.parent
-                
-                # A workaround for compact if-else blocks
-                if elseTarget.type != "block":
-                    if getattr(node, "rel", None) == "elsePart":
-                        # We are a elsePart of the if where we want to move our
-                        # content to. This cannot work. So we need to wrap ourself
-                        # into a block and move the else statements to this newly
-                        # established block
-                        
-                        newBlock = Node(None, "block")
-                        newBlock.wrapped = True
-                        
-                        # Replace node with newly created block and put ourself into it
-                        node.parent.replace(node, newBlock)
-                        newBlock.append(node)
-                        
-                        # Update the elseTarget and the index
-                        elseTarget = newBlock
-                        ifIndex = 1
-                    
-                # Can only move to block parents
-                if elseTarget.type == "block":
-                    for child in reversed(elsePart):
-                        elseTarget.insert(ifIndex, child)
-
-                    # Remove else block from if statement
-                    node.remove(elsePart)
-
-                    # Reset elsePart variable as it is now cleaned up
-                    elsePart = None
+            elsePart = reworkElse(node, elsePart)
 
         # Optimize using "AND" or "OR" operators
         # Combine multiple semicolon statements into one semicolon statement using an "comma" expression
@@ -118,6 +79,57 @@ def optimize(node, level=0):
         elif thenPart.type == "semicolon":
             compactIf(node, thenPart, condition)
 
+
+
+def reworkElse(node, elsePart):
+    ifIndex = node.parent.index(node)+1
+
+    if elsePart.type == "if":
+        node.parent.insert(ifIndex, elsePart)
+
+        # Reset elsePart variable as it is now cleaned up
+        elsePart = None
+                        
+    elif elsePart.type == "block":
+        elseTarget = node.parent
+        
+        # A workaround for compact if-else blocks
+        if not elseTarget.type in ("block","script"):
+            if getattr(node, "rel", None) == "elsePart":
+                # We are a elsePart of the if where we want to move our
+                # content to. This cannot work. So we need to wrap ourself
+                # into a block and move the else statements to this newly
+                # established block
+                
+                newBlock = Node(None, "block")
+                newBlock.wrapped = True
+                
+                # Replace node with newly created block and put ourself into it
+                node.parent.replace(node, newBlock)
+                newBlock.append(node)
+                
+                # Update the elseTarget and the index
+                elseTarget = newBlock
+                ifIndex = 1
+            
+        # Can only move to block parents
+        if elseTarget.type in ("block","script"):
+            for child in reversed(elsePart):
+                elseTarget.insert(ifIndex, child)
+
+            # Remove else block from if statement
+            node.remove(elsePart)
+
+            # Reset elsePart variable as it is now cleaned up
+            elsePart = None
+            
+        else:
+            logging.debug("Could not rework else at: %s" % node.line)
+            
+    else:
+        print("Single statement else?")
+        
+    return elsePart  
 
 
 
