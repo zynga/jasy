@@ -9,6 +9,5 @@ function x()
   else
   {
     y++;
-    for(;;) {}
   }
 }
