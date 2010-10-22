@@ -69,9 +69,7 @@ class StaticContext(object):
         
         # Sets to store variable uses
         self.functions = set()
-        self.exceptions = set()
         self.variables = set()
-        self.uses = set()
         
         # Status
         self.needsHoisting = False
@@ -97,8 +95,6 @@ def Script(tokenizer, staticContext):
     # copy over data from compiler context
     node.functions = staticContext.functions
     node.variables = staticContext.variables
-    node.exceptions = staticContext.exceptions 
-    node.uses = staticContext.uses
 
     return node
     
@@ -433,12 +429,9 @@ def Statement(tokenizer, staticContext):
                 # Destructured catch identifiers.
                 tokenizer.unget()
                 exception = DestructuringExpression(tokenizer, staticContext, True)
-                for exceptionChild in exception:
-                    staticContext.exceptions.add(exceptionChild.value)
             
             elif nextTokenType == "identifier":
                 exception = builder.CATCH_wrapException(tokenizer)
-                staticContext.exceptions.add(exception.value)
             
             else:
                 raise SyntaxError("Missing identifier in catch", tokenizer)
@@ -1527,7 +1520,6 @@ def PrimaryExpression(tokenizer, staticContext):
         
         if tokenType == "identifier" and node.value != "arguments":
             node.scope = True
-            staticContext.uses.add(node.value)
             
         builder.PRIMARY_finish(node)
 
