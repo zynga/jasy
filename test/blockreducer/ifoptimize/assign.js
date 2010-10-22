@@ -1,3 +1,3 @@
-if (!window.qx) {
-  window.qx = {};
+if (something) {
+  x = 4;
 }
