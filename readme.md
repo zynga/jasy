@@ -20,7 +20,7 @@ Parser
 - Full JavaScript 1.8 parser based on Narcissus (based on Spidermonkey)
 - Reworked parser for better child handling (easier to traverse tree compared to original)
 - Support for JavaScript 1.8 (Generators, Block Scope, Function Expressions, Array Comprehensions, ...)
-- Comment processing (Parse and attach to nodes)
+- Comment processing (Comments are attached to nodes and are part of the AST)
 
 Project Handling
 ----------------
