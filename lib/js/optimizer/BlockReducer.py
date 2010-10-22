@@ -10,10 +10,10 @@ import logging
 
 __all__ = ["optimize"]
 
-def optimize(node, level=0):
+def optimize(node):
     # Process from inside to outside
     for child in node:
-        optimize(child, level+1)
+        optimize(child)
                     
         
     # Remove unneeded parens
@@ -24,17 +24,13 @@ def optimize(node, level=0):
     # Unwrap blocks
     if node.type == "block":
         if node.parent.type in ("try", "catch", "finally"):
-            # print("Omit unwrapping of block (try/catch/finally) at #%s" % level)
             pass
         elif len(node) == 0:
-            # print("Replace empty block #%s" % level)
             node.parent.replace(node, Node(node.tokenizer, "semicolon"))
         elif len(node) == 1:
             if node.parent.type == "if" and containsIf(node):
-                # print("Omit unwrapping of block (cascaded if blocks) at #%s" % level)
                 pass
             else:
-                # print("Unwrap block at #%s" % level)
                 node.parent.replace(node, node[0])
             
             
@@ -47,7 +43,6 @@ def optimize(node, level=0):
         # Optimize using hook operator
         if elsePart and thenPart.type == "return" and elsePart.type == "return":
             # Combine return statement
-            # print("Merge return at #%s" % level)
             replacement = createReturn(createHook(condition, thenPart.value, elsePart.value))
             node.parent.replace(node, replacement)
             return
@@ -55,27 +50,18 @@ def optimize(node, level=0):
         # Check whether if-part ends with a return statement. Then
         # We do not need a else statement here and just can wrap the whole content
         # of the else block inside the parent
-        if elsePart and endsWithReturnOrThrow(thenPart, level):
-            elsePart = reworkElse(node, elsePart)
+        if elsePart and endsWithReturnOrThrow(thenPart):
+            reworkElse(node, elsePart)
+            elsePart = None
 
         # Optimize using "AND" or "OR" operators
         # Combine multiple semicolon statements into one semicolon statement using an "comma" expression
-        thenPart = combineToCommaExpression(thenPart, level)
-        elsePart = combineToCommaExpression(elsePart, level)
+        thenPart = combineToCommaExpression(thenPart)
+        elsePart = combineToCommaExpression(elsePart)
         
-        # Optimize else-if
+        # Optimize remaining if or if-else constructs
         if elsePart:
-            if thenPart.type == "semicolon" and elsePart.type == "semicolon":
-                # Combine two assignments or expressions
-                thenExpression = getattr(thenPart, "expression", None)
-                elseExpression = getattr(elsePart, "expression", None)
-                if thenExpression and elseExpression:
-                    replacement = combineAssignments(condition, thenExpression, elseExpression) or combineExpressions(condition, thenExpression, elseExpression)
-                    if replacement:
-                        # print("Merge assignment/expression at #%s" % level)
-                        node.parent.replace(node, replacement)
-                        
-        # Optimize simple if
+            mergeParts(node, thenPart, elsePart, condition)
         elif thenPart.type == "semicolon":
             compactIf(node, thenPart, condition)
 
@@ -88,57 +74,45 @@ def reworkElse(node, elsePart):
     deals with all the nasty details of this operation.
     """
     
-    ifIndex = node.parent.index(node)+1
+    target = node.parent
+    targetIndex = target.index(node)+1
 
-    if elsePart.type == "if":
-        node.parent.insert(ifIndex, elsePart)
-
-        # Reset elsePart variable as it is now cleaned up
-        elsePart = None
-                        
-    elif elsePart.type == "block":
-        elseTarget = node.parent
+    # A workaround for compact if-else blocks
+    # We are a elsePart of the if where we want to move our
+    # content to. This cannot work. So we need to wrap ourself
+    # into a block and move the else statements to this newly
+    # established block
+    if not target.type in ("block","script"):
+        newBlock = Node(None, "block")
+        newBlock.wrapped = True
         
-        # A workaround for compact if-else blocks
-        if not elseTarget.type in ("block","script") and getattr(node, "rel", None) == "elsePart":
-            # We are a elsePart of the if where we want to move our
-            # content to. This cannot work. So we need to wrap ourself
-            # into a block and move the else statements to this newly
-            # established block
-            
-            newBlock = Node(None, "block")
-            newBlock.wrapped = True
-            
-            # Replace node with newly created block and put ourself into it
-            node.parent.replace(node, newBlock)
-            newBlock.append(node)
-            
-            # Update the elseTarget and the index
-            elseTarget = newBlock
-            ifIndex = 1
-            
-        # Can only move to block parents
-        if elseTarget.type in ("block","script"):
-            for child in reversed(elsePart):
-                elseTarget.insert(ifIndex, child)
+        # Replace node with newly created block and put ourself into it
+        node.parent.replace(node, newBlock)
+        newBlock.append(node)
+        
+        # Update the target and the index
+        target = newBlock
+        targetIndex = 1
+        
+    if not target.type in ("block","script"):
+        print("No possible target found/created")
+        return elsePart
+        
+    if elsePart.type == "block":
+        for child in reversed(elsePart):
+            target.insert(targetIndex, child)
 
-            # Remove else block from if statement
-            node.remove(elsePart)
-
-            # Reset elsePart variable as it is now cleaned up
-            elsePart = None
-            
-        else:
-            logging.debug("Could not rework else at: %s" % node.line)
+        # Remove else block from if statement
+        node.remove(elsePart)
             
     else:
-        print("Single statement else?")
+        target.insert(targetIndex, elsePart)
         
-    return elsePart  
+    return  
 
 
 
-def endsWithReturnOrThrow(node, level):
+def endsWithReturnOrThrow(node):
     if node.type in ("return", "throw"):
         return True
         
@@ -147,6 +121,18 @@ def endsWithReturnOrThrow(node, level):
         return length > 0 and node[length-1].type in ("return", "throw")
         
     return False
+    
+    
+    
+def mergeParts(node, thenPart, elsePart, condition):
+    if thenPart.type == "semicolon" and elsePart.type == "semicolon":
+        # Combine two assignments or expressions
+        thenExpression = getattr(thenPart, "expression", None)
+        elseExpression = getattr(elsePart, "expression", None)
+        if thenExpression and elseExpression:
+            replacement = combineAssignments(condition, thenExpression, elseExpression) or combineExpressions(condition, thenExpression, elseExpression)
+            if replacement:
+                node.parent.replace(node, replacement)    
 
 
 
@@ -180,7 +166,7 @@ def fixParens(node):
 
 
 
-def combineToCommaExpression(node, level):
+def combineToCommaExpression(node):
     if node == None or node.type != "block":
         return node
         
@@ -201,7 +187,6 @@ def combineToCommaExpression(node, level):
     parent = node.parent
     parent.replace(node, semicolon)
     
-    # print("Combine to comma expression at: #%s" % level)
     return semicolon
         
 
