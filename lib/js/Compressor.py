@@ -259,7 +259,7 @@ def __instanceof(node):
     first = compress(node[0])
     second = compress(node[1])
 
-    return "%s in %s" % (first, second)    
+    return "%s instanceof %s" % (first, second)    
     
     
 
