@@ -65,8 +65,14 @@ def handleForcedSemicolon(node):
         __forcedSemicolon = True
 
 def addSemicolon(result):
+    global __forcedSemicolon
+    
     if not result.endswith(__semicolonSymbol):
+        if __forcedSemicolon:
+            __forcedSemicolon = False
+        
         return result + __semicolonSymbol
+
     else:
         return result
 
