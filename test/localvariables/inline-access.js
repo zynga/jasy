@@ -1,1 +1,5 @@
-var d, a=d;
+function wrapper()
+{
+  var d, a=d;
+}
+

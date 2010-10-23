@@ -1,2 +1,5 @@
-var first=4;
-var a=5;
+function wrapper()
+{
+  var first=4;
+  var a=5;
+}
