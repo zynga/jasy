@@ -82,21 +82,15 @@ def __scanScope(node):
     for child in node:
         __scanNode(child, declares, uses)
     
-
     parents = set()
     for name in uses:
         if name not in declares:
             parents.add(name)
 
-
-    print("Quit Scope [Line:%s]" % node.line)
-    print("- Declares:", declares)
-    print("- Uses:", uses)
-    print("- Parents:", parents)
-    
-    
-    
-    
+    # print("Quit Scope [Line:%s]" % node.line)
+    # print("- Declares:", declares)
+    # print("- Uses:", uses)
+    # print("- Parents:", parents)
     
     node.__declares = declares
     node.__uses = uses
