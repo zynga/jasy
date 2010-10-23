@@ -63,7 +63,7 @@ Compression Features
 Optimizer Features
 ------------------
 
-- Renames local variables/functions
+- Renames local variables/functions/exceptions
 - Renames file private variables (starting with double underscore)
 - Combines multi var statements into one per function
 - Removes needless blocks (with just one statement)
