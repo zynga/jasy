@@ -17,7 +17,7 @@ empty = ("null", "this", "true", "false", "number", "string", "regexp")
 #
 
 def optimize(node):
-    globalUses = __scanScope(node)
+    undefines = __scanScope(node)
     __patch(node)
 
 
@@ -61,12 +61,21 @@ def __scanNode(node, delcares, uses):
                 uses[node.value] = 1
     
     if node.type == "script":
-        childUses = __scanScope(node)
-        for name in childUses:
+        childUndefines = __scanScope(node)
+        for name in childUndefines:
             if name in uses:
-                uses[name] += childUses[name]
+                uses[name] += childUndefines[name]
             else:
-                uses[name] = childUses[name]
+                uses[name] = childUndefines[name]
+                
+    # Treat catch blocks like new scopes
+    elif node.type == "block" and getattr(node, "rel") == "block" and node.parent.type == "catch":
+        childUndefines = __scanScope(node)
+        for name in childUndefines:
+            if name in uses:
+                uses[name] += childUndefines[name]
+            else:
+                uses[name] = childUndefines[name]        
         
     else:
         for child in node:
@@ -75,59 +84,73 @@ def __scanNode(node, delcares, uses):
 
 
 def __scanScope(node):
-    declares = set()
+    defines = set()
     uses = {}
     
     # Add params to declaration list
-    __addParams(node, declares)
+    __addParams(node, defines)
+    __addExceptions(node, defines)
 
     # Process children
     for child in node:
-        __scanNode(child, declares, uses)
+        __scanNode(child, defines, uses)
     
-    # Look for used varibles which have not been declared
+    # Look for used varibles which have not been defined
     # Might be a part of a closure or just a mistake
-    parents = {}
+    undefines = {}
     for name in uses:
-        if name not in declares:
-            parents[name] = uses[name]
+        if name not in defines:
+            undefines[name] = uses[name]
 
-    # print("Quit Scope [Line:%s]" % node.line)
-    # print("- Declares:", declares)
-    # print("- Uses:", uses)
-    # print("- Parents:", parents)
+    print("Quit Scope [Line:%s]" % node.line)
+    print("- Defines:", defines)
+    print("- Uses:", uses)
+    print("- Undefines:", undefines)
     
-    node.__declares = declares
+    node.__defines = defines
     node.__uses = uses
-    node.__parents = parents
+    node.__undefines = undefines
     
-    return parents
+    return undefines
     
     
-def __addParams(node, declares):
+def __addParams(node, defines):
+    """ Adds all param names from outer function to the definition list """
+    
     rel = getattr(node, "rel", None)
     if rel == "body" and node.parent.type == "function":
         paramList = getattr(node.parent, "params", None)
         if paramList:
             for paramIdentifier in paramList:
-                declares.add(paramIdentifier.value)
+                defines.add(paramIdentifier.value)
+                
+                
+def __addExceptions(node, defines):
+    """ Adds name of exception variable from outer catch """
+    
+    if node.type == "block" and node.parent.type == "catch":
+        exception = node.parent.exception
+        defines.add(exception.value)
 
 
-
-def __patch(node, translate=None):
+def __patch(node, enable=False, translate=None):
+    if node.type == "script" and hasattr(node, "parent"):
+        enable = True
+    
+    
     #
     # GENERATE TRANSLATION TABLE
     #
-    if node.type == "script" and hasattr(node, "parent"):
+    if enable and hasattr(node, "__defines"):
         usedRepl = set()
         
         if not translate:
             translate = {}
         else:
-            # copy only the interesting ones from the __parents set
+            # copy only the interesting ones from the __undefines set
             newTranslate = {}
             
-            for name in node.__parents:
+            for name in node.__undefines:
                 if name in translate:
                     newTranslate[name] = translate[name]
                     usedRepl.add(translate[name])
@@ -137,22 +160,22 @@ def __patch(node, translate=None):
         # the possibilities to sort translation priority to
         # the usage number. Pretty cool.
         
-        declared = {}
-        for name in node.__declares:
+        defined = {}
+        for name in node.__defines:
             if name in node.__uses:
-                declared[name] = node.__uses[name]
+                defined[name] = node.__uses[name]
             else:
-                declared[name] = 0
+                defined[name] = 0
                 
-        declaredSorted = list(reversed(sorted(declared, key=lambda x: declared[x])))
+        definedSorted = list(reversed(sorted(defined, key=lambda x: defined[x])))
 
         # Extend translation map by new replacements for locally 
-        # declared variables. Automatically ignores keywords. Only
+        # defined variables. Automatically ignores keywords. Only
         # blocks usage of replacements where the original variable from
         # outer scope is used. This way variable names may be re-used more
         # often than in the original code.
         pos = 0
-        for name in declaredSorted:
+        for name in definedSorted:
             while True:
                 repl = __baseEncode(pos)
                 pos += 1
@@ -167,9 +190,8 @@ def __patch(node, translate=None):
     # APPLY TRANSLATION
     #
     if translate:
-        # Update params
+        # Update param names in outer function block
         if node.type == "script":
-            # Update params from outer function block
             if hasattr(node, "parent"):
                 function = node.parent
                 if function.type == "function" and hasattr(function, "params"):
@@ -177,6 +199,12 @@ def __patch(node, translate=None):
                         if identifier.value in translate:
                             identifier.value = translate[identifier.value]
             
+        # Update catch variable name in outer catch block
+        elif node.type == "block" and node.parent.type == "catch":
+            exceptionVariable = node.parent.exception
+            if exceptionVariable.value in translate:
+                exceptionVariable.value = translate[exceptionVariable.value]
+
         # Update function name
         elif node.type == "function":
             if hasattr(node, "name") and node.name in translate:
@@ -206,6 +234,6 @@ def __patch(node, translate=None):
     # PROCESS CHILDREN
     #
     for child in node:
-        __patch(child, translate)
+        __patch(child, enable, translate)
 
 
