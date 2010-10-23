@@ -101,6 +101,9 @@ def __scanScope(node):
     
         
 def __rework(node, translate=None):
+    #
+    # GENERATE TRANSLATION TABLE
+    #
     if node.type == "script" and hasattr(node, "parent"):
         usedRepl = set()
         
@@ -124,16 +127,16 @@ def __rework(node, translate=None):
                 if not repl in usedRepl and not repl in keywords:
                     break
                 
-            
             print("Translate: %s => %s" % (name, repl))
             translate[name] = repl
+            
+            
+        return
 
 
-    for child in node:
-        __rework(child, translate)
-        
-        
-        
+    #
+    # APPLY TRANSLATION
+    #
     if translate:
         # Update params
         if node.type == "script":
@@ -168,4 +171,11 @@ def __rework(node, translate=None):
             varName = getattr(node, "name", None)
             if varName != None and varName in translate:
                 node.name = varName = translate[varName]
+                
+    #
+    # PROCESS CHILDREN
+    #
+    for child in node:
+        __rework(child, translate)
+
 
