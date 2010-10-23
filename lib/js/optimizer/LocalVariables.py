@@ -92,10 +92,10 @@ def __scanScope(node):
         if name not in declares:
             parents[name] = uses[name]
 
-    print("Quit Scope [Line:%s]" % node.line)
-    print("- Declares:", declares)
-    print("- Uses:", uses)
-    print("- Parents:", parents)
+    # print("Quit Scope [Line:%s]" % node.line)
+    # print("- Declares:", declares)
+    # print("- Uses:", uses)
+    # print("- Parents:", parents)
     
     node.__declares = declares
     node.__uses = uses
@@ -133,15 +133,33 @@ def __patch(node, translate=None):
                     usedRepl.add(translate[name])
             translate = newTranslate
             
-        pos = 0
+        # Merge in usage data into declaration map to have
+        # the possibilities to sort translation priority to
+        # the usage number. Pretty cool.
+        
+        declared = {}
         for name in node.__declares:
+            if name in node.__uses:
+                declared[name] = node.__uses[name]
+            else:
+                declared[name] = 0
+                
+        declaredSorted = list(reversed(sorted(declared, key=lambda x: declared[x])))
+
+        # Extend translation map by new replacements for locally 
+        # declared variables. Automatically ignores keywords. Only
+        # blocks usage of replacements where the original variable from
+        # outer scope is used. This way variable names may be re-used more
+        # often than in the original code.
+        pos = 0
+        for name in declaredSorted:
             while True:
                 repl = __baseEncode(pos)
                 pos += 1
                 if not repl in usedRepl and not repl in keywords:
                     break
                 
-            print("Translate: %s => %s" % (name, repl))
+            # print("Translate: %s => %s" % (name, repl))
             translate[name] = repl
 
 
