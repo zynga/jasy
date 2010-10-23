@@ -102,10 +102,10 @@ def __scanScope(node):
         if name not in defines:
             undefines[name] = uses[name]
 
-    print("Quit Scope [Line:%s]" % node.line)
-    print("- Defines:", defines)
-    print("- Uses:", uses)
-    print("- Undefines:", undefines)
+    # print("Quit Scope [Line:%s]" % node.line)
+    # print("- Defines:", defines)
+    # print("- Uses:", uses)
+    # print("- Undefines:", undefines)
     
     node.__defines = defines
     node.__uses = uses
