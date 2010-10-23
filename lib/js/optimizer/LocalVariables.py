@@ -55,11 +55,18 @@ def __scanNode(node, delcares, uses):
             pass
             
         elif node.parent.type != "dot" or node.parent.index(node) == 0:
-            uses.add(node.value)
+            if node.value in uses:
+                uses[node.value] += 1
+            else:
+                uses[node.value] = 1
     
     if node.type == "script":
-        for name in __scanScope(node):
-            uses.add(name)
+        childUses = __scanScope(node)
+        for name in childUses:
+            if name in uses:
+                uses[name] += childUses[name]
+            else:
+                uses[name] = childUses[name]
         
     else:
         for child in node:
@@ -69,33 +76,41 @@ def __scanNode(node, delcares, uses):
 
 def __scanScope(node):
     declares = set()
-    uses = set()
+    uses = {}
     
-    rel = getattr(node, "rel", None)
-    if rel == "body" and node.parent.type == "function":
-        paramList = getattr(node.parent, "params", None)
-        if paramList:
-            for paramIdentifier in paramList:
-                declares.add(paramIdentifier.value)
-    
+    # Add params to declaration list
+    __addParams(node, declares)
+
+    # Process children
     for child in node:
         __scanNode(child, declares, uses)
     
-    parents = set()
+    # Look for used varibles which have not been declared
+    # Might be a part of a closure or just a mistake
+    parents = {}
     for name in uses:
         if name not in declares:
-            parents.add(name)
+            parents[name] = uses[name]
 
-    # print("Quit Scope [Line:%s]" % node.line)
-    # print("- Declares:", declares)
-    # print("- Uses:", uses)
-    # print("- Parents:", parents)
+    print("Quit Scope [Line:%s]" % node.line)
+    print("- Declares:", declares)
+    print("- Uses:", uses)
+    print("- Parents:", parents)
     
     node.__declares = declares
     node.__uses = uses
     node.__parents = parents
     
     return parents
+    
+    
+def __addParams(node, declares):
+    rel = getattr(node, "rel", None)
+    if rel == "body" and node.parent.type == "function":
+        paramList = getattr(node.parent, "params", None)
+        if paramList:
+            for paramIdentifier in paramList:
+                declares.add(paramIdentifier.value)
 
 
 
