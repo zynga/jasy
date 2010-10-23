@@ -18,14 +18,14 @@ empty = ("null", "this", "true", "false", "number", "string", "regexp")
 
 def optimize(node):
     globalUses = __scanScope(node)
-    __rework(node)
+    __patch(node)
 
 
 #
 # Implementation
 #
 
-def baseEncode(num, alphabet=string.ascii_letters):
+def __baseEncode(num, alphabet=string.ascii_letters):
     if (num == 0):
         return alphabet[0]
     arr = []
@@ -36,10 +36,9 @@ def baseEncode(num, alphabet=string.ascii_letters):
         arr.append(alphabet[rem])
     arr.reverse()
     return "".join(arr)
-        
-       
-       
-       
+
+
+
 def __scanNode(node, delcares, uses):
     if node.type == "function":
         functionName = getattr(node, "name", None)
@@ -65,8 +64,8 @@ def __scanNode(node, delcares, uses):
     else:
         for child in node:
             __scanNode(child, delcares, uses)
-    
-    
+
+
 
 def __scanScope(node):
     declares = set()
@@ -97,10 +96,10 @@ def __scanScope(node):
     node.__parents = parents
     
     return parents
-    
-    
-        
-def __rework(node, translate=None):
+
+
+
+def __patch(node, translate=None):
     #
     # GENERATE TRANSLATION TABLE
     #
@@ -122,16 +121,13 @@ def __rework(node, translate=None):
         pos = 0
         for name in node.__declares:
             while True:
-                repl = baseEncode(pos)
+                repl = __baseEncode(pos)
                 pos += 1
                 if not repl in usedRepl and not repl in keywords:
                     break
                 
             print("Translate: %s => %s" % (name, repl))
             translate[name] = repl
-            
-            
-        return
 
 
     #
@@ -171,11 +167,12 @@ def __rework(node, translate=None):
             varName = getattr(node, "name", None)
             if varName != None and varName in translate:
                 node.name = varName = translate[varName]
-                
+
+
     #
     # PROCESS CHILDREN
     #
     for child in node:
-        __rework(child, translate)
+        __patch(child, translate)
 
 
