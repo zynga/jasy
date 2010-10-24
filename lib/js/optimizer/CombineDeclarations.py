@@ -153,6 +153,21 @@ def __createSimpleAssignment(identifier, valueNode):
     assignNode.append(valueNode)
 
     return assignNode
+    
+    
+def __createMultiAssignment(names, valueNode):
+    assignNode = Node(None, "assign")
+    assignNode.append(names)
+    assignNode.append(valueNode)
+
+    return assignNode    
+
+
+def __createDeclaration(name):
+    declNode = Node(None, "declaration")
+    declNode.name = name
+    declNode.readOnly = False
+    return declNode
 
 
 def __patchVarStatements(node, firstVarStatement):
@@ -182,14 +197,25 @@ def __rebuildAsAssignment(node, firstVarStatement):
 
     # Casting to list() creates a copy during the process (keeps loop stable)
     for child in list(node):
-        # Cleanup initializer and move to assignment
-        if hasattr(child, "initializer"):
-            assign = __createSimpleAssignment(child.name, child.initializer)
-            assignmentList.append(assign)
-            
-        # Now move declaration without initializer around
-        firstVarStatement.append(child)
-            
+        if hasattr(child, "name"):
+            # Cleanup initializer and move to assignment
+            if hasattr(child, "initializer"):
+                assign = __createSimpleAssignment(child.name, child.initializer)
+                assignmentList.append(assign)
+                
+            firstVarStatement.append(child)
+        
+        else:
+            # JS 1.7 Destructing Expression
+            for identifier in child.names:
+                firstVarStatement.append(__createDeclaration(identifier.value))
+
+            if hasattr(child, "initializer"):
+                assign = __createMultiAssignment(child.names, child.initializer)
+                assignmentList.append(assign)
+                
+            node.remove(child)
+                        
     # Patch parent node to contain assignment instead of declaration
     if len(assignmentList) > 0:
         node.parent.replace(node, assignment)
