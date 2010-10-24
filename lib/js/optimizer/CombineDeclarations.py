@@ -232,7 +232,11 @@ def __rebuildAsAssignment(node, firstVarStatement):
     # all in for-in loops and so the first if basically does nothing
     # for these kind of statements.
     elif getattr(node, "rel", None) == "iterator":
-        node.parent.replace(node, __createIdentifier(child.name))
+        if hasattr(child, "name"):
+            node.parent.replace(node, __createIdentifier(child.name))
+        else:
+            # JS 1.7 Destructing Expressions
+            node.parent.replace(node, child.names)
     
     # Edge case. Not yet found if this happen realistically
     else:
