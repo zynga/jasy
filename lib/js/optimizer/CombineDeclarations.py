@@ -147,6 +147,8 @@ def __cleanFirst(first):
         if not hasattr(child, "initializer"):
             if child.name in known:
                 first.remove(child)
+            else:
+                known.add(child.name)
 
 
 def __createSimpleAssignment(identifier, valueNode):
