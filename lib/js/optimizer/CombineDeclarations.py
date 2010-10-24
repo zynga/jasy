@@ -74,9 +74,13 @@ def __combineVarStatements(node):
     firstVar = __findFirstVarStatement(node)
     
     # Special case, when a node has variables, but no valid "var" block to hold them
-    if not firstVar and node.variables:
-        firstVar = Node(None, "var")
-        node.append(firstVar)
+    # This happens in cases where there is a for-loop which contains a "var", but
+    # there are no other variable declarations anywhere. In this case we are not able
+    # to optimize the code further and just exit at this point
+    
+    # This code is not required as the next if already deals with this correctly
+    # if not firstVar and node.variables:
+    #    return
     
     if firstVar:
         __patchVarStatements(node, firstVar)
