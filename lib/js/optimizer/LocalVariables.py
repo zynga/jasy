@@ -39,16 +39,16 @@ def __baseEncode(num, alphabet=string.ascii_letters):
 
 
 
-def __scanNode(node, delcares, uses):
+def __scanNode(node, declares, uses):
     if node.type == "function":
         functionName = getattr(node, "name", None)
         if functionName:
-            delcares.add(functionName)
+            declares.add(functionName)
     
     elif node.type == "declaration":
         varName = getattr(node, "name", None)
         if varName != None:
-            delcares.add(varName)
+            declares.add(varName)
             
     elif node.type == "identifier":
         if node.parent.type == "list" and getattr(node.parent, "rel", None) == "params":
@@ -59,6 +59,10 @@ def __scanNode(node, delcares, uses):
                 uses[node.value] += 1
             else:
                 uses[node.value] = 1
+                
+    # Treat exception variables in catch blocks like declarations
+    elif node.type == "block" and node.parent.type == "catch":
+        declares.add(node.parent.exception.value)                
     
     if node.type == "script":
         childUndefines = __scanScope(node)
@@ -68,18 +72,9 @@ def __scanNode(node, delcares, uses):
             else:
                 uses[name] = childUndefines[name]
                 
-    # Treat catch blocks like new scopes
-    elif node.type == "block" and getattr(node, "rel", None) == "block" and node.parent.type == "catch":
-        childUndefines = __scanScope(node)
-        for name in childUndefines:
-            if name in uses:
-                uses[name] += childUndefines[name]
-            else:
-                uses[name] = childUndefines[name]        
-        
     else:
         for child in node:
-            __scanNode(child, delcares, uses)
+            __scanNode(child, declares, uses)
 
 
 
@@ -89,7 +84,6 @@ def __scanScope(node):
     
     # Add params to declaration list
     __addParams(node, defines)
-    __addExceptions(node, defines)
 
     # Process children
     for child in node:
@@ -123,17 +117,10 @@ def __addParams(node, defines):
         if paramList:
             for paramIdentifier in paramList:
                 defines.add(paramIdentifier.value)
-                
-                
-def __addExceptions(node, defines):
-    """ Adds name of exception variable from outer catch """
-    
-    if node.type == "block" and node.parent.type == "catch":
-        exception = node.parent.exception
-        defines.add(exception.value)
 
 
 def __patch(node, enable=False, translate=None):
+    # Start with first level scopes (global scope should not be affected)
     if node.type == "script" and hasattr(node, "parent"):
         enable = True
     
@@ -199,11 +186,10 @@ def __patch(node, enable=False, translate=None):
                         if identifier.value in translate:
                             identifier.value = translate[identifier.value]
             
-        # Update catch variable name in outer catch block
-        elif node.type == "block" and node.parent.type == "catch":
-            exceptionVariable = node.parent.exception
-            if exceptionVariable.value in translate:
-                exceptionVariable.value = translate[exceptionVariable.value]
+        # Update names of exception objects
+        elif node.type == "exception":
+            if node.value in translate:
+                node.value = translate[node.value]
 
         # Update function name
         elif node.type == "function":
