@@ -49,6 +49,11 @@ def __scanNode(node, declares, uses):
         varName = getattr(node, "name", None)
         if varName != None:
             declares.add(varName)
+        else:
+            # JS 1.7 Destructing Expression
+            varNames = node.names
+            for identifier in node.names:
+                declares.add(identifier.value)
             
     elif node.type == "identifier":
         if node.parent.type == "list" and getattr(node.parent, "rel", None) == "params":
@@ -212,8 +217,14 @@ def __patch(node, enable=False, translate=None):
         # Update declarations (as part of a var statement)
         elif node.type == "declaration":
             varName = getattr(node, "name", None)
-            if varName != None and varName in translate:
-                node.name = varName = translate[varName]
+            if varName != None:
+                if varName in translate:
+                    node.name = varName = translate[varName]
+            else:
+                # JS 1.7 Destructing Expression
+                for identifier in node.names:
+                    if identifier.value in translate:
+                        identifier.value = translate[identifier.value]
 
 
     #
