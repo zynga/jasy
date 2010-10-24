@@ -11,8 +11,10 @@ def optimize(node):
     
     # Process from inside to outside
     for child in node:
-        if optimize(child):
-            optimized = True
+        # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
+        if child != None:
+            if optimize(child):
+                optimized = True
         
     # Optimize if cases
     if node.type == "if":

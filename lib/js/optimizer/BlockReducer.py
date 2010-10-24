@@ -13,7 +13,9 @@ __all__ = ["optimize"]
 def optimize(node):
     # Process from inside to outside
     for child in node:
-        optimize(child)
+        # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
+        if child != None:
+            optimize(child)
                     
         
     # Remove unneeded parens

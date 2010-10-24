@@ -21,7 +21,9 @@ def optimize(node):
         copy = list(node)
     
     for child in copy:
-        optimize(child)
+        # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
+        if child != None:
+            optimize(child)
         
     if node.type in ("script", "block"):
         __combineSiblings(node)

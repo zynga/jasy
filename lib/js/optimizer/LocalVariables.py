@@ -79,7 +79,9 @@ def __scanNode(node, declares, uses):
                 
     else:
         for child in node:
-            __scanNode(child, declares, uses)
+            # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
+            if child != None:
+                __scanNode(child, declares, uses)
 
 
 
@@ -231,6 +233,8 @@ def __patch(node, enable=False, translate=None):
     # PROCESS CHILDREN
     #
     for child in node:
-        __patch(child, enable, translate)
+        # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
+        if child != None:
+            __patch(child, enable, translate)
 
 
