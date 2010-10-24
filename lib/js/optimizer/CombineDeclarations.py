@@ -117,12 +117,31 @@ def __findFirstVarStatement(node):
         
 
 def __cleanFirst(first):
+    """ 
+    Should remove double declared variables which have no initializer e.g.
+    var s=3,s,s,t,s; => var s=3,t;
+    """
+    
+    # Add all with initializer first
     known = set()
+    for child in first:
+        if hasattr(child, "initializer"):
+            varName = getattr(child, "name", None)
+            if varName != None:
+                known.add(varName)
+            else:
+                # JS 1.7 Destructing Expression
+                for varIdentifier in child.names:
+                    known.add(varIdentifier.value)
+    
+    # Then add all remaining ones which are not added before
+    # This implementation omits duplicates even if the assignments
+    # are listed later in the original node.
     for child in list(first):
-        if not child.name in known:
-            known.add(child.name)
-        elif not hasattr(child, "initializer"):
-            first.remove(child)
+        # JS 1.7 Destructing Expression always have a initializer
+        if not hasattr(child, "initializer"):
+            if child.name in known:
+                first.remove(child)
 
 
 def __createSimpleAssignment(identifier, valueNode):
