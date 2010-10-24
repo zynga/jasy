@@ -78,9 +78,10 @@ def __combineVarStatements(node):
     # there are no other variable declarations anywhere. In this case we are not able
     # to optimize the code further and just exit at this point
     
-    # This code is not required as the next if already deals with this correctly
-    # if not firstVar and node.variables:
-    #    return
+    # Only size-saving when there are multiple for-in loops, but no other var statement
+    if not firstVar and node.variables and len(node.variables) > 1:
+        firstVar = Node(None, "var")
+        node.append(firstVar)
     
     if firstVar:
         __patchVarStatements(node, firstVar)
