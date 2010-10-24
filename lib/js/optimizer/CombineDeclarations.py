@@ -170,6 +170,13 @@ def __createDeclaration(name):
     return declNode
 
 
+def __createIdentifier(value):
+    identifier = Node(None, "identifier")
+    identifier.scope = True
+    identifier.value = value
+    return identifier    
+
+
 def __patchVarStatements(node, firstVarStatement):
     """Patches all variable statements in the given node (works recursively) and replace them with assignments."""
     if node is firstVarStatement:
@@ -220,17 +227,14 @@ def __rebuildAsAssignment(node, firstVarStatement):
     if len(assignmentList) > 0:
         node.parent.replace(node, assignment)
     
+    # Special process for "for-in" loops
+    # It is OK to be second because of assignments are not allowed at
+    # all in for-in loops and so the first if basically does nothing
+    # for these kind of statements.
     elif getattr(node, "rel", None) == "iterator":
-        # is OK to be second because of assignments are not allowed at
-        # all in for-in loops and so the first if basically does nothing
-        # for these kind of statements.
-        identifier = Node(None, "identifier")
-        identifier.scope = True
-
-        # copy name of declaration into value of new identifier node
-        identifier.value = child.name
-        node.parent.replace(node, identifier)
+        node.parent.replace(node, __createIdentifier(child.name))
     
+    # Edge case. Not yet found if this happen realistically
     else:
         if hasattr(node, "rel"):
             logging.warn("Remove related node (%s) from parent: %s" % (node.rel, node))
