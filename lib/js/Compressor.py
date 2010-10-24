@@ -406,7 +406,7 @@ def __for_in(node):
     else:
         body = ""
         
-    result = "for(%s in %s)%s" % (compress(node.iterator), compress(node.object), body)
+    result = "for(%s in %s)%s" % (removeSemicolon(compress(node.iterator)), compress(node.object), body)
     
     if body:
         handleForcedSemicolon(node.body)
