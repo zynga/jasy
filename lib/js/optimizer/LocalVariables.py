@@ -69,7 +69,7 @@ def __scanNode(node, delcares, uses):
                 uses[name] = childUndefines[name]
                 
     # Treat catch blocks like new scopes
-    elif node.type == "block" and getattr(node, "rel") == "block" and node.parent.type == "catch":
+    elif node.type == "block" and getattr(node, "rel", None) == "block" and node.parent.type == "catch":
         childUndefines = __scanScope(node)
         for name in childUndefines:
             if name in uses:
