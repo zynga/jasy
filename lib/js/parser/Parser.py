@@ -825,7 +825,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
             # Need to unget to parse the full destructured expression.
             tokenizer.unget()
             builder.DECL_setNames(childNode, DestructuringExpression(tokenizer, staticContext, True, childContext))
-
+            
             if staticContext.inForLoopInit and tokenizer.peek() == "in":
                 addDecl(node, childNode, childContext)
                 if tokenizer.match("comma"): 
@@ -838,13 +838,7 @@ def Variables(tokenizer, staticContext, letBlock=None):
                 raise SyntaxError("Invalid variable initialization", tokenizer)
 
             # Parse the init as a normal assignment.
-            assignmentNode = builder.ASSIGN_build(tokenizer)
-            builder.ASSIGN_addOperand(assignmentNode, childNode.names)
-            builder.ASSIGN_addOperand(assignmentNode, AssignExpression(tokenizer, staticContext))
-            builder.ASSIGN_finish(assignmentNode)
-
-            # But only add the rhs as the initializer.
-            builder.DECL_setInitializer(childNode, assignmentNode[1])
+            builder.DECL_setInitializer(childNode, AssignExpression(tokenizer, staticContext))
             builder.DECL_finish(childNode)
             addDecl(node, childNode, childContext)
             
