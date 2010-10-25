@@ -19,9 +19,8 @@ def optimize(node):
                     
         
     # Remove unneeded parens
-    if getattr(node, "parenthesized", False) and node.type in expressions:
-        fixParens(node)
-    
+    if getattr(node, "parenthesized", False):
+        cleanParens(node)
     
     # Unwrap blocks
     if node.type == "block":
@@ -165,20 +164,48 @@ def mergeParts(node, thenPart, elsePart, condition):
                 node.parent.replace(node, replacement)    
 
 
+def cleanParens(node):
+    parent = node.parent
+
+    if node.type == "function" and parent.type == "call":
+        # Ignore for direct execution functions
+        pass
+
+    elif getattr(node, "rel", None) == "condition":
+        # inside a condition e.g. while(condition) or for(;condition;) we do not need
+        # parens aroudn an expression
+        node.parenthesized = False
+    
+    elif node.type in expressions and parent.type == "return":
+        node.parenthesized = False
+        
+    elif node.type == "new" and parent.type == "dot":
+        # Constructs like (new foo.bar.Object).doSomething()
+        # "new" is defined with lower
+        pass
+                
+    elif node.type in expressions and parent.type in expressions:
+        prio = expressionOrder[node.type]
+        parentPrio = expressionOrder[node.parent.type]
+        
+        if node.type == node.parent.type and node.type in ("and", "or"):
+            # Simplify expressions like (foo&&bar)&&baz => foo&&bar&&baz
+            node.parenthesized = False
+            
+        elif prio > parentPrio:
+            # In all other cases only remove parens if the child has a higher priority
+            node.parenthesized = False
+
 
 def fixParens(node):
     parent = node.parent
     
-    if node.type in expressions and parent.type == "return":
-        node.parenthesized = False
-
-    elif node.type == "function" and parent.type == "call":
-        # Ignore for direct execution functions
-        pass
-        
-    elif parent.type in expressions:
+    if parent.type in expressions:
         prio = expressionOrder[node.type]
         parentPrio = expressionOrder[node.parent.type]
+
+        # If the child was moved to a new parent we need to figure
+        # out whether we need parens to 
         needsParens = prio < parentPrio
         
         # Fix minor priority issue in hook statements. They are a little bit special. 
@@ -188,12 +215,6 @@ def fixParens(node):
             needsParens = node.rel == "condition"
 
         node.parenthesized = needsParens
-        
-    elif getattr(node, "rel", None) == "condition":
-        # inside a condition e.g. while(condition) or for(;condition;) we do not need
-        # parens aroudn an expression
-        node.parenthesized = False
-
 
 
 def combineToCommaExpression(node):
@@ -244,7 +265,7 @@ def compactIf(node, thenPart, condition):
         thenPart.append(replacement, "expression")
 
         fixParens(thenExpression)
-        fixParens(condition)    
+        fixParens(condition)
         
         node.parent.replace(node, thenPart)
 
