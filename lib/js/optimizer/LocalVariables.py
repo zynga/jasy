@@ -56,9 +56,15 @@ def __scanNode(node, declares, uses):
                 declares.add(identifier.value)
             
     elif node.type == "identifier":
+        # Ignore parameter names (of inner functions, these are handled by __scanScope)
         if node.parent.type == "list" and getattr(node.parent, "rel", None) == "params":
             pass
+        
+        # Ignore property initialization names
+        elif node.parent.type == "property_init" and node.parent[0] == node:
+            pass
             
+        # Ignore non first identifiers in dot-chains
         elif node.parent.type != "dot" or node.parent.index(node) == 0:
             if node.value in uses:
                 uses[node.value] += 1
@@ -207,6 +213,10 @@ def __patch(node, enable=False, translate=None):
         elif node.type == "identifier":
             # Ignore param blocks from inner functions
             if node.parent.type == "list" and getattr(node.parent, "rel", None) == "params":
+                pass
+                
+            # Ignore keyword in property initialization names
+            elif node.parent.type == "property_init" and node.parent[0] == node:
                 pass
             
             # Update all identifiers which are 
