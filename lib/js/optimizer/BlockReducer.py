@@ -195,7 +195,10 @@ def cleanParens(node):
         prio = expressionOrder[node.type]
         parentPrio = expressionOrder[node.parent.type]
         
-        if prio >= parentPrio:
+        # Only higher priorities are optimized. Others are just to complex e.g.
+        # "hello" + (3+4) + "world" is not allowed to be translated to 
+        # "hello" + 3+4 + "world"
+        if prio > parentPrio:
             node.parenthesized = False
 
 
