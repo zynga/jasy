@@ -19,6 +19,41 @@ __semicolonSymbol = ";\n"
 __commaSymbol = ",\n"
 __forcedSemicolon = False
 
+__futureReserved = set([
+    "abstract",
+    "boolean",
+    "byte",
+    "char",
+    "class",
+    "const",
+    "debugger",
+    "double",
+    "enum",
+    "export",
+    "extends",
+    "final",
+    "float",
+    "goto",
+    "implements",
+    "import",
+    "int",
+    "interface",
+    "long",
+    "native",
+    "package",
+    "private",
+    "protected",
+    "public",
+    "short",
+    "static",
+    "super",
+    "synchronized",
+    "throws",
+    "transient",
+    "volatile" 
+])
+
+
 
 #
 # Main
@@ -158,7 +193,7 @@ def __property_init(node):
         pass
 
     # Protect keywords and special characters
-    elif key in keywords or not __simpleProperty.match(key):
+    elif key in keywords or key in __futureReserved or not __simpleProperty.match(key):
         key = __string(node[0])
 
     return "%s:%s" % (key, value)
