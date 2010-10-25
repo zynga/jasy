@@ -156,7 +156,6 @@ def __cleanFirst(first):
 def __createSimpleAssignment(identifier, valueNode):
     assignNode = Node(None, "assign")
     identNode = Node(None, "identifier")
-    identNode.scope = True
     identNode.value = identifier
     assignNode.append(identNode)
     assignNode.append(valueNode)
@@ -181,7 +180,6 @@ def __createDeclaration(name):
 
 def __createIdentifier(value):
     identifier = Node(None, "identifier")
-    identifier.scope = True
     identifier.value = value
     return identifier    
 
