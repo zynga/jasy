@@ -176,7 +176,7 @@ def cleanParens(node):
         # priorities might suggest
         pass
 
-    elif getattr(node, "rel", None) == "condition":
+    elif getattr(node, "rel", None) == "condition" and node.parent.type != "hook":
         # inside a condition e.g. while(condition) or for(;condition;) we do not need
         # parens aroudn an expression
         node.parenthesized = False
@@ -192,6 +192,9 @@ def cleanParens(node):
         # the same works without issues when having "new_with_args" 
         # instead like: new foo.bar.Object("param").doSomething()
         pass
+        
+    elif node.type == "assign" and parent.type == "hook":
+        node.parenthesized = node.rel == "condition"
                 
     elif node.type in expressions and parent.type in expressions:
         prio = expressionOrder[node.type]
