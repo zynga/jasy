@@ -176,7 +176,10 @@ def cleanParens(node):
         # priorities might suggest
         pass
 
-    elif getattr(node, "rel", None) == "condition" and node.parent.type != "hook":
+    elif node.type == "assign" and parent.type == "hook":
+        node.parenthesized = node.rel == "condition"
+                
+    elif getattr(node, "rel", None) == "condition":
         # inside a condition e.g. while(condition) or for(;condition;) we do not need
         # parens aroudn an expression
         node.parenthesized = False
@@ -193,9 +196,6 @@ def cleanParens(node):
         # instead like: new foo.bar.Object("param").doSomething()
         pass
         
-    elif node.type == "assign" and parent.type == "hook":
-        node.parenthesized = node.rel == "condition"
-                
     elif node.type in expressions and parent.type in expressions:
         prio = expressionOrder[node.type]
         parentPrio = expressionOrder[node.parent.type]
@@ -205,6 +205,10 @@ def cleanParens(node):
         # "hello" + 3+4 + "world"
         if prio > parentPrio:
             node.parenthesized = False
+        elif prio == parentPrio:
+            if node.type == "hook":
+                node.parenthesized = False
+            
 
 
 def fixParens(node):
