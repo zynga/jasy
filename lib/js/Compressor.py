@@ -15,8 +15,8 @@ __all__ = [ "compress" ]
 #
 
 __simpleProperty = re.compile("^[a-zA-Z_$][a-zA-Z0-9_$]*$")
-__semicolonSymbol = ";"
-__commaSymbol = ","
+__semicolonSymbol = ";\n"
+__commaSymbol = ",\n"
 __forcedSemicolon = False
 
 
@@ -458,10 +458,12 @@ def __if(node):
         
         # Micro optimization: Don't need a space when the child is a block
         # At this time the brace could not be part of a map declaration (would be a syntax error)
-        if not elseCode.startswith(("{", "(")):
+        if not elseCode.startswith(("{", "(", ";")):
             result += " "        
             
         result += elseCode
+        
+        handleForcedSemicolon(elsePart)
         
     return result
 

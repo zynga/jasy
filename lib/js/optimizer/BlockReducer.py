@@ -161,7 +161,7 @@ def fixParens(node):
 
         node.parenthesized = needsParens
         
-    elif getattr(node, "rel") == "condition":
+    elif getattr(node, "rel", None) == "condition":
         # inside a condition e.g. while(condition) or for(;condition;) we do not need
         # parens aroudn an expression
         node.parenthesized = False
