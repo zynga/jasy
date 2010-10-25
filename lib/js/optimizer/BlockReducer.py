@@ -28,19 +28,47 @@ def optimize(node):
         if node.parent.type in ("try", "catch", "finally"):
             pass
         elif len(node) == 0:
-            node.parent.replace(node, Node(node.tokenizer, "semicolon"))
+            repl =Node(node.tokenizer, "semicolon")
+            node.parent.replace(node, repl)
+            node = repl
         elif len(node) == 1:
             if node.parent.type == "if" and containsIf(node):
                 pass
             else:
                 node.parent.replace(node, node[0])
-            
+                node = node[0]
+        
+        
+    # Remove "empty" semicolons who are inside a block/script parent
+    if node.type == "semicolon":
+        if not hasattr(node, "expression"):
+            if node.parent.type in ("block", "script"):
+                node.parent.remove(node)
+            elif node.parent.type == "if":
+                rel = getattr(node, "rel", None)
+                if rel == "elsePart":
+                    node.parent.remove(node)
             
     # Process all if-statements
     if node.type == "if":
         condition = node.condition
         thenPart = node.thenPart
         elsePart = getattr(node, "elsePart", None)
+        
+        # Optimize for empty thenPart if elsePart is available
+        if thenPart.type == "semicolon" and not hasattr(thenPart, "expression") and elsePart:
+            if condition.type == "not":
+                node.replace(condition, condition[0])
+                condition = condition[0]
+            else:
+                repl = Node(None, "not")
+                node.replace(condition, repl)
+                repl.append(condition)
+                condition = repl
+            
+            node.replace(thenPart, elsePart)
+            thenPart = elsePart
+            elsePart = None
         
         # Optimize using hook operator
         if elsePart and thenPart.type == "return" and elsePart.type == "return":
