@@ -1023,7 +1023,6 @@ def comprehensionTail(tokenizer, staticContext):
             # such that the variables are in their own def when desugared.
             
             identifier = builder.PRIMARY_build(tokenizer, "identifier")
-            identifier.scope = True
             builder.FOR_setIterator(node, identifier)
 
         else:
@@ -1511,10 +1510,6 @@ def PrimaryExpression(tokenizer, staticContext):
 
     elif tokenType in ["null", "this", "true", "false", "identifier", "number", "string", "regexp"]:
         node = builder.PRIMARY_build(tokenizer, tokenType)
-        
-        if tokenType == "identifier" and node.value != "arguments":
-            node.scope = True
-            
         builder.PRIMARY_finish(node)
 
     else:
