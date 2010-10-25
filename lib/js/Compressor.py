@@ -376,7 +376,7 @@ def __return(node):
         valueCode = compress(node.value)
 
         # Micro optimization: Don't need a space when a block/map/array/group/strings are returned
-        if not valueCode.startswith(("(","[","{","'",'"',"!")): 
+        if not valueCode.startswith(("(","[","{","'",'"',"!","-")): 
             result += " "
 
         result += valueCode
@@ -507,7 +507,11 @@ def __switch(node):
     result = "switch(%s){" % compress(node.discriminant)
     for case in node:
         if case.type == "case":
-            result += "case %s:" % compress(case.label)
+            labelCode = compress(case.label)
+            if labelCode.startswith('"'):
+                result += "case%s:" % labelCode
+            else:
+                result += "case %s:" % labelCode
         elif case.type == "default":
             result += "default:"
         else:
