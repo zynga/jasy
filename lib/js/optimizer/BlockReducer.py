@@ -31,9 +31,14 @@ def optimize(node):
             node.parent.replace(node, repl)
             node = repl
         elif len(node) == 1:
-            if node.parent.type == "if" and containsIfElse(node):
+            if node.parent.type == "if" and node.rel == "thenBlock" and hasattr(node.parent, "elsePart") and containsIf(node):
+                # if with else where the thenBlock contains another if
                 pass
-            elif node.parent.type in ("case","default"):
+            elif node.parent.type == "if" and node.rel == "thenBlock" and containsIfElse(node):
+                # if without else where the thenBlock contains a if-else
+                pass
+            elif node.parent.type in ("case", "default"):
+                # virtual blocks inside case/default statements
                 pass
             else:
                 node.parent.replace(node, node[0])
@@ -301,6 +306,23 @@ def containsIfElse(node):
             return True
 
     return False
+    
+    
+def containsIf(node):
+    """ helper for block removal optimization """
+    if node.type == "if":
+        return True
+
+    for child in node:
+        # Blocks reset this if-else problem so we ignore them 
+        # (and their content) for our scan.
+        if child.type == "block":
+            pass
+
+        elif containsIf(child):
+            return True
+
+    return False    
 
 
 def combineAssignments(condition, thenExpression, elseExpression):
