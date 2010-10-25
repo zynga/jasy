@@ -33,6 +33,8 @@ def optimize(node):
         elif len(node) == 1:
             if node.parent.type == "if" and containsIf(node):
                 pass
+            elif node.parent.type in ("case","default"):
+                pass
             else:
                 node.parent.replace(node, node[0])
                 node = node[0]
