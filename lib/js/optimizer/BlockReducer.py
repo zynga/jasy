@@ -31,7 +31,7 @@ def optimize(node):
             node.parent.replace(node, repl)
             node = repl
         elif len(node) == 1:
-            if node.parent.type == "if" and containsIf(node):
+            if node.parent.type == "if" and containsIfElse(node):
                 pass
             elif node.parent.type in ("case","default"):
                 pass
@@ -286,9 +286,9 @@ def compactIf(node, thenPart, condition):
         node.parent.replace(node, thenPart)
 
 
-def containsIf(node):
+def containsIfElse(node):
     """ helper for block removal optimization """
-    if node.type == "if":
+    if node.type == "if" and hasattr(node, "elsePart"):
         return True
 
     for child in node:
@@ -297,7 +297,7 @@ def containsIf(node):
         if child.type == "block":
             pass
         
-        elif containsIf(child):
+        elif containsIfElse(child):
             return True
 
     return False
