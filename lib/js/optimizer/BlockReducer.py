@@ -173,9 +173,11 @@ def cleanParens(node):
         # Ignore for direct execution functions. This is required
         # for parsing e.g. (function(){})(); which does not work
         # without parens around the function instance other than
-        # priorities might suggest
-        pass
-
+        # priorities might suggest. It only works this way when being
+        # part of assignment/declaration.
+        if parent.parent.type in ("declaration", "assign"):
+            node.parenthesized = False
+            
     elif node.type == "assign" and parent.type == "hook":
         node.parenthesized = node.rel == "condition"
                 
