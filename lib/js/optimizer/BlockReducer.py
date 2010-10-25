@@ -168,7 +168,10 @@ def cleanParens(node):
     parent = node.parent
 
     if node.type == "function" and parent.type == "call":
-        # Ignore for direct execution functions
+        # Ignore for direct execution functions. This is required
+        # for parsing e.g. (function(){})(); which does not work
+        # without parens around the function instance other than
+        # priorities might suggest
         pass
 
     elif getattr(node, "rel", None) == "condition":
@@ -177,23 +180,22 @@ def cleanParens(node):
         node.parenthesized = False
     
     elif node.type in expressions and parent.type == "return":
+        # Returns never need parens around the expression
         node.parenthesized = False
         
     elif node.type == "new" and parent.type == "dot":
         # Constructs like (new foo.bar.Object).doSomething()
-        # "new" is defined with lower
+        # "new" is defined with higher priority than "dot" but in
+        # this case it does not work without parens. Interestingly
+        # the same works without issues when having "new_with_args" 
+        # instead like: new foo.bar.Object("param").doSomething()
         pass
                 
     elif node.type in expressions and parent.type in expressions:
         prio = expressionOrder[node.type]
         parentPrio = expressionOrder[node.parent.type]
         
-        if node.type == node.parent.type and node.type in ("and", "or"):
-            # Simplify expressions like (foo&&bar)&&baz => foo&&bar&&baz
-            node.parenthesized = False
-            
-        elif prio > parentPrio:
-            # In all other cases only remove parens if the child has a higher priority
+        if prio >= parentPrio:
             node.parenthesized = False
 
 
