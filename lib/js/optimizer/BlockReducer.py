@@ -292,7 +292,12 @@ def containsIf(node):
         return True
 
     for child in node:
-        if containsIf(child):
+        # Blocks reset this if-else problem so we ignore them 
+        # (and their content) for our scan.
+        if child.type == "block":
+            pass
+        
+        elif containsIf(child):
             return True
 
     return False
