@@ -131,6 +131,9 @@ class Node(list):
     
     # Replaces the given kid with the given replacement kid
     def replace(self, kid, repl):
+        if repl in self:
+            self.remove(repl)
+        
         self[self.index(kid)] = repl
         
         if hasattr(kid, "rel"):
