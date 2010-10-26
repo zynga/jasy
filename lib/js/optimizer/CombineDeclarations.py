@@ -81,7 +81,7 @@ def __combineVarStatements(node):
     # to optimize the code further and just exit at this point
     
     # Only size-saving when there are multiple for-in loops, but no other var statement
-    if not firstVar and node.variables and len(node.variables) > 1:
+    if not firstVar and len(node.defines) > 1:
         firstVar = Node(None, "var")
         node.append(firstVar)
     
