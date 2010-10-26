@@ -14,6 +14,7 @@ from js.optimizer import DeadCode
 from js.optimizer import CryptPrivates
 from js.optimizer import BlockReducer
 
+from js.Variables import scan
 from js.Compressor import compress
 
 
@@ -42,6 +43,8 @@ def jsoptimize(source, filename=None):
     BlockReducer.optimize(tree)
     #CryptPrivates.optimize(tree, "xx")
     CombineDeclarations.optimize(tree)
+    
+    scan(tree)
     LocalVariables.optimize(tree)
     
     return compress(tree)
