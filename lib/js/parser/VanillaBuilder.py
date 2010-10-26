@@ -161,8 +161,8 @@ class VanillaBuilder:
     def BREAK_build(self, tokenizer):
         return Node(tokenizer, "break")
 
-    def BREAK_setLabel(self, node, identifier):
-        node.append(identifier, "label")
+    def BREAK_setLabel(self, node, label):
+        node.label = label
 
     def BREAK_setTarget(self, node, target):
         # Hint, no append() - relation, but not a child
