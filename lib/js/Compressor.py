@@ -164,7 +164,8 @@ prefixes = {
     "unary_minus"   : "-",
     "delete"        : "delete ",
     "new"           : "new ",
-    "typeof"        : "typeof "
+    "typeof"        : "typeof ",
+    "void"          : "void "
 }
 
 
