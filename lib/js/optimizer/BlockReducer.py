@@ -77,7 +77,7 @@ def optimize(node):
                 node.parent.replace(node, node[0])
                 node = node[0]
         else:
-            combineToCommaExpression(node)
+            node = combineToCommaExpression(node)
         
         
     # Remove "empty" semicolons who are inside a block/script parent
