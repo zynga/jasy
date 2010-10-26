@@ -85,15 +85,23 @@ def __scanScope(node):
     for name in uses:
         if name not in defines and name != "arguments":
             inherits[name] = uses[name]
+            
+    # Look for variables which have been defined, but not used.
+    unused = set()
+    for name in defines:
+        if not name in uses:
+            unused.add(name)
 
-    print("Quit Scope [Line:%s]" % node.line)
-    print("- Defines:", defines)
-    print("- Uses:", uses)
-    print("- Inherits:", inherits)
+    #print("Quit Scope [Line:%s]" % node.line)
+    #print("- Defines:", defines)
+    #print("- Uses:", uses)
+    #print("- Inherits:", inherits)
+    #print("- Unused:", unused)
     
     node.defines = defines
     node.uses = uses
     node.inherits = inherits
+    node.unused = unused
     
     return inherits
     
