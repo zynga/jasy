@@ -91,9 +91,9 @@ def __scanScope(node):
     print("- Uses:", uses)
     print("- Inherits:", inherits)
     
-    node.__defines = defines
-    node.__uses = uses
-    node.__inherits = inherits
+    node.defines = defines
+    node.uses = uses
+    node.inherits = inherits
     
     return inherits
     
