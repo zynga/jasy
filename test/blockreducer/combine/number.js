@@ -1,1 +1,2 @@
-var result = 4 * (5+6);
+var adds = 4 * (5+6);
+var third = 1/3; 

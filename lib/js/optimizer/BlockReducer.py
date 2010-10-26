@@ -43,7 +43,7 @@ def optimize(node):
             elif operator == "mod":
                 result = firstNumber.value % secondNumber.value
             
-            if len(str(result)) < compress(result):
+            if len(str(result)) < len(compress(node)):
                 firstNumber.value = result
                 node.parent.replace(node, firstNumber)
 
