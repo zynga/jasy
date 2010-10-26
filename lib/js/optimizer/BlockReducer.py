@@ -23,7 +23,7 @@ def optimize(node):
         cleanParens(node)
     
     
-    # Pre-compute expressions where it makes sense
+    # Pre-compute numeric expressions where it makes sense
     if node.type in ("plus","minus","mul","div","mod") and node[1].type == "number" and node[1].type == "number":
         firstNumber = node[0]
         secondNumber = node[1]
@@ -48,6 +48,7 @@ def optimize(node):
                 node.parent.replace(node, firstNumber)
 
 
+    # Pre-combine strings (even supports mixed string + number concats)
     elif node.type == "plus" and node[0].type in ("number", "string") and node[1].type in ("number", "string"):
         node[0].value = "%s%s" % (node[0].value, node[1].value)
         node[0].type = "string"
