@@ -24,7 +24,7 @@ def optimize(node):
     
     
     # Pre-compute numeric expressions where it makes sense
-    if node.type in ("plus","minus","mul","div","mod") and node[1].type == "number" and node[1].type == "number":
+    if node.type in ("plus","minus","mul","div","mod") and node[0].type == "number" and node[1].type == "number":
         firstNumber = node[0]
         secondNumber = node[1]
         operator = node.type
