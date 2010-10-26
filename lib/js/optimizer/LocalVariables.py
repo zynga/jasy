@@ -9,7 +9,6 @@ import string, logging
 
 __all__ = ["optimize"]
 
-empty = ("null", "this", "true", "false", "number", "string", "regexp")
 
 
 #
