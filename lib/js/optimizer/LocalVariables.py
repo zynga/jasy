@@ -52,10 +52,10 @@ def __patch(node, enable=False, translate=None):
         if not translate:
             translate = {}
         else:
-            # copy only the interesting ones from the __undefines set
+            # copy only the interesting ones from the __inherits set
             newTranslate = {}
             
-            for name in node.__undefines:
+            for name in node.__inherits:
                 if name in translate:
                     newTranslate[name] = translate[name]
                     usedRepl.add(translate[name])
