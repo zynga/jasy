@@ -42,7 +42,6 @@ def jsoptimize(source, filename=None):
     BlockReducer.optimize(tree)
     #CryptPrivates.optimize(tree, "xx")
     CombineDeclarations.optimize(tree)
-    print(tree)
     #LocalVariables.optimize(tree)
     
     return compress(tree)
