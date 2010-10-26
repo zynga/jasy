@@ -329,8 +329,8 @@ class VanillaBuilder:
     def FUNCTION_setBody(self, node, statement):
         # copy over function parameters to function body
         params = getattr(node, "params", None)
-        if params:
-            statement.params = [param.value for param in params]
+        #if params:
+        #    statement.params = [param.value for param in params]
             
         node.append(statement, "body")
 
@@ -387,7 +387,6 @@ class VanillaBuilder:
 
     def LETBLOCK_build(self, tokenizer):
         node = Node(tokenizer, "let_block")
-        node.varDecls = []
         return node
 
     def LETBLOCK_setVariables(self, node, childNode):
@@ -404,7 +403,6 @@ class VanillaBuilder:
 
     def BLOCK_build(self, tokenizer, id):
         node = Node(tokenizer, "block")
-        node.varDecls = []
         node.id = id
         return node
 
