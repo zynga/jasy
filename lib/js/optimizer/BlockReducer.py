@@ -23,17 +23,37 @@ def optimize(node):
         cleanParens(node)
     
     
-    # Combine "plus" expressions where it makes sense
-    if node.type == "plus":
-        if node[0].type == "string" and node[1].type == "string":
-            node[0].value += node[1].value
-            node.parent.replace(node, node[0])
+    # Pre-compute expressions where it makes sense
+    if node.type in ("plus","minus","mul","div","mod") and node[1].type == "number" and node[1].type == "number":
+        firstNumber = node[0]
+        secondNumber = node[1]
+        operator = node.type
+        
+        if operator == "plus":
+            firstNumber.value += secondNumber.value
+            node.parent.replace(node, firstNumber)
+        elif operator == "minus":
+            firstNumber.value -= secondNumber.value
+            node.parent.replace(node, firstNumber)
+        else:
+            if operator == "mul":
+                result = firstNumber.value * secondNumber.value
+            elif operator == "div":
+                result = firstNumber.value / secondNumber.value
+            elif operator == "mod":
+                result = firstNumber.value % secondNumber.value
             
-        elif node[1].type == "number" and node[1].type == "number":
-            node[0].value += node[1].value
-            node.parent.replace(node, node[0])
-    
-    
+            if len(str(result)) < compress(result):
+                firstNumber.value = result
+                node.parent.replace(node, firstNumber)
+
+
+    elif node.type == "plus" and node[0].type in ("number", "string") and node[1].type in ("number", "string"):
+        node[0].value = "%s%s" % (node[0].value, node[1].value)
+        node[0].type = "string"
+        node.parent.replace(node, node[0])
+
+
     # Unwrap blocks
     if node.type == "block":
         if node.parent.type in ("try", "catch", "finally"):
