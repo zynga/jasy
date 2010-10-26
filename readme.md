@@ -58,20 +58,26 @@ Compression Features
 --------------------
 
 - Comment Removal
-- White Space Removal (even is some quirky places e.g. keywords before strings, etc.)
+- White Space Removal (even in some quirky places e.g. keywords before strings, etc.)
 
 Optimizer Features
 ------------------
 
-- Renames local variables/functions/exceptions
-- Renames file private variables (starting with double underscore)
-- Combines multi var statements into one per function
+- Renames local variables/functions/exceptions (based on their usage number)
+- Renames file private variables (starting with double underscore by convention)
+- Combines multi var statements into one per function (really all of them)
 - Removes needless blocks (with just one statement)
+- Automatically combines strings and numbers (e.g. "Version " + 1.3 => "Version 1.3")
 - Optimizes if(-else) statements with expressions as content
   - Translates if-statements without else using `&&` or `||` operators
-  - Translates if-statements with else using conditional operator `? :` (especially impressive with returns/assignments)
+  - Translates if-statements with else using conditional operator `? :` (especially worth with returns/assignments)
 - Removes needless else (if previous if-block ends with a return/throw statement)
 - Removes needless parens based on priority analysis on the AST
+
+
+
+
+
 
 
 
