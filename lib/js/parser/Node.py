@@ -173,19 +173,21 @@ class Node(list):
                     if hasattr(value, "rel"):
                         relatedChildren.append(value)
 
-                elif type(value) in (bool, int, float, str, list, set):
+                elif type(value) in (bool, int, float, str, list, set, dict):
                     if type(value) == bool:
                         value = "true" if value else "false" 
                     elif type(value) in (int, float):
                         value = str(value)
-                    elif type(value) == list or type(value) == set:
+                    elif type(value) in (list, set, dict):
+                        if type(value) == dict:
+                            value = value.keys()
                         if len(value) == 0:
                             continue
                         try:
                             value = ",".join(value)
                         except TypeError:
                             raise Exception("Invalid attribute list child at: %s" % name)
-                                
+                            
                     attrsCollection.append('%s=%s' % (name, json.dumps(value)))
 
         attrs = (" " + " ".join(attrsCollection)) if len(attrsCollection) > 0 else ""
