@@ -64,10 +64,10 @@ def optimize(node):
             node.parent.replace(node, repl)
             node = repl
         elif len(node) == 1:
-            if node.parent.type == "if" and node.rel == "thenBlock" and hasattr(node.parent, "elsePart") and containsIf(node):
+            if node.parent.type == "if" and node.rel == "thenPart" and hasattr(node.parent, "elsePart") and containsIf(node):
                 # if with else where the thenBlock contains another if
                 pass
-            elif node.parent.type == "if" and node.rel == "thenBlock" and containsIfElse(node):
+            elif node.parent.type == "if" and node.rel == "thenPart" and containsIfElse(node):
                 # if without else where the thenBlock contains a if-else
                 pass
             elif node.parent.type in ("case", "default"):
