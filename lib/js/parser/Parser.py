@@ -68,11 +68,11 @@ class StaticContext(object):
         self.statementStack = []
         
         # Sets to store variable uses
-        self.functions = set()
-        self.variables = set()
+        # self.functions = set()
+        # self.variables = set()
         
         # Status
-        self.needsHoisting = False
+        # self.needsHoisting = False
         self.bracketLevel = 0
         self.curlyLevel = 0
         self.parenLevel = 0
@@ -93,8 +93,8 @@ def Script(tokenizer, staticContext):
     node.type = "script"
     
     # copy over data from compiler context
-    node.functions = staticContext.functions
-    node.variables = staticContext.variables
+    # node.functions = staticContext.functions
+    # node.variables = staticContext.variables
 
     return node
     
@@ -130,12 +130,12 @@ def Statements(tokenizer, staticContext):
     staticContext.statementStack.pop()
     builder.BLOCK_finish(node)
 
-    if getattr(node, "needsHoisting", False):
-        # TODO
-        raise Exception("Needs hoisting went true!!!")
-        builder.setHoists(node.id, node.variables)
-        # Propagate up to the function.
-        staticContext.needsHoisting = True
+    # if getattr(node, "needsHoisting", False):
+    #     # TODO
+    #     raise Exception("Needs hoisting went true!!!")
+    #     builder.setHoists(node.id, node.variables)
+    #     # Propagate up to the function.
+    #     staticContext.needsHoisting = True
 
     return node
 
@@ -730,26 +730,35 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     # Blocks are already uniquely numbered; see the comment in
     # Statements.
     # 
-    if childContext.needsHoisting:
-        # Order is important here! Builders expect functions to come after variables!
-        builder.setHoists(functionNode.body.id, childContext.variables.concat(childContext.functions))
-
-        if staticContext.inFunction:
-            # If an inner function needs hoisting, we need to propagate
-            # this flag up to the parent function.
-            staticContext.needsHoisting = True
-        
-        else:
-            # Only re-parse functions at the top level of the program.
-            childContext = StaticContext(True, builder)
-            tokenizer.rewind(rp)
-            
-            # Set a flag in case the builder wants to have different behavior
-            # on the second pass.
-            builder.secondPass = True
-            builder.FUNCTION_hoistVars(functionNode.body.id, True)
-            builder.FUNCTION_setBody(functionNode, Script(tokenizer, childContext))
-            builder.secondPass = False
+    
+    #
+    # wpbasti: 
+    # Don't have the feeling that I need this functionality because the
+    # tree is often modified before the variables and names inside are 
+    # of any interest. So better doing this in a post-scan.
+    #
+    
+    #
+    # if childContext.needsHoisting:
+    #     # Order is important here! Builders expect functions to come after variables!
+    #     builder.setHoists(functionNode.body.id, childContext.variables.concat(childContext.functions))
+    # 
+    #     if staticContext.inFunction:
+    #         # If an inner function needs hoisting, we need to propagate
+    #         # this flag up to the parent function.
+    #         staticContext.needsHoisting = True
+    #     
+    #     else:
+    #         # Only re-parse functions at the top level of the program.
+    #         childContext = StaticContext(True, builder)
+    #         tokenizer.rewind(rp)
+    #         
+    #         # Set a flag in case the builder wants to have different behavior
+    #         # on the second pass.
+    #         builder.secondPass = True
+    #         builder.FUNCTION_hoistVars(functionNode.body.id, True)
+    #         builder.FUNCTION_setBody(functionNode, Script(tokenizer, childContext))
+    #         builder.secondPass = False
 
     if tokenType == "left_curly":
         tokenizer.mustMatch("right_curly")
@@ -757,8 +766,8 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     functionNode.end = tokenizer.token.end
     functionNode.functionForm = functionForm
     
-    if functionForm == "declared_form":
-        staticContext.functions.add(functionNode.name)
+    # if functionForm == "declared_form":
+    #    staticContext.functions.add(functionNode.name)
         
     builder.FUNCTION_finish(functionNode, staticContext)
     
@@ -843,8 +852,8 @@ def Variables(tokenizer, staticContext, letBlock=None):
             addDecl(node, childNode, childContext)
             
             # Copy over names for variable list
-            for nameNode in childNode.names:
-                childContext.variables.add(nameNode.value)
+            # for nameNode in childNode.names:
+            #    childContext.variables.add(nameNode.value)
                 
             if tokenizer.match("comma"): 
                 continue
@@ -875,10 +884,10 @@ def Variables(tokenizer, staticContext, letBlock=None):
         builder.DECL_finish(childNode)
         
         # If we directly use the node in "let" constructs
-        if not hasattr(childContext, "variables"):
-            childContext.variables = set()
+        # if not hasattr(childContext, "variables"):
+        #    childContext.variables = set()
         
-        childContext.variables.add(childNode.name)
+        # childContext.variables.add(childNode.name)
         
         if not tokenizer.match("comma"):
             break
@@ -957,7 +966,7 @@ def checkDestructuring(tokenizer, staticContext, node, simpleNamesOnly=None, dat
                 builder.DECL_finish(childNode)
 
                 # Each pattern needs to be added to variables.
-                data.variables.add(childNode.name)
+                # data.variables.add(childNode.name)
                 
 
 # JavaScript 1.7
