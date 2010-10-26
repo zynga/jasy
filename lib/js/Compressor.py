@@ -15,8 +15,8 @@ __all__ = [ "compress" ]
 #
 
 __simpleProperty = re.compile("^[a-zA-Z_$][a-zA-Z0-9_$]*$")
-__semicolonSymbol = ";\n"
-__commaSymbol = ",\n"
+__semicolonSymbol = ";"
+__commaSymbol = ","
 __forcedSemicolon = False
 
 __futureReserved = set([
