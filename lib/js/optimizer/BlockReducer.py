@@ -76,6 +76,8 @@ def optimize(node):
             else:
                 node.parent.replace(node, node[0])
                 node = node[0]
+        else:
+            combineToCommaExpression(node)
         
         
     # Remove "empty" semicolons who are inside a block/script parent
@@ -87,6 +89,7 @@ def optimize(node):
                 rel = getattr(node, "rel", None)
                 if rel == "elsePart":
                     node.parent.remove(node)
+            
             
     # Process all if-statements
     if node.type == "if":
@@ -133,7 +136,6 @@ def optimize(node):
             mergeParts(node, thenPart, elsePart, condition)
         elif thenPart.type == "semicolon":
             compactIf(node, thenPart, condition)
-
 
 
 def reworkElse(node, elsePart):
