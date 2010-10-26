@@ -16,11 +16,23 @@ def optimize(node):
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
             optimize(child)
-                    
-        
+    
+    
     # Remove unneeded parens
     if getattr(node, "parenthesized", False):
         cleanParens(node)
+    
+    
+    # Combine "plus" expressions where it makes sense
+    if node.type == "plus":
+        if node[0].type == "string" and node[1].type == "string":
+            node[0].value += node[1].value
+            node.parent.replace(node, node[0])
+            
+        elif node[1].type == "number" and node[1].type == "number":
+            node[0].value += node[1].value
+            node.parent.replace(node, node[0])
+    
     
     # Unwrap blocks
     if node.type == "block":
