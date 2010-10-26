@@ -213,11 +213,11 @@ def __string(node):
 
 def __number(node):
     value = node.value
-    if int(value) == value:
+    if int(value) == value and node.parent.type != "dot":
         value = int(value)
     else:
         conv = str(value)
-        if conv.startswith("0."):
+        if conv.startswith("0.") and len(conv) > 2:
             value = conv[1:]
 
     return "%s" % value
