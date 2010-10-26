@@ -3,6 +3,8 @@
 # Copyright 2010 Sebastian Werner
 #
 
+import logging
+
 __all__ = ["scan"]
 
 def scan(node):
@@ -79,21 +81,21 @@ def __scanScope(node):
     
     # Look for used varibles which have not been defined
     # Might be a part of a closure or just a mistake
-    undefines = {}
+    inherits = {}
     for name in uses:
-        if name not in defines:
-            undefines[name] = uses[name]
+        if name not in defines and name != "arguments":
+            inherits[name] = uses[name]
 
-    # print("Quit Scope [Line:%s]" % node.line)
-    # print("- Defines:", defines)
-    # print("- Uses:", uses)
-    # print("- Undefines:", undefines)
+    print("Quit Scope [Line:%s]" % node.line)
+    print("- Defines:", defines)
+    print("- Uses:", uses)
+    print("- Inherits:", inherits)
     
     node.__defines = defines
     node.__uses = uses
-    node.__undefines = undefines
+    node.__inherits = inherits
     
-    return undefines
+    return inherits
     
     
     
