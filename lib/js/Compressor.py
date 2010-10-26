@@ -376,7 +376,7 @@ def __return(node):
         valueCode = compress(node.value)
 
         # Micro optimization: Don't need a space when a block/map/array/group/strings are returned
-        if not valueCode.startswith(("(","[","{","'",'"',"!","-")): 
+        if not valueCode.startswith(("(","[","{","'",'"',"!","-","/")): 
             result += " "
 
         result += valueCode
