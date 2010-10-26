@@ -20,6 +20,7 @@ def optimize(node):
     __patch(node)
 
 
+
 #
 # Implementation
 #
@@ -35,7 +36,6 @@ def __baseEncode(num, alphabet=string.ascii_letters):
         arr.append(alphabet[rem])
     arr.reverse()
     return "".join(arr)
-
 
 
 def __patch(node, enable=False, translate=None):
