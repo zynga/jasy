@@ -16,21 +16,40 @@ def scan(node):
 # Implementation
 #
 
-def __scanNode(node, declares, uses):
+def __scanNode(node, declared, used):
+    """ Scans nodes recursively and collects all variables which are declared and used. """
+    
+    def increment(name, by=1):
+        """ Small helper so simplify adding variables to "used" dict """
+        if not name in used:
+            used[name] = by
+        else:
+            used[name] += by
+    
     if node.type == "function":
         functionName = getattr(node, "name", None)
         if functionName:
-            declares.add(functionName)
+            declared.add(functionName)
     
     elif node.type == "declaration":
         varName = getattr(node, "name", None)
         if varName != None:
-            declares.add(varName)
+            declared.add(varName)
+            
+            # If the variable is used as a iterator, we need to add it to the use counter as well
+            if getattr(node.parent, "rel", None) == "iterator":
+                increment(varName)
+            
         else:
             # JS 1.7 Destructing Expression
             varNames = node.names
             for identifier in node.names:
-                declares.add(identifier.value)
+                declared.add(identifier.value)
+                
+            # If the variable is used as a iterator, we need to add it to the use counter as well
+            if getattr(node.parent, "rel", None) == "iterator":
+                for identifier in node.names:
+                    increment(identifier.value)
             
     elif node.type == "identifier":
         # Ignore parameter names (of inner functions, these are handled by __scanScope)
@@ -43,76 +62,84 @@ def __scanNode(node, declares, uses):
             
         # Ignore non first identifiers in dot-chains
         elif node.parent.type != "dot" or node.parent.index(node) == 0:
-            if node.value in uses:
-                uses[node.value] += 1
-            else:
-                uses[node.value] = 1
+            increment(node.value)
                 
-    # Treat exception variables in catch blocks like declarations
+    # Treat exception variables in catch blocks like declared
     elif node.type == "block" and node.parent.type == "catch":
-        declares.add(node.parent.exception.value)                
+        declared.add(node.parent.exception.value)                
     
     if node.type == "script":
-        childUndefines = __scanScope(node)
-        for name in childUndefines:
-            if name in uses:
-                uses[name] += childUndefines[name]
-            else:
-                uses[name] = childUndefines[name]
+        shared = __scanScope(node)
+        for name in shared:
+            increment(name, shared[name])
                 
     else:
         for child in node:
             # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
             if child != None:
-                __scanNode(child, declares, uses)
+                __scanNode(child, declared, used)
 
 
 
 def __scanScope(node):
-    defines = set()
-    uses = {}
+    """ Scans a scope and collects statistics on variable declaration and usage """
     
     # Add params to declaration list
-    __addParams(node, defines)
+    params = __getParams(node)
 
-    # Process children
+    # Scan children
+    declared = set()
+    used = {}
     for child in node:
-        __scanNode(child, defines, uses)
+        __scanNode(child, declared, used)
     
     # Look for used varibles which have not been defined
     # Might be a part of a closure or just a mistake
-    inherits = {}
-    for name in uses:
-        if name not in defines and name != "arguments":
-            inherits[name] = uses[name]
+    shared = {}
+    for name in used:
+        if name not in declared and name not in params and name != "arguments":
+            shared[name] = used[name]
             
     # Look for variables which have been defined, but not used.
     unused = set()
-    for name in defines:
-        if not name in uses:
+    for name in params:
+        if not name in used:
+            unused.add(name)
+    for name in declared:
+        if not name in used:
             unused.add(name)
 
-    #print("Quit Scope [Line:%s]" % node.line)
-    #print("- Defines:", defines)
-    #print("- Uses:", uses)
-    #print("- Inherits:", inherits)
-    #print("- Unused:", unused)
+
+
+
+
+    print("Quit Scope [Line:%s]" % node.line)
+    print("- Params:", params)
+    print("- Declared:", declared)
+    print("- Used:", used)
+    print("- Shared:", shared)
+    print("- Unused:", unused)
     
-    node.defines = defines
-    node.uses = uses
-    node.inherits = inherits
+    node.params = params
+    node.declared = declared
+    node.used = used
+    node.shared = shared
     node.unused = unused
     
-    return inherits
+    return shared
     
     
     
-def __addParams(node, defines):
+def __getParams(node):
     """ Adds all param names from outer function to the definition list """
 
+    params = set()
     rel = getattr(node, "rel", None)
     if rel == "body" and node.parent.type == "function":
         paramList = getattr(node.parent, "params", None)
         if paramList:
             for paramIdentifier in paramList:
-                defines.add(paramIdentifier.value)    
+                params.add(paramIdentifier.value)    
+                
+    return params
+    
