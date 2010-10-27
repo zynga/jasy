@@ -403,7 +403,7 @@ class VanillaBuilder:
 
     def BLOCK_build(self, tokenizer, id):
         node = Node(tokenizer, "block")
-        node.id = id
+        # node.id = id
         return node
 
     def BLOCK_hoistLets(self, node):
