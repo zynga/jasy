@@ -6,10 +6,12 @@ import sys, os
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
 from js.parser.Parser import parse
+from js.Variables import scan
 
 
 def jstree(source, filename=None):
     root = parse(source, filename)
+    scan(root)
     return root.toXml()
 
 if __name__ == "__main__":
