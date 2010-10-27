@@ -46,49 +46,52 @@ def __patch(node, enable=False, translate=None):
     #
     # GENERATE TRANSLATION TABLE
     #
-    if enable and hasattr(node, "__defines"):
-        usedRepl = set()
+    if enable:
+        declared = getattr(node, "declared", None)
+        params = getattr(node, "params", None)
         
-        if not translate:
-            translate = {}
-        else:
-            # copy only the interesting ones from the __inherits set
-            newTranslate = {}
-            
-            for name in node.__inherits:
-                if name in translate:
-                    newTranslate[name] = translate[name]
-                    usedRepl.add(translate[name])
-            translate = newTranslate
-            
-        # Merge in usage data into declaration map to have
-        # the possibilities to sort translation priority to
-        # the usage number. Pretty cool.
+        if declared or params:
+            usedRepl = set()
         
-        defined = {}
-        for name in node.__defines:
-            if name in node.__uses:
-                defined[name] = node.__uses[name]
+            if not translate:
+                translate = {}
             else:
-                defined[name] = 0
+                # copy only the interesting ones from the shared set
+                newTranslate = {}
+            
+                for name in node.shared:
+                    if name in translate:
+                        newTranslate[name] = translate[name]
+                        usedRepl.add(translate[name])
+                translate = newTranslate
+            
+            # Merge in usage data into declaration map to have
+            # the possibilities to sort translation priority to
+            # the usage number. Pretty cool.
+        
+            names = set()
+            if params:
+                names.update(params)
+            if declared:
+                names.update(declared)
                 
-        definedSorted = list(reversed(sorted(defined, key=lambda x: defined[x])))
+            namesSorted = list(reversed(sorted(names, key=lambda x: node.used[x] if x in node.used else 0)))
 
-        # Extend translation map by new replacements for locally 
-        # defined variables. Automatically ignores keywords. Only
-        # blocks usage of replacements where the original variable from
-        # outer scope is used. This way variable names may be re-used more
-        # often than in the original code.
-        pos = 0
-        for name in definedSorted:
-            while True:
-                repl = __baseEncode(pos)
-                pos += 1
-                if not repl in usedRepl and not repl in keywords:
-                    break
+            # Extend translation map by new replacements for locally 
+            # declared variables. Automatically ignores keywords. Only
+            # blocks usage of replacements where the original variable from
+            # outer scope is used. This way variable names may be re-used more
+            # often than in the original code.
+            pos = 0
+            for name in namesSorted:
+                while True:
+                    repl = __baseEncode(pos)
+                    pos += 1
+                    if not repl in usedRepl and not repl in keywords:
+                        break
                 
-            # print("Translate: %s => %s" % (name, repl))
-            translate[name] = repl
+                # print("Translate: %s => %s" % (name, repl))
+                translate[name] = repl
 
 
     #
