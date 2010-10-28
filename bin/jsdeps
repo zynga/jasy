@@ -14,14 +14,20 @@ def jsdeps(source, filename=None):
     root = parse(source, filename)
     stats = scan(root)
     
-    for name in sorted(stats.modified):
-        print("Exports Variable: %s" % name)
+    if stats.modified:
+        print("Exported Variables:")
+        for name in sorted(stats.modified):
+            print(" - %s" % name)
 
-    for name in sorted(stats.shared):
-        print("Accesses Global: %s" % name)
+    if stats.shared:
+        print("Accessed Globals:")
+        for name in sorted(stats.shared):
+            print(" - %s" % name)
 
-    for name in sorted(stats.packages):
-        print("Accesses Packages: %s" % name)
+    if stats.packages:
+        print("Accessed Packages:")
+        for name in sorted(stats.packages):
+            print(" - %s" % name)
 
 
 if __name__ == "__main__":

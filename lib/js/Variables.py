@@ -156,7 +156,6 @@ def __scanScope(node):
     for child in node:
         __scanNode(child, stats)
         
-    # Cleanup objects
     # Remove all objects which are based on locally declared variables
     for name in list(stats.packages):
         top = name[0:name.index(".")]
@@ -176,9 +175,10 @@ def __scanScope(node):
     for name in stats.declared:
         if not name in stats.accessed:
             stats.unused.add(name)
+    
 
-    # print("Quit Scope [Line:%s]" % node.line)
-    # stats.output()
+    #print("Quit Scope [Line:%s]" % node.line)
+    #stats.output()
     
     return stats
     
