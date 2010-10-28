@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v1.4.3
+ * jQuery JavaScript Library v1.4.4pre
  * http://jquery.com/
  *
  * Copyright 2010, John Resig
@@ -11,7 +11,7 @@
  * Copyright 2010, The Dojo Foundation
  * Released under the MIT, BSD, and GPL Licenses.
  *
- * Date: Thu Oct 14 23:10:06 2010 -0400
+ * Date: Thu Oct 28 11:58:03 2010 -0500
  */
 (function( window, undefined ) {
 
@@ -211,7 +211,7 @@ jQuery.fn = jQuery.prototype = {
 	selector: "",
 
 	// The current version of jQuery being used
-	jquery: "1.4.3",
+	jquery: "1.4.4pre",
 
 	// The default length of a jQuery object is 0
 	length: 0,
@@ -331,7 +331,7 @@ jQuery.fn.init.prototype = jQuery.fn;
 
 jQuery.extend = jQuery.fn.extend = function() {
 	// copy reference to target object
-	var target = arguments[0] || {}, i = 1, length = arguments.length, deep = false, options, name, src, copy, copyIsArray;
+	var target = arguments[0] || {}, i = 1, length = arguments.length, deep = false, options, name, src, copy, copyIsArray, clone;
 
 	// Handle a deep copy situation
 	if ( typeof target === "boolean" ) {
@@ -443,8 +443,8 @@ jQuery.extend({
 			}
 
 			// Trigger any bound ready events
-			if ( jQuery.fn.triggerHandler ) {
-				jQuery( document ).triggerHandler( "ready" );
+			if ( jQuery.fn.trigger ) {
+				jQuery( document ).trigger( "ready" ).unbind( "ready" );
 			}
 		}
 	},
@@ -964,6 +964,7 @@ return (window.jQuery = window.$ = jQuery);
 		optSelected: opt.selected,
 
 		// Will be defined later
+		deleteExpando: true,
 		optDisabled: false,
 		checkClone: false,
 		scriptEval: false,
@@ -992,6 +993,15 @@ return (window.jQuery = window.$ = jQuery);
 	if ( window[ id ] ) {
 		jQuery.support.scriptEval = true;
 		delete window[ id ];
+	}
+
+	// Test to see if it's possible to delete an expando from an element
+	// Fails in Internet Explorer
+	try {
+		delete script.test;
+
+	} catch(e) {
+		jQuery.support.deleteExpando = false;
 	}
 
 	root.removeChild( script );
@@ -1086,20 +1096,6 @@ return (window.jQuery = window.$ = jQuery);
 	// release memory in IE
 	root = script = div = all = a = null;
 })();
-
-jQuery.props = {
-	"for": "htmlFor",
-	"class": "className",
-	readonly: "readOnly",
-	maxlength: "maxLength",
-	cellspacing: "cellSpacing",
-	rowspan: "rowSpan",
-	colspan: "colSpan",
-	tabindex: "tabIndex",
-	usemap: "useMap",
-	frameborder: "frameBorder"
-};
-
 
 
 
@@ -1237,8 +1233,24 @@ jQuery.extend({
 
 jQuery.fn.extend({
 	data: function( key, value ) {
+		var data = null;
+
 		if ( typeof key === "undefined" ) {
-			return this.length ? jQuery.data( this[0] ) : null;
+			if ( this.length ) {
+				var attr = this[0].attributes, name;
+				data = jQuery.data( this[0] );
+
+				for ( var i = 0, l = attr.length; i < l; i++ ) {
+					name = attr[i].name;
+
+					if ( name.indexOf( "data-" ) === 0 ) {
+						name = name.substr( 5 );
+						dataAttr( this[0], name, data[ name ] );
+					}
+				}
+			}
+
+			return data;
 
 		} else if ( typeof key === "object" ) {
 			return this.each(function() {
@@ -1250,31 +1262,12 @@ jQuery.fn.extend({
 		parts[1] = parts[1] ? "." + parts[1] : "";
 
 		if ( value === undefined ) {
-			var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
+			data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
 
 			// Try to fetch any internally stored data first
 			if ( data === undefined && this.length ) {
 				data = jQuery.data( this[0], key );
-
-				// If nothing was found internally, try to fetch any
-				// data from the HTML5 data-* attribute
-				if ( data === undefined && this[0].nodeType === 1 ) {
-					data = this[0].getAttribute( "data-" + key );
-
-					if ( typeof data === "string" ) {
-						try {
-							data = data === "true" ? true :
-								data === "false" ? false :
-								data === "null" ? null :
-								!jQuery.isNaN( data ) ? parseFloat( data ) :
-								rbrace.test( data ) ? jQuery.parseJSON( data ) :
-								data;
-						} catch( e ) {}
-
-					} else {
-						data = undefined;
-					}
-				}
+				data = dataAttr( this[0], key, data );
 			}
 
 			return data === undefined && parts[1] ?
@@ -1298,6 +1291,33 @@ jQuery.fn.extend({
 		});
 	}
 });
+
+function dataAttr( elem, key, data ) {
+	// If nothing was found internally, try to fetch any
+	// data from the HTML5 data-* attribute
+	if ( data === undefined && elem.nodeType === 1 ) {
+		data = elem.getAttribute( "data-" + key );
+
+		if ( typeof data === "string" ) {
+			try {
+				data = data === "true" ? true :
+				data === "false" ? false :
+				data === "null" ? null :
+				!jQuery.isNaN( data ) ? parseFloat( data ) :
+					rbrace.test( data ) ? jQuery.parseJSON( data ) :
+					data;
+			} catch( e ) {}
+
+			// Make sure we set the data so it isn't changed later
+			jQuery.data( elem, key, data );
+
+		} else {
+			data = undefined;
+		}
+	}
+
+	return data;
+}
 
 
 
@@ -1404,6 +1424,19 @@ var rclass = /[\n\t]/g,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
 	rradiocheck = /^(?:radio|checkbox)$/i;
+
+jQuery.props = {
+	"for": "htmlFor",
+	"class": "className",
+	readonly: "readOnly",
+	maxlength: "maxLength",
+	cellspacing: "cellSpacing",
+	rowspan: "rowSpan",
+	colspan: "colSpan",
+	tabindex: "tabIndex",
+	usemap: "useMap",
+	frameborder: "frameBorder"
+};
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -1790,6 +1823,9 @@ jQuery.event = {
 
 		if ( handler === false ) {
 			handler = returnFalse;
+		} else if ( !handler ) {
+		  // Fixes bug #7229. Fix recommended by jdalton
+		  return;
 		}
 
 		var handleObjIn, handleObj;
@@ -2823,7 +2859,7 @@ function liveHandler( event ) {
 	if ( event.liveFired === this || !events || !events.live || event.button && event.type === "click" ) {
 		return;
 	}
-
+	
 	if ( event.namespace ) {
 		namespace = new RegExp("(^|\\.)" + event.namespace.split(".").join("\\.(?:.*\\.)?") + "(\\.|$)");
 	}
@@ -2886,6 +2922,9 @@ function liveHandler( event ) {
 
 			if ( ret === false ) {
 				stop = false;
+			}
+			if ( event.isImmediatePropagationStopped() ) {
+				break;
 			}
 		}
 	}
@@ -3901,7 +3940,7 @@ if ( document.querySelectorAll ) {
 				// and working up from there (Thanks to Andrew Dupont for the technique)
 				// IE 8 doesn't work on object elements
 				} else if ( context.nodeType === 1 && context.nodeName.toLowerCase() !== "object" ) {
-					var old = context.id, id = context.id = "__sizzle__";
+					var old = context.getAttribute( "id" ), id = context.id = "__sizzle__";
 
 					try {
 						return makeArray( context.querySelectorAll( "#" + id + " " + query ), extra );
@@ -3937,7 +3976,7 @@ if ( document.querySelectorAll ) {
 	try {
 		// This should fail with an exception
 		// Gecko does not error, returns false instead
-		matches.call( document.documentElement, ":sizzle" );
+		matches.call( document.documentElement, "[test!='']:sizzle" );
 	
 	} catch( pseudoError ) {
 		pseudoWorks = true;
@@ -3945,13 +3984,15 @@ if ( document.querySelectorAll ) {
 
 	if ( matches ) {
 		Sizzle.matchesSelector = function( node, expr ) {
+			if ( !Sizzle.isXML( node ) ) {
 				try { 
-					if ( pseudoWorks || !Expr.match.PSEUDO.test( expr ) ) {
+					if ( pseudoWorks || !Expr.match.PSEUDO.test( expr ) && !/!=/.test( expr ) ) {
 						return matches.call( node, expr );
 					}
 				} catch(e) {}
+			}
 
-				return Sizzle(expr, null, null, [node]).length > 0;
+			return Sizzle(expr, null, null, [node]).length > 0;
 		};
 	}
 })();
@@ -4053,11 +4094,21 @@ function dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
 	}
 }
 
-Sizzle.contains = document.documentElement.contains ? function(a, b){
-	return a !== b && (a.contains ? a.contains(b) : true);
-} : function(a, b){
-	return !!(a.compareDocumentPosition(b) & 16);
-};
+if ( document.documentElement.contains ) {
+	Sizzle.contains = function(a, b){
+		return a !== b && (a.contains ? a.contains(b) : true);
+	};
+
+} else if ( document.documentElement.compareDocumentPosition ) {
+	Sizzle.contains = function(a, b){
+		return !!(a.compareDocumentPosition(b) & 16);
+	};
+
+} else {
+	Sizzle.contains = function(){
+		return false;
+	};
+}
 
 Sizzle.isXML = function(elem){
 	// documentElement is verified for cases where it doesn't yet exist
@@ -5161,7 +5212,19 @@ jQuery.each(["height", "width"], function( i, name ) {
 					});
 				}
 
-				return val + "px";
+				if ( val <= 0 ) {
+					val = curCSS( elem, name, name );
+
+					if ( val != null ) {
+						return val === "auto" ? "" : val;
+					}
+				}
+
+				if ( val < 0 || val == null ) {
+					return elem.style[ name ];
+				}
+
+				return typeof val === "string" ? val : val + "px";
 			}
 		},
 
@@ -5301,7 +5364,7 @@ var jsc = jQuery.now(),
 	rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
 	rselectTextarea = /^(?:select|textarea)/i,
 	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
-	rnoContent = /^(?:GET|HEAD|DELETE)$/,
+	rnoContent = /^(?:GET|HEAD)$/,
 	rbracket = /\[\]$/,
 	jsre = /\=\?(&|$)/,
 	rquery = /\?/,
@@ -5536,10 +5599,6 @@ jQuery.extend({
 			var customJsonp = window[ jsonp ];
 
 			window[ jsonp ] = function( tmp ) {
-				data = tmp;
-				jQuery.handleSuccess( s, xhr, status, data );
-				jQuery.handleComplete( s, xhr, status, data );
-
 				if ( jQuery.isFunction( customJsonp ) ) {
 					customJsonp( tmp );
 
@@ -5551,6 +5610,10 @@ jQuery.extend({
 						delete window[ jsonp ];
 					} catch( jsonpError ) {}
 				}
+
+				data = tmp;
+				jQuery.handleSuccess( s, xhr, status, data );
+				jQuery.handleComplete( s, xhr, status, data );
 				
 				if ( head ) {
 					head.removeChild( script );
@@ -5562,7 +5625,7 @@ jQuery.extend({
 			s.cache = false;
 		}
 
-		if ( s.cache === false && type === "GET" ) {
+		if ( s.cache === false && noContent ) {
 			var ts = jQuery.now();
 
 			// try replacing _= if it is there
@@ -5572,8 +5635,8 @@ jQuery.extend({
 			s.url = ret + ((ret === s.url) ? (rquery.test(s.url) ? "&" : "?") + "_=" + ts : "");
 		}
 
-		// If data is available, append data to url for get requests
-		if ( s.data && type === "GET" ) {
+		// If data is available, append data to url for GET/HEAD requests
+		if ( s.data && noContent ) {
 			s.url += (rquery.test(s.url) ? "&" : "?") + s.data;
 		}
 
@@ -5584,7 +5647,7 @@ jQuery.extend({
 
 		// Matches an absolute URL, and saves the domain
 		var parts = rurl.exec( s.url ),
-			remote = parts && (parts[1] && parts[1] !== location.protocol || parts[2] !== location.host);
+			remote = parts && (parts[1] && parts[1].toLowerCase() !== location.protocol || parts[2].toLowerCase() !== location.host);
 
 		// If we're requesting a remote document
 		// and trying to load JSON or Script with a GET
@@ -6029,28 +6092,39 @@ var elemdisplay = {},
 
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
+		var elem, display;
+
 		if ( speed || speed === 0 ) {
 			return this.animate( genFx("show", 3), speed, easing, callback);
+
 		} else {
 			for ( var i = 0, j = this.length; i < j; i++ ) {
+				elem = this[i];
+				display = elem.style.display;
+
 				// Reset the inline display of this element to learn if it is
 				// being hidden by cascaded rules or not
-				if ( !jQuery.data(this[i], "olddisplay") && this[i].style.display === "none" ) {
-					this[i].style.display = "";
+				if ( !jQuery.data(elem, "olddisplay") && display === "none" ) {
+					display = elem.style.display = "";
 				}
 
 				// Set elements which have been overridden with display: none
 				// in a stylesheet to whatever the default browser style is
 				// for such an element
-				if ( this[i].style.display === "" && jQuery.css( this[i], "display" ) === "none" ) {
-					jQuery.data(this[i], "olddisplay", defaultDisplay(this[i].nodeName));
+				if ( display === "" && jQuery.css( elem, "display" ) === "none" ) {
+					jQuery.data(elem, "olddisplay", defaultDisplay(elem.nodeName));
 				}
 			}
 
 			// Set the display of most of the elements in a second loop
 			// to avoid the constant reflow
 			for ( i = 0; i < j; i++ ) {
-				this[i].style.display = jQuery.data(this[i], "olddisplay") || "";
+				elem = this[i];
+				display = elem.style.display;
+
+				if ( display === "" || display === "none" ) {
+					elem.style.display = jQuery.data(elem, "olddisplay") || "";
+				}
 			}
 
 			return this;
@@ -6115,7 +6189,7 @@ jQuery.fn.extend({
 		}
 
 		return this[ optall.queue === false ? "each" : "queue" ](function() {
-			// XXX â€˜thisâ€™ does not always have a nodeName when running the
+			// XXX ‘this’ does not always have a nodeName when running the
 			// test suite
 
 			var opt = jQuery.extend({}, optall), p,
@@ -6188,7 +6262,7 @@ jQuery.fn.extend({
 
 				} else {
 					var parts = rfxnum.exec(val),
-						start = e.cur(true) || 0;
+						start = e.cur() || 0;
 
 					if ( parts ) {
 						var end = parseFloat( parts[2] ),
@@ -6197,7 +6271,7 @@ jQuery.fn.extend({
 						// We need to compute starting value
 						if ( unit !== "px" ) {
 							jQuery.style( self, name, (end || 1) + unit);
-							start = ((end || 1) / e.cur(true)) * start;
+							start = ((end || 1) / e.cur()) * start;
 							jQuery.style( self, name, start + unit);
 						}
 
@@ -6266,7 +6340,8 @@ jQuery.each({
 	slideUp: genFx("hide", 1),
 	slideToggle: genFx("toggle", 1),
 	fadeIn: { opacity: "show" },
-	fadeOut: { opacity: "hide" }
+	fadeOut: { opacity: "hide" },
+	fadeToggle: { opacity: "toggle" }
 }, function( name, props ) {
 	jQuery.fn[ name ] = function( speed, easing, callback ) {
 		return this.animate( props, speed, easing, callback );
@@ -6854,27 +6929,29 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 			});
 		}
 
-		return jQuery.isWindow( elem ) ?
+		if ( jQuery.isWindow( elem ) ) {
 			// Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
-			elem.document.compatMode === "CSS1Compat" && elem.document.documentElement[ "client" + name ] ||
-			elem.document.body[ "client" + name ] :
+			return elem.document.compatMode === "CSS1Compat" && elem.document.documentElement[ "client" + name ] ||
+				elem.document.body[ "client" + name ];
 
-			// Get document width or height
-			(elem.nodeType === 9) ? // is it a document
-				// Either scroll[Width/Height] or offset[Width/Height], whichever is greater
-				Math.max(
-					elem.documentElement["client" + name],
-					elem.body["scroll" + name], elem.documentElement["scroll" + name],
-					elem.body["offset" + name], elem.documentElement["offset" + name]
-				) :
+		// Get document width or height
+		} else if ( elem.nodeType === 9 ) {
+			// Either scroll[Width/Height] or offset[Width/Height], whichever is greater
+			return Math.max(
+				elem.documentElement["client" + name],
+				elem.body["scroll" + name], elem.documentElement["scroll" + name],
+				elem.body["offset" + name], elem.documentElement["offset" + name]
+			);
 
-				// Get or set width or height on the element
-				size === undefined ?
-					// Get width or height on the element
-					parseFloat( jQuery.css( elem, type ) ) :
+		// Get or set width or height on the element
+		} else if ( size === undefined ) {
+			var orig = jQuery.css( elem, type ), ret = parseFloat( orig );
+			return jQuery.isNaN( ret ) ? orig : ret;
 
-					// Set the width or height on the element (default to pixels if value is unitless)
-					this.css( type, typeof size === "string" ? size : size + "px" );
+		// Set the width or height on the element (default to pixels if value is unitless)
+		} else {
+			return this.css( type, typeof size === "string" ? size : size + "px" );
+		}
 	};
 
 });
