@@ -4,6 +4,8 @@
 #
 
 import logging
+from js.Compressor import compress
+
 
 __all__ = ["scan"]
 
@@ -19,9 +21,7 @@ class Stats:
         self.modified = set()
         self.shared = {}
         self.unused = set()
-        
-        self.accessedObjects = set()
-        self.modifiedObjects = set()
+        self.packages = set()
         
         
     def output(self):
@@ -34,8 +34,7 @@ class Stats:
         print("- Modified Name:", self.modified)
         print("- Shared Name:", self.shared)
 
-        print("- Accessed Objects", self.accessedObjects)
-        print("- Modified Objects", self.modifiedObjects)
+        print("- Packages", self.packages)
     
 
 
@@ -99,21 +98,16 @@ def __scanNode(node, stats):
             if node.value != "arguments":
                 stats.increment(node.value)
             
-                if node.parent.type in ("increment", "decrement", "assign"):
+                if node.parent.type in ("increment", "decrement"):
+                    stats.modified.add(node.value)
+                
+                elif node.parent.type == "assign" and node.parent[0] == node:
                     stats.modified.add(node.value)
 
-                # Support for namespaced object access
+                # Support for package-like object access
                 if node.parent.type == "dot":
-                    variable = combineVariable(node)
-                
-                    nonDot = node.parent
-                    while nonDot.type == "dot":
-                        nonDot = nonDot.parent
-                
-                    if nonDot.type in ("increment", "decrement", "assign"):
-                        stats.modifiedObjects.add(variable)
-                    else:
-                        stats.accessedObjects.add(variable)
+                    package = combinePackage(node)
+                    stats.packages.add(package)
                 
     # Treat exception variables in catch blocks like declared
     elif node.type == "block" and node.parent.type == "catch":
@@ -127,9 +121,7 @@ def __scanNode(node, stats):
             if name in innerStats.modified:
                 stats.modified.add(name)
             
-            
-        stats.accessedObjects.update(innerStats.accessedObjects)
-        stats.modifiedObjects.update(innerStats.modifiedObjects)
+        stats.packages.update(innerStats.packages)
                 
     else:
         for child in node:
@@ -138,34 +130,18 @@ def __scanNode(node, stats):
                 __scanNode(child, stats)
 
 
+def combinePackage(node):
+    """ Combines a package variable (e.g. foo.bar.baz) into one string """
 
-def combineVariable(node):
-    """ Combines an identifier node to a namespaced variable. Only returns a (string) value when value is part of a namespaced variable """
-
-    if node.parent.type == "dot":
-        variable = __combineVariableRecurser(node)
-        if "." in variable:
-            return variable
-
-    return None
-
-
-def __combineVariableRecurser(node):
-    """ Internal helper for namespace builder """
-    result = node.value
-
+    result = [node.value]
     parent = node.parent
-    if parent.type == "dot":
-        if parent[0] is node:
-            result += "." + __combineVariableRecurser(parent[1])
-        else:
-            parentParent = parent.parent
-            if parentParent.type == "dot" and parentParent[0] is parent:
-                result += "." + __combineVariableRecurser(parentParent[1])
+    while parent.type == "dot":
+        result.append(parent[1].value)
+        parent = parent.parent
 
-    return result
-
-
+    return ".".join(result)
+    
+    
 def __scanScope(node):
     """ Scans a scope and collects statistics on variable declaration and usage """
     
@@ -182,16 +158,11 @@ def __scanScope(node):
         
     # Cleanup objects
     # Remove all objects which are based on locally declared variables
-    for name in list(stats.accessedObjects):
+    for name in list(stats.packages):
         top = name[0:name.index(".")]
         if top in stats.declared or top in stats.params:
-            stats.accessedObjects.remove(name)
-
-    for name in list(stats.modifiedObjects):
-        top = name[0:name.index(".")]
-        if top in stats.declared or top in stats.params:
-            stats.modifiedObjects.remove(name)
-            
+            stats.packages.remove(name)
+    
     # Look for accessed varibles which have not been defined
     # Might be a part of a closure or just a mistake
     for name in stats.accessed:
