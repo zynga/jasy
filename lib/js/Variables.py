@@ -176,9 +176,8 @@ def __scanScope(node):
         if not name in stats.accessed:
             stats.unused.add(name)
     
-
-    #print("Quit Scope [Line:%s]" % node.line)
-    #stats.output()
+    # print("Quit Scope [Line:%s]" % node.line)
+    # stats.output()
     
     return stats
     
