@@ -8,7 +8,7 @@
  * For details, see the FuseJS website: <http://www.fusejs.com/license.txt>
  * or the Prototype website: <http://www.prototypejs.org>
  *
- * Built: Tue. Oct 26 2010 17:05:17 CEST
+ * Built: Thu. Oct 28 2010 20:35:50 CEST
  * ----------------------------------------------------------------------------*/
 
 (function(window) {
