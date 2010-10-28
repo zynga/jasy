@@ -42,13 +42,14 @@ def jsoptimize(source, filename=None):
     
     #ValuePatch.patch(tree, values)
     DeadCode.optimize(tree)
-    BlockReducer.optimize(tree)
-    #CryptPrivates.optimize(tree, "xx")
-
+    
     scan(tree)
-
+    
+    BlockReducer.optimize(tree)
     CombineDeclarations.optimize(tree)
     LocalVariables.optimize(tree)
+
+    #CryptPrivates.optimize(tree, "xx")
     
     return compress(tree)
 
