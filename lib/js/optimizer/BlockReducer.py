@@ -236,14 +236,17 @@ def cleanParens(node):
     """
     parent = node.parent
 
-    if node.type == "function" and parent.type == "call":
+    if node.type == "function":
         # Ignore for direct execution functions. This is required
         # for parsing e.g. (function(){})(); which does not work
         # without parens around the function instance other than
         # priorities might suggest. It only works this way when being
         # part of assignment/declaration.
-        if parent.parent.type in ("declaration", "assign"):
+        if parent.type == "call" and parent.parent.type in ("declaration", "assign"):
             node.parenthesized = False
+            
+        # Need to make sure to not modify in cases where we use a "dot" operator e.g.
+        # var x = (function(){ return 1; }).hide();
             
     elif node.type == "assign" and parent.type == "hook":
         node.parenthesized = node.rel == "condition"
