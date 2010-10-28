@@ -52,7 +52,7 @@ def __clean(node, unused):
             # as there is not a required one after us.
             for identifier in reversed(params):
                 if identifier.value in unused:
-                    # logging.debug("Cleanup '%s' in line %s" % (identifier.value, identifier.line))
+                    logging.debug("Cleanup '%s' in line %s", identifier.value, identifier.line)
                     retval = True
                     params.remove(identifier)
                 else:
@@ -63,7 +63,7 @@ def __clean(node, unused):
         node = splitVar(node)
         
     elif node.type == "declaration" and node.name in unused:
-        # logging.debug("Cleanup '%s' in line %s" % (node.name, node.line))
+        logging.debug("Cleanup '%s' in line %s", node.name, node.line)
         
         if hasattr(node, "initializer"):
             # Replace whole "var" statement with initializer wrapped in semicolon statement
