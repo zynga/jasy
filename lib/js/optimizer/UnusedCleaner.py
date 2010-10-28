@@ -46,8 +46,8 @@ def __clean(node, unused):
     retval = False
     
     # Process children
-    for child in node:
-        if child.type != "function":
+    if node.type != "function":
+        for child in node:
             if __clean(child, unused):
                 retval = True
                     
@@ -59,79 +59,45 @@ def __clean(node, unused):
             # as there is not a required one after us.
             for identifier in reversed(params):
                 if identifier.value in unused:
-                    # logging.debug("Cleanup '%s' in line %s", identifier.value, identifier.line)
+                    logging.debug("Cleanup '%s' in line %s", identifier.value, identifier.line)
                     params.remove(identifier)
                     retval = True
                 else:
                     break
                     
-            
+                    
+    elif node.type == "function":
+        if hasattr(node, "name") and node.name in unused:
+            if node.functionForm == "declared_form":
+                if node.parent.type != "script" or hasattr(node.parent, "parent"):
+                    logging.debug("Remove unused function %s at line %s" % (node.name, node.line))
+                    node.parent.remove(node)
+                
+            else:
+                logging.debug("Clearing unused function name %s at line %s" % (node.name, node.line))
+                del node.name
+    
+    
     elif node.type == "var":
-        later = []
         for decl in reversed(node):
             if decl.name in unused:
                 if hasattr(decl, "initializer"):
                     init = decl.initializer
-                    if init.type in ("null", "this", "true", "false", "identifier", "number", "string", "regexp"):
-                        # Primary initializer => just remove the declaration
+                    if init.type in ("null", "this", "true", "false", "identifier", "number", "string", "regexp", "function"):
+                        logging.debug("Remove unused variable %s at line %s" % (decl.name, decl.line))
                         node.remove(decl)
                         retval = True
                         
                     else:
-                        later.append(decl)
+                        logging.warn("Could not automatically remove unused variable %s at line %s without possible side-effects" % (decl.name, decl.line))
                     
                 else:
-                    # No initializer => just remove the declaration
                     node.remove(decl)
                     retval = True
                     
-        # Whether we need to rework the list to remove all declarations cleanly
-        if later:
-            parent = node.parent
-            if parent.type in ("block", "script"):
-                index = parent.index(node)
-                currentVar = node
-                for child in list(node):
-                    if child in later:
-                        # Wrap initializer into semicolon statement
-                        index += 1
-                        semicolon = Node(child.tokenizer, "semicolon")
-                        semicolon.append(child.initializer, "expression")
-                        parent.insert(index, semicolon)
-                        
-                        # Remove original child
-                        node.remove(child)
-                    
-                        # Prepare new var block for following children
-                        index += 1
-                        currentVar = Node(node.tokenizer, "var")
-                        parent.insert(index, currentVar)
-                        
-                    elif child.parent != currentVar:
-                        # Append remaining definitions to current variable block
-                        currentVar.append(child)
-                        
-                # Remove the last created "var" statement if it is unused
-                if len(currentVar) == 0:
-                    currentVar.parent.remove(currentVar)
-                
-            else:
-                # Edge-case: Variable declaration which assigns a complex value, but
-                # where the result is never used. What needs to be happen here is 
-                # that one needs to extract the "var" block to the outside of the loop.
-                # This needs to create a new "block" if there is not yet one, move the "for"
-                # inside it, extract the "var" block to be placed before the "for" 
-                # and then need to rework this new block with the same logic as above.
-                
-                for decl in later:
-                    logging.warn("Unused variables %s at line %s could not be removed automatically." % (decl.name, node.line))
-                
-                
-        elif len(node) == 0:
+        if len(node) == 0:
+            logging.debug("Remove empty 'var' block at line %s" % node.line)
             node.parent.remove(node)
-
-
-
 
     return retval
 
