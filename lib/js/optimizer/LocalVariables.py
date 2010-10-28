@@ -62,7 +62,7 @@ def __patch(node, enable=False, translate=None):
                     # copy only the interesting ones from the shared set
                     newTranslate = {}
             
-                    for name in node.shared:
+                    for name in stats.shared:
                         if name in translate:
                             newTranslate[name] = translate[name]
                             usedRepl.add(translate[name])
