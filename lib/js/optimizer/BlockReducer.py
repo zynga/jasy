@@ -12,12 +12,20 @@ __all__ = ["optimize"]
 
 def optimize(node):
     # Process from inside to outside
-    for child in node:
+    for child in list(node):
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
             optimize(child)
     
     
+    # Cleans up empty semicolon statements (or pseudo-empty)
+    if node.type == "semicolon" and node.parent.type in ("block", "script"):
+        expr = getattr(node, "expression", None)
+        if not expr or expr.type in ("null", "this", "true", "false", "identifier", "number", "string", "regexp"):
+            node.parent.remove(node)
+            return
+
+
     # Remove unneeded parens
     if getattr(node, "parenthesized", False):
         cleanParens(node)
