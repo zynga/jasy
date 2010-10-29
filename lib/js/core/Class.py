@@ -5,11 +5,11 @@
 
 import os, logging, copy, binascii, string
 
-from js.MetaData import MetaData
-from js.Dependencies import Dependencies
+from js.core.MetaData import MetaData
+from js.core.Dependencies import Dependencies
 from js.parser.Parser import parse
-from js.Compressor import compress
-from js.Variables import scan
+from js.process.Compressor import compress
+from js.process.Variables import scan
 
 # Permutation support
 from js.optimizer.ValuePatch import patch

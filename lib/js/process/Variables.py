@@ -4,7 +4,7 @@
 #
 
 import logging
-from js.Compressor import compress
+from js.process.Compressor import compress
 
 
 __all__ = ["scan"]

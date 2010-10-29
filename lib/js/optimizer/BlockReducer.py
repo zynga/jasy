@@ -4,7 +4,7 @@
 #
 
 from js.parser.Node import Node
-from js.Compressor import compress
+from js.process.Compressor import compress
 from js.parser.Lang import expressionOrder, expressions
 import logging
 
