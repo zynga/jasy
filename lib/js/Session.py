@@ -6,7 +6,7 @@
 import logging
 import itertools
 import time
-from api.Permutation import Permutation
+from js.Permutation import Permutation
 
 class Session():
     def __init__(self):

@@ -5,8 +5,8 @@
 
 import os, logging
 from configparser import SafeConfigParser
-from api.JsClass import JsClass
-from api.Cache import Cache
+from js.JsClass import JsClass
+from js.Cache import Cache
         
 class Project():
     def __init__(self, path):
