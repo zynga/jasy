@@ -5,7 +5,8 @@
 
 import os, logging, copy, binascii, string
 
-from js.Dependencies import collect
+from js.MetaData import MetaData
+from js.Dependencies import Dependencies
 from js.parser.Parser import parse
 from js.Compressor import compress
 from js.Variables import scan
@@ -112,22 +113,21 @@ class JsClass():
         field = "deps[%s]-%s" % (self.rel, permutation)
         deps = self.__cache.read(field, self.__mtime)
         if deps == None:
-            deps, breaks = collect(self.getTree(permutation), self.getName())
+            deps = Dependencies(self.getTree(permutation))
             self.__cache.store(field, deps, self.__mtime)
-            
-            field = "breaks[%s]-%s" % (self.rel, permutation)
-            self.__cache.store(field, breaks, self.__mtime)
         
         return deps
             
-    def getBreakDependencies(self, permutation=None):
-        field = "breaks[%s]-%s" % (self.rel, permutation)
-        breaks = self.__cache.read(field, self.__mtime)
+    def getMetaData(self, permutation=None):
+        field = "meta[%s]-%s" % (self.rel, permutation)
+        meta = self.__cache.read(field, self.__mtime)
         if breaks == None:
-            self.getDependencies(permutation)
-            breaks = self.__cache.read(field, self.__mtime)
+            # TODO: Possibility to have tree-free meta data as well?
+            # e.g. in MooTools via require, provide, etc.
+            meta = MetaData(self.getTree(permutation))
+            self.__cache.store(field, meta, self.__mtime)
             
-        return breaks
+        return meta
         
     def getCompressed(self, permutation=None, optimization=None):
         field = "compressed[%s]-%s" % (self.rel, permutation)

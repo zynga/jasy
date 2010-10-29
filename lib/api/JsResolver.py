@@ -28,7 +28,6 @@ class JsResolver():
         self.included = []
         
         
-        
     def addClassName(self, className):
         """ Adds a class to the initial dependencies """
         projects = self.session.getProjects()
@@ -44,7 +43,6 @@ class JsResolver():
         self.required.append(classObj)
 
 
-
     def getIncludedClasses(self):
         """ Returns the unsorted list of classes with resolved dependencies """
 
@@ -54,16 +52,8 @@ class JsResolver():
         logging.info("Collecting included classes...")
         
         collection = {}
-        threads = {}
         for classObj in self.required:
-            self.__resolveDependencies(classObj, collection, threads)
-
-        main = threading.current_thread()
-        
-        while threading.active_count() > 1:
-            for thread in threading.enumerate():
-                if thread is not main:
-                    thread.join()
+            self.__resolveDependencies(classObj, collection)
         
         self.included = list(collection.values())
         logging.info("Included classes: %s" % len(self.included))      
@@ -71,7 +61,7 @@ class JsResolver():
         return self.included
 
 
-    def __resolveDependencies(self, classObj, collection, threads):
+    def __resolveDependencies(self, classObj, collection):
         # Add current
         className = classObj.getName()
         collection[className] = classObj
@@ -79,23 +69,8 @@ class JsResolver():
         logging.debug("%s: Resolving dependencies..." % classObj)
 
         # Process dependencies
-        dependencies = classObj.getDependencies(self.permutation)
+        dependencies = classObj.getDependencies(self.permutation).filter(self.classes)
         for depClassName in dependencies:
-            if not depClassName in self.classes:
-                continue
-
-            elif depClassName == className or depClassName in collection:
-                continue
-
-            elif not depClassName in collection and not depClassName in threads:
-                threads[depClassName] = None
-                # logging.info("Start: %s", depClassName)
-                depClassObj = self.classes[depClassName]
-                t = threading.Thread(name="DepsClass%s" % depClassObj.id, target=self.__resolveDependencies, args=(depClassObj, collection, threads))
-                threads[depClassName] = t
-                t.start()
-                
-        if className in threads:
-            del threads[className]
-
+            if depClassName != className and not depClassName in collection:
+                self.__resolveDependencies(self.classes[depClassName], collection)
                     
