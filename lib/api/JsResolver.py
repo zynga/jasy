@@ -3,7 +3,6 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import threading
 import logging
 
 __all__ = ["JsResolver"]
