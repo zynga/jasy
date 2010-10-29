@@ -21,7 +21,7 @@ class Stats:
         self.modified = set()
         self.shared = {}
         self.unused = set()
-        self.packages = set()
+        self.packages = {}
         
         
     def output(self):
@@ -107,7 +107,10 @@ def __scanNode(node, stats):
                 # Support for package-like object access
                 if node.parent.type == "dot":
                     package = combinePackage(node)
-                    stats.packages.add(package)
+                    if package in stats.packages:
+                        stats.packages[package] += 1
+                    else:
+                        stats.packages[package] = 1
                 
     # Treat exception variables in catch blocks like declared
     elif node.type == "block" and node.parent.type == "catch":
@@ -120,8 +123,12 @@ def __scanNode(node, stats):
             
             if name in innerStats.modified:
                 stats.modified.add(name)
-            
-        stats.packages.update(innerStats.packages)
+        
+        for package in innerStats.packages:
+            if package in stats.packages:
+                stats.packages[package] += innerStats.packages[package]
+            else:
+                stats.packages[package] = innerStats.packages[package]
                 
     else:
         for child in node:
@@ -160,7 +167,7 @@ def __scanScope(node):
     for name in list(stats.packages):
         top = name[0:name.index(".")]
         if top in stats.declared or top in stats.params:
-            stats.packages.remove(name)
+            del stats.packages[name]
     
     # Look for accessed varibles which have not been defined
     # Might be a part of a closure or just a mistake

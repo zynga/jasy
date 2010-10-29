@@ -22,12 +22,12 @@ def jsdeps(source, filename=None):
     if stats.shared:
         print("Accessed Globals:")
         for name in sorted(stats.shared):
-            print(" - %s" % name)
+            print(" - %s (%sx)" % (name, stats.shared[name]))
 
     if stats.packages:
         print("Accessed Packages:")
-        for name in sorted(stats.packages):
-            print(" - %s" % name)
+        for package in sorted(stats.packages):
+            print(" - %s (%sx)" % (package, stats.packages[package]))
 
 
 if __name__ == "__main__":
