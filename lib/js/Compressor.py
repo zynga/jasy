@@ -179,7 +179,11 @@ def __string(node):
 
 def __number(node):
     value = node.value
-    if int(value) == value and node.parent.type != "dot":
+    
+    # Keep protected floats in the same format as they are in source
+    if type(value) == str:
+        return value
+    elif int(value) == value and node.parent.type != "dot":
         value = int(value)
     else:
         conv = str(value)

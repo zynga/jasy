@@ -293,7 +293,7 @@ class Tokenizer(object):
                 
             self.cursor -= 1
             self.lexExponent()
-            token.value = float(input[token.start:self.cursor])
+            token.value = input[token.start:self.cursor]
             
         elif ch == "x" or ch == "X":
             while(True):
@@ -303,7 +303,7 @@ class Tokenizer(object):
                     break
                     
             self.cursor -= 1
-            token.value = eval(input[token.start:self.cursor])
+            token.value = input[token.start:self.cursor]
 
         elif ch >= "0" and ch <= "7":
             while(True):
@@ -313,7 +313,7 @@ class Tokenizer(object):
                     break
                     
             self.cursor -= 1
-            token.value = int(input[token.start:self.cursor])
+            token.value = input[token.start:self.cursor]
 
         else:
             self.cursor -= 1
@@ -345,7 +345,7 @@ class Tokenizer(object):
 
         segment = input[token.start:self.cursor]
         if floating or exponent:
-            token.value = float(segment)
+            token.value = segment
         else:
             token.value = int(segment)
 
@@ -366,7 +366,7 @@ class Tokenizer(object):
             self.lexExponent()
 
             token.type = "number"
-            token.value = float(input[token.start:self.cursor])
+            token.value = input[token.start:self.cursor]
 
         else:
             token.type = "dot"

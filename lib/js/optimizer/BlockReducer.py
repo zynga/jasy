@@ -36,8 +36,11 @@ def optimize(node):
         firstNumber = node[0]
         secondNumber = node[1]
         operator = node.type
-        
-        if operator == "plus":
+
+        # Only do for real numeric values and not for protected strings (float differences between Python and JS)
+        if type(firstNumber.value) == str or type(secondNumber.value) == str:
+            pass
+        elif operator == "plus":
             firstNumber.value += secondNumber.value
             node.parent.replace(node, firstNumber)
         elif operator == "minus":
