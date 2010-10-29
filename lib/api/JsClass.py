@@ -8,6 +8,7 @@ import os, logging, copy, binascii, string
 from js.Dependencies import collect
 from js.parser.Parser import parse
 from js.Compressor import compress
+from js.Variables import scan
 
 # Permutation support
 from js.optimizer.ValuePatch import patch
@@ -84,7 +85,9 @@ class JsClass():
             if permutation:
                 patch(tree, permutation)
                 optimize(tree)
-
+                
+            scan(tree)
+            
             if optimization:
                 if "privates" in optimization:
                     CryptPrivates.optimize(tree, self.id)

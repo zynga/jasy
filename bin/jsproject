@@ -49,12 +49,12 @@ for permutation in session.getPermutations():
     classes = resolver.getIncludedClasses()
 
     # Sorting classes
-    sorter = JsSorter(classes, permutation)
-    sortedClasses = sorter.getSortedClasses()
+    #sorter = JsSorter(classes, permutation)
+    #sortedClasses = sorter.getSortedClasses()
 
     # Compiling classes
-    compressor = JsCompressor(sortedClasses, permutation, optimization)
-    compressor.compress("main-%s.js" % hashed)
+    #compressor = JsCompressor(sortedClasses, permutation, optimization)
+    #compressor.compress("main-%s.js" % hashed)
 
 
 
