@@ -5,9 +5,9 @@
 
 import logging
 
-__all__ = ["JsResolver"]
+__all__ = ["Resolver"]
 
-class JsResolver():
+class Resolver():
     debug = False
     
     def __init__(self, session, permutation=None):

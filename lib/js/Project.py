@@ -5,7 +5,7 @@
 
 import os, logging
 from configparser import SafeConfigParser
-from js.core.Class import JsClass
+from js.core.Class import Class
 from js.core.Cache import Cache
         
 class Project():
@@ -67,7 +67,7 @@ class Project():
                     filePath = os.path.join(dirPath, fileName)
                     relPath = filePath[classPathLen:]
 
-                    classObj = JsClass(filePath, relPath, self)
+                    classObj = Class(filePath, relPath, self)
                     className = classObj.getName()
 
                     classes[className] = classObj

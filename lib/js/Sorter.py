@@ -5,15 +5,15 @@
 
 import logging
 
-__all__ = ["JsSorter"]
+__all__ = ["Sorter"]
 
-class JsCircularDependencyBreaker(Exception):
+class CircularDependencyBreaker(Exception):
     def __init__(self, className):
         self.breakAt = className
         Exception.__init__(self, "Circular dependency to: %s" % className)
 
 
-class JsSorter:
+class Sorter:
     def __init__(self, classes, permutation=None):
         # Keep classes/session/permutation reference
         self.__classes = classes
@@ -60,7 +60,7 @@ class JsSorter:
 
     def __recursivelyCollect(self, className, stack):
         if className in stack:
-            raise JsCircularDependencyBreaker(className)
+            raise CircularDependencyBreaker(className)
     
         indent1 = "  " * len(stack)
 
@@ -84,7 +84,7 @@ class JsSorter:
             else:
                 try:
                     current = self.__recursivelyCollect(depName, list(stack))
-                except JsCircularDependencyBreaker as circularError:
+                except CircularDependencyBreaker as circularError:
                     if circularError.breakAt == className:
                         #logging.debug("%sIgnoring circular %s", indent, depName)
                         circular.add(depName)

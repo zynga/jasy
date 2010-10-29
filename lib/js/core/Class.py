@@ -23,8 +23,9 @@ import js.optimizer.CombineDeclarations as CombineDeclarations
 
 allIds = {}
 
+__all__ = ["Class"]
 
-class JsClass():
+class Class():
     def __init__(self, path, rel, project):
         self.__project = project
         self.__cache = project.cache
