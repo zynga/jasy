@@ -4,13 +4,19 @@
 #
 
 class Dependencies:
-    """ Data structure to hold all dependency information """
-    def __init__(self, classObj, tree):
+    """
+    Data structure to hold all dependency information 
+    
+    Hint: Must be a clean data class without links to other 
+    systems for optiomal cachability using Pickle
+    """
+    
+    def __init__(self, tree, name):
         # top-level node in tree is a script node containing 
         # the relevant "shared" and "packages" data
         
         self.__tree = tree
-        self.__class = classObj
+        self.__name = name
         
     
     def filter(self, classes):
@@ -23,7 +29,7 @@ class Dependencies:
             raise Exception("Depencies.filter(classes) requires a dict type as first param!")
         
         stats = self.__tree.stats
-        me = self.__class.getName()
+        me = self.__name
         result = set()
         
         for name in stats.shared:

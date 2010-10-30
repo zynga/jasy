@@ -4,10 +4,14 @@
 #
 
 class MetaData:
-    """ Data structure to hold all dependency information """
-    def __init__(self, classObj, tree):
-        self.__class = classObj
-        
+    """ 
+    Data structure to hold all dependency information 
+
+    Hint: Must be a clean data class without links to other 
+    systems for optiomal cachability using Pickle
+    """
+    
+    def __init__(self, tree):
         self.provides = set()
         self.requires = set()
         self.optionals = set()
