@@ -47,7 +47,7 @@ class Sorter:
 
 
 
-    def __addSorted(self, classObj, result):
+    def __addSorted(self, classObj, result, postponed=False):
         """ Adds a single class and its dependencies to the given sorted result list """
 
         if classObj in result:
@@ -68,17 +68,19 @@ class Sorter:
         # for a more granular system where you need more than
         # just a final list of classes.
         if wait:
-            result.append("-- wait --")
+            result.append("-- wait for load --")
+        
+        # Debug only
+        # if postponed:
+        #    result.append("-- post poned item --")
 
         result.append(classObj)
 
         # Insert runtime dependencies as soon as possible
-        runDeps = self.__getRuntimeDeps(classObj)
-        if runDeps:
-            for depName in runDeps:
-                depObj = self.__names[depName]
-                if not depObj in result:
-                    self.__addSorted(depObj, result)
+        circularDeps = self.__circularDeps[classObj]
+        for depObj in circularDeps:
+            if not depObj in result:
+                self.__addSorted(depObj, result, True)
 
 
 
@@ -113,11 +115,14 @@ class Sorter:
     
         stack.append(classObj)
 
-        result = set()
-        circular = set()
-
         classDeps = classObj.getDependencies(self.__permutation).filter(self.__names)
         classMeta = classObj.getMeta(self.__permutation)
+        
+        result = set()
+        circular = set()
+        
+        for breakName in classMeta.breaks:
+            circular.add(self.__names[breakName])
 
         for depObj in classDeps:
             depName = depObj.getName()
@@ -145,23 +150,4 @@ class Sorter:
         self.__loadDeps[classObj] = result
         self.__circularDeps[classObj] = circular
 
-        return result      
-
-
-
-    def __getRuntimeDeps(self, classObj):
-        """ Returns user defined """
-        runtimeDeps = set()
-
-        className = classObj.getName()
-        if className in self.__circularDeps:
-            circular = self.__circularDeps[className]
-            if circular:
-                logging.debug("Auto break: %s to %s" % (classObj, ", ".join(list(circular))))
-                runtimeDeps.update(circular)
-
-        meta = classObj.getMeta(self.__permutation)
-        runtimeDeps.update(meta.breaks)
-
-        return runtimeDeps
-
+        return result
