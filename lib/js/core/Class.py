@@ -115,7 +115,7 @@ class Class():
         field = "deps[%s]-%s" % (self.rel, permutation)
         deps = self.__cache.read(field, self.__mtime)
         if deps == None:
-            deps = Dependencies(self.getTree(permutation))
+            deps = Dependencies(self, self.getTree(permutation))
             self.__cache.store(field, deps, self.__mtime)
         
         return deps
@@ -126,7 +126,7 @@ class Class():
         if meta == None:
             # TODO: Possibility to have tree-free meta data as well?
             # e.g. in MooTools via require, provide, etc.
-            meta = MetaData(self.getTree(permutation))
+            meta = MetaData(self, self.getTree(permutation))
             self.__cache.store(field, meta, self.__mtime)
             
         return meta

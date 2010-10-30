@@ -5,13 +5,15 @@
 
 class MetaData:
     """ Data structure to hold all dependency information """
-    def __init__(self, node):
+    def __init__(self, classObj, tree):
+        self.__class = classObj
+        
         self.provides = set()
         self.requires = set()
         self.optionals = set()
         self.breaks = set()
         
-        self.__inspect(node)
+        self.__inspect(tree)
         
         
     def __inspect(self, node):

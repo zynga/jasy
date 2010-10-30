@@ -29,6 +29,7 @@ class Resolver():
         
     def addClassName(self, className):
         """ Adds a class to the initial dependencies """
+        
         projects = self.session.getProjects()
         for project in projects:
             classObj = project.getClassByName(className)
@@ -38,38 +39,52 @@ class Resolver():
         if not classObj:
             raise Exception("Unknown Class: %s" % className)
             
-        logging.info("Add class: %s" % className)
+        logging.info("Adding class: %s" % className)
         self.required.append(classObj)
+        
+        if self.included:
+            self.included = []
+        
+        
+    def removeClassName(self, className):
+        """ Removes a class name from dependencies """
+        
+        for classObj in self.required:
+            if classObj.getName() == className:
+                self.required.remove(classObj)
+                if self.included:
+                    self.included = []
+                return True
+                
+        return False
 
 
     def getIncludedClasses(self):
-        """ Returns the unsorted list of classes with resolved dependencies """
+        """ Returns a final set of classes after resolving dependencies """
 
         if self.included:
             return self.included
         
         logging.info("Collecting included classes...")
         
-        collection = {}
+        collection = set()
         for classObj in self.required:
             self.__resolveDependencies(classObj, collection)
         
-        self.included = list(collection.values())
+        self.included = collection
         logging.info("Included classes: %s" % len(self.included))      
         
         return self.included
 
 
     def __resolveDependencies(self, classObj, collection):
-        # Add current
-        className = classObj.getName()
-        collection[className] = classObj
+        """ Internal resolver engine which works recursively through all dependencies """
         
-        logging.debug("%s: Resolving dependencies..." % classObj)
+        logging.debug("Resolving dependencies of %s..." % classObj)
 
-        # Process dependencies
+        collection.add(classObj)
         dependencies = classObj.getDependencies(self.permutation).filter(self.classes)
-        for depClassName in dependencies:
-            if depClassName != className and not depClassName in collection:
-                self.__resolveDependencies(self.classes[depClassName], collection)
+        for depObj in dependencies:
+            if not depObj in collection:
+                self.__resolveDependencies(depObj, collection)
                     
