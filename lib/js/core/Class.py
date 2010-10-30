@@ -122,7 +122,7 @@ class Class():
     def getMetaData(self, permutation=None):
         field = "meta[%s]-%s" % (self.rel, permutation)
         meta = self.__cache.read(field, self.__mtime)
-        if breaks == None:
+        if meta == None:
             # TODO: Possibility to have tree-free meta data as well?
             # e.g. in MooTools via require, provide, etc.
             meta = MetaData(self.getTree(permutation))
