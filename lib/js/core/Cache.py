@@ -6,8 +6,15 @@
 import shelve, time, logging, os, os.path
 
 class Cache:
+    """ 
+    A cache class based on shelve feature of Python. 
+    Supports transient only in-memory storage, too.
+    """
+    
     def __init__(self, path, clear=False):
         self.__file = os.path.join(path, "cache")
+        self.__transient = {}
+        
         logging.debug("Cache File: %s" % self.__file)
         
         try:
@@ -34,6 +41,9 @@ class Cache:
         after the given time to be valid.
         """
         
+        if key in self.__transient:
+            return self.__transient[key]
+        
         timeKey = key + "-timestamp"
         if key in self.__db and timeKey in self.__db:
             if not timestamp or timestamp <= self.__db[timeKey]:
@@ -44,13 +54,17 @@ class Cache:
         return None
         
     
-    def store(self, key, value, timestamp=None):
+    def store(self, key, value, timestamp=None, transient=False):
         """
         Stores the given value.
         
         Default timestamp goes to the current time. Can be modified
         to the time of an other files modification date etc.
         """
+        
+        if transient:
+            self.__transient[key] = value;
+            return
         
         if not timestamp:
             timestamp = time.time()

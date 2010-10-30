@@ -75,39 +75,41 @@ class Class():
         return classId
 
     def getTree(self, permutation=None, optimization=None):
-        field = "tree[%s]" % self.rel
+        field = "tree[%s]-%s+%s" % (self.rel, permutation, optimization)
         tree = self.__cache.read(field, self.__mtime)
         
-        if tree == None:
-            tree = parse(self.getText(), self.rel)
-            self.__cache.store(field, tree, self.__mtime)
+        if tree != None:
+            return tree
             
         if permutation or optimization:
-            tree = copy.deepcopy(self.getTree())
+            tree = self.getTree()
+            tree = copy.deepcopy(tree)
             
-            if permutation:
-                patch(tree, permutation)
-                optimize(tree)
-                
+        else:
+            tree = parse(self.getText(), self.rel)
+            scan(tree)
+
+        if permutation:
+            patch(tree, permutation)
+            optimize(tree)
+            
+            # re-scan tree
             scan(tree)
             
-            if optimization:
-                if "privates" in optimization:
-                    CryptPrivates.optimize(tree, self.id)
-                
-                if "blocks" in optimization:
-                    BlockReducer.optimize(tree)
-
-                if "variables" in optimization:
-                    LocalVariables.optimize(tree)
-                    
-                if "declarations" in optimization:
-                    CombineDeclarations.optimize(tree)
-                
-                if "x-strings" in optimization:
-                    # Strings.optimize(tree)
-                    pass
+        if optimization:
+            if "privates" in optimization:
+                CryptPrivates.optimize(tree, self.id)
             
+            if "blocks" in optimization:
+                BlockReducer.optimize(tree)
+
+            if "variables" in optimization:
+                LocalVariables.optimize(tree)
+                
+            if "declarations" in optimization:
+                CombineDeclarations.optimize(tree)
+                
+        self.__cache.store(field, tree, self.__mtime, True)
             
         return tree
 
