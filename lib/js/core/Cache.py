@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import shelve, time, logging, os, os.path
+import shelve, time, logging, os, os.path, sys, pickle
 
 class Cache:
     """ 
@@ -12,8 +12,8 @@ class Cache:
     """
     
     def __init__(self, path, clear=False):
-        self.__file = os.path.join(path, "cache")
         self.__transient = {}
+        self.__file = os.path.join(path, "cache")
         
         logging.debug("Cache File: %s" % self.__file)
         
@@ -47,10 +47,8 @@ class Cache:
         timeKey = key + "-timestamp"
         if key in self.__db and timeKey in self.__db:
             if not timestamp or timestamp <= self.__db[timeKey]:
-                # print("From Cache: %s" % key) 
                 return self.__db[key]
-
-        #print("None: %s" % key)
+                
         return None
         
     
@@ -63,7 +61,7 @@ class Cache:
         """
         
         if transient:
-            self.__transient[key] = value;
+            self.__transient[key] = value
             return
         
         if not timestamp:
@@ -72,10 +70,9 @@ class Cache:
         try:
             self.__db[key+"-timestamp"] = timestamp
             self.__db[key] = value
-        except:
-            # Ignore cache store errors
-            pass
-        
+        except pickle.PicklingError as err:
+            logging.error("Failed to store enty: %s" % key)
+
         
     def sync(self):
         """ Syncs the internal storage database """
