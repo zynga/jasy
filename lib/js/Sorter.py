@@ -20,9 +20,7 @@ class Sorter:
         self.__permutation = permutation
         
         # Building map for name-based lookup
-        self.__nameToClass = {}
-        for classObj in classes:
-            self.__nameToClass[classObj.getName()] = classObj
+        self.__nameToClass = dict([(classObj.getName(), classObj) for classObj in classes])
         
         # Load time dependencies of every class
         self.__loadDeps = {}
@@ -31,21 +29,7 @@ class Sorter:
         # Sorted included classes
         self.__sortedClasses = []        
         
-        
-    def __getFilteredDeps(self, classObj):
-        """ Returns dependencies of the given class to other classes """
 
-        permutation = self.__permutation
-        deps = classObj.getDependencies(permutation)
-        breakDeps = classObj.getBreakDependencies(permutation)
-
-        result = []
-        for key in deps:
-            if key in self.__nameToClass and not key in breakDeps:
-                result.append(key)
-
-        return result        
-        
 
     def __getLoadDeps(self, classObj):
         """ Returns load time dependencies of given class """
@@ -64,7 +48,7 @@ class Sorter:
     
         indent1 = "  " * len(stack)
 
-        #logging.debug("%sBegin: %s", indent1, className)
+        logging.debug("%sBegin: %s", indent1, className)
     
         stack.append(className)
         indent = "  " * len(stack)
@@ -73,11 +57,15 @@ class Sorter:
         circular = set()
 
         classObj = self.__nameToClass[className]
-        classDeps = self.__getFilteredDeps(classObj)
+        
+        
+        classDeps = classObj.getDependencies(self.__permutation).filter(self.__nameToClass)
+        classMeta = classObj.getMetaData(self.__permutation)
+        
 
         for depName in classDeps:
             if depName in self.__loadDeps:
-                #logging.debug("%sFast: %s", indent, depName)
+                logging.debug("%sFast: %s", indent, depName)
                 result.update(self.__loadDeps[depName])
                 result.add(depName)
         
@@ -86,11 +74,11 @@ class Sorter:
                     current = self.__recursivelyCollect(depName, list(stack))
                 except CircularDependencyBreaker as circularError:
                     if circularError.breakAt == className:
-                        #logging.debug("%sIgnoring circular %s", indent, depName)
+                        logging.debug("%sIgnoring circular %s", indent, depName)
                         circular.add(depName)
                         continue  
                     else:
-                        #logging.debug("%sBubble circular: %s", indent, circularError.breakAt)
+                        logging.debug("%sBubble circular: %s", indent, circularError.breakAt)
                         raise circularError
         
                 result.update(current)
@@ -100,7 +88,7 @@ class Sorter:
         self.__loadDeps[className] = result
         self.__circularDeps[className] = circular
 
-        #logging.debug("%sSuccessful %s: %s (circular: %s)", indent1, className, result, circular)
+        logging.debug("%sSuccessful %s: %s (circular: %s)", indent1, className, result, circular)
 
         return result      
 
@@ -117,8 +105,8 @@ class Sorter:
                 logging.debug("Auto break: %s to %s" % (classObj, ", ".join(list(circular))))
                 runtimeDeps.update(circular)
 
-        breakDeps = classObj.getBreakDependencies(self.__permutation)
-        runtimeDeps.update(breakDeps)
+        meta = classObj.getMetaData(self.__permutation)
+        runtimeDeps.update(meta.breaks)
 
         return runtimeDeps
 
