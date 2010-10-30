@@ -9,14 +9,15 @@ __all__ = ["Sorter"]
 
 
 class CircularDependencyBreaker(Exception):
-    def __init__(self, className):
-        self.breakAt = className
-        Exception.__init__(self, "Circular dependency to: %s" % className)
+    def __init__(self, classObj):
+        self.breakAt = classObj
+        Exception.__init__(self, "Circular dependency to: %s" % classObj)
 
 
 class Sorter:
     def __init__(self, classes, permutation=None):
         # Keep classes/permutation reference
+        # Classes is set(classObj, ...)
         self.__classes = classes
         self.__permutation = permutation
 
@@ -52,25 +53,27 @@ class Sorter:
         if classObj in result:
             return
 
-        loadDeps = self.__getLoadDeps(classObj)
-        runDeps = self.__getRuntimeDeps(classObj)
-
         wait = False
-        for depName in loadDeps:
-            depObj = self.__names[depName]
+        loadDeps = self.__getLoadDeps(classObj)
+        for depObj in loadDeps:
             if not depObj in result:
-                wait = True
                 self.__addSorted(depObj, result)
+                wait = True
 
         if classObj in result:
             return
 
+        # When this class had required classes when we need
+        # to wait for them being loaded. This is mainly information
+        # for a more granular system where you need more than
+        # just a final list of classes.
         if wait:
             result.append("-- wait --")
 
         result.append(classObj)
 
         # Insert runtime dependencies as soon as possible
+        runDeps = self.__getRuntimeDeps(classObj)
         if runDeps:
             for depName in runDeps:
                 depObj = self.__names[depName]
@@ -82,50 +85,50 @@ class Sorter:
     def __getLoadDeps(self, classObj):
         """ Returns load time dependencies of given class """
 
-        className = classObj.getName()
-        if not className in self.__loadDeps:
-            result = self.__recursivelyCollect(className, [])
+        if not classObj in self.__loadDeps:
+            result = self.__recursivelyCollect(classObj, [])
 
-        return self.__loadDeps[className]
-
+        return self.__loadDeps[classObj]
 
 
-    def __recursivelyCollect(self, className, stack):
-        if className in stack:
-            raise CircularDependencyBreaker(className)
+
+    def __recursivelyCollect(self, classObj, stack):
+        if classObj in stack:
+            raise CircularDependencyBreaker(classObj)
     
-        stack.append(className)
+        stack.append(classObj)
 
         result = set()
         circular = set()
 
-        classObj = self.__names[className]
         classDeps = classObj.getDependencies(self.__permutation).filter(self.__names)
         classMeta = classObj.getMeta(self.__permutation)
 
-        for depName in classDeps:
+        for depObj in classDeps:
+            depName = depObj.getName()
+            
             if depName in classMeta.breaks:
                 pass
             
-            elif depName in self.__loadDeps:
-                result.update(self.__loadDeps[depName])
-                result.add(depName)
+            elif depObj in self.__loadDeps:
+                result.update(self.__loadDeps[depObj])
+                result.add(depObj)
         
             else:
                 try:
-                    current = self.__recursivelyCollect(depName, list(stack))
+                    current = self.__recursivelyCollect(depObj, list(stack))
                 except CircularDependencyBreaker as circularError:
-                    if circularError.breakAt == className:
-                        circular.add(depName)
+                    if circularError.breakAt == classObj:
+                        circular.add(depObj)
                         continue  
                     else:
                         raise circularError
         
                 result.update(current)
-                result.add(depName)
+                result.add(depObj)
         
-        self.__loadDeps[className] = result
-        self.__circularDeps[className] = circular
+        self.__loadDeps[classObj] = result
+        self.__circularDeps[classObj] = circular
 
         return result      
 
