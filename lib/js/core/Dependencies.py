@@ -18,10 +18,6 @@ class Dependencies:
         self.__deps = deps
         
     
-    def all(self):
-        return self.__deps
-        
-        
     def filter(self, classes):
         """ Returns a new list of dependencies filtered by the known classes """
         
