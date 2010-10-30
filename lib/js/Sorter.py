@@ -86,13 +86,28 @@ class Sorter:
         """ Returns load time dependencies of given class """
 
         if not classObj in self.__loadDeps:
-            result = self.__recursivelyCollect(classObj, [])
+            result = self.__getLoadDepsRecurser(classObj, [])
 
         return self.__loadDeps[classObj]
 
 
 
-    def __recursivelyCollect(self, classObj, stack):
+    def __getLoadDepsRecurser(self, classObj, stack):
+        """ 
+        This is the main routine which tries to control over a system
+        of unsorted classes. It directly tries to fullfil every dependency
+        a class have, but has some kind of exception based loop protection
+        to prevent circular dependencies from breaking the build.
+        
+        It respects break information given by file specific meta data, but
+        also adds custom hints where it found recursions. This lead to a valid 
+        sort, but might lead to problems between exeactly the two affected classes.
+        Without doing an exact execution it's not possible to whether found out
+        which of two each-other referencing classes needs to be loaded first.
+        This is basically only interesting in cases where one class needs another
+        during the definition phase which is not the case that often.
+        """
+        
         if classObj in stack:
             raise CircularDependencyBreaker(classObj)
     
@@ -116,7 +131,7 @@ class Sorter:
         
             else:
                 try:
-                    current = self.__recursivelyCollect(depObj, list(stack))
+                    current = self.__getLoadDepsRecurser(depObj, list(stack))
                 except CircularDependencyBreaker as circularError:
                     if circularError.breakAt == classObj:
                         circular.add(depObj)
