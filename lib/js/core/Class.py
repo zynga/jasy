@@ -120,7 +120,7 @@ class Class():
         
         return deps
             
-    def getMetaData(self, permutation=None):
+    def getMeta(self, permutation=None):
         field = "meta[%s]-%s" % (self.rel, permutation)
         meta = self.__cache.read(field, self.__mtime)
         if meta == None:
