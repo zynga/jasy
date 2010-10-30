@@ -101,7 +101,7 @@ class Sorter:
 
         classObj = self.__names[className]
         classDeps = classObj.getDependencies(self.__permutation).filter(self.__names)
-        classMeta = classObj.getMetaData(self.__permutation)
+        classMeta = classObj.getMeta(self.__permutation)
 
         for depName in classDeps:
             if depName in classMeta.breaks:
@@ -142,7 +142,7 @@ class Sorter:
                 logging.debug("Auto break: %s to %s" % (classObj, ", ".join(list(circular))))
                 runtimeDeps.update(circular)
 
-        meta = classObj.getMetaData(self.__permutation)
+        meta = classObj.getMeta(self.__permutation)
         runtimeDeps.update(meta.breaks)
 
         return runtimeDeps
