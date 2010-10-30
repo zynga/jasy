@@ -9,35 +9,42 @@ class Dependencies:
         # top-level node in tree is a script node containing 
         # the relevant "shared" and "packages" data
         
-        deps = set()
-        stats = tree.stats
-        deps.update(set(stats.shared))
-        deps.update(set(stats.packages))
-
+        self.__tree = tree
         self.__class = classObj
-        self.__deps = deps
         
     
     def filter(self, classes):
-        """ Returns a new list of dependencies filtered by the known classes """
+        """ 
+        Returns a set of dependencies seen through the given list of known 
+        classes (ignoring all unknown items in original set) 
+        """
         
-        deps = self.__deps
+        if type(classes) != dict:
+            raise Exception("Depencies.filter(classes) requires a dict type as first param!")
+        
+        stats = self.__tree.stats
         me = self.__class.getName()
         result = set()
         
-        for name in deps:
-            if name in classes:
-                if name != me:
-                    result.add(classes[name])
-            elif "." in name:
-                splitted = name.split(".")
-                while splitted:
-                    splitted.pop()
-                    temp = ".".join(splitted)
-                    if temp in classes:
-                        if temp != me:
-                            result.add(classes[temp])
+        for name in stats.shared:
+            if name != me and name in classes:
+                result.add(classes[name])
+                    
+        for package in stats.packages:
+            while True:
+                if package == me:
+                    break
+                
+                elif package in classes:
+                    result.add(classes[package])
+                    break
+                
+                else:
+                    pos = package.rfind(".")
+                    if pos == -1:
                         break
+                        
+                    package = package[0:pos]
         
         return result
 
