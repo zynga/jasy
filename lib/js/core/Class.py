@@ -77,6 +77,7 @@ class Class():
     def getTree(self, permutation=None, optimization=None):
         field = "tree[%s]" % self.rel
         tree = self.__cache.read(field, self.__mtime)
+        
         if tree == None:
             tree = parse(self.getText(), self.rel)
             self.__cache.store(field, tree, self.__mtime)
