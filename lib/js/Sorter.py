@@ -52,7 +52,7 @@ class Sorter:
 
         if classObj in result:
             return
-
+            
         wait = False
         loadDeps = self.__getLoadDeps(classObj)
         for depObj in loadDeps:
@@ -69,10 +69,6 @@ class Sorter:
         # just a final list of classes.
         if wait:
             result.append("-- wait for load --")
-        
-        # Debug only
-        # if postponed:
-        #    result.append("-- post poned item --")
 
         result.append(classObj)
 
@@ -88,7 +84,7 @@ class Sorter:
         """ Returns load time dependencies of given class """
 
         if not classObj in self.__loadDeps:
-            result = self.__getLoadDepsRecurser(classObj, [])
+            self.__getLoadDepsRecurser(classObj, [])
 
         return self.__loadDeps[classObj]
 
