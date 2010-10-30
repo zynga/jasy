@@ -51,7 +51,9 @@ for permutation in session.getPermutations():
     # Sorting classes
     sorter = Sorter(classes, permutation)
     sortedClasses = sorter.getSortedClasses()
-    print(sortedClasses)
+    for classObj in sortedClasses:
+        print(classObj)
+    
 
     # Compiling classes
     #Compressor(sortedClasses, permutation, optimization)

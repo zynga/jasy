@@ -7,6 +7,7 @@ import logging
 
 __all__ = ["Sorter"]
 
+
 class CircularDependencyBreaker(Exception):
     def __init__(self, className):
         self.breakAt = className
@@ -15,20 +16,67 @@ class CircularDependencyBreaker(Exception):
 
 class Sorter:
     def __init__(self, classes, permutation=None):
-        # Keep classes/session/permutation reference
+        # Keep classes/permutation reference
         self.__classes = classes
         self.__permutation = permutation
+
+        # Build class name dict
+        self.__names = dict([(classObj.getName(), classObj) for classObj in classes])
         
-        # Building map for name-based lookup
-        self.__nameToClass = dict([(classObj.getName(), classObj) for classObj in classes])
-        
-        # Load time dependencies of every class
+        # Initialize fields
         self.__loadDeps = {}
-        self.__circularDeps = {}       
-        
-        # Sorted included classes
-        self.__sortedClasses = []        
-        
+        self.__circularDeps = {}
+        self.__sortedClasses = []
+
+
+
+    def getSortedClasses(self):
+        """ Returns the sorted class list (caches result) """
+
+        if not self.__sortedClasses:
+            logging.info("Sorting classes...")
+
+            result = []
+            for classObj in self.__classes:
+                self.__addSorted(classObj, result)
+
+            self.__sortedClasses = result
+
+        return self.__sortedClasses
+
+
+
+    def __addSorted(self, classObj, result):
+        """ Adds a single class and its dependencies to the given sorted result list """
+
+        if classObj in result:
+            return
+
+        loadDeps = self.__getLoadDeps(classObj)
+        runDeps = self.__getRuntimeDeps(classObj)
+
+        wait = False
+        for depName in loadDeps:
+            depObj = self.__names[depName]
+            if not depObj in result:
+                wait = True
+                self.__addSorted(depObj, result)
+
+        if classObj in result:
+            return
+
+        if wait:
+            result.append("-- wait --")
+
+        result.append(classObj)
+
+        # Insert runtime dependencies as soon as possible
+        if runDeps:
+            for depName in runDeps:
+                depObj = self.__names[depName]
+                if not depObj in result:
+                    self.__addSorted(depObj, result)
+
 
 
     def __getLoadDeps(self, classObj):
@@ -46,26 +94,20 @@ class Sorter:
         if className in stack:
             raise CircularDependencyBreaker(className)
     
-        indent1 = "  " * len(stack)
-
-        logging.debug("%sBegin: %s", indent1, className)
-    
         stack.append(className)
-        indent = "  " * len(stack)
 
         result = set()
         circular = set()
 
-        classObj = self.__nameToClass[className]
-        
-        
-        classDeps = classObj.getDependencies(self.__permutation).filter(self.__nameToClass)
+        classObj = self.__names[className]
+        classDeps = classObj.getDependencies(self.__permutation).filter(self.__names)
         classMeta = classObj.getMetaData(self.__permutation)
-        
 
         for depName in classDeps:
-            if depName in self.__loadDeps:
-                logging.debug("%sFast: %s", indent, depName)
+            if depName in classMeta.breaks:
+                pass
+            
+            elif depName in self.__loadDeps:
                 result.update(self.__loadDeps[depName])
                 result.add(depName)
         
@@ -74,21 +116,16 @@ class Sorter:
                     current = self.__recursivelyCollect(depName, list(stack))
                 except CircularDependencyBreaker as circularError:
                     if circularError.breakAt == className:
-                        logging.debug("%sIgnoring circular %s", indent, depName)
                         circular.add(depName)
                         continue  
                     else:
-                        logging.debug("%sBubble circular: %s", indent, circularError.breakAt)
                         raise circularError
         
                 result.update(current)
                 result.add(depName)
- 
- 
+        
         self.__loadDeps[className] = result
         self.__circularDeps[className] = circular
-
-        logging.debug("%sSuccessful %s: %s (circular: %s)", indent1, className, result, circular)
 
         return result      
 
@@ -110,46 +147,3 @@ class Sorter:
 
         return runtimeDeps
 
-
-
-    def getSortedClasses(self):
-        """ Returns the sorted class list """
-
-        if not self.__sortedClasses:
-            logging.info("Sorting classes...")
-    
-            result = []
-            for classObj in self.__classes:
-                self.__addSorted(classObj, result)
-        
-            self.__sortedClasses = result
-    
-        return self.__sortedClasses
-
-
-
-    def __addSorted(self, classObj, result):
-        """ Adds a single class and its dependencies to the given sorted result list """
-
-        if classObj in result:
-            return
-            
-        loadDeps = self.__getLoadDeps(classObj)
-        runDeps = self.__getRuntimeDeps(classObj)
-
-        for depName in loadDeps:
-            depObj = self.__nameToClass[depName]
-            if not depObj in result:
-                self.__addSorted(depObj, result)
-
-        if classObj in result:
-            return
-
-        result.append(classObj)
-
-        # Insert runtime dependencies as soon as possible
-        if runDeps:
-            for depName in runDeps:
-                depObj = self.__nameToClass[depName]
-                if not depObj in result:
-                    self.__addSorted(depObj, result)
