@@ -43,7 +43,9 @@ for permutation in session.getPermutations():
     # Resolving dependencies
     resolver = Resolver(session, permutation)
     #resolver.addClassName("qx.Bootstrap")
-    resolver.addClassName("qx.core.Object")
+    #resolver.addClassName("qx.core.Object")
+    resolver.addClassName("qx.ui.form.TextField")
+    #resolver.addClassName("qx.util.DeferredCall")
     #resolver.addClassName("qx.ui.window.Window")
     #resolver.addClassName("apiviewer.Application")
     classes = resolver.getIncludedClasses()

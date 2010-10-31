@@ -47,14 +47,30 @@ class Sorter:
 
 
 
+    def __needsWait(self, result, obj):
+        """ Check whether the given dependency is protected by a wait command """
+        
+        pos = result.index(obj) + 1
+        wait = "WAIT"
+        
+        while pos < len(result):
+            if result[pos] == wait:
+                return False
+            else:
+                pos += 1
+            
+        return True
+
+
     def __addSorted(self, classObj, result, postponed=False):
-        """ Adds a single class and its dependencies to the given sorted result list """
+        """ Adds a single class and its dependencies to the sorted result list """
 
         if classObj in result:
             return
             
         wait = False
         loadDeps = self.__getLoadDeps(classObj)
+        
         for depObj in loadDeps:
             if not depObj in result:
                 self.__addSorted(depObj, result)
@@ -62,13 +78,20 @@ class Sorter:
 
         if classObj in result:
             return
+            
+        # Reprocess list to check whether all dependencies are after the last "WAIT"
+        if not wait:
+            for depObj in loadDeps:
+                if self.__needsWait(result, depObj):
+                    wait = True
+                    break
 
         # When this class had required classes when we need
         # to wait for them being loaded. This is mainly information
         # for a more granular system where you need more than
         # just a final list of classes.
-        if wait:
-            result.append("-- wait for load --")
+        if wait and result[-1] != "WAIT":
+            result.append("WAIT")
 
         result.append(classObj)
 
@@ -117,9 +140,13 @@ class Sorter:
         result = set()
         circular = set()
         
+        # Respect manually defined breaks
+        # Breaks are dependencies which are down-priorized to break
+        # circular dependencies between classes.
         for breakName in classMeta.breaks:
             circular.add(self.__names[breakName])
 
+        # Now process the deps of the given class
         for depObj in classDeps:
             depName = depObj.getName()
             
@@ -142,6 +169,11 @@ class Sorter:
         
                 result.update(current)
                 result.add(depObj)
+        
+        # Sort dependencies by number of other dependencies
+        # For performance reasions we access the __loadDeps 
+        # dict directly as this data is already stored
+        result = sorted(result, key=lambda depObj: len(self.__loadDeps[depObj]))
         
         self.__loadDeps[classObj] = result
         self.__circularDeps[classObj] = circular
