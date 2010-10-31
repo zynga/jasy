@@ -15,7 +15,7 @@ class Session():
         self.variants["locale"] = set()
         self.timestamp = time.time()
         
-        logging.basicConfig(filename="log.txt", level=logging.DEBUG, format="%(asctime)s - %(threadName)s - %(levelname)s - %(message)s")
+        logging.basicConfig(filename="log.txt", level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
         
         # define a Handler which writes INFO messages or higher to the sys.stderr
         console = logging.StreamHandler()

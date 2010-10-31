@@ -84,6 +84,7 @@ class Resolver():
 
         collection.add(classObj)
         dependencies = classObj.getDependencies(self.permutation).filter(self.classes)
+        
         for depObj in dependencies:
             if not depObj in collection:
                 self.__resolveDependencies(depObj, collection)

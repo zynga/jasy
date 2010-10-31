@@ -3,6 +3,13 @@
 # Copyright 2010 Sebastian Werner
 #
 
+import logging
+
+__all__ = ["Dependencies"]
+
+# Used for caching relation between raw package dependencies and classes
+aliases = {}
+
 class Dependencies:
     """
     Data structure to hold all dependency information 
@@ -18,15 +25,12 @@ class Dependencies:
         self.__tree = tree
         self.__name = name
         
-    
+        
     def filter(self, classes):
         """ 
         Returns a set of dependencies seen through the given list of known 
         classes (ignoring all unknown items in original set) 
         """
-        
-        if type(classes) != dict:
-            raise Exception("Depencies.filter(classes) requires a dict type as first param!")
         
         stats = self.__tree.stats
         me = self.__name
@@ -36,21 +40,30 @@ class Dependencies:
             if name != me and name in classes:
                 result.add(classes[name])
                     
+        count = 0
         for package in stats.packages:
-            while True:
-                if package == me:
-                    break
+            if package in aliases and package in classes:
+                result.add(classes[package])
+            
+            else:
+                orig = package
+                while True:
+                    count += 1
                 
-                elif package in classes:
-                    result.add(classes[package])
-                    break
-                
-                else:
-                    pos = package.rfind(".")
-                    if pos == -1:
+                    if package == me:
                         break
+                
+                    elif package in classes:
+                        aliases[orig] = package
+                        result.add(classes[package])
+                        break
+                
+                    else:
+                        pos = package.rfind(".")
+                        if pos == -1:
+                            break
                         
-                    package = package[0:pos]
+                        package = package[0:pos]
         
         return result
 

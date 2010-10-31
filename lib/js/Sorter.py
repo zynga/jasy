@@ -40,7 +40,9 @@ class Sorter:
 
             result = []
             for classObj in self.__classes:
-                self.__addSorted(classObj, result)
+                if not classObj in result:
+                    logging.debug("Start adding with: %s", classObj)
+                    self.__addSorted(classObj, result)
 
             self.__sortedClasses = result
 
@@ -50,9 +52,6 @@ class Sorter:
     def __addSorted(self, classObj, result, postponed=False):
         """ Adds a single class and its dependencies to the sorted result list """
 
-        if classObj in result:
-            return
-            
         wait = False
         loadDeps = self.__getLoadDeps(classObj)
         
@@ -76,9 +75,11 @@ class Sorter:
         # for a more granular system where you need more than
         # just a final list of classes.
         if wait and result[-1] != "WAIT":
+            logging.debug("Adding wait command")
             self.__lastWait = len(result)
             result.append("WAIT")
 
+        logging.debug("Adding class: %s", classObj)
         result.append(classObj)
 
         # Insert runtime dependencies as soon as possible
