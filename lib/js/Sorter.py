@@ -4,6 +4,7 @@
 #
 
 import logging
+from js.core.Profiler import *
 
 __all__ = ["Sorter"]
 
@@ -36,8 +37,17 @@ class Sorter:
         """ Returns the sorted class list (caches result) """
 
         if not self.__sortedClasses:
-            logging.info("Sorting classes...")
+            pstart()
+            logging.info("Computing load dependencies...")
+            for classObj in self.__classes:
+                self.__getLoadDeps(classObj)
+            pstop()
 
+            logging.info("Sorting classes by number of load dependencies...")
+            self.__classes = list(sorted(self.__classes, key=lambda depObj: len(self.__loadDeps[depObj])))
+            pstop()
+            
+            logging.info("Sorting classes for final loading...")
             result = []
             for classObj in self.__classes:
                 if not classObj in result:
@@ -45,10 +55,11 @@ class Sorter:
                     self.__addSorted(classObj, result)
 
             self.__sortedClasses = result
+            pstop()
 
         return self.__sortedClasses
-
-
+        
+        
     def __addSorted(self, classObj, result, postponed=False):
         """ Adds a single class and its dependencies to the sorted result list """
 
