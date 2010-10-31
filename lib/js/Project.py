@@ -7,6 +7,7 @@ import os, logging
 from configparser import SafeConfigParser
 from js.core.Class import Class
 from js.core.Cache import Cache
+from js.core.Profiler import *
         
 class Project():
     def __init__(self, path):
@@ -52,6 +53,8 @@ class Project():
             return self.classes
             
         except AttributeError:
+            pstart()
+            
             classPath = os.path.join(self.path, "source", "class")
             classes = {}
             classPathLen = len(classPath) + 1
@@ -73,6 +76,7 @@ class Project():
                     classes[className] = classObj
                 
             logging.info("Project '%s' has %s classes", self.namespace, len(classes))
+            pstop()
             self.classes = classes
             return classes
 

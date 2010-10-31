@@ -4,6 +4,7 @@
 #
 
 import logging
+from js.core.Profiler import *
 
 __all__ = ["Resolver"]
 
@@ -65,6 +66,7 @@ class Resolver():
         if self.included:
             return self.included
         
+        pstart()
         logging.info("Collecting included classes...")
         
         collection = set()
@@ -72,7 +74,8 @@ class Resolver():
             self.__resolveDependencies(classObj, collection)
         
         self.included = collection
-        logging.info("Included classes: %s" % len(self.included))      
+        logging.info("Included classes: %s" % len(self.included))
+        pstop()
         
         return self.included
 
