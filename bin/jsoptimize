@@ -17,8 +17,8 @@ from js.optimizer import CryptPrivates
 from js.optimizer import BlockReducer
 from js.optimizer import UnusedCleaner
 
-from js.Variables import scan
-from js.Compressor import compress
+from js.process.Variables import scan
+from js.process.Compressor import compress
 
 
 def jsoptimize(source, filename=None):
