@@ -28,7 +28,8 @@ class Sorter:
         self.__loadDeps = {}
         self.__circularDeps = {}
         self.__sortedClasses = []
-
+        
+        self.__lastWait = -1
 
 
     def getSortedClasses(self):
@@ -44,22 +45,6 @@ class Sorter:
             self.__sortedClasses = result
 
         return self.__sortedClasses
-
-
-
-    def __needsWait(self, result, obj):
-        """ Check whether the given dependency is protected by a wait command """
-        
-        pos = result.index(obj) + 1
-        wait = "WAIT"
-        
-        while pos < len(result):
-            if result[pos] == wait:
-                return False
-            else:
-                pos += 1
-            
-        return True
 
 
     def __addSorted(self, classObj, result, postponed=False):
@@ -82,7 +67,7 @@ class Sorter:
         # Reprocess list to check whether all dependencies are after the last "WAIT"
         if not wait:
             for depObj in loadDeps:
-                if self.__needsWait(result, depObj):
+                if result.index(depObj) > self.__lastWait:
                     wait = True
                     break
 
@@ -91,6 +76,7 @@ class Sorter:
         # for a more granular system where you need more than
         # just a final list of classes.
         if wait and result[-1] != "WAIT":
+            self.__lastWait = len(result)
             result.append("WAIT")
 
         result.append(classObj)
