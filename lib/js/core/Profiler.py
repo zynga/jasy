@@ -17,6 +17,6 @@ def pstart():
 def pstop():
     global __start
     now = time.time()
-    logging.info(" - Done in: %sms" % int((now-__start)*1000))
+    logging.info(" - in %sms" % int((now-__start)*1000))
     __start = now
     

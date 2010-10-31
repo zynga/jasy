@@ -74,7 +74,7 @@ class Resolver():
             self.__resolveDependencies(classObj, collection)
         
         self.included = collection
-        logging.info("Included classes: %s" % len(self.included))
+        logging.info(" - %s classes" % len(self.included))
         pstop()
         
         return self.included

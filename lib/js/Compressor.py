@@ -4,6 +4,7 @@
 #
 
 from datetime import datetime
+from js.core.Profiler import *
 import logging
 
 class Compressor():
@@ -19,6 +20,7 @@ class Compressor():
         permutation = self.__permutation
         optimization = self.__optimization
         
+        pstart()
         logging.info("Compressing classes...")
         result.append("// Permutation: %s (%s)" % (permutation, permutation.getHash()))
         result.append("// Optimization: %s" % optimization)
@@ -40,6 +42,8 @@ class Compressor():
             result.append(compressed)
             
         result = "\n".join(result)
+        pstop()
+        
         if fileName:
             output = open(fileName, mode="w", encoding="utf-8")
             output.write(result)
