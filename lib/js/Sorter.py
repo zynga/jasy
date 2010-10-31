@@ -3,8 +3,9 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging
+import logging, time
 from js.core.Profiler import *
+
 
 __all__ = ["Sorter"]
 
@@ -94,10 +95,11 @@ class Sorter:
         result.append(classObj)
 
         # Insert runtime dependencies as soon as possible
-        circularDeps = self.__circularDeps[classObj]
-        for depObj in circularDeps:
-            if not depObj in result:
-                self.__addSorted(depObj, result, True)
+        if classObj in self.__circularDeps:
+            circularDeps = self.__circularDeps[classObj]
+            for depObj in circularDeps:
+                if not depObj in result:
+                    self.__addSorted(depObj, result, True)
 
 
 
@@ -145,19 +147,20 @@ class Sorter:
             circular.add(self.__names[breakName])
 
         # Now process the deps of the given class
+        loadDeps = self.__loadDeps
         for depObj in classDeps:
             depName = depObj.getName()
             
             if depName in classMeta.breaks:
                 pass
             
-            elif depObj in self.__loadDeps:
-                result.update(self.__loadDeps[depObj])
+            elif depObj in loadDeps:
+                result.update(loadDeps[depObj])
                 result.add(depObj)
         
             else:
                 try:
-                    current = self.__getLoadDepsRecurser(depObj, list(stack))
+                    current = self.__getLoadDepsRecurser(depObj, stack[:])
                 except CircularDependencyBreaker as circularError:
                     if circularError.breakAt == classObj:
                         circular.add(depObj)
@@ -173,7 +176,9 @@ class Sorter:
         # dict directly as this data is already stored
         result = sorted(result, key=lambda depObj: len(self.__loadDeps[depObj]))
         
-        self.__loadDeps[classObj] = result
-        self.__circularDeps[classObj] = circular
-
+        loadDeps[classObj] = result
+        
+        if circular:
+            self.__circularDeps[classObj] = circular
+        
         return result
