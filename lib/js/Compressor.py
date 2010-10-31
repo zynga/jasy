@@ -6,7 +6,7 @@
 from datetime import datetime
 import logging
 
-class JsCompressor():
+class Compressor():
     def __init__(self, classList, permutation, optimization):
         self.__classList = classList
         self.__permutation = permutation
@@ -24,6 +24,9 @@ class JsCompressor():
         result.append("// Optimization: %s" % optimization)
         
         for classObj in self.__classList:
+            if classObj == "WAIT":
+                continue
+            
             compressed = classObj.getCompressed(permutation, optimization)
             logging.debug("Adding %s: %s bytes", classObj, len(compressed))
             
@@ -32,7 +35,7 @@ class JsCompressor():
                 result.append("// %s" % classObj.getName())
                 result.append("//   - size: %s bytes" % len(compressed))
                 result.append("//   - modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
-                result.append("//   - dependencies: \n//       %s" % "\n//       ".join(sorted(classObj.getDependencies())))
+                #result.append("//   - dependencies: \n//       %s" % "\n//       ".join(sorted(classObj.getDependencies())))
             
             result.append(compressed)
             

@@ -56,10 +56,9 @@ for permutation in session.getPermutations():
     for classObj in sortedClasses:
         print(classObj)
     
-
     # Compiling classes
-    #Compressor(sortedClasses, permutation, optimization)
-    #compressor.compress("main-%s.js" % hashed)
+    compressor = Compressor(sortedClasses, permutation, optimization)
+    compressor.compress("main-%s.js" % hashed)
 
 
 
