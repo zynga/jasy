@@ -47,7 +47,12 @@ class Cache:
         timeKey = key + "-timestamp"
         if key in self.__db and timeKey in self.__db:
             if not timestamp or timestamp <= self.__db[timeKey]:
-                return self.__db[key]
+                value = self.__db[key]
+                
+                # Copy over value to in-memory cache
+                self.__transient[key] = value
+                
+                return value
                 
         return None
         
