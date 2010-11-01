@@ -592,10 +592,14 @@ class VanillaBuilder:
                 node.value = value
             else:
                 # Check whether Python and JavaScript number created is the same
-                conv = float(value)
-                if str(conv) == value:
-                    node.value = conv
-                else:
+                try:
+                    conv = float(value)
+                    if str(conv) == value:
+                        node.value = conv
+                    else:
+                        node.value = value
+                except ValueError:
+                    # Required for preventing issues with 0xF0 like values
                     node.value = value
             
         return node
