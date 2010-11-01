@@ -39,8 +39,16 @@ class Compressor():
                 result.append("//   - modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
                 
                 deps = classObj.getDependencies(permutation)
-                result.append("//   - names: \n//       %s" % "\n//       ".join(sorted(deps.names())))
-                result.append("//   - packages: \n//       %s" % "\n//       ".join(sorted(deps.packages())))
+
+                result.append("//   - names:")
+                names = deps.names()
+                for name in sorted(names):
+                    result.append("//       %s, %sx" % (name, names[name]))
+                
+                result.append("//   - packages:")
+                packages = deps.packages()
+                for package in sorted(packages):
+                    result.append("//       %s, %sx" % (package, packages[package]))
             
             result.append(compressed)
             
