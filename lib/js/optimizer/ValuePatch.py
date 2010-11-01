@@ -25,7 +25,7 @@ def patch(node, permutation):
                 node.parent.replace(node, repl)            
                 modified = True
                 
-            # qooxdoo specific: qx.core.Variant.isSet(value, expected)
+            # qooxdoo specific: qx.core.Variant.isSet(key, expected)
             elif assembled == "qx.core.Variant.isSet" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
@@ -39,8 +39,18 @@ def patch(node, permutation):
                     
                     callNode.parent.replace(callNode, replacementNode)
                     modified = True
+                    
+            # qooxdoo specific: qx.core.Settings.get(key)
+            elif assembled == "qx.core.Setting.get" and node.parent.type == "call":
+                callNode = node.parent
+                params = callNode[1]
+                replacement = permutation.get(params[0].value)
+                if replacement:
+                    replacementNode = parseExpression(replacement)
+                    callNode.parent.replace(callNode, replacementNode)
+                    modified = True                    
     
-            # qooxdoo specific: qx.core.Variant.select(value, map)
+            # qooxdoo specific: qx.core.Variant.select(key, map)
             elif assembled == "qx.core.Variant.select" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
