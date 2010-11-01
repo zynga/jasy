@@ -32,10 +32,14 @@ session.addLocale("en_US")
 
 # Variant data
 session.addVariant("qx.debug", [ '"on"' ])
-session.addVariant("qx.client", [ '"webkit"' ])
+session.addVariant("qx.client", [ '"gecko"' ])
 session.addVariant("qx.dynlocale", [ '"off"' ])
 session.addVariant("qx.application", [ '"apiviewer.Application"' ])
 session.addVariant("qx.globalErrorHandling", [ '"off"' ])
+session.addVariant("qx.jstools", ["true"])
+session.addVariant("qx.version", ["1.0"])
+session.addVariant("qx.theme", ['"apiviewer.Theme"'])
+#qx.ioRemoteDebug
 
 optimization = set(["privates", "variables", "declarations", "blocks"])
 
@@ -51,6 +55,7 @@ for permutation in session.getPermutations():
     #resolver.addClassName("qx.util.DeferredCall")
     #resolver.addClassName("qx.ui.window.Window")
     resolver.addClassName("apiviewer.Application")
+    resolver.addClassName("apiviewer.Theme")
     classes = resolver.getIncludedClasses()
 
     # Sorting classes
