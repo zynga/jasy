@@ -34,21 +34,6 @@ class Class():
         self.path = path
         self.rel = os.path.splitext(rel)[0]
         self.name = self.rel.replace("/", ".")
-        self.id = self.getId()
-
-
-    def __baseEncode(self, num, alphabet=string.ascii_letters+string.digits):
-        if (num == 0):
-            return alphabet[0]
-        arr = []
-        base = len(alphabet)
-        while num:
-            rem = num % base
-            num = num // base
-            arr.append(alphabet[rem])
-        arr.reverse()
-        return "".join(arr)
-
 
     def getName(self):
         return self.name
@@ -58,21 +43,6 @@ class Class():
 
     def getText(self):
         return open(self.path, mode="r", encoding="utf-8").read()
-        
-    def getId(self):
-        field = "id[%s]" % self.rel
-        classId = self.__cache.read(field)
-        if classId == None:
-            numericId = binascii.crc32(self.rel.encode("utf-8"))
-            classId = self.__baseEncode(numericId)
-            
-            self.__cache.store(field, classId, self.__mtime)
-            
-        if classId in allIds:
-            logging.error("Oops: Conflict in class IDs between: %s <=> %s" % (allIds[classId], self.rel))
-            
-        allIds[classId] = self.rel
-        return classId
 
     def getTree(self, permutation=None, optimization=None):
         field = "tree[%s]-%s+%s" % (self.rel, permutation, optimization)
@@ -98,7 +68,7 @@ class Class():
             
         if optimization:
             if "privates" in optimization:
-                CryptPrivates.optimize(tree, self.id)
+                CryptPrivates.optimize(tree)
             
             if "blocks" in optimization:
                 BlockReducer.optimize(tree)

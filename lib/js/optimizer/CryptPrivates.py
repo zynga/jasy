@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import binascii, string
+import zlib, string
 
 __all__ = ["optimize"]
 
@@ -13,10 +13,8 @@ __all__ = ["optimize"]
 # Public API
 #
 
-def optimize(node, fileId):
-    privates = {}
-    __recurser(node, fileId, privates)
-    return len(privates) > 0
+def optimize(node):
+    __recurser(node)
     
     
 
@@ -24,28 +22,29 @@ def optimize(node, fileId):
 # Internal API
 #
 
-def __recurser(node, fileId, privates, modified=False):
+__cache = {}
+
+def __recurser(node, modified=False):
     if node.type == "identifier":
         value = node.value
-        if type(value) == str and value.startswith("__"):
-            modified = True
-            
-            if value in privates:
-                repl = privates[value]
+        if type(value) == str and value.startswith("__") and not value.endswith("__"):
+            if value in __cache:
+                repl = __cache[value]
             else:
-                repl = "$%s$%s" % (fileId, __baseEncode(len(privates)))
-                privates[value] = repl
+                repl = "__%s" % __encode(value)
+                __cache[value] = repl
                 
             # Updating identifier
             node.value = repl
         
     for child in node:
-        __recurser(child, fileId, privates)
+        __recurser(child)
     
     
     
-def __baseEncode(num, alphabet=string.ascii_letters+string.digits):
-    if (num == 0):
+def __encode(value, alphabet=string.ascii_letters+string.digits):
+    num = zlib.adler32(value.encode("utf-8"))
+    if num == 0:
         return alphabet[0]
     arr = []
     base = len(alphabet)
