@@ -92,7 +92,7 @@ def patch(node, permutation):
                     node.parent.replace(node, replacementNode)
 
     # Process children
-    for child in node:
+    for child in reversed(node):
         if patch(child, permutation):
             modified = True
             
