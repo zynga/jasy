@@ -48,7 +48,7 @@ class Class():
         field = "tree[%s]-%s+%s" % (self.rel, permutation, optimization)
         tree = self.__cache.read(field, self.__mtime)
         
-        if tree != None:
+        if tree is not None:
             return tree
             
         if permutation or optimization:
@@ -57,15 +57,16 @@ class Class():
             
         else:
             tree = parse(self.getText(), self.rel)
-            scan(tree)
 
+        # Modify tree according to given permutation
         if permutation:
             patch(tree, permutation)
             optimize(tree)
             
-            # re-scan tree
-            scan(tree)
+        # Scan content-final tree
+        scan(tree)
             
+        # Apply optimizations (compressor related)
         if optimization:
             if "privates" in optimization:
                 CryptPrivates.optimize(tree)

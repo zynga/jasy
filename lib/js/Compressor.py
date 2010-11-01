@@ -38,7 +38,7 @@ class Compressor():
                 result.append("//   - size: %s bytes" % len(compressed))
                 result.append("//   - modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
                 
-                deps = classObj.getDependencies()
+                deps = classObj.getDependencies(permutation)
                 result.append("//   - names: \n//       %s" % "\n//       ".join(sorted(deps.names())))
                 result.append("//   - packages: \n//       %s" % "\n//       ".join(sorted(deps.packages())))
             

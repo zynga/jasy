@@ -33,6 +33,8 @@ session.addLocale("en_US")
 # Variant data
 session.addVariant("qx.debug", [ "off" ])
 session.addVariant("qx.client", [ "webkit" ])
+session.addVariant("qx.dynlocale", ["off"])
+session.addVariant("qx.application", ["apiviewer.application"])
 
 optimization = set(["privates", "variables", "declarations", "blocks"])
 
