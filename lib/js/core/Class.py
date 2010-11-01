@@ -88,7 +88,7 @@ class Class():
         field = "deps[%s]-%s" % (self.rel, permutation)
         deps = self.__cache.read(field, self.__mtime)
         if deps == None:
-            deps = Dependencies(self.getTree(permutation), self.name)
+            deps = Dependencies(self.getTree(permutation), self.getMeta(permutation), self.name)
             self.__cache.store(field, deps, self.__mtime)
         
         return deps

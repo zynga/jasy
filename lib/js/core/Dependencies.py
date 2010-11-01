@@ -18,12 +18,13 @@ class Dependencies:
     systems for optiomal cachability using Pickle
     """
     
-    def __init__(self, tree, name):
+    def __init__(self, tree, meta, name):
         # top-level node in tree is a script node containing 
         # the relevant "shared" and "packages" data
         
         self.__tree = tree
         self.__name = name
+        self.__meta = meta
         
         
     def names(self):
@@ -40,9 +41,14 @@ class Dependencies:
         classes (ignoring all unknown items in original set) 
         """
         
+        meta = self.__meta
         stats = self.__tree.stats
         me = self.__name
         result = set()
+        
+        for name in meta.requires:
+            if name in classes:
+                result.add(classes[name])
         
         for name in stats.shared:
             if name != me and name in classes:
