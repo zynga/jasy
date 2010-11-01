@@ -1,7 +1,7 @@
 before;
 if (js.Variant.THEME == "blueish") {
-  blue
+  blue()
 } else {
-  grey
+  grey()
 }
 after;

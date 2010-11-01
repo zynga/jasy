@@ -1,7 +1,7 @@
 before;
 if (js.Variant.VERSION == 0.3) {
-  current
+  current()
 } else {
-  old
+  old()
 }
 after;

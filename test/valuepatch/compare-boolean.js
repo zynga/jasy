@@ -1,7 +1,7 @@
 before;
 if (js.Variant.DEBUG == true) {
-  debug
+  debug()
 } else {
-  optimized
+  optimized()
 }
 after;

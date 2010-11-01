@@ -1,7 +1,7 @@
 before;
 if (qx.core.Variant.isSet("qx.debug", "on")) {
-  debug;
+  debug();
 } else {
-  optimized;
+  optimized();
 }
 after;

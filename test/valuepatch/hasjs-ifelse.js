@@ -1,5 +1,5 @@
 if(has("function-bind")){
-    use.Function.prototype.bind
+    use.Function.prototype.bind()
 }else{
-    use.custom.bind
+    use.custom.bind()
 }
