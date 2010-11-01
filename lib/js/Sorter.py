@@ -128,7 +128,8 @@ class Sorter:
         
         if classObj in stack:
             stack.append(classObj)
-            logging.debug("Stack: %s" % stack[stack.index(classObj):])
+            msg = " >> ".join([x.getName() for x in stack[stack.index(classObj):]])
+            logging.debug("Circular Dependency: %s" % msg)
             raise CircularDependencyBreaker(classObj)
     
         stack.append(classObj)
@@ -167,7 +168,7 @@ class Sorter:
                     current = self.__getLoadDepsRecurser(depObj, stack[:])
                 except CircularDependencyBreaker as circularError:
                     if circularError.breakAt == classObj:
-                        logging.info("Break circular: %s => %s" % (classObj, depObj))
+                        logging.info("Auto Break: %s |> %s" % (classObj, depObj))
                         circular.add(depObj)
                         continue  
                     else:
