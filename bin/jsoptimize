@@ -32,7 +32,9 @@ def jsoptimize(source, filename=None):
         
         # qooxdoo specific
         "qx.debug" : '"off"',
+        "qx.dynlocale" : '"off"',
         "qx.client" : '"webkit"',
+        "qx.application" : '"qx.application.Standalone"',
         
         # has.js specific
         "string-trim" : "true",
@@ -41,7 +43,7 @@ def jsoptimize(source, filename=None):
     
     tree = parse(source, filename)
     
-    #ValuePatch.patch(tree, values)
+    ValuePatch.patch(tree, values)
     DeadCode.optimize(tree)
     
     scan(tree)
@@ -52,7 +54,7 @@ def jsoptimize(source, filename=None):
     CombineDeclarations.optimize(tree)
     LocalVariables.optimize(tree)
 
-    #CryptPrivates.optimize(tree, "xx")
+    CryptPrivates.optimize(tree)
     
     return compress(tree)
 
