@@ -127,6 +127,8 @@ class Sorter:
         """
         
         if classObj in stack:
+            stack.append(classObj)
+            logging.debug("Stack: %s" % stack[stack.index(classObj):])
             raise CircularDependencyBreaker(classObj)
     
         stack.append(classObj)
