@@ -44,12 +44,9 @@ class Sorter:
                 self.__getLoadDeps(classObj)
             pstop()
 
-            logging.info("Sorting classes by number of load dependencies...")
-            self.__classes = list(sorted(self.__classes, key=lambda depObj: len(self.__loadDeps[depObj])))
-            pstop()
-            
             logging.info("Sorting classes for final loading...")
             result = []
+            self.__classes = list(sorted(self.__classes, key=lambda depObj: len(self.__loadDeps[depObj])))
             for classObj in self.__classes:
                 if not classObj in result:
                     logging.debug("Start adding with: %s", classObj)
