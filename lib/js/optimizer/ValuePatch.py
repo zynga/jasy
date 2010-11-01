@@ -31,8 +31,8 @@ def patch(node, permutation):
                 params = callNode[1]
                 replacement = permutation.get(params[0].value)
                 if replacement:
-                    parsedReplacement = parseExpression(replacement)
-                    if parsedReplacement.value == params[1].value:
+                    targetIdentifier = parseExpression(replacement).value
+                    if targetIdentifier in str(params[1].value).split("|"):
                         replacementNode = parseExpression("true")
                     else:
                         replacementNode = parseExpression("false")
@@ -48,7 +48,7 @@ def patch(node, permutation):
                 if replacement:
                     replacementNode = parseExpression(replacement)
                     callNode.parent.replace(callNode, replacementNode)
-                    modified = True                    
+                    modified = True 
     
             # qooxdoo specific: qx.core.Variant.select(key, map)
             elif assembled == "qx.core.Variant.select" and node.parent.type == "call":
@@ -65,8 +65,8 @@ def patch(node, permutation):
                         for propertyInit in objectInit:
                             if propertyInit[0].value == "default":
                                 fallbackNode = propertyInit[1]
-
-                            elif propertyInit[0].value == targetIdentifier:
+                                
+                            elif targetIdentifier in str(propertyInit[0].value).split("|"):
                                 callNode.parent.replace(callNode, propertyInit[1])
                                 modified = True
                                 break
