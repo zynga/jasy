@@ -26,6 +26,14 @@ class Dependencies:
         self.__name = name
         
         
+    def names(self):
+        return self.__tree.stats.shared
+        
+    
+    def packages(self):
+        return self.__tree.stats.packages
+        
+        
     def filter(self, classes):
         """ 
         Returns a set of dependencies seen through the given list of known 

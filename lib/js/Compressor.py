@@ -37,7 +37,10 @@ class Compressor():
                 result.append("// %s" % classObj.getName())
                 result.append("//   - size: %s bytes" % len(compressed))
                 result.append("//   - modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
-                #result.append("//   - dependencies: \n//       %s" % "\n//       ".join(sorted(classObj.getDependencies())))
+                
+                deps = classObj.getDependencies()
+                result.append("//   - names: \n//       %s" % "\n//       ".join(sorted(deps.names())))
+                result.append("//   - packages: \n//       %s" % "\n//       ".join(sorted(deps.packages())))
             
             result.append(compressed)
             
