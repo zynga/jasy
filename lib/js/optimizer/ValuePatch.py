@@ -56,8 +56,7 @@ def patch(node, permutation):
                 params = callNode[1]
                 replacement = permutation.get(params[0].value)
                 if replacement:
-                    parsedReplacement = parseExpression(replacement)
-                    targetIdentifier = parsedReplacement.value
+                    targetIdentifier = parseExpression(replacement).value
 
                     # Directly try to find matching identifier in second param (map)
                     objectInit = params[1]
@@ -72,7 +71,7 @@ def patch(node, permutation):
                                 modified = True
                                 break
                                 
-                        if not modified and fallbackNode:
+                        if not modified and fallbackNode is not None:
                             callNode.parent.replace(callNode, fallbackNode)
                             modified = True
     
