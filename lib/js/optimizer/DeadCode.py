@@ -10,7 +10,7 @@ def optimize(node):
     optimized = False
     
     # Process from inside to outside
-    for child in node:
+    for child in node[:]:
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
             if optimize(child):
@@ -87,9 +87,9 @@ def __checkCondition(node):
     elif node.type == "true":
         return True
         
-    elif node.type == "eq":
+    elif node.type == "eq" or node.type == "strict_eq":
         return __compareNodes(node[0], node[1])
-    elif node.type == "ne":
+    elif node.type == "ne" or node.type == "strict_ne":
         return __invertResult(__compareNodes(node[0], node[1]))
         
     elif node.type == "not":
