@@ -143,7 +143,8 @@ class Sorter:
         # Breaks are dependencies which are down-priorized to break
         # circular dependencies between classes.
         for breakName in classMeta.breaks:
-            circular.add(self.__names[breakName])
+            if breakName in self.__names:
+                circular.add(self.__names[breakName])
 
         # Now process the deps of the given class
         loadDeps = self.__loadDeps
