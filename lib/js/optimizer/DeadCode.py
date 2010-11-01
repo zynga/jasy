@@ -10,7 +10,7 @@ def optimize(node):
     optimized = False
     
     # Process from inside to outside
-    for child in node[:]:
+    for child in reversed(node):
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
             if optimize(child):
