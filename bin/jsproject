@@ -31,7 +31,7 @@ session.addLocale("en_US")
 #session.addLocale("de_DE")
 
 # Variant data
-session.addVariant("qx.debug", [ '"off"' ])
+session.addVariant("qx.debug", [ '"on"' ])
 session.addVariant("qx.client", [ '"webkit"' ])
 session.addVariant("qx.dynlocale", [ '"off"' ])
 session.addVariant("qx.application", [ '"apiviewer.Application"' ])
