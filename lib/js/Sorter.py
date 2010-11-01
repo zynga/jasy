@@ -146,9 +146,13 @@ class Sorter:
         # Now process the deps of the given class
         loadDeps = self.__loadDeps
         for depObj in classDeps:
+            if depObj is classObj:
+                continue
+            
             depName = depObj.getName()
             
             if depName in classMeta.breaks:
+                logging.debug("Manual Break: %s => %s" % (classObj, depObj))
                 pass
             
             elif depObj in loadDeps:
@@ -160,6 +164,7 @@ class Sorter:
                     current = self.__getLoadDepsRecurser(depObj, stack[:])
                 except CircularDependencyBreaker as circularError:
                     if circularError.breakAt == classObj:
+                        logging.info("Break circular: %s => %s" % (classObj, depObj))
                         circular.add(depObj)
                         continue  
                     else:
