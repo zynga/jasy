@@ -16,11 +16,18 @@ session.addProject(Project("../../unify/framework"))
 # Locale data
 session.addLocale("en_US")
 
-# Generate Source
+# Resolve Classes
 resolver = Resolver(session)
 resolver.addClassName("apiviewer.Application")
 resolver.addClassName("apiviewer.Theme")
-sorter = Sorter(resolver.getIncludedClasses())
+classes = resolver.getIncludedClasses()
+
+# Collect Resources
+resources = Resources(classes)
+resourceCode = resources.index()
+
+# Generate Loader
+sorter = Sorter(classes)
 loader = Loader(sorter.getSortedClasses())
 loader.generate("source.js", "qx.core.Init.boot(apiviewer.Application)")
 
