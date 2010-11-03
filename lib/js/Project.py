@@ -82,44 +82,62 @@ class Project():
 
 
     def getResources(self):
-        resourcePath = os.path.join(path, "source", "resource")
+        try:
+            return self.resources
+            
+        except AttributeError:
+            pstart()
+            
+            resourcePath = os.path.join(self.path, "source", "resource")
 
-        # List resources
-        resources = {}
-        resourcePathLen = len(resourcePath) + 1
-        for dirPath, dirNames, fileNames in os.walk(resourcePath):
-            for dirName in dirNames:
-                if dirName in self.dirFilter:
-                    dirNames.remove(dirName)
+            # List resources
+            resources = {}
+            resourcePathLen = len(resourcePath) + 1
+            for dirPath, dirNames, fileNames in os.walk(resourcePath):
+                for dirName in dirNames:
+                    if dirName in self.dirFilter:
+                        dirNames.remove(dirName)
 
-            for fileName in fileNames:    
-                if fileName[0] == ".":
-                    continue
+                for fileName in fileNames:    
+                    if fileName[0] == ".":
+                        continue
 
-                filePath = os.path.join(dirPath, fileName)
-                relPath = filePath[resourcePathLen:]            
+                    filePath = os.path.join(dirPath, fileName)
+                    relPath = filePath[resourcePathLen:]            
 
-                resources[relPath] = filePath
-                
-        return resources
+                    resources[relPath] = filePath
+                    
+            logging.info("Project '%s' has %s resources", self.namespace, len(resources))
+            pstop()
+            self.resources = resources
+            return resources
 
 
     def getTranslations(self):
-        translationPath = os.path.join(path, "source", "translation")
+        try:
+            return self.translations
+            
+        except AttributeError:
+            pstart()  
+            
+            translationPath = os.path.join(self.path, "source", "translation")
         
-        # List translations    
-        translations = {}
-        for dirPath, dirNames, fileNames in os.walk(translationPath):
-            for dirName in dirNames:
-                if dirName in self.dirFilter:
-                    dirNames.remove(dirName)
+            # List translations    
+            translations = {}
+            for dirPath, dirNames, fileNames in os.walk(translationPath):
+                for dirName in dirNames:
+                    if dirName in self.dirFilter:
+                        dirNames.remove(dirName)
 
-            for fileName in fileNames:    
-                if fileName[0] == "." or not fileName.endswith(".po"):
-                    continue
+                for fileName in fileNames:    
+                    if fileName[0] == "." or not fileName.endswith(".po"):
+                        continue
 
-                translations[os.path.splitext(fileName)[0]] = os.path.join(dirPath, fileName)
-                
-        return translations
+                    translations[os.path.splitext(fileName)[0]] = os.path.join(dirPath, fileName)
+            
+            logging.info("Project '%s' has %s translations", self.namespace, len(translations))
+            pstop()
+            self.translations = translations
+            return translations
         
         

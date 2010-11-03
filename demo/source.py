@@ -23,7 +23,7 @@ resolver.addClassName("apiviewer.Theme")
 classes = resolver.getIncludedClasses()
 
 # Collect Resources
-resources = Resources(classes)
+resources = Resources(session, classes)
 resourceCode = resources.index()
 
 # Generate Loader
