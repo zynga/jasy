@@ -8,10 +8,11 @@ from js.core.Profiler import *
 import logging
 
 class Compressor():
-    def __init__(self, classList, permutation, optimization):
+    def __init__(self, classList, permutation, optimization, boot):
         self.__classList = classList
         self.__permutation = permutation
         self.__optimization = optimization
+        self.__boot = boot
         
         self.addHeaders = True
         
@@ -53,6 +54,10 @@ class Compressor():
             result.append(compressed)
             
         result = "\n".join(result)
+        
+        if self.__boot:
+            result += self.__boot
+        
         pstop()
         
         if fileName:
