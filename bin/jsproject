@@ -48,7 +48,7 @@ optimization = set(["privates", "variables", "declarations", "blocks"])
 # Generate source loader (LabJS)
 resolver = Resolver(session)
 resolver.addClassName("apiviewer.Application")
-resolver.addClassName("qx.theme.Modern")
+resolver.addClassName("apiviewer.Theme")
 sorter = Sorter(resolver.getIncludedClasses())
 loader = Loader(sorter.getSortedClasses())
 boot = "console.debug('Booting...');qx.$$loader={scriptLoaded:true};qx.event.handler.Application.onScriptLoaded()"
