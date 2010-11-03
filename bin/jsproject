@@ -44,6 +44,9 @@ session.addVariant("qx.theme", ['"apiviewer.Theme"'])
 
 optimization = set(["privates", "variables", "declarations", "blocks"])
 
+# Boot Initializer
+boot = "qx.core.Init.boot(apiviewer.Application);"
+
 
 # Generate source loader (LabJS)
 resolver = Resolver(session)
@@ -51,7 +54,6 @@ resolver.addClassName("apiviewer.Application")
 resolver.addClassName("apiviewer.Theme")
 sorter = Sorter(resolver.getIncludedClasses())
 loader = Loader(sorter.getSortedClasses())
-boot = "qx.core.Init.boot(apiviewer.Application);"
 loader.generate("source.js", boot)
 
 
@@ -76,7 +78,7 @@ for permutation in session.getPermutations():
     sortedClasses = sorter.getSortedClasses()
     
     # Compiling classes
-    compressor = Compressor(sortedClasses, permutation, optimization)
+    compressor = Compressor(sortedClasses, permutation, optimization, boot)
     compressor.compress("main-%s.js" % hashed)
 
 
