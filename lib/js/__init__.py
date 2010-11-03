@@ -8,3 +8,4 @@ from js.Project import *
 from js.Resolver import *
 from js.Sorter import *
 from js.Compressor import *
+from js.Loader import *
