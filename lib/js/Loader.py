@@ -24,7 +24,7 @@ class Loader():
             else:
                 result.append('script("%s")' % classObj.path)
                 
-        result.append("wait(function(){alert('loaded')})")
+        result.append("wait(function(){console.debug('Loaded successfully!')})")
             
         result = "\n.".join(result)
         pstop()
