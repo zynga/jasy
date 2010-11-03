@@ -99,9 +99,9 @@ class Comment():
 
             
     hasName = ["param"]
-    hasType = ["return", "param", "type", "enum", "implements", "require", "optional", "break", "throws"]
+    hasType = ["return", "param", "type", "enum", "implements", "require", "optional", "break", "throws", "asset"]
     hasDescription = ["deprecated", "license", "preserve", "param", "return", "throws"]        
-    isList = ["require", "optional", "break", "throws"]
+    isList = ["require", "optional", "break", "throws", "asset"]
         
         
     def __extractTags(self, text, startLineNo):
@@ -136,7 +136,8 @@ class Comment():
         # pre-compiler (lists)
         @require {Type}
         @optional {Type}
-        @break {Type}        
+        @break {Type}
+        @asset {Resource}
         """        
 
         description = []

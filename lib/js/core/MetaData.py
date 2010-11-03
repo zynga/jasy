@@ -16,6 +16,7 @@ class MetaData:
         self.requires = set()
         self.optionals = set()
         self.breaks = set()
+        self.assets = set()
         
         self.__inspect(tree)
         
@@ -41,6 +42,8 @@ class MetaData:
                         self.optionals.update(set(commentTags["optional"]))
                     if "break" in commentTags:
                         self.breaks.update(set(commentTags["break"]))
+                    if "asset" in commentTags:
+                        self.assets.update(set(commentTags["asset"]))
 
         # Process children
         for child in node:
