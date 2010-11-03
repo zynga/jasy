@@ -7,7 +7,6 @@ import os, logging
 from configparser import SafeConfigParser
 from js.core.Class import Class
 from js.core.Cache import Cache
-from js.core.Profiler import *
         
 class Project():
     def __init__(self, path):
@@ -53,8 +52,6 @@ class Project():
             return self.classes
             
         except AttributeError:
-            pstart()
-            
             classPath = os.path.join(self.path, "source", "class")
             classes = {}
             classPathLen = len(classPath) + 1
@@ -76,7 +73,6 @@ class Project():
                     classes[className] = classObj
                 
             logging.info("Project '%s' has %s classes", self.namespace, len(classes))
-            pstop()
             self.classes = classes
             return classes
 
@@ -86,11 +82,7 @@ class Project():
             return self.resources
             
         except AttributeError:
-            pstart()
-            
             resourcePath = os.path.join(self.path, "source", "resource")
-
-            # List resources
             resources = {}
             resourcePathLen = len(resourcePath) + 1
             for dirPath, dirNames, fileNames in os.walk(resourcePath):
@@ -108,7 +100,6 @@ class Project():
                     resources[relPath] = filePath
                     
             logging.info("Project '%s' has %s resources", self.namespace, len(resources))
-            pstop()
             self.resources = resources
             return resources
 
@@ -118,11 +109,7 @@ class Project():
             return self.translations
             
         except AttributeError:
-            pstart()  
-            
             translationPath = os.path.join(self.path, "source", "translation")
-        
-            # List translations    
             translations = {}
             for dirPath, dirNames, fileNames in os.walk(translationPath):
                 for dirName in dirNames:
@@ -136,7 +123,6 @@ class Project():
                     translations[os.path.splitext(fileName)[0]] = os.path.join(dirPath, fileName)
             
             logging.info("Project '%s' has %s translations", self.namespace, len(translations))
-            pstop()
             self.translations = translations
             return translations
         
