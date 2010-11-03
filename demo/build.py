@@ -6,9 +6,6 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 
 # Import JavaScript tooling
 from js import *
-import time, logging
-
-start = time.time()
 
 # Application specific code
 session = Session()
@@ -18,7 +15,6 @@ session.addProject(Project("../../unify/framework"))
 
 # Locale data
 session.addLocale("en_US")
-#session.addLocale("de_DE")
 
 # Variant data
 session.addVariant("qx.debug", [ '"on"' ])
@@ -32,23 +28,8 @@ session.addVariant("qx.theme", ['"apiviewer.Theme"'])
 
 optimization = set(["privates", "variables", "declarations", "blocks"])
 
-# Boot Initializer
-boot = "qx.core.Init.boot(apiviewer.Application);"
-
-
-# Generate source loader (LabJS)
-resolver = Resolver(session)
-resolver.addClassName("apiviewer.Application")
-resolver.addClassName("apiviewer.Theme")
-sorter = Sorter(resolver.getIncludedClasses())
-loader = Loader(sorter.getSortedClasses())
-loader.generate("source.js", boot)
-
-
-# Build version
 for permutation in session.getPermutations():
     hashed = permutation.getHash()
-    logging.info("Permutation: %s" % permutation)
     
     # Resolving dependencies
     resolver = Resolver(session, permutation)
@@ -61,12 +42,8 @@ for permutation in session.getPermutations():
     sortedClasses = sorter.getSortedClasses()
     
     # Compiling classes
-    compressor = Compressor(sortedClasses, permutation, optimization, boot)
+    compressor = Compressor(sortedClasses, permutation, optimization, "qx.core.Init.boot(apiviewer.Application)")
     compressor.compress("main-%s.js" % hashed)
-
-
-# Info
-logging.info("Runtime: %ims" % ((time.time()-start)*1000))
 
 # Close session
 session.close()
