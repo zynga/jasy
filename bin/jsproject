@@ -14,8 +14,8 @@ start = time.time()
 session = Session()
 #session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo/qooxdoo/framework"))
 session.addProject(Project("../../qooxdoo/qooxdoo/framework"))
-session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo/qooxdoo/component/apiviewer"))
-session.addProject(Project("/Users/Sebastian/Workspace/unify/framework"))
+session.addProject(Project("../../qooxdoo/qooxdoo/component/apiviewer"))
+session.addProject(Project("../../unify/framework"))
 
 # Simple command line support
 if len(sys.argv) > 1:
@@ -47,10 +47,12 @@ optimization = set(["privates", "variables", "declarations", "blocks"])
 
 # Generate source loader (LabJS)
 resolver = Resolver(session)
-resolver.addClassName("qx.core.Object")
+resolver.addClassName("apiviewer.Application")
+resolver.addClassName("qx.theme.Modern")
 sorter = Sorter(resolver.getIncludedClasses())
 loader = Loader(sorter.getSortedClasses())
-loader.generate("source.js")
+boot = "console.debug('Booting...');qx.$$loader={scriptLoaded:true};qx.event.handler.Application.onScriptLoaded()"
+loader.generate("source.js", boot)
 
 
 # Build version

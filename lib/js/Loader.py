@@ -11,7 +11,7 @@ class Loader():
         self.__classList = classList
 
         
-    def generate(self, fileName=None):
+    def generate(self, fileName=None, bootCode=None):
         result = ["$LAB"]
         
         pstart()
@@ -24,7 +24,8 @@ class Loader():
             else:
                 result.append('script("%s")' % classObj.path)
                 
-        result.append("wait(function(){console.debug('Loaded successfully!')})")
+        if bootCode:
+            result.append("wait(function(){%s})" % bootCode)
             
         result = "\n.".join(result)
         pstop()
