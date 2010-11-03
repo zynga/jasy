@@ -12,20 +12,9 @@ start = time.time()
 
 # Application specific code
 session = Session()
-#session.addProject(Project("/Users/Sebastian/Workspace/qooxdoo/qooxdoo/framework"))
 session.addProject(Project("../../qooxdoo/qooxdoo/framework"))
 session.addProject(Project("../../qooxdoo/qooxdoo/component/apiviewer"))
 session.addProject(Project("../../unify/framework"))
-
-# Simple command line support
-if len(sys.argv) > 1:
-    cmd = sys.argv[1]
-    
-    if cmd == "-c":
-        logging.info("Clearing cache...")
-        session.clearCache()
-
-            
 
 # Locale data
 session.addLocale("en_US")
@@ -40,7 +29,6 @@ session.addVariant("qx.globalErrorHandling", [ '"off"' ])
 session.addVariant("qx.jstools", ["true"])
 session.addVariant("qx.version", ["1.0"])
 session.addVariant("qx.theme", ['"apiviewer.Theme"'])
-#qx.ioRemoteDebug
 
 optimization = set(["privates", "variables", "declarations", "blocks"])
 
