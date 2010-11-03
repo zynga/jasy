@@ -12,6 +12,8 @@ class Loader():
 
         
     def generate(self, fileName=None, bootCode=None):
+        config = "$LAB.setGlobalDefaults({AlwaysPreserveOrder:true});\n"
+        
         result = ["$LAB"]
         
         pstart()
@@ -20,16 +22,19 @@ class Loader():
         scripts = []
         for classObj in self.__classList:
             if classObj == "WAIT":
-                result.append('script(["%s"]).wait()' % '","'.join(scripts))
+                result.append('script(["%s"])' % '","'.join(scripts))
                 scripts = []
                 
             else:
                 scripts.append(classObj.path)
                 
+        # Append remaining scripts
+        result.append('script(["%s"])' % '","'.join(scripts))
+                
         if bootCode:
             result.append("wait(function(){%s})" % bootCode)
             
-        result = "\n.".join(result)
+        result = "%s%s" % (config, "\n.".join(result))
         pstop()
         
         if fileName:

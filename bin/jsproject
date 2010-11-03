@@ -51,7 +51,7 @@ resolver.addClassName("apiviewer.Application")
 resolver.addClassName("apiviewer.Theme")
 sorter = Sorter(resolver.getIncludedClasses())
 loader = Loader(sorter.getSortedClasses())
-boot = "console.debug('Booting...');qx.$$loader={scriptLoaded:true};qx.event.handler.Application.onScriptLoaded()"
+boot = "qx.core.Init.boot(apiviewer.Application);"
 loader.generate("source.js", boot)
 
 
