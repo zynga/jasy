@@ -27,9 +27,8 @@ class Resources:
             logging.info("Found %s assets directives" % len(assets))
             expr = re.compile("^%s$" % "|".join(["(%s)" % asset.replace("*", ".*") for asset in assets]))
 
-            projects = self.__session.getProjects()
             result = set()
-            for project in projects:
+            for project in self.__session.getProjects():
                 for resource in project.getResources():
                     if expr.match(resource):
                         result.add(resource)
@@ -40,4 +39,24 @@ class Resources:
             return result
         
     
+    def fullpaths(self):
+        # map namespace to full resource path
+        namespaces = dict((project.namespace, project.resourcePath) for project in self.__session.getProjects())
+
+        # regular expression matching all namespaces
+        ns = re.compile("^(%s)(/.+)$" % '|'.join([project.namespace for project in self.__session.getProjects()]))
+        
+        index = self.index()
+        result = {}
+        for resource in index:
+            match = ns.match(resource)
+            if match:
+                result[resource] = "%s%s" % (namespaces[match.group(1)], match.group(2))
+            else:
+                logging.error("No namespace match for: %s" % resource)
+        
+        
+        print(result)
+        
+        
     

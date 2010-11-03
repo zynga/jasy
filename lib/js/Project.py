@@ -24,6 +24,10 @@ class Project():
         self.namespace = parser.get("main", "namespace")
         logging.info("Initialized project %s" % self.namespace)
         
+        self.classPath = os.path.join(self.path, "source", "class")
+        self.resourcePath = os.path.join(self.path, "source", "resource")
+        self.translationPath = os.path.join(self.path, "source", "translation")
+        
         
     def clearCache(self):
         self.cache.clear()
@@ -52,7 +56,7 @@ class Project():
             return self.classes
             
         except AttributeError:
-            classPath = os.path.join(self.path, "source", "class")
+            classPath = self.classPath
             classes = {}
             classPathLen = len(classPath) + 1
             for dirPath, dirNames, fileNames in os.walk(classPath):
@@ -82,7 +86,7 @@ class Project():
             return self.resources
             
         except AttributeError:
-            resourcePath = os.path.join(self.path, "source", "resource")
+            resourcePath = self.resourcePath
             resources = {}
             resourcePathLen = len(resourcePath) + 1
             for dirPath, dirNames, fileNames in os.walk(resourcePath):
@@ -109,7 +113,7 @@ class Project():
             return self.translations
             
         except AttributeError:
-            translationPath = os.path.join(self.path, "source", "translation")
+            translationPath = self.translationPath
             translations = {}
             for dirPath, dirNames, fileNames in os.walk(translationPath):
                 for dirName in dirNames:
