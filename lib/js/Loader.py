@@ -17,12 +17,14 @@ class Loader():
         pstart()
         logging.info("Generating loader...")
         
+        scripts = []
         for classObj in self.__classList:
             if classObj == "WAIT":
-                result.append("wait()")
+                result.append('script(["%s"]).wait()' % '","'.join(scripts))
+                scripts = []
                 
             else:
-                result.append('script("%s")' % classObj.path)
+                scripts.append(classObj.path)
                 
         if bootCode:
             result.append("wait(function(){%s})" % bootCode)
