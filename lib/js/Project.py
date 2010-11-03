@@ -22,7 +22,7 @@ class Project():
         parser.read(manifestPath)
 
         self.namespace = parser.get("main", "namespace")
-        logging.info("Initialized project '%s'" % self.namespace)
+        logging.info("Initialized project %s" % self.namespace)
         
         
     def clearCache(self):
@@ -72,7 +72,7 @@ class Project():
 
                     classes[className] = classObj
                 
-            logging.info("Project '%s' has %s classes", self.namespace, len(classes))
+            logging.info("Project %s contains %s classes", self.namespace, len(classes))
             self.classes = classes
             return classes
 
@@ -99,7 +99,7 @@ class Project():
 
                     resources[relPath] = filePath
                     
-            logging.info("Project '%s' has %s resources", self.namespace, len(resources))
+            logging.info("Project %s contains %s resources", self.namespace, len(resources))
             self.resources = resources
             return resources
 
@@ -122,7 +122,7 @@ class Project():
 
                     translations[os.path.splitext(fileName)[0]] = os.path.join(dirPath, fileName)
             
-            logging.info("Project '%s' has %s translations", self.namespace, len(translations))
+            logging.info("Project %s contains %s translations", self.namespace, len(translations))
             self.translations = translations
             return translations
         
