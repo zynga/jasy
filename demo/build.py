@@ -20,9 +20,7 @@ session.addLocale("en_US")
 session.addVariant("qx.debug", [ '"on"' ])
 session.addVariant("qx.client", [ '"gecko"' ])
 session.addVariant("qx.dynlocale", [ '"off"' ])
-session.addVariant("qx.application", [ '"apiviewer.Application"' ])
 session.addVariant("qx.globalErrorHandling", [ '"off"' ])
-session.addVariant("qx.jstools", ["true"])
 session.addVariant("qx.version", ["1.0"])
 session.addVariant("qx.theme", ['"apiviewer.Theme"'])
 
@@ -43,7 +41,8 @@ for permutation in session.getPermutations():
     
     # Compiling classes
     compressor = Compressor(sortedClasses, permutation, optimization, "qx.core.Init.boot(apiviewer.Application)")
-    compressor.compress("main-%s.js" % hashed)
+    # compressor.compress("build-%s.js" % hashed)
+    compressor.compress("build.js")
 
 # Close session
 session.close()
