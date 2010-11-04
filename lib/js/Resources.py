@@ -144,9 +144,7 @@ class ImgInfo(object):
         for cls in classes:
             img = cls(filename)
             if img.verify():
-                size = img.size()
-                if size is not None:
-                    return size + (img.type(),)
+                return img.size()
 
         return None
 
@@ -223,7 +221,7 @@ class Resources:
                 
             imgInfo = img.getInfo()
             if imgInfo != None:
-                print("IMAGE: %s" % resource)
+                print("IMAGE: %s: %s" % (resource, imgInfo))
             else:
                 print("OTHER: %s" % resource)
                 
