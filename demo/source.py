@@ -25,7 +25,7 @@ classes = resolver.getIncludedClasses()
 
 # Collect Resources
 resources = Resources(session, classes)
-resourceCode = resources.getFiltered()
+resourceCode = resources.getInfo()
 
 # Generate Loader
 sorter = Sorter(classes)
