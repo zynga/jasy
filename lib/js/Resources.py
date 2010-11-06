@@ -214,9 +214,13 @@ class Resources:
         projects = self.__session.getProjects()
         
         # Result data structures
+        roots = {}
         sprites = {}
-        images = {}
-        resources = {}
+        files = {}
+        
+        # Collect roots
+        for projectId, project in enumerate(projects):
+            roots[projectId] = project.resourcePath
 
         # Processing...
         logging.info("Detecting image sizes...")
@@ -239,24 +243,29 @@ class Resources:
                 continue
                 
             else:
+                if not dirname in files:
+                    files[dirname] = {}
+
                 img = ImgInfo(fullPath)
                 imgInfo = img.getInfo()
                 if imgInfo != None:
-                    if not dirname in images:
-                        images[dirname] = {}
-                        
-                    images[dirname][basename] = (projectId,) + imgInfo
+                    files[dirname][basename] = (projectId,) + imgInfo
                 
                 else:
-                    if not dirname in resources:
-                        resources[dirname] = {}
-                        
-                    resources[dirname][basename] = projectId
+                    files[dirname][basename] = projectId
                     
 
         return {
+            "roots" : roots,
             "sprites" : sprites, 
-            "images" : images, 
-            "resources" : resources
+            "files" : files
         }
+        
+        
+    def export(self, to="$$resources"):
+        info = self.getInfo()
+        code = json.dumps(info, separators=(',',':'))
+        
+        return "(function(){this.%s=%s})();" % (to, code)
+        
         

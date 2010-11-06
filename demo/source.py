@@ -18,19 +18,24 @@ session.addLocale("en_US")
 
 # Resolve Classes
 resolver = Resolver(session)
-#resolver.addClassName("apiviewer.Application")
-resolver.addClassName("qx.ui.core.Widget")
+resolver.addClassName("apiviewer.Application")
+#resolver.addClassName("qx.ui.core.Widget")
 resolver.addClassName("apiviewer.Theme")
 classes = resolver.getIncludedClasses()
 
 # Collect Resources
 resources = Resources(session, classes)
-resourceCode = resources.getInfo()
+resourceCode = resources.export()
 
 # Generate Loader
 sorter = Sorter(classes)
 loader = Loader(sorter.getSortedClasses())
-loader.generate("source.js", "qx.core.Init.boot(apiviewer.Application)")
+loaderCode = loader.generate("qx.core.Init.boot(apiviewer.Application)")
+
+# Write file
+outfile = open("source.js", mode="w", encoding="utf-8")
+outfile.write(resourceCode + loaderCode)
+outfile.close()
 
 # Close session
 session.close()

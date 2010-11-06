@@ -11,7 +11,7 @@ class Loader():
         self.__classList = classList
 
         
-    def generate(self, fileName=None, bootCode=None):
+    def generate(self, bootCode):
         config = "$LAB.setGlobalDefaults({AlwaysPreserveOrder:true});\n"
         
         result = ["$LAB"]
@@ -37,11 +37,5 @@ class Loader():
         result = "%s%s" % (config, "\n.".join(result))
         pstop()
         
-        if fileName:
-            output = open(fileName, mode="w", encoding="utf-8")
-            output.write(result)
-            output.close()
-            
-        else:
-            return result
+        return result
 
