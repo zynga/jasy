@@ -168,9 +168,9 @@ class Resources:
         
         except AttributeError:
             result = {}
-            for project in self.__session.getProjects():
+            for pos, project in enumerate(self.__session.getProjects()):
                 for resource in project.getResources():
-                    result[resource] = project
+                    result[resource] = pos
 
             self.__merged = result
             return result
@@ -211,19 +211,52 @@ class Resources:
             
     def getInfo(self):
         filtered = self.getFiltered()
+        projects = self.__session.getProjects()
         
+        # Result data structures
+        sprites = {}
+        images = {}
+        resources = {}
+
+        # Processing...
         logging.info("Detecting image sizes...")
-        
         for resource in filtered:
-            resourceOrigin = filtered[resource]
+            projectId = filtered[resource]
+            project = projects[projectId]
             
-            img = ImgInfo("%s/%s" % (resourceOrigin.resourcePath, resource))
+            fullPath = "%s/%s" % (project.resourcePath, resource)
+            
+            basename = os.path.basename(resource)
+            dirname = os.path.dirname(resource)
+            extension = os.path.splitext(basename)[1]
+            
+            if basename == "sprites.json":
+                sprites[dirname] = json.load(open(fullPath))
+                pass
                 
-            imgInfo = img.getInfo()
-            if imgInfo != None:
-                print("IMAGE: %s: %s" % (resource, imgInfo))
+            elif extension == ".meta":
+                # qooxdoo style sprite meta info
+                continue
+                
             else:
-                print("OTHER: %s" % resource)
+                img = ImgInfo(fullPath)
+                imgInfo = img.getInfo()
+                if imgInfo != None:
+                    if not dirname in images:
+                        images[dirname] = {}
+                        
+                    images[dirname][basename] = (projectId,) + imgInfo
                 
-            
+                else:
+                    if not dirname in resources:
+                        resources[dirname] = {}
+                        
+                    resources[dirname][basename] = projectId
+                    
+
+        return {
+            "sprites" : sprites, 
+            "images" : images, 
+            "resources" : resources
+        }
         
