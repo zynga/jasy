@@ -58,6 +58,8 @@ class Sorter:
         return self.__sortedClasses
         
         
+        
+        
     def __addSorted(self, classObj, result, postponed=False):
         """ Adds a single class and its dependencies to the sorted result list """
 
@@ -91,7 +93,7 @@ class Sorter:
         logging.debug("Adding class: %s", classObj)
         result.append(classObj)
 
-        # Insert runtime dependencies as soon as possible
+        # Insert circular dependencies as soon as possible
         if classObj in self.__circularDeps:
             circularDeps = self.__circularDeps[classObj]
             for depObj in circularDeps:
