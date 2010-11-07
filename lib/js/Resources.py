@@ -209,20 +209,29 @@ class Resources:
             
             
             
-    def getInfo(self):
+            
+        
+    def __findPos(self, coll, item):
+        for pos, obj in enumerate(coll):
+            if obj == item:
+                return pos
+                
+        return -1
+        
+            
+            
+    def getInfo(self, enableSprites=True, enableInlining=True):
         filtered = self.getFiltered()
         projects = self.__session.getProjects()
         
-        # Result data structures
-        roots = {}
-        sprites = {}
-        files = {}
-        
-        # Collect roots
+        # Collecting roots
+        roots = []
         for projectId, project in enumerate(projects):
-            roots[projectId] = project.resourcePath
+            roots.append(project.resourcePath)
 
-        # Processing...
+        # Processing resources...
+        files = {}
+        sprites = {}
         logging.info("Detecting image sizes...")
         for resource in filtered:
             projectId = filtered[resource]
@@ -254,10 +263,56 @@ class Resources:
                 else:
                     files[dirname][basename] = projectId
                     
+                    
+        # Merge in sprite data and create additional data for sprites
+        spritesResult = {}
+        
+        for spriteDir in sprites:
+            spriteFiles = sprites[spriteDir]
+            for spriteFile in spriteFiles:
+                # Ignore if sprite file is not included
+                if not spriteFile in files[spriteDir]:
+                    continue
+                    
+                spriteData = files[spriteDir][spriteFile]
+                spriteItems = spriteFiles[spriteFile]
+                
+                
+
+                # Pre-check for offsets (e.g. just using x or y is more efficient to store)
+                hasXOffsets = 0
+                hasYOffsets = 0
+                for spriteItem in spriteItems:
+                    spriteOffset = spriteItems[spriteItem]
+                    if spriteOffset[0] > 0:
+                        hasXOffsets = 1
+                    if spriteOffset[1] > 0:
+                        hasYOffsets = 1
+                        
+                # Mark file as sprite file
+                # Format: fileName, hasOffsetX, hasOffsetY
+                if not spriteDir in spritesResult:
+                    spritesResult[spriteDir] = []
+
+                spriteIndex = len(spritesResult[spriteDir])
+                spritesResult[spriteDir].append((spriteFile,) + (hasXOffsets, hasYOffsets))
+                
+                # Add sprite data to single image data
+                # Format: projectId, width, height, spriteIndex, offsetX|offsetY, offsetY?
+                for spriteItem in spriteItems:
+                    spriteOffset = spriteItems[spriteItem]
+                    
+                    spriteInfo = (spriteIndex,)
+                    if hasXOffsets:
+                        spriteInfo += (spriteOffset[0],)
+                    if hasYOffsets:
+                        spriteInfo += (spriteOffset[1],)
+
+                    files[spriteDir][spriteItem] += spriteInfo
 
         return {
             "roots" : roots,
-            "sprites" : sprites, 
+            "sprites" : spritesResult,
             "files" : files
         }
         
