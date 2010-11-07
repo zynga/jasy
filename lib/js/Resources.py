@@ -273,32 +273,34 @@ class Resources:
                 # Ignore if sprite file is not included
                 if not spriteFile in files[spriteDir]:
                     continue
-                    
+                
+                # Read and delete sprite data
                 spriteData = files[spriteDir][spriteFile]
-                spriteItems = spriteFiles[spriteFile]
+                del files[spriteDir][spriteFile]
                 
-                
-
                 # Pre-check for offsets (e.g. just using x or y is more efficient to store)
                 hasXOffsets = 0
                 hasYOffsets = 0
+                spriteItems = spriteFiles[spriteFile]
                 for spriteItem in spriteItems:
                     spriteOffset = spriteItems[spriteItem]
                     if spriteOffset[0] > 0:
                         hasXOffsets = 1
                     if spriteOffset[1] > 0:
                         hasYOffsets = 1
-                        
-                # Mark file as sprite file
-                # Format: fileName, hasOffsetX, hasOffsetY
-                if not spriteDir in spritesResult:
-                    spritesResult[spriteDir] = []
 
-                spriteIndex = len(spritesResult[spriteDir])
-                spritesResult[spriteDir].append((spriteFile,) + (hasXOffsets, hasYOffsets))
-                
+                # Mark file as sprite file
+                # Format: fileName(str), projectId(int), width(int), height(int), hasOffsetX(int), hasOffsetY(int)
+                spriteEntry = (spriteFile,) + spriteData + (hasXOffsets, hasYOffsets)
+
+                if spriteDir in spritesResult:
+                    spritesResult[spriteDir].append(spriteEntry)
+                else:
+                    spritesResult[spriteDir] = [spriteEntry]
+                    
                 # Add sprite data to single image data
-                # Format: projectId, width, height, spriteIndex, offsetX|offsetY, offsetY?
+                # Format: projectId(int), width(int), height(int), spriteIndex(int), offsetX(int)|offsetY(int), offsetY(int)?
+                spriteIndex = len(spritesResult[spriteDir]) - 1
                 for spriteItem in spriteItems:
                     spriteOffset = spriteItems[spriteItem]
                     
