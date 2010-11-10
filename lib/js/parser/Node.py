@@ -258,8 +258,10 @@ class Node(list):
         for name in dir(self):
             if not name in ("parent", "target") and name[0] != "_":
                 value = getattr(self, name)
-                if type(value) in (bool, int, float, str, list, set):
+                if name == "stats" or type(value) in (bool, int, float, str):
                     setattr(result, name, value)
+                elif name == "stats" or type(value) in (list, set):
+                    setattr(result, name, copy.deepcopy(value, memo))
             
         # Note: "target" attribute is ignored because if recursion error
         #       This is used by "break" and "continue" statements only and refers
