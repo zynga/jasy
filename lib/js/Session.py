@@ -57,7 +57,7 @@ class Session():
         
         names = sorted(variants)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(variants[name] for name in names))]
-        permutations = [Permutation(combi, self.timestamp) for combi in combinations]
+        permutations = [Permutation(combi) for combi in combinations]
         
         return permutations
 

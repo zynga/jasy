@@ -28,7 +28,6 @@ optimization = set(["privates", "variables", "declarations", "blocks"])
 
 for permutation in session.getPermutations():
     logging.info("PERMUTATION: %s" % permutation)
-    hashed = permutation.getHash()
     
     # Resolving dependencies
     resolver = Resolver(session, permutation)
@@ -51,8 +50,12 @@ for permutation in session.getPermutations():
     # Combine result
     buildCode = resourceCode + compressed + "qx.core.Init.boot(apiviewer.Application);"
 
+    # Create filename
+    # Based on permutation.getKey(), optimization, modification date, etc.
+    outfileName = "build.js"
+
     # Write file
-    outfile = open("build.js", mode="w", encoding="utf-8")
+    outfile = open(outfileName, mode="w", encoding="utf-8")
     outfile.write(buildCode)
     outfile.close()
 

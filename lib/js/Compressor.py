@@ -20,7 +20,7 @@ class Compressor():
         
         pstart()
         logging.info("Compressing classes...")
-        result.append("// Permutation: %s (%s)" % (permutation, permutation.getHash()))
+        result.append("// Permutation: %s" % permutation)
         result.append("// Optimization: %s" % optimization)
         
         for classObj in self.__classList:

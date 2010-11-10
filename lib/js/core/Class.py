@@ -11,11 +11,8 @@ from js.parser.Parser import parse
 from js.process.Compressor import compress
 from js.process.Variables import scan
 
-# Permutation support
-from js.optimizer.ValuePatch import patch
-from js.optimizer.DeadCode import optimize
-
 # Post optimization
+from js.optimizer.DeadCode import optimize
 import js.optimizer.CryptPrivates as CryptPrivates
 import js.optimizer.BlockReducer as BlockReducer
 import js.optimizer.LocalVariables as LocalVariables
@@ -60,7 +57,7 @@ class Class():
 
         # Modify tree according to given permutation
         if permutation:
-            patch(tree, permutation)
+            permutation.patch(tree)
             optimize(tree)
             
         # Scan content-final tree
