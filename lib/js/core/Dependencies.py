@@ -19,21 +19,19 @@ class Dependencies:
     """
     
     def __init__(self, tree, meta, name):
-        # top-level node in tree is a script node containing 
-        # the relevant "shared" and "packages" data
-        
-        self.__tree = tree
+        # Store own name
         self.__name = name
-        self.__meta = meta
         
+        # Extract data from input params
+        self.__shared = tree.stats.shared
+        self.__packages = tree.stats.packages
+        self.__requires = meta.requires
         
     def names(self):
-        return self.__tree.stats.shared
+        return self.__shared
         
-    
     def packages(self):
-        return self.__tree.stats.packages
-        
+        return self.__packages
         
     def filter(self, classes):
         """ 
@@ -41,29 +39,27 @@ class Dependencies:
         classes (ignoring all unknown items in original set) 
         """
         
-        meta = self.__meta
-        stats = self.__tree.stats
         me = self.__name
         result = set()
         
-        for name in meta.requires:
-            if name in classes:
-                result.add(classes[name])
-        
-        for name in stats.shared:
+        # Manually defined names/classes
+        for name in self.__requires:
             if name != me and name in classes:
                 result.add(classes[name])
-                    
-        count = 0
-        for package in stats.packages:
+        
+        # Globally modified names (mostly relevant when working without namespaces)
+        for name in self.__shared:
+            if name != me and name in classes:
+                result.add(classes[name])
+        
+        # Real filtering
+        for package in self.__packages:
             if package in aliases and package in classes:
                 result.add(classes[package])
             
             else:
                 orig = package
                 while True:
-                    count += 1
-                
                     if package == me:
                         break
                 
