@@ -3,15 +3,13 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import os, logging, copy, binascii, string, hashlib
+import os, logging, copy, hashlib
 
 from js.core.MetaData import MetaData
 from js.core.Dependencies import Dependencies
 from js.parser.Parser import parse
 from js.process.Compressor import compress
 from js.process.Variables import scan
-
-# Post optimization
 
 allIds = {}
 
@@ -36,17 +34,15 @@ class Class():
     def getText(self):
         return open(self.path, mode="r", encoding="utf-8").read()
 
-    def getTree(self, permutation=None, optimization=None):
-        field = "tree[%s]-%s+%s" % (self.rel, permutation, optimization)
+    def getTree(self, permutation=None):
+        field = "tree[%s]-%s" % (self.rel, permutation)
         tree = self.__cache.read(field, self.__mtime)
         
         if tree is not None:
             return tree
             
-        if permutation or optimization:
-            tree = self.getTree()
-            tree = copy.deepcopy(tree)
-            
+        if permutation:
+            tree = copy.deepcopy(self.getTree())
         else:
             tree = parse(self.getText(), self.rel)
 
@@ -56,10 +52,6 @@ class Class():
             
         # Scan content-final tree
         scan(tree)
-            
-        # Apply optimizations
-        if optimization:
-            optimization.apply(tree)
                 
         self.__cache.store(field, tree, self.__mtime, True)
             
@@ -89,8 +81,13 @@ class Class():
         
         compressed = self.__cache.read(field, self.__mtime)
         if compressed == None:
-            tree = self.getTree(permutation, optimization)
-            compressed = compress(tree)
+            tree = self.getTree(permutation)
+            
+            if optimization:
+                tree = copy.deepcopy(tree)
+                optimization.apply(tree)
+                
+            compressed = compress(tree, format)
             self.__cache.store(field, compressed, self.__mtime)
             
         return compressed

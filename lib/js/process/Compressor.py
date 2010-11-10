@@ -25,7 +25,7 @@ __forcedSemicolon = False
 # Main
 #
 
-def compress(node):
+def compress(node, format=False):
     type = node.type
     result = None
     
