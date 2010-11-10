@@ -39,7 +39,7 @@ def parse(source, fileId=None, line=0, builder=None):
     node = Script(tokenizer, staticContext)
     
     # store fileId on top-level node
-    # node.id = tokenizer.fileId
+    node.fileId = tokenizer.fileId
     
     if not tokenizer.done():
         raise SyntaxError("Unexpected end of file", tokenizer)
