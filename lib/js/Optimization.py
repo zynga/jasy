@@ -28,7 +28,7 @@ class Optimization:
         
     def apply(self, tree):
         enabled = self.__optimizations
-        logging.info("Apply: %s" % self)
+        logging.debug("Apply: %s" % self)
         
         if "unused" in enabled:
             UnusedCleaner.optimize(tree)
