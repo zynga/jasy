@@ -150,9 +150,10 @@ class ImgInfo(object):
 
 
 class Resources:
-    def __init__(self, session, classes):
+    def __init__(self, session, classes, permutation=None):
         self.__session = session
         self.__classes = classes
+        self.__permutation = permutation
         
         
     def getMerged(self):
@@ -190,7 +191,7 @@ class Resources:
             # Merge asset hints from all classes and remove duplicates
             assets = set()
             for classObj in self.__classes:
-                assets.update(classObj.getMeta().assets)
+                assets.update(classObj.getMeta(self.__permutation).assets)
 
             # Compile regular expressions which is used to filter resource later on
             expr = re.compile("^%s$" % "|".join(["(%s)" % asset.replace("*", ".*") for asset in assets]))

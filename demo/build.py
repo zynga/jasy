@@ -39,7 +39,7 @@ try:
         classes = resolver.getIncludedClasses()
     
         # Collect Resources
-        resources = Resources(session, classes)
+        resources = Resources(session, classes, permutation)
         resourceCode = resources.export()    
 
         # Sorting classes

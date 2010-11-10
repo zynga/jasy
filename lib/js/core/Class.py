@@ -13,7 +13,6 @@ from js.process.Compressor import compress
 from js.process.Variables import scan
 
 allIds = {}
-cacheTreesInMemory = True
 
 __all__ = ["Class"]
 
@@ -37,28 +36,23 @@ class Class():
         return open(self.path, mode="r", encoding="utf-8").read()
 
     def getTree(self, permutation=None):
-        if cacheTreesInMemory:
-            field = "tree[%s]-%s" % (self.rel, permutation)
-            tree = self.__cache.read(field, self.__mtime)
-            if tree is not None:
-                return tree
+        field = "tree[%s]-%s" % (self.rel, permutation)
+        tree = self.__cache.read(field, self.__mtime)
+        if tree is not None:
+            return tree
             
-        if permutation:
-            tree = copy.deepcopy(self.getTree())
-        else:
-            tree = parse(self.getText(), self.rel)
+        # Parse tree
+        tree = parse(self.getText(), self.rel)
 
-        # Modify tree according to given permutation
+        # Apply permutation
         if permutation:
             permutation.patch(tree)
             cleanup(tree)
 
         # Index variables
         scan(tree)
-            
-        if cacheTreesInMemory:
-            self.__cache.store(field, tree, self.__mtime, True)
-            
+        
+        self.__cache.store(field, tree, self.__mtime, True)
         return tree
 
     def getDependencies(self, permutation=None):
@@ -85,8 +79,6 @@ class Class():
         
         compressed = self.__cache.read(field, self.__mtime)
         if compressed == None:
-            print("Compressing: %s" % field)
-
             tree = self.getTree(permutation)
             
             if optimization:
