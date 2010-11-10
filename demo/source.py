@@ -19,7 +19,6 @@ session.addLocale("en_US")
 # Resolve Classes
 resolver = Resolver(session)
 resolver.addClassName("apiviewer.Application")
-#resolver.addClassName("qx.ui.core.Widget")
 resolver.addClassName("apiviewer.Theme")
 classes = resolver.getIncludedClasses()
 
