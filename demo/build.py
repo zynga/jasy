@@ -25,7 +25,7 @@ session.addVariant("qx.version", ["1.0"])
 session.addVariant("qx.theme", ['"apiviewer.Theme"'])
 
 # Create optimizer for improved speed/compression
-optimization = Optimization(["privates", "variables", "declarations", "blocks"])
+optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
 
 # Process every possible permutation
 for permutation in session.getPermutations():

@@ -5,7 +5,7 @@
 
 import logging
 
-def optimize(node):
+def cleanup(node):
     """ Reprocesses JavaScript to remove dead paths """
     optimized = False
     
@@ -13,7 +13,7 @@ def optimize(node):
     for child in reversed(node):
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
-            if optimize(child):
+            if cleanup(child):
                 optimized = True
         
     # Optimize if cases

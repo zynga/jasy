@@ -3,11 +3,14 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import js.optimizer.DeadCode as DeadCode
+import logging
+
 import js.optimizer.CryptPrivates as CryptPrivates
 import js.optimizer.BlockReducer as BlockReducer
 import js.optimizer.LocalVariables as LocalVariables
 import js.optimizer.CombineDeclarations as CombineDeclarations
+import js.optimizer.UnusedCleaner as UnusedCleaner
+
 
 class Optimization:
     def __init__(self, enable):
@@ -25,21 +28,24 @@ class Optimization:
         
     def apply(self, tree):
         enabled = self.__optimizations
+        logging.info("Apply: %s" % self)
         
-        if "deadcode" in enabled:
-            DeadCode.optimize(tree)
-            
-        if "privates" in enabled:
-            CryptPrivates.optimize(tree)
-        
+        if "unused" in enabled:
+            UnusedCleaner.optimize(tree)
+
+        if "declarations" in enabled:
+            CombineDeclarations.optimize(tree)
+
         if "blocks" in enabled:
             BlockReducer.optimize(tree)
 
         if "variables" in enabled:
             LocalVariables.optimize(tree)
+
+        if "privates" in enabled:
+            CryptPrivates.optimize(tree)
+
             
-        if "declarations" in enabled:
-            CombineDeclarations.optimize(tree)     
             
     def getKey(self):
         return "+".join(sorted(self.__optimizations))
