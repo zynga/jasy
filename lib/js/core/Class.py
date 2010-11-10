@@ -7,12 +7,11 @@ import os, logging, copy, hashlib
 
 from js.core.DeadCode import cleanup
 from js.core.MetaData import MetaData
-from js.core.Dependencies import Dependencies
 from js.parser.Parser import parse
 from js.process.Compressor import compress
 from js.process.Variables import scan
 
-allIds = {}
+aliases = {}
 
 __all__ = ["Class"]
 
@@ -55,15 +54,63 @@ class Class():
         self.__cache.store(field, tree, self.__mtime, True)
         return tree
 
-    def getDependencies(self, permutation=None):
-        field = "deps[%s]-%s" % (self.rel, permutation)
-        deps = self.__cache.read(field, self.__mtime)
-        if deps == None:
-            deps = Dependencies(self.getTree(permutation), self.getMeta(permutation), self.name)
-            self.__cache.store(field, deps, self.__mtime)
+
+    def getDependencies(self, permutation=None, classes=None):
+        """ 
+        Returns a set of dependencies seen through the given list of known 
+        classes (ignoring all unknown items in original set) 
+        """
         
-        return deps
+        meta = self.getMeta(permutation)
+        stats = self.getStats(permutation)
+        result = set()
+        
+        # Manually defined names/classes
+        for name in meta.requires:
+            if name != self.name and name in classes:
+                result.add(classes[name])
+        
+        # Globally modified names (mostly relevant when working without namespaces)
+        for name in stats.shared:
+            if name != self.name and name in classes:
+                result.add(classes[name])
+        
+        # Real filtering
+        for package in stats.packages:
+            if package in aliases and package in classes:
+                result.add(classes[package])
             
+            else:
+                orig = package
+                while True:
+                    if package == self.name:
+                        break
+                
+                    elif package in classes:
+                        aliases[orig] = package
+                        result.add(classes[package])
+                        break
+                
+                    else:
+                        pos = package.rfind(".")
+                        if pos == -1:
+                            break
+                        
+                        package = package[0:pos]
+        
+        return result        
+        
+        
+    def getStats(self, permutation=None):
+        field = "stats[%s]-%s" % (self.rel, permutation)
+        stats = self.__cache.read(field, self.__mtime)
+        if stats == None:
+            stats = self.getTree(permutation).stats
+            self.__cache.store(field, stats, self.__mtime)
+        
+        return stats
+        
+        
     def getMeta(self, permutation=None):
         field = "meta[%s]-%s" % (self.rel, permutation)
         meta = self.__cache.read(field, self.__mtime)

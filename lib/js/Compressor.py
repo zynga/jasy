@@ -33,20 +33,8 @@ class Compressor():
             if addHeaders:
                 result.append("")
                 result.append("// %s" % classObj.getName())
-                result.append("//   - size: %s bytes" % len(compressed))
-                result.append("//   - modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
-                
-                deps = classObj.getDependencies(permutation)
-
-                result.append("//   - names:")
-                names = deps.names()
-                for name in sorted(names):
-                    result.append("//       %s, %sx" % (name, names[name]))
-                
-                result.append("//   - packages:")
-                packages = deps.packages()
-                for package in sorted(packages):
-                    result.append("//       %s, %sx" % (package, packages[package]))
+                result.append("//   - Size: %s bytes" % len(compressed))
+                result.append("//   - Modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
             
             result.append(compressed)
             

@@ -136,7 +136,7 @@ class Sorter:
     
         stack.append(classObj)
 
-        classDeps = classObj.getDependencies(self.__permutation).filter(self.__names)
+        classDeps = classObj.getDependencies(self.__permutation, classes=self.__names)
         classMeta = classObj.getMeta(self.__permutation)
         
         result = set()

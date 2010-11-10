@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Extend PYTHONPATH with 'lib'
-import sys, os
+import sys, os, traceback
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
 # Import JavaScript tooling
@@ -62,8 +62,9 @@ try:
         outfile.write(buildCode)
         outfile.close()
 
-except Exception as ex:
+except BaseException as ex:
     logging.error(ex)
+    traceback.print_exc()
     
 
 # Close session
