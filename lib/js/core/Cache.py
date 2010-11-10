@@ -51,7 +51,6 @@ class Cache:
                 
                 # Copy over value to in-memory cache
                 self.__transient[key] = value
-                
                 return value
                 
         return None
@@ -65,8 +64,8 @@ class Cache:
         to the time of an other files modification date etc.
         """
         
+        self.__transient[key] = value
         if transient:
-            self.__transient[key] = value
             return
         
         if not timestamp:

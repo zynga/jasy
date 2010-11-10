@@ -24,8 +24,10 @@ session.addVariant("qx.globalErrorHandling", [ '"off"' ])
 session.addVariant("qx.version", ["1.0"])
 session.addVariant("qx.theme", ['"apiviewer.Theme"'])
 
-optimization = set(["privates", "variables", "declarations", "blocks"])
+# Create optimizer for improved speed/compression
+optimization = Optimization(["privates", "variables", "declarations", "blocks"])
 
+# Process every possible permutation
 for permutation in session.getPermutations():
     logging.info("PERMUTATION: %s" % permutation)
     

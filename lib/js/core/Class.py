@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import os, logging, copy, binascii, string
+import os, logging, copy, binascii, string, hashlib
 
 from js.core.MetaData import MetaData
 from js.core.Dependencies import Dependencies
@@ -12,11 +12,6 @@ from js.process.Compressor import compress
 from js.process.Variables import scan
 
 # Post optimization
-from js.optimizer.DeadCode import optimize
-import js.optimizer.CryptPrivates as CryptPrivates
-import js.optimizer.BlockReducer as BlockReducer
-import js.optimizer.LocalVariables as LocalVariables
-import js.optimizer.CombineDeclarations as CombineDeclarations
 
 allIds = {}
 
@@ -58,24 +53,13 @@ class Class():
         # Modify tree according to given permutation
         if permutation:
             permutation.patch(tree)
-            optimize(tree)
             
         # Scan content-final tree
         scan(tree)
             
-        # Apply optimizations (compressor related)
+        # Apply optimizations
         if optimization:
-            if "privates" in optimization:
-                CryptPrivates.optimize(tree)
-            
-            if "blocks" in optimization:
-                BlockReducer.optimize(tree)
-
-            if "variables" in optimization:
-                LocalVariables.optimize(tree)
-                
-            if "declarations" in optimization:
-                CombineDeclarations.optimize(tree)
+            optimization.apply(tree)
                 
         self.__cache.store(field, tree, self.__mtime, True)
             
@@ -100,7 +84,9 @@ class Class():
         return meta
         
     def getCompressed(self, permutation=None, optimization=None, format=True):
-        field = "compressed[%s]-%s" % (self.rel, permutation)
+        field = "compressed[%s]-%s-%s-%s" % (self.rel, permutation, optimization, format)
+        field = hashlib.md5(field.encode("utf-8")).hexdigest()
+        
         compressed = self.__cache.read(field, self.__mtime)
         if compressed == None:
             tree = self.getTree(permutation, optimization)
