@@ -28,38 +28,43 @@ session.addVariant("qx.theme", ['"apiviewer.Theme"'])
 optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
 
 # Process every possible permutation
-for permutation in session.getPermutations():
-    logging.info("PERMUTATION: %s" % permutation)
+try:
+    for permutation in session.getPermutations():
+        logging.info("PERMUTATION: %s" % permutation)
     
-    # Resolving dependencies
-    resolver = Resolver(session, permutation)
-    resolver.addClassName("apiviewer.Application")
-    resolver.addClassName("apiviewer.Theme")
-    classes = resolver.getIncludedClasses()
+        # Resolving dependencies
+        resolver = Resolver(session, permutation)
+        resolver.addClassName("apiviewer.Application")
+        resolver.addClassName("apiviewer.Theme")
+        classes = resolver.getIncludedClasses()
     
-    # Collect Resources
-    resources = Resources(session, classes)
-    resourceCode = resources.export()    
+        # Collect Resources
+        resources = Resources(session, classes)
+        resourceCode = resources.export()    
 
-    # Sorting classes
-    sorter = Sorter(classes, permutation)
-    sortedClasses = sorter.getSortedClasses()
+        # Sorting classes
+        sorter = Sorter(classes, permutation)
+        sortedClasses = sorter.getSortedClasses()
     
-    # Compiling classes
-    compressor = Compressor(sortedClasses, permutation, optimization)
-    compressed = compressor.compress()
+        # Compiling classes
+        compressor = Compressor(sortedClasses, permutation, optimization)
+        compressed = compressor.compress()
 
-    # Combine result
-    buildCode = resourceCode + compressed + "qx.core.Init.boot(apiviewer.Application);"
+        # Combine result
+        buildCode = resourceCode + compressed + "qx.core.Init.boot(apiviewer.Application);"
 
-    # Create filename
-    # Based on permutation.getKey(), optimization, modification date, etc.
-    outfileName = "build.js"
+        # Create filename
+        # Based on permutation.getKey(), optimization, modification date, etc.
+        outfileName = "build.js"
 
-    # Write file
-    outfile = open(outfileName, mode="w", encoding="utf-8")
-    outfile.write(buildCode)
-    outfile.close()
+        # Write file
+        outfile = open(outfileName, mode="w", encoding="utf-8")
+        outfile.write(buildCode)
+        outfile.close()
+
+except Exception as ex:
+    logging.error(ex)
+    
 
 # Close session
 session.close()
