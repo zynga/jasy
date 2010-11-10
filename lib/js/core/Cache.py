@@ -49,6 +49,11 @@ class Cache:
             if not timestamp or timestamp <= self.__db[timeKey]:
                 value = self.__db[key]
                 
+                # Useful to debug serialized size. Often a performance
+                # issue when data gets to big.
+                # rePacked = pickle.dumps(value)
+                # print("LEN: %s = %s" % (key, len(rePacked)))
+                
                 # Copy over value to in-memory cache
                 self.__transient[key] = value
                 return value
