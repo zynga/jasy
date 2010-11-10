@@ -102,7 +102,7 @@ class Class():
             
         return meta
         
-    def getCompressed(self, permutation=None, optimization=None):
+    def getCompressed(self, permutation=None, optimization=None, format=True):
         field = "compressed[%s]-%s" % (self.rel, permutation)
         compressed = self.__cache.read(field, self.__mtime)
         if compressed == None:

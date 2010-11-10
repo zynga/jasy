@@ -8,15 +8,12 @@ from js.core.Profiler import *
 import logging
 
 class Compressor():
-    def __init__(self, classList, permutation, optimization, boot):
+    def __init__(self, classList, permutation, optimization):
         self.__classList = classList
         self.__permutation = permutation
         self.__optimization = optimization
-        self.__boot = boot
         
-        self.addHeaders = True
-        
-    def compress(self, fileName=None):
+    def compress(self, addHeaders=True, format=True):
         result = []
         permutation = self.__permutation
         optimization = self.__optimization
@@ -30,10 +27,10 @@ class Compressor():
             if classObj == "WAIT":
                 continue
             
-            compressed = classObj.getCompressed(permutation, optimization)
+            compressed = classObj.getCompressed(permutation, optimization, format=format)
             logging.debug("Adding %s: %s bytes", classObj, len(compressed))
             
-            if self.addHeaders:
+            if addHeaders:
                 result.append("")
                 result.append("// %s" % classObj.getName())
                 result.append("//   - size: %s bytes" % len(compressed))
@@ -55,16 +52,6 @@ class Compressor():
             
         result = "\n".join(result)
         
-        if self.__boot:
-            result += self.__boot
-        
         pstop()
-        
-        if fileName:
-            output = open(fileName, mode="w", encoding="utf-8")
-            output.write(result)
-            output.close()
-            
-        else:
-            return result
+        return result
 

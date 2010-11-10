@@ -27,6 +27,7 @@ session.addVariant("qx.theme", ['"apiviewer.Theme"'])
 optimization = set(["privates", "variables", "declarations", "blocks"])
 
 for permutation in session.getPermutations():
+    logging.info("PERMUTATION: %s" % permutation)
     hashed = permutation.getHash()
     
     # Resolving dependencies
@@ -34,15 +35,26 @@ for permutation in session.getPermutations():
     resolver.addClassName("apiviewer.Application")
     resolver.addClassName("apiviewer.Theme")
     classes = resolver.getIncludedClasses()
+    
+    # Collect Resources
+    resources = Resources(session, classes)
+    resourceCode = resources.export()    
 
     # Sorting classes
     sorter = Sorter(classes, permutation)
     sortedClasses = sorter.getSortedClasses()
     
     # Compiling classes
-    compressor = Compressor(sortedClasses, permutation, optimization, "qx.core.Init.boot(apiviewer.Application)")
-    # compressor.compress("build-%s.js" % hashed)
-    compressor.compress("build.js")
+    compressor = Compressor(sortedClasses, permutation, optimization)
+    compressed = compressor.compress()
+
+    # Combine result
+    buildCode = resourceCode + compressed + "qx.core.Init.boot(apiviewer.Application);"
+
+    # Write file
+    outfile = open("build.js", mode="w", encoding="utf-8")
+    outfile.write(buildCode)
+    outfile.close()
 
 # Close session
 session.close()
