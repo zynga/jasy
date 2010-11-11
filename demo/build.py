@@ -34,6 +34,15 @@ try:
     # Process every possible permutation
     for permutation in session.getPermutations():
         logging.info("PERMUTATION: %s" % permutation)
+        
+        # Build file header
+        header = ""
+        header += "/*\n"
+        header += " * Copyright 2010\n"
+        header += " *\n"
+        header += " * Permutation: %s\n" % permutation
+        header += " * Optimizations: %s\n" % optimization
+        header += " */\n\n"
     
         # Resolving dependencies
         resolver = Resolver(session, permutation)
@@ -49,7 +58,7 @@ try:
         compressor = Compressor(sorter.getSortedClasses(), permutation, optimization)
 
         # Combining result
-        buildCode = resources.export() + compressor.compress() + "qx.core.Init.boot(apiviewer.Application);"
+        buildCode = header + resources.export() + compressor.compress() + "qx.core.Init.boot(apiviewer.Application);"
 
         # Create filename
         # Based on permutation.getKey(), optimization, modification date, etc.

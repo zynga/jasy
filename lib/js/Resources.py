@@ -326,6 +326,6 @@ class Resources:
         
         logging.info("Generated %sKB of resource info" % (int(len(code)/1024)))
         
-        return "(function(){this.%s=%s})();" % (to, code)
+        return "(function(){this.%s=%s})();\n" % (to, code)
         
         

@@ -20,8 +20,6 @@ class Compressor():
         
         pstart()
         logging.info("Compressing classes...")
-        result.append("// Permutation: %s" % permutation)
-        result.append("// Optimization: %s" % optimization)
         
         for classObj in self.__classList:
             if classObj == "WAIT":

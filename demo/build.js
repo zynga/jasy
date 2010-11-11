@@ -1,5 +1,11 @@
-(function(){this.$$resources={"files":{"apiviewer/image":{"event18.gif":[1,18,18,0,198],"property_themeable18.gif":[1,18,18,0,396],"blank.gif":[1,1,1],"search18.png":[1,18,18],"constructor18.gif":[1,18,18,0,558],"class_abstract_warning18.gif":[1,18,18,0,306],"class_warning18.gif":[1,18,18,0,342],"class_abstract18.gif":[1,18,18,0,486],"overlay_overridden18.gif":[1,18,18,0,288],"overlay_themeable18.gif":[1,18,18,0,360],"information18.png":[1,18,18],"childcontrol18.gif":[1,18,18,0,540],"class_singleton_warning18.gif":[1,18,18,0,252],"overlay_abstract18.gif":[1,18,18,0,0],"property_private18.gif":[1,18,18,0,72],"overlay_mixin18.gif":[1,18,18,0,180],"overlay_warning18.gif":[1,18,18,0,594],"constant18.gif":[1,18,18,0,504],"method_public18.gif":[1,18,18,0,126],"overlay_error18.gif":[1,18,18,0,414],"class_static18.gif":[1,18,18,0,234],"method_protected18.gif":[1,18,18,0,216],"overlay_constructor18.gif":[1,18,18,0,36],"vline.gif":[1,18,18],"class18.gif":[1,18,18,0,324],"interface18.gif":[1,18,18,0,432],"nextlevel.gif":[1,18,18],"mixin18.gif":[1,18,18,0,162],"class_singleton18.gif":[1,18,18,0,612],"package18.gif":[1,18,18,0,54],"method_private18.gif":[1,18,18,0,270],"class_static_warning18.gif":[1,18,18,0,144],"overlay_static18.gif":[1,18,18,0,378],"property18.gif":[1,18,18,0,522],"method_public_inherited18.gif":[1,18,18,0,18],"package_warning18.gif":[1,18,18,0,90],"interface_warning18.gif":[1,18,18,0,450],"overlay_inherited18.gif":[1,18,18,0,576],"open.gif":[1,17,13],"property_protected18.gif":[1,18,18,0,468],"colorstrip.gif":[1,192,10],"close.gif":[1,17,13],"mixin_warning18.gif":[1,18,18,0,108],"cross.gif":[1,18,18]},"qx/decoration/cursors":{"nodrop.gif":[0,20,20,0,0],"alias.gif":[0,19,15,0,52],"copy.gif":[0,19,15,0,33],"move.gif":[0,13,9,0,20]},"qx/decoration/window":{"captionbar-active-c.png":[0,40,9],"captionbar-active-bl.png":[0,6,6,2,24],"captionbar-inactive-c.png":[0,40,9],"captionbar-active-tl.png":[0,6,6,2,0],"statusbar-l.png":[0,4,7,3,4],"captionbar-active-l.png":[0,6,9,0,6],"close-active.png":[0,9,9,5,9],"captionbar-active-r.png":[0,6,9,0,0],"captionbar-inactive-br.png":[0,6,6,1,30],"captionbar-inactive-tl.png":[0,6,6,1,12],"captionbar-inactive-l.png":[0,6,9,4,0],"captionbar-inactive-r.png":[0,6,9,4,6],"captionbar-active-br.png":[0,6,6,2,12],"statusbar-b.png":[0,4,4,6,16],"maximize-active.png":[0,9,9,5,81],"close-inactive.png":[0,9,9,5,90],"restore-active-hovered.png":[0,9,8,5,0],"maximize-inactive.png":[0,9,9,5,54],"statusbar.png":[0,369,15],"captionbar-inactive-bl.png":[0,6,6,1,6],"captionbar-active-t.png":[0,6,6,2,6],"restore-active.png":[0,9,8,5,99],"statusbar-tr.png":[0,4,4,6,12],"captionbar-inactive-t.png":[0,6,6,1,0],"statusbar-tl.png":[0,4,4,6,8],"captionbar-active.png":[0,69,21],"captionbar-active-b.png":[0,6,6,2,18],"captionbar-inactive-tr.png":[0,6,6,1,18],"statusbar-c.png":[0,40,7],"statusbar-bl.png":[0,4,4,6,20],"statusbar-t.png":[0,4,4,6,0],"minimize-active.png":[0,9,9,5,72],"captionbar-active-tr.png":[0,6,6,2,30],"minimize-active-hovered.png":[0,9,9,5,63],"captionbar-inactive.png":[0,69,21],"statusbar-r.png":[0,4,7,3,0],"restore-inactive.png":[0,9,8,5,45],"minimize-inactive.png":[0,9,9,5,36],"captionbar-inactive-b.png":[0,6,6,1,24],"maximize-active-hovered.png":[0,9,9,5,18],"close-active-hovered.png":[0,9,9,5,27],"statusbar-br.png":[0,4,4,6,4]},"qx/decoration/tree":{"open-selected.png":[0,8,8,0,8],"closed.png":[0,8,8,0,16],"closed-selected.png":[0,8,8,0,24],"open.png":[0,8,8,0,0]},"qx/decoration/tabview":{"tab-button-bottom-inactive-tl.png":[0,3,3,1,0],"tab-button-bottom-active-br.png":[0,5,5,20,5],"tab-button-right-active-l.png":[0,5,37,2,0],"tab-button-left-inactive-b.png":[0,3,3,3,0],"tabview-pane-tr.png":[0,30,30,18,90],"tab-button-left-inactive.png":[0,20,45],"tab-button-left-active-r.png":[0,5,37,14,5],"tab-button-right-inactive-br.png":[0,3,3,19,6],"tabview-pane-b.png":[0,30,30,18,60],"tab-button-bottom-active-l.png":[0,5,14,17,0],"tab-button-top-inactive-tr.png":[0,3,3,7,6],"tab-button-top-active-bl.png":[0,5,5,8,15],"tab-button-left-active-t.png":[0,5,5,6,15],"tab-button-right-active-br.png":[0,5,5,12,20],"tab-button-top-active-l.png":[0,5,12,21,0],"tab-button-top-inactive-l.png":[0,3,15,10,0],"tab-button-left-inactive-bl.png":[0,3,3,3,6],"tab-button-top-inactive-c.png":[0,40,15],"tab-button-right-inactive-l.png":[0,3,39,5,0],"tab-button-left-inactive-tr.png":[0,3,3,13,6],"tabview-pane-l.png":[0,30,2,15,0],"tab-button-bottom-inactive.png":[0,45,21],"tab-button-left-active-l.png":[0,5,37,14,0],"tab-button-top-inactive-r.png":[0,3,15,10,3],"tab-button-bottom-inactive-l.png":[0,3,15,4,3],"tab-button-right-inactive-r.png":[0,3,39,5,3],"tab-button-top-active-tr.png":[0,5,5,8,5],"tab-button-top-active-br.png":[0,5,5,8,10],"tab-button-top-inactive-t.png":[0,3,3,7,3],"tab-button-right-inactive-t.png":[0,3,3,16,0],"tab-button-left-active-br.png":[0,5,5,6,25],"tab-button-bottom-active-t.png":[0,5,5,20,20],"tab-button-left-inactive-l.png":[0,3,39,11,3],"tab-button-right-inactive.png":[0,20,45],"tab-button-bottom-inactive-br.png":[0,3,3,9,3],"tab-button-right-inactive-c.png":[0,40,39],"tab-button-left-inactive-c.png":[0,40,39],"tab-button-right-active-c.png":[0,40,37],"tab-button-left-inactive-t.png":[0,3,3,13,3],"tab-button-left-active.png":[0,22,47],"tab-button-top-active-c.png":[0,40,14],"tab-button-left-active-c.png":[0,40,37],"tabview-pane-t.png":[0,30,30,18,150],"tab-button-top-active-t.png":[0,5,5,8,0],"tab-button-left-inactive-tl.png":[0,3,3,13,0],"tab-button-bottom-active-tr.png":[0,5,5,20,0],"tab-button-top-active.png":[0,48,22],"tab-button-bottom-inactive-t.png":[0,3,3,1,3],"tab-button-bottom-active-bl.png":[0,5,5,20,15],"tab-button-bottom-active-b.png":[0,5,5,20,10],"tab-button-top-active-tl.png":[0,5,5,8,25],"tab-button-bottom-active-tl.png":[0,5,5,20,25],"tab-button-top-inactive.png":[0,45,21],"tab-button-left-active-tl.png":[0,5,5,6,10],"tab-button-bottom-inactive-tr.png":[0,3,3,1,6],"tab-button-top-active-b.png":[0,5,5,8,20],"tab-button-right-active.png":[0,22,47],"tab-button-right-active-t.png":[0,5,5,12,5],"tab-button-left-active-b.png":[0,5,5,6,5],"tabview-pane-tl.png":[0,30,30,18,30],"tab-button-top-active-r.png":[0,5,12,21,5],"tab-button-bottom-inactive-b.png":[0,3,3,9,0],"tab-button-right-active-tr.png":[0,5,5,12,10],"tab-button-right-active-r.png":[0,5,37,2,5],"tabview-pane-bl.png":[0,30,30,18,0],"tab-button-left-inactive-br.png":[0,3,3,3,3],"tab-button-right-active-b.png":[0,5,5,12,25],"tabview-pane-br.png":[0,30,30,18,120],"tab-button-bottom-active-r.png":[0,5,14,17,5],"tab-button-top-inactive-bl.png":[0,3,3,0,3],"tab-button-bottom-inactive-r.png":[0,3,15,4,0],"tab-button-bottom-active-c.png":[0,40,14],"tab-button-top-inactive-br.png":[0,3,3,0,0],"tabview-pane.png":[0,185,250],"tab-button-top-inactive-tl.png":[0,3,3,7,0],"tab-button-bottom-active.png":[0,49,24],"tab-button-top-inactive-b.png":[0,3,3,0,6],"tab-button-bottom-inactive-bl.png":[0,3,3,9,6],"tabview-pane-r.png":[0,30,2,15,30],"tab-button-bottom-inactive-c.png":[0,40,15],"tabview-pane-c.png":[0,40,120],"tab-button-left-inactive-r.png":[0,3,39,11,0],"tab-button-right-active-tl.png":[0,5,5,12,15],"tab-button-right-active-bl.png":[0,5,5,12,0],"tab-button-right-inactive-tl.png":[0,3,3,16,3],"tab-button-right-inactive-tr.png":[0,3,3,16,6],"tab-button-right-inactive-bl.png":[0,3,3,19,0],"tab-button-left-active-bl.png":[0,5,5,6,0],"tab-button-left-active-tr.png":[0,5,5,6,20],"tab-button-right-inactive-b.png":[0,3,3,19,3]},"qx/icon/16/actions":{"dialog-ok.png":[0,16,16],"view-refresh.png":[0,16,16],"window-close.png":[0,16,16],"dialog-cancel.png":[0,16,16]},"qx/icon/32/mimetypes":{"office-document.png":[0,32,32]},"qx/decoration/scrollbar":{"scrollbar-bg-pressed-horizontal.png":[0,19,10],"scrollbar-left.png":[0,4,6,0,50],"scrollbar-bg-horizontal.png":[0,76,15],"scrollbar-button-bg-horizontal.png":[0,12,10,0,34],"scrollbar-right.png":[0,4,6,0,46],"slider-knob-background.png":[0,12,10,0,16],"scrollbar-down.png":[0,6,4,0,28],"scrollbar-button-bg-vertical.png":[0,10,12,0,6],"scrollbar-bg-pressed-vertical.png":[0,10,19],"scrollbar-bg-vertical.png":[0,15,76],"scrollbar-up.png":[0,6,4,0,0]},"qx/decoration/pane":{"pane-br.png":[0,6,6,0,12],"pane-t.png":[0,6,6,0,0],"pane-r.png":[0,6,238,1,6],"pane-tl.png":[0,6,6,0,24],"pane-l.png":[0,6,238,1,0],"pane-tr.png":[0,6,6,0,6],"pane-bl.png":[0,6,6,0,18],"pane.png":[0,185,250],"pane-b.png":[0,6,6,0,30],"pane-c.png":[0,40,238]},"qx/decoration/shadow":{"shadow-b.png":[0,15,15,2,30],"shadow-small-b.png":[0,5,5,1,20],"shadow-tl.png":[0,15,15,2,75],"shadow-small-r.png":[0,5,136,0,5],"shadow-br.png":[0,15,15,2,45],"shadow-small.png":[0,114,146],"shadow.png":[0,381,412],"shadow-r.png":[0,15,382,3,15],"shadow-small-br.png":[0,5,5,1,10],"shadow-bl.png":[0,15,15,2,15],"shadow-small-t.png":[0,5,5,1,5],"shadow-tr.png":[0,15,15,2,0],"shadow-c.png":[0,40,382],"shadow-t.png":[0,15,15,2,60],"shadow-small-c.png":[0,40,136],"shadow-small-l.png":[0,5,136,0,0],"shadow-small-tl.png":[0,5,5,1,0],"shadow-l.png":[0,15,382,3,0],"shadow-small-bl.png":[0,5,5,1,15],"shadow-small-tr.png":[0,5,5,1,25]},"qx/decoration/splitpane":{"knob-vertical.png":[0,8,1,0,0],"knob-horizontal.png":[0,1,8,0,1]},"qx/decoration/menu":{"checkbox-invert.gif":[0,16,7,1,16],"radiobutton-invert.gif":[0,16,5,1,32],"checkbox.gif":[0,16,7,1,48],"bar-background.png":[0,40,20,0,0],"background.png":[0,40,49,0,40],"radiobutton.gif":[0,16,5,1,0]},"qx/icon/22/actions":{"media-seek-forward.png":[0,22,22],"edit-find.png":[0,22,22]},"qx/decoration/form":{"button-r.png":[0,4,52,3,0],"tooltip-error-bl.png":[0,6,6,0,24],"button-focused-r.png":[0,4,52,3,44],"checkbox-hovered.png":[0,14,14,2,238],"input-focused.png":[0,40,12],"button-hovered.png":[0,80,60],"radiobutton-checked-focused.png":[0,14,14,2,98],"radiobutton-checked-disabled.png":[0,14,14,2,196],"button-preselected-bl.png":[0,4,4,1,176],"button-checked.png":[0,80,60],"tooltip-error-t.png":[0,6,6,0,6],"radiobutton-disabled.png":[0,14,14,2,336],"radiobutton-invalid.png":[0,14,14,2,154],"button-checked-focused-t.png":[0,4,4,1,28],"button-pressed-l.png":[0,4,52,3,52],"button-pressed-c.png":[0,40,52],"button-preselected-t.png":[0,4,4,1,96],"button-preselected-focused-t.png":[0,4,4,1,196],"button-checked-focused-l.png":[0,4,52,3,40],"button-bl.png":[0,4,4,1,204],"button-hovered-t.png":[0,4,4,1,44],"button-pressed-b.png":[0,4,4,1,12],"checkbox-checked.png":[0,14,14,2,182],"button-preselected-r.png":[0,4,52,3,64],"tooltip-error-arrow.png":[0,11,14],"radiobutton-checked.png":[0,14,14,2,252],"button-focused-tl.png":[0,4,4,1,148],"button-hovered-br.png":[0,4,4,1,128],"button-preselected-c.png":[0,40,52],"checkbox-invalid.png":[0,14,14,2,462],"button-disabled-tl.png":[0,4,4,1,168],"button-checked-l.png":[0,4,52,3,16],"button-preselected-br.png":[0,4,4,1,200],"button-preselected-focused-br.png":[0,4,4,1,152],"checkbox.png":[0,14,14,2,140],"button-checked-focused-tr.png":[0,4,4,1,48],"radiobutton-checked-focused-invalid.png":[0,14,14,2,168],"checkbox-checked-focused.png":[0,14,14,2,294],"button-preselected-focused-b.png":[0,4,4,1,0],"tooltip-error.png":[0,127,30],"radiobutton-pressed-invalid.png":[0,14,14,2,434],"button-disabled-bl.png":[0,4,4,1,136],"input.png":[0,84,12],"button-disabled-br.png":[0,4,4,1,16],"checkbox-disabled.png":[0,14,14,2,42],"button-pressed-br.png":[0,4,4,1,20],"button-preselected-focused.png":[0,80,60],"button-focused-c.png":[0,40,52],"button-checked-b.png":[0,4,4,1,36],"button-preselected-tl.png":[0,4,4,1,80],"checkbox-checked-disabled.png":[0,14,14,2,126],"button-checked-focused-tl.png":[0,4,4,1,24],"button-checked-bl.png":[0,4,4,1,84],"button-hovered-l.png":[0,4,52,3,20],"button-pressed-r.png":[0,4,52,3,12],"button-preselected.png":[0,80,60],"button-hovered-tl.png":[0,4,4,1,76],"button-b.png":[0,4,4,1,72],"radiobutton-checked-invalid.png":[0,14,14,2,28],"button-hovered-r.png":[0,4,52,3,48],"tooltip-error-tr.png":[0,6,6,0,12],"button-hovered-tr.png":[0,4,4,1,88],"button-focused-b.png":[0,4,4,1,68],"button-pressed-bl.png":[0,4,4,1,52],"button-checked-t.png":[0,4,4,1,140],"button-focused-l.png":[0,4,52,3,24],"button-checked-focused-c.png":[0,40,52],"button-preselected-focused-r.png":[0,4,52,3,36],"button-pressed-tr.png":[0,4,4,1,64],"button-focused-br.png":[0,4,4,1,8],"button.png":[0,80,60],"checkbox-focused-invalid.png":[0,14,14,2,392],"radiobutton-checked-hovered.png":[0,14,14,2,406],"button-pressed-t.png":[0,4,4,1,100],"button-disabled-t.png":[0,4,4,1,116],"checkbox-checked-hovered.png":[0,14,14,2,490],"button-disabled-b.png":[0,4,4,1,40],"button-hovered-b.png":[0,4,4,1,108],"button-focused-bl.png":[0,4,4,1,144],"radiobutton-hovered.png":[0,14,14,2,0],"button-focused-t.png":[0,4,4,1,192],"checkbox-pressed-invalid.png":[0,14,14,2,112],"tooltip-error-r.png":[0,6,18,4,0],"tooltip-error-br.png":[0,6,6,0,0],"button-l.png":[0,4,52,3,56],"button-preselected-focused-tl.png":[0,4,4,1,164],"button-preselected-l.png":[0,4,52,3,8],"radiobutton.png":[0,14,14,2,70],"checkbox-pressed.png":[0,14,14,2,448],"button-checked-tr.png":[0,4,4,1,112],"button-checked-c.png":[0,40,52],"checkbox-checked-pressed-invalid.png":[0,14,14,2,378],"button-preselected-focused-l.png":[0,4,52,3,28],"button-preselected-focused-c.png":[0,40,52],"button-checked-focused-b.png":[0,4,4,1,156],"button-checked-focused-r.png":[0,4,52,3,32],"button-pressed.png":[0,80,60],"button-tr.png":[0,4,4,1,180],"checkbox-checked-hovered-invalid.png":[0,14,14,2,364],"button-t.png":[0,4,4,1,92],"radiobutton-checked-pressed-invalid.png":[0,14,14,2,350],"button-preselected-tr.png":[0,4,4,1,132],"tooltip-error-tl.png":[0,6,6,0,18],"button-disabled-c.png":[0,40,52],"button-preselected-b.png":[0,4,4,1,124],"button-c.png":[0,40,52],"checkbox-hovered-invalid.png":[0,14,14,2,14],"radiobutton-checked-pressed.png":[0,14,14,2,266],"radiobutton-checked-hovered-invalid.png":[0,14,14,2,308],"button-hovered-bl.png":[0,4,4,1,32],"tooltip-error-b.png":[0,6,6,0,30],"button-checked-tl.png":[0,4,4,1,56],"button-focused.png":[0,80,60],"button-disabled-l.png":[0,4,52,3,68],"button-disabled-tr.png":[0,4,4,1,60],"button-br.png":[0,4,4,1,188],"tooltip-error-c.png":[0,40,18],"button-hovered-c.png":[0,40,52],"checkbox-checked-pressed.png":[0,14,14,2,84],"button-checked-r.png":[0,4,52,3,60],"button-checked-focused-bl.png":[0,4,4,1,208],"button-checked-focused.png":[0,80,60],"button-disabled-r.png":[0,4,52,3,4],"checkbox-checked-focused-invalid.png":[0,14,14,2,322],"button-checked-br.png":[0,4,4,1,184],"radiobutton-focused.png":[0,14,14,2,420],"button-checked-focused-br.png":[0,4,4,1,160],"radiobutton-focused-invalid.png":[0,14,14,2,476],"radiobutton-pressed.png":[0,14,14,2,280],"button-tl.png":[0,4,4,1,120],"checkbox-focused.png":[0,14,14,2,210],"checkbox-checked-invalid.png":[0,14,14,2,224],"tooltip-error-l.png":[0,6,18,4,6],"button-focused-tr.png":[0,4,4,1,104],"button-preselected-focused-bl.png":[0,4,4,1,4],"button-pressed-tl.png":[0,4,4,1,172],"button-disabled.png":[0,80,60],"radiobutton-hovered-invalid.png":[0,14,14,2,56],"button-preselected-focused-tr.png":[0,4,4,1,212]},"qx/decoration/arrows":{"down-small-invert.png":[0,5,3,0,69],"up-invert.png":[0,8,5,0,28],"right.png":[0,5,8,0,54],"down-invert.png":[0,8,5,0,74],"up.png":[0,8,5,0,36],"left-invert.png":[0,5,8,0,0],"forward.png":[0,10,8,0,59],"left.png":[0,5,8,0,44],"up-small.png":[0,5,3,0,82],"right-invert.png":[0,5,8,0,5],"down.png":[0,8,5,0,20],"rewind.png":[0,10,8,0,10],"down-small.png":[0,5,3,0,49]},"apiviewer/css":{"apiviewer.css":1},"qx/static":{"blank.gif":[0,1,1],"blank.html":0},"qx/decoration/table":{"boolean-false.png":[0,14,14,0,80],"ascending.png":[0,8,5,0,0],"boolean-true.png":[0,14,14,0,26],"header-cell.png":[0,40,18,0,40],"descending.png":[0,8,5,0,18],"select-column-order.png":[0,10,9,0,8]},"qx/icon/22/mimetypes":{"office-document.png":[0,22,22]},"qx/icon/16/places":{"folder.png":[0,16,16],"folder-open.png":[0,16,16]},"qx/decoration/groupbox":{"groupbox-b.png":[0,4,4,1,12],"groupbox-br.png":[0,4,4,1,8],"groupbox-c.png":[0,40,51],"groupbox-tr.png":[0,4,4,1,20],"groupbox-l.png":[0,4,51,0,4],"groupbox-r.png":[0,4,51,0,0],"groupbox-t.png":[0,4,4,1,4],"groupbox.png":[0,255,59],"groupbox-tl.png":[0,4,4,1,0],"groupbox-bl.png":[0,4,4,1,16]},"qx/decoration":{"app-header.png":[0,110,20],"selection.png":[0,110,20]},"qx/icon/16/mimetypes":{"office-document.png":[0,16,16]},"qx/icon/22/apps":{"utilities-graphics-viewer.png":[0,22,22],"utilities-help.png":[0,22,22],"utilities-dictionary.png":[0,22,22]},"qx/icon/22/places":{"folder.png":[0,22,22],"folder-open.png":[0,22,22]},"qx/icon/16/apps":{"office-calendar.png":[0,16,16],"utilities-color-chooser.png":[0,16,16]},"qx/decoration/colorselector":{"brightness-handle.gif":[0,35,11,0,0],"huesaturation-field.jpg":[0,256,256],"brightness-field.png":[0,19,256],"huesaturation-handle.gif":[0,11,11,0,35]},"qx/decoration/toolbar":{"toolbar-gradient.png":[0,40,130,0,0],"toolbar-part.gif":[0,7,1],"toolbar-handle-knob.gif":[0,1,8],"toolbar-gradient-blue.png":[0,40,130,0,40]},"qx/icon/32/places":{"folder.png":[0,32,32],"folder-open.png":[0,32,32]}},"sprites":{"apiviewer/image":[["symbols.gif",1,18,630,0,1]],"qx/decoration/window":[["window-captionbar-lr-active-combined.png",0,12,9,1,0],["window-captionbar-tb-inactive-combined.png",0,6,36,0,1],["window-captionbar-tb-active-combined.png",0,6,36,0,1],["window-statusbar-lr-combined.png",0,8,7,1,0],["window-captionbar-lr-inactive-combined.png",0,12,9,1,0],["window-captionbar-buttons-combined.png",0,108,9,1,0],["window-statusbar-tb-combined.png",0,4,24,0,1]],"qx/decoration/groupbox":[["groupbox-lr-combined.png",0,8,51,1,0],["groupbox-tb-combined.png",0,4,24,0,1]],"qx/decoration/pane":[["pane-tb-combined.png",0,6,36,0,1],["pane-lr-combined.png",0,12,238,1,0]],"qx/decoration/tree":[["tree-combined.png",0,32,8,1,0]],"qx/decoration/shadow":[["shadow-small-lr-combined.png",0,10,136,1,0],["shadow-small-tb-combined.png",0,5,30,0,1],["shadow-tb-combined.png",0,15,90,0,1],["shadow-lr-combined.png",0,30,382,1,0]],"qx/decoration/splitpane":[["splitpane-knobs-combined.png",0,8,9,0,1]],"qx/decoration/tabview":[["tabview-button-top-inactive-b-combined.png",0,3,9,0,1],["tabview-button-bottom-inactive-t-combined.png",0,3,9,0,1],["tabview-button-right-active-lr-combined.png",0,10,37,1,0],["tabview-button-left-inactive-b-combined.png",0,3,9,0,1],["tabview-button-bottom-inactive-lr-combined.png",0,6,15,1,0],["tabview-button-right-inactive-lr-combined.png",0,6,39,1,0],["tabview-button-left-active-tb-combined.png",0,5,30,0,1],["tabview-button-top-inactive-t-combined.png",0,3,9,0,1],["tabview-button-top-active-tb-combined.png",0,5,30,0,1],["tabview-button-bottom-inactive-b-combined.png",0,3,9,0,1],["tabview-button-top-inactive-lr-combined.png",0,6,15,1,0],["tabview-button-left-inactive-lr-combined.png",0,6,39,1,0],["tabview-button-right-active-tb-combined.png",0,5,30,0,1],["tabview-button-left-inactive-t-combined.png",0,3,9,0,1],["tabview-button-left-active-lr-combined.png",0,10,37,1,0],["tabview-pane-lr-combined.png",0,60,2,1,0],["tabview-button-right-inactive-t-combined.png",0,3,9,0,1],["tabview-button-bottom-active-lr-combined.png",0,10,14,1,0],["tabview-pane-tb-combined.png",0,30,180,0,1],["tabview-button-right-inactive-b-combined.png",0,3,9,0,1],["tabview-button-bottom-active-tb-combined.png",0,5,30,0,1],["tabview-button-top-active-lr-combined.png",0,10,12,1,0]],"qx/decoration/colorselector":[["colorselector-combined.gif",0,46,11,1,0]],"qx/decoration/table":[["table-combined.png",0,94,18,1,0]],"qx/decoration/form":[["tooltip-error-tb-combined.png",0,6,36,0,1],["button-tb-combined.png",0,4,216,0,1],["checkradio-combined.png",0,504,14,1,0],["button-lr-combined.png",0,72,52,1,0],["tooltip-error-lr-combined.png",0,12,18,1,0]],"qx/decoration/cursors":[["cursors-combined.gif",0,71,20,1,0]],"qx/decoration/toolbar":[["toolbar-combined.png",0,80,130,1,0]],"qx/decoration/scrollbar":[["scrollbar-combined.png",0,54,12,1,0]],"qx/decoration/menu":[["menu-background-combined.png",0,80,49,1,0],["menu-checkradio-combined.gif",0,64,7,1,0]],"qx/decoration/arrows":[["arrows-combined.png",0,87,8,1,0]]},"roots":["../../qooxdoo/qooxdoo/framework/source/resource","../../qooxdoo/qooxdoo/component/apiviewer/source/resource","../../unify/framework/source/resource"]}})();// Permutation: locale:en_US; qx.client:"gecko"; qx.debug:"on"; qx.dynlocale:"off"; qx.globalErrorHandling:"off"; qx.theme:"apiviewer.Theme"; qx.version:1.0
-// Optimization: blocks+declarations+privates+unused+variables
+/*
+ * Copyright 2010
+ *
+ * Permutation: locale:en_US; qx.client:"gecko"; qx.debug:"on"; qx.dynlocale:"off"; qx.globalErrorHandling:"off"; qx.theme:"apiviewer.Theme"; qx.version:1.0
+ * Optimizations: blocks+declarations+privates+unused+variables
+ */
+
+(function(){this.$$resources={"files":{"apiviewer/image":{"event18.gif":[1,18,18,0,198],"property_themeable18.gif":[1,18,18,0,396],"blank.gif":[1,1,1],"search18.png":[1,18,18],"constructor18.gif":[1,18,18,0,558],"class_abstract_warning18.gif":[1,18,18,0,306],"class_warning18.gif":[1,18,18,0,342],"class_abstract18.gif":[1,18,18,0,486],"overlay_overridden18.gif":[1,18,18,0,288],"overlay_themeable18.gif":[1,18,18,0,360],"information18.png":[1,18,18],"childcontrol18.gif":[1,18,18,0,540],"class_singleton_warning18.gif":[1,18,18,0,252],"overlay_abstract18.gif":[1,18,18,0,0],"property_private18.gif":[1,18,18,0,72],"overlay_mixin18.gif":[1,18,18,0,180],"overlay_warning18.gif":[1,18,18,0,594],"constant18.gif":[1,18,18,0,504],"method_public18.gif":[1,18,18,0,126],"overlay_error18.gif":[1,18,18,0,414],"class_static18.gif":[1,18,18,0,234],"method_protected18.gif":[1,18,18,0,216],"overlay_constructor18.gif":[1,18,18,0,36],"vline.gif":[1,18,18],"class18.gif":[1,18,18,0,324],"interface18.gif":[1,18,18,0,432],"nextlevel.gif":[1,18,18],"mixin18.gif":[1,18,18,0,162],"class_singleton18.gif":[1,18,18,0,612],"package18.gif":[1,18,18,0,54],"method_private18.gif":[1,18,18,0,270],"class_static_warning18.gif":[1,18,18,0,144],"overlay_static18.gif":[1,18,18,0,378],"property18.gif":[1,18,18,0,522],"method_public_inherited18.gif":[1,18,18,0,18],"package_warning18.gif":[1,18,18,0,90],"interface_warning18.gif":[1,18,18,0,450],"overlay_inherited18.gif":[1,18,18,0,576],"open.gif":[1,17,13],"property_protected18.gif":[1,18,18,0,468],"colorstrip.gif":[1,192,10],"close.gif":[1,17,13],"mixin_warning18.gif":[1,18,18,0,108],"cross.gif":[1,18,18]},"qx/decoration/cursors":{"nodrop.gif":[0,20,20,0,0],"alias.gif":[0,19,15,0,52],"copy.gif":[0,19,15,0,33],"move.gif":[0,13,9,0,20]},"qx/decoration/window":{"captionbar-active-c.png":[0,40,9],"captionbar-active-bl.png":[0,6,6,2,24],"captionbar-inactive-c.png":[0,40,9],"captionbar-active-tl.png":[0,6,6,2,0],"statusbar-l.png":[0,4,7,3,4],"captionbar-active-l.png":[0,6,9,0,6],"close-active.png":[0,9,9,5,9],"captionbar-active-r.png":[0,6,9,0,0],"captionbar-inactive-br.png":[0,6,6,1,30],"captionbar-inactive-tl.png":[0,6,6,1,12],"captionbar-inactive-l.png":[0,6,9,4,0],"captionbar-inactive-r.png":[0,6,9,4,6],"captionbar-active-br.png":[0,6,6,2,12],"statusbar-b.png":[0,4,4,6,16],"maximize-active.png":[0,9,9,5,81],"close-inactive.png":[0,9,9,5,90],"restore-active-hovered.png":[0,9,8,5,0],"maximize-inactive.png":[0,9,9,5,54],"statusbar.png":[0,369,15],"captionbar-inactive-bl.png":[0,6,6,1,6],"captionbar-active-t.png":[0,6,6,2,6],"restore-active.png":[0,9,8,5,99],"statusbar-tr.png":[0,4,4,6,12],"captionbar-inactive-t.png":[0,6,6,1,0],"statusbar-tl.png":[0,4,4,6,8],"captionbar-active.png":[0,69,21],"captionbar-active-b.png":[0,6,6,2,18],"captionbar-inactive-tr.png":[0,6,6,1,18],"statusbar-c.png":[0,40,7],"statusbar-bl.png":[0,4,4,6,20],"statusbar-t.png":[0,4,4,6,0],"minimize-active.png":[0,9,9,5,72],"captionbar-active-tr.png":[0,6,6,2,30],"minimize-active-hovered.png":[0,9,9,5,63],"captionbar-inactive.png":[0,69,21],"statusbar-r.png":[0,4,7,3,0],"restore-inactive.png":[0,9,8,5,45],"minimize-inactive.png":[0,9,9,5,36],"captionbar-inactive-b.png":[0,6,6,1,24],"maximize-active-hovered.png":[0,9,9,5,18],"close-active-hovered.png":[0,9,9,5,27],"statusbar-br.png":[0,4,4,6,4]},"qx/decoration/tree":{"open-selected.png":[0,8,8,0,8],"closed.png":[0,8,8,0,16],"closed-selected.png":[0,8,8,0,24],"open.png":[0,8,8,0,0]},"qx/decoration/tabview":{"tab-button-bottom-inactive-tl.png":[0,3,3,1,0],"tab-button-bottom-active-br.png":[0,5,5,20,5],"tab-button-right-active-l.png":[0,5,37,2,0],"tab-button-left-inactive-b.png":[0,3,3,3,0],"tabview-pane-tr.png":[0,30,30,18,90],"tab-button-left-inactive.png":[0,20,45],"tab-button-left-active-r.png":[0,5,37,14,5],"tab-button-right-inactive-br.png":[0,3,3,19,6],"tabview-pane-b.png":[0,30,30,18,60],"tab-button-bottom-active-l.png":[0,5,14,17,0],"tab-button-top-inactive-tr.png":[0,3,3,7,6],"tab-button-top-active-bl.png":[0,5,5,8,15],"tab-button-left-active-t.png":[0,5,5,6,15],"tab-button-right-active-br.png":[0,5,5,12,20],"tab-button-top-active-l.png":[0,5,12,21,0],"tab-button-top-inactive-l.png":[0,3,15,10,0],"tab-button-left-inactive-bl.png":[0,3,3,3,6],"tab-button-top-inactive-c.png":[0,40,15],"tab-button-right-inactive-l.png":[0,3,39,5,0],"tab-button-left-inactive-tr.png":[0,3,3,13,6],"tabview-pane-l.png":[0,30,2,15,0],"tab-button-bottom-inactive.png":[0,45,21],"tab-button-left-active-l.png":[0,5,37,14,0],"tab-button-top-inactive-r.png":[0,3,15,10,3],"tab-button-bottom-inactive-l.png":[0,3,15,4,3],"tab-button-right-inactive-r.png":[0,3,39,5,3],"tab-button-top-active-tr.png":[0,5,5,8,5],"tab-button-top-active-br.png":[0,5,5,8,10],"tab-button-top-inactive-t.png":[0,3,3,7,3],"tab-button-right-inactive-t.png":[0,3,3,16,0],"tab-button-left-active-br.png":[0,5,5,6,25],"tab-button-bottom-active-t.png":[0,5,5,20,20],"tab-button-left-inactive-l.png":[0,3,39,11,3],"tab-button-right-inactive.png":[0,20,45],"tab-button-bottom-inactive-br.png":[0,3,3,9,3],"tab-button-right-inactive-c.png":[0,40,39],"tab-button-left-inactive-c.png":[0,40,39],"tab-button-right-active-c.png":[0,40,37],"tab-button-left-inactive-t.png":[0,3,3,13,3],"tab-button-left-active.png":[0,22,47],"tab-button-top-active-c.png":[0,40,14],"tab-button-left-active-c.png":[0,40,37],"tabview-pane-t.png":[0,30,30,18,150],"tab-button-top-active-t.png":[0,5,5,8,0],"tab-button-left-inactive-tl.png":[0,3,3,13,0],"tab-button-bottom-active-tr.png":[0,5,5,20,0],"tab-button-top-active.png":[0,48,22],"tab-button-bottom-inactive-t.png":[0,3,3,1,3],"tab-button-bottom-active-bl.png":[0,5,5,20,15],"tab-button-bottom-active-b.png":[0,5,5,20,10],"tab-button-top-active-tl.png":[0,5,5,8,25],"tab-button-bottom-active-tl.png":[0,5,5,20,25],"tab-button-top-inactive.png":[0,45,21],"tab-button-left-active-tl.png":[0,5,5,6,10],"tab-button-bottom-inactive-tr.png":[0,3,3,1,6],"tab-button-top-active-b.png":[0,5,5,8,20],"tab-button-right-active.png":[0,22,47],"tab-button-right-active-t.png":[0,5,5,12,5],"tab-button-left-active-b.png":[0,5,5,6,5],"tabview-pane-tl.png":[0,30,30,18,30],"tab-button-top-active-r.png":[0,5,12,21,5],"tab-button-bottom-inactive-b.png":[0,3,3,9,0],"tab-button-right-active-tr.png":[0,5,5,12,10],"tab-button-right-active-r.png":[0,5,37,2,5],"tabview-pane-bl.png":[0,30,30,18,0],"tab-button-left-inactive-br.png":[0,3,3,3,3],"tab-button-right-active-b.png":[0,5,5,12,25],"tabview-pane-br.png":[0,30,30,18,120],"tab-button-bottom-active-r.png":[0,5,14,17,5],"tab-button-top-inactive-bl.png":[0,3,3,0,3],"tab-button-bottom-inactive-r.png":[0,3,15,4,0],"tab-button-bottom-active-c.png":[0,40,14],"tab-button-top-inactive-br.png":[0,3,3,0,0],"tabview-pane.png":[0,185,250],"tab-button-top-inactive-tl.png":[0,3,3,7,0],"tab-button-bottom-active.png":[0,49,24],"tab-button-top-inactive-b.png":[0,3,3,0,6],"tab-button-bottom-inactive-bl.png":[0,3,3,9,6],"tabview-pane-r.png":[0,30,2,15,30],"tab-button-bottom-inactive-c.png":[0,40,15],"tabview-pane-c.png":[0,40,120],"tab-button-left-inactive-r.png":[0,3,39,11,0],"tab-button-right-active-tl.png":[0,5,5,12,15],"tab-button-right-active-bl.png":[0,5,5,12,0],"tab-button-right-inactive-tl.png":[0,3,3,16,3],"tab-button-right-inactive-tr.png":[0,3,3,16,6],"tab-button-right-inactive-bl.png":[0,3,3,19,0],"tab-button-left-active-bl.png":[0,5,5,6,0],"tab-button-left-active-tr.png":[0,5,5,6,20],"tab-button-right-inactive-b.png":[0,3,3,19,3]},"qx/icon/16/actions":{"dialog-ok.png":[0,16,16],"view-refresh.png":[0,16,16],"window-close.png":[0,16,16],"dialog-cancel.png":[0,16,16]},"qx/icon/32/mimetypes":{"office-document.png":[0,32,32]},"qx/decoration/scrollbar":{"scrollbar-bg-pressed-horizontal.png":[0,19,10],"scrollbar-left.png":[0,4,6,0,50],"scrollbar-bg-horizontal.png":[0,76,15],"scrollbar-button-bg-horizontal.png":[0,12,10,0,34],"scrollbar-right.png":[0,4,6,0,46],"slider-knob-background.png":[0,12,10,0,16],"scrollbar-down.png":[0,6,4,0,28],"scrollbar-button-bg-vertical.png":[0,10,12,0,6],"scrollbar-bg-pressed-vertical.png":[0,10,19],"scrollbar-bg-vertical.png":[0,15,76],"scrollbar-up.png":[0,6,4,0,0]},"qx/decoration/pane":{"pane-br.png":[0,6,6,0,12],"pane-t.png":[0,6,6,0,0],"pane-r.png":[0,6,238,1,6],"pane-tl.png":[0,6,6,0,24],"pane-l.png":[0,6,238,1,0],"pane-tr.png":[0,6,6,0,6],"pane-bl.png":[0,6,6,0,18],"pane.png":[0,185,250],"pane-b.png":[0,6,6,0,30],"pane-c.png":[0,40,238]},"qx/decoration/shadow":{"shadow-b.png":[0,15,15,2,30],"shadow-small-b.png":[0,5,5,1,20],"shadow-tl.png":[0,15,15,2,75],"shadow-small-r.png":[0,5,136,0,5],"shadow-br.png":[0,15,15,2,45],"shadow-small.png":[0,114,146],"shadow.png":[0,381,412],"shadow-r.png":[0,15,382,3,15],"shadow-small-br.png":[0,5,5,1,10],"shadow-bl.png":[0,15,15,2,15],"shadow-small-t.png":[0,5,5,1,5],"shadow-tr.png":[0,15,15,2,0],"shadow-c.png":[0,40,382],"shadow-t.png":[0,15,15,2,60],"shadow-small-c.png":[0,40,136],"shadow-small-l.png":[0,5,136,0,0],"shadow-small-tl.png":[0,5,5,1,0],"shadow-l.png":[0,15,382,3,0],"shadow-small-bl.png":[0,5,5,1,15],"shadow-small-tr.png":[0,5,5,1,25]},"qx/decoration/splitpane":{"knob-vertical.png":[0,8,1,0,0],"knob-horizontal.png":[0,1,8,0,1]},"qx/decoration/menu":{"checkbox-invert.gif":[0,16,7,1,16],"radiobutton-invert.gif":[0,16,5,1,32],"checkbox.gif":[0,16,7,1,48],"bar-background.png":[0,40,20,0,0],"background.png":[0,40,49,0,40],"radiobutton.gif":[0,16,5,1,0]},"qx/icon/22/actions":{"media-seek-forward.png":[0,22,22],"edit-find.png":[0,22,22]},"qx/decoration/form":{"button-r.png":[0,4,52,3,0],"tooltip-error-bl.png":[0,6,6,0,24],"button-focused-r.png":[0,4,52,3,44],"checkbox-hovered.png":[0,14,14,2,238],"input-focused.png":[0,40,12],"button-hovered.png":[0,80,60],"radiobutton-checked-focused.png":[0,14,14,2,98],"radiobutton-checked-disabled.png":[0,14,14,2,196],"button-preselected-bl.png":[0,4,4,1,176],"button-checked.png":[0,80,60],"tooltip-error-t.png":[0,6,6,0,6],"radiobutton-disabled.png":[0,14,14,2,336],"radiobutton-invalid.png":[0,14,14,2,154],"button-checked-focused-t.png":[0,4,4,1,28],"button-pressed-l.png":[0,4,52,3,52],"button-pressed-c.png":[0,40,52],"button-preselected-t.png":[0,4,4,1,96],"button-preselected-focused-t.png":[0,4,4,1,196],"button-checked-focused-l.png":[0,4,52,3,40],"button-bl.png":[0,4,4,1,204],"button-hovered-t.png":[0,4,4,1,44],"button-pressed-b.png":[0,4,4,1,12],"checkbox-checked.png":[0,14,14,2,182],"button-preselected-r.png":[0,4,52,3,64],"tooltip-error-arrow.png":[0,11,14],"radiobutton-checked.png":[0,14,14,2,252],"button-focused-tl.png":[0,4,4,1,148],"button-hovered-br.png":[0,4,4,1,128],"button-preselected-c.png":[0,40,52],"checkbox-invalid.png":[0,14,14,2,462],"button-disabled-tl.png":[0,4,4,1,168],"button-checked-l.png":[0,4,52,3,16],"button-preselected-br.png":[0,4,4,1,200],"button-preselected-focused-br.png":[0,4,4,1,152],"checkbox.png":[0,14,14,2,140],"button-checked-focused-tr.png":[0,4,4,1,48],"radiobutton-checked-focused-invalid.png":[0,14,14,2,168],"checkbox-checked-focused.png":[0,14,14,2,294],"button-preselected-focused-b.png":[0,4,4,1,0],"tooltip-error.png":[0,127,30],"radiobutton-pressed-invalid.png":[0,14,14,2,434],"button-disabled-bl.png":[0,4,4,1,136],"input.png":[0,84,12],"button-disabled-br.png":[0,4,4,1,16],"checkbox-disabled.png":[0,14,14,2,42],"button-pressed-br.png":[0,4,4,1,20],"button-preselected-focused.png":[0,80,60],"button-focused-c.png":[0,40,52],"button-checked-b.png":[0,4,4,1,36],"button-preselected-tl.png":[0,4,4,1,80],"checkbox-checked-disabled.png":[0,14,14,2,126],"button-checked-focused-tl.png":[0,4,4,1,24],"button-checked-bl.png":[0,4,4,1,84],"button-hovered-l.png":[0,4,52,3,20],"button-pressed-r.png":[0,4,52,3,12],"button-preselected.png":[0,80,60],"button-hovered-tl.png":[0,4,4,1,76],"button-b.png":[0,4,4,1,72],"radiobutton-checked-invalid.png":[0,14,14,2,28],"button-hovered-r.png":[0,4,52,3,48],"tooltip-error-tr.png":[0,6,6,0,12],"button-hovered-tr.png":[0,4,4,1,88],"button-focused-b.png":[0,4,4,1,68],"button-pressed-bl.png":[0,4,4,1,52],"button-checked-t.png":[0,4,4,1,140],"button-focused-l.png":[0,4,52,3,24],"button-checked-focused-c.png":[0,40,52],"button-preselected-focused-r.png":[0,4,52,3,36],"button-pressed-tr.png":[0,4,4,1,64],"button-focused-br.png":[0,4,4,1,8],"button.png":[0,80,60],"checkbox-focused-invalid.png":[0,14,14,2,392],"radiobutton-checked-hovered.png":[0,14,14,2,406],"button-pressed-t.png":[0,4,4,1,100],"button-disabled-t.png":[0,4,4,1,116],"checkbox-checked-hovered.png":[0,14,14,2,490],"button-disabled-b.png":[0,4,4,1,40],"button-hovered-b.png":[0,4,4,1,108],"button-focused-bl.png":[0,4,4,1,144],"radiobutton-hovered.png":[0,14,14,2,0],"button-focused-t.png":[0,4,4,1,192],"checkbox-pressed-invalid.png":[0,14,14,2,112],"tooltip-error-r.png":[0,6,18,4,0],"tooltip-error-br.png":[0,6,6,0,0],"button-l.png":[0,4,52,3,56],"button-preselected-focused-tl.png":[0,4,4,1,164],"button-preselected-l.png":[0,4,52,3,8],"radiobutton.png":[0,14,14,2,70],"checkbox-pressed.png":[0,14,14,2,448],"button-checked-tr.png":[0,4,4,1,112],"button-checked-c.png":[0,40,52],"checkbox-checked-pressed-invalid.png":[0,14,14,2,378],"button-preselected-focused-l.png":[0,4,52,3,28],"button-preselected-focused-c.png":[0,40,52],"button-checked-focused-b.png":[0,4,4,1,156],"button-checked-focused-r.png":[0,4,52,3,32],"button-pressed.png":[0,80,60],"button-tr.png":[0,4,4,1,180],"checkbox-checked-hovered-invalid.png":[0,14,14,2,364],"button-t.png":[0,4,4,1,92],"radiobutton-checked-pressed-invalid.png":[0,14,14,2,350],"button-preselected-tr.png":[0,4,4,1,132],"tooltip-error-tl.png":[0,6,6,0,18],"button-disabled-c.png":[0,40,52],"button-preselected-b.png":[0,4,4,1,124],"button-c.png":[0,40,52],"checkbox-hovered-invalid.png":[0,14,14,2,14],"radiobutton-checked-pressed.png":[0,14,14,2,266],"radiobutton-checked-hovered-invalid.png":[0,14,14,2,308],"button-hovered-bl.png":[0,4,4,1,32],"tooltip-error-b.png":[0,6,6,0,30],"button-checked-tl.png":[0,4,4,1,56],"button-focused.png":[0,80,60],"button-disabled-l.png":[0,4,52,3,68],"button-disabled-tr.png":[0,4,4,1,60],"button-br.png":[0,4,4,1,188],"tooltip-error-c.png":[0,40,18],"button-hovered-c.png":[0,40,52],"checkbox-checked-pressed.png":[0,14,14,2,84],"button-checked-r.png":[0,4,52,3,60],"button-checked-focused-bl.png":[0,4,4,1,208],"button-checked-focused.png":[0,80,60],"button-disabled-r.png":[0,4,52,3,4],"checkbox-checked-focused-invalid.png":[0,14,14,2,322],"button-checked-br.png":[0,4,4,1,184],"radiobutton-focused.png":[0,14,14,2,420],"button-checked-focused-br.png":[0,4,4,1,160],"radiobutton-focused-invalid.png":[0,14,14,2,476],"radiobutton-pressed.png":[0,14,14,2,280],"button-tl.png":[0,4,4,1,120],"checkbox-focused.png":[0,14,14,2,210],"checkbox-checked-invalid.png":[0,14,14,2,224],"tooltip-error-l.png":[0,6,18,4,6],"button-focused-tr.png":[0,4,4,1,104],"button-preselected-focused-bl.png":[0,4,4,1,4],"button-pressed-tl.png":[0,4,4,1,172],"button-disabled.png":[0,80,60],"radiobutton-hovered-invalid.png":[0,14,14,2,56],"button-preselected-focused-tr.png":[0,4,4,1,212]},"qx/decoration/arrows":{"down-small-invert.png":[0,5,3,0,69],"up-invert.png":[0,8,5,0,28],"right.png":[0,5,8,0,54],"down-invert.png":[0,8,5,0,74],"up.png":[0,8,5,0,36],"left-invert.png":[0,5,8,0,0],"forward.png":[0,10,8,0,59],"left.png":[0,5,8,0,44],"up-small.png":[0,5,3,0,82],"right-invert.png":[0,5,8,0,5],"down.png":[0,8,5,0,20],"rewind.png":[0,10,8,0,10],"down-small.png":[0,5,3,0,49]},"apiviewer/css":{"apiviewer.css":1},"qx/static":{"blank.gif":[0,1,1],"blank.html":0},"qx/decoration/table":{"boolean-false.png":[0,14,14,0,80],"ascending.png":[0,8,5,0,0],"boolean-true.png":[0,14,14,0,26],"header-cell.png":[0,40,18,0,40],"descending.png":[0,8,5,0,18],"select-column-order.png":[0,10,9,0,8]},"qx/icon/22/mimetypes":{"office-document.png":[0,22,22]},"qx/icon/16/places":{"folder.png":[0,16,16],"folder-open.png":[0,16,16]},"qx/decoration/groupbox":{"groupbox-b.png":[0,4,4,1,12],"groupbox-br.png":[0,4,4,1,8],"groupbox-c.png":[0,40,51],"groupbox-tr.png":[0,4,4,1,20],"groupbox-l.png":[0,4,51,0,4],"groupbox-r.png":[0,4,51,0,0],"groupbox-t.png":[0,4,4,1,4],"groupbox.png":[0,255,59],"groupbox-tl.png":[0,4,4,1,0],"groupbox-bl.png":[0,4,4,1,16]},"qx/decoration":{"app-header.png":[0,110,20],"selection.png":[0,110,20]},"qx/icon/16/mimetypes":{"office-document.png":[0,16,16]},"qx/icon/22/apps":{"utilities-graphics-viewer.png":[0,22,22],"utilities-help.png":[0,22,22],"utilities-dictionary.png":[0,22,22]},"qx/icon/22/places":{"folder.png":[0,22,22],"folder-open.png":[0,22,22]},"qx/icon/16/apps":{"office-calendar.png":[0,16,16],"utilities-color-chooser.png":[0,16,16]},"qx/decoration/colorselector":{"brightness-handle.gif":[0,35,11,0,0],"huesaturation-field.jpg":[0,256,256],"brightness-field.png":[0,19,256],"huesaturation-handle.gif":[0,11,11,0,35]},"qx/decoration/toolbar":{"toolbar-gradient.png":[0,40,130,0,0],"toolbar-part.gif":[0,7,1],"toolbar-handle-knob.gif":[0,1,8],"toolbar-gradient-blue.png":[0,40,130,0,40]},"qx/icon/32/places":{"folder.png":[0,32,32],"folder-open.png":[0,32,32]}},"sprites":{"apiviewer/image":[["symbols.gif",1,18,630,0,1]],"qx/decoration/window":[["window-captionbar-lr-active-combined.png",0,12,9,1,0],["window-captionbar-tb-inactive-combined.png",0,6,36,0,1],["window-captionbar-tb-active-combined.png",0,6,36,0,1],["window-statusbar-lr-combined.png",0,8,7,1,0],["window-captionbar-lr-inactive-combined.png",0,12,9,1,0],["window-captionbar-buttons-combined.png",0,108,9,1,0],["window-statusbar-tb-combined.png",0,4,24,0,1]],"qx/decoration/groupbox":[["groupbox-lr-combined.png",0,8,51,1,0],["groupbox-tb-combined.png",0,4,24,0,1]],"qx/decoration/pane":[["pane-tb-combined.png",0,6,36,0,1],["pane-lr-combined.png",0,12,238,1,0]],"qx/decoration/tree":[["tree-combined.png",0,32,8,1,0]],"qx/decoration/shadow":[["shadow-small-lr-combined.png",0,10,136,1,0],["shadow-small-tb-combined.png",0,5,30,0,1],["shadow-tb-combined.png",0,15,90,0,1],["shadow-lr-combined.png",0,30,382,1,0]],"qx/decoration/splitpane":[["splitpane-knobs-combined.png",0,8,9,0,1]],"qx/decoration/tabview":[["tabview-button-top-inactive-b-combined.png",0,3,9,0,1],["tabview-button-bottom-inactive-t-combined.png",0,3,9,0,1],["tabview-button-right-active-lr-combined.png",0,10,37,1,0],["tabview-button-left-inactive-b-combined.png",0,3,9,0,1],["tabview-button-bottom-inactive-lr-combined.png",0,6,15,1,0],["tabview-button-right-inactive-lr-combined.png",0,6,39,1,0],["tabview-button-left-active-tb-combined.png",0,5,30,0,1],["tabview-button-top-inactive-t-combined.png",0,3,9,0,1],["tabview-button-top-active-tb-combined.png",0,5,30,0,1],["tabview-button-bottom-inactive-b-combined.png",0,3,9,0,1],["tabview-button-top-inactive-lr-combined.png",0,6,15,1,0],["tabview-button-left-inactive-lr-combined.png",0,6,39,1,0],["tabview-button-right-active-tb-combined.png",0,5,30,0,1],["tabview-button-left-inactive-t-combined.png",0,3,9,0,1],["tabview-button-left-active-lr-combined.png",0,10,37,1,0],["tabview-pane-lr-combined.png",0,60,2,1,0],["tabview-button-right-inactive-t-combined.png",0,3,9,0,1],["tabview-button-bottom-active-lr-combined.png",0,10,14,1,0],["tabview-pane-tb-combined.png",0,30,180,0,1],["tabview-button-right-inactive-b-combined.png",0,3,9,0,1],["tabview-button-bottom-active-tb-combined.png",0,5,30,0,1],["tabview-button-top-active-lr-combined.png",0,10,12,1,0]],"qx/decoration/colorselector":[["colorselector-combined.gif",0,46,11,1,0]],"qx/decoration/table":[["table-combined.png",0,94,18,1,0]],"qx/decoration/form":[["tooltip-error-tb-combined.png",0,6,36,0,1],["button-tb-combined.png",0,4,216,0,1],["checkradio-combined.png",0,504,14,1,0],["button-lr-combined.png",0,72,52,1,0],["tooltip-error-lr-combined.png",0,12,18,1,0]],"qx/decoration/cursors":[["cursors-combined.gif",0,71,20,1,0]],"qx/decoration/toolbar":[["toolbar-combined.png",0,80,130,1,0]],"qx/decoration/scrollbar":[["scrollbar-combined.png",0,54,12,1,0]],"qx/decoration/menu":[["menu-background-combined.png",0,80,49,1,0],["menu-checkradio-combined.gif",0,64,7,1,0]],"qx/decoration/arrows":[["arrows-combined.png",0,87,8,1,0]]},"roots":["../../qooxdoo/qooxdoo/framework/source/resource","../../qooxdoo/qooxdoo/component/apiviewer/source/resource","../../unify/framework/source/resource"]}})();
 
 // qx.Bootstrap
 //   - Size: 4732 bytes
@@ -134,6 +140,51 @@ getUri:function(){return this.__g0JOt},
 getLineNumber:function(){return this.__JeJe8}}});
 
 
+// qx.core.property.Util
+//   - Size: 501 bytes
+//   - Modified: 2010-06-18T23:08:09
+qx.Bootstrap.define("qx.core.property.Util",{statics:{getPropertyDefinition:function(a,c){var b;
+while(a){b=a.$$properties;
+if(b&&b[c])return b[c];
+a=a.superclass}return null},
+hasProperty:function(a,b){return!!this.getPropertyDefinition(a,b)},
+getProperties:function(a){var b=[];
+while(a)a.$$properties&&b.push.apply(b,qx.Bootstrap.getKeys(a.$$properties)),a=a.superclass;
+return b},
+getByProperty:function(a,b){while(a){if(a.$$properties&&a.$$properties[b])return a;
+a=a.superclass}return null}}});
+
+
+// qx.core.Setting
+//   - Size: 1333 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Bootstrap.define("qx.core.Setting",{statics:{__zP2zc:{},
+define:function(a,b){if(b===undefined)throw new Error("Default value of setting \""+a+"\" must be defined!");
+if(!this.__zP2zc[a])this.__zP2zc[a]={};
+else if(this.__zP2zc[a].defaultValue!==undefined)throw new Error("Setting \""+a+"\" is already defined!");
+this.__zP2zc[a].defaultValue=b},
+get:function(b){var a=this.__zP2zc[b];
+if(a===undefined)throw new Error("Setting \""+b+"\" is not defined.");
+if(a.value!==undefined)return a.value;
+return a.defaultValue},
+set:function(a,b){if((a.split(".")).length<2)throw new Error("Malformed settings key \""+a+"\". Must be following the schema \"namespace.key\".");
+this.__zP2zc[a]||(this.__zP2zc[a]={});
+this.__zP2zc[a].value=b},
+__jA3lT:function(){if(window.qxsettings){for(a in window.qxsettings)this.set(a,window.qxsettings[a]);
+window.qxsettings=undefined;
+try{delete window.qxsettings}catch(b){}this.__bg8Heh()}var a},
+__bg8Heh:function(){if(this.get("qx.allowUrlSettings")!=true)return;
+for(var c=document.location.search.slice(1).split("&"),b=0,a;
+b<c.length;
+b++){a=c[b].split(":");
+if(a.length!=3||a[0]!="qxsetting")continue;
+this.set(a[1],decodeURIComponent(a[2]))}}},
+defer:function(a){a.define("qx.allowUrlSettings",false);
+a.define("qx.allowUrlVariants",false);
+a.define("qx.propertyDebugLevel",0);
+a.__jA3lT()}});
+
+
 // qx.core.property.Core
 //   - Size: 87 bytes
 //   - Modified: 2010-06-18T23:08:09
@@ -163,21 +214,6 @@ this.set(f)};
 d["reset"+f]=function(){for(var a=0;
 a<e;
 a++)this.reset(c[a])}}}});
-
-
-// qx.core.property.Util
-//   - Size: 501 bytes
-//   - Modified: 2010-06-18T23:08:09
-qx.Bootstrap.define("qx.core.property.Util",{statics:{getPropertyDefinition:function(a,c){var b;
-while(a){b=a.$$properties;
-if(b&&b[c])return b[c];
-a=a.superclass}return null},
-hasProperty:function(a,b){return!!this.getPropertyDefinition(a,b)},
-getProperties:function(a){var b=[];
-while(a)a.$$properties&&b.push.apply(b,qx.Bootstrap.getKeys(a.$$properties)),a=a.superclass;
-return b},
-getByProperty:function(a,b){while(a){if(a.$$properties&&a.$$properties[b])return a;
-a=a.superclass}return null}}});
 
 
 // qx.Mixin
@@ -413,36 +449,6 @@ this.VERSION=parseFloat(a)}},
 defer:function(a){a.__jA3lT()}});
 
 
-// qx.core.Setting
-//   - Size: 1333 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Bootstrap.define("qx.core.Setting",{statics:{__zP2zc:{},
-define:function(a,b){if(b===undefined)throw new Error("Default value of setting \""+a+"\" must be defined!");
-if(!this.__zP2zc[a])this.__zP2zc[a]={};
-else if(this.__zP2zc[a].defaultValue!==undefined)throw new Error("Setting \""+a+"\" is already defined!");
-this.__zP2zc[a].defaultValue=b},
-get:function(b){var a=this.__zP2zc[b];
-if(a===undefined)throw new Error("Setting \""+b+"\" is not defined.");
-if(a.value!==undefined)return a.value;
-return a.defaultValue},
-set:function(a,b){if((a.split(".")).length<2)throw new Error("Malformed settings key \""+a+"\". Must be following the schema \"namespace.key\".");
-this.__zP2zc[a]||(this.__zP2zc[a]={});
-this.__zP2zc[a].value=b},
-__jA3lT:function(){if(window.qxsettings){for(a in window.qxsettings)this.set(a,window.qxsettings[a]);
-window.qxsettings=undefined;
-try{delete window.qxsettings}catch(b){}this.__bg8Heh()}var a},
-__bg8Heh:function(){if(this.get("qx.allowUrlSettings")!=true)return;
-for(var c=document.location.search.slice(1).split("&"),b=0,a;
-b<c.length;
-b++){a=c[b].split(":");
-if(a.length!=3||a[0]!="qxsetting")continue;
-this.set(a[1],decodeURIComponent(a[2]))}}},
-defer:function(a){a.define("qx.allowUrlSettings",false);
-a.define("qx.allowUrlVariants",false);
-a.define("qx.propertyDebugLevel",0);
-a.__jA3lT()}});
-
-
 // qx.core.Type
 //   - Size: 2978 bytes
 //   - Modified: 2010-11-11T16:55:27
@@ -632,48 +638,6 @@ if(d[a]===undefined)throw new Error("Invalid key \""+a+"\" of property \""+b+"\"
 if(e[a]!==null&&typeof d[a]!==e[a])throw new Error("Invalid type of key \""+a+"\" of property \""+b+"\" in class \""+c.classname+"\"! The type of the key must be \""+e[a]+"\"!")}}}});
 
 
-// qx.core.property.Simple
-//   - Size: 1334 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Bootstrap.define("qx.core.property.Simple",{statics:{__uSSUl:0,
-__brLhnR:{},
-add:function(q,c,b){var g,o=this,k="fireDataEvent",j="$$data",l,e,f,a,n,d,p,i,h,m;
-o.__uSSUl++;
-l=o.__brLhnR;
-e=l[c];
-e||(e=l[c]=qx.core.property.Core.ID,qx.core.property.Core.ID++);
-f=q.prototype;
-b.init!==g&&(a="$$init-"+c,f[a]=b.init);
-n=qx.Bootstrap,d=n.$$firstUp[c]||n.firstUp(c),p=b.nullable,i=b.event,h=b.apply,m=b.validate;
-f["get"+d]=function(){var d,h,f;
-d=this;
-qx.core.property.Debug.checkGetter(d,b,arguments);
-h=d[j];
-h&&(f=h[e]);
-if(f===g){if(a)return d[a];
-p||d.error("Missing value for: "+c+" (during get())");
-f=null}return f};
-a&&(f["init"+d]=function(){var b=this,d=b[j];
-(!d||d[e]===g)&&(h&&b[h](b[a],g,c),i&&b[k](i,b[a],g))});
-f["set"+d]=function(f){var d,n,l;
-d=this;
-qx.core.property.Debug.checkSetter(d,b,arguments);
-m&&qx.core.Type.check(f,m,d,qx.core.ValidationError);
-n=d[j];
-n?l=n[e]:n=d[j]={};
-f!==l&&(l===g&&a&&(l=d[a]),n[e]=f,h&&d[h](f,l,c),i&&d[k](i,f,l));
-return f};
-f["reset"+d]=function(){var d,m,l,f;
-d=this;
-qx.core.property.Debug.checkResetter(d,b,arguments);
-m=d[j];
-if(!m)return;
-l=m[e];
-f=g;
-l!==f&&(m[e]=f,a?f=d[a]:p||d.error("Missing value for: "+c+" (during reset())"),h&&d[h](f,l,c),i&&d[k](i,f,l))};
-b.check==="Boolean"&&(f["toggle"+d]=function(){this["set"+d](!this["get"+d]())},f["is"+d]=f["get"+d])}}});
-
-
 // qx.core.property.Multi
 //   - Size: 4298 bytes
 //   - Modified: 2010-11-11T16:55:27
@@ -786,6 +750,48 @@ h=a;
 j&&(s=r?r[m]:a,s===a?h=j[p]:(q=c[s].get,h=q?j[q]?j[q](l):a:r[m+s],h===a&&(h=j[p])));
 h===a?(h=i[p],k[m]!==a&&(k[m]=a)):k[m]=t;
 h!==n&&(o=v[l],o.apply&&i[o.apply](h,n,l),o.event&&i.fireDataEvent(o.event,h,n),e(i,h,n,o))}}}})})();
+
+
+// qx.core.property.Simple
+//   - Size: 1334 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Bootstrap.define("qx.core.property.Simple",{statics:{__uSSUl:0,
+__brLhnR:{},
+add:function(q,c,b){var g,o=this,k="fireDataEvent",j="$$data",l,e,f,a,n,d,p,i,h,m;
+o.__uSSUl++;
+l=o.__brLhnR;
+e=l[c];
+e||(e=l[c]=qx.core.property.Core.ID,qx.core.property.Core.ID++);
+f=q.prototype;
+b.init!==g&&(a="$$init-"+c,f[a]=b.init);
+n=qx.Bootstrap,d=n.$$firstUp[c]||n.firstUp(c),p=b.nullable,i=b.event,h=b.apply,m=b.validate;
+f["get"+d]=function(){var d,h,f;
+d=this;
+qx.core.property.Debug.checkGetter(d,b,arguments);
+h=d[j];
+h&&(f=h[e]);
+if(f===g){if(a)return d[a];
+p||d.error("Missing value for: "+c+" (during get())");
+f=null}return f};
+a&&(f["init"+d]=function(){var b=this,d=b[j];
+(!d||d[e]===g)&&(h&&b[h](b[a],g,c),i&&b[k](i,b[a],g))});
+f["set"+d]=function(f){var d,n,l;
+d=this;
+qx.core.property.Debug.checkSetter(d,b,arguments);
+m&&qx.core.Type.check(f,m,d,qx.core.ValidationError);
+n=d[j];
+n?l=n[e]:n=d[j]={};
+f!==l&&(l===g&&a&&(l=d[a]),n[e]=f,h&&d[h](f,l,c),i&&d[k](i,f,l));
+return f};
+f["reset"+d]=function(){var d,m,l,f;
+d=this;
+qx.core.property.Debug.checkResetter(d,b,arguments);
+m=d[j];
+if(!m)return;
+l=m[e];
+f=g;
+l!==f&&(m[e]=f,a?f=d[a]:p||d.error("Missing value for: "+c+" (during reset())"),h&&d[h](f,l,c),i&&d[k](i,f,l))};
+b.check==="Boolean"&&(f["toggle"+d]=function(){this["set"+d](!this["get"+d]())},f["is"+d]=f["get"+d])}}});
 
 
 // qx.Class
@@ -1016,89 +1022,6 @@ members:{_applyOverflowX:function(a){this.getContentElement().setStyle("overflow
 _applyOverflowY:function(a){this.getContentElement().setStyle("overflowY",a)}}});
 
 
-// apiviewer.MWidgetRegistry
-//   - Size: 662 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("apiviewer.MWidgetRegistry",{properties:{id:{check:"String",
-apply:"_applyId",
-nullable:true,
-init:null}},
-members:{_applyId:function(b,a){var c=apiviewer.MWidgetRegistry;
-a&&c.unregister(this,a);
-b&&c.register(this,b)},
-getWidgetById:function(a){return apiviewer.MWidgetRegistry.getWidgetById(a)}},
-statics:{__yALNM:{},
-getWidgetById:function(a){return this.__yALNM[a]},
-register:function(b,a){if(this.__yALNM[a])throw new Error("An object with the id '"+a+"' already exists.");
-this.__yALNM[a]=b},
-unregister:function(b,a){if(this.__yALNM[a]!==b)throw new Error("The object is not registered with the id '"+a+"'.");
-delete this.__yALNM[a]}}});
-
-
-// qx.ui.form.MModelProperty
-//   - Size: 104 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Mixin.define("qx.ui.form.MModelProperty",{properties:{model:{nullable:true,
-event:"changeModel"}}});
-
-
-// qx.ui.form.MForm
-//   - Size: 503 bytes
-//   - Modified: 2010-09-30T14:20:20
-qx.Mixin.define("qx.ui.form.MForm",{construct:function(){},
-properties:{valid:{check:"Boolean",
-init:true,
-apply:"_applyValid",
-event:"changeValid"},
-required:{check:"Boolean",
-init:false,
-event:"changeRequired"},
-invalidMessage:{check:"String",
-init:"",
-event:"changeInvalidMessage"},
-requiredInvalidMessage:{check:"String",
-nullable:true,
-event:"changeInvalidMessage"}},
-members:{_applyValid:function(a){a?this.removeState("invalid"):this.addState("invalid")},
-__7AESY:null},
-destruct:function(){}});
-
-
-// qx.bom.client.Feature
-//   - Size: 1736 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Bootstrap.define("qx.bom.client.Feature",{statics:{STANDARD_MODE:false,
-QUIRKS_MODE:false,
-CONTENT_BOX:false,
-BORDER_BOX:false,
-SVG:false,
-CANVAS:!!window.CanvasRenderingContext2D,
-VML:false,
-XPATH:!!document.evaluate,
-AIR:navigator.userAgent.toLowerCase().indexOf("adobeair")!==-1,
-GEARS:!!(window.google&&window.google.gears),
-SSL:window.location.protocol==="https:",
-ECMA_OBJECT_COUNT:({}.__count__==0),
-CSS_POINTER_EVENTS:false,
-XUL:false,
-CSS_TEXT_OVERFLOW:("textOverflow"in document.documentElement.style||"OTextOverflow"in document.documentElement.style),
-HTML5_CLASSLIST:(document.documentElement.classList&&qx.Bootstrap.getClass(document.documentElement.classList)==="DOMTokenList"),
-TOUCH:("ontouchstart"in window),
-PLACEHOLDER:false,
-__jA3lT:function(){this.QUIRKS_MODE=this.__VT4YB();
-this.STANDARD_MODE=!this.QUIRKS_MODE;
-this.CONTENT_BOX=!qx.bom.client.Engine.MSHTML||this.STANDARD_MODE;
-this.BORDER_BOX=!this.CONTENT_BOX;
-this.SVG=document.implementation&&document.implementation.hasFeature&&(document.implementation.hasFeature("org.w3c.dom.svg","1.0")||document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure","1.1"));
-this.VML=qx.bom.client.Engine.MSHTML;
-try{document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul","label");
-this.XUL=true}catch(b){this.XUL=false}var a=document.createElement("input");
-this.PLACEHOLDER="placeholder"in a;
-"pointerEvents"in document.documentElement.style&&(this.CSS_POINTER_EVENTS=qx.bom.client.Engine.OPERA?false:true)},
-__VT4YB:function(){return qx.bom.client.Engine.MSHTML&&qx.bom.client.Engine.VERSION>=8?qx.bom.client.Engine.DOCUMENT_MODE===5:document.compatMode!=="CSS1Compat"}},
-defer:function(a){a.__jA3lT()}});
-
-
 // qx.ui.core.MBlocker
 //   - Size: 994 bytes
 //   - Modified: 2010-11-11T16:55:28
@@ -1220,16 +1143,39 @@ qx.Mixin.define("qx.ui.core.MRemoteLayoutHandling",{members:{setLayout:function(
 getLayout:function(){return this.getChildrenContainer().getLayout()}}});
 
 
-// qx.event.IEventHandler
-//   - Size: 226 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Interface.define("qx.event.IEventHandler",{statics:{TARGET_DOMNODE:1,
-TARGET_WINDOW:2,
-TARGET_OBJECT:4,
-TARGET_DOCUMENT:8},
-members:{canHandleEvent:function(){},
-registerEvent:function(){},
-unregisterEvent:function(){}}});
+// qx.bom.client.Feature
+//   - Size: 1736 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Bootstrap.define("qx.bom.client.Feature",{statics:{STANDARD_MODE:false,
+QUIRKS_MODE:false,
+CONTENT_BOX:false,
+BORDER_BOX:false,
+SVG:false,
+CANVAS:!!window.CanvasRenderingContext2D,
+VML:false,
+XPATH:!!document.evaluate,
+AIR:navigator.userAgent.toLowerCase().indexOf("adobeair")!==-1,
+GEARS:!!(window.google&&window.google.gears),
+SSL:window.location.protocol==="https:",
+ECMA_OBJECT_COUNT:({}.__count__==0),
+CSS_POINTER_EVENTS:false,
+XUL:false,
+CSS_TEXT_OVERFLOW:("textOverflow"in document.documentElement.style||"OTextOverflow"in document.documentElement.style),
+HTML5_CLASSLIST:(document.documentElement.classList&&qx.Bootstrap.getClass(document.documentElement.classList)==="DOMTokenList"),
+TOUCH:("ontouchstart"in window),
+PLACEHOLDER:false,
+__jA3lT:function(){this.QUIRKS_MODE=this.__VT4YB();
+this.STANDARD_MODE=!this.QUIRKS_MODE;
+this.CONTENT_BOX=!qx.bom.client.Engine.MSHTML||this.STANDARD_MODE;
+this.BORDER_BOX=!this.CONTENT_BOX;
+this.SVG=document.implementation&&document.implementation.hasFeature&&(document.implementation.hasFeature("org.w3c.dom.svg","1.0")||document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure","1.1"));
+this.VML=qx.bom.client.Engine.MSHTML;
+try{document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul","label");
+this.XUL=true}catch(b){this.XUL=false}var a=document.createElement("input");
+this.PLACEHOLDER="placeholder"in a;
+"pointerEvents"in document.documentElement.style&&(this.CSS_POINTER_EVENTS=qx.bom.client.Engine.OPERA?false:true)},
+__VT4YB:function(){return qx.bom.client.Engine.MSHTML&&qx.bom.client.Engine.VERSION>=8?qx.bom.client.Engine.DOCUMENT_MODE===5:document.compatMode!=="CSS1Compat"}},
+defer:function(a){a.__jA3lT()}});
 
 
 // qx.data.IListData
@@ -1252,6 +1198,34 @@ qx.Interface.define("qx.ui.decoration.IDecorator",{members:{getMarkup:function()
 resize:function(){},
 tint:function(){},
 getInsets:function(){}}});
+
+
+// qx.ui.core.MExecutable
+//   - Size: 1095 bytes
+//   - Modified: 2010-06-18T23:08:09
+qx.Mixin.define("qx.ui.core.MExecutable",{events:{execute:"qx.event.type.Event"},
+properties:{command:{check:"qx.ui.core.Command",
+apply:"_applyCommand",
+event:"changeCommand",
+nullable:true}},
+members:{__b0TXYK:null,
+__EsQBb:false,
+__bzr6dB:null,
+_bindableProperties:["enabled","label","icon","toolTipText","value","menu"],
+execute:function(){var a=this.getCommand();
+a&&(this.__EsQBb?this.__EsQBb=false:(this.__EsQBb=true,a.execute(this)));
+this.fireEvent("execute")},
+__bote5O:function(){if(this.__EsQBb){this.__EsQBb=false;
+return}this.__EsQBb=true;
+this.execute()},
+_applyCommand:function(c,d){d!=null&&d.removeListenerById(this.__bzr6dB);
+c!=null&&(this.__bzr6dB=c.addListener("execute",this.__bote5O,this));
+var b=this.__b0TXYK,e,a,g,f;
+b==null&&(this.__b0TXYK=b={});
+for(e=0;
+e<this._bindableProperties.length;
+e++)a=this._bindableProperties[e],d!=null&&b[a]!=null&&(d.removeBinding(b[a]),b[a]=null),c!=null&&qx.core.property.Util.hasProperty(this.constructor,a)&&(g=c.get(a),g==null&&(f=this.get(a)),b[a]=c.bind(a,this,a),f&&this.set(a,f))}},
+destruct:function(){this.__b0TXYK=null}});
 
 
 // qx.ui.form.IExecutable
@@ -1285,6 +1259,18 @@ defer:function(a){qx.core.Setting.define("qx.globalErrorHandling","on");
 a.setErrorHandler(null,null)}});
 
 
+// qx.event.IEventHandler
+//   - Size: 226 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Interface.define("qx.event.IEventHandler",{statics:{TARGET_DOMNODE:1,
+TARGET_WINDOW:2,
+TARGET_OBJECT:4,
+TARGET_DOCUMENT:8},
+members:{canHandleEvent:function(){},
+registerEvent:function(){},
+unregisterEvent:function(){}}});
+
+
 // qx.ui.window.IWindowManager
 //   - Size: 331 bytes
 //   - Modified: 2010-10-13T22:40:51
@@ -1306,34 +1292,6 @@ unblockContent:function(){},
 isContentBlocked:function(){}}});
 
 
-// qx.ui.core.MExecutable
-//   - Size: 1095 bytes
-//   - Modified: 2010-06-18T23:08:09
-qx.Mixin.define("qx.ui.core.MExecutable",{events:{execute:"qx.event.type.Event"},
-properties:{command:{check:"qx.ui.core.Command",
-apply:"_applyCommand",
-event:"changeCommand",
-nullable:true}},
-members:{__b0TXYK:null,
-__EsQBb:false,
-__bzr6dB:null,
-_bindableProperties:["enabled","label","icon","toolTipText","value","menu"],
-execute:function(){var a=this.getCommand();
-a&&(this.__EsQBb?this.__EsQBb=false:(this.__EsQBb=true,a.execute(this)));
-this.fireEvent("execute")},
-__bote5O:function(){if(this.__EsQBb){this.__EsQBb=false;
-return}this.__EsQBb=true;
-this.execute()},
-_applyCommand:function(c,d){d!=null&&d.removeListenerById(this.__bzr6dB);
-c!=null&&(this.__bzr6dB=c.addListener("execute",this.__bote5O,this));
-var b=this.__b0TXYK,e,a,g,f;
-b==null&&(this.__b0TXYK=b={});
-for(e=0;
-e<this._bindableProperties.length;
-e++)a=this._bindableProperties[e],d!=null&&b[a]!=null&&(d.removeBinding(b[a]),b[a]=null),c!=null&&qx.core.property.Util.hasProperty(this.constructor,a)&&(g=c.get(a),g==null&&(f=this.get(a)),b[a]=c.bind(a,this,a),f&&this.set(a,f))}},
-destruct:function(){this.__b0TXYK=null}});
-
-
 // qx.lang.Type
 //   - Size: 617 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -1347,55 +1305,6 @@ isNumber:function(a){return a!==null&&(this.getClass(a)=="Number"||a instanceof 
 isBoolean:function(a){return a!==null&&(this.getClass(a)=="Boolean"||a instanceof Boolean)},
 isDate:function(a){return a!==null&&(this.getClass(a)=="Date"||a instanceof Date)},
 isError:function(a){return a!==null&&(this.getClass(a)=="Error"||a instanceof Error)}}});
-
-
-// qx.bom.client.Locale
-//   - Size: 288 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.bom.client.Locale",{statics:{LOCALE:"",
-VARIANT:"",
-__jA3lT:function(){var a=(navigator.userLanguage||navigator.language).toLowerCase(),c="",b=a.indexOf("-");
-b!=-1&&(c=a.substr(b+1),a=a.substr(0,b));
-this.LOCALE=a;
-this.VARIANT=c}},
-defer:function(a){a.__jA3lT()}});
-
-
-// qx.lang.RingBuffer
-//   - Size: 1181 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.lang.RingBuffer",{extend:Object,
-construct:function(a){this.setMaxEntries(a||50)},
-members:{__bHMv5N:0,
-__3Ng1e:0,
-__UksBG:false,
-__cofKxn:0,
-__uPjgP:null,
-__Jk3m7:null,
-setMaxEntries:function(a){this.__Jk3m7=a;
-this.clear()},
-getMaxEntries:function(){return this.__Jk3m7},
-addEntry:function(b){this.__uPjgP[this.__bHMv5N]=b;
-this.__bHMv5N=this.__HDJCN(this.__bHMv5N,1);
-var a=this.getMaxEntries();
-this.__3Ng1e<a&&this.__3Ng1e++;
-this.__UksBG&&this.__cofKxn<a&&this.__cofKxn++},
-mark:function(){this.__UksBG=true;
-this.__cofKxn=0},
-clearMark:function(){this.__UksBG=false},
-getAllEntries:function(){return this.getEntries(this.getMaxEntries(),false)},
-getEntries:function(a,e){a>this.__3Ng1e&&(a=this.__3Ng1e);
-e&&this.__UksBG&&a>this.__cofKxn&&(a=this.__cofKxn);
-if(a>0){var c=this.__HDJCN(this.__bHMv5N,-1),d=this.__HDJCN(c,-a+1),b;
-b=d<=c?this.__uPjgP.slice(d,c+1):this.__uPjgP.slice(d,this.__3Ng1e).concat(this.__uPjgP.slice(0,c+1))}else b=[];
-return b},
-clear:function(){this.__uPjgP=new Array(this.getMaxEntries());
-this.__3Ng1e=0;
-this.__cofKxn=0;
-this.__bHMv5N=0},
-__HDJCN:function(c,d){var b=this.getMaxEntries(),a=(c+d)%b;
-a<0&&(a+=b);
-return a}}});
 
 
 // qx.dom.Node
@@ -1440,6 +1349,43 @@ break}return null},
 isBlockNode:function(a){if(!qx.dom.Node.isElement(a))return false;
 a=qx.dom.Node.getName(a);
 return/^(body|form|textarea|fieldset|ul|ol|dl|dt|dd|li|div|hr|p|h[1-6]|quote|pre|table|thead|tbody|tfoot|tr|td|th|iframe|address|blockquote)$/.test(a)}}});
+
+
+// qx.lang.RingBuffer
+//   - Size: 1181 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.lang.RingBuffer",{extend:Object,
+construct:function(a){this.setMaxEntries(a||50)},
+members:{__bHMv5N:0,
+__3Ng1e:0,
+__UksBG:false,
+__cofKxn:0,
+__uPjgP:null,
+__Jk3m7:null,
+setMaxEntries:function(a){this.__Jk3m7=a;
+this.clear()},
+getMaxEntries:function(){return this.__Jk3m7},
+addEntry:function(b){this.__uPjgP[this.__bHMv5N]=b;
+this.__bHMv5N=this.__HDJCN(this.__bHMv5N,1);
+var a=this.getMaxEntries();
+this.__3Ng1e<a&&this.__3Ng1e++;
+this.__UksBG&&this.__cofKxn<a&&this.__cofKxn++},
+mark:function(){this.__UksBG=true;
+this.__cofKxn=0},
+clearMark:function(){this.__UksBG=false},
+getAllEntries:function(){return this.getEntries(this.getMaxEntries(),false)},
+getEntries:function(a,e){a>this.__3Ng1e&&(a=this.__3Ng1e);
+e&&this.__UksBG&&a>this.__cofKxn&&(a=this.__cofKxn);
+if(a>0){var c=this.__HDJCN(this.__bHMv5N,-1),d=this.__HDJCN(c,-a+1),b;
+b=d<=c?this.__uPjgP.slice(d,c+1):this.__uPjgP.slice(d,this.__3Ng1e).concat(this.__uPjgP.slice(0,c+1))}else b=[];
+return b},
+clear:function(){this.__uPjgP=new Array(this.getMaxEntries());
+this.__3Ng1e=0;
+this.__cofKxn=0;
+this.__bHMv5N=0},
+__HDJCN:function(c,d){var b=this.getMaxEntries(),a=(c+d)%b;
+a<0&&(a+=b);
+return a}}});
 
 
 // qx.bom.Selector
@@ -1734,6 +1680,18 @@ n.query=function(a,c){return b(a,c)};
 n.matches=function(a,c){return b(a,null,null,c)}})();
 
 
+// qx.bom.client.Locale
+//   - Size: 288 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.bom.client.Locale",{statics:{LOCALE:"",
+VARIANT:"",
+__jA3lT:function(){var a=(navigator.userLanguage||navigator.language).toLowerCase(),c="",b=a.indexOf("-");
+b!=-1&&(c=a.substr(b+1),a=a.substr(0,b));
+this.LOCALE=a;
+this.VARIANT=c}},
+defer:function(a){a.__jA3lT()}});
+
+
 // qx.bom.client.Platform
 //   - Size: 691 bytes
 //   - Modified: 2010-06-18T23:08:09
@@ -1879,6 +1837,12 @@ set:function(b,a){b.style.cursor=this.__gMIjx[a]||a},
 reset:function(a){a.style.cursor=""}}});
 
 
+// qx.lang.Date
+//   - Size: 78 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.lang.Date",{statics:{now:function(){return +new Date}}});
+
+
 // qx.bom.element.Opacity
 //   - Size: 730 bytes
 //   - Modified: 2010-10-15T14:16:07
@@ -1893,12 +1857,6 @@ a==.999999&&(a=1);
 if(a!=null)return parseFloat(a);
 return 1}},
 defer:function(a){a.SUPPORT_CSS3_OPACITY=typeof document.documentElement.style.opacity=="string"}});
-
-
-// qx.lang.Date
-//   - Size: 78 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.lang.Date",{statics:{now:function(){return +new Date}}});
 
 
 // qx.bom.element.Overflow
@@ -1931,6 +1889,68 @@ return a}:function(a,b){return qx.bom.element.Style.get(a,"overflowY",b,false)},
 setY:qx.bom.client.Engine.VERSION<1.8?function(b,a){a==="hidden"&&(a="-moz-scrollbars-none");
 b.style.overflow=a}:function(a,b){a.style.overflowY=b},
 resetY:qx.bom.client.Engine.VERSION<1.8?function(a){a.style.overflow=""}:function(a){a.style.overflowY=""}}});
+
+
+// qx.lang.Array
+//   - Size: 2598 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Class.define("qx.lang.Array",{statics:{toArray:function(b,a){return this.cast(b,Array,a)},
+cast:function(b,d,c){if(b.constructor===d)return b;
+var a=new d;
+Object.prototype.toString.call(b)==="[object Array]"&&c==null?a.push.apply(a,b):a.push.apply(a,Array.prototype.slice.call(b,c||0));
+return a},
+fromArguments:function(b,a){return Array.prototype.slice.call(b,a||0)},
+fromCollection:function(a){return Array.prototype.slice.call(a,0)},
+clone:function(a){return a.concat()},
+insertAt:function(a,b,c){a.splice(c,0,b);
+return a},
+insertBefore:function(a,b,d){var c=a.indexOf(d);
+c==-1?a.push(b):a.splice(c,0,b);
+return a},
+insertAfter:function(a,c,d){var b=a.indexOf(d);
+b==-1||b==a.length-1?a.push(c):a.splice(b+1,0,c);
+return a},
+removeAt:function(a,b){return a.splice(b,1)[0]},
+removeAll:function(a){a.length=0;
+return this},
+append:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
+Array.prototype.push.apply(a,b);
+return a},
+exclude:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
+for(var d=0,e=b.length,c;
+d<e;
+d++)c=a.indexOf(b[d]),c!=-1&&a.splice(c,1);
+return a},
+remove:function(b,a){var c=b.indexOf(a);
+if(c!=-1){b.splice(c,1);
+return a}},
+contains:function(b,a){return b.indexOf(a)!==-1},
+equals:function(b,c){var d=b.length,a;
+if(d!==c.length)return false;
+for(a=0;
+a<d;
+a++)if(b[a]!==c[a])return false;
+return true},
+sum:function(c){for(var b=0,a=0,d=c.length;
+a<d;
+a++)b+=c[a];
+return b},
+max:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
+var b,d=a.length,c=a[0];
+for(b=1;
+b<d;
+b++)a[b]>c&&(c=a[b]);
+return c===undefined?null:c},
+min:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
+var b,d=a.length,c=a[0];
+for(b=1;
+b<d;
+b++)a[b]<c&&(c=a[b]);
+return c===undefined?null:c},
+unique:function(k){for(var c=[],l={},i={},e={},a,n=0,d="qx"+qx.lang.Date.now(),j=false,h=false,g=false,f=0,m=k.length,b;
+f<m;
+f++)a=k[f],a===null?j||(j=true,c.push(a)):a===undefined||(a===false?h||(h=true,c.push(a)):a===true?g||(g=true,c.push(a)):typeof a==="string"?l[a]||(l[a]=1,c.push(a)):typeof a==="number"?i[a]||(i[a]=1,c.push(a)):(b=a[d],b==null&&(b=a[d]=n++),e[b]||(e[b]=a,c.push(a))));
+for(b in e)try{delete e[b][d]}catch(o){try{e[b][d]=null}catch(o){throw new Error("Cannot clean-up map entry doneObjects["+b+"]["+d+"]")}}return c}}});
 
 
 // qx.core.Assert
@@ -2022,111 +2042,6 @@ while(a){if(a.classname===c)return true;
 a=a.superclass}return false}}});
 
 
-// qx.core.ObjectRegistry
-//   - Size: 1438 bytes
-//   - Modified: 2010-05-06T22:42:39
-qx.Class.define("qx.core.ObjectRegistry",{statics:{inShutDown:false,
-__zAUSy:{},
-__y4b2Q:0,
-__IA8cb:[],
-register:function(a){var c=this.__zAUSy,b,d;
-if(!c)return;
-b=a.$$hash;
-b==null&&(d=this.__IA8cb,b=d.length>0?d.pop():this.__y4b2Q+++"",a.$$hash=b);
-if(!a.dispose)throw new Error("Invalid object: "+a);
-c[b]=a},
-unregister:function(a){var b=a.$$hash,c;
-if(b==null)return;
-c=this.__zAUSy;
-c&&c[b]&&(delete c[b],this.__IA8cb.push(b));
-try{delete a.$$hash}catch(d){a.removeAttribute&&a.removeAttribute("$$hash")}},
-toHashCode:function(b){if(b==null)throw new Error("Invalid object: "+b);
-var a=b.$$hash,c;
-if(a!=null)return a;
-c=this.__IA8cb;
-a=c.length>0?c.pop():this.__y4b2Q+++"";
-return b.$$hash=a},
-clearHashCode:function(a){if(a==null)throw new Error("Invalid object: "+a);
-var b=a.$$hash;
-if(b!=null){this.__IA8cb.push(b);
-try{delete a.$$hash}catch(c){a.removeAttribute&&a.removeAttribute("$$hash")}}},
-fromHashCode:function(a){return this.__zAUSy[a]||null},
-shutdown:function(){this.inShutDown=true;
-var f=this.__zAUSy,c=[],d,b,a,e;
-for(d in f)c.push(d);
-c.sort(function(b,a){return parseInt(a)-parseInt(b)});
-a=0,e=c.length;
-while(true){try{for(;
-a<e;
-a++)d=c[a],b=f[d],b&&b.dispose&&b.dispose()}catch(g){qx.Bootstrap.error(this,"Could not dispose object "+b.toString()+": "+g);
-if(a!==e){a++;
-continue}}break}qx.Bootstrap.debug(this,"Disposed "+e+" objects");
-delete this.__zAUSy},
-getRegistry:function(){return this.__zAUSy}}});
-
-
-// qx.lang.Array
-//   - Size: 2598 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.lang.Array",{statics:{toArray:function(b,a){return this.cast(b,Array,a)},
-cast:function(b,d,c){if(b.constructor===d)return b;
-var a=new d;
-Object.prototype.toString.call(b)==="[object Array]"&&c==null?a.push.apply(a,b):a.push.apply(a,Array.prototype.slice.call(b,c||0));
-return a},
-fromArguments:function(b,a){return Array.prototype.slice.call(b,a||0)},
-fromCollection:function(a){return Array.prototype.slice.call(a,0)},
-clone:function(a){return a.concat()},
-insertAt:function(a,b,c){a.splice(c,0,b);
-return a},
-insertBefore:function(a,b,d){var c=a.indexOf(d);
-c==-1?a.push(b):a.splice(c,0,b);
-return a},
-insertAfter:function(a,c,d){var b=a.indexOf(d);
-b==-1||b==a.length-1?a.push(c):a.splice(b+1,0,c);
-return a},
-removeAt:function(a,b){return a.splice(b,1)[0]},
-removeAll:function(a){a.length=0;
-return this},
-append:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
-Array.prototype.push.apply(a,b);
-return a},
-exclude:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
-for(var d=0,e=b.length,c;
-d<e;
-d++)c=a.indexOf(b[d]),c!=-1&&a.splice(c,1);
-return a},
-remove:function(b,a){var c=b.indexOf(a);
-if(c!=-1){b.splice(c,1);
-return a}},
-contains:function(b,a){return b.indexOf(a)!==-1},
-equals:function(b,c){var d=b.length,a;
-if(d!==c.length)return false;
-for(a=0;
-a<d;
-a++)if(b[a]!==c[a])return false;
-return true},
-sum:function(c){for(var b=0,a=0,d=c.length;
-a<d;
-a++)b+=c[a];
-return b},
-max:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
-var b,d=a.length,c=a[0];
-for(b=1;
-b<d;
-b++)a[b]>c&&(c=a[b]);
-return c===undefined?null:c},
-min:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
-var b,d=a.length,c=a[0];
-for(b=1;
-b<d;
-b++)a[b]<c&&(c=a[b]);
-return c===undefined?null:c},
-unique:function(k){for(var c=[],l={},i={},e={},a,n=0,d="qx"+qx.lang.Date.now(),j=false,h=false,g=false,f=0,m=k.length,b;
-f<m;
-f++)a=k[f],a===null?j||(j=true,c.push(a)):a===undefined||(a===false?h||(h=true,c.push(a)):a===true?g||(g=true,c.push(a)):typeof a==="string"?l[a]||(l[a]=1,c.push(a)):typeof a==="number"?i[a]||(i[a]=1,c.push(a)):(b=a[d],b==null&&(b=a[d]=n++),e[b]||(e[b]=a,c.push(a))));
-for(b in e)try{delete e[b][d]}catch(o){try{e[b][d]=null}catch(o){throw new Error("Cannot clean-up map entry doneObjects["+b+"]["+d+"]")}}return c}}});
-
-
 // qx.lang.Function
 //   - Size: 2546 bytes
 //   - Modified: 2010-11-11T16:55:28
@@ -2172,49 +2087,6 @@ args:arguments.length>3?qx.lang.Array.fromArguments(arguments,3):null})()},
 periodical:function(a,b,c){return this.create(a,{periodical:b,
 self:c,
 args:arguments.length>3?qx.lang.Array.fromArguments(arguments,3):null})()}}});
-
-
-// qx.dev.StackTrace
-//   - Size: 1128 bytes
-//   - Modified: 2010-11-10T13:22:29
-qx.Class.define("qx.dev.StackTrace",{statics:{getStackTrace:function(){try{throw new Error()}catch(n){var a=this.getStackTraceFromError(n),c,j,b,i,e,l,k,o,f,g,m,h,d;
-qx.lang.Array.removeAt(a,0);
-c=this.getStackTraceFromCaller(arguments),j=c.length>a.length?c:a,b=0;
-for(;
-b<Math.min(c.length,a.length);
-b++){i=c[b];
-if(i.indexOf("anonymous")>=0)continue;
-e=i.split(":");
-if(e.length!=2)continue;
-l=e[0],k=e[1],o=a[b],f=o.split(":"),g=f[0],m=f[1];
-h=qx.Class.getByName(g)?g:l;
-d=h+":";
-k&&(d+=k+":");
-d+=m;
-j[b]=d}return j}},
-getStackTraceFromCaller:function(e){var b=[],a=qx.lang.Function.getCaller(e),d={},f,c;
-while(a){f=qx.lang.Function.getName(a);
-b.push(f);
-try{a=a.caller}catch(g){break}if(!a)break;
-c=qx.core.ObjectRegistry.toHashCode(a);
-if(d[c]){b.push("...");
-break}d[c]=a}return b},
-getStackTraceFromError:function(b){if(!b.stack)return[];
-var f=/@(.+):(\d+)$/gm,a,c=[],e,d,g;
-while((a=f.exec(b.stack))!=null)e=a[1],d=a[2],g=this.__bMVLSw(e),c.push(g+":"+d);
-return c},
-__bMVLSw:function(a){var b="/source/class/",c=a.indexOf(b),d=c==-1?a:a.substring(c+b.length).replace(/\//g,".").replace(/\.js$/,"");
-return d}}});
-
-
-// qx.core.AssertionError
-//   - Size: 248 bytes
-//   - Modified: 2010-08-30T22:23:15
-qx.Class.define("qx.core.AssertionError",{extend:qx.type.BaseError,
-construct:function(b,a){qx.type.BaseError.call(this,b,a);
-this.__mSOCg=qx.dev.StackTrace.getStackTrace()},
-members:{__mSOCg:null,
-getStackTrace:function(){return this.__mSOCg}}});
 
 
 // qx.lang.String
@@ -2331,6 +2203,92 @@ stringify:null,
 parse:null},
 defer:function(a){a.stringify=a.JSON.stringify;
 a.parse=a.JSON.parse}});
+
+
+// qx.core.ObjectRegistry
+//   - Size: 1438 bytes
+//   - Modified: 2010-05-06T22:42:39
+qx.Class.define("qx.core.ObjectRegistry",{statics:{inShutDown:false,
+__zAUSy:{},
+__y4b2Q:0,
+__IA8cb:[],
+register:function(a){var c=this.__zAUSy,b,d;
+if(!c)return;
+b=a.$$hash;
+b==null&&(d=this.__IA8cb,b=d.length>0?d.pop():this.__y4b2Q+++"",a.$$hash=b);
+if(!a.dispose)throw new Error("Invalid object: "+a);
+c[b]=a},
+unregister:function(a){var b=a.$$hash,c;
+if(b==null)return;
+c=this.__zAUSy;
+c&&c[b]&&(delete c[b],this.__IA8cb.push(b));
+try{delete a.$$hash}catch(d){a.removeAttribute&&a.removeAttribute("$$hash")}},
+toHashCode:function(b){if(b==null)throw new Error("Invalid object: "+b);
+var a=b.$$hash,c;
+if(a!=null)return a;
+c=this.__IA8cb;
+a=c.length>0?c.pop():this.__y4b2Q+++"";
+return b.$$hash=a},
+clearHashCode:function(a){if(a==null)throw new Error("Invalid object: "+a);
+var b=a.$$hash;
+if(b!=null){this.__IA8cb.push(b);
+try{delete a.$$hash}catch(c){a.removeAttribute&&a.removeAttribute("$$hash")}}},
+fromHashCode:function(a){return this.__zAUSy[a]||null},
+shutdown:function(){this.inShutDown=true;
+var f=this.__zAUSy,c=[],d,b,a,e;
+for(d in f)c.push(d);
+c.sort(function(b,a){return parseInt(a)-parseInt(b)});
+a=0,e=c.length;
+while(true){try{for(;
+a<e;
+a++)d=c[a],b=f[d],b&&b.dispose&&b.dispose()}catch(g){qx.Bootstrap.error(this,"Could not dispose object "+b.toString()+": "+g);
+if(a!==e){a++;
+continue}}break}qx.Bootstrap.debug(this,"Disposed "+e+" objects");
+delete this.__zAUSy},
+getRegistry:function(){return this.__zAUSy}}});
+
+
+// qx.dev.StackTrace
+//   - Size: 1128 bytes
+//   - Modified: 2010-11-10T13:22:29
+qx.Class.define("qx.dev.StackTrace",{statics:{getStackTrace:function(){try{throw new Error()}catch(n){var a=this.getStackTraceFromError(n),c,j,b,i,e,l,k,o,f,g,m,h,d;
+qx.lang.Array.removeAt(a,0);
+c=this.getStackTraceFromCaller(arguments),j=c.length>a.length?c:a,b=0;
+for(;
+b<Math.min(c.length,a.length);
+b++){i=c[b];
+if(i.indexOf("anonymous")>=0)continue;
+e=i.split(":");
+if(e.length!=2)continue;
+l=e[0],k=e[1],o=a[b],f=o.split(":"),g=f[0],m=f[1];
+h=qx.Class.getByName(g)?g:l;
+d=h+":";
+k&&(d+=k+":");
+d+=m;
+j[b]=d}return j}},
+getStackTraceFromCaller:function(e){var b=[],a=qx.lang.Function.getCaller(e),d={},f,c;
+while(a){f=qx.lang.Function.getName(a);
+b.push(f);
+try{a=a.caller}catch(g){break}if(!a)break;
+c=qx.core.ObjectRegistry.toHashCode(a);
+if(d[c]){b.push("...");
+break}d[c]=a}return b},
+getStackTraceFromError:function(b){if(!b.stack)return[];
+var f=/@(.+):(\d+)$/gm,a,c=[],e,d,g;
+while((a=f.exec(b.stack))!=null)e=a[1],d=a[2],g=this.__bMVLSw(e),c.push(g+":"+d);
+return c},
+__bMVLSw:function(a){var b="/source/class/",c=a.indexOf(b),d=c==-1?a:a.substring(c+b.length).replace(/\//g,".").replace(/\.js$/,"");
+return d}}});
+
+
+// qx.core.AssertionError
+//   - Size: 248 bytes
+//   - Modified: 2010-08-30T22:23:15
+qx.Class.define("qx.core.AssertionError",{extend:qx.type.BaseError,
+construct:function(b,a){qx.type.BaseError.call(this,b,a);
+this.__mSOCg=qx.dev.StackTrace.getStackTrace()},
+members:{__mSOCg:null,
+getStackTrace:function(){return this.__mSOCg}}});
 
 
 // qx.bom.element.Style
@@ -2891,6 +2849,15 @@ getOldData:function(){return this.__gQ654}},
 destruct:function(){this.__jlEBF=this.__gQ654=null}});
 
 
+// qx.event.IEventDispatcher
+//   - Size: 258 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.event.IEventDispatcher",{members:{canDispatchEvent:function(c,a,b){this.assertInstance(a,qx.event.type.Event);
+this.assertString(b)},
+dispatchEvent:function(c,a,b){this.assertInstance(a,qx.event.type.Event);
+this.assertString(b)}}});
+
+
 // qx.log.Logger
 //   - Size: 4576 bytes
 //   - Modified: 2010-11-03T14:43:37
@@ -3013,15 +2980,6 @@ qx.Bootstrap.info=a.info;
 qx.Bootstrap.warn=a.warn;
 qx.Bootstrap.error=a.error;
 qx.Bootstrap.trace=a.trace}});
-
-
-// qx.event.IEventDispatcher
-//   - Size: 258 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.event.IEventDispatcher",{members:{canDispatchEvent:function(c,a,b){this.assertInstance(a,qx.event.type.Event);
-this.assertString(b)},
-dispatchEvent:function(c,a,b){this.assertInstance(a,qx.event.type.Event);
-this.assertString(b)}}});
 
 
 // qx.event.Manager
@@ -3364,44 +3322,6 @@ _getDynamic:function(){return this._dynamic}},
 destruct:function(){this._dynamic=null}});
 
 
-// qx.theme.manager.Decoration
-//   - Size: 1131 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.theme.manager.Decoration",{type:"singleton",
-extend:qx.core.Object,
-construct:function(){this.base(arguments);
-qx.core.Type.add("Decorator",this.isValidPropertyValue,this)},
-properties:{theme:{check:"Theme",
-nullable:true,
-apply:"_applyTheme",
-event:"changeTheme"}},
-members:{__uFGym:null,
-resolve:function(a){if(!a)return null;
-if(typeof a==="object")return a;
-var d=this.getTheme(),b,f,c,e;
-if(!d)return null;
-d=this.getTheme();
-if(!d)return null;
-b=this.__uFGym;
-b||(b=this.__uFGym={});
-f=b[a];
-if(f)return f;
-c=d.decorations[a];
-if(!c)return null;
-e=c.decorator;
-if(e==null)throw new Error("Missing definition of which decorator to use in entry: "+a+"!");
-return b[a]=(new e).set(c.style)},
-isValidPropertyValue:function(a){if(typeof a==="string")return this.isDynamic(a);
-if(typeof a==="object"){var b=a.constructor;
-return qx.Class.hasInterface(b,qx.ui.decoration.IDecorator)}return false},
-isDynamic:function(a){if(!a)return false;
-var b=this.getTheme();
-if(!b)return false;
-return!!b.decorations[a]},
-_applyTheme:function(a){a||(this.__uFGym={})}},
-destruct:function(){this._disposeMap("__dynamic")}});
-
-
 // qx.theme.manager.Color
 //   - Size: 846 bytes
 //   - Modified: 2010-10-26T17:35:52
@@ -3574,6 +3494,44 @@ break}}return[a.red,a.green,a.blue]},
 randomColor:function(){var c=Math.round(Math.random()*255),a=Math.round(Math.random()*255),b=Math.round(Math.random()*255);
 return this.rgbToRgbString([c,a,b])}},
 defer:function(a){qx.core.Type.add("Color",a.isValidPropertyValue,a)}});
+
+
+// qx.theme.manager.Decoration
+//   - Size: 1131 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.theme.manager.Decoration",{type:"singleton",
+extend:qx.core.Object,
+construct:function(){this.base(arguments);
+qx.core.Type.add("Decorator",this.isValidPropertyValue,this)},
+properties:{theme:{check:"Theme",
+nullable:true,
+apply:"_applyTheme",
+event:"changeTheme"}},
+members:{__uFGym:null,
+resolve:function(a){if(!a)return null;
+if(typeof a==="object")return a;
+var d=this.getTheme(),b,f,c,e;
+if(!d)return null;
+d=this.getTheme();
+if(!d)return null;
+b=this.__uFGym;
+b||(b=this.__uFGym={});
+f=b[a];
+if(f)return f;
+c=d.decorations[a];
+if(!c)return null;
+e=c.decorator;
+if(e==null)throw new Error("Missing definition of which decorator to use in entry: "+a+"!");
+return b[a]=(new e).set(c.style)},
+isValidPropertyValue:function(a){if(typeof a==="string")return this.isDynamic(a);
+if(typeof a==="object"){var b=a.constructor;
+return qx.Class.hasInterface(b,qx.ui.decoration.IDecorator)}return false},
+isDynamic:function(a){if(!a)return false;
+var b=this.getTheme();
+if(!b)return false;
+return!!b.decorations[a]},
+_applyTheme:function(a){a||(this.__uFGym={})}},
+destruct:function(){this._disposeMap("__dynamic")}});
 
 
 // qx.ui.layout.Util
@@ -3926,31 +3884,6 @@ getContentSize:function(a){return{width:this.getContentWidth(a),
 height:this.getContentHeight(a)}}}});
 
 
-// qx.event.type.Native
-//   - Size: 861 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.type.Native",{extend:qx.event.type.Event,
-members:{init:function(a,b,d,c,e){this.base(arguments,c,e);
-this._target=b||qx.bom.Event.getTarget(a);
-this._relatedTarget=d||qx.bom.Event.getRelatedTarget(a);
-a.timeStamp&&(this._timeStamp=a.timeStamp);
-this._native=a;
-this._returnValue=null;
-return this},
-clone:function(c){var a=this.base(arguments,c),b={};
-a._native=this._cloneNativeEvent(this._native,b);
-a._returnValue=this._returnValue;
-return a},
-_cloneNativeEvent:function(b,a){a.preventDefault=qx.lang.Function.empty;
-return a},
-preventDefault:function(){this.base(arguments);
-qx.bom.Event.preventDefault(this._native)},
-getNativeEvent:function(){return this._native},
-setReturnValue:function(a){this._returnValue=a},
-getReturnValue:function(){return this._returnValue}},
-destruct:function(){this._native=this._returnValue=null}});
-
-
 // qx.bom.element.Location
 //   - Size: 3635 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -4007,6 +3940,133 @@ getPosition:function(a){return this.getRelative(a,this.getOffsetParent(a))},
 getOffsetParent:function(b){var a=b.offsetParent||document.body,c=qx.bom.element.Style;
 while(a&&(!/^body|html$/i.test(a.tagName)&&c.get(a,"position")==="static"))a=a.offsetParent;
 return a}}});
+
+
+// qx.event.type.Native
+//   - Size: 861 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.type.Native",{extend:qx.event.type.Event,
+members:{init:function(a,b,d,c,e){this.base(arguments,c,e);
+this._target=b||qx.bom.Event.getTarget(a);
+this._relatedTarget=d||qx.bom.Event.getRelatedTarget(a);
+a.timeStamp&&(this._timeStamp=a.timeStamp);
+this._native=a;
+this._returnValue=null;
+return this},
+clone:function(c){var a=this.base(arguments,c),b={};
+a._native=this._cloneNativeEvent(this._native,b);
+a._returnValue=this._returnValue;
+return a},
+_cloneNativeEvent:function(b,a){a.preventDefault=qx.lang.Function.empty;
+return a},
+preventDefault:function(){this.base(arguments);
+qx.bom.Event.preventDefault(this._native)},
+getNativeEvent:function(){return this._native},
+setReturnValue:function(a){this._returnValue=a},
+getReturnValue:function(){return this._returnValue}},
+destruct:function(){this._native=this._returnValue=null}});
+
+
+// qx.locale.Manager
+//   - Size: 2202 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.locale.Manager",{type:"singleton",
+extend:qx.core.Object,
+construct:function(){this.base(arguments);
+this.__XruXR=qx.$$translations||{};
+this.__uqPUA=qx.$$locales||{};
+var b=qx.bom.client.Locale,a=b.LOCALE,c=b.VARIANT;
+c!==""&&(a+="_"+c);
+this.__VgKYI=a;
+this.setLocale(a||this.__1UpdE)},
+statics:{tr:function(b){var a=qx.lang.Array.fromArguments(arguments);
+a.splice(0,1);
+return qx.locale.Manager.getInstance().translate(b,a)},
+trn:function(c,b,d){var a=qx.lang.Array.fromArguments(arguments);
+a.splice(0,3);
+return d!=1?qx.locale.Manager.getInstance().translate(b,a):qx.locale.Manager.getInstance().translate(c,a)},
+trc:function(d,b){var a=qx.lang.Array.fromArguments(arguments);
+a.splice(0,2);
+return qx.locale.Manager.getInstance().translate(b,a)},
+marktr:function(a){return a}},
+properties:{locale:{check:"String",
+nullable:true,
+apply:"_applyLocale",
+event:"changeLocale"}},
+members:{__1UpdE:"C",
+__qi6oJ:null,
+__yZNgl:null,
+__XruXR:null,
+__uqPUA:null,
+__VgKYI:null,
+getLanguage:function(){return this.__yZNgl},
+getTerritory:function(){return this.getLocale().split("_")[1]||""},
+getAvailableLocales:function(){var b=[],a;
+for(a in this.__uqPUA)a!=this.__1UpdE&&b.push(a);
+return b},
+__bitbTS:function(b){var a,c=b.indexOf("_");
+a=c==-1?b:b.substring(0,c);
+return a},
+_applyLocale:function(a){a in this.__uqPUA||a==this.__VgKYI||qx.log.Logger.warn("Locale: "+a+" not available.");
+this.__qi6oJ=a;
+this.__yZNgl=this.__bitbTS(a)},
+addTranslation:function(d,a){var c=this.__XruXR,b;
+if(c[d])for(b in a)c[d][b]=a[b];
+else c[d]=a},
+addLocale:function(a,c){var d=this.__uqPUA,b;
+if(d[a])for(b in c)d[a][b]=c[b];
+else d[a]=c},
+translate:function(a,b,d){var c=this.__XruXR;
+return this.__bhMQmC(c,a,b,d)},
+localize:function(a,b,d){var c=this.__uqPUA;
+return this.__bhMQmC(c,a,b,d)},
+__bhMQmC:function(b,c,g,e){var a,h,i,d,f;
+if(!b)return c;
+e?h=this.__bitbTS(e):(e=this.__qi6oJ,h=this.__yZNgl);
+!a&&b[e]&&(a=b[e][c]);
+!a&&b[h]&&(a=b[h][c]);
+!a&&b[this.__1UpdE]&&(a=b[this.__1UpdE][c]);
+a||(a=c);
+if(g.length>0){i=[],d=0;
+for(;
+d<g.length;
+d++)f=g[d],i[d]=f&&f.translate?f.translate():f;
+a=qx.lang.String.format(a,i)}return a}},
+destruct:function(){this.__XruXR=this.__uqPUA=null}});
+
+
+// qx.theme.manager.Font
+//   - Size: 1195 bytes
+//   - Modified: 2010-06-18T23:08:09
+qx.Class.define("qx.theme.manager.Font",{type:"singleton",
+extend:qx.util.ValueManager,
+construct:function(){this.base(arguments);
+qx.core.Type.add("Font",this.isDynamic,this)},
+properties:{theme:{check:"Theme",
+nullable:true,
+apply:"_applyTheme",
+event:"changeTheme"}},
+members:{resolveDynamic:function(a){var b=this._dynamic;
+return a instanceof qx.bom.Font?a:b[a]},
+resolve:function(a){var c=this._dynamic,d=c[a],b;
+if(d)return d;
+b=this.getTheme();
+if(b!==null&&b.fonts[a])return c[a]=(new qx.bom.Font).set(b.fonts[a]);
+return a},
+isDynamic:function(a){var c=this._dynamic,b;
+if(a&&(a instanceof qx.bom.Font||c[a]!==undefined))return true;
+b=this.getTheme();
+if(b!==null&&a&&b.fonts[a]){c[a]=(new qx.bom.Font).set(b.fonts[a]);
+return true}return false},
+__ba0WFb:function(a,b){if(a[b].include){var c=a[a[b].include];
+a[b].include=null;
+delete a[b].include;
+a[b]=qx.lang.Object.mergeWith(a[b],c,false);
+this.__ba0WFb(a,b)}},
+_applyTheme:function(d){var b=this._getDynamic(),a,c,e;
+for(a in b)b[a].themed&&(b[a].dispose(),delete b[a]);
+if(d){c=d.fonts,e=qx.bom.Font;
+for(a in c)c[a].include&&c[c[a].include]&&this.__ba0WFb(c,a),b[a]=(new e).set(c[a]),b[a].themed=true}this._setDynamic(b)}}});
 
 
 // qx.data.SingleValueBinding
@@ -4168,108 +4228,6 @@ b<this.__yQrBp[a].length;
 b++)this.showBindingInLog(c,this.__yQrBp[a][b][0])}}});
 
 
-// qx.locale.Manager
-//   - Size: 2202 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.locale.Manager",{type:"singleton",
-extend:qx.core.Object,
-construct:function(){this.base(arguments);
-this.__XruXR=qx.$$translations||{};
-this.__uqPUA=qx.$$locales||{};
-var b=qx.bom.client.Locale,a=b.LOCALE,c=b.VARIANT;
-c!==""&&(a+="_"+c);
-this.__VgKYI=a;
-this.setLocale(a||this.__1UpdE)},
-statics:{tr:function(b){var a=qx.lang.Array.fromArguments(arguments);
-a.splice(0,1);
-return qx.locale.Manager.getInstance().translate(b,a)},
-trn:function(c,b,d){var a=qx.lang.Array.fromArguments(arguments);
-a.splice(0,3);
-return d!=1?qx.locale.Manager.getInstance().translate(b,a):qx.locale.Manager.getInstance().translate(c,a)},
-trc:function(d,b){var a=qx.lang.Array.fromArguments(arguments);
-a.splice(0,2);
-return qx.locale.Manager.getInstance().translate(b,a)},
-marktr:function(a){return a}},
-properties:{locale:{check:"String",
-nullable:true,
-apply:"_applyLocale",
-event:"changeLocale"}},
-members:{__1UpdE:"C",
-__qi6oJ:null,
-__yZNgl:null,
-__XruXR:null,
-__uqPUA:null,
-__VgKYI:null,
-getLanguage:function(){return this.__yZNgl},
-getTerritory:function(){return this.getLocale().split("_")[1]||""},
-getAvailableLocales:function(){var b=[],a;
-for(a in this.__uqPUA)a!=this.__1UpdE&&b.push(a);
-return b},
-__bitbTS:function(b){var a,c=b.indexOf("_");
-a=c==-1?b:b.substring(0,c);
-return a},
-_applyLocale:function(a){a in this.__uqPUA||a==this.__VgKYI||qx.log.Logger.warn("Locale: "+a+" not available.");
-this.__qi6oJ=a;
-this.__yZNgl=this.__bitbTS(a)},
-addTranslation:function(d,a){var c=this.__XruXR,b;
-if(c[d])for(b in a)c[d][b]=a[b];
-else c[d]=a},
-addLocale:function(a,c){var d=this.__uqPUA,b;
-if(d[a])for(b in c)d[a][b]=c[b];
-else d[a]=c},
-translate:function(a,b,d){var c=this.__XruXR;
-return this.__bhMQmC(c,a,b,d)},
-localize:function(a,b,d){var c=this.__uqPUA;
-return this.__bhMQmC(c,a,b,d)},
-__bhMQmC:function(b,c,g,e){var a,h,i,d,f;
-if(!b)return c;
-e?h=this.__bitbTS(e):(e=this.__qi6oJ,h=this.__yZNgl);
-!a&&b[e]&&(a=b[e][c]);
-!a&&b[h]&&(a=b[h][c]);
-!a&&b[this.__1UpdE]&&(a=b[this.__1UpdE][c]);
-a||(a=c);
-if(g.length>0){i=[],d=0;
-for(;
-d<g.length;
-d++)f=g[d],i[d]=f&&f.translate?f.translate():f;
-a=qx.lang.String.format(a,i)}return a}},
-destruct:function(){this.__XruXR=this.__uqPUA=null}});
-
-
-// qx.theme.manager.Font
-//   - Size: 1195 bytes
-//   - Modified: 2010-06-18T23:08:09
-qx.Class.define("qx.theme.manager.Font",{type:"singleton",
-extend:qx.util.ValueManager,
-construct:function(){this.base(arguments);
-qx.core.Type.add("Font",this.isDynamic,this)},
-properties:{theme:{check:"Theme",
-nullable:true,
-apply:"_applyTheme",
-event:"changeTheme"}},
-members:{resolveDynamic:function(a){var b=this._dynamic;
-return a instanceof qx.bom.Font?a:b[a]},
-resolve:function(a){var c=this._dynamic,d=c[a],b;
-if(d)return d;
-b=this.getTheme();
-if(b!==null&&b.fonts[a])return c[a]=(new qx.bom.Font).set(b.fonts[a]);
-return a},
-isDynamic:function(a){var c=this._dynamic,b;
-if(a&&(a instanceof qx.bom.Font||c[a]!==undefined))return true;
-b=this.getTheme();
-if(b!==null&&a&&b.fonts[a]){c[a]=(new qx.bom.Font).set(b.fonts[a]);
-return true}return false},
-__ba0WFb:function(a,b){if(a[b].include){var c=a[a[b].include];
-a[b].include=null;
-delete a[b].include;
-a[b]=qx.lang.Object.mergeWith(a[b],c,false);
-this.__ba0WFb(a,b)}},
-_applyTheme:function(d){var b=this._getDynamic(),a,c,e;
-for(a in b)b[a].themed&&(b[a].dispose(),delete b[a]);
-if(d){c=d.fonts,e=qx.bom.Font;
-for(a in c)c[a].include&&c[c[a].include]&&this.__ba0WFb(c,a),b[a]=(new e).set(c[a]),b[a].themed=true}this._setDynamic(b)}}});
-
-
 // qx.bom.element.Decoration
 //   - Size: 476 bytes
 //   - Modified: 2010-11-11T16:55:27
@@ -4282,6 +4240,15 @@ backgroundImage:"url("+(a?a.uri:d.toUri(b))+")",
 backgroundRepeat:e,
 backgroundPosition:a?-a.left+"px "+(-a.top-.01)+"px":null};
 return f}}});
+
+
+// qx.data.MBinding
+//   - Size: 393 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.data.MBinding",{members:{bind:function(d,a,c,b){return qx.data.SingleValueBinding.bind(this,d,a,c,b)},
+removeBinding:function(a){qx.data.SingleValueBinding.removeBindingFromObject(this,a)},
+removeAllBindings:function(){qx.data.SingleValueBinding.removeAllBindingsForObject(this)},
+getBindings:function(){return qx.data.SingleValueBinding.getAllBindingsForObject(this)}}});
 
 
 // qx.locale.MTranslation
@@ -4299,15 +4266,6 @@ throw new Error("To enable localization please include qx.locale.Manager into yo
 marktr:function(){var a=qx.locale.Manager;
 if(a)return a.marktr.apply(a,arguments);
 throw new Error("To enable localization please include qx.locale.Manager into your build!")}}});
-
-
-// qx.data.MBinding
-//   - Size: 393 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.data.MBinding",{members:{bind:function(d,a,c,b){return qx.data.SingleValueBinding.bind(this,d,a,c,b)},
-removeBinding:function(a){qx.data.SingleValueBinding.removeBindingFromObject(this,a)},
-removeAllBindings:function(){qx.data.SingleValueBinding.removeAllBindingsForObject(this)},
-getBindings:function(){return qx.data.SingleValueBinding.getAllBindingsForObject(this)}}});
 
 
 // qx.event.type.Dom
@@ -4337,20 +4295,6 @@ isMetaPressed:function(){return this._native.metaKey},
 isCtrlOrCommandPressed:function(){return qx.bom.client.Platform.MAC?this._native.metaKey:this._native.ctrlKey}}});
 
 
-// qx.event.type.KeyInput
-//   - Size: 372 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.type.KeyInput",{extend:qx.event.type.Dom,
-members:{init:function(b,a,c){this.base(arguments,b,a,null,true,true);
-this._charCode=c;
-return this},
-clone:function(b){var a=this.base(arguments,b);
-a._charCode=this._charCode;
-return a},
-getCharCode:function(){return this._charCode},
-getChar:function(){return String.fromCharCode(this._charCode)}}});
-
-
 // qx.event.type.KeySequence
 //   - Size: 420 bytes
 //   - Modified: 2010-09-07T21:24:54
@@ -4365,6 +4309,20 @@ a._identifier=this._identifier;
 return a},
 getKeyIdentifier:function(){return this._identifier},
 getKeyCode:function(){return this._keyCode}}});
+
+
+// qx.event.type.KeyInput
+//   - Size: 372 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.type.KeyInput",{extend:qx.event.type.Dom,
+members:{init:function(b,a,c){this.base(arguments,b,a,null,true,true);
+this._charCode=c;
+return this},
+clone:function(b){var a=this.base(arguments,b);
+a._charCode=this._charCode;
+return a},
+getCharCode:function(){return this._charCode},
+getChar:function(){return String.fromCharCode(this._charCode)}}});
 
 
 // qx.event.handler.Appear
@@ -4428,6 +4386,46 @@ statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL},
 members:{_getParent:function(a){return a.parentNode},
 canDispatchEvent:function(b,a){return b.nodeType!==undefined&&a.getBubbles()}},
 defer:function(a){qx.event.Registration.addDispatcher(a)}});
+
+
+// qx.event.handler.Window
+//   - Size: 1494 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Class.define("qx.event.handler.Window",{extend:qx.core.Object,
+implement:qx.event.IEventHandler,
+construct:function(a){this.base(arguments);
+this._manager=a;
+this._window=a.getWindow();
+this._initWindowObserver()},
+statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
+SUPPORTED_TYPES:{error:1,
+load:1,
+beforeunload:1,
+unload:1,
+resize:1,
+scroll:1,
+beforeshutdown:1},
+TARGET_CHECK:qx.event.IEventHandler.TARGET_WINDOW,
+IGNORE_CAN_HANDLE:true},
+members:{canHandleEvent:function(){},
+registerEvent:function(){},
+unregisterEvent:function(){},
+_initWindowObserver:function(){this._onNativeWrapper=qx.lang.Function.listener(this._onNative,this);
+var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
+for(a in b)qx.bom.Event.addNativeListener(this._window,a,this._onNativeWrapper)},
+_stopWindowObserver:function(){var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
+for(a in b)qx.bom.Event.removeNativeListener(this._window,a,this._onNativeWrapper)},
+_onNative:qx.event.GlobalError.observeMethod(function(c){if(this.isDisposed())return;
+var a=this._window,f,g,b,e,d;
+try{f=a.document}catch(c){return}g=f.documentElement,b=qx.bom.Event.getTarget(c);
+if(b==null||b===a||b===f||b===g){e=qx.event.Registration.createEvent(c.type,qx.event.type.Native,[c,a]);
+qx.event.Registration.dispatchEvent(a,e);
+d=e.getReturnValue();
+if(d!=null){c.returnValue=d;
+return d}}})},
+destruct:function(){this._stopWindowObserver();
+this._manager=this._window=null},
+defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.event.handler.DragDrop
@@ -4563,46 +4561,6 @@ getCurrentType:function(){return this.getManager().getCurrentType()},
 getCurrentAction:function(){return this.getManager().getCurrentAction()}}});
 
 
-// qx.event.handler.Window
-//   - Size: 1494 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.event.handler.Window",{extend:qx.core.Object,
-implement:qx.event.IEventHandler,
-construct:function(a){this.base(arguments);
-this._manager=a;
-this._window=a.getWindow();
-this._initWindowObserver()},
-statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
-SUPPORTED_TYPES:{error:1,
-load:1,
-beforeunload:1,
-unload:1,
-resize:1,
-scroll:1,
-beforeshutdown:1},
-TARGET_CHECK:qx.event.IEventHandler.TARGET_WINDOW,
-IGNORE_CAN_HANDLE:true},
-members:{canHandleEvent:function(){},
-registerEvent:function(){},
-unregisterEvent:function(){},
-_initWindowObserver:function(){this._onNativeWrapper=qx.lang.Function.listener(this._onNative,this);
-var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
-for(a in b)qx.bom.Event.addNativeListener(this._window,a,this._onNativeWrapper)},
-_stopWindowObserver:function(){var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
-for(a in b)qx.bom.Event.removeNativeListener(this._window,a,this._onNativeWrapper)},
-_onNative:qx.event.GlobalError.observeMethod(function(c){if(this.isDisposed())return;
-var a=this._window,f,g,b,e,d;
-try{f=a.document}catch(c){return}g=f.documentElement,b=qx.bom.Event.getTarget(c);
-if(b==null||b===a||b===f||b===g){e=qx.event.Registration.createEvent(c.type,qx.event.type.Native,[c,a]);
-qx.event.Registration.dispatchEvent(a,e);
-d=e.getReturnValue();
-if(d!=null){c.returnValue=d;
-return d}}})},
-destruct:function(){this._stopWindowObserver();
-this._manager=this._window=null},
-defer:function(a){qx.event.Registration.addHandler(a)}});
-
-
 // qx.core.Init
 //   - Size: 476 bytes
 //   - Modified: 2010-11-11T16:55:27
@@ -4617,6 +4575,51 @@ __z0dnz:function(){var a=this.__PJiSt;
 a&&a.terminate()}},
 defer:function(a){qx.event.Registration.addListener(window,"shutdown",a.__z0dnz,a);
 qx.event.Registration.addListener(window,"beforeunload",a.__mJbUf,a)}});
+
+
+// qx.bom.Element
+//   - Size: 1650 bytes
+//   - Modified: 2010-11-03T13:22:29
+qx.Class.define("qx.bom.Element",{statics:{__PoXf0:{},
+allowCreationWithMarkup:function(b){b||(b=window);
+var a=qx.core.ObjectRegistry.toHashCode(b),c=qx.bom.Element.__PoXf0;
+if(c[a]==undefined)try{b.document.createElement("<INPUT TYPE='RADIO' NAME='RADIOTEST' VALUE='Second Choice'>");
+c[a]=true}catch(d){c[a]=false}return qx.bom.Element.__PoXf0[a]},
+getHelperElement:function(a){a||(a=window);
+var b=qx.core.ObjectRegistry.toHashCode(a),c;
+qx.bom.Element.__19NXN[b]||(c=qx.bom.Element.__19NXN[b]=a.document.createElement("div"));
+return qx.bom.Element.__19NXN[b]},
+__bzowAS:{onload:true,
+onpropertychange:true,
+oninput:true,
+onchange:true,
+name:true,
+type:true,
+checked:true,
+disabled:true},
+__19NXN:{},
+create:function(d,e,b){b||(b=window);
+if(!d)throw new Error("The tag name is missing!");
+var g=this.__bzowAS,f="",a,c,h;
+for(a in e)g[a]&&(f+=a+"='"+e[a]+"' ");
+f!=""?qx.bom.Element.allowCreationWithMarkup(b)?c=b.document.createElement("<"+d+" "+f+">"):(h=qx.bom.Element.getHelperElement(b),h.innerHTML="<"+d+" "+f+"></"+d+">",c=h.firstChild):c=b.document.createElement(d);
+for(a in e)g[a]||qx.bom.element.Attribute.set(c,a,e[a]);
+return c},
+empty:function(a){return a.innerHTML=""},
+clone:function(a,h){var f,l,g,i,c,j,k,b,d,m,e,n;
+(h||false&&!qx.xml.Document.isXmlDocument(a))&&(l=qx.event.Registration.getManager(a),g=qx.dom.Hierarchy.getDescendants(a),g.push(a));
+f=a.cloneNode(true);
+if(h===true){i=qx.dom.Hierarchy.getDescendants(f);
+i.push(f);
+d=0,m=g.length;
+for(;
+d<m;
+d++){k=g[d];
+c=l.serializeListeners(k);
+if(c.length>0){j=i[d];
+for(e=0,n=c.length;
+e<n;
+e++)b=c[e],l.addListener(j,b.type,b.handler,b.self,b.capture)}}}return f}}});
 
 
 // qx.event.handler.Focus
@@ -4736,51 +4739,6 @@ this._manager=this._window=this._document=this._root=this._body=this.__PKXaq=nul
 defer:function(b){qx.event.Registration.addHandler(b);
 var c=b.FOCUSABLE_ELEMENTS,a;
 for(a in c)c[a.toUpperCase()]=1}});
-
-
-// qx.bom.Element
-//   - Size: 1650 bytes
-//   - Modified: 2010-11-03T13:22:29
-qx.Class.define("qx.bom.Element",{statics:{__PoXf0:{},
-allowCreationWithMarkup:function(b){b||(b=window);
-var a=qx.core.ObjectRegistry.toHashCode(b),c=qx.bom.Element.__PoXf0;
-if(c[a]==undefined)try{b.document.createElement("<INPUT TYPE='RADIO' NAME='RADIOTEST' VALUE='Second Choice'>");
-c[a]=true}catch(d){c[a]=false}return qx.bom.Element.__PoXf0[a]},
-getHelperElement:function(a){a||(a=window);
-var b=qx.core.ObjectRegistry.toHashCode(a),c;
-qx.bom.Element.__19NXN[b]||(c=qx.bom.Element.__19NXN[b]=a.document.createElement("div"));
-return qx.bom.Element.__19NXN[b]},
-__bzowAS:{onload:true,
-onpropertychange:true,
-oninput:true,
-onchange:true,
-name:true,
-type:true,
-checked:true,
-disabled:true},
-__19NXN:{},
-create:function(d,e,b){b||(b=window);
-if(!d)throw new Error("The tag name is missing!");
-var g=this.__bzowAS,f="",a,c,h;
-for(a in e)g[a]&&(f+=a+"='"+e[a]+"' ");
-f!=""?qx.bom.Element.allowCreationWithMarkup(b)?c=b.document.createElement("<"+d+" "+f+">"):(h=qx.bom.Element.getHelperElement(b),h.innerHTML="<"+d+" "+f+"></"+d+">",c=h.firstChild):c=b.document.createElement(d);
-for(a in e)g[a]||qx.bom.element.Attribute.set(c,a,e[a]);
-return c},
-empty:function(a){return a.innerHTML=""},
-clone:function(a,h){var f,l,g,i,c,j,k,b,d,m,e,n;
-(h||false&&!qx.xml.Document.isXmlDocument(a))&&(l=qx.event.Registration.getManager(a),g=qx.dom.Hierarchy.getDescendants(a),g.push(a));
-f=a.cloneNode(true);
-if(h===true){i=qx.dom.Hierarchy.getDescendants(f);
-i.push(f);
-d=0,m=g.length;
-for(;
-d<m;
-d++){k=g[d];
-c=l.serializeListeners(k);
-if(c.length>0){j=i[d];
-for(e=0,n=c.length;
-e<n;
-e++)b=c[e],l.addListener(j,b.type,b.handler,b.self,b.capture)}}}return f}}});
 
 
 // qx.event.dispatch.MouseCapture
@@ -5580,49 +5538,6 @@ for(a in b)d=b[a],delete b[a],c[a]==null&&this.__ba6aAU(d),c[a]&&c[a]!=e[a]&&d.c
 this.__m5bO4={}}}});
 
 
-// qx.ui.core.queue.Appearance
-//   - Size: 459 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.core.queue.Appearance",{statics:{__m5bO4:{},
-remove:function(a){delete this.__m5bO4[a.$$hash]},
-add:function(a){var b=this.__m5bO4;
-if(b[a.$$hash])return;
-b[a.$$hash]=a;
-qx.ui.core.queue.Manager.scheduleFlush("appearance")},
-has:function(a){return!!this.__m5bO4[a.$$hash]},
-flush:function(){var d=qx.ui.core.queue.Visibility,c=this.__m5bO4,a,b;
-for(b in c)a=c[b],delete c[b],d.isVisible(a)?a.syncAppearance():a.$$stateChanges=true}}});
-
-
-// qx.ui.core.queue.Dispose
-//   - Size: 315 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.core.queue.Dispose",{statics:{__m5bO4:{},
-add:function(a){var b=this.__m5bO4;
-if(b[a.$$hash])return;
-b[a.$$hash]=a;
-qx.ui.core.queue.Manager.scheduleFlush("dispose")},
-flush:function(){var b=this.__m5bO4,a,c;
-for(a in b)c=b[a],delete b[a],c.dispose();
-for(a in b)return;
-this.__m5bO4={}}}});
-
-
-// qx.ui.core.queue.Widget
-//   - Size: 367 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.core.queue.Widget",{statics:{__m5bO4:{},
-remove:function(a){delete this.__m5bO4[a.$$hash]},
-add:function(a){var b=this.__m5bO4;
-if(b[a.$$hash])return;
-b[a.$$hash]=a;
-qx.ui.core.queue.Manager.scheduleFlush("widget")},
-flush:function(){var b=this.__m5bO4,c,a;
-for(a in b)c=b[a],delete b[a],c.syncWidget();
-for(a in b)return;
-this.__m5bO4={}}}});
-
-
 // qx.ui.core.queue.Layout
 //   - Size: 1469 bytes
 //   - Modified: 2010-09-23T21:51:03
@@ -5656,6 +5571,49 @@ a.invalidateLayoutCache();
 continue}c=a.getSizeHint(false);
 c?(a.invalidateLayoutCache(),e=a.getSizeHint(),g=!a.getBounds()||c.minWidth!==e.minWidth||c.width!==e.width||c.maxWidth!==e.maxWidth||c.minHeight!==e.minHeight||c.height!==e.height||c.maxHeight!==e.maxHeight):g=true;
 g?(h=a.getLayoutParent(),d[b-1]||(d[b-1]={}),d[b-1][h.$$hash]=h):f.push(a)}}return f}}});
+
+
+// qx.ui.core.queue.Dispose
+//   - Size: 315 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.core.queue.Dispose",{statics:{__m5bO4:{},
+add:function(a){var b=this.__m5bO4;
+if(b[a.$$hash])return;
+b[a.$$hash]=a;
+qx.ui.core.queue.Manager.scheduleFlush("dispose")},
+flush:function(){var b=this.__m5bO4,a,c;
+for(a in b)c=b[a],delete b[a],c.dispose();
+for(a in b)return;
+this.__m5bO4={}}}});
+
+
+// qx.ui.core.queue.Appearance
+//   - Size: 459 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.core.queue.Appearance",{statics:{__m5bO4:{},
+remove:function(a){delete this.__m5bO4[a.$$hash]},
+add:function(a){var b=this.__m5bO4;
+if(b[a.$$hash])return;
+b[a.$$hash]=a;
+qx.ui.core.queue.Manager.scheduleFlush("appearance")},
+has:function(a){return!!this.__m5bO4[a.$$hash]},
+flush:function(){var d=qx.ui.core.queue.Visibility,c=this.__m5bO4,a,b;
+for(b in c)a=c[b],delete c[b],d.isVisible(a)?a.syncAppearance():a.$$stateChanges=true}}});
+
+
+// qx.ui.core.queue.Widget
+//   - Size: 367 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.core.queue.Widget",{statics:{__m5bO4:{},
+remove:function(a){delete this.__m5bO4[a.$$hash]},
+add:function(a){var b=this.__m5bO4;
+if(b[a.$$hash])return;
+b[a.$$hash]=a;
+qx.ui.core.queue.Manager.scheduleFlush("widget")},
+flush:function(){var b=this.__m5bO4,c,a;
+for(a in b)c=b[a],delete b[a],c.syncWidget();
+for(a in b)return;
+this.__m5bO4={}}}});
 
 
 // qx.ui.core.DecoratorFactory
@@ -5711,6 +5669,26 @@ return this},
 getValue:function(){return this._getProperty("value")}}});
 
 
+// qx.html.Image
+//   - Size: 868 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.html.Image",{extend:qx.html.Element,
+members:{_applyProperty:function(c,d){this.base(arguments,c,d);
+if(c==="source"){var a=this._getProperty("source"),b;
+a!=null&&(b=this.getDomElement(),this._getProperty("scale")?b.src=qx.util.ResourceManager.getInstance().toUri(a):qx.bom.element2.Style.set(b,qx.bom.element.Decoration.getStyles(a,"no-repeat")))}},
+_createDomElement:function(){this.setNodeName(this._getProperty("scale")?"img":"div");
+return this.base(arguments)},
+_copyData:function(){return this.base(arguments,true)},
+setSource:function(a){this._setProperty("source",a);
+return this},
+getSource:function(){return this._getProperty("source")},
+resetSource:function(){this._removeProperty("source",true);
+return this},
+setScale:function(a){this._setProperty("scale",a);
+return this},
+getScale:function(){return this._getProperty("scale")}}});
+
+
 // qx.ui.window.Manager
 //   - Size: 1159 bytes
 //   - Modified: 2010-08-26T21:43:54
@@ -5737,26 +5715,6 @@ c&&(b.push(a),this.updateStack())},
 sendToBack:function(a){var b=this.__uDc7p.getWindows(),c=qx.lang.Array.remove(b,a);
 c&&(b.unshift(a),this.updateStack())}},
 destruct:function(){this._disposeObjects("__desktop")}});
-
-
-// qx.html.Image
-//   - Size: 868 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.html.Image",{extend:qx.html.Element,
-members:{_applyProperty:function(c,d){this.base(arguments,c,d);
-if(c==="source"){var a=this._getProperty("source"),b;
-a!=null&&(b=this.getDomElement(),this._getProperty("scale")?b.src=qx.util.ResourceManager.getInstance().toUri(a):qx.bom.element2.Style.set(b,qx.bom.element.Decoration.getStyles(a,"no-repeat")))}},
-_createDomElement:function(){this.setNodeName(this._getProperty("scale")?"img":"div");
-return this.base(arguments)},
-_copyData:function(){return this.base(arguments,true)},
-setSource:function(a){this._setProperty("source",a);
-return this},
-getSource:function(){return this._getProperty("source")},
-resetSource:function(){this._removeProperty("source",true);
-return this},
-setScale:function(a){this._setProperty("scale",a);
-return this},
-getScale:function(){return this._getProperty("scale")}}});
 
 
 // qx.ui.core.LayoutItem
@@ -6051,87 +6009,6 @@ width:h}}},
 destruct:function(){this.__umq8d=this.__mLFlJ=this.__yONi8=null}});
 
 
-// qx.ui.layout.HBox
-//   - Size: 3489 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.ui.layout.HBox",{extend:qx.ui.layout.Abstract,
-construct:function(c,b,a){this.base(arguments);
-c&&this.setSpacing(c);
-b&&this.setAlignX(b);
-a&&this.setSeparator(a)},
-properties:{alignX:{check:["left","center","right"],
-init:"left",
-apply:"_applyLayoutChange"},
-alignY:{check:["top","middle","bottom"],
-init:"top",
-apply:"_applyLayoutChange"},
-spacing:{check:"Integer",
-init:0,
-apply:"_applyLayoutChange"},
-separator:{check:"Decorator",
-nullable:true,
-apply:"_applyLayoutChange"},
-reversed:{check:"Boolean",
-init:false,
-apply:"_applyReversed"}},
-members:{__qLqrC:null,
-__mLFlJ:null,
-__ItYVd:null,
-__yONi8:null,
-_applyReversed:function(){this._invalidChildrenCache=true;
-this._applyLayoutChange()},
-__VfnJe:function(){var b=this._getLayoutChildren(),d=b.length,g=false,f=this.__qLqrC&&this.__qLqrC.length!=d&&this.__mLFlJ&&this.__qLqrC,c,h=f?this.__qLqrC:new Array(d),e=f?this.__mLFlJ:new Array(d),a;
-this.getReversed()&&(b=b.concat().reverse());
-for(a=0;
-a<d;
-a++)c=b[a].getLayoutProperties(),c.width!=null&&(h[a]=parseFloat(c.width)/100),c.flex!=null?(e[a]=c.flex,g=true):e[a]=0;
-f||(this.__qLqrC=h,this.__mLFlJ=e);
-this.__ItYVd=g;
-this.__yONi8=b;
-delete this._invalidChildrenCache},
-verifyLayoutProperty:function(c,a,b){this.assert(a==="flex"||a==="width","The property '"+a+"' is not supported by the HBox layout!");
-a=="width"?this.assertMatch(b,qx.ui.layout.Util.PERCENT_VALUE):(this.assertNumber(b),this.assert(b>=0))},
-renderLayout:function(i,q){this._invalidChildrenCache&&this.__VfnJe();
-var d=this.__yONi8,n=d.length,j=qx.ui.layout.Util,k=this.getSpacing(),e=this.getSeparator(),A,a,c,f,p,l,h,y,u,o,z,b,g,x,r,s,m,t,w,v;
-A=e?j.computeHorizontalSeparatorGaps(d,k,e):j.computeHorizontalGaps(d,k,true);
-l=[],h=A;
-for(a=0;
-a<n;
-a+=1)p=this.__qLqrC[a],f=p!=null?Math.floor((i-A)*p):d[a].getSizeHint().width,l.push(f),h+=f;
-if(this.__ItYVd&&h!=i){y={};
-for(a=0;
-a<n;
-a+=1)u=this.__mLFlJ[a],u>0&&(g=d[a].getSizeHint(),y[a]={min:g.minWidth,
-value:l[a],
-max:g.maxWidth,
-flex:u});
-z=j.computeFlexOffsets(y,i,h);
-for(a in z)o=z[a].offset,l[a]+=o,h+=o}b=d[0].getMarginLeft();
-h<i&&this.getAlignX()!="left"&&(b=i-h,this.getAlignX()==="center"&&(b=Math.round(b/2)));
-k=this.getSpacing();
-this._clearSeparators();
-e&&(w=qx.theme.manager.Decoration.getInstance().resolve(e).getInsets(),v=w.left+w.right);
-for(a=0;
-a<n;
-a+=1)c=d[a],f=l[a],g=c.getSizeHint(),m=c.getMarginTop(),t=c.getMarginBottom(),r=Math.max(g.minHeight,Math.min(q-m-t,g.maxHeight)),x=j.computeVerticalAlignOffset(c.getAlignY()||this.getAlignY(),r,q,m,t),a>0&&(e?(b+=s+k,this._renderSeparator(e,{left:b,
-top:0,
-width:v,
-height:q}),b+=v+k+c.getMarginLeft()):b+=j.collapseMargins(k,s,c.getMarginLeft())),c.renderLayout(b,x,f,r),b+=f,s=c.getMarginRight()},
-_computeSizeHint:function(){this._invalidChildrenCache&&this.__VfnJe();
-for(var n=qx.ui.layout.Util,e=this.__yONi8,d=0,l=0,i=0,k=0,j=0,f,a,b,c=0,p=e.length,q,m,o,g,h;
-c<p;
-c+=1)f=e[c],a=f.getSizeHint(),l+=a.width,q=this.__mLFlJ[c],m=this.__qLqrC[c],q?d+=a.minWidth:m?i=Math.max(i,Math.round(a.minWidth/m)):d+=a.width,b=f.getMarginTop()+f.getMarginBottom(),a.height+b>j&&(j=a.height+b),a.minHeight+b>k&&(k=a.minHeight+b);
-d+=i;
-o=this.getSpacing(),g=this.getSeparator();
-h=g?n.computeHorizontalSeparatorGaps(e,o,g):n.computeHorizontalGaps(e,o,true);
-this.assertInteger(h,"Layout utility returned invalid gaps. Used separator: "+g);
-return{minWidth:d+h,
-width:l+h,
-minHeight:k,
-height:j}}},
-destruct:function(){this.__qLqrC=this.__mLFlJ=this.__yONi8=null}});
-
-
 // qx.ui.layout.Grid
 //   - Size: 10330 bytes
 //   - Modified: 2010-08-26T21:43:53
@@ -6409,6 +6286,87 @@ minHeight:e+j,
 height:k+j};
 return m}},
 destruct:function(){this.__jxKLh=this.__usc9t=this.__tKdjT=this.__yElrO=this.__ztuye=this.__DHg8i=this.__JCnsd=null}});
+
+
+// qx.ui.layout.HBox
+//   - Size: 3489 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.ui.layout.HBox",{extend:qx.ui.layout.Abstract,
+construct:function(c,b,a){this.base(arguments);
+c&&this.setSpacing(c);
+b&&this.setAlignX(b);
+a&&this.setSeparator(a)},
+properties:{alignX:{check:["left","center","right"],
+init:"left",
+apply:"_applyLayoutChange"},
+alignY:{check:["top","middle","bottom"],
+init:"top",
+apply:"_applyLayoutChange"},
+spacing:{check:"Integer",
+init:0,
+apply:"_applyLayoutChange"},
+separator:{check:"Decorator",
+nullable:true,
+apply:"_applyLayoutChange"},
+reversed:{check:"Boolean",
+init:false,
+apply:"_applyReversed"}},
+members:{__qLqrC:null,
+__mLFlJ:null,
+__ItYVd:null,
+__yONi8:null,
+_applyReversed:function(){this._invalidChildrenCache=true;
+this._applyLayoutChange()},
+__VfnJe:function(){var b=this._getLayoutChildren(),d=b.length,g=false,f=this.__qLqrC&&this.__qLqrC.length!=d&&this.__mLFlJ&&this.__qLqrC,c,h=f?this.__qLqrC:new Array(d),e=f?this.__mLFlJ:new Array(d),a;
+this.getReversed()&&(b=b.concat().reverse());
+for(a=0;
+a<d;
+a++)c=b[a].getLayoutProperties(),c.width!=null&&(h[a]=parseFloat(c.width)/100),c.flex!=null?(e[a]=c.flex,g=true):e[a]=0;
+f||(this.__qLqrC=h,this.__mLFlJ=e);
+this.__ItYVd=g;
+this.__yONi8=b;
+delete this._invalidChildrenCache},
+verifyLayoutProperty:function(c,a,b){this.assert(a==="flex"||a==="width","The property '"+a+"' is not supported by the HBox layout!");
+a=="width"?this.assertMatch(b,qx.ui.layout.Util.PERCENT_VALUE):(this.assertNumber(b),this.assert(b>=0))},
+renderLayout:function(i,q){this._invalidChildrenCache&&this.__VfnJe();
+var d=this.__yONi8,n=d.length,j=qx.ui.layout.Util,k=this.getSpacing(),e=this.getSeparator(),A,a,c,f,p,l,h,y,u,o,z,b,g,x,r,s,m,t,w,v;
+A=e?j.computeHorizontalSeparatorGaps(d,k,e):j.computeHorizontalGaps(d,k,true);
+l=[],h=A;
+for(a=0;
+a<n;
+a+=1)p=this.__qLqrC[a],f=p!=null?Math.floor((i-A)*p):d[a].getSizeHint().width,l.push(f),h+=f;
+if(this.__ItYVd&&h!=i){y={};
+for(a=0;
+a<n;
+a+=1)u=this.__mLFlJ[a],u>0&&(g=d[a].getSizeHint(),y[a]={min:g.minWidth,
+value:l[a],
+max:g.maxWidth,
+flex:u});
+z=j.computeFlexOffsets(y,i,h);
+for(a in z)o=z[a].offset,l[a]+=o,h+=o}b=d[0].getMarginLeft();
+h<i&&this.getAlignX()!="left"&&(b=i-h,this.getAlignX()==="center"&&(b=Math.round(b/2)));
+k=this.getSpacing();
+this._clearSeparators();
+e&&(w=qx.theme.manager.Decoration.getInstance().resolve(e).getInsets(),v=w.left+w.right);
+for(a=0;
+a<n;
+a+=1)c=d[a],f=l[a],g=c.getSizeHint(),m=c.getMarginTop(),t=c.getMarginBottom(),r=Math.max(g.minHeight,Math.min(q-m-t,g.maxHeight)),x=j.computeVerticalAlignOffset(c.getAlignY()||this.getAlignY(),r,q,m,t),a>0&&(e?(b+=s+k,this._renderSeparator(e,{left:b,
+top:0,
+width:v,
+height:q}),b+=v+k+c.getMarginLeft()):b+=j.collapseMargins(k,s,c.getMarginLeft())),c.renderLayout(b,x,f,r),b+=f,s=c.getMarginRight()},
+_computeSizeHint:function(){this._invalidChildrenCache&&this.__VfnJe();
+for(var n=qx.ui.layout.Util,e=this.__yONi8,d=0,l=0,i=0,k=0,j=0,f,a,b,c=0,p=e.length,q,m,o,g,h;
+c<p;
+c+=1)f=e[c],a=f.getSizeHint(),l+=a.width,q=this.__mLFlJ[c],m=this.__qLqrC[c],q?d+=a.minWidth:m?i=Math.max(i,Math.round(a.minWidth/m)):d+=a.width,b=f.getMarginTop()+f.getMarginBottom(),a.height+b>j&&(j=a.height+b),a.minHeight+b>k&&(k=a.minHeight+b);
+d+=i;
+o=this.getSpacing(),g=this.getSeparator();
+h=g?n.computeHorizontalSeparatorGaps(e,o,g):n.computeHorizontalGaps(e,o,true);
+this.assertInteger(h,"Layout utility returned invalid gaps. Used separator: "+g);
+return{minWidth:d+h,
+width:l+h,
+minHeight:k,
+height:j}}},
+destruct:function(){this.__qLqrC=this.__mLFlJ=this.__yONi8=null}});
 
 
 // qx.ui.core.Widget
@@ -7064,17 +7022,6 @@ case"align-end":return b.end-a.end-c}},
 _isInRange:function(a,b,c){return a>=0&&a+b<=c}}});
 
 
-// qx.util.placement.KeepAlignAxis
-//   - Size: 342 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.util.placement.KeepAlignAxis",{extend:qx.util.placement.AbstractAxis,
-members:{computeStart:function(f,c,b,h,g){var a=this._moveToEdgeAndAlign(f,c,b,g),e,d;
-if(this._isInRange(a,f,h))return a;
-g=="edge-start"||g=="edge-end"?(e=c.start-b.end,d=c.end+b.start):(e=c.end-b.end,d=c.start+b.start);
-a=e>h-d?e-f:d;
-return a}}});
-
-
 // qx.util.placement.BestFitAxis
 //   - Size: 275 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -7083,6 +7030,17 @@ members:{computeStart:function(b,f,e,c,d){var a=this._moveToEdgeAndAlign(b,f,e,d
 if(this._isInRange(a,b,c))return a;
 a<0&&(a=Math.min(0,c-b));
 a+b>c&&(a=Math.max(0,c-b));
+return a}}});
+
+
+// qx.util.placement.KeepAlignAxis
+//   - Size: 342 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.util.placement.KeepAlignAxis",{extend:qx.util.placement.AbstractAxis,
+members:{computeStart:function(f,c,b,h,g){var a=this._moveToEdgeAndAlign(f,c,b,g),e,d;
+if(this._isInRange(a,f,h))return a;
+g=="edge-start"||g=="edge-end"?(e=c.start-b.end,d=c.end+b.start):(e=c.end-b.end,d=c.start+b.start);
+a=e>h-d?e-f:d;
 return a}}});
 
 
@@ -8870,13 +8828,116 @@ this._disposeObjects("__contentBlocker","__blocker","__timer");
 this.__VI41X=this.__9hYDs=this.__2x0gW=this._widget=this.__bRCHEn=null}});
 
 
-// qx.ui.form.IBooleanForm
-//   - Size: 199 bytes
+// qx.ui.form.MModelProperty
+//   - Size: 104 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Mixin.define("qx.ui.form.MModelProperty",{properties:{model:{nullable:true,
+event:"changeModel"}}});
+
+
+// qx.ui.form.MForm
+//   - Size: 503 bytes
+//   - Modified: 2010-09-30T14:20:20
+qx.Mixin.define("qx.ui.form.MForm",{construct:function(){},
+properties:{valid:{check:"Boolean",
+init:true,
+apply:"_applyValid",
+event:"changeValid"},
+required:{check:"Boolean",
+init:false,
+event:"changeRequired"},
+invalidMessage:{check:"String",
+init:"",
+event:"changeInvalidMessage"},
+requiredInvalidMessage:{check:"String",
+nullable:true,
+event:"changeInvalidMessage"}},
+members:{_applyValid:function(a){a?this.removeState("invalid"):this.addState("invalid")},
+__7AESY:null},
+destruct:function(){}});
+
+
+// apiviewer.MWidgetRegistry
+//   - Size: 662 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IBooleanForm",{events:{changeValue:"qx.event.type.Data"},
-members:{setValue:function(){return arguments.length==1},
-resetValue:function(){},
-getValue:function(){}}});
+qx.Mixin.define("apiviewer.MWidgetRegistry",{properties:{id:{check:"String",
+apply:"_applyId",
+nullable:true,
+init:null}},
+members:{_applyId:function(b,a){var c=apiviewer.MWidgetRegistry;
+a&&c.unregister(this,a);
+b&&c.register(this,b)},
+getWidgetById:function(a){return apiviewer.MWidgetRegistry.getWidgetById(a)}},
+statics:{__yALNM:{},
+getWidgetById:function(a){return this.__yALNM[a]},
+register:function(b,a){if(this.__yALNM[a])throw new Error("An object with the id '"+a+"' already exists.");
+this.__yALNM[a]=b},
+unregister:function(b,a){if(this.__yALNM[a]!==b)throw new Error("The object is not registered with the id '"+a+"'.");
+delete this.__yALNM[a]}}});
+
+
+// qx.ui.table.ITableModel
+//   - Size: 616 bytes
+//   - Modified: 2010-08-26T21:43:54
+qx.Interface.define("qx.ui.table.ITableModel",{events:{dataChanged:"qx.event.type.Data",
+metaDataChanged:"qx.event.type.Event",
+sorted:"qx.event.type.Data"},
+members:{getRowCount:function(){},
+getRowData:function(){},
+getColumnCount:function(){},
+getColumnId:function(){},
+getColumnIndexById:function(){},
+getColumnName:function(){},
+isColumnEditable:function(){},
+isColumnSortable:function(){},
+sortByColumn:function(){},
+getSortColumnIndex:function(){},
+isSortAscending:function(){},
+prefetchRows:function(){},
+getValue:function(){},
+getValueById:function(){},
+setValue:function(){},
+setValueById:function(){}}});
+
+
+// qx.ui.core.scroll.IScrollBar
+//   - Size: 308 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.core.scroll.IScrollBar",{events:{scroll:"qx.event.type.Data"},
+properties:{orientation:{},
+maximum:{},
+position:{},
+knobFactor:{}},
+members:{scrollTo:function(a){this.assertNumber(a)},
+scrollBy:function(a){this.assertNumber(a)},
+scrollBySteps:function(a){this.assertNumber(a)}}});
+
+
+// qx.ui.core.ISingleSelection
+//   - Size: 389 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Interface.define("qx.ui.core.ISingleSelection",{events:{changeSelection:"qx.event.type.Data"},
+members:{getSelection:function(){return true},
+setSelection:function(){return arguments.length==1},
+resetSelection:function(){return true},
+isSelected:function(){return arguments.length==1},
+isSelectionEmpty:function(){return true},
+getSelectables:function(){return arguments.length==1}}});
+
+
+// qx.ui.core.ISingleSelectionProvider
+//   - Size: 125 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.core.ISingleSelectionProvider",{members:{getItems:function(){},
+isItemSelectable:function(){}}});
+
+
+// qx.ui.table.IColumnMenuButton
+//   - Size: 151 bytes
+//   - Modified: 2010-10-13T17:38:57
+qx.Interface.define("qx.ui.table.IColumnMenuButton",{properties:{menu:{}},
+members:{factory:function(){return true},
+empty:function(){return true}}});
 
 
 // qx.ui.form.IForm
@@ -8907,67 +8968,26 @@ close:function(){},
 terminate:function(){}}});
 
 
+// qx.ui.form.IBooleanForm
+//   - Size: 199 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IBooleanForm",{events:{changeValue:"qx.event.type.Data"},
+members:{setValue:function(){return arguments.length==1},
+resetValue:function(){},
+getValue:function(){}}});
+
+
+// qx.ui.table.ICellRenderer
+//   - Size: 105 bytes
+//   - Modified: 2010-07-17T16:42:24
+qx.Interface.define("qx.ui.table.ICellRenderer",{members:{createDataCellHtml:function(){return true}}});
+
+
 // qx.ui.form.IModelSelection
 //   - Size: 126 bytes
 //   - Modified: 2010-04-29T21:34:05
 qx.Interface.define("qx.ui.form.IModelSelection",{members:{setModelSelection:function(){},
 getModelSelection:function(){}}});
-
-
-// qx.ui.form.IModel
-//   - Size: 167 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IModel",{events:{changeModel:"qx.event.type.Data"},
-members:{setModel:function(){},
-getModel:function(){},
-resetModel:function(){}}});
-
-
-// qx.ui.form.IRange
-//   - Size: 365 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IRange",{members:{setMinimum:function(){return arguments.length==1},
-getMinimum:function(){},
-setMaximum:function(){return arguments.length==1},
-getMaximum:function(){},
-setSingleStep:function(){return arguments.length==1},
-getSingleStep:function(){},
-setPageStep:function(){return arguments.length==1},
-getPageStep:function(){}}});
-
-
-// qx.ui.core.ISingleSelection
-//   - Size: 389 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Interface.define("qx.ui.core.ISingleSelection",{events:{changeSelection:"qx.event.type.Data"},
-members:{getSelection:function(){return true},
-setSelection:function(){return arguments.length==1},
-resetSelection:function(){return true},
-isSelected:function(){return arguments.length==1},
-isSelectionEmpty:function(){return true},
-getSelectables:function(){return arguments.length==1}}});
-
-
-// qx.ui.table.IColumnMenuButton
-//   - Size: 151 bytes
-//   - Modified: 2010-10-13T17:38:57
-qx.Interface.define("qx.ui.table.IColumnMenuButton",{properties:{menu:{}},
-members:{factory:function(){return true},
-empty:function(){return true}}});
-
-
-// qx.ui.core.ISingleSelectionProvider
-//   - Size: 125 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.core.ISingleSelectionProvider",{members:{getItems:function(){},
-isItemSelectable:function(){}}});
-
-
-// qx.ui.table.IColumnMenuItem
-//   - Size: 123 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.table.IColumnMenuItem",{properties:{visible:{}},
-events:{changeVisible:"qx.event.type.Data"}});
 
 
 // qx.ui.table.IHeaderRenderer
@@ -8993,32 +9013,13 @@ qx.Interface.define("qx.util.format.IFormat",{members:{format:function(){},
 parse:function(){}}});
 
 
-// qx.ui.form.INumberForm
-//   - Size: 198 bytes
+// qx.ui.form.IModel
+//   - Size: 167 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.INumberForm",{events:{changeValue:"qx.event.type.Data"},
-members:{setValue:function(){return arguments.length==1},
-resetValue:function(){},
-getValue:function(){}}});
-
-
-// qx.ui.table.ICellRenderer
-//   - Size: 105 bytes
-//   - Modified: 2010-07-17T16:42:24
-qx.Interface.define("qx.ui.table.ICellRenderer",{members:{createDataCellHtml:function(){return true}}});
-
-
-// qx.ui.core.scroll.IScrollBar
-//   - Size: 308 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.core.scroll.IScrollBar",{events:{scroll:"qx.event.type.Data"},
-properties:{orientation:{},
-maximum:{},
-position:{},
-knobFactor:{}},
-members:{scrollTo:function(a){this.assertNumber(a)},
-scrollBy:function(a){this.assertNumber(a)},
-scrollBySteps:function(a){this.assertNumber(a)}}});
+qx.Interface.define("qx.ui.form.IModel",{events:{changeModel:"qx.event.type.Data"},
+members:{setModel:function(){},
+getModel:function(){},
+resetModel:function(){}}});
 
 
 // qx.ui.table.ICellEditorFactory
@@ -9028,28 +9029,33 @@ qx.Interface.define("qx.ui.table.ICellEditorFactory",{members:{createCellEditor:
 getCellEditorValue:function(){return true}}});
 
 
-// qx.ui.table.ITableModel
-//   - Size: 616 bytes
-//   - Modified: 2010-08-26T21:43:54
-qx.Interface.define("qx.ui.table.ITableModel",{events:{dataChanged:"qx.event.type.Data",
-metaDataChanged:"qx.event.type.Event",
-sorted:"qx.event.type.Data"},
-members:{getRowCount:function(){},
-getRowData:function(){},
-getColumnCount:function(){},
-getColumnId:function(){},
-getColumnIndexById:function(){},
-getColumnName:function(){},
-isColumnEditable:function(){},
-isColumnSortable:function(){},
-sortByColumn:function(){},
-getSortColumnIndex:function(){},
-isSortAscending:function(){},
-prefetchRows:function(){},
-getValue:function(){},
-getValueById:function(){},
-setValue:function(){},
-setValueById:function(){}}});
+// qx.ui.form.IRange
+//   - Size: 365 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IRange",{members:{setMinimum:function(){return arguments.length==1},
+getMinimum:function(){},
+setMaximum:function(){return arguments.length==1},
+getMaximum:function(){},
+setSingleStep:function(){return arguments.length==1},
+getSingleStep:function(){},
+setPageStep:function(){return arguments.length==1},
+getPageStep:function(){}}});
+
+
+// qx.ui.table.IColumnMenuItem
+//   - Size: 123 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.table.IColumnMenuItem",{properties:{visible:{}},
+events:{changeVisible:"qx.event.type.Data"}});
+
+
+// qx.ui.form.INumberForm
+//   - Size: 198 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.INumberForm",{events:{changeValue:"qx.event.type.Data"},
+members:{setValue:function(){return arguments.length==1},
+resetValue:function(){},
+getValue:function(){}}});
 
 
 // qx.ui.core.IMultiSelection
@@ -9059,6 +9065,26 @@ qx.Interface.define("qx.ui.core.IMultiSelection",{extend:qx.ui.core.ISingleSelec
 members:{selectAll:function(){return true},
 addToSelection:function(){return arguments.length==1},
 removeFromSelection:function(){return arguments.length==1}}});
+
+
+// qx.util.StringEscape
+//   - Size: 574 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.util.StringEscape",{statics:{escape:function(d,g){for(var b,e="",c=0,h=d.length,f,a;
+c<h;
+c++)f=d.charAt(c),a=f.charCodeAt(0),b=g[a]?"&"+g[a]+";":a>0x7F?"&#"+a+";":f,e+=b;
+return e},
+unescape:function(b,a){return b.replace(/&[#\w]+;/gi,function(b){var d=b,b=b.substring(1,b.length-1),c=a[b];
+c?d=String.fromCharCode(c):b.charAt(0)=="#"&&(b.charAt(1).toUpperCase()=="X"?(c=b.substring(2),c.match(/^[0-9A-Fa-f]+$/gi)&&(d=String.fromCharCode(parseInt(c,16)))):(c=b.substring(1),c.match(/^\d+$/gi)&&(d=String.fromCharCode(parseInt(c,10)))));
+return d})}}});
+
+
+// qx.lang.Number
+//   - Size: 204 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.lang.Number",{statics:{isInRange:function(a,b,c){return a>=b&&a<=c},
+isBetweenRange:function(a,b,c){return a>b&&a<c},
+limit:function(b,a,c){return c!=null&&b>c?c:a!=null&&b<a?a:b}}});
 
 
 // qx.log.appender.Util
@@ -9109,26 +9135,6 @@ for(;
 f<k;
 f++)e.push(b[f].text);
 d.type==="map"?c.push("{",e.join(", "),"}"):c.push("[",e.join(", "),"]")}else c.push(b)}return c}}});
-
-
-// qx.lang.Number
-//   - Size: 204 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.lang.Number",{statics:{isInRange:function(a,b,c){return a>=b&&a<=c},
-isBetweenRange:function(a,b,c){return a>b&&a<c},
-limit:function(b,a,c){return c!=null&&b>c?c:a!=null&&b<a?a:b}}});
-
-
-// qx.util.StringEscape
-//   - Size: 574 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.util.StringEscape",{statics:{escape:function(d,g){for(var b,e="",c=0,h=d.length,f,a;
-c<h;
-c++)f=d.charAt(c),a=f.charCodeAt(0),b=g[a]?"&"+g[a]+";":a>0x7F?"&#"+a+";":f,e+=b;
-return e},
-unescape:function(b,a){return b.replace(/&[#\w]+;/gi,function(b){var d=b,b=b.substring(1,b.length-1),c=a[b];
-c?d=String.fromCharCode(c):b.charAt(0)=="#"&&(b.charAt(1).toUpperCase()=="X"?(c=b.substring(2),c.match(/^[0-9A-Fa-f]+$/gi)&&(d=String.fromCharCode(parseInt(c,16)))):(c=b.substring(1),c.match(/^\d+$/gi)&&(d=String.fromCharCode(parseInt(c,10)))));
-return d})}}});
 
 
 // qx.type.BaseArray
@@ -9190,15 +9196,6 @@ a.prototype.length=0;
 qx.type.BaseArray=c(a)})();
 
 
-// apiviewer.ObjectRegistry
-//   - Size: 212 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ObjectRegistry",{statics:{__yALNM:{},
-register:function(a){var b=qx.core.ObjectRegistry.toHashCode(a);
-this.__yALNM[b]=a},
-getObjectFromHashCode:function(a){return this.__yALNM[a]}}});
-
-
 // qx.bom.client.Transport
 //   - Size: 357 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -9208,6 +9205,15 @@ a[1]&&(e=a[1]);
 a[2]&&(f=a[2]);
 b=window.maxConnectionsPerServer?window.maxConnectionsPerServer:d.OPERA?8:d.WEBKIT?4:d.GECKO&&(c>1||c==1&&e>9||c==1&&e==9&&f>=1)?6:2;
 return b}}});
+
+
+// apiviewer.ObjectRegistry
+//   - Size: 212 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("apiviewer.ObjectRegistry",{statics:{__yALNM:{},
+register:function(a){var b=qx.core.ObjectRegistry.toHashCode(a);
+this.__yALNM[b]=a},
+getObjectFromHashCode:function(a){return this.__yALNM[a]}}});
 
 
 // qx.util.StringBuilder
@@ -9487,6 +9493,49 @@ toText:function(a){return qx.bom.String.unescape(a.replace(/\s+|<([^>])+>/gi,fun
 defer:function(a){a.FROM_CHARCODE=qx.lang.Object.invert(a.TO_CHARCODE)}});
 
 
+// qx.ui.table.pane.Model
+//   - Size: 1709 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.pane.Model",{extend:qx.core.Object,
+construct:function(a){this.base(arguments);
+a.addListener("visibilityChangedPre",this._onColVisibilityChanged,this);
+this.__boH5Jq=a},
+events:{modelChanged:"qx.event.type.Event"},
+statics:{EVENT_TYPE_MODEL_CHANGED:"modelChanged"},
+properties:{firstColumnX:{check:"Integer",
+init:0,
+apply:"_applyFirstColumnX"},
+maxColumnCount:{check:"Number",
+init:-1,
+apply:"_applyMaxColumnCount"}},
+members:{__PMBsU:null,
+__boH5Jq:null,
+_applyFirstColumnX:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+_applyMaxColumnCount:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+setTableColumnModel:function(a){this.__boH5Jq=a;
+this.__PMBsU=null},
+_onColVisibilityChanged:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+getColumnCount:function(){if(this.__PMBsU==null){var c=this.getFirstColumnX(),a=this.getMaxColumnCount(),b=this.__boH5Jq.getVisibleColumnCount();
+this.__PMBsU=a==-1||c+a>b?b-c:a}return this.__PMBsU},
+getColumnAtX:function(a){var b=this.getFirstColumnX();
+return this.__boH5Jq.getVisibleColumnAtX(b+a)},
+getX:function(c){var d=this.getFirstColumnX(),b=this.getMaxColumnCount(),a=this.__boH5Jq.getVisibleX(c)-d;
+return a>=0&&(b==-1||a<b)?a:-1},
+getColumnLeft:function(d){for(var c=0,e=this.getColumnCount(),a=0,b;
+a<e;
+a++){b=this.getColumnAtX(a);
+if(b==d)return c;
+c+=this.__boH5Jq.getColumnWidth(b)}return-1},
+getTotalWidth:function(){for(var b=0,d=this.getColumnCount(),a=0,c;
+a<d;
+a++)c=this.getColumnAtX(a),b+=this.__boH5Jq.getColumnWidth(c);
+return b}},
+destruct:function(){this.__boH5Jq=null}});
+
+
 // qx.ui.table.columnmodel.resizebehavior.Abstract
 //   - Size: 872 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -9614,49 +9663,6 @@ a++)b=this.__bo6y46[a],c+=" ["+b.minIndex+".."+b.maxIndex+"]";
 this.debug(c)},
 _fireChangeSelection:function(){this.hasBatchMode()?this.__cNnwDS=true:this.fireEvent("changeSelection")}},
 destruct:function(){this.__bo6y46=null}});
-
-
-// qx.ui.table.pane.Model
-//   - Size: 1709 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.pane.Model",{extend:qx.core.Object,
-construct:function(a){this.base(arguments);
-a.addListener("visibilityChangedPre",this._onColVisibilityChanged,this);
-this.__boH5Jq=a},
-events:{modelChanged:"qx.event.type.Event"},
-statics:{EVENT_TYPE_MODEL_CHANGED:"modelChanged"},
-properties:{firstColumnX:{check:"Integer",
-init:0,
-apply:"_applyFirstColumnX"},
-maxColumnCount:{check:"Number",
-init:-1,
-apply:"_applyMaxColumnCount"}},
-members:{__PMBsU:null,
-__boH5Jq:null,
-_applyFirstColumnX:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-_applyMaxColumnCount:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-setTableColumnModel:function(a){this.__boH5Jq=a;
-this.__PMBsU=null},
-_onColVisibilityChanged:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-getColumnCount:function(){if(this.__PMBsU==null){var c=this.getFirstColumnX(),a=this.getMaxColumnCount(),b=this.__boH5Jq.getVisibleColumnCount();
-this.__PMBsU=a==-1||c+a>b?b-c:a}return this.__PMBsU},
-getColumnAtX:function(a){var b=this.getFirstColumnX();
-return this.__boH5Jq.getVisibleColumnAtX(b+a)},
-getX:function(c){var d=this.getFirstColumnX(),b=this.getMaxColumnCount(),a=this.__boH5Jq.getVisibleX(c)-d;
-return a>=0&&(b==-1||a<b)?a:-1},
-getColumnLeft:function(d){for(var c=0,e=this.getColumnCount(),a=0,b;
-a<e;
-a++){b=this.getColumnAtX(a);
-if(b==d)return c;
-c+=this.__boH5Jq.getColumnWidth(b)}return-1},
-getTotalWidth:function(){for(var b=0,d=this.getColumnCount(),a=0,c;
-a<d;
-a++)c=this.getColumnAtX(a),b+=this.__boH5Jq.getColumnWidth(c);
-return b}},
-destruct:function(){this.__boH5Jq=null}});
 
 
 // apiviewer.TreeUtil
@@ -9797,28 +9803,6 @@ this.setColumnNamesByIndex(b)}},
 destruct:function(){this.__O3vqJ=this.__2m0iZ=this.__9WoOR=null}});
 
 
-// qx.ui.table.celleditor.AbstractField
-//   - Size: 696 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.celleditor.AbstractField",{extend:qx.core.Object,
-implement:qx.ui.table.ICellEditorFactory,
-type:"abstract",
-properties:{validationFunction:{check:"Function",
-nullable:true,
-init:null}},
-members:{_createEditor:function(){throw new Error("Abstract method call!")},
-createCellEditor:function(b){var a=this._createEditor();
-a.originalValue=b.value;
-(b.value===null||b.value===undefined)&&(b.value="");
-a.setValue(""+b.value);
-a.addListener("appear",function(){a.selectAllText()});
-return a},
-getCellEditorValue:function(b){var a=b.getValue(),c=this.getValidationFunction();
-c&&(a=c(a,b.originalValue));
-typeof b.originalValue=="number"&&(a=parseFloat(a));
-return a}}});
-
-
 // qx.ui.core.SingleSelectionManager
 //   - Size: 1641 bytes
 //   - Modified: 2010-11-11T16:55:28
@@ -9858,6 +9842,56 @@ a++)if(b[a]===c)return true;
 return false}},
 destruct:function(){this.__bzZEce.toHashCode?this._disposeObjects("__selectionProvider"):this.__bzZEce=null;
 this._disposeObjects("__selected")}});
+
+
+// qx.ui.table.celleditor.AbstractField
+//   - Size: 696 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.celleditor.AbstractField",{extend:qx.core.Object,
+implement:qx.ui.table.ICellEditorFactory,
+type:"abstract",
+properties:{validationFunction:{check:"Function",
+nullable:true,
+init:null}},
+members:{_createEditor:function(){throw new Error("Abstract method call!")},
+createCellEditor:function(b){var a=this._createEditor();
+a.originalValue=b.value;
+(b.value===null||b.value===undefined)&&(b.value="");
+a.setValue(""+b.value);
+a.addListener("appear",function(){a.selectAllText()});
+return a},
+getCellEditorValue:function(b){var a=b.getValue(),c=this.getValidationFunction();
+c&&(a=c(a,b.originalValue));
+typeof b.originalValue=="number"&&(a=parseFloat(a));
+return a}}});
+
+
+// qx.ui.core.MSingleSelectionHandling
+//   - Size: 1318 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Mixin.define("qx.ui.core.MSingleSelectionHandling",{events:{changeSelection:"qx.event.type.Data"},
+members:{__ugn3e:null,
+getSelection:function(){var a=this.__IwJpC().getSelected();
+return a?[a]:[]},
+setSelection:function(a){switch(a.length){case 0:this.resetSelection();
+break;
+case 1:this.__IwJpC().setSelected(a[0]);
+break;
+default:throw new Error("Could only select one item, but the selection  array contains "+a.length+" items!")}},
+resetSelection:function(){this.__IwJpC().resetSelected()},
+isSelected:function(a){return this.__IwJpC().isSelected(a)},
+isSelectionEmpty:function(){return this.__IwJpC().isSelectionEmpty()},
+getSelectables:function(a){return this.__IwJpC().getSelectables(a)},
+_onChangeSelected:function(c){var a=c.getData(),b=c.getOldData();
+a==null?a=[]:a=[a];
+b==null?b=[]:b=[b];
+this.fireDataEvent("changeSelection",a,b)},
+__IwJpC:function(){if(this.__ugn3e==null){var a=this;
+this.__ugn3e=new qx.ui.core.SingleSelectionManager({getItems:function(){return a._getItems()},
+isItemSelectable:function(b){return a._isItemSelectable?a._isItemSelectable(b):b.isVisible()}});
+this.__ugn3e.addListener("changeSelected",this._onChangeSelected,this)}this.__ugn3e.setAllowEmptySelection(this._isAllowEmptySelection());
+return this.__ugn3e}},
+destruct:function(){this._disposeObjects("__manager")}});
 
 
 // qx.ui.table.model.Simple
@@ -9986,34 +10020,6 @@ b<h;
 ++b)c[b]=d[a][this.getColumnId(b)];
 f[a]=c}return f}},
 destruct:function(){this.__qvtBo=this.__8iVLk=this.__Qj9qV=this.__bahQDi=null}});
-
-
-// qx.ui.core.MSingleSelectionHandling
-//   - Size: 1318 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Mixin.define("qx.ui.core.MSingleSelectionHandling",{events:{changeSelection:"qx.event.type.Data"},
-members:{__ugn3e:null,
-getSelection:function(){var a=this.__IwJpC().getSelected();
-return a?[a]:[]},
-setSelection:function(a){switch(a.length){case 0:this.resetSelection();
-break;
-case 1:this.__IwJpC().setSelected(a[0]);
-break;
-default:throw new Error("Could only select one item, but the selection  array contains "+a.length+" items!")}},
-resetSelection:function(){this.__IwJpC().resetSelected()},
-isSelected:function(a){return this.__IwJpC().isSelected(a)},
-isSelectionEmpty:function(){return this.__IwJpC().isSelectionEmpty()},
-getSelectables:function(a){return this.__IwJpC().getSelectables(a)},
-_onChangeSelected:function(c){var a=c.getData(),b=c.getOldData();
-a==null?a=[]:a=[a];
-b==null?b=[]:b=[b];
-this.fireDataEvent("changeSelection",a,b)},
-__IwJpC:function(){if(this.__ugn3e==null){var a=this;
-this.__ugn3e=new qx.ui.core.SingleSelectionManager({getItems:function(){return a._getItems()},
-isItemSelectable:function(b){return a._isItemSelectable?a._isItemSelectable(b):b.isVisible()}});
-this.__ugn3e.addListener("changeSelected",this._onChangeSelected,this)}this.__ugn3e.setAllowEmptySelection(this._isAllowEmptySelection());
-return this.__ugn3e}},
-destruct:function(){this._disposeObjects("__manager")}});
 
 
 // qx.io.remote.Response
@@ -10147,14 +10153,6 @@ qx.lang.Type.isString(a)&&a!=this.getState()&&this._onHistoryLoad(a)},
 _readState:function(){return this._decode(this._getHash())},
 _writeState:function(a){this._setHash(this._encode(a))}},
 destruct:function(){this.__bpGRyj()}});
-
-
-// qx.log.appender.Native
-//   - Size: 275 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.log.appender.Native",{statics:{process:function(c){var b=window.debug||window.console||window.air&&window.air.Introspector.Console,a;
-b&&(a=c.level,a in b||(a="log"),b[a](qx.log.appender.Util.toText(c)))}},
-defer:function(a){qx.log.Logger.register(a)}});
 
 
 // qx.data.Array
@@ -10315,6 +10313,14 @@ destruct:function(){for(var a=0;
 a<this.__mK7fC.length;
 a++)this._applyEventPropagation(null,this.__mK7fC[a],a);
 this.__mK7fC=null}});
+
+
+// qx.log.appender.Native
+//   - Size: 275 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.log.appender.Native",{statics:{process:function(c){var b=window.debug||window.console||window.air&&window.air.Introspector.Console,a;
+b&&(a=c.level,a in b||(a="log"),b[a](qx.log.appender.Util.toText(c)))}},
+defer:function(a){qx.log.Logger.register(a)}});
 
 
 // qx.ui.form.MModelSelection
@@ -11335,6 +11341,34 @@ a&&a.setValue(true)}},
 destruct:function(){this._disposeArray("__items")}});
 
 
+// qx.ui.table.pane.CellEvent
+//   - Size: 544 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.pane.CellEvent",{extend:qx.event.type.Mouse,
+properties:{row:{check:"Integer",
+nullable:true},
+column:{check:"Integer",
+nullable:true}},
+members:{init:function(b,d,a,c){d.clone(this);
+this.setBubbles(false);
+a!=null?this.setRow(a):this.setRow(b._getRowForPagePos(this.getDocumentLeft(),this.getDocumentTop()));
+c!=null?this.setColumn(c):this.setColumn(b._getColumnForPageX(this.getDocumentLeft()))},
+clone:function(b){var a=this.base(arguments,b);
+a.set({row:this.getRow(),
+column:this.getColumn()});
+return a}}});
+
+
+// qx.ui.form.IRadioItem
+//   - Size: 237 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IRadioItem",{events:{changeValue:"qx.event.type.Data"},
+members:{setValue:function(){},
+getValue:function(){},
+setGroup:function(a){this.assertInstance(a,qx.ui.form.RadioGroup)},
+getGroup:function(){}}});
+
+
 // qx.util.Json
 //   - Size: 3785 bytes
 //   - Modified: 2010-11-11T16:55:28
@@ -11411,16 +11445,6 @@ qx.core.Setting.define("qx.jsonDebugging",false);
 a.__bn0U1J=Date.prototype.toJSON}});
 
 
-// qx.ui.form.IRadioItem
-//   - Size: 237 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IRadioItem",{events:{changeValue:"qx.event.type.Data"},
-members:{setValue:function(){},
-getValue:function(){},
-setGroup:function(a){this.assertInstance(a,qx.ui.form.RadioGroup)},
-getGroup:function(){}}});
-
-
 // apiviewer.UiModel
 //   - Size: 419 bytes
 //   - Modified: 2010-05-05T20:54:13
@@ -11439,24 +11463,6 @@ event:"changeShowProtected"},
 showPrivate:{check:"Boolean",
 init:false,
 event:"changeShowPrivate"}}});
-
-
-// qx.ui.table.pane.CellEvent
-//   - Size: 544 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.pane.CellEvent",{extend:qx.event.type.Mouse,
-properties:{row:{check:"Integer",
-nullable:true},
-column:{check:"Integer",
-nullable:true}},
-members:{init:function(b,d,a,c){d.clone(this);
-this.setBubbles(false);
-a!=null?this.setRow(a):this.setRow(b._getRowForPagePos(this.getDocumentLeft(),this.getDocumentTop()));
-c!=null?this.setColumn(c):this.setColumn(b._getColumnForPageX(this.getDocumentLeft()))},
-clone:function(b){var a=this.base(arguments,b);
-a.set({row:this.getRow(),
-column:this.getColumn()});
-return a}}});
 
 
 // apiviewer.dao.Node
@@ -11815,18 +11821,6 @@ destruct:function(){this._see=this._superInterfaces=this._superMixins=this._even
 this._disposeObjects("_constructor")}});
 
 
-// apiviewer.dao.Event
-//   - Size: 432 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.dao.Event",{extend:apiviewer.dao.ClassItem,
-construct:function(b,a,c){this.base(arguments,b,a,c)},
-members:{getType:function(){return apiviewer.dao.Class.getClassByName(this._type)},
-getTypes:function(){return this._type?[{type:this._type}]:null},
-_addChildNode:function(a){switch(a.type){case"types":this._type=a.children[0].attributes.type;
-break;
-default:return this.base(arguments,a)}return true}}});
-
-
 // apiviewer.dao.State
 //   - Size: 232 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -11846,6 +11840,18 @@ getTypes:function(){return[{type:this._docNode.attributes.type}]},
 getAppearance:function(){return this.getClass()},
 getStates:function(){return this._states||[]},
 _addChildNode:function(a){switch(a.type){case"states":this._states=this._createNodeList(a,apiviewer.dao.State,this);
+break;
+default:return this.base(arguments,a)}return true}}});
+
+
+// apiviewer.dao.Event
+//   - Size: 432 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("apiviewer.dao.Event",{extend:apiviewer.dao.ClassItem,
+construct:function(b,a,c){this.base(arguments,b,a,c)},
+members:{getType:function(){return apiviewer.dao.Class.getClassByName(this._type)},
+getTypes:function(){return this._type?[{type:this._type}]:null},
+_addChildNode:function(a){switch(a.type){case"types":this._type=a.children[0].attributes.type;
 break;
 default:return this.base(arguments,a)}return true}}});
 
@@ -12403,42 +12409,6 @@ g&&(c=null,e=qx.lang.Array.clone(a.getPossibleValues()),e.length>0?(a.isNullable
 return b.get()}}});
 
 
-// apiviewer.ui.panels.AppearancePanel
-//   - Size: 1657 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ui.panels.AppearancePanel",{extend:apiviewer.ui.panels.InfoPanel,
-members:{__cip9dg:function(b){var f=b.getStates(),c,h,a,e,g,d,j,i;
-c=f.length>0?qx.lang.Array.clone(f):[];
-h=b.getType(),a=b.getClass(),e=1;
-h!=a&&(a=h,e=0);
-g=a.getClassHierarchy(),d=e;
-for(;
-d<g.length;
-d++)a=g[d],j=a.getClassAppearance(),j&&(i=j.getStates(),i&&qx.lang.Array.append(c,i));
-return c},
-_getPanelItems:function(f,a){var d=this.base(arguments,f,a),e,b,g,c;
-if(!f)return d;
-e=a.getClassHierarchy(),b=0;
-for(;
-b<e.length;
-b++){g=e[b],c=g.getClassAppearance();
-if(c){c.getType()!=a&&d.push(c);
-return d}}},
-getItemTypeHtml:function(a){var b=a.getName(),c;
-c=a.getType()==a.getClass()?b+" (default appearance of the class)":b;
-return c},
-getItemTitleHtml:function(a){return apiviewer.ui.panels.InfoPanel.setTitleClass(a,a.getName())},
-getItemTextHtml:function(c,i,h){var a=new qx.util.StringBuilder(),d,e,b,g,f;
-a.add("<div class=\"item-desc\">",apiviewer.ui.panels.InfoPanel.createDescriptionHtml(c,c.getClass(),true),"</div>");
-if(h){d=this.__cip9dg(c);
-if(d.length>0){a.add("<div class=\"item-detail-headline\">","States:","</div>");
-for(e=0;
-e<d.length;
-e++)b=d[e],a.add("<div class='item-detail-text'><code>",b.getName(),"</code><p>"),g=b.getAppearance(),g.getType()!=c.getClass()&&a.add(" <span class='item-detail-define'>defined by ",apiviewer.ui.panels.InfoPanel.createItemLinkHtml(g.getType().getFullName()),"</span>: "),f=b.getDescription(),f&&a.add(" ",apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(f,b.getClass())),a.add("</p></div>");
-a.add("</div>")}}return a.get()},
-itemHasDetails:function(a){return this.__cip9dg(a).length>0}}});
-
-
 // apiviewer.ui.panels.MethodPanel
 //   - Size: 3538 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -12493,6 +12463,17 @@ itemHasDetails:function(a,d){var b=a.getDocNode(),c=b.getReturn()&&b.getReturn()
 return a.getClass()!=d||a.getOverriddenFrom()!=null||a.getRequiredBy().length>0||b.getParams().length>0||b.getThrows().length>0||c||a.getSee().length>0||a.getErrors().length>0||a.isDeprecated()||a.getApply()||apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)}}});
 
 
+// apiviewer.ui.panels.ChildControlsPanel
+//   - Size: 591 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("apiviewer.ui.panels.ChildControlsPanel",{extend:apiviewer.ui.panels.InfoPanel,
+members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createTypeHtml(a,"var",true)},
+getItemTitleHtml:function(a){return apiviewer.ui.panels.InfoPanel.setTitleClass(a,a.getName())},
+getItemTextHtml:function(a,d,c){var b=new qx.util.StringBuilder(a.getDescription());
+c&&b.add("<div class=\"item-detail-headline\">","Default value:","</div>","<div class=\"item-detail-text\">","<code>",(a.getDefaultValue()?a.getDefaultValue():"null"),"</code>","</div>");
+return b.get()}}});
+
+
 // apiviewer.ui.panels.ConstantPanel
 //   - Size: 1085 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -12520,15 +12501,40 @@ d&&(b.add(apiviewer.ui.panels.InfoPanel.createInheritedFromHtml(a,c)),b.add(apiv
 return b.get()}}});
 
 
-// apiviewer.ui.panels.ChildControlsPanel
-//   - Size: 591 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("apiviewer.ui.panels.ChildControlsPanel",{extend:apiviewer.ui.panels.InfoPanel,
-members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createTypeHtml(a,"var",true)},
+// apiviewer.ui.panels.AppearancePanel
+//   - Size: 1657 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("apiviewer.ui.panels.AppearancePanel",{extend:apiviewer.ui.panels.InfoPanel,
+members:{__cip9dg:function(b){var f=b.getStates(),c,h,a,e,g,d,j,i;
+c=f.length>0?qx.lang.Array.clone(f):[];
+h=b.getType(),a=b.getClass(),e=1;
+h!=a&&(a=h,e=0);
+g=a.getClassHierarchy(),d=e;
+for(;
+d<g.length;
+d++)a=g[d],j=a.getClassAppearance(),j&&(i=j.getStates(),i&&qx.lang.Array.append(c,i));
+return c},
+_getPanelItems:function(f,a){var d=this.base(arguments,f,a),e,b,g,c;
+if(!f)return d;
+e=a.getClassHierarchy(),b=0;
+for(;
+b<e.length;
+b++){g=e[b],c=g.getClassAppearance();
+if(c){c.getType()!=a&&d.push(c);
+return d}}},
+getItemTypeHtml:function(a){var b=a.getName(),c;
+c=a.getType()==a.getClass()?b+" (default appearance of the class)":b;
+return c},
 getItemTitleHtml:function(a){return apiviewer.ui.panels.InfoPanel.setTitleClass(a,a.getName())},
-getItemTextHtml:function(a,d,c){var b=new qx.util.StringBuilder(a.getDescription());
-c&&b.add("<div class=\"item-detail-headline\">","Default value:","</div>","<div class=\"item-detail-text\">","<code>",(a.getDefaultValue()?a.getDefaultValue():"null"),"</code>","</div>");
-return b.get()}}});
+getItemTextHtml:function(c,i,h){var a=new qx.util.StringBuilder(),d,e,b,g,f;
+a.add("<div class=\"item-desc\">",apiviewer.ui.panels.InfoPanel.createDescriptionHtml(c,c.getClass(),true),"</div>");
+if(h){d=this.__cip9dg(c);
+if(d.length>0){a.add("<div class=\"item-detail-headline\">","States:","</div>");
+for(e=0;
+e<d.length;
+e++)b=d[e],a.add("<div class='item-detail-text'><code>",b.getName(),"</code><p>"),g=b.getAppearance(),g.getType()!=c.getClass()&&a.add(" <span class='item-detail-define'>defined by ",apiviewer.ui.panels.InfoPanel.createItemLinkHtml(g.getType().getFullName()),"</span>: "),f=b.getDescription(),f&&a.add(" ",apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(f,b.getClass())),a.add("</p></div>");
+a.add("</div>")}}return a.get()},
+itemHasDetails:function(a){return this.__cip9dg(a).length>0}}});
 
 
 // apiviewer.dao.Property
@@ -12597,43 +12603,6 @@ a+="width:"+Math.max(c,0)+"px;";
 a+="height:"+Math.max(b,0)+"px;";
 return a},
 createDataCellHtml:function(a,b){b.push("<div class=\"",this._getCellClass(a),"\" style=\"","left:",a.styleLeft,"px;",this._getCellSizeStyle(a.styleWidth,a.styleHeight,this._insetX,this._insetY),this._getCellStyle(a),"\" ",this._getCellAttributes(a),">"+this._getContentHtml(a),"</div>")}}});
-
-
-// qx.event.handler.Element
-//   - Size: 1363 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.handler.Element",{extend:qx.core.Object,
-implement:qx.event.IEventHandler,
-construct:function(a){this.base(arguments);
-this._manager=a;
-this._registeredEvents={}},
-statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
-SUPPORTED_TYPES:{abort:true,
-scroll:true,
-select:true,
-reset:true,
-submit:true},
-TARGET_CHECK:qx.event.IEventHandler.TARGET_DOMNODE,
-IGNORE_CAN_HANDLE:true},
-members:{canHandleEvent:function(){},
-registerEvent:function(b,a){var e=qx.core.ObjectRegistry.toHashCode(b),d=e+"-"+a,c=qx.lang.Function.listener(this._onNative,this,d);
-qx.bom.Event.addNativeListener(b,a,c);
-this._registeredEvents[d]={element:b,
-type:a,
-listener:c}},
-unregisterEvent:function(c,a){var f=this._registeredEvents,e,d,b;
-if(!f)return;
-e=qx.core.ObjectRegistry.toHashCode(c),d=e+"-"+a,b=this._registeredEvents[d];
-b&&qx.bom.Event.removeNativeListener(c,a,b.listener);
-delete this._registeredEvents[d]},
-_onNative:qx.event.GlobalError.observeMethod(function(d,c){var b=this._registeredEvents,a;
-if(!b)return;
-a=b[c];
-qx.event.Registration.fireNonBubblingEvent(a.element,a.type,qx.event.type.Native,[d])})},
-destruct:function(){var a,c=this._registeredEvents,b;
-for(b in c)a=c[b],qx.bom.Event.removeNativeListener(a.element,a.type,a.listener);
-this._manager=this._registeredEvents=null},
-defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.ui.core.selection.Widget
@@ -12785,6 +12754,43 @@ return a.join("")},
 getRowClass:function(){return""},
 getRowAttributes:function(){return""}},
 destruct:function(){this.__qwQQT=this.__EudQp=this.__biXIkY=null}});
+
+
+// qx.event.handler.Element
+//   - Size: 1363 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.handler.Element",{extend:qx.core.Object,
+implement:qx.event.IEventHandler,
+construct:function(a){this.base(arguments);
+this._manager=a;
+this._registeredEvents={}},
+statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
+SUPPORTED_TYPES:{abort:true,
+scroll:true,
+select:true,
+reset:true,
+submit:true},
+TARGET_CHECK:qx.event.IEventHandler.TARGET_DOMNODE,
+IGNORE_CAN_HANDLE:true},
+members:{canHandleEvent:function(){},
+registerEvent:function(b,a){var e=qx.core.ObjectRegistry.toHashCode(b),d=e+"-"+a,c=qx.lang.Function.listener(this._onNative,this,d);
+qx.bom.Event.addNativeListener(b,a,c);
+this._registeredEvents[d]={element:b,
+type:a,
+listener:c}},
+unregisterEvent:function(c,a){var f=this._registeredEvents,e,d,b;
+if(!f)return;
+e=qx.core.ObjectRegistry.toHashCode(c),d=e+"-"+a,b=this._registeredEvents[d];
+b&&qx.bom.Event.removeNativeListener(c,a,b.listener);
+delete this._registeredEvents[d]},
+_onNative:qx.event.GlobalError.observeMethod(function(d,c){var b=this._registeredEvents,a;
+if(!b)return;
+a=b[c];
+qx.event.Registration.fireNonBubblingEvent(a.element,a.type,qx.event.type.Native,[d])})},
+destruct:function(){var a,c=this._registeredEvents,b;
+for(b in c)a=c[b],qx.bom.Event.removeNativeListener(a.element,a.type,a.listener);
+this._manager=this._registeredEvents=null},
+defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.ui.core.selection.ScrollArea
@@ -13257,50 +13263,6 @@ if(a){a.onreadystatechange=qx.lang.Function.empty;
 switch(a.readyState){case 1:case 2:case 3:a.abort()}}this.__u3kLI=null}});
 
 
-// qx.bom.Input
-//   - Size: 1444 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.bom.Input",{statics:{__nhP4O:{text:1,
-textarea:1,
-select:1,
-checkbox:1,
-radio:1,
-password:1,
-hidden:1,
-submit:1,
-image:1,
-file:1,
-search:1,
-reset:1,
-button:1},
-create:function(a,b,d){qx.core.Assert.assertKeyInMap(a,this.__nhP4O,"Unsupported input type.");
-var b=b?qx.lang.Object.clone(b):{},c;
-a==="textarea"||a==="select"?c=a:(c="input",b.type=a);
-return qx.bom.Element.create(c,b,d)},
-setValue:function(a,b){var l=a.nodeName.toLowerCase(),e=a.type,h=qx.lang.Array,i=qx.lang.Type,j,g,d,c,f,k;
-typeof b==="number"&&(b+="");
-if(e==="checkbox"||e==="radio")a.checked=i.isArray(b)?h.contains(b,a.value):a.value==b;
-else if(l==="select"){j=i.isArray(b),g=a.options,f=0,k=g.length;
-for(;
-f<k;
-f++)d=g[f],c=d.getAttribute("value"),c==null&&(c=d.text),d.selected=j?h.contains(b,c):b==c;
-j&&b.length==0&&(a.selectedIndex=-1)}else e==="text"&&false?(a.$$inValueSet=true,a.value=b,a.$$inValueSet=null):a.value=b},
-getValue:function(a){var h=a.nodeName.toLowerCase(),d,g,f,e,j,b,c,k,i;
-if(h==="option")return(a.attributes.value||{}).specified?a.value:a.text;
-if(h==="select"){d=a.selectedIndex;
-if(d<0)return null;
-g=[],f=a.options,e=a.type=="select-one",j=qx.bom.Input,c=e?d:0,k=e?d+1:f.length;
-for(;
-c<k;
-c++){i=f[c];
-if(i.selected){b=j.getValue(i);
-if(e)return b;
-g.push(b)}}return g}return(a.value||"").replace(/\r/g,"")},
-setWrap:function(a,b){var c=b?"soft":"off",d=b?"":"auto";
-a.setAttribute("wrap",c);
-a.style.overflow=d}}});
-
-
 // qx.io.remote.RequestQueue
 //   - Size: 3433 bytes
 //   - Modified: 2010-10-13T17:38:57
@@ -13382,6 +13344,50 @@ b?b.abort():qx.lang.Array.contains(this.__m5bO4,a)&&qx.lang.Array.remove(this.__
 destruct:function(){this._disposeArray("__active");
 this._disposeObjects("__timer");
 this.__m5bO4=null}});
+
+
+// qx.bom.Input
+//   - Size: 1444 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.bom.Input",{statics:{__nhP4O:{text:1,
+textarea:1,
+select:1,
+checkbox:1,
+radio:1,
+password:1,
+hidden:1,
+submit:1,
+image:1,
+file:1,
+search:1,
+reset:1,
+button:1},
+create:function(a,b,d){qx.core.Assert.assertKeyInMap(a,this.__nhP4O,"Unsupported input type.");
+var b=b?qx.lang.Object.clone(b):{},c;
+a==="textarea"||a==="select"?c=a:(c="input",b.type=a);
+return qx.bom.Element.create(c,b,d)},
+setValue:function(a,b){var l=a.nodeName.toLowerCase(),e=a.type,h=qx.lang.Array,i=qx.lang.Type,j,g,d,c,f,k;
+typeof b==="number"&&(b+="");
+if(e==="checkbox"||e==="radio")a.checked=i.isArray(b)?h.contains(b,a.value):a.value==b;
+else if(l==="select"){j=i.isArray(b),g=a.options,f=0,k=g.length;
+for(;
+f<k;
+f++)d=g[f],c=d.getAttribute("value"),c==null&&(c=d.text),d.selected=j?h.contains(b,c):b==c;
+j&&b.length==0&&(a.selectedIndex=-1)}else e==="text"&&false?(a.$$inValueSet=true,a.value=b,a.$$inValueSet=null):a.value=b},
+getValue:function(a){var h=a.nodeName.toLowerCase(),d,g,f,e,j,b,c,k,i;
+if(h==="option")return(a.attributes.value||{}).specified?a.value:a.text;
+if(h==="select"){d=a.selectedIndex;
+if(d<0)return null;
+g=[],f=a.options,e=a.type=="select-one",j=qx.bom.Input,c=e?d:0,k=e?d+1:f.length;
+for(;
+c<k;
+c++){i=f[c];
+if(i.selected){b=j.getValue(i);
+if(e)return b;
+g.push(b)}}return g}return(a.value||"").replace(/\r/g,"")},
+setWrap:function(a,b){var c=b?"soft":"off",d=b?"":"auto";
+a.setAttribute("wrap",c);
+a.style.overflow=d}}});
 
 
 // qx.io.remote.Request
@@ -13685,21 +13691,6 @@ width:d})}},
 defer:function(){qx.core.Setting.define("qx.tableResizeDebug",false)}});
 
 
-// qx.ui.core.Spacer
-//   - Size: 375 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.ui.core.Spacer",{extend:qx.ui.core.LayoutItem,
-construct:function(b,a){this.base(arguments);
-this.setWidth(b!=null?b:0);
-this.setHeight(a!=null?a:0)},
-members:{checkAppearanceNeeds:function(){},
-addChildrenToQueue:function(){},
-destroy:function(){if(this.$$disposed)return;
-var a=this.$$parent;
-a&&a._remove(this);
-qx.ui.core.queue.Dispose.add(this)}}});
-
-
 // qx.ui.layout.Grow
 //   - Size: 846 bytes
 //   - Modified: 2010-08-26T21:43:53
@@ -13717,6 +13708,21 @@ minWidth:d,
 minHeight:f,
 maxWidth:h,
 maxHeight:e}}}});
+
+
+// qx.ui.core.Spacer
+//   - Size: 375 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.ui.core.Spacer",{extend:qx.ui.core.LayoutItem,
+construct:function(b,a){this.base(arguments);
+this.setWidth(b!=null?b:0);
+this.setHeight(a!=null?a:0)},
+members:{checkAppearanceNeeds:function(){},
+addChildrenToQueue:function(){},
+destroy:function(){if(this.$$disposed)return;
+var a=this.$$parent;
+a&&a._remove(this);
+qx.ui.core.queue.Dispose.add(this)}}});
 
 
 // qx.ui.splitpane.VLayout
@@ -13911,57 +13917,28 @@ destruct:function(){this.__bqzRkj=this.__baJTDe=null;
 this._disposeObjects("__layout","__deferredComputeColumnsFlexWidth")}});
 
 
-// qx.ui.core.MMultiSelectionHandling
-//   - Size: 2889 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Mixin.define("qx.ui.core.MMultiSelectionHandling",{construct:function(){var b=this.SELECTION_MANAGER,a=this.__ugn3e=new b(this);
-this.addListener("mousedown",a.handleMouseDown,a);
-this.addListener("mouseup",a.handleMouseUp,a);
-this.addListener("mouseover",a.handleMouseOver,a);
-this.addListener("mousemove",a.handleMouseMove,a);
-this.addListener("losecapture",a.handleLoseCapture,a);
-this.addListener("keypress",a.handleKeyPress,a);
-this.addListener("addItem",a.handleAddItem,a);
-this.addListener("removeItem",a.handleRemoveItem,a);
-a.addListener("changeSelection",this._onSelectionChange,this)},
-events:{changeSelection:"qx.event.type.Data"},
-properties:{selectionMode:{check:["single","multi","additive","one"],
-init:"single",
-apply:"_applySelectionMode"},
-dragSelection:{check:"Boolean",
-init:false,
-apply:"_applyDragSelection"},
-quickSelection:{check:"Boolean",
-init:false,
-apply:"_applyQuickSelection"}},
-members:{__ugn3e:null,
-selectAll:function(){this.__ugn3e.selectAll()},
-isSelected:function(a){if(!qx.ui.core.Widget.contains(this,a))throw new Error("Could not test if "+a+" is selected, because it is not a child element!");
-return this.__ugn3e.isItemSelected(a)},
-addToSelection:function(a){if(!qx.ui.core.Widget.contains(this,a))throw new Error("Could not add + "+a+" to selection, because it is not a child element!");
-this.__ugn3e.addItem(a)},
-removeFromSelection:function(a){if(!qx.ui.core.Widget.contains(this,a))throw new Error("Could not remove "+a+" from selection, because it is not a child element!");
-this.__ugn3e.removeItem(a)},
-selectRange:function(b,a){this.__ugn3e.selectItemRange(b,a)},
-resetSelection:function(){this.__ugn3e.clearSelection()},
-setSelection:function(a){for(var b=0,c;
-b<a.length;
-b++)if(!qx.ui.core.Widget.contains(this,a[b]))throw new Error("Could not select "+a[b]+", because it is not a child element!");
-a.length===0?this.resetSelection():(c=this.getSelection(),qx.lang.Array.equals(c,a)||this.__ugn3e.replaceSelection(a))},
-getSelection:function(){return this.__ugn3e.getSelection()},
-getSortedSelection:function(){return this.__ugn3e.getSortedSelection()},
-isSelectionEmpty:function(){return this.__ugn3e.isSelectionEmpty()},
-getSelectionContext:function(){return this.__ugn3e.getSelectionContext()},
-_getManager:function(){return this.__ugn3e},
-getSelectables:function(a){return this.__ugn3e.getSelectables(a)},
-invertSelection:function(){this.__ugn3e.invertSelection()},
-_getLeadItem:function(){var a=this.__ugn3e.getMode();
-return a==="single"||a==="one"?this.__ugn3e.getSelectedItem():this.__ugn3e.getLeadItem()},
-_applySelectionMode:function(a){this.__ugn3e.setMode(a)},
-_applyDragSelection:function(a){this.__ugn3e.setDrag(a)},
-_applyQuickSelection:function(a){this.__ugn3e.setQuick(a)},
-_onSelectionChange:function(a){this.fireDataEvent("changeSelection",a.getData())}},
-destruct:function(){this._disposeObjects("__manager")}});
+// qx.ui.menu.Separator
+//   - Size: 166 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.menu.Separator",{extend:qx.ui.core.Widget,
+properties:{appearance:{refine:true,
+init:"menu-separator"},
+anonymous:{refine:true,
+init:true}}});
+
+
+// qx.ui.toolbar.Separator
+//   - Size: 231 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.toolbar.Separator",{extend:qx.ui.core.Widget,
+properties:{appearance:{refine:true,
+init:"toolbar-separator"},
+anonymous:{refine:true,
+init:true},
+width:{refine:true,
+init:0},
+height:{refine:true,
+init:0}}});
 
 
 // qx.ui.table.pane.Pane
@@ -14113,14 +14090,57 @@ this.fireEvent("paneUpdated")}},
 destruct:function(){this.__827Zu=this.__VtpeD=this.__yLuIh=null}});
 
 
-// qx.ui.menu.Separator
-//   - Size: 166 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.menu.Separator",{extend:qx.ui.core.Widget,
-properties:{appearance:{refine:true,
-init:"menu-separator"},
-anonymous:{refine:true,
-init:true}}});
+// qx.ui.core.MMultiSelectionHandling
+//   - Size: 2889 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Mixin.define("qx.ui.core.MMultiSelectionHandling",{construct:function(){var b=this.SELECTION_MANAGER,a=this.__ugn3e=new b(this);
+this.addListener("mousedown",a.handleMouseDown,a);
+this.addListener("mouseup",a.handleMouseUp,a);
+this.addListener("mouseover",a.handleMouseOver,a);
+this.addListener("mousemove",a.handleMouseMove,a);
+this.addListener("losecapture",a.handleLoseCapture,a);
+this.addListener("keypress",a.handleKeyPress,a);
+this.addListener("addItem",a.handleAddItem,a);
+this.addListener("removeItem",a.handleRemoveItem,a);
+a.addListener("changeSelection",this._onSelectionChange,this)},
+events:{changeSelection:"qx.event.type.Data"},
+properties:{selectionMode:{check:["single","multi","additive","one"],
+init:"single",
+apply:"_applySelectionMode"},
+dragSelection:{check:"Boolean",
+init:false,
+apply:"_applyDragSelection"},
+quickSelection:{check:"Boolean",
+init:false,
+apply:"_applyQuickSelection"}},
+members:{__ugn3e:null,
+selectAll:function(){this.__ugn3e.selectAll()},
+isSelected:function(a){if(!qx.ui.core.Widget.contains(this,a))throw new Error("Could not test if "+a+" is selected, because it is not a child element!");
+return this.__ugn3e.isItemSelected(a)},
+addToSelection:function(a){if(!qx.ui.core.Widget.contains(this,a))throw new Error("Could not add + "+a+" to selection, because it is not a child element!");
+this.__ugn3e.addItem(a)},
+removeFromSelection:function(a){if(!qx.ui.core.Widget.contains(this,a))throw new Error("Could not remove "+a+" from selection, because it is not a child element!");
+this.__ugn3e.removeItem(a)},
+selectRange:function(b,a){this.__ugn3e.selectItemRange(b,a)},
+resetSelection:function(){this.__ugn3e.clearSelection()},
+setSelection:function(a){for(var b=0,c;
+b<a.length;
+b++)if(!qx.ui.core.Widget.contains(this,a[b]))throw new Error("Could not select "+a[b]+", because it is not a child element!");
+a.length===0?this.resetSelection():(c=this.getSelection(),qx.lang.Array.equals(c,a)||this.__ugn3e.replaceSelection(a))},
+getSelection:function(){return this.__ugn3e.getSelection()},
+getSortedSelection:function(){return this.__ugn3e.getSortedSelection()},
+isSelectionEmpty:function(){return this.__ugn3e.isSelectionEmpty()},
+getSelectionContext:function(){return this.__ugn3e.getSelectionContext()},
+_getManager:function(){return this.__ugn3e},
+getSelectables:function(a){return this.__ugn3e.getSelectables(a)},
+invertSelection:function(){this.__ugn3e.invertSelection()},
+_getLeadItem:function(){var a=this.__ugn3e.getMode();
+return a==="single"||a==="one"?this.__ugn3e.getSelectedItem():this.__ugn3e.getLeadItem()},
+_applySelectionMode:function(a){this.__ugn3e.setMode(a)},
+_applyDragSelection:function(a){this.__ugn3e.setDrag(a)},
+_applyQuickSelection:function(a){this.__ugn3e.setQuick(a)},
+_onSelectionChange:function(a){this.fireDataEvent("changeSelection",a.getData())}},
+destruct:function(){this._disposeObjects("__manager")}});
 
 
 // qx.ui.splitpane.Slider
@@ -14131,85 +14151,6 @@ properties:{allowShrinkX:{refine:true,
 init:false},
 allowShrinkY:{refine:true,
 init:false}}});
-
-
-// qx.ui.toolbar.Separator
-//   - Size: 231 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.toolbar.Separator",{extend:qx.ui.core.Widget,
-properties:{appearance:{refine:true,
-init:"toolbar-separator"},
-anonymous:{refine:true,
-init:true},
-width:{refine:true,
-init:0},
-height:{refine:true,
-init:0}}});
-
-
-// qx.ui.core.scroll.ScrollPane
-//   - Size: 2545 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.ui.core.scroll.ScrollPane",{extend:qx.ui.core.Widget,
-construct:function(){this.base(arguments);
-this.set({minWidth:0,
-minHeight:0});
-this._setLayout(new qx.ui.layout.Grow());
-this.addListener("resize",this._onUpdate);
-var a=this.getContentElement();
-a.addListener("scroll",this._onScroll,this);
-a.addListener("appear",this._onAppear,this)},
-events:{update:"qx.event.type.Event"},
-properties:{scrollX:{check:function(a){qx.core.Type.check(a,"Integer");
-return a<=this.getScrollMaxX()},
-apply:"_applyScrollX",
-event:"scrollX",
-init:0},
-scrollY:{check:function(a){qx.core.Type.check(a,"Integer");
-return a<=this.getScrollMaxY()},
-apply:"_applyScrollY",
-event:"scrollY",
-init:0}},
-members:{add:function(b){var a=this._getChildren()[0];
-a&&(this._remove(a),a.removeListener("resize",this._onUpdate,this));
-b&&(this._add(b),b.addListener("resize",this._onUpdate,this))},
-remove:function(a){a&&(this._remove(a),a.removeListener("resize",this._onUpdate,this))},
-getChildren:function(){return this._getChildren()},
-_onUpdate:function(){this.fireEvent("update")},
-_onScroll:function(){var a=this.getContentElement();
-this.setScrollX(a.getScrollX());
-this.setScrollY(a.getScrollY())},
-_onAppear:function(){var a=this.getContentElement(),c=this.getScrollX(),e=a.getScrollX(),b,d;
-c!=e&&a.scrollToX(c);
-b=this.getScrollY(),d=a.getScrollY();
-b!=d&&a.scrollToY(b)},
-getItemTop:function(a){var b=0;
-do{b+=a.getBounds().top,a=a.getLayoutParent();
-}while(a&&a!==this);
-return b},
-getItemBottom:function(a){return this.getItemTop(a)+a.getBounds().height},
-getItemLeft:function(a){var c=0,b;
-do{c+=a.getBounds().left,b=a.getLayoutParent(),b&&(c+=b.getInsets().left),a=b;
-}while(a&&a!==this);
-return c},
-getItemRight:function(a){return this.getItemLeft(a)+a.getBounds().width},
-getScrollSize:function(){return this.getChildren()[0].getBounds()},
-getScrollMaxX:function(){var a=this.getInnerSize(),b=this.getScrollSize();
-if(a&&b)return Math.max(0,b.width-a.width);
-return 0},
-getScrollMaxY:function(){var a=this.getInnerSize(),b=this.getScrollSize();
-if(a&&b)return Math.max(0,b.height-a.height);
-return 0},
-scrollToX:function(a){var b=this.getScrollMaxX();
-a<0?a=0:a>b&&(a=b);
-this.setScrollX(a)},
-scrollToY:function(a){var b=this.getScrollMaxY();
-a<0?a=0:a>b&&(a=b);
-this.setScrollY(a)},
-scrollByX:function(a){this.scrollToX(this.getScrollX()+a)},
-scrollByY:function(a){this.scrollToY(this.getScrollY()+a)},
-_applyScrollX:function(a){this.getContentElement().scrollToX(a)},
-_applyScrollY:function(a){this.getContentElement().scrollToY(a)}}});
 
 
 // qx.ui.menu.Manager
@@ -14356,6 +14297,71 @@ a.removeListener(b,"keyup",this._onKeyUpDown,this,true);
 a.removeListener(b,"keypress",this._onKeyPress,this,true);
 this._disposeObjects("__openTimer","__closeTimer");
 this._disposeArray("__objects")}});
+
+
+// qx.ui.core.scroll.ScrollPane
+//   - Size: 2545 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.ui.core.scroll.ScrollPane",{extend:qx.ui.core.Widget,
+construct:function(){this.base(arguments);
+this.set({minWidth:0,
+minHeight:0});
+this._setLayout(new qx.ui.layout.Grow());
+this.addListener("resize",this._onUpdate);
+var a=this.getContentElement();
+a.addListener("scroll",this._onScroll,this);
+a.addListener("appear",this._onAppear,this)},
+events:{update:"qx.event.type.Event"},
+properties:{scrollX:{check:function(a){qx.core.Type.check(a,"Integer");
+return a<=this.getScrollMaxX()},
+apply:"_applyScrollX",
+event:"scrollX",
+init:0},
+scrollY:{check:function(a){qx.core.Type.check(a,"Integer");
+return a<=this.getScrollMaxY()},
+apply:"_applyScrollY",
+event:"scrollY",
+init:0}},
+members:{add:function(b){var a=this._getChildren()[0];
+a&&(this._remove(a),a.removeListener("resize",this._onUpdate,this));
+b&&(this._add(b),b.addListener("resize",this._onUpdate,this))},
+remove:function(a){a&&(this._remove(a),a.removeListener("resize",this._onUpdate,this))},
+getChildren:function(){return this._getChildren()},
+_onUpdate:function(){this.fireEvent("update")},
+_onScroll:function(){var a=this.getContentElement();
+this.setScrollX(a.getScrollX());
+this.setScrollY(a.getScrollY())},
+_onAppear:function(){var a=this.getContentElement(),c=this.getScrollX(),e=a.getScrollX(),b,d;
+c!=e&&a.scrollToX(c);
+b=this.getScrollY(),d=a.getScrollY();
+b!=d&&a.scrollToY(b)},
+getItemTop:function(a){var b=0;
+do{b+=a.getBounds().top,a=a.getLayoutParent();
+}while(a&&a!==this);
+return b},
+getItemBottom:function(a){return this.getItemTop(a)+a.getBounds().height},
+getItemLeft:function(a){var c=0,b;
+do{c+=a.getBounds().left,b=a.getLayoutParent(),b&&(c+=b.getInsets().left),a=b;
+}while(a&&a!==this);
+return c},
+getItemRight:function(a){return this.getItemLeft(a)+a.getBounds().width},
+getScrollSize:function(){return this.getChildren()[0].getBounds()},
+getScrollMaxX:function(){var a=this.getInnerSize(),b=this.getScrollSize();
+if(a&&b)return Math.max(0,b.width-a.width);
+return 0},
+getScrollMaxY:function(){var a=this.getInnerSize(),b=this.getScrollSize();
+if(a&&b)return Math.max(0,b.height-a.height);
+return 0},
+scrollToX:function(a){var b=this.getScrollMaxX();
+a<0?a=0:a>b&&(a=b);
+this.setScrollX(a)},
+scrollToY:function(a){var b=this.getScrollMaxY();
+a<0?a=0:a>b&&(a=b);
+this.setScrollY(a)},
+scrollByX:function(a){this.scrollToX(this.getScrollX()+a)},
+scrollByY:function(a){this.scrollToY(this.getScrollY()+a)},
+_applyScrollX:function(a){this.getContentElement().scrollToX(a)},
+_applyScrollY:function(a){this.getContentElement().scrollToY(a)}}});
 
 
 // qx.ui.form.HoverButton
@@ -14901,6 +14907,20 @@ return b}},
 destruct:function(){this.hasListener("resize")&&this.removeListener("resize",this._onResize,this)}});
 
 
+// qx.ui.toolbar.PartContainer
+//   - Size: 326 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.toolbar.PartContainer",{extend:qx.ui.container.Composite,
+construct:function(){this.base(arguments);
+this._setLayout(new qx.ui.layout.HBox)},
+properties:{appearance:{refine:true,
+init:"toolbar/part/container"},
+show:{init:"both",
+check:["both","label","icon"],
+inheritable:true,
+event:"changeShow"}}});
+
+
 // qx.ui.form.MenuButton
 //   - Size: 1410 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -14957,20 +14977,6 @@ a&&a.isVisible()&&!this.hasState("pressed")&&this.addState("pressed")},
 _onMouseOver:function(){this.addState("hovered");
 if(this.getMenu()){var a=this.getMenuBar();
 a._isAllowMenuOpenHover()&&(qx.ui.menu.Manager.getInstance().hideAll(),a._setAllowMenuOpenHover(true),this.isEnabled()&&this.open())}}}});
-
-
-// qx.ui.toolbar.PartContainer
-//   - Size: 326 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.toolbar.PartContainer",{extend:qx.ui.container.Composite,
-construct:function(){this.base(arguments);
-this._setLayout(new qx.ui.layout.HBox)},
-properties:{appearance:{refine:true,
-init:"toolbar/part/container"},
-show:{init:"both",
-check:["both","label","icon"],
-inheritable:true,
-event:"changeShow"}}});
 
 
 // qx.ui.toolbar.Part
@@ -15350,18 +15356,6 @@ _applyMaximum:function(a){this.getValue()>a&&this.setValue(a);
 this._updateKnobPosition()}}});
 
 
-// qx.ui.core.scroll.ScrollSlider
-//   - Size: 360 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.ui.core.scroll.ScrollSlider",{extend:qx.ui.form.Slider,
-construct:function(a){this.base(arguments,a);
-this.removeListener("keypress",this._onKeyPress);
-this.removeListener("mousewheel",this._onMouseWheel)},
-members:{getSizeHint:function(){var a=this.base(arguments);
-this.getOrientation()==="horizontal"?a.width=0:a.height=0;
-return a}}});
-
-
 // qx.ui.splitpane.Splitter
 //   - Size: 612 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -15377,6 +15371,18 @@ members:{_createChildControlImpl:function(b){var a;
 switch(b){case"knob":a=new qx.ui.basic.Image;
 this._add(a);
 break}return a||this.base(arguments,b)}}});
+
+
+// qx.ui.core.scroll.ScrollSlider
+//   - Size: 360 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.ui.core.scroll.ScrollSlider",{extend:qx.ui.form.Slider,
+construct:function(a){this.base(arguments,a);
+this.removeListener("keypress",this._onKeyPress);
+this.removeListener("mousewheel",this._onMouseWheel)},
+members:{getSizeHint:function(){var a=this.base(arguments);
+this.getOrientation()==="horizontal"?a.width=0:a.height=0;
+return a}}});
 
 
 // qx.ui.popup.Popup
@@ -15914,6 +15920,20 @@ destruct:function(){this._disposeArray("__children");
 this._disposeObjects("__spacer","__childrenContainer")}});
 
 
+// qx.ui.tree.TreeFolder
+//   - Size: 311 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.tree.TreeFolder",{extend:qx.ui.tree.AbstractTreeItem,
+construct:function(a){this.base(arguments);
+a&&this.setLabel(a)},
+properties:{appearance:{refine:true,
+init:"tree-folder"}},
+members:{_addWidgets:function(){this.addSpacer();
+this.addOpenButton();
+this.addIcon();
+this.addLabel()}}});
+
+
 // qx.ui.toolbar.MenuButton
 //   - Size: 506 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -15932,34 +15952,75 @@ break}return a||this.base(arguments,b)},
 _applyShowArrow:function(a){a?this._showChildControl("arrow"):this._excludeChildControl("arrow")}}});
 
 
-// qx.ui.tree.TreeFolder
-//   - Size: 311 bytes
+// apiviewer.ui.panels.ClassPanel
+//   - Size: 1204 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.tree.TreeFolder",{extend:qx.ui.tree.AbstractTreeItem,
-construct:function(a){this.base(arguments);
-a&&this.setLabel(a)},
-properties:{appearance:{refine:true,
-init:"tree-folder"}},
-members:{_addWidgets:function(){this.addSpacer();
-this.addOpenButton();
-this.addIcon();
-this.addLabel()}}});
-
-
-// apiviewer.ui.panels.PackagePanel
-//   - Size: 754 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ui.panels.PackagePanel",{extend:apiviewer.ui.panels.InfoPanel,
-members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getFullName(),null,false,true)},
+qx.Class.define("apiviewer.ui.panels.ClassPanel",{extend:apiviewer.ui.panels.InfoPanel,
+construct:function(c,a,b){this.base(arguments,c,a);
+this.setType(b)},
+properties:{type:{check:["class","mixin","interface"]}},
+members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getName(),a,false,true)},
 getItemTitleHtml:function(a){return a.getFullName()},
-getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getPackage(),b)},
-getItemTooltip:function(){return"Package"},
+getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getClass(),b)},
+getItemTooltip:function(b){if(b.isAbstract())var a="Abstract ";
+else a=b.isStatic()?"Static ":b.isSingleton()?"Singleton ":"";
+switch(b.getType()){case"mixin":a+="Mixin";
+break;
+case"interface":a+="Interface";
+break;
+default:a+="Class";
+break}return a},
 itemHasDetails:function(a){return apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)},
-update:function(c,b){if(!this.getElement())return;
-this.setDocNode(b);
-var a=b.getPackages();
-a&&a.length>0&&this._sortItems(a);
-this._displayNodes(a,b)}}});
+update:function(f,d){if(!this.getElement())return;
+this.setDocNode(d);
+for(var e=d.getClasses(),b=[],a,c=0;
+c<e.length;
+c++)a=e[c].getType(),(a==="bootstrap"||a==="list")&&(a="class"),a===this.getType()&&b.push(e[c]);
+b&&b.length>0&&this._sortItems(b);
+this._displayNodes(b,d)}}});
+
+
+// qx.ui.tooltip.ToolTip
+//   - Size: 1167 bytes
+//   - Modified: 2010-05-21T19:22:00
+qx.Class.define("qx.ui.tooltip.ToolTip",{extend:qx.ui.popup.Popup,
+construct:function(b,a){this.base(arguments);
+this.setLayout(new qx.ui.layout.Grow);
+this._createChildControl("atom");
+b!=null&&this.setLabel(b);
+a!=null&&this.setIcon(a);
+this.addListener("mouseover",this._onMouseOver,this)},
+properties:{appearance:{refine:true,
+init:"tooltip"},
+showTimeout:{check:"Integer",
+init:700,
+themeable:true},
+hideTimeout:{check:"Integer",
+init:4000,
+themeable:true},
+label:{check:"String",
+nullable:true,
+apply:"_applyLabel"},
+icon:{check:"String",
+nullable:true,
+apply:"_applyIcon",
+themeable:true},
+rich:{check:"Boolean",
+init:false,
+apply:"_applyRich"},
+opener:{check:"qx.ui.core.Widget",
+nullable:true}},
+members:{_createChildControlImpl:function(b){var a;
+switch(b){case"atom":a=new qx.ui.basic.Atom;
+this._add(a);
+break}return a||this.base(arguments,b)},
+_onMouseOver:function(){this.hide()},
+_applyIcon:function(b){var a=this.getChildControl("atom");
+b==null?a.resetIcon():a.setIcon(b)},
+_applyLabel:function(b){var a=this.getChildControl("atom");
+b==null?a.resetLabel():a.setLabel(b)},
+_applyRich:function(b){var a=this.getChildControl("atom");
+a.setRich(b)}}});
 
 
 // qx.ui.form.ToggleButton
@@ -16012,75 +16073,20 @@ _onKeyUp:function(a){if(!this.hasState("pressed"))return;
 switch(a.getKeyIdentifier()){case"Enter":case"Space":this.removeState("abandoned"),this.execute(),this.removeState("pressed"),a.stopPropagation()}}}});
 
 
-// qx.ui.tooltip.ToolTip
-//   - Size: 1167 bytes
-//   - Modified: 2010-05-21T19:22:00
-qx.Class.define("qx.ui.tooltip.ToolTip",{extend:qx.ui.popup.Popup,
-construct:function(b,a){this.base(arguments);
-this.setLayout(new qx.ui.layout.Grow);
-this._createChildControl("atom");
-b!=null&&this.setLabel(b);
-a!=null&&this.setIcon(a);
-this.addListener("mouseover",this._onMouseOver,this)},
-properties:{appearance:{refine:true,
-init:"tooltip"},
-showTimeout:{check:"Integer",
-init:700,
-themeable:true},
-hideTimeout:{check:"Integer",
-init:4000,
-themeable:true},
-label:{check:"String",
-nullable:true,
-apply:"_applyLabel"},
-icon:{check:"String",
-nullable:true,
-apply:"_applyIcon",
-themeable:true},
-rich:{check:"Boolean",
-init:false,
-apply:"_applyRich"},
-opener:{check:"qx.ui.core.Widget",
-nullable:true}},
-members:{_createChildControlImpl:function(b){var a;
-switch(b){case"atom":a=new qx.ui.basic.Atom;
-this._add(a);
-break}return a||this.base(arguments,b)},
-_onMouseOver:function(){this.hide()},
-_applyIcon:function(b){var a=this.getChildControl("atom");
-b==null?a.resetIcon():a.setIcon(b)},
-_applyLabel:function(b){var a=this.getChildControl("atom");
-b==null?a.resetLabel():a.setLabel(b)},
-_applyRich:function(b){var a=this.getChildControl("atom");
-a.setRich(b)}}});
-
-
-// apiviewer.ui.panels.ClassPanel
-//   - Size: 1204 bytes
+// apiviewer.ui.panels.PackagePanel
+//   - Size: 754 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ui.panels.ClassPanel",{extend:apiviewer.ui.panels.InfoPanel,
-construct:function(c,a,b){this.base(arguments,c,a);
-this.setType(b)},
-properties:{type:{check:["class","mixin","interface"]}},
-members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getName(),a,false,true)},
+qx.Class.define("apiviewer.ui.panels.PackagePanel",{extend:apiviewer.ui.panels.InfoPanel,
+members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getFullName(),null,false,true)},
 getItemTitleHtml:function(a){return a.getFullName()},
-getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getClass(),b)},
-getItemTooltip:function(b){if(b.isAbstract())var a="Abstract ";
-else a=b.isStatic()?"Static ":b.isSingleton()?"Singleton ":"";
-switch(b.getType()){case"mixin":a+="Mixin";
-break;
-case"interface":a+="Interface";
-break;
-default:a+="Class";
-break}return a},
+getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getPackage(),b)},
+getItemTooltip:function(){return"Package"},
 itemHasDetails:function(a){return apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)},
-update:function(f,d){if(!this.getElement())return;
-this.setDocNode(d);
-for(var e=d.getClasses(),b=[],a,c=0;
-c<e.length;
-c++)a=e[c].getType(),(a==="bootstrap"||a==="list")&&(a="class"),a===this.getType()&&b.push(e[c]);
-b&&b.length>0&&this._sortItems(b);
-this._displayNodes(b,d)}}});
+update:function(c,b){if(!this.getElement())return;
+this.setDocNode(b);
+var a=b.getPackages();
+a&&a.length>0&&this._sortItems(a);
+this._displayNodes(a,b)}}});
 
 
 // qx.ui.toolbar.CheckBox
@@ -16203,27 +16209,6 @@ case"left":case"right":break}if(!a)return null;
 return this._isSelectable(a)?a:this._getRelatedSelectable(a,b)}}});
 
 
-// apiviewer.ui.PackageViewer
-//   - Size: 980 bytes
-//   - Modified: 2010-07-17T16:42:24
-qx.Class.define("apiviewer.ui.PackageViewer",{extend:apiviewer.ui.AbstractViewer,
-construct:function(){this.base(arguments);
-this.addInfoPanel(new apiviewer.ui.panels.MethodPanel("functions","functions"));
-this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","classes","class"));
-this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","interfaces","interface"));
-this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","mixins","mixin"));
-this.addInfoPanel(new apiviewer.ui.panels.PackagePanel("packages","packages"));
-this.getContentElement().setAttribute("class","ClassViewer");
-this._init(new apiviewer.dao.Package({}))},
-members:{_getTitleHtml:function(b){var a="";
-a+="<small>package</small>";
-a+=b.getFullName();
-return a},
-_getDescriptionHtml:function(b){var c=new qx.util.StringBuilder(),a=b.getDescription();
-a!=""&&c.add("<div class=\"class-description\">",apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a,b),"</div>");
-return c.get()}}});
-
-
 // qx.ui.core.scroll.ScrollBar
 //   - Size: 3224 bytes
 //   - Modified: 2010-08-26T21:43:53
@@ -16293,6 +16278,48 @@ this.getOrientation()=="vertical"?d.height<c.minHeight+this.__qt6mo&&(a=true):d.
 a?b.exclude():b.show()}}});
 
 
+// apiviewer.ui.PackageViewer
+//   - Size: 980 bytes
+//   - Modified: 2010-07-17T16:42:24
+qx.Class.define("apiviewer.ui.PackageViewer",{extend:apiviewer.ui.AbstractViewer,
+construct:function(){this.base(arguments);
+this.addInfoPanel(new apiviewer.ui.panels.MethodPanel("functions","functions"));
+this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","classes","class"));
+this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","interfaces","interface"));
+this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","mixins","mixin"));
+this.addInfoPanel(new apiviewer.ui.panels.PackagePanel("packages","packages"));
+this.getContentElement().setAttribute("class","ClassViewer");
+this._init(new apiviewer.dao.Package({}))},
+members:{_getTitleHtml:function(b){var a="";
+a+="<small>package</small>";
+a+=b.getFullName();
+return a},
+_getDescriptionHtml:function(b){var c=new qx.util.StringBuilder(),a=b.getDescription();
+a!=""&&c.add("<div class=\"class-description\">",apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a,b),"</div>");
+return c.get()}}});
+
+
+// qx.ui.table.headerrenderer.Default
+//   - Size: 895 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.headerrenderer.Default",{extend:qx.core.Object,
+implement:qx.ui.table.IHeaderRenderer,
+statics:{STATE_SORTED:"sorted",
+STATE_SORTED_ASCENDING:"sortedAscending"},
+properties:{toolTip:{check:"String",
+init:null,
+nullable:true}},
+members:{createHeaderCell:function(b){var a=new qx.ui.table.headerrenderer.HeaderCell();
+this.updateHeaderCell(b,a);
+return a},
+updateHeaderCell:function(b,a){var d=qx.ui.table.headerrenderer.Default,c;
+b.name&&b.name.translate?a.setLabel(b.name.translate()):a.setLabel(b.name);
+c=a.getToolTip();
+this.getToolTip()!=null&&(c==null?(c=new qx.ui.tooltip.ToolTip(this.getToolTip()),a.setToolTip(c),qx.util.DisposeUtil.disposeTriggeredBy(c,a)):c.setLabel(this.getToolTip()));
+b.sorted?a.addState(d.STATE_SORTED):a.removeState(d.STATE_SORTED);
+b.sortedAscending?a.addState(d.STATE_SORTED_ASCENDING):a.removeState(d.STATE_SORTED_ASCENDING)}}});
+
+
 // qx.ui.toolbar.RadioButton
 //   - Size: 288 bytes
 //   - Modified: 2010-11-03T14:43:37
@@ -16337,54 +16364,6 @@ switch(b.getKeyIdentifier()){case"Left":case"Up":a.selectPrevious();
 break;
 case"Right":case"Down":a.selectNext();
 break}}}});
-
-
-// qx.ui.table.headerrenderer.Default
-//   - Size: 895 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.headerrenderer.Default",{extend:qx.core.Object,
-implement:qx.ui.table.IHeaderRenderer,
-statics:{STATE_SORTED:"sorted",
-STATE_SORTED_ASCENDING:"sortedAscending"},
-properties:{toolTip:{check:"String",
-init:null,
-nullable:true}},
-members:{createHeaderCell:function(b){var a=new qx.ui.table.headerrenderer.HeaderCell();
-this.updateHeaderCell(b,a);
-return a},
-updateHeaderCell:function(b,a){var d=qx.ui.table.headerrenderer.Default,c;
-b.name&&b.name.translate?a.setLabel(b.name.translate()):a.setLabel(b.name);
-c=a.getToolTip();
-this.getToolTip()!=null&&(c==null?(c=new qx.ui.tooltip.ToolTip(this.getToolTip()),a.setToolTip(c),qx.util.DisposeUtil.disposeTriggeredBy(c,a)):c.setLabel(this.getToolTip()));
-b.sorted?a.addState(d.STATE_SORTED):a.removeState(d.STATE_SORTED);
-b.sortedAscending?a.addState(d.STATE_SORTED_ASCENDING):a.removeState(d.STATE_SORTED_ASCENDING)}}});
-
-
-// qx.ui.core.scroll.MScrollBarFactory
-//   - Size: 277 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.core.Setting.define("qx.nativeScrollBars",false);
-qx.Mixin.define("qx.ui.core.scroll.MScrollBarFactory",{members:{_createScrollBar:function(a){return qx.core.Setting.get("qx.nativeScrollBars")?new qx.ui.core.scroll.NativeScrollBar(a):new qx.ui.core.scroll.ScrollBar(a)}}});
-
-
-// qx.application.AbstractGui
-//   - Size: 613 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.application.AbstractGui",{type:"abstract",
-extend:qx.core.Object,
-implement:[qx.application.IApplication],
-include:qx.locale.MTranslation,
-members:{__jO4QN:null,
-_createRootWidget:function(){throw new Error("Abstract method call")},
-getRoot:function(){return this.__jO4QN},
-main:function(){qx.theme.manager.Meta.getInstance().initialize();
-qx.ui.tooltip.Manager.getInstance();
-this.__jO4QN=this._createRootWidget()},
-finalize:function(){this.render()},
-render:function(){qx.ui.core.queue.Manager.flush()},
-close:function(){},
-terminate:function(){}},
-destruct:function(){this.__jO4QN=null}});
 
 
 // qx.ui.tabview.TabButton
@@ -16460,6 +16439,33 @@ _onCloseButtonClick:function(){this.fireDataEvent("close",this)},
 _applyShowCloseButton:function(a){a?this._showChildControl("close-button"):this._excludeChildControl("close-button")},
 _applyCenter:function(b){var a=this._getLayout();
 b?a.setColumnAlign(2,"center","middle"):a.setColumnAlign(2,"left","middle")}}});
+
+
+// qx.application.AbstractGui
+//   - Size: 613 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.application.AbstractGui",{type:"abstract",
+extend:qx.core.Object,
+implement:[qx.application.IApplication],
+include:qx.locale.MTranslation,
+members:{__jO4QN:null,
+_createRootWidget:function(){throw new Error("Abstract method call")},
+getRoot:function(){return this.__jO4QN},
+main:function(){qx.theme.manager.Meta.getInstance().initialize();
+qx.ui.tooltip.Manager.getInstance();
+this.__jO4QN=this._createRootWidget()},
+finalize:function(){this.render()},
+render:function(){qx.ui.core.queue.Manager.flush()},
+close:function(){},
+terminate:function(){}},
+destruct:function(){this.__jO4QN=null}});
+
+
+// qx.ui.core.scroll.MScrollBarFactory
+//   - Size: 277 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.core.Setting.define("qx.nativeScrollBars",false);
+qx.Mixin.define("qx.ui.core.scroll.MScrollBarFactory",{members:{_createScrollBar:function(a){return qx.core.Setting.get("qx.nativeScrollBars")?new qx.ui.core.scroll.NativeScrollBar(a):new qx.ui.core.scroll.ScrollBar(a)}}});
 
 
 // qx.ui.core.scroll.AbstractScrollArea
@@ -16719,64 +16725,6 @@ members:{__qdSs6:null},
 destruct:function(){this._disposeMap("__legend")}});
 
 
-// qx.ui.table.pane.Header
-//   - Size: 2649 bytes
-//   - Modified: 2010-08-26T21:43:54
-qx.Class.define("qx.ui.table.pane.Header",{extend:qx.ui.core.Widget,
-construct:function(a){this.base(arguments);
-this._setLayout(new qx.ui.layout.HBox());
-this.__ukeJN=new qx.ui.core.Blocker(this);
-this.__VtpeD=a},
-members:{__VtpeD:null,
-__UZqTn:null,
-__bRA3mc:null,
-__ukeJN:null,
-getPaneScroller:function(){return this.__VtpeD},
-getTable:function(){return this.__VtpeD.getTable()},
-getBlocker:function(){return this.__ukeJN},
-onColOrderChanged:function(){this._updateContent(true)},
-onPaneModelChanged:function(){this._updateContent(true)},
-onTableModelMetaDataChanged:function(){this._updateContent()},
-setColumnWidth:function(b,c){var a=this.getHeaderWidgetAtColumn(b);
-a!=null&&a.setWidth(c)},
-setMouseOverColumn:function(a){if(a!=this.__bRA3mc){if(this.__bRA3mc!=null){var b=this.getHeaderWidgetAtColumn(this.__bRA3mc);
-b!=null&&b.removeState("hovered")}a!=null&&this.getHeaderWidgetAtColumn(a).addState("hovered");
-this.__bRA3mc=a}},
-getHeaderWidgetAtColumn:function(a){var b=this.getPaneScroller().getTablePaneModel().getX(a);
-return this._getChildren()[b]},
-showColumnMoveFeedback:function(b,g){var e=this.getContainerLocation(),c,f,l,k,i,h,j,a,d;
-this.__UZqTn==null&&(c=this.getTable(),f=this.getPaneScroller().getTablePaneModel().getX(b),l=this._getChildren()[f],k=c.getTableModel(),i=c.getTableColumnModel(),h={xPos:f,
-col:b,
-name:k.getColumnName(b),
-table:c},j=i.getHeaderCellRenderer(b),a=j.createHeaderCell(h),d=l.getBounds(),a.setWidth(d.width),a.setHeight(d.height),a.setZIndex(1000000),a.setOpacity(.8),a.setLayoutProperties({top:e.top}),this.getApplicationRoot().add(a),this.__UZqTn=a);
-this.__UZqTn.setLayoutProperties({left:e.left+g});
-this.__UZqTn.show()},
-hideColumnMoveFeedback:function(){this.__UZqTn!=null&&(this.__UZqTn.destroy(),this.__UZqTn=null)},
-isShowingColumnMoveFeedback:function(){return this.__UZqTn!=null},
-_updateContent:function(j){var f=this.getTable(),e=f.getTableModel(),g=f.getTableColumnModel(),i=this.getPaneScroller().getTablePaneModel(),n=this._getChildren(),m=i.getColumnCount(),l=e.getSortColumnIndex(),a,c,b,k,h,d;
-j&&this._cleanUpCells();
-a={};
-a.sortedAscending=e.isSortAscending();
-for(c=0;
-c<m;
-c++){b=i.getColumnAtX(c);
-if(b===undefined)continue;
-k=g.getColumnWidth(b),h=g.getHeaderCellRenderer(b);
-a.xPos=c;
-a.col=b;
-a.name=e.getColumnName(b);
-a.editable=e.isColumnEditable(b);
-a.sorted=b==l;
-a.table=f;
-d=n[c];
-d==null?(d=h.createHeaderCell(a),d.set({width:k}),this._add(d)):h.updateHeaderCell(a,d)}},
-_cleanUpCells:function(){for(var b=this._getChildren(),a=b.length-1,c;
-a>=0;
-a--)c=b[a],c.destroy()}},
-destruct:function(){this.__ukeJN.dispose();
-this._disposeObjects("__paneScroller")}});
-
-
 // qx.ui.tabview.TabView
 //   - Size: 4183 bytes
 //   - Modified: 2010-08-26T21:43:54
@@ -16876,6 +16824,64 @@ c.reset();
 this.remove(a)}},
 destruct:function(){this._disposeObjects("__radioGroup");
 this.__bHdRVN=null}});
+
+
+// qx.ui.table.pane.Header
+//   - Size: 2649 bytes
+//   - Modified: 2010-08-26T21:43:54
+qx.Class.define("qx.ui.table.pane.Header",{extend:qx.ui.core.Widget,
+construct:function(a){this.base(arguments);
+this._setLayout(new qx.ui.layout.HBox());
+this.__ukeJN=new qx.ui.core.Blocker(this);
+this.__VtpeD=a},
+members:{__VtpeD:null,
+__UZqTn:null,
+__bRA3mc:null,
+__ukeJN:null,
+getPaneScroller:function(){return this.__VtpeD},
+getTable:function(){return this.__VtpeD.getTable()},
+getBlocker:function(){return this.__ukeJN},
+onColOrderChanged:function(){this._updateContent(true)},
+onPaneModelChanged:function(){this._updateContent(true)},
+onTableModelMetaDataChanged:function(){this._updateContent()},
+setColumnWidth:function(b,c){var a=this.getHeaderWidgetAtColumn(b);
+a!=null&&a.setWidth(c)},
+setMouseOverColumn:function(a){if(a!=this.__bRA3mc){if(this.__bRA3mc!=null){var b=this.getHeaderWidgetAtColumn(this.__bRA3mc);
+b!=null&&b.removeState("hovered")}a!=null&&this.getHeaderWidgetAtColumn(a).addState("hovered");
+this.__bRA3mc=a}},
+getHeaderWidgetAtColumn:function(a){var b=this.getPaneScroller().getTablePaneModel().getX(a);
+return this._getChildren()[b]},
+showColumnMoveFeedback:function(b,g){var e=this.getContainerLocation(),c,f,l,k,i,h,j,a,d;
+this.__UZqTn==null&&(c=this.getTable(),f=this.getPaneScroller().getTablePaneModel().getX(b),l=this._getChildren()[f],k=c.getTableModel(),i=c.getTableColumnModel(),h={xPos:f,
+col:b,
+name:k.getColumnName(b),
+table:c},j=i.getHeaderCellRenderer(b),a=j.createHeaderCell(h),d=l.getBounds(),a.setWidth(d.width),a.setHeight(d.height),a.setZIndex(1000000),a.setOpacity(.8),a.setLayoutProperties({top:e.top}),this.getApplicationRoot().add(a),this.__UZqTn=a);
+this.__UZqTn.setLayoutProperties({left:e.left+g});
+this.__UZqTn.show()},
+hideColumnMoveFeedback:function(){this.__UZqTn!=null&&(this.__UZqTn.destroy(),this.__UZqTn=null)},
+isShowingColumnMoveFeedback:function(){return this.__UZqTn!=null},
+_updateContent:function(j){var f=this.getTable(),e=f.getTableModel(),g=f.getTableColumnModel(),i=this.getPaneScroller().getTablePaneModel(),n=this._getChildren(),m=i.getColumnCount(),l=e.getSortColumnIndex(),a,c,b,k,h,d;
+j&&this._cleanUpCells();
+a={};
+a.sortedAscending=e.isSortAscending();
+for(c=0;
+c<m;
+c++){b=i.getColumnAtX(c);
+if(b===undefined)continue;
+k=g.getColumnWidth(b),h=g.getHeaderCellRenderer(b);
+a.xPos=c;
+a.col=b;
+a.name=e.getColumnName(b);
+a.editable=e.isColumnEditable(b);
+a.sorted=b==l;
+a.table=f;
+d=n[c];
+d==null?(d=h.createHeaderCell(a),d.set({width:k}),this._add(d)):h.updateHeaderCell(a,d)}},
+_cleanUpCells:function(){for(var b=this._getChildren(),a=b.length-1,c;
+a>=0;
+a--)c=b[a],c.destroy()}},
+destruct:function(){this.__ukeJN.dispose();
+this._disposeObjects("__paneScroller")}});
 
 
 // qx.ui.table.columnmodel.Basic
@@ -17023,68 +17029,6 @@ qx.Class.define("apiviewer.ui.tabview.ClassPage",{extend:apiviewer.ui.tabview.Ab
 members:{_createViewer:function(){return new apiviewer.ui.ClassViewer()}}});
 
 
-// qx.ui.table.columnmodel.Resize
-//   - Size: 2939 bytes
-//   - Modified: 2010-08-26T21:43:54
-qx.Class.define("qx.ui.table.columnmodel.Resize",{extend:qx.ui.table.columnmodel.Basic,
-include:qx.locale.MTranslation,
-construct:function(){this.base(arguments);
-this.__NFZdV=false;
-this.__Cykvf=false},
-properties:{behavior:{check:"qx.ui.table.columnmodel.resizebehavior.Abstract",
-init:null,
-nullable:true,
-apply:"_applyBehavior",
-event:"changeBehavior"}},
-members:{__Cykvf:null,
-__NFZdV:null,
-__mFTjD:null,
-_applyBehavior:function(b,a){a!=null&&(a.dispose(),a=null);
-b._setNumColumns(this.getOverallColumnCount());
-b.setTableColumnModel(this)},
-init:function(b,a){this.base(arguments,b,a);
-this.__mFTjD==null&&(this.__mFTjD=a,a.addListener("appear",this._onappear,this),a.addListener("tableWidthChanged",this._onTableWidthChanged,this),a.addListener("verticalScrollBarChanged",this._onverticalscrollbarchanged,this),a.addListener("columnVisibilityMenuCreateEnd",this._addResetColumnWidthButton,this),this.addListener("widthChanged",this._oncolumnwidthchanged,this),this.addListener("visibilityChanged",this._onvisibilitychanged,this));
-this.getBehavior()==null&&this.setBehavior(new qx.ui.table.columnmodel.resizebehavior.Default());
-this.getBehavior()._setNumColumns(b)},
-getTable:function(){return this.__mFTjD},
-_addResetColumnWidthButton:function(e){var b=e.getData(),c=b.columnButton,d=b.menu,a;
-a=c.factory("separator");
-d.add(a);
-a=c.factory("user-button",{text:this.tr("Reset column widths")});
-d.add(a);
-a.addListener("execute",this._onappear,this)},
-_onappear:function(a){if(this.__NFZdV)return;
-this.__NFZdV=true;
-qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onappear");
-this.getBehavior().onAppear(a,a.getType()!=="appear");
-this.__mFTjD._updateScrollerWidths();
-this.__mFTjD._updateScrollBarVisibility();
-this.__NFZdV=false;
-this.__Cykvf=true},
-_onTableWidthChanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
-this.__NFZdV=true;
-qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("ontablewidthchanged");
-this.getBehavior().onTableWidthChanged(a);
-this.__NFZdV=false},
-_onverticalscrollbarchanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
-this.__NFZdV=true;
-qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onverticalscrollbarchanged");
-this.getBehavior().onVerticalScrollBarChanged(a);
-qx.event.Timer.once(function(){this.__mFTjD&&!this.__mFTjD.isDisposed()&&(this.__mFTjD._updateScrollerWidths(),this.__mFTjD._updateScrollBarVisibility())},this,0);
-this.__NFZdV=false},
-_oncolumnwidthchanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
-this.__NFZdV=true;
-qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("oncolumnwidthchanged");
-this.getBehavior().onColumnWidthChanged(a);
-this.__NFZdV=false},
-_onvisibilitychanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
-this.__NFZdV=true;
-qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onvisibilitychanged");
-this.getBehavior().onVisibilityChanged(a);
-this.__NFZdV=false}},
-destruct:function(){this.__mFTjD=null}});
-
-
 // qx.ui.tree.Tree
 //   - Size: 4021 bytes
 //   - Modified: 2010-08-26T21:43:54
@@ -17179,6 +17123,68 @@ break;
 case"Enter":case"Space":a.isOpenable()&&a.toggleOpen();
 break}}},
 destruct:function(){this._disposeObjects("__content")}});
+
+
+// qx.ui.table.columnmodel.Resize
+//   - Size: 2939 bytes
+//   - Modified: 2010-08-26T21:43:54
+qx.Class.define("qx.ui.table.columnmodel.Resize",{extend:qx.ui.table.columnmodel.Basic,
+include:qx.locale.MTranslation,
+construct:function(){this.base(arguments);
+this.__NFZdV=false;
+this.__Cykvf=false},
+properties:{behavior:{check:"qx.ui.table.columnmodel.resizebehavior.Abstract",
+init:null,
+nullable:true,
+apply:"_applyBehavior",
+event:"changeBehavior"}},
+members:{__Cykvf:null,
+__NFZdV:null,
+__mFTjD:null,
+_applyBehavior:function(b,a){a!=null&&(a.dispose(),a=null);
+b._setNumColumns(this.getOverallColumnCount());
+b.setTableColumnModel(this)},
+init:function(b,a){this.base(arguments,b,a);
+this.__mFTjD==null&&(this.__mFTjD=a,a.addListener("appear",this._onappear,this),a.addListener("tableWidthChanged",this._onTableWidthChanged,this),a.addListener("verticalScrollBarChanged",this._onverticalscrollbarchanged,this),a.addListener("columnVisibilityMenuCreateEnd",this._addResetColumnWidthButton,this),this.addListener("widthChanged",this._oncolumnwidthchanged,this),this.addListener("visibilityChanged",this._onvisibilitychanged,this));
+this.getBehavior()==null&&this.setBehavior(new qx.ui.table.columnmodel.resizebehavior.Default());
+this.getBehavior()._setNumColumns(b)},
+getTable:function(){return this.__mFTjD},
+_addResetColumnWidthButton:function(e){var b=e.getData(),c=b.columnButton,d=b.menu,a;
+a=c.factory("separator");
+d.add(a);
+a=c.factory("user-button",{text:this.tr("Reset column widths")});
+d.add(a);
+a.addListener("execute",this._onappear,this)},
+_onappear:function(a){if(this.__NFZdV)return;
+this.__NFZdV=true;
+qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onappear");
+this.getBehavior().onAppear(a,a.getType()!=="appear");
+this.__mFTjD._updateScrollerWidths();
+this.__mFTjD._updateScrollBarVisibility();
+this.__NFZdV=false;
+this.__Cykvf=true},
+_onTableWidthChanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
+this.__NFZdV=true;
+qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("ontablewidthchanged");
+this.getBehavior().onTableWidthChanged(a);
+this.__NFZdV=false},
+_onverticalscrollbarchanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
+this.__NFZdV=true;
+qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onverticalscrollbarchanged");
+this.getBehavior().onVerticalScrollBarChanged(a);
+qx.event.Timer.once(function(){this.__mFTjD&&!this.__mFTjD.isDisposed()&&(this.__mFTjD._updateScrollerWidths(),this.__mFTjD._updateScrollBarVisibility())},this,0);
+this.__NFZdV=false},
+_oncolumnwidthchanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
+this.__NFZdV=true;
+qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("oncolumnwidthchanged");
+this.getBehavior().onColumnWidthChanged(a);
+this.__NFZdV=false},
+_onvisibilitychanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
+this.__NFZdV=true;
+qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onvisibilitychanged");
+this.getBehavior().onVisibilityChanged(a);
+this.__NFZdV=false}},
+destruct:function(){this.__mFTjD=null}});
 
 
 // qx.ui.table.pane.Scroller
@@ -19435,6 +19441,39 @@ right:a.getImageWidth(b.r)}}},
 destruct:function(){this.__qyd51=this.__qd9wf=this.__msGX5=null}});
 
 
+// qx.ui.decoration.Background
+//   - Size: 1105 bytes
+//   - Modified: 2010-09-30T14:20:20
+qx.Class.define("qx.ui.decoration.Background",{extend:qx.ui.decoration.Abstract,
+include:[qx.ui.decoration.MBackgroundImage],
+construct:function(a){this.base(arguments);
+a!=null&&this.setBackgroundColor(a)},
+properties:{backgroundColor:{check:"Color",
+nullable:true,
+apply:"_applyStyle"}},
+members:{__qyd51:null,
+_getDefaultInsets:function(){return{top:0,
+right:0,
+bottom:0,
+left:0}},
+_isInitialized:function(){return!!this.__qyd51},
+getMarkup:function(){if(this.__qyd51)return this.__qyd51;
+var b={position:"absolute",
+top:0,
+left:0},a=this._generateBackgroundMarkup(b);
+return this.__qyd51=a},
+resize:function(b,d,c){var a=this.getInsets();
+b.style.width=(d-a.left-a.right)+"px";
+b.style.height=(c-a.top-a.bottom)+"px";
+b.style.left=-a.left+"px";
+b.style.top=-a.top+"px"},
+tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
+a==null&&(a=this.getBackgroundColor());
+b.style.backgroundColor=c.resolve(a)||""},
+_applyStyle:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
+destruct:function(){this.__qyd51=null}});
+
+
 // qx.ui.decoration.Single
 //   - Size: 3487 bytes
 //   - Modified: 2010-11-11T16:55:28
@@ -19533,39 +19572,6 @@ b.style.backgroundColor=c.resolve(a)||""},
 _applyWidth:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!");
 this._resetInsets()},
 _applyStyle:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
-destruct:function(){this.__qyd51=null}});
-
-
-// qx.ui.decoration.Background
-//   - Size: 1105 bytes
-//   - Modified: 2010-09-30T14:20:20
-qx.Class.define("qx.ui.decoration.Background",{extend:qx.ui.decoration.Abstract,
-include:[qx.ui.decoration.MBackgroundImage],
-construct:function(a){this.base(arguments);
-a!=null&&this.setBackgroundColor(a)},
-properties:{backgroundColor:{check:"Color",
-nullable:true,
-apply:"_applyStyle"}},
-members:{__qyd51:null,
-_getDefaultInsets:function(){return{top:0,
-right:0,
-bottom:0,
-left:0}},
-_isInitialized:function(){return!!this.__qyd51},
-getMarkup:function(){if(this.__qyd51)return this.__qyd51;
-var b={position:"absolute",
-top:0,
-left:0},a=this._generateBackgroundMarkup(b);
-return this.__qyd51=a},
-resize:function(b,d,c){var a=this.getInsets();
-b.style.width=(d-a.left-a.right)+"px";
-b.style.height=(c-a.top-a.bottom)+"px";
-b.style.left=-a.left+"px";
-b.style.top=-a.top+"px"},
-tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
-a==null&&(a=this.getBackgroundColor());
-b.style.backgroundColor=c.resolve(a)||""},
-_applyStyle:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
 destruct:function(){this.__qyd51=null}});
 
 
