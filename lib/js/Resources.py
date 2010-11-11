@@ -324,6 +324,8 @@ class Resources:
         info = self.getInfo()
         code = json.dumps(info, separators=(',',':'))
         
+        logging.info("Generated %sKB of resource info" % (len(code)/1024))
+        
         return "(function(){this.%s=%s})();" % (to, code)
         
         
