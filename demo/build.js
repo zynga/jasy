@@ -124,37 +124,6 @@ error:function(){qx.Bootstrap.$$logs.push(["error",arguments])},
 trace:function(){}}});
 
 
-// qx.core.WindowError
-//   - Size: 356 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Bootstrap.define("qx.core.WindowError",{extend:Error,
-construct:function(b,c,a){Error.call(this,b);
-this.__OnqWO=b;
-this.__g0JOt=c||"";
-this.__JeJe8=a===undefined?-1:a},
-members:{__OnqWO:null,
-__g0JOt:null,
-__JeJe8:null,
-toString:function(){return this.__OnqWO},
-getUri:function(){return this.__g0JOt},
-getLineNumber:function(){return this.__JeJe8}}});
-
-
-// qx.core.property.Util
-//   - Size: 501 bytes
-//   - Modified: 2010-06-18T23:08:09
-qx.Bootstrap.define("qx.core.property.Util",{statics:{getPropertyDefinition:function(a,c){var b;
-while(a){b=a.$$properties;
-if(b&&b[c])return b[c];
-a=a.superclass}return null},
-hasProperty:function(a,b){return!!this.getPropertyDefinition(a,b)},
-getProperties:function(a){var b=[];
-while(a)a.$$properties&&b.push.apply(b,qx.Bootstrap.getKeys(a.$$properties)),a=a.superclass;
-return b},
-getByProperty:function(a,b){while(a){if(a.$$properties&&a.$$properties[b])return a;
-a=a.superclass}return null}}});
-
-
 // qx.core.Setting
 //   - Size: 1333 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -183,6 +152,81 @@ defer:function(a){a.define("qx.allowUrlSettings",false);
 a.define("qx.allowUrlVariants",false);
 a.define("qx.propertyDebugLevel",0);
 a.__jA3lT()}});
+
+
+// qx.core.Type
+//   - Size: 2978 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Bootstrap.define("qx.core.Type",{statics:{__mtv7d:{String:"$$isString"},
+__qxW2Q:{String:1,
+Number:1,
+Function:1,
+RegExp:1,
+Date:1,
+Boolean:1,
+Array:1,
+Object:1,
+Error:1},
+__bqGsvO:{Integer:"Number",
+PositiveNumber:"Number",
+PositiveInteger:"Number"},
+__E0WFw:{String:"string",
+Number:"number",
+Boolean:"boolean"},
+__3iKAd:{"[object String]":"String",
+"[object Array]":"Array",
+"[object Object]":"Object",
+"[object RegExp]":"RegExp",
+"[object Number]":"Number",
+"[object Boolean]":"Boolean",
+"[object Date]":"Date",
+"[object Function]":"Function",
+"[object Error]":"Error"},
+__DBL9i:{Class:1,
+Mixin:1,
+Interface:1,
+Theme:1},
+__yBAW6:{Node:1,
+Element:1,
+Document:1},
+__p3qB2:{},
+add:function(a,d,c){var b=this.__p3qB2;
+if(b[a])throw new Error("Type if already registered by another class: "+a);
+b[a]={method:d,
+context:c}},
+check:function(c,a,r,d){var b,n,o,h,k,g,i,m,j,l,f,e,p;
+d||(d=Error);
+if(c==null){b=a=="Null";
+if(b==false)throw new d("Value: '"+c+"' is null but needs to be: "+a+"!")}else if(typeof a=="string"){if(this.__qxW2Q[a]||this.__bqGsvO[a]){n=this.__bqGsvO[a];
+n&&(o=a,a=n);
+h=this.__E0WFw[a];
+h&&(b=typeof c==h);
+b||(b=this.__3iKAd[Object.prototype.toString.call(c)]==a);
+k=this.__mtv7d[a];
+!b&&k&&(b=k in c);
+b&&a=="Number"&&(b=isFinite(c));
+o&&(a=o,b&&(a=="Integer"?b=c%1==0:a=="PositiveInteger"?b=c%1==0&&c>=0:a=="PositiveNumber"&&(b=c>=0)));
+if(b==false)throw new d("Value: '"+c+"' is not type of: "+a+"!")}else if(this.__yBAW6[a]){g=c.nodeType;
+b=g!=null&&(a=="Node"||g==1&&a=="Element"||g==9&&a=="Document");
+if(b==false)throw new d("Value: '"+c+"' is not type of "+a+"!")}else if(this.__DBL9i[a]){b=c.$$type==a;
+if(b==false)throw new d("Value: '"+c+"' is not type of "+a+"!")}else{i=qx.Bootstrap.getByName(a);
+if(i){b=c.hasOwnProperty&&c instanceof i;
+if(b==false)throw new d("Value: '"+c+"' is not an instance of "+a+"!")}else{m=c.constructor;
+j=qx.Interface.getByName(a);
+if(j){b=qx.Bootstrap.hasInterface(m,j);
+if(b==false)throw new d("Value: '"+c+"' do not implement interface: "+a+"!")}else{l=qx.Mixin.getByName(a);
+if(l){b=qx.Class&&qx.Class.hasMixin(m,l);
+if(b==false)throw new d("Value: '"+c+"' does not include mixin: "+a+"!")}}}}b==null&&(f=this.__p3qB2[a],f&&(b=f.method.call(f.context||window,c)))}else if(a instanceof Array){if(a.indexOf)b=a.indexOf(c)!=-1;
+else{b=false;
+for(e=0,p=a.length;
+e<p;
+e++)if(c===a[e]){b=true;
+break}}if(b==false)throw new d("Value: '"+c+"' is not listed in possible values: "+a)}else if(a instanceof RegExp){qx.core.Type.check(c,"String");
+b=a.match(c);
+if(b==false)throw new d("Value: '"+c+"' does not match regular expression: "+a)}else if(a instanceof Function){try{b=a.call(r||window,c);
+b==null&&(b=true)}catch(q){throw new d("Value: '"+c+"' is not accepted by check routine: "+q)}if(b==false)throw new d("Value: '"+c+"' is not accepted by check routine.")}if(b==null||b==false){d||(d=Error);
+if(b==null)throw new d("Unsupported check: "+a);
+throw new d("Value: '"+c+"' does not validates as: "+a)}}}});
 
 
 // qx.core.property.Core
@@ -280,248 +324,19 @@ c++){if(f[c]==null)throw new Error("Includes of mixins must be mixins. The inclu
 if(f[c].$$type!=="Mixin")throw new Error("Includes of mixins must be mixins. The include number '"+(c+1)+"' in mixin '"+d+"'is not a mixin!")}this.checkCompatibility(b.include)}}}});
 
 
-// qx.Theme
-//   - Size: 4074 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Bootstrap.define("qx.Theme",{statics:{define:function(d,a){if(!a)var a={},b,c,e,f;
-a.include=this.__ba6rD1(a.include);
-a.patch=this.__ba6rD1(a.patch);
-this.__9AoUd(d,a);
-b={$$type:"Theme",
-name:d,
-title:a.title,
-toString:this.genericToString};
-a.extend&&(b.supertheme=a.extend);
-b.basename=qx.Bootstrap.createNamespace(d,b);
-this.__uNnVI(b,a);
-this.$$registry[d]=b;
-for(c=0,e=a.include,f=e.length;
-c<f;
-c++)this.include(b,e[c]);
-for(c=0,e=a.patch,f=e.length;
-c<f;
-c++)this.patch(b,e[c])},
-__ba6rD1:function(a){if(!a)return[];
-return qx.Bootstrap.isArray(a)?a:[a]},
-getAll:function(){return this.$$registry},
-getByName:function(a){return this.$$registry[a]},
-isDefined:function(a){return this.getByName(a)!==undefined},
-getTotalNumber:function(){return qx.Bootstrap.objectGetLength(this.$$registry)},
-genericToString:function(){return"[Theme "+this.name+"]"},
-__QriHM:function(d){for(var a=0,b=this.__bh2e6M,c=b.length;
-a<c;
-a++)if(d[b[a]])return b[a]},
-__uNnVI:function(f,a){var c=this.__QriHM(a),d,e,g,b;
-a.extend&&!c&&(c=a.extend.type);
-f.type=c||"other";
-if(!c)return;
-d=function(){};
-a.extend&&(d.prototype=new a.extend.$$clazz);
-e=d.prototype,g=a[c];
-for(b in g){e[b]=g[b];
-if(e[b].base){if(!a.extend)throw new Error("Found base flag in entry '"+b+"' of theme '"+a.name+"'. Base flags are not allowed for themes without a valid super theme!");
-e[b].base=a.extend}}f.$$clazz=d;
-f[c]=new d},
-$$registry:{},
-__bh2e6M:["colors","decorations","fonts","appearances","meta"],
-__PnQ3H:{title:"string",
-type:"string",
-extend:"object",
-colors:"object",
-decorations:"object",
-fonts:"object",
-appearances:"object",
-meta:"object",
-include:"object",
-patch:"object"},
-__yIb8g:{color:"object",
-decoration:"object",
-font:"object",
-appearance:"object"},
-__9AoUd:function(d,a){var f=this.__PnQ3H,b,g,c,h,i,e;
-for(b in a){if(f[b]===undefined)throw new Error("The configuration key \""+b+"\" in theme \""+d+"\" is not allowed!");
-if(a[b]==null)throw new Error("Invalid key \""+b+"\" in theme \""+d+"\"! The value is undefined/null!");
-if(f[b]!==null&&typeof a[b]!==f[b])throw new Error("Invalid type of key \""+b+"\" in theme \""+d+"\"! The type of the key must be \""+f[b]+"\"!")}g=["colors","decorations","fonts","appearances","meta"],c=0,h=g.length;
-for(;
-c<h;
-c++){b=g[c];
-if(a[b]!==undefined&&(a[b] instanceof Array||a[b] instanceof RegExp||a[b] instanceof Date||a[b].classname!==undefined))throw new Error("Invalid key \""+b+"\" in theme \""+d+"\"! The value needs to be a map!")}i=0,c=0,h=g.length;
-for(;
-c<h;
-c++){b=g[c];
-a[b]&&i++;
-if(i>1)throw new Error("You can only define one theme category per file! Invalid theme: "+d)}if(!a.extend&&i===0)throw new Error("You must define at least one entry in your theme configuration :"+d);
-if(a.meta)for(b in a.meta){e=a.meta[b];
-if(this.__yIb8g[b]===undefined)throw new Error("The key \""+b+"\" is not allowed inside a meta theme block.");
-if(typeof e!==this.__yIb8g[b])throw new Error("The type of the key \""+b+"\" inside the meta block is wrong.");
-if(!(typeof e==="object"&&e!==null&&e.$$type==="Theme"))throw new Error("The content of a meta theme must reference to other themes. The value for \""+b+"\" in theme \""+d+"\" is invalid: "+e)}if(a.extend&&a.extend.$$type!=="Theme")throw new Error("Invalid extend in theme \""+d+"\": "+a.extend);
-if(a.include)for(c=0,h=a.include.length;
-c<h;
-c++)if(typeof a.include[c]=="undefined"||a.include[c].$$type!=="Theme")throw new Error("Invalid include in theme \""+d+"\": "+a.include[c]);
-if(a.patch)for(c=0,h=a.patch.length;
-c<h;
-c++)if(typeof a.patch[c]=="undefined"||a.patch[c].$$type!=="Theme")throw new Error("Invalid patch in theme \""+d+"\": "+a.patch[c])},
-patch:function(b,c){var d=this.__QriHM(c),e,f,a;
-if(d!==this.__QriHM(b))throw new Error("The mixins '"+b.name+"' are not compatible '"+c.name+"'!");
-e=c[d],f=b.$$clazz.prototype;
-for(a in e)f[a]=e[a]},
-include:function(b,c){var d=c.type,f,e,a;
-if(d!==b.type)throw new Error("The mixins '"+b.name+"' are not compatible '"+c.name+"'!");
-f=c[d],e=b.$$clazz.prototype;
-for(a in f){if(e[a]!==undefined)continue;
-e[a]=f[a]}}}});
-
-
-// qx.lang.Core
-//   - Size: 2474 bytes
-//   - Modified: 2010-05-21T19:22:00
-qx.Bootstrap.define("qx.lang.Core",{statics:{errorToString:{"native":Error.prototype.toString,
-emulated:function(){return this.message}}[!Error.prototype.toString||Error.prototype.toString()=="[object Error]"?"emulated":"native"],
-arrayIndexOf:{"native":Array.prototype.indexOf,
-emulated:function(c,a){a==null?a=0:a<0&&(a=Math.max(0,this.length+a));
-for(var b=a;
-b<this.length;
-b++)if(this[b]===c)return b;
-return-1}}[Array.prototype.indexOf?"native":"emulated"],
-arrayLastIndexOf:{"native":Array.prototype.lastIndexOf,
-emulated:function(c,a){a==null?a=this.length-1:a<0&&(a=Math.max(0,this.length+a));
-for(var b=a;
-b>=0;
-b--)if(this[b]===c)return b;
-return-1}}[Array.prototype.lastIndexOf?"native":"emulated"],
-arrayForEach:{"native":Array.prototype.forEach,
-emulated:function(e,d){for(var c=this.length,a=0,b;
-a<c;
-a++)b=this[a],b!==undefined&&e.call(d||window,b,a,this)}}[Array.prototype.forEach?"native":"emulated"],
-arrayFilter:{"native":Array.prototype.filter,
-emulated:function(f,e){for(var c=[],d=this.length,a=0,b;
-a<d;
-a++)b=this[a],b!==undefined&&f.call(e||window,b,a,this)&&c.push(this[a]);
-return c}}[Array.prototype.filter?"native":"emulated"],
-arrayMap:{"native":Array.prototype.map,
-emulated:function(f,e){for(var c=[],d=this.length,a=0,b;
-a<d;
-a++)b=this[a],b!==undefined&&(c[a]=f.call(e||window,b,a,this));
-return c}}[Array.prototype.map?"native":"emulated"],
-arraySome:{"native":Array.prototype.some,
-emulated:function(e,d){for(var c=this.length,a=0,b;
-a<c;
-a++){b=this[a];
-if(b!==undefined)if(e.call(d||window,b,a,this))return true}return false}}[Array.prototype.some?"native":"emulated"],
-arrayEvery:{"native":Array.prototype.every,
-emulated:function(e,d){for(var c=this.length,a=0,b;
-a<c;
-a++){b=this[a];
-if(b!==undefined)if(!e.call(d||window,b,a,this))return false}return true}}[Array.prototype.every?"native":"emulated"],
-stringQuote:{"native":String.prototype.quote,
-emulated:function(){return"\""+this.replace(/\\/g,"\\\\").replace(/\"/g,"\\\"")+"\""}}[String.prototype.quote?"native":"emulated"]}});
-Error.prototype.toString=qx.lang.Core.errorToString;
-Array.prototype.indexOf=qx.lang.Core.arrayIndexOf;
-Array.prototype.lastIndexOf=qx.lang.Core.arrayLastIndexOf;
-Array.prototype.forEach=qx.lang.Core.arrayForEach;
-Array.prototype.filter=qx.lang.Core.arrayFilter;
-Array.prototype.map=qx.lang.Core.arrayMap;
-Array.prototype.some=qx.lang.Core.arraySome;
-Array.prototype.every=qx.lang.Core.arrayEvery;
-String.prototype.quote=qx.lang.Core.stringQuote;
-
-
-// qx.bom.client.Engine
-//   - Size: 1551 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Bootstrap.define("qx.bom.client.Engine",{statics:{NAME:"",
-FULLVERSION:"0.0.0",
-VERSION:0,
-OPERA:false,
-WEBKIT:false,
-GECKO:false,
-MSHTML:false,
-UNKNOWN_ENGINE:false,
-UNKNOWN_VERSION:false,
-DOCUMENT_MODE:null,
-__jA3lT:function(){var b="unknown",a="0.0.0",c=window.navigator.userAgent,f=false,d=false,g,e;
-window.opera&&Object.prototype.toString.call(window.opera)=="[object Opera]"?(b="opera",this.OPERA=true,/Opera[\s\/]([0-9]+)\.([0-9])([0-9]*)/.test(c)?(a=RegExp.$1+"."+RegExp.$2,RegExp.$3!=""&&(a+="."+RegExp.$3)):(d=true,a="9.6.0")):window.navigator.userAgent.indexOf("AppleWebKit/")!=-1?(b="webkit",this.WEBKIT=true,/AppleWebKit\/([^ ]+)/.test(c)?(a=RegExp.$1,g=RegExp("[^\\.0-9]").exec(a),g&&(a=a.slice(0,g.index))):(d=true,a="525.26")):window.controllers&&window.navigator.product==="Gecko"?(b="gecko",this.GECKO=true,/rv\:([^\);]+)(\)|;)/.test(c)?a=RegExp.$1:(d=true,a="1.9.0.0")):window.navigator.cpuClass&&/MSIE\s+([^\);]+)(\)|;)/.test(c)?(b="mshtml",a=RegExp.$1,document.documentMode&&(this.DOCUMENT_MODE=document.documentMode),a<8&&/Trident\/([^\);]+)(\)|;)/.test(c)&&RegExp.$1==="4.0"&&(a="8.0"),this.MSHTML=true):(e=window.qxFail,e&&typeof e==="function"?(b=e(),b.NAME&&b.FULLVERSION&&(b=b.NAME,this[b.toUpperCase()]=true,a=b.FULLVERSION)):(f=true,d=true,a="1.9.0.0",b="gecko",this.GECKO=true,qx.Bootstrap.warn("Unsupported client: "+c+"! Assumed gecko version 1.9.0.0 (Firefox 3.0).")));
-this.UNKNOWN_ENGINE=f;
-this.UNKNOWN_VERSION=d;
-this.NAME=b;
-this.FULLVERSION=a;
-this.VERSION=parseFloat(a)}},
-defer:function(a){a.__jA3lT()}});
-
-
-// qx.core.Type
-//   - Size: 2978 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Bootstrap.define("qx.core.Type",{statics:{__mtv7d:{String:"$$isString"},
-__qxW2Q:{String:1,
-Number:1,
-Function:1,
-RegExp:1,
-Date:1,
-Boolean:1,
-Array:1,
-Object:1,
-Error:1},
-__bqGsvO:{Integer:"Number",
-PositiveNumber:"Number",
-PositiveInteger:"Number"},
-__E0WFw:{String:"string",
-Number:"number",
-Boolean:"boolean"},
-__3iKAd:{"[object String]":"String",
-"[object Array]":"Array",
-"[object Object]":"Object",
-"[object RegExp]":"RegExp",
-"[object Number]":"Number",
-"[object Boolean]":"Boolean",
-"[object Date]":"Date",
-"[object Function]":"Function",
-"[object Error]":"Error"},
-__DBL9i:{Class:1,
-Mixin:1,
-Interface:1,
-Theme:1},
-__yBAW6:{Node:1,
-Element:1,
-Document:1},
-__p3qB2:{},
-add:function(a,d,c){var b=this.__p3qB2;
-if(b[a])throw new Error("Type if already registered by another class: "+a);
-b[a]={method:d,
-context:c}},
-check:function(c,a,r,d){var b,n,o,h,k,g,i,m,j,l,f,e,p;
-d||(d=Error);
-if(c==null){b=a=="Null";
-if(b==false)throw new d("Value: '"+c+"' is null but needs to be: "+a+"!")}else if(typeof a=="string"){if(this.__qxW2Q[a]||this.__bqGsvO[a]){n=this.__bqGsvO[a];
-n&&(o=a,a=n);
-h=this.__E0WFw[a];
-h&&(b=typeof c==h);
-b||(b=this.__3iKAd[Object.prototype.toString.call(c)]==a);
-k=this.__mtv7d[a];
-!b&&k&&(b=k in c);
-b&&a=="Number"&&(b=isFinite(c));
-o&&(a=o,b&&(a=="Integer"?b=c%1==0:a=="PositiveInteger"?b=c%1==0&&c>=0:a=="PositiveNumber"&&(b=c>=0)));
-if(b==false)throw new d("Value: '"+c+"' is not type of: "+a+"!")}else if(this.__yBAW6[a]){g=c.nodeType;
-b=g!=null&&(a=="Node"||g==1&&a=="Element"||g==9&&a=="Document");
-if(b==false)throw new d("Value: '"+c+"' is not type of "+a+"!")}else if(this.__DBL9i[a]){b=c.$$type==a;
-if(b==false)throw new d("Value: '"+c+"' is not type of "+a+"!")}else{i=qx.Bootstrap.getByName(a);
-if(i){b=c.hasOwnProperty&&c instanceof i;
-if(b==false)throw new d("Value: '"+c+"' is not an instance of "+a+"!")}else{m=c.constructor;
-j=qx.Interface.getByName(a);
-if(j){b=qx.Bootstrap.hasInterface(m,j);
-if(b==false)throw new d("Value: '"+c+"' do not implement interface: "+a+"!")}else{l=qx.Mixin.getByName(a);
-if(l){b=qx.Class&&qx.Class.hasMixin(m,l);
-if(b==false)throw new d("Value: '"+c+"' does not include mixin: "+a+"!")}}}}b==null&&(f=this.__p3qB2[a],f&&(b=f.method.call(f.context||window,c)))}else if(a instanceof Array){if(a.indexOf)b=a.indexOf(c)!=-1;
-else{b=false;
-for(e=0,p=a.length;
-e<p;
-e++)if(c===a[e]){b=true;
-break}}if(b==false)throw new d("Value: '"+c+"' is not listed in possible values: "+a)}else if(a instanceof RegExp){qx.core.Type.check(c,"String");
-b=a.match(c);
-if(b==false)throw new d("Value: '"+c+"' does not match regular expression: "+a)}else if(a instanceof Function){try{b=a.call(r||window,c);
-b==null&&(b=true)}catch(q){throw new d("Value: '"+c+"' is not accepted by check routine: "+q)}if(b==false)throw new d("Value: '"+c+"' is not accepted by check routine.")}if(b==null||b==false){d||(d=Error);
-if(b==null)throw new d("Unsupported check: "+a);
-throw new d("Value: '"+c+"' does not validates as: "+a)}}}});
+// qx.core.property.Util
+//   - Size: 501 bytes
+//   - Modified: 2010-06-18T23:08:09
+qx.Bootstrap.define("qx.core.property.Util",{statics:{getPropertyDefinition:function(a,c){var b;
+while(a){b=a.$$properties;
+if(b&&b[c])return b[c];
+a=a.superclass}return null},
+hasProperty:function(a,b){return!!this.getPropertyDefinition(a,b)},
+getProperties:function(a){var b=[];
+while(a)a.$$properties&&b.push.apply(b,qx.Bootstrap.getKeys(a.$$properties)),a=a.superclass;
+return b},
+getByProperty:function(a,b){while(a){if(a.$$properties&&a.$$properties[b])return a;
+a=a.superclass}return null}}});
 
 
 // qx.Interface
@@ -1008,46 +823,189 @@ toString:function(){return this.__uzUwU+": "+this.message}}});
 qx.Class.define("qx.core.ValidationError",{extend:qx.type.BaseError});
 
 
-// qx.ui.core.MNativeOverflow
-//   - Size: 465 bytes
+// qx.core.WindowError
+//   - Size: 356 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.ui.core.MNativeOverflow",{properties:{overflowX:{check:["hidden","visible","scroll","auto"],
-nullable:true,
-apply:"_applyOverflowX"},
-overflowY:{check:["hidden","visible","scroll","auto"],
-nullable:true,
-apply:"_applyOverflowY"},
-overflow:{group:["overflowX","overflowY"]}},
-members:{_applyOverflowX:function(a){this.getContentElement().setStyle("overflowX",a)},
-_applyOverflowY:function(a){this.getContentElement().setStyle("overflowY",a)}}});
+qx.Bootstrap.define("qx.core.WindowError",{extend:Error,
+construct:function(b,c,a){Error.call(this,b);
+this.__OnqWO=b;
+this.__g0JOt=c||"";
+this.__JeJe8=a===undefined?-1:a},
+members:{__OnqWO:null,
+__g0JOt:null,
+__JeJe8:null,
+toString:function(){return this.__OnqWO},
+getUri:function(){return this.__g0JOt},
+getLineNumber:function(){return this.__JeJe8}}});
 
 
-// qx.ui.core.MBlocker
-//   - Size: 994 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Mixin.define("qx.ui.core.MBlocker",{construct:function(){this.__ukeJN=new qx.ui.core.Blocker(this)},
-properties:{blockerColor:{check:"Color",
-init:null,
-nullable:true,
-apply:"_applyBlockerColor",
-themeable:true},
-blockerOpacity:{check:"Number",
-init:1,
-apply:"_applyBlockerOpacity",
-themeable:true}},
-members:{__ukeJN:null,
-_applyBlockerColor:function(a){this.__ukeJN.setColor(a)},
-_applyBlockerOpacity:function(a){this.__ukeJN.setOpacity(a)},
-block:function(){this.__ukeJN.block()},
-isBlocked:function(){return this.__ukeJN.isBlocked()},
-unblock:function(){this.__ukeJN.unblock()},
-forceUnblock:function(){this.__ukeJN.forceUnblock()},
-blockContent:function(a){this.__ukeJN.blockContent(a)},
-isContentBlocked:function(){return this.__ukeJN.isContentBlocked()},
-unblockContent:function(){this.__ukeJN.unblockContent()},
-forceUnblockContent:function(){this.__ukeJN.forceUnblockContent()},
-getBlocker:function(){return this.__ukeJN}},
-destruct:function(){this._disposeObjects("__blocker")}});
+// qx.lang.Core
+//   - Size: 2474 bytes
+//   - Modified: 2010-05-21T19:22:00
+qx.Bootstrap.define("qx.lang.Core",{statics:{errorToString:{"native":Error.prototype.toString,
+emulated:function(){return this.message}}[!Error.prototype.toString||Error.prototype.toString()=="[object Error]"?"emulated":"native"],
+arrayIndexOf:{"native":Array.prototype.indexOf,
+emulated:function(c,a){a==null?a=0:a<0&&(a=Math.max(0,this.length+a));
+for(var b=a;
+b<this.length;
+b++)if(this[b]===c)return b;
+return-1}}[Array.prototype.indexOf?"native":"emulated"],
+arrayLastIndexOf:{"native":Array.prototype.lastIndexOf,
+emulated:function(c,a){a==null?a=this.length-1:a<0&&(a=Math.max(0,this.length+a));
+for(var b=a;
+b>=0;
+b--)if(this[b]===c)return b;
+return-1}}[Array.prototype.lastIndexOf?"native":"emulated"],
+arrayForEach:{"native":Array.prototype.forEach,
+emulated:function(e,d){for(var c=this.length,a=0,b;
+a<c;
+a++)b=this[a],b!==undefined&&e.call(d||window,b,a,this)}}[Array.prototype.forEach?"native":"emulated"],
+arrayFilter:{"native":Array.prototype.filter,
+emulated:function(f,e){for(var c=[],d=this.length,a=0,b;
+a<d;
+a++)b=this[a],b!==undefined&&f.call(e||window,b,a,this)&&c.push(this[a]);
+return c}}[Array.prototype.filter?"native":"emulated"],
+arrayMap:{"native":Array.prototype.map,
+emulated:function(f,e){for(var c=[],d=this.length,a=0,b;
+a<d;
+a++)b=this[a],b!==undefined&&(c[a]=f.call(e||window,b,a,this));
+return c}}[Array.prototype.map?"native":"emulated"],
+arraySome:{"native":Array.prototype.some,
+emulated:function(e,d){for(var c=this.length,a=0,b;
+a<c;
+a++){b=this[a];
+if(b!==undefined)if(e.call(d||window,b,a,this))return true}return false}}[Array.prototype.some?"native":"emulated"],
+arrayEvery:{"native":Array.prototype.every,
+emulated:function(e,d){for(var c=this.length,a=0,b;
+a<c;
+a++){b=this[a];
+if(b!==undefined)if(!e.call(d||window,b,a,this))return false}return true}}[Array.prototype.every?"native":"emulated"],
+stringQuote:{"native":String.prototype.quote,
+emulated:function(){return"\""+this.replace(/\\/g,"\\\\").replace(/\"/g,"\\\"")+"\""}}[String.prototype.quote?"native":"emulated"]}});
+Error.prototype.toString=qx.lang.Core.errorToString;
+Array.prototype.indexOf=qx.lang.Core.arrayIndexOf;
+Array.prototype.lastIndexOf=qx.lang.Core.arrayLastIndexOf;
+Array.prototype.forEach=qx.lang.Core.arrayForEach;
+Array.prototype.filter=qx.lang.Core.arrayFilter;
+Array.prototype.map=qx.lang.Core.arrayMap;
+Array.prototype.some=qx.lang.Core.arraySome;
+Array.prototype.every=qx.lang.Core.arrayEvery;
+String.prototype.quote=qx.lang.Core.stringQuote;
+
+
+// qx.Theme
+//   - Size: 4074 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Bootstrap.define("qx.Theme",{statics:{define:function(d,a){if(!a)var a={},b,c,e,f;
+a.include=this.__ba6rD1(a.include);
+a.patch=this.__ba6rD1(a.patch);
+this.__9AoUd(d,a);
+b={$$type:"Theme",
+name:d,
+title:a.title,
+toString:this.genericToString};
+a.extend&&(b.supertheme=a.extend);
+b.basename=qx.Bootstrap.createNamespace(d,b);
+this.__uNnVI(b,a);
+this.$$registry[d]=b;
+for(c=0,e=a.include,f=e.length;
+c<f;
+c++)this.include(b,e[c]);
+for(c=0,e=a.patch,f=e.length;
+c<f;
+c++)this.patch(b,e[c])},
+__ba6rD1:function(a){if(!a)return[];
+return qx.Bootstrap.isArray(a)?a:[a]},
+getAll:function(){return this.$$registry},
+getByName:function(a){return this.$$registry[a]},
+isDefined:function(a){return this.getByName(a)!==undefined},
+getTotalNumber:function(){return qx.Bootstrap.objectGetLength(this.$$registry)},
+genericToString:function(){return"[Theme "+this.name+"]"},
+__QriHM:function(d){for(var a=0,b=this.__bh2e6M,c=b.length;
+a<c;
+a++)if(d[b[a]])return b[a]},
+__uNnVI:function(f,a){var c=this.__QriHM(a),d,e,g,b;
+a.extend&&!c&&(c=a.extend.type);
+f.type=c||"other";
+if(!c)return;
+d=function(){};
+a.extend&&(d.prototype=new a.extend.$$clazz);
+e=d.prototype,g=a[c];
+for(b in g){e[b]=g[b];
+if(e[b].base){if(!a.extend)throw new Error("Found base flag in entry '"+b+"' of theme '"+a.name+"'. Base flags are not allowed for themes without a valid super theme!");
+e[b].base=a.extend}}f.$$clazz=d;
+f[c]=new d},
+$$registry:{},
+__bh2e6M:["colors","decorations","fonts","appearances","meta"],
+__PnQ3H:{title:"string",
+type:"string",
+extend:"object",
+colors:"object",
+decorations:"object",
+fonts:"object",
+appearances:"object",
+meta:"object",
+include:"object",
+patch:"object"},
+__yIb8g:{color:"object",
+decoration:"object",
+font:"object",
+appearance:"object"},
+__9AoUd:function(d,a){var f=this.__PnQ3H,b,g,c,h,i,e;
+for(b in a){if(f[b]===undefined)throw new Error("The configuration key \""+b+"\" in theme \""+d+"\" is not allowed!");
+if(a[b]==null)throw new Error("Invalid key \""+b+"\" in theme \""+d+"\"! The value is undefined/null!");
+if(f[b]!==null&&typeof a[b]!==f[b])throw new Error("Invalid type of key \""+b+"\" in theme \""+d+"\"! The type of the key must be \""+f[b]+"\"!")}g=["colors","decorations","fonts","appearances","meta"],c=0,h=g.length;
+for(;
+c<h;
+c++){b=g[c];
+if(a[b]!==undefined&&(a[b] instanceof Array||a[b] instanceof RegExp||a[b] instanceof Date||a[b].classname!==undefined))throw new Error("Invalid key \""+b+"\" in theme \""+d+"\"! The value needs to be a map!")}i=0,c=0,h=g.length;
+for(;
+c<h;
+c++){b=g[c];
+a[b]&&i++;
+if(i>1)throw new Error("You can only define one theme category per file! Invalid theme: "+d)}if(!a.extend&&i===0)throw new Error("You must define at least one entry in your theme configuration :"+d);
+if(a.meta)for(b in a.meta){e=a.meta[b];
+if(this.__yIb8g[b]===undefined)throw new Error("The key \""+b+"\" is not allowed inside a meta theme block.");
+if(typeof e!==this.__yIb8g[b])throw new Error("The type of the key \""+b+"\" inside the meta block is wrong.");
+if(!(typeof e==="object"&&e!==null&&e.$$type==="Theme"))throw new Error("The content of a meta theme must reference to other themes. The value for \""+b+"\" in theme \""+d+"\" is invalid: "+e)}if(a.extend&&a.extend.$$type!=="Theme")throw new Error("Invalid extend in theme \""+d+"\": "+a.extend);
+if(a.include)for(c=0,h=a.include.length;
+c<h;
+c++)if(typeof a.include[c]=="undefined"||a.include[c].$$type!=="Theme")throw new Error("Invalid include in theme \""+d+"\": "+a.include[c]);
+if(a.patch)for(c=0,h=a.patch.length;
+c<h;
+c++)if(typeof a.patch[c]=="undefined"||a.patch[c].$$type!=="Theme")throw new Error("Invalid patch in theme \""+d+"\": "+a.patch[c])},
+patch:function(b,c){var d=this.__QriHM(c),e,f,a;
+if(d!==this.__QriHM(b))throw new Error("The mixins '"+b.name+"' are not compatible '"+c.name+"'!");
+e=c[d],f=b.$$clazz.prototype;
+for(a in e)f[a]=e[a]},
+include:function(b,c){var d=c.type,f,e,a;
+if(d!==b.type)throw new Error("The mixins '"+b.name+"' are not compatible '"+c.name+"'!");
+f=c[d],e=b.$$clazz.prototype;
+for(a in f){if(e[a]!==undefined)continue;
+e[a]=f[a]}}}});
+
+
+// qx.bom.client.Engine
+//   - Size: 1551 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Bootstrap.define("qx.bom.client.Engine",{statics:{NAME:"",
+FULLVERSION:"0.0.0",
+VERSION:0,
+OPERA:false,
+WEBKIT:false,
+GECKO:false,
+MSHTML:false,
+UNKNOWN_ENGINE:false,
+UNKNOWN_VERSION:false,
+DOCUMENT_MODE:null,
+__jA3lT:function(){var b="unknown",a="0.0.0",c=window.navigator.userAgent,f=false,d=false,g,e;
+window.opera&&Object.prototype.toString.call(window.opera)=="[object Opera]"?(b="opera",this.OPERA=true,/Opera[\s\/]([0-9]+)\.([0-9])([0-9]*)/.test(c)?(a=RegExp.$1+"."+RegExp.$2,RegExp.$3!=""&&(a+="."+RegExp.$3)):(d=true,a="9.6.0")):window.navigator.userAgent.indexOf("AppleWebKit/")!=-1?(b="webkit",this.WEBKIT=true,/AppleWebKit\/([^ ]+)/.test(c)?(a=RegExp.$1,g=RegExp("[^\\.0-9]").exec(a),g&&(a=a.slice(0,g.index))):(d=true,a="525.26")):window.controllers&&window.navigator.product==="Gecko"?(b="gecko",this.GECKO=true,/rv\:([^\);]+)(\)|;)/.test(c)?a=RegExp.$1:(d=true,a="1.9.0.0")):window.navigator.cpuClass&&/MSIE\s+([^\);]+)(\)|;)/.test(c)?(b="mshtml",a=RegExp.$1,document.documentMode&&(this.DOCUMENT_MODE=document.documentMode),a<8&&/Trident\/([^\);]+)(\)|;)/.test(c)&&RegExp.$1==="4.0"&&(a="8.0"),this.MSHTML=true):(e=window.qxFail,e&&typeof e==="function"?(b=e(),b.NAME&&b.FULLVERSION&&(b=b.NAME,this[b.toUpperCase()]=true,a=b.FULLVERSION)):(f=true,d=true,a="1.9.0.0",b="gecko",this.GECKO=true,qx.Bootstrap.warn("Unsupported client: "+c+"! Assumed gecko version 1.9.0.0 (Firefox 3.0).")));
+this.UNKNOWN_ENGINE=f;
+this.UNKNOWN_VERSION=d;
+this.NAME=b;
+this.FULLVERSION=a;
+this.VERSION=parseFloat(a)}},
+defer:function(a){a.__jA3lT()}});
 
 
 // qx.ui.core.MContentPadding
@@ -1084,38 +1042,23 @@ _applyContentPadding:function(b,f,c){var a=this._getContentPaddingTarget(),e,d;
 b==null?(e=this.__cm5qGh[c],a[e]()):(d=this.__b1yWhg[c],a[d](b))}}});
 
 
-// qx.ui.core.MChildrenHandling
-//   - Size: 777 bytes
+// apiviewer.MWidgetRegistry
+//   - Size: 662 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.ui.core.MChildrenHandling",{members:{getChildren:function(){return this._getChildren()},
-hasChildren:function(){return this._hasChildren()},
-indexOf:function(a){return this._indexOf(a)},
-add:function(a,b){this._add(a,b)},
-addAt:function(a,c,b){this._addAt(a,c,b)},
-addBefore:function(c,a,b){this._addBefore(c,a,b)},
-addAfter:function(a,c,b){this._addAfter(a,c,b)},
-remove:function(a){this._remove(a)},
-removeAt:function(a){return this._removeAt(a)},
-removeAll:function(){this._removeAll()}},
-statics:{remap:function(a){a.getChildren=a._getChildren;
-a.hasChildren=a._hasChildren;
-a.indexOf=a._indexOf;
-a.add=a._add;
-a.addAt=a._addAt;
-a.addBefore=a._addBefore;
-a.addAfter=a._addAfter;
-a.remove=a._remove;
-a.removeAt=a._removeAt;
-a.removeAll=a._removeAll}}});
-
-
-// qx.ui.core.MLayoutHandling
-//   - Size: 237 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.ui.core.MLayoutHandling",{members:{setLayout:function(a){return this._setLayout(a)},
-getLayout:function(){return this._getLayout()}},
-statics:{remap:function(a){a.getLayout=a._getLayout;
-a.setLayout=a._setLayout}}});
+qx.Mixin.define("apiviewer.MWidgetRegistry",{properties:{id:{check:"String",
+apply:"_applyId",
+nullable:true,
+init:null}},
+members:{_applyId:function(b,a){var c=apiviewer.MWidgetRegistry;
+a&&c.unregister(this,a);
+b&&c.register(this,b)},
+getWidgetById:function(a){return apiviewer.MWidgetRegistry.getWidgetById(a)}},
+statics:{__yALNM:{},
+getWidgetById:function(a){return this.__yALNM[a]},
+register:function(b,a){if(this.__yALNM[a])throw new Error("An object with the id '"+a+"' already exists.");
+this.__yALNM[a]=b},
+unregister:function(b,a){if(this.__yALNM[a]!==b)throw new Error("The object is not registered with the id '"+a+"'.");
+delete this.__yALNM[a]}}});
 
 
 // qx.ui.core.MRemoteChildrenHandling
@@ -1136,11 +1079,33 @@ addAfter:function(a,c,b){this.__uR3K4("addAfter",a,c,b)},
 removeAt:function(a){this.__uR3K4("removeAt",a)}}});
 
 
-// qx.ui.core.MRemoteLayoutHandling
-//   - Size: 206 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.ui.core.MRemoteLayoutHandling",{members:{setLayout:function(a){return this.getChildrenContainer().setLayout(a)},
-getLayout:function(){return this.getChildrenContainer().getLayout()}}});
+// qx.ui.form.MForm
+//   - Size: 503 bytes
+//   - Modified: 2010-09-30T14:20:20
+qx.Mixin.define("qx.ui.form.MForm",{construct:function(){},
+properties:{valid:{check:"Boolean",
+init:true,
+apply:"_applyValid",
+event:"changeValid"},
+required:{check:"Boolean",
+init:false,
+event:"changeRequired"},
+invalidMessage:{check:"String",
+init:"",
+event:"changeInvalidMessage"},
+requiredInvalidMessage:{check:"String",
+nullable:true,
+event:"changeInvalidMessage"}},
+members:{_applyValid:function(a){a?this.removeState("invalid"):this.addState("invalid")},
+__7AESY:null},
+destruct:function(){}});
+
+
+// qx.ui.form.MModelProperty
+//   - Size: 104 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Mixin.define("qx.ui.form.MModelProperty",{properties:{model:{nullable:true,
+event:"changeModel"}}});
 
 
 // qx.bom.client.Feature
@@ -1178,6 +1143,75 @@ __VT4YB:function(){return qx.bom.client.Engine.MSHTML&&qx.bom.client.Engine.VERS
 defer:function(a){a.__jA3lT()}});
 
 
+// qx.ui.core.MBlocker
+//   - Size: 994 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Mixin.define("qx.ui.core.MBlocker",{construct:function(){this.__ukeJN=new qx.ui.core.Blocker(this)},
+properties:{blockerColor:{check:"Color",
+init:null,
+nullable:true,
+apply:"_applyBlockerColor",
+themeable:true},
+blockerOpacity:{check:"Number",
+init:1,
+apply:"_applyBlockerOpacity",
+themeable:true}},
+members:{__ukeJN:null,
+_applyBlockerColor:function(a){this.__ukeJN.setColor(a)},
+_applyBlockerOpacity:function(a){this.__ukeJN.setOpacity(a)},
+block:function(){this.__ukeJN.block()},
+isBlocked:function(){return this.__ukeJN.isBlocked()},
+unblock:function(){this.__ukeJN.unblock()},
+forceUnblock:function(){this.__ukeJN.forceUnblock()},
+blockContent:function(a){this.__ukeJN.blockContent(a)},
+isContentBlocked:function(){return this.__ukeJN.isContentBlocked()},
+unblockContent:function(){this.__ukeJN.unblockContent()},
+forceUnblockContent:function(){this.__ukeJN.forceUnblockContent()},
+getBlocker:function(){return this.__ukeJN}},
+destruct:function(){this._disposeObjects("__blocker")}});
+
+
+// qx.ui.core.MLayoutHandling
+//   - Size: 237 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.ui.core.MLayoutHandling",{members:{setLayout:function(a){return this._setLayout(a)},
+getLayout:function(){return this._getLayout()}},
+statics:{remap:function(a){a.getLayout=a._getLayout;
+a.setLayout=a._setLayout}}});
+
+
+// qx.ui.core.MChildrenHandling
+//   - Size: 777 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.ui.core.MChildrenHandling",{members:{getChildren:function(){return this._getChildren()},
+hasChildren:function(){return this._hasChildren()},
+indexOf:function(a){return this._indexOf(a)},
+add:function(a,b){this._add(a,b)},
+addAt:function(a,c,b){this._addAt(a,c,b)},
+addBefore:function(c,a,b){this._addBefore(c,a,b)},
+addAfter:function(a,c,b){this._addAfter(a,c,b)},
+remove:function(a){this._remove(a)},
+removeAt:function(a){return this._removeAt(a)},
+removeAll:function(){this._removeAll()}},
+statics:{remap:function(a){a.getChildren=a._getChildren;
+a.hasChildren=a._hasChildren;
+a.indexOf=a._indexOf;
+a.add=a._add;
+a.addAt=a._addAt;
+a.addBefore=a._addBefore;
+a.addAfter=a._addAfter;
+a.remove=a._remove;
+a.removeAt=a._removeAt;
+a.removeAll=a._removeAll}}});
+
+
+// qx.ui.core.MRemoteLayoutHandling
+//   - Size: 206 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.ui.core.MRemoteLayoutHandling",{members:{setLayout:function(a){return this.getChildrenContainer().setLayout(a)},
+getLayout:function(){return this.getChildrenContainer().getLayout()}}});
+
+
 // qx.data.IListData
 //   - Size: 261 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -1189,15 +1223,6 @@ splice:function(){},
 contains:function(){},
 getLength:function(){},
 toArray:function(){}}});
-
-
-// qx.ui.decoration.IDecorator
-//   - Size: 151 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.decoration.IDecorator",{members:{getMarkup:function(){},
-resize:function(){},
-tint:function(){},
-getInsets:function(){}}});
 
 
 // qx.ui.core.MExecutable
@@ -1228,22 +1253,14 @@ e++)a=this._bindableProperties[e],d!=null&&b[a]!=null&&(d.removeBinding(b[a]),b[
 destruct:function(){this.__b0TXYK=null}});
 
 
-// qx.ui.form.IExecutable
-//   - Size: 195 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IExecutable",{events:{execute:"qx.event.type.Data"},
-members:{setCommand:function(){return arguments.length==1},
-getCommand:function(){},
-execute:function(){}}});
-
-
-// qx.ui.form.IStringForm
-//   - Size: 198 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IStringForm",{events:{changeValue:"qx.event.type.Data"},
-members:{setValue:function(){return arguments.length==1},
-resetValue:function(){},
-getValue:function(){}}});
+// qx.ui.window.IWindowManager
+//   - Size: 331 bytes
+//   - Modified: 2010-10-13T22:40:51
+qx.Interface.define("qx.ui.window.IWindowManager",{members:{setDesktop:function(a){this.assertInterface(a,qx.ui.window.IDesktop)},
+changeActiveWindow:function(){},
+updateStack:function(){},
+bringToFront:function(a){this.assertInstance(a,qx.ui.window.Window)},
+sendToBack:function(a){this.assertInstance(a,qx.ui.window.Window)}}});
 
 
 // qx.event.GlobalError
@@ -1271,14 +1288,31 @@ registerEvent:function(){},
 unregisterEvent:function(){}}});
 
 
-// qx.ui.window.IWindowManager
-//   - Size: 331 bytes
-//   - Modified: 2010-10-13T22:40:51
-qx.Interface.define("qx.ui.window.IWindowManager",{members:{setDesktop:function(a){this.assertInterface(a,qx.ui.window.IDesktop)},
-changeActiveWindow:function(){},
-updateStack:function(){},
-bringToFront:function(a){this.assertInstance(a,qx.ui.window.Window)},
-sendToBack:function(a){this.assertInstance(a,qx.ui.window.Window)}}});
+// qx.ui.decoration.IDecorator
+//   - Size: 151 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.decoration.IDecorator",{members:{getMarkup:function(){},
+resize:function(){},
+tint:function(){},
+getInsets:function(){}}});
+
+
+// qx.ui.form.IExecutable
+//   - Size: 195 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IExecutable",{events:{execute:"qx.event.type.Data"},
+members:{setCommand:function(){return arguments.length==1},
+getCommand:function(){},
+execute:function(){}}});
+
+
+// qx.ui.form.IStringForm
+//   - Size: 198 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IStringForm",{events:{changeValue:"qx.event.type.Data"},
+members:{setValue:function(){return arguments.length==1},
+resetValue:function(){},
+getValue:function(){}}});
 
 
 // qx.ui.window.IDesktop
@@ -1290,6 +1324,49 @@ supportsMaximize:function(){},
 blockContent:function(a){this.assertInteger(a)},
 unblockContent:function(){},
 isContentBlocked:function(){}}});
+
+
+// qx.core.ObjectRegistry
+//   - Size: 1438 bytes
+//   - Modified: 2010-05-06T22:42:39
+qx.Class.define("qx.core.ObjectRegistry",{statics:{inShutDown:false,
+__zAUSy:{},
+__y4b2Q:0,
+__IA8cb:[],
+register:function(a){var c=this.__zAUSy,b,d;
+if(!c)return;
+b=a.$$hash;
+b==null&&(d=this.__IA8cb,b=d.length>0?d.pop():this.__y4b2Q+++"",a.$$hash=b);
+if(!a.dispose)throw new Error("Invalid object: "+a);
+c[b]=a},
+unregister:function(a){var b=a.$$hash,c;
+if(b==null)return;
+c=this.__zAUSy;
+c&&c[b]&&(delete c[b],this.__IA8cb.push(b));
+try{delete a.$$hash}catch(d){a.removeAttribute&&a.removeAttribute("$$hash")}},
+toHashCode:function(b){if(b==null)throw new Error("Invalid object: "+b);
+var a=b.$$hash,c;
+if(a!=null)return a;
+c=this.__IA8cb;
+a=c.length>0?c.pop():this.__y4b2Q+++"";
+return b.$$hash=a},
+clearHashCode:function(a){if(a==null)throw new Error("Invalid object: "+a);
+var b=a.$$hash;
+if(b!=null){this.__IA8cb.push(b);
+try{delete a.$$hash}catch(c){a.removeAttribute&&a.removeAttribute("$$hash")}}},
+fromHashCode:function(a){return this.__zAUSy[a]||null},
+shutdown:function(){this.inShutDown=true;
+var f=this.__zAUSy,c=[],d,b,a,e;
+for(d in f)c.push(d);
+c.sort(function(b,a){return parseInt(a)-parseInt(b)});
+a=0,e=c.length;
+while(true){try{for(;
+a<e;
+a++)d=c[a],b=f[d],b&&b.dispose&&b.dispose()}catch(g){qx.Bootstrap.error(this,"Could not dispose object "+b.toString()+": "+g);
+if(a!==e){a++;
+continue}}break}qx.Bootstrap.debug(this,"Disposed "+e+" objects");
+delete this.__zAUSy},
+getRegistry:function(){return this.__zAUSy}}});
 
 
 // qx.lang.Type
@@ -1305,6 +1382,36 @@ isNumber:function(a){return a!==null&&(this.getClass(a)=="Number"||a instanceof 
 isBoolean:function(a){return a!==null&&(this.getClass(a)=="Boolean"||a instanceof Boolean)},
 isDate:function(a){return a!==null&&(this.getClass(a)=="Date"||a instanceof Date)},
 isError:function(a){return a!==null&&(this.getClass(a)=="Error"||a instanceof Error)}}});
+
+
+// qx.lang.Date
+//   - Size: 78 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.lang.Date",{statics:{now:function(){return +new Date}}});
+
+
+// qx.xml.Document
+//   - Size: 412 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.xml.Document",{statics:{DOMDOC:null,
+XMLHTTP:null,
+isXmlDocument:function(a){return a.nodeType===9?a.documentElement.nodeName!=="HTML":a.ownerDocument?this.isXmlDocument(a.ownerDocument):false},
+create:function(b,a){return document.implementation.createDocument(b||"",a||"",null)},
+fromString:function(a){var b=new DOMParser();
+return b.parseFromString(a,"text/xml")}},
+defer:function(){}});
+
+
+// qx.bom.client.Locale
+//   - Size: 288 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.bom.client.Locale",{statics:{LOCALE:"",
+VARIANT:"",
+__jA3lT:function(){var a=(navigator.userLanguage||navigator.language).toLowerCase(),c="",b=a.indexOf("-");
+b!=-1&&(c=a.substr(b+1),a=a.substr(0,b));
+this.LOCALE=a;
+this.VARIANT=c}},
+defer:function(a){a.__jA3lT()}});
 
 
 // qx.dom.Node
@@ -1349,43 +1456,6 @@ break}return null},
 isBlockNode:function(a){if(!qx.dom.Node.isElement(a))return false;
 a=qx.dom.Node.getName(a);
 return/^(body|form|textarea|fieldset|ul|ol|dl|dt|dd|li|div|hr|p|h[1-6]|quote|pre|table|thead|tbody|tfoot|tr|td|th|iframe|address|blockquote)$/.test(a)}}});
-
-
-// qx.lang.RingBuffer
-//   - Size: 1181 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.lang.RingBuffer",{extend:Object,
-construct:function(a){this.setMaxEntries(a||50)},
-members:{__bHMv5N:0,
-__3Ng1e:0,
-__UksBG:false,
-__cofKxn:0,
-__uPjgP:null,
-__Jk3m7:null,
-setMaxEntries:function(a){this.__Jk3m7=a;
-this.clear()},
-getMaxEntries:function(){return this.__Jk3m7},
-addEntry:function(b){this.__uPjgP[this.__bHMv5N]=b;
-this.__bHMv5N=this.__HDJCN(this.__bHMv5N,1);
-var a=this.getMaxEntries();
-this.__3Ng1e<a&&this.__3Ng1e++;
-this.__UksBG&&this.__cofKxn<a&&this.__cofKxn++},
-mark:function(){this.__UksBG=true;
-this.__cofKxn=0},
-clearMark:function(){this.__UksBG=false},
-getAllEntries:function(){return this.getEntries(this.getMaxEntries(),false)},
-getEntries:function(a,e){a>this.__3Ng1e&&(a=this.__3Ng1e);
-e&&this.__UksBG&&a>this.__cofKxn&&(a=this.__cofKxn);
-if(a>0){var c=this.__HDJCN(this.__bHMv5N,-1),d=this.__HDJCN(c,-a+1),b;
-b=d<=c?this.__uPjgP.slice(d,c+1):this.__uPjgP.slice(d,this.__3Ng1e).concat(this.__uPjgP.slice(0,c+1))}else b=[];
-return b},
-clear:function(){this.__uPjgP=new Array(this.getMaxEntries());
-this.__3Ng1e=0;
-this.__cofKxn=0;
-this.__bHMv5N=0},
-__HDJCN:function(c,d){var b=this.getMaxEntries(),a=(c+d)%b;
-a<0&&(a+=b);
-return a}}});
 
 
 // qx.bom.Selector
@@ -1680,16 +1750,68 @@ n.query=function(a,c){return b(a,c)};
 n.matches=function(a,c){return b(a,null,null,c)}})();
 
 
-// qx.bom.client.Locale
-//   - Size: 288 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.bom.client.Locale",{statics:{LOCALE:"",
-VARIANT:"",
-__jA3lT:function(){var a=(navigator.userLanguage||navigator.language).toLowerCase(),c="",b=a.indexOf("-");
-b!=-1&&(c=a.substr(b+1),a=a.substr(0,b));
-this.LOCALE=a;
-this.VARIANT=c}},
-defer:function(a){a.__jA3lT()}});
+// qx.lang.RingBuffer
+//   - Size: 1181 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.lang.RingBuffer",{extend:Object,
+construct:function(a){this.setMaxEntries(a||50)},
+members:{__bHMv5N:0,
+__3Ng1e:0,
+__UksBG:false,
+__cofKxn:0,
+__uPjgP:null,
+__Jk3m7:null,
+setMaxEntries:function(a){this.__Jk3m7=a;
+this.clear()},
+getMaxEntries:function(){return this.__Jk3m7},
+addEntry:function(b){this.__uPjgP[this.__bHMv5N]=b;
+this.__bHMv5N=this.__HDJCN(this.__bHMv5N,1);
+var a=this.getMaxEntries();
+this.__3Ng1e<a&&this.__3Ng1e++;
+this.__UksBG&&this.__cofKxn<a&&this.__cofKxn++},
+mark:function(){this.__UksBG=true;
+this.__cofKxn=0},
+clearMark:function(){this.__UksBG=false},
+getAllEntries:function(){return this.getEntries(this.getMaxEntries(),false)},
+getEntries:function(a,e){a>this.__3Ng1e&&(a=this.__3Ng1e);
+e&&this.__UksBG&&a>this.__cofKxn&&(a=this.__cofKxn);
+if(a>0){var c=this.__HDJCN(this.__bHMv5N,-1),d=this.__HDJCN(c,-a+1),b;
+b=d<=c?this.__uPjgP.slice(d,c+1):this.__uPjgP.slice(d,this.__3Ng1e).concat(this.__uPjgP.slice(0,c+1))}else b=[];
+return b},
+clear:function(){this.__uPjgP=new Array(this.getMaxEntries());
+this.__3Ng1e=0;
+this.__cofKxn=0;
+this.__bHMv5N=0},
+__HDJCN:function(c,d){var b=this.getMaxEntries(),a=(c+d)%b;
+a<0&&(a+=b);
+return a}}});
+
+
+// qx.bom.Viewport
+//   - Size: 698 bytes
+//   - Modified: 2010-09-18T15:10:19
+qx.Class.define("qx.bom.Viewport",{statics:{getWidth:function(b){var a=(b||window).document;
+return qx.bom.Document.isStandardMode(b)?a.documentElement.clientWidth:a.body.clientWidth},
+getHeight:function(b){var a=(b||window).document;
+return qx.bom.Document.isStandardMode(b)?a.documentElement.clientHeight:a.body.clientHeight},
+getScrollLeft:function(a){return(a||window).pageXOffset},
+getScrollTop:function(a){return(a||window).pageYOffset},
+getOrientation:function(b){var a=(b||window).orientation;
+a==null&&(a=this.getWidth(b)>this.getHeight(b)?90:0);
+return a},
+isLandscape:function(a){return Math.abs(this.getOrientation(a))==90},
+isPortrait:function(a){return this.getOrientation(a)==0}}});
+
+
+// qx.bom.Document
+//   - Size: 540 bytes
+//   - Modified: 2010-07-17T16:42:24
+qx.Class.define("qx.bom.Document",{statics:{isQuirksMode:function(a){return(a||window).document.compatMode!=="CSS1Compat"},
+isStandardMode:function(a){return!this.isQuirksMode(a)},
+getWidth:function(a){var b=(a||window).document,d=qx.bom.Viewport.getWidth(a),c=this.isStandardMode(a)?b.documentElement.scrollWidth:b.body.scrollWidth;
+return Math.max(c,d)},
+getHeight:function(a){var b=(a||window).document,d=qx.bom.Viewport.getHeight(a),c=this.isStandardMode(a)?b.documentElement.scrollHeight:b.body.scrollHeight;
+return Math.max(c,d)}}});
 
 
 // qx.bom.client.Platform
@@ -1837,12 +1959,6 @@ set:function(b,a){b.style.cursor=this.__gMIjx[a]||a},
 reset:function(a){a.style.cursor=""}}});
 
 
-// qx.lang.Date
-//   - Size: 78 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.lang.Date",{statics:{now:function(){return +new Date}}});
-
-
 // qx.bom.element.Opacity
 //   - Size: 730 bytes
 //   - Modified: 2010-10-15T14:16:07
@@ -1889,68 +2005,6 @@ return a}:function(a,b){return qx.bom.element.Style.get(a,"overflowY",b,false)},
 setY:qx.bom.client.Engine.VERSION<1.8?function(b,a){a==="hidden"&&(a="-moz-scrollbars-none");
 b.style.overflow=a}:function(a,b){a.style.overflowY=b},
 resetY:qx.bom.client.Engine.VERSION<1.8?function(a){a.style.overflow=""}:function(a){a.style.overflowY=""}}});
-
-
-// qx.lang.Array
-//   - Size: 2598 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.lang.Array",{statics:{toArray:function(b,a){return this.cast(b,Array,a)},
-cast:function(b,d,c){if(b.constructor===d)return b;
-var a=new d;
-Object.prototype.toString.call(b)==="[object Array]"&&c==null?a.push.apply(a,b):a.push.apply(a,Array.prototype.slice.call(b,c||0));
-return a},
-fromArguments:function(b,a){return Array.prototype.slice.call(b,a||0)},
-fromCollection:function(a){return Array.prototype.slice.call(a,0)},
-clone:function(a){return a.concat()},
-insertAt:function(a,b,c){a.splice(c,0,b);
-return a},
-insertBefore:function(a,b,d){var c=a.indexOf(d);
-c==-1?a.push(b):a.splice(c,0,b);
-return a},
-insertAfter:function(a,c,d){var b=a.indexOf(d);
-b==-1||b==a.length-1?a.push(c):a.splice(b+1,0,c);
-return a},
-removeAt:function(a,b){return a.splice(b,1)[0]},
-removeAll:function(a){a.length=0;
-return this},
-append:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
-Array.prototype.push.apply(a,b);
-return a},
-exclude:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
-for(var d=0,e=b.length,c;
-d<e;
-d++)c=a.indexOf(b[d]),c!=-1&&a.splice(c,1);
-return a},
-remove:function(b,a){var c=b.indexOf(a);
-if(c!=-1){b.splice(c,1);
-return a}},
-contains:function(b,a){return b.indexOf(a)!==-1},
-equals:function(b,c){var d=b.length,a;
-if(d!==c.length)return false;
-for(a=0;
-a<d;
-a++)if(b[a]!==c[a])return false;
-return true},
-sum:function(c){for(var b=0,a=0,d=c.length;
-a<d;
-a++)b+=c[a];
-return b},
-max:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
-var b,d=a.length,c=a[0];
-for(b=1;
-b<d;
-b++)a[b]>c&&(c=a[b]);
-return c===undefined?null:c},
-min:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
-var b,d=a.length,c=a[0];
-for(b=1;
-b<d;
-b++)a[b]<c&&(c=a[b]);
-return c===undefined?null:c},
-unique:function(k){for(var c=[],l={},i={},e={},a,n=0,d="qx"+qx.lang.Date.now(),j=false,h=false,g=false,f=0,m=k.length,b;
-f<m;
-f++)a=k[f],a===null?j||(j=true,c.push(a)):a===undefined||(a===false?h||(h=true,c.push(a)):a===true?g||(g=true,c.push(a)):typeof a==="string"?l[a]||(l[a]=1,c.push(a)):typeof a==="number"?i[a]||(i[a]=1,c.push(a)):(b=a[d],b==null&&(b=a[d]=n++),e[b]||(e[b]=a,c.push(a))));
-for(b in e)try{delete e[b][d]}catch(o){try{e[b][d]=null}catch(o){throw new Error("Cannot clean-up map entry doneObjects["+b+"]["+d+"]")}}return c}}});
 
 
 // qx.core.Assert
@@ -2040,6 +2094,68 @@ __VkBFl:function(b,c){if(!b)return false;
 var a=b.constructor;
 while(a){if(a.classname===c)return true;
 a=a.superclass}return false}}});
+
+
+// qx.lang.Array
+//   - Size: 2598 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Class.define("qx.lang.Array",{statics:{toArray:function(b,a){return this.cast(b,Array,a)},
+cast:function(b,d,c){if(b.constructor===d)return b;
+var a=new d;
+Object.prototype.toString.call(b)==="[object Array]"&&c==null?a.push.apply(a,b):a.push.apply(a,Array.prototype.slice.call(b,c||0));
+return a},
+fromArguments:function(b,a){return Array.prototype.slice.call(b,a||0)},
+fromCollection:function(a){return Array.prototype.slice.call(a,0)},
+clone:function(a){return a.concat()},
+insertAt:function(a,b,c){a.splice(c,0,b);
+return a},
+insertBefore:function(a,b,d){var c=a.indexOf(d);
+c==-1?a.push(b):a.splice(c,0,b);
+return a},
+insertAfter:function(a,c,d){var b=a.indexOf(d);
+b==-1||b==a.length-1?a.push(c):a.splice(b+1,0,c);
+return a},
+removeAt:function(a,b){return a.splice(b,1)[0]},
+removeAll:function(a){a.length=0;
+return this},
+append:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
+Array.prototype.push.apply(a,b);
+return a},
+exclude:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
+for(var d=0,e=b.length,c;
+d<e;
+d++)c=a.indexOf(b[d]),c!=-1&&a.splice(c,1);
+return a},
+remove:function(b,a){var c=b.indexOf(a);
+if(c!=-1){b.splice(c,1);
+return a}},
+contains:function(b,a){return b.indexOf(a)!==-1},
+equals:function(b,c){var d=b.length,a;
+if(d!==c.length)return false;
+for(a=0;
+a<d;
+a++)if(b[a]!==c[a])return false;
+return true},
+sum:function(c){for(var b=0,a=0,d=c.length;
+a<d;
+a++)b+=c[a];
+return b},
+max:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
+var b,d=a.length,c=a[0];
+for(b=1;
+b<d;
+b++)a[b]>c&&(c=a[b]);
+return c===undefined?null:c},
+min:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
+var b,d=a.length,c=a[0];
+for(b=1;
+b<d;
+b++)a[b]<c&&(c=a[b]);
+return c===undefined?null:c},
+unique:function(k){for(var c=[],l={},i={},e={},a,n=0,d="qx"+qx.lang.Date.now(),j=false,h=false,g=false,f=0,m=k.length,b;
+f<m;
+f++)a=k[f],a===null?j||(j=true,c.push(a)):a===undefined||(a===false?h||(h=true,c.push(a)):a===true?g||(g=true,c.push(a)):typeof a==="string"?l[a]||(l[a]=1,c.push(a)):typeof a==="number"?i[a]||(i[a]=1,c.push(a)):(b=a[d],b==null&&(b=a[d]=n++),e[b]||(e[b]=a,c.push(a))));
+for(b in e)try{delete e[b][d]}catch(o){try{e[b][d]=null}catch(o){throw new Error("Cannot clean-up map entry doneObjects["+b+"]["+d+"]")}}return c}}});
 
 
 // qx.lang.Function
@@ -2205,49 +2321,6 @@ defer:function(a){a.stringify=a.JSON.stringify;
 a.parse=a.JSON.parse}});
 
 
-// qx.core.ObjectRegistry
-//   - Size: 1438 bytes
-//   - Modified: 2010-05-06T22:42:39
-qx.Class.define("qx.core.ObjectRegistry",{statics:{inShutDown:false,
-__zAUSy:{},
-__y4b2Q:0,
-__IA8cb:[],
-register:function(a){var c=this.__zAUSy,b,d;
-if(!c)return;
-b=a.$$hash;
-b==null&&(d=this.__IA8cb,b=d.length>0?d.pop():this.__y4b2Q+++"",a.$$hash=b);
-if(!a.dispose)throw new Error("Invalid object: "+a);
-c[b]=a},
-unregister:function(a){var b=a.$$hash,c;
-if(b==null)return;
-c=this.__zAUSy;
-c&&c[b]&&(delete c[b],this.__IA8cb.push(b));
-try{delete a.$$hash}catch(d){a.removeAttribute&&a.removeAttribute("$$hash")}},
-toHashCode:function(b){if(b==null)throw new Error("Invalid object: "+b);
-var a=b.$$hash,c;
-if(a!=null)return a;
-c=this.__IA8cb;
-a=c.length>0?c.pop():this.__y4b2Q+++"";
-return b.$$hash=a},
-clearHashCode:function(a){if(a==null)throw new Error("Invalid object: "+a);
-var b=a.$$hash;
-if(b!=null){this.__IA8cb.push(b);
-try{delete a.$$hash}catch(c){a.removeAttribute&&a.removeAttribute("$$hash")}}},
-fromHashCode:function(a){return this.__zAUSy[a]||null},
-shutdown:function(){this.inShutDown=true;
-var f=this.__zAUSy,c=[],d,b,a,e;
-for(d in f)c.push(d);
-c.sort(function(b,a){return parseInt(a)-parseInt(b)});
-a=0,e=c.length;
-while(true){try{for(;
-a<e;
-a++)d=c[a],b=f[d],b&&b.dispose&&b.dispose()}catch(g){qx.Bootstrap.error(this,"Could not dispose object "+b.toString()+": "+g);
-if(a!==e){a++;
-continue}}break}qx.Bootstrap.debug(this,"Disposed "+e+" objects");
-delete this.__zAUSy},
-getRegistry:function(){return this.__zAUSy}}});
-
-
 // qx.dev.StackTrace
 //   - Size: 1128 bytes
 //   - Modified: 2010-11-10T13:22:29
@@ -2360,43 +2433,30 @@ return d?d[a]:""}}},
 defer:function(a){a.__cnanzb()}});
 
 
-// qx.bom.Viewport
-//   - Size: 698 bytes
-//   - Modified: 2010-09-18T15:10:19
-qx.Class.define("qx.bom.Viewport",{statics:{getWidth:function(b){var a=(b||window).document;
-return qx.bom.Document.isStandardMode(b)?a.documentElement.clientWidth:a.body.clientWidth},
-getHeight:function(b){var a=(b||window).document;
-return qx.bom.Document.isStandardMode(b)?a.documentElement.clientHeight:a.body.clientHeight},
-getScrollLeft:function(a){return(a||window).pageXOffset},
-getScrollTop:function(a){return(a||window).pageYOffset},
-getOrientation:function(b){var a=(b||window).orientation;
-a==null&&(a=this.getWidth(b)>this.getHeight(b)?90:0);
-return a},
-isLandscape:function(a){return Math.abs(this.getOrientation(a))==90},
-isPortrait:function(a){return this.getOrientation(a)==0}}});
-
-
-// qx.bom.Document
-//   - Size: 540 bytes
-//   - Modified: 2010-07-17T16:42:24
-qx.Class.define("qx.bom.Document",{statics:{isQuirksMode:function(a){return(a||window).document.compatMode!=="CSS1Compat"},
-isStandardMode:function(a){return!this.isQuirksMode(a)},
-getWidth:function(a){var b=(a||window).document,d=qx.bom.Viewport.getWidth(a),c=this.isStandardMode(a)?b.documentElement.scrollWidth:b.body.scrollWidth;
-return Math.max(c,d)},
-getHeight:function(a){var b=(a||window).document,d=qx.bom.Viewport.getHeight(a),c=this.isStandardMode(a)?b.documentElement.scrollHeight:b.body.scrollHeight;
-return Math.max(c,d)}}});
-
-
-// qx.xml.Document
-//   - Size: 412 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.xml.Document",{statics:{DOMDOC:null,
-XMLHTTP:null,
-isXmlDocument:function(a){return a.nodeType===9?a.documentElement.nodeName!=="HTML":a.ownerDocument?this.isXmlDocument(a.ownerDocument):false},
-create:function(b,a){return document.implementation.createDocument(b||"",a||"",null)},
-fromString:function(a){var b=new DOMParser();
-return b.parseFromString(a,"text/xml")}},
-defer:function(){}});
+// qx.util.DisposeUtil
+//   - Size: 1120 bytes
+//   - Modified: 2010-08-29T12:27:35
+qx.Class.define("qx.util.DisposeUtil",{statics:{disposeObjects:function(b,d,f){for(var a,c=0,e=d.length;
+c<e;
+c++){a=d[c];
+if(b[a]==null||!b.hasOwnProperty(a))continue;
+if(!qx.core.ObjectRegistry.inShutDown){if(b[a].dispose){if(!f&&b[a].constructor.$$instance)throw new Error("The object stored in key "+a+" is a singleton! Please use disposeSingleton instead.");
+b[a].dispose()}else throw new Error("Has no disposable object under key: "+a+"!")}b[a]=null}},
+disposeArray:function(b,c){var a=b[c],d,e;
+if(!a)return;
+if(qx.core.ObjectRegistry.inShutDown){b[c]=null;
+return}try{e=a.length-1;
+for(;
+e>=0;
+e--)d=a[e],d&&d.dispose()}catch(f){throw new Error("The array field: "+c+" of object: "+b+" has non disposable entries: "+f)}a.length=0;
+b[c]=null},
+disposeMap:function(b,c){var a=b[c],d;
+if(!a)return;
+if(qx.core.ObjectRegistry.inShutDown){b[c]=null;
+return}try{for(d in a)a.hasOwnProperty(d)&&a[d].dispose()}catch(e){throw new Error("The map field: "+c+" of object: "+b+" has non disposable entries: "+e)}b[c]=null},
+disposeTriggeredBy:function(c,a){var b=a.dispose;
+a.dispose=function(){b.call(a);
+c.dispose()}}}});
 
 
 // qx.log.appender.RingBuffer
@@ -2431,32 +2491,6 @@ return b.fireEvent("on"+c,a)},
 supportsEvent:function(a,d){var c="on"+d,b=(c in a);
 b||(b=typeof a[c]=="function",!b&&a.setAttribute&&(a.setAttribute(c,"return;"),b=typeof a[c]=="function",a.removeAttribute(c)));
 return b}}});
-
-
-// qx.util.DisposeUtil
-//   - Size: 1120 bytes
-//   - Modified: 2010-08-29T12:27:35
-qx.Class.define("qx.util.DisposeUtil",{statics:{disposeObjects:function(b,d,f){for(var a,c=0,e=d.length;
-c<e;
-c++){a=d[c];
-if(b[a]==null||!b.hasOwnProperty(a))continue;
-if(!qx.core.ObjectRegistry.inShutDown){if(b[a].dispose){if(!f&&b[a].constructor.$$instance)throw new Error("The object stored in key "+a+" is a singleton! Please use disposeSingleton instead.");
-b[a].dispose()}else throw new Error("Has no disposable object under key: "+a+"!")}b[a]=null}},
-disposeArray:function(b,c){var a=b[c],d,e;
-if(!a)return;
-if(qx.core.ObjectRegistry.inShutDown){b[c]=null;
-return}try{e=a.length-1;
-for(;
-e>=0;
-e--)d=a[e],d&&d.dispose()}catch(f){throw new Error("The array field: "+c+" of object: "+b+" has non disposable entries: "+f)}a.length=0;
-b[c]=null},
-disposeMap:function(b,c){var a=b[c],d;
-if(!a)return;
-if(qx.core.ObjectRegistry.inShutDown){b[c]=null;
-return}try{for(d in a)a.hasOwnProperty(d)&&a[d].dispose()}catch(e){throw new Error("The map field: "+c+" of object: "+b+" has non disposable entries: "+e)}b[c]=null},
-disposeTriggeredBy:function(c,a){var b=a.dispose;
-a.dispose=function(){b.call(a);
-c.dispose()}}}});
 
 
 // qx.core.MAssert
@@ -2602,56 +2636,6 @@ __bKqGiY:function(a,c){var b=[];
 while(a=a[c])a.nodeType==1&&b.push(a);
 return b},
 getSiblings:function(a){return this.getPreviousSiblings(a).reverse().concat(this.getNextSiblings(a))}}});
-
-
-// qx.io.ImageLoader
-//   - Size: 1736 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Bootstrap.define("qx.io.ImageLoader",{statics:{__jlEBF:{},
-__O6wYB:{width:null,
-height:null},
-__cbGrT1:/\.(png|gif|jpg|jpeg|bmp)\b/i,
-isLoaded:function(b){var a=this.__jlEBF[b];
-return!!(a&&a.loaded)},
-isFailed:function(b){var a=this.__jlEBF[b];
-return!!(a&&a.failed)},
-isLoading:function(b){var a=this.__jlEBF[b];
-return!!(a&&a.loading)},
-getFormat:function(b){var a=this.__jlEBF[b];
-return a?a.format:null},
-getSize:function(b){var a=this.__jlEBF[b];
-return a?{width:a.width,
-height:a.height}:this.__O6wYB},
-getWidth:function(b){var a=this.__jlEBF[b];
-return a?a.width:null},
-getHeight:function(b){var a=this.__jlEBF[b];
-return a?a.height:null},
-load:function(e,b,d){var a=this.__jlEBF[e],c,f;
-a||(a=this.__jlEBF[e]={});
-b&&!d&&(d=window);
-a.loaded||a.loading||a.failed?b&&(a.loading?a.callbacks.push(b,d):b.call(d,e,a)):(a.loading=true,a.callbacks=[],b&&a.callbacks.push(b,d),c=new Image(),f=qx.lang.Function.listener(this.__qBNI8,this,c,e),c.onload=f,c.onerror=f,c.src=e,a.element=c)},
-abort:function(d){var a=this.__jlEBF[d],c,e,b,f;
-if(a&&!a.loaded){a.aborted=true;
-c=a.callbacks,e=a.element;
-e.onload=e.onerror=null;
-delete a.callbacks;
-delete a.element;
-delete a.loading;
-for(b=0,f=c.length;
-b<f;
-b+=2)c[b].call(c[b+1],d,a)}this.__jlEBF[d]=null},
-__qBNI8:qx.event.GlobalError.observeMethod(function(g,b,d){var a=this.__jlEBF[d],f,e,c,h;
-g.type==="load"?(a.loaded=true,a.width=this.__yHD19(b),a.height=this.__Dbnsa(b),f=this.__cbGrT1.exec(d),f!=null&&(a.format=f[1])):a.failed=true;
-b.onload=b.onerror=null;
-e=a.callbacks;
-delete a.loading;
-delete a.callbacks;
-delete a.element;
-for(c=0,h=e.length;
-c<h;
-c+=2)e[c].call(e[c+1],d,a)}),
-__yHD19:function(a){return a.naturalWidth},
-__Dbnsa:function(a){return a.naturalHeight}}});
 
 
 // qx.core.Object
@@ -2830,34 +2814,6 @@ setCancelable:function(a){this._cancelable=a}},
 destruct:function(){this._target=this._currentTarget=this._relatedTarget=this._originalTarget=null}});
 
 
-// qx.event.type.Data
-//   - Size: 448 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.type.Data",{extend:qx.event.type.Event,
-members:{__jlEBF:null,
-__gQ654:null,
-init:function(b,a,c){this.base(arguments,false,c);
-this.__jlEBF=b;
-this.__gQ654=a;
-return this},
-clone:function(b){var a=this.base(arguments,b);
-a.__jlEBF=this.__jlEBF;
-a.__gQ654=this.__gQ654;
-return a},
-getData:function(){return this.__jlEBF},
-getOldData:function(){return this.__gQ654}},
-destruct:function(){this.__jlEBF=this.__gQ654=null}});
-
-
-// qx.event.IEventDispatcher
-//   - Size: 258 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.event.IEventDispatcher",{members:{canDispatchEvent:function(c,a,b){this.assertInstance(a,qx.event.type.Event);
-this.assertString(b)},
-dispatchEvent:function(c,a,b){this.assertInstance(a,qx.event.type.Event);
-this.assertString(b)}}});
-
-
 // qx.log.Logger
 //   - Size: 4576 bytes
 //   - Modified: 2010-11-03T14:43:37
@@ -2980,6 +2936,15 @@ qx.Bootstrap.info=a.info;
 qx.Bootstrap.warn=a.warn;
 qx.Bootstrap.error=a.error;
 qx.Bootstrap.trace=a.trace}});
+
+
+// qx.event.IEventDispatcher
+//   - Size: 258 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.event.IEventDispatcher",{members:{canDispatchEvent:function(c,a,b){this.assertInstance(a,qx.event.type.Event);
+this.assertString(b)},
+dispatchEvent:function(c,a,b){this.assertInstance(a,qx.event.type.Event);
+this.assertString(b)}}});
 
 
 // qx.event.Manager
@@ -3199,6 +3164,25 @@ unregisterEvent:function(){}},
 defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
+// qx.event.type.Data
+//   - Size: 448 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.type.Data",{extend:qx.event.type.Event,
+members:{__jlEBF:null,
+__gQ654:null,
+init:function(b,a,c){this.base(arguments,false,c);
+this.__jlEBF=b;
+this.__gQ654=a;
+return this},
+clone:function(b){var a=this.base(arguments,b);
+a.__jlEBF=this.__jlEBF;
+a.__gQ654=this.__gQ654;
+return a},
+getData:function(){return this.__jlEBF},
+getOldData:function(){return this.__gQ654}},
+destruct:function(){this.__jlEBF=this.__gQ654=null}});
+
+
 // qx.event.dispatch.Direct
 //   - Size: 846 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -3214,6 +3198,73 @@ if(c)for(d=0,i=c.length;
 d<i;
 d++)h=c[d].context||a,c[d].handler.call(h,b)}},
 defer:function(a){qx.event.Registration.addDispatcher(a)}});
+
+
+// qx.io.ImageLoader
+//   - Size: 1736 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Bootstrap.define("qx.io.ImageLoader",{statics:{__jlEBF:{},
+__O6wYB:{width:null,
+height:null},
+__cbGrT1:/\.(png|gif|jpg|jpeg|bmp)\b/i,
+isLoaded:function(b){var a=this.__jlEBF[b];
+return!!(a&&a.loaded)},
+isFailed:function(b){var a=this.__jlEBF[b];
+return!!(a&&a.failed)},
+isLoading:function(b){var a=this.__jlEBF[b];
+return!!(a&&a.loading)},
+getFormat:function(b){var a=this.__jlEBF[b];
+return a?a.format:null},
+getSize:function(b){var a=this.__jlEBF[b];
+return a?{width:a.width,
+height:a.height}:this.__O6wYB},
+getWidth:function(b){var a=this.__jlEBF[b];
+return a?a.width:null},
+getHeight:function(b){var a=this.__jlEBF[b];
+return a?a.height:null},
+load:function(e,b,d){var a=this.__jlEBF[e],c,f;
+a||(a=this.__jlEBF[e]={});
+b&&!d&&(d=window);
+a.loaded||a.loading||a.failed?b&&(a.loading?a.callbacks.push(b,d):b.call(d,e,a)):(a.loading=true,a.callbacks=[],b&&a.callbacks.push(b,d),c=new Image(),f=qx.lang.Function.listener(this.__qBNI8,this,c,e),c.onload=f,c.onerror=f,c.src=e,a.element=c)},
+abort:function(d){var a=this.__jlEBF[d],c,e,b,f;
+if(a&&!a.loaded){a.aborted=true;
+c=a.callbacks,e=a.element;
+e.onload=e.onerror=null;
+delete a.callbacks;
+delete a.element;
+delete a.loading;
+for(b=0,f=c.length;
+b<f;
+b+=2)c[b].call(c[b+1],d,a)}this.__jlEBF[d]=null},
+__qBNI8:qx.event.GlobalError.observeMethod(function(g,b,d){var a=this.__jlEBF[d],f,e,c,h;
+g.type==="load"?(a.loaded=true,a.width=this.__yHD19(b),a.height=this.__Dbnsa(b),f=this.__cbGrT1.exec(d),f!=null&&(a.format=f[1])):a.failed=true;
+b.onload=b.onerror=null;
+e=a.callbacks;
+delete a.loading;
+delete a.callbacks;
+delete a.element;
+for(c=0,h=e.length;
+c<h;
+c+=2)e[c].call(e[c+1],d,a)}),
+__yHD19:function(a){return a.naturalWidth},
+__Dbnsa:function(a){return a.naturalHeight}}});
+
+
+// qx.util.ValueManager
+//   - Size: 479 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.util.ValueManager",{type:"abstract",
+extend:qx.core.Object,
+construct:function(){this.base(arguments);
+this._dynamic={}},
+members:{_dynamic:null,
+resolveDynamic:function(a){return this._dynamic[a]},
+isDynamic:function(a){return!!this._dynamic[a]},
+resolve:function(a){if(a&&this._dynamic[a])return this._dynamic[a];
+return a},
+_setDynamic:function(a){this._dynamic=a},
+_getDynamic:function(){return this._dynamic}},
+destruct:function(){this._dynamic=null}});
 
 
 // qx.theme.manager.Appearance
@@ -3303,23 +3354,6 @@ var b=this.getData(a),c,d;
 if(b==null)return a;
 c=$$resources.roots[b.join?b[0]:b],d=c+"/"+a;
 return d}}});
-
-
-// qx.util.ValueManager
-//   - Size: 479 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.util.ValueManager",{type:"abstract",
-extend:qx.core.Object,
-construct:function(){this.base(arguments);
-this._dynamic={}},
-members:{_dynamic:null,
-resolveDynamic:function(a){return this._dynamic[a]},
-isDynamic:function(a){return!!this._dynamic[a]},
-resolve:function(a){if(a&&this._dynamic[a])return this._dynamic[a];
-return a},
-_setDynamic:function(a){this._dynamic=a},
-_getDynamic:function(){return this._dynamic}},
-destruct:function(){this._dynamic=null}});
 
 
 // qx.theme.manager.Color
@@ -3967,6 +4001,54 @@ getReturnValue:function(){return this._returnValue}},
 destruct:function(){this._native=this._returnValue=null}});
 
 
+// qx.bom.element.Decoration
+//   - Size: 476 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.bom.element.Decoration",{statics:{getStyles:function(b,e){var d=qx.util.ResourceManager.getInstance(),c=d.getImageSize(b)||qx.io.ImageLoader.getSize(b),a,f;
+if(c==null){qx.log.Logger.warn("Image without dimensions: "+b);
+return{}}e!="repeat"&&(a=d.getImageSprite(b));
+f={width:c.width+"px",
+height:c.height+"px",
+backgroundImage:"url("+(a?a.uri:d.toUri(b))+")",
+backgroundRepeat:e,
+backgroundPosition:a?-a.left+"px "+(-a.top-.01)+"px":null};
+return f}}});
+
+
+// qx.theme.manager.Font
+//   - Size: 1195 bytes
+//   - Modified: 2010-06-18T23:08:09
+qx.Class.define("qx.theme.manager.Font",{type:"singleton",
+extend:qx.util.ValueManager,
+construct:function(){this.base(arguments);
+qx.core.Type.add("Font",this.isDynamic,this)},
+properties:{theme:{check:"Theme",
+nullable:true,
+apply:"_applyTheme",
+event:"changeTheme"}},
+members:{resolveDynamic:function(a){var b=this._dynamic;
+return a instanceof qx.bom.Font?a:b[a]},
+resolve:function(a){var c=this._dynamic,d=c[a],b;
+if(d)return d;
+b=this.getTheme();
+if(b!==null&&b.fonts[a])return c[a]=(new qx.bom.Font).set(b.fonts[a]);
+return a},
+isDynamic:function(a){var c=this._dynamic,b;
+if(a&&(a instanceof qx.bom.Font||c[a]!==undefined))return true;
+b=this.getTheme();
+if(b!==null&&a&&b.fonts[a]){c[a]=(new qx.bom.Font).set(b.fonts[a]);
+return true}return false},
+__ba0WFb:function(a,b){if(a[b].include){var c=a[a[b].include];
+a[b].include=null;
+delete a[b].include;
+a[b]=qx.lang.Object.mergeWith(a[b],c,false);
+this.__ba0WFb(a,b)}},
+_applyTheme:function(d){var b=this._getDynamic(),a,c,e;
+for(a in b)b[a].themed&&(b[a].dispose(),delete b[a]);
+if(d){c=d.fonts,e=qx.bom.Font;
+for(a in c)c[a].include&&c[c[a].include]&&this.__ba0WFb(c,a),b[a]=(new e).set(c[a]),b[a].themed=true}this._setDynamic(b)}}});
+
+
 // qx.locale.Manager
 //   - Size: 2202 bytes
 //   - Modified: 2010-11-11T16:55:28
@@ -4033,40 +4115,6 @@ d<g.length;
 d++)f=g[d],i[d]=f&&f.translate?f.translate():f;
 a=qx.lang.String.format(a,i)}return a}},
 destruct:function(){this.__XruXR=this.__uqPUA=null}});
-
-
-// qx.theme.manager.Font
-//   - Size: 1195 bytes
-//   - Modified: 2010-06-18T23:08:09
-qx.Class.define("qx.theme.manager.Font",{type:"singleton",
-extend:qx.util.ValueManager,
-construct:function(){this.base(arguments);
-qx.core.Type.add("Font",this.isDynamic,this)},
-properties:{theme:{check:"Theme",
-nullable:true,
-apply:"_applyTheme",
-event:"changeTheme"}},
-members:{resolveDynamic:function(a){var b=this._dynamic;
-return a instanceof qx.bom.Font?a:b[a]},
-resolve:function(a){var c=this._dynamic,d=c[a],b;
-if(d)return d;
-b=this.getTheme();
-if(b!==null&&b.fonts[a])return c[a]=(new qx.bom.Font).set(b.fonts[a]);
-return a},
-isDynamic:function(a){var c=this._dynamic,b;
-if(a&&(a instanceof qx.bom.Font||c[a]!==undefined))return true;
-b=this.getTheme();
-if(b!==null&&a&&b.fonts[a]){c[a]=(new qx.bom.Font).set(b.fonts[a]);
-return true}return false},
-__ba0WFb:function(a,b){if(a[b].include){var c=a[a[b].include];
-a[b].include=null;
-delete a[b].include;
-a[b]=qx.lang.Object.mergeWith(a[b],c,false);
-this.__ba0WFb(a,b)}},
-_applyTheme:function(d){var b=this._getDynamic(),a,c,e;
-for(a in b)b[a].themed&&(b[a].dispose(),delete b[a]);
-if(d){c=d.fonts,e=qx.bom.Font;
-for(a in c)c[a].include&&c[c[a].include]&&this.__ba0WFb(c,a),b[a]=(new e).set(c[a]),b[a].themed=true}this._setDynamic(b)}}});
 
 
 // qx.data.SingleValueBinding
@@ -4228,29 +4276,6 @@ b<this.__yQrBp[a].length;
 b++)this.showBindingInLog(c,this.__yQrBp[a][b][0])}}});
 
 
-// qx.bom.element.Decoration
-//   - Size: 476 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.bom.element.Decoration",{statics:{getStyles:function(b,e){var d=qx.util.ResourceManager.getInstance(),c=d.getImageSize(b)||qx.io.ImageLoader.getSize(b),a,f;
-if(c==null){qx.log.Logger.warn("Image without dimensions: "+b);
-return{}}e!="repeat"&&(a=d.getImageSprite(b));
-f={width:c.width+"px",
-height:c.height+"px",
-backgroundImage:"url("+(a?a.uri:d.toUri(b))+")",
-backgroundRepeat:e,
-backgroundPosition:a?-a.left+"px "+(-a.top-.01)+"px":null};
-return f}}});
-
-
-// qx.data.MBinding
-//   - Size: 393 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.data.MBinding",{members:{bind:function(d,a,c,b){return qx.data.SingleValueBinding.bind(this,d,a,c,b)},
-removeBinding:function(a){qx.data.SingleValueBinding.removeBindingFromObject(this,a)},
-removeAllBindings:function(){qx.data.SingleValueBinding.removeAllBindingsForObject(this)},
-getBindings:function(){return qx.data.SingleValueBinding.getAllBindingsForObject(this)}}});
-
-
 // qx.locale.MTranslation
 //   - Size: 746 bytes
 //   - Modified: 2010-11-03T14:43:37
@@ -4266,6 +4291,15 @@ throw new Error("To enable localization please include qx.locale.Manager into yo
 marktr:function(){var a=qx.locale.Manager;
 if(a)return a.marktr.apply(a,arguments);
 throw new Error("To enable localization please include qx.locale.Manager into your build!")}}});
+
+
+// qx.data.MBinding
+//   - Size: 393 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.data.MBinding",{members:{bind:function(d,a,c,b){return qx.data.SingleValueBinding.bind(this,d,a,c,b)},
+removeBinding:function(a){qx.data.SingleValueBinding.removeBindingFromObject(this,a)},
+removeAllBindings:function(){qx.data.SingleValueBinding.removeAllBindingsForObject(this)},
+getBindings:function(){return qx.data.SingleValueBinding.getAllBindingsForObject(this)}}});
 
 
 // qx.event.type.Dom
@@ -4295,6 +4329,20 @@ isMetaPressed:function(){return this._native.metaKey},
 isCtrlOrCommandPressed:function(){return qx.bom.client.Platform.MAC?this._native.metaKey:this._native.ctrlKey}}});
 
 
+// qx.event.type.KeyInput
+//   - Size: 372 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.type.KeyInput",{extend:qx.event.type.Dom,
+members:{init:function(b,a,c){this.base(arguments,b,a,null,true,true);
+this._charCode=c;
+return this},
+clone:function(b){var a=this.base(arguments,b);
+a._charCode=this._charCode;
+return a},
+getCharCode:function(){return this._charCode},
+getChar:function(){return String.fromCharCode(this._charCode)}}});
+
+
 // qx.event.type.KeySequence
 //   - Size: 420 bytes
 //   - Modified: 2010-09-07T21:24:54
@@ -4309,20 +4357,6 @@ a._identifier=this._identifier;
 return a},
 getKeyIdentifier:function(){return this._identifier},
 getKeyCode:function(){return this._keyCode}}});
-
-
-// qx.event.type.KeyInput
-//   - Size: 372 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.type.KeyInput",{extend:qx.event.type.Dom,
-members:{init:function(b,a,c){this.base(arguments,b,a,null,true,true);
-this._charCode=c;
-return this},
-clone:function(b){var a=this.base(arguments,b);
-a._charCode=this._charCode;
-return a},
-getCharCode:function(){return this._charCode},
-getChar:function(){return String.fromCharCode(this._charCode)}}});
 
 
 // qx.event.handler.Appear
@@ -4375,56 +4409,6 @@ canHandleEvent:function(){},
 registerEvent:function(){},
 unregisterEvent:function(){}},
 destruct:function(){this.__ugn3e=this.__qOaV1=null},
-defer:function(a){qx.event.Registration.addHandler(a)}});
-
-
-// qx.event.dispatch.DomBubbling
-//   - Size: 345 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.dispatch.DomBubbling",{extend:qx.event.dispatch.AbstractBubbling,
-statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL},
-members:{_getParent:function(a){return a.parentNode},
-canDispatchEvent:function(b,a){return b.nodeType!==undefined&&a.getBubbles()}},
-defer:function(a){qx.event.Registration.addDispatcher(a)}});
-
-
-// qx.event.handler.Window
-//   - Size: 1494 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.event.handler.Window",{extend:qx.core.Object,
-implement:qx.event.IEventHandler,
-construct:function(a){this.base(arguments);
-this._manager=a;
-this._window=a.getWindow();
-this._initWindowObserver()},
-statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
-SUPPORTED_TYPES:{error:1,
-load:1,
-beforeunload:1,
-unload:1,
-resize:1,
-scroll:1,
-beforeshutdown:1},
-TARGET_CHECK:qx.event.IEventHandler.TARGET_WINDOW,
-IGNORE_CAN_HANDLE:true},
-members:{canHandleEvent:function(){},
-registerEvent:function(){},
-unregisterEvent:function(){},
-_initWindowObserver:function(){this._onNativeWrapper=qx.lang.Function.listener(this._onNative,this);
-var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
-for(a in b)qx.bom.Event.addNativeListener(this._window,a,this._onNativeWrapper)},
-_stopWindowObserver:function(){var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
-for(a in b)qx.bom.Event.removeNativeListener(this._window,a,this._onNativeWrapper)},
-_onNative:qx.event.GlobalError.observeMethod(function(c){if(this.isDisposed())return;
-var a=this._window,f,g,b,e,d;
-try{f=a.document}catch(c){return}g=f.documentElement,b=qx.bom.Event.getTarget(c);
-if(b==null||b===a||b===f||b===g){e=qx.event.Registration.createEvent(c.type,qx.event.type.Native,[c,a]);
-qx.event.Registration.dispatchEvent(a,e);
-d=e.getReturnValue();
-if(d!=null){c.returnValue=d;
-return d}}})},
-destruct:function(){this._stopWindowObserver();
-this._manager=this._window=null},
 defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
@@ -4559,6 +4543,56 @@ addData:function(b,a){this.getManager().addData(b,a)},
 getData:function(a){return this.getManager().getData(a)},
 getCurrentType:function(){return this.getManager().getCurrentType()},
 getCurrentAction:function(){return this.getManager().getCurrentAction()}}});
+
+
+// qx.event.dispatch.DomBubbling
+//   - Size: 345 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.dispatch.DomBubbling",{extend:qx.event.dispatch.AbstractBubbling,
+statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL},
+members:{_getParent:function(a){return a.parentNode},
+canDispatchEvent:function(b,a){return b.nodeType!==undefined&&a.getBubbles()}},
+defer:function(a){qx.event.Registration.addDispatcher(a)}});
+
+
+// qx.event.handler.Window
+//   - Size: 1494 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Class.define("qx.event.handler.Window",{extend:qx.core.Object,
+implement:qx.event.IEventHandler,
+construct:function(a){this.base(arguments);
+this._manager=a;
+this._window=a.getWindow();
+this._initWindowObserver()},
+statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
+SUPPORTED_TYPES:{error:1,
+load:1,
+beforeunload:1,
+unload:1,
+resize:1,
+scroll:1,
+beforeshutdown:1},
+TARGET_CHECK:qx.event.IEventHandler.TARGET_WINDOW,
+IGNORE_CAN_HANDLE:true},
+members:{canHandleEvent:function(){},
+registerEvent:function(){},
+unregisterEvent:function(){},
+_initWindowObserver:function(){this._onNativeWrapper=qx.lang.Function.listener(this._onNative,this);
+var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
+for(a in b)qx.bom.Event.addNativeListener(this._window,a,this._onNativeWrapper)},
+_stopWindowObserver:function(){var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
+for(a in b)qx.bom.Event.removeNativeListener(this._window,a,this._onNativeWrapper)},
+_onNative:qx.event.GlobalError.observeMethod(function(c){if(this.isDisposed())return;
+var a=this._window,f,g,b,e,d;
+try{f=a.document}catch(c){return}g=f.documentElement,b=qx.bom.Event.getTarget(c);
+if(b==null||b===a||b===f||b===g){e=qx.event.Registration.createEvent(c.type,qx.event.type.Native,[c,a]);
+qx.event.Registration.dispatchEvent(a,e);
+d=e.getReturnValue();
+if(d!=null){c.returnValue=d;
+return d}}})},
+destruct:function(){this._stopWindowObserver();
+this._manager=this._window=null},
+defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.core.Init
@@ -4741,6 +4775,44 @@ var c=b.FOCUSABLE_ELEMENTS,a;
 for(a in c)c[a.toUpperCase()]=1}});
 
 
+// qx.bom.Selection
+//   - Size: 2311 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.bom.Selection",{statics:{getSelectionObject:function(a){return qx.dom.Node.getWindow(a).getSelection()},
+get:function(a){return this.__byrF7m(a)?a.value.substring(a.selectionStart,a.selectionEnd):this.getSelectionObject(qx.dom.Node.getDocument(a)).toString()},
+getLength:function(a){return this.__byrF7m(a)?a.selectionEnd-a.selectionStart:this.get(a).length},
+getStart:function(b){if(this.__byrF7m(b))return b.selectionStart;
+var c=qx.dom.Node.getDocument(b),a=this.getSelectionObject(c);
+return a.anchorOffset<a.focusOffset?a.anchorOffset:a.focusOffset},
+getEnd:function(b){if(this.__byrF7m(b))return b.selectionEnd;
+var c=qx.dom.Node.getDocument(b),a=this.getSelectionObject(c);
+return a.focusOffset>a.anchorOffset?a.focusOffset:a.anchorOffset},
+__byrF7m:function(a){return qx.dom.Node.isElement(a)&&(a.nodeName.toLowerCase()=="input"||a.nodeName.toLowerCase()=="textarea")},
+set:function(a,c,b){var g=a.nodeName.toLowerCase(),f,d,e;
+if(qx.dom.Node.isElement(a)&&(g=="input"||g=="textarea")){b===undefined&&(b=a.value.length);
+if(c>=0&&c<=a.value.length&&b>=0&&b<=a.value.length){a.focus();
+a.select();
+a.setSelectionRange(c,b);
+return true}}else{f=false,d=qx.dom.Node.getWindow(a).getSelection(),e=qx.bom.Range.get(a);
+qx.dom.Node.isText(a)?(b===undefined&&(b=a.length),c>=0&&c<a.length&&b>=0&&b<=a.length&&(f=true)):qx.dom.Node.isElement(a)?(b===undefined&&(b=a.childNodes.length-1),c>=0&&a.childNodes[c]&&b>=0&&a.childNodes[b]&&(f=true)):qx.dom.Node.isDocument(a)&&(a=a.body,b===undefined&&(b=a.childNodes.length-1),c>=0&&a.childNodes[c]&&b>=0&&a.childNodes[b]&&(f=true));
+if(f){d.isCollapsed||d.collapseToStart();
+e.setStart(a,c);
+qx.dom.Node.isText(a)?e.setEnd(a,b):e.setEndAfter(a.childNodes[b]);
+d.rangeCount>0&&d.removeAllRanges();
+d.addRange(e);
+return true}}return false},
+setAll:function(a){return qx.bom.Selection.set(a,0)},
+clear:function(a){var f=qx.bom.Selection.getSelectionObject(qx.dom.Node.getDocument(a)),c=a.nodeName.toLowerCase(),e,b,d;
+qx.dom.Node.isElement(a)&&(c=="input"||c=="textarea")?(a.setSelectionRange(0,0),qx.bom.Element.blur(a)):qx.dom.Node.isDocument(a)||c=="body"?f.collapse(a.body?a.body:a,0):(e=qx.bom.Range.get(a),e.collapsed||(d=e.commonAncestorContainer,b=qx.dom.Node.isElement(a)&&qx.dom.Node.isText(d)?d.parentNode:d,b==a&&f.collapse(a,0)))}}});
+
+
+// qx.bom.Range
+//   - Size: 191 bytes
+//   - Modified: 2010-09-18T15:10:12
+qx.Class.define("qx.bom.Range",{statics:{get:function(c){var b=qx.dom.Node.getDocument(c),a=qx.bom.Selection.getSelectionObject(b);
+return a.rangeCount>0?a.getRangeAt(0):b.createRange()}}});
+
+
 // qx.event.dispatch.MouseCapture
 //   - Size: 1849 bytes
 //   - Modified: 2010-11-11T16:55:27
@@ -4789,44 +4861,6 @@ nativeSetCapture:qx.lang.Function.empty,
 nativeReleaseCapture:qx.lang.Function.empty},
 destruct:function(){this.__90fvJ=this.__qOaV1=this.__W9lJC=null},
 defer:function(a){qx.event.Registration.addDispatcher(a)}});
-
-
-// qx.bom.Selection
-//   - Size: 2311 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.bom.Selection",{statics:{getSelectionObject:function(a){return qx.dom.Node.getWindow(a).getSelection()},
-get:function(a){return this.__byrF7m(a)?a.value.substring(a.selectionStart,a.selectionEnd):this.getSelectionObject(qx.dom.Node.getDocument(a)).toString()},
-getLength:function(a){return this.__byrF7m(a)?a.selectionEnd-a.selectionStart:this.get(a).length},
-getStart:function(b){if(this.__byrF7m(b))return b.selectionStart;
-var c=qx.dom.Node.getDocument(b),a=this.getSelectionObject(c);
-return a.anchorOffset<a.focusOffset?a.anchorOffset:a.focusOffset},
-getEnd:function(b){if(this.__byrF7m(b))return b.selectionEnd;
-var c=qx.dom.Node.getDocument(b),a=this.getSelectionObject(c);
-return a.focusOffset>a.anchorOffset?a.focusOffset:a.anchorOffset},
-__byrF7m:function(a){return qx.dom.Node.isElement(a)&&(a.nodeName.toLowerCase()=="input"||a.nodeName.toLowerCase()=="textarea")},
-set:function(a,c,b){var g=a.nodeName.toLowerCase(),f,d,e;
-if(qx.dom.Node.isElement(a)&&(g=="input"||g=="textarea")){b===undefined&&(b=a.value.length);
-if(c>=0&&c<=a.value.length&&b>=0&&b<=a.value.length){a.focus();
-a.select();
-a.setSelectionRange(c,b);
-return true}}else{f=false,d=qx.dom.Node.getWindow(a).getSelection(),e=qx.bom.Range.get(a);
-qx.dom.Node.isText(a)?(b===undefined&&(b=a.length),c>=0&&c<a.length&&b>=0&&b<=a.length&&(f=true)):qx.dom.Node.isElement(a)?(b===undefined&&(b=a.childNodes.length-1),c>=0&&a.childNodes[c]&&b>=0&&a.childNodes[b]&&(f=true)):qx.dom.Node.isDocument(a)&&(a=a.body,b===undefined&&(b=a.childNodes.length-1),c>=0&&a.childNodes[c]&&b>=0&&a.childNodes[b]&&(f=true));
-if(f){d.isCollapsed||d.collapseToStart();
-e.setStart(a,c);
-qx.dom.Node.isText(a)?e.setEnd(a,b):e.setEndAfter(a.childNodes[b]);
-d.rangeCount>0&&d.removeAllRanges();
-d.addRange(e);
-return true}}return false},
-setAll:function(a){return qx.bom.Selection.set(a,0)},
-clear:function(a){var f=qx.bom.Selection.getSelectionObject(qx.dom.Node.getDocument(a)),c=a.nodeName.toLowerCase(),e,b,d;
-qx.dom.Node.isElement(a)&&(c=="input"||c=="textarea")?(a.setSelectionRange(0,0),qx.bom.Element.blur(a)):qx.dom.Node.isDocument(a)||c=="body"?f.collapse(a.body?a.body:a,0):(e=qx.bom.Range.get(a),e.collapsed||(d=e.commonAncestorContainer,b=qx.dom.Node.isElement(a)&&qx.dom.Node.isText(d)?d.parentNode:d,b==a&&f.collapse(a,0)))}}});
-
-
-// qx.bom.Range
-//   - Size: 191 bytes
-//   - Modified: 2010-09-18T15:10:12
-qx.Class.define("qx.bom.Range",{statics:{get:function(c){var b=qx.dom.Node.getDocument(c),a=qx.bom.Selection.getSelectionObject(b);
-return a.rangeCount>0?a.getRangeAt(0):b.createRange()}}});
 
 
 // qx.bom.element.Scroll
@@ -5538,6 +5572,49 @@ for(a in b)d=b[a],delete b[a],c[a]==null&&this.__ba6aAU(d),c[a]&&c[a]!=e[a]&&d.c
 this.__m5bO4={}}}});
 
 
+// qx.ui.core.queue.Dispose
+//   - Size: 315 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.core.queue.Dispose",{statics:{__m5bO4:{},
+add:function(a){var b=this.__m5bO4;
+if(b[a.$$hash])return;
+b[a.$$hash]=a;
+qx.ui.core.queue.Manager.scheduleFlush("dispose")},
+flush:function(){var b=this.__m5bO4,a,c;
+for(a in b)c=b[a],delete b[a],c.dispose();
+for(a in b)return;
+this.__m5bO4={}}}});
+
+
+// qx.ui.core.queue.Widget
+//   - Size: 367 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.core.queue.Widget",{statics:{__m5bO4:{},
+remove:function(a){delete this.__m5bO4[a.$$hash]},
+add:function(a){var b=this.__m5bO4;
+if(b[a.$$hash])return;
+b[a.$$hash]=a;
+qx.ui.core.queue.Manager.scheduleFlush("widget")},
+flush:function(){var b=this.__m5bO4,c,a;
+for(a in b)c=b[a],delete b[a],c.syncWidget();
+for(a in b)return;
+this.__m5bO4={}}}});
+
+
+// qx.ui.core.queue.Appearance
+//   - Size: 459 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.core.queue.Appearance",{statics:{__m5bO4:{},
+remove:function(a){delete this.__m5bO4[a.$$hash]},
+add:function(a){var b=this.__m5bO4;
+if(b[a.$$hash])return;
+b[a.$$hash]=a;
+qx.ui.core.queue.Manager.scheduleFlush("appearance")},
+has:function(a){return!!this.__m5bO4[a.$$hash]},
+flush:function(){var d=qx.ui.core.queue.Visibility,c=this.__m5bO4,a,b;
+for(b in c)a=c[b],delete c[b],d.isVisible(a)?a.syncAppearance():a.$$stateChanges=true}}});
+
+
 // qx.ui.core.queue.Layout
 //   - Size: 1469 bytes
 //   - Modified: 2010-09-23T21:51:03
@@ -5571,49 +5648,6 @@ a.invalidateLayoutCache();
 continue}c=a.getSizeHint(false);
 c?(a.invalidateLayoutCache(),e=a.getSizeHint(),g=!a.getBounds()||c.minWidth!==e.minWidth||c.width!==e.width||c.maxWidth!==e.maxWidth||c.minHeight!==e.minHeight||c.height!==e.height||c.maxHeight!==e.maxHeight):g=true;
 g?(h=a.getLayoutParent(),d[b-1]||(d[b-1]={}),d[b-1][h.$$hash]=h):f.push(a)}}return f}}});
-
-
-// qx.ui.core.queue.Dispose
-//   - Size: 315 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.core.queue.Dispose",{statics:{__m5bO4:{},
-add:function(a){var b=this.__m5bO4;
-if(b[a.$$hash])return;
-b[a.$$hash]=a;
-qx.ui.core.queue.Manager.scheduleFlush("dispose")},
-flush:function(){var b=this.__m5bO4,a,c;
-for(a in b)c=b[a],delete b[a],c.dispose();
-for(a in b)return;
-this.__m5bO4={}}}});
-
-
-// qx.ui.core.queue.Appearance
-//   - Size: 459 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.core.queue.Appearance",{statics:{__m5bO4:{},
-remove:function(a){delete this.__m5bO4[a.$$hash]},
-add:function(a){var b=this.__m5bO4;
-if(b[a.$$hash])return;
-b[a.$$hash]=a;
-qx.ui.core.queue.Manager.scheduleFlush("appearance")},
-has:function(a){return!!this.__m5bO4[a.$$hash]},
-flush:function(){var d=qx.ui.core.queue.Visibility,c=this.__m5bO4,a,b;
-for(b in c)a=c[b],delete c[b],d.isVisible(a)?a.syncAppearance():a.$$stateChanges=true}}});
-
-
-// qx.ui.core.queue.Widget
-//   - Size: 367 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.core.queue.Widget",{statics:{__m5bO4:{},
-remove:function(a){delete this.__m5bO4[a.$$hash]},
-add:function(a){var b=this.__m5bO4;
-if(b[a.$$hash])return;
-b[a.$$hash]=a;
-qx.ui.core.queue.Manager.scheduleFlush("widget")},
-flush:function(){var b=this.__m5bO4,c,a;
-for(a in b)c=b[a],delete b[a],c.syncWidget();
-for(a in b)return;
-this.__m5bO4={}}}});
 
 
 // qx.ui.core.DecoratorFactory
@@ -5669,26 +5703,6 @@ return this},
 getValue:function(){return this._getProperty("value")}}});
 
 
-// qx.html.Image
-//   - Size: 868 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.html.Image",{extend:qx.html.Element,
-members:{_applyProperty:function(c,d){this.base(arguments,c,d);
-if(c==="source"){var a=this._getProperty("source"),b;
-a!=null&&(b=this.getDomElement(),this._getProperty("scale")?b.src=qx.util.ResourceManager.getInstance().toUri(a):qx.bom.element2.Style.set(b,qx.bom.element.Decoration.getStyles(a,"no-repeat")))}},
-_createDomElement:function(){this.setNodeName(this._getProperty("scale")?"img":"div");
-return this.base(arguments)},
-_copyData:function(){return this.base(arguments,true)},
-setSource:function(a){this._setProperty("source",a);
-return this},
-getSource:function(){return this._getProperty("source")},
-resetSource:function(){this._removeProperty("source",true);
-return this},
-setScale:function(a){this._setProperty("scale",a);
-return this},
-getScale:function(){return this._getProperty("scale")}}});
-
-
 // qx.ui.window.Manager
 //   - Size: 1159 bytes
 //   - Modified: 2010-08-26T21:43:54
@@ -5715,6 +5729,26 @@ c&&(b.push(a),this.updateStack())},
 sendToBack:function(a){var b=this.__uDc7p.getWindows(),c=qx.lang.Array.remove(b,a);
 c&&(b.unshift(a),this.updateStack())}},
 destruct:function(){this._disposeObjects("__desktop")}});
+
+
+// qx.html.Image
+//   - Size: 868 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.html.Image",{extend:qx.html.Element,
+members:{_applyProperty:function(c,d){this.base(arguments,c,d);
+if(c==="source"){var a=this._getProperty("source"),b;
+a!=null&&(b=this.getDomElement(),this._getProperty("scale")?b.src=qx.util.ResourceManager.getInstance().toUri(a):qx.bom.element2.Style.set(b,qx.bom.element.Decoration.getStyles(a,"no-repeat")))}},
+_createDomElement:function(){this.setNodeName(this._getProperty("scale")?"img":"div");
+return this.base(arguments)},
+_copyData:function(){return this.base(arguments,true)},
+setSource:function(a){this._setProperty("source",a);
+return this},
+getSource:function(){return this._getProperty("source")},
+resetSource:function(){this._removeProperty("source",true);
+return this},
+setScale:function(a){this._setProperty("scale",a);
+return this},
+getScale:function(){return this._getProperty("scale")}}});
 
 
 // qx.ui.core.LayoutItem
@@ -5927,6 +5961,87 @@ _getWidget:function(){return this.__qzkhX},
 _applyLayoutChange:function(){this.__qzkhX&&this.__qzkhX.scheduleLayoutUpdate()},
 _getLayoutChildren:function(){return this.__qzkhX.getLayoutChildren()}},
 destruct:function(){this.__qzkhX=this.__zcIy1=null}});
+
+
+// qx.ui.layout.HBox
+//   - Size: 3489 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.ui.layout.HBox",{extend:qx.ui.layout.Abstract,
+construct:function(c,b,a){this.base(arguments);
+c&&this.setSpacing(c);
+b&&this.setAlignX(b);
+a&&this.setSeparator(a)},
+properties:{alignX:{check:["left","center","right"],
+init:"left",
+apply:"_applyLayoutChange"},
+alignY:{check:["top","middle","bottom"],
+init:"top",
+apply:"_applyLayoutChange"},
+spacing:{check:"Integer",
+init:0,
+apply:"_applyLayoutChange"},
+separator:{check:"Decorator",
+nullable:true,
+apply:"_applyLayoutChange"},
+reversed:{check:"Boolean",
+init:false,
+apply:"_applyReversed"}},
+members:{__qLqrC:null,
+__mLFlJ:null,
+__ItYVd:null,
+__yONi8:null,
+_applyReversed:function(){this._invalidChildrenCache=true;
+this._applyLayoutChange()},
+__VfnJe:function(){var b=this._getLayoutChildren(),d=b.length,g=false,f=this.__qLqrC&&this.__qLqrC.length!=d&&this.__mLFlJ&&this.__qLqrC,c,h=f?this.__qLqrC:new Array(d),e=f?this.__mLFlJ:new Array(d),a;
+this.getReversed()&&(b=b.concat().reverse());
+for(a=0;
+a<d;
+a++)c=b[a].getLayoutProperties(),c.width!=null&&(h[a]=parseFloat(c.width)/100),c.flex!=null?(e[a]=c.flex,g=true):e[a]=0;
+f||(this.__qLqrC=h,this.__mLFlJ=e);
+this.__ItYVd=g;
+this.__yONi8=b;
+delete this._invalidChildrenCache},
+verifyLayoutProperty:function(c,a,b){this.assert(a==="flex"||a==="width","The property '"+a+"' is not supported by the HBox layout!");
+a=="width"?this.assertMatch(b,qx.ui.layout.Util.PERCENT_VALUE):(this.assertNumber(b),this.assert(b>=0))},
+renderLayout:function(i,q){this._invalidChildrenCache&&this.__VfnJe();
+var d=this.__yONi8,n=d.length,j=qx.ui.layout.Util,k=this.getSpacing(),e=this.getSeparator(),A,a,c,f,p,l,h,y,u,o,z,b,g,x,r,s,m,t,w,v;
+A=e?j.computeHorizontalSeparatorGaps(d,k,e):j.computeHorizontalGaps(d,k,true);
+l=[],h=A;
+for(a=0;
+a<n;
+a+=1)p=this.__qLqrC[a],f=p!=null?Math.floor((i-A)*p):d[a].getSizeHint().width,l.push(f),h+=f;
+if(this.__ItYVd&&h!=i){y={};
+for(a=0;
+a<n;
+a+=1)u=this.__mLFlJ[a],u>0&&(g=d[a].getSizeHint(),y[a]={min:g.minWidth,
+value:l[a],
+max:g.maxWidth,
+flex:u});
+z=j.computeFlexOffsets(y,i,h);
+for(a in z)o=z[a].offset,l[a]+=o,h+=o}b=d[0].getMarginLeft();
+h<i&&this.getAlignX()!="left"&&(b=i-h,this.getAlignX()==="center"&&(b=Math.round(b/2)));
+k=this.getSpacing();
+this._clearSeparators();
+e&&(w=qx.theme.manager.Decoration.getInstance().resolve(e).getInsets(),v=w.left+w.right);
+for(a=0;
+a<n;
+a+=1)c=d[a],f=l[a],g=c.getSizeHint(),m=c.getMarginTop(),t=c.getMarginBottom(),r=Math.max(g.minHeight,Math.min(q-m-t,g.maxHeight)),x=j.computeVerticalAlignOffset(c.getAlignY()||this.getAlignY(),r,q,m,t),a>0&&(e?(b+=s+k,this._renderSeparator(e,{left:b,
+top:0,
+width:v,
+height:q}),b+=v+k+c.getMarginLeft()):b+=j.collapseMargins(k,s,c.getMarginLeft())),c.renderLayout(b,x,f,r),b+=f,s=c.getMarginRight()},
+_computeSizeHint:function(){this._invalidChildrenCache&&this.__VfnJe();
+for(var n=qx.ui.layout.Util,e=this.__yONi8,d=0,l=0,i=0,k=0,j=0,f,a,b,c=0,p=e.length,q,m,o,g,h;
+c<p;
+c+=1)f=e[c],a=f.getSizeHint(),l+=a.width,q=this.__mLFlJ[c],m=this.__qLqrC[c],q?d+=a.minWidth:m?i=Math.max(i,Math.round(a.minWidth/m)):d+=a.width,b=f.getMarginTop()+f.getMarginBottom(),a.height+b>j&&(j=a.height+b),a.minHeight+b>k&&(k=a.minHeight+b);
+d+=i;
+o=this.getSpacing(),g=this.getSeparator();
+h=g?n.computeHorizontalSeparatorGaps(e,o,g):n.computeHorizontalGaps(e,o,true);
+this.assertInteger(h,"Layout utility returned invalid gaps. Used separator: "+g);
+return{minWidth:d+h,
+width:l+h,
+minHeight:k,
+height:j}}},
+destruct:function(){this.__qLqrC=this.__mLFlJ=this.__yONi8=null}});
 
 
 // qx.ui.layout.VBox
@@ -6286,87 +6401,6 @@ minHeight:e+j,
 height:k+j};
 return m}},
 destruct:function(){this.__jxKLh=this.__usc9t=this.__tKdjT=this.__yElrO=this.__ztuye=this.__DHg8i=this.__JCnsd=null}});
-
-
-// qx.ui.layout.HBox
-//   - Size: 3489 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.ui.layout.HBox",{extend:qx.ui.layout.Abstract,
-construct:function(c,b,a){this.base(arguments);
-c&&this.setSpacing(c);
-b&&this.setAlignX(b);
-a&&this.setSeparator(a)},
-properties:{alignX:{check:["left","center","right"],
-init:"left",
-apply:"_applyLayoutChange"},
-alignY:{check:["top","middle","bottom"],
-init:"top",
-apply:"_applyLayoutChange"},
-spacing:{check:"Integer",
-init:0,
-apply:"_applyLayoutChange"},
-separator:{check:"Decorator",
-nullable:true,
-apply:"_applyLayoutChange"},
-reversed:{check:"Boolean",
-init:false,
-apply:"_applyReversed"}},
-members:{__qLqrC:null,
-__mLFlJ:null,
-__ItYVd:null,
-__yONi8:null,
-_applyReversed:function(){this._invalidChildrenCache=true;
-this._applyLayoutChange()},
-__VfnJe:function(){var b=this._getLayoutChildren(),d=b.length,g=false,f=this.__qLqrC&&this.__qLqrC.length!=d&&this.__mLFlJ&&this.__qLqrC,c,h=f?this.__qLqrC:new Array(d),e=f?this.__mLFlJ:new Array(d),a;
-this.getReversed()&&(b=b.concat().reverse());
-for(a=0;
-a<d;
-a++)c=b[a].getLayoutProperties(),c.width!=null&&(h[a]=parseFloat(c.width)/100),c.flex!=null?(e[a]=c.flex,g=true):e[a]=0;
-f||(this.__qLqrC=h,this.__mLFlJ=e);
-this.__ItYVd=g;
-this.__yONi8=b;
-delete this._invalidChildrenCache},
-verifyLayoutProperty:function(c,a,b){this.assert(a==="flex"||a==="width","The property '"+a+"' is not supported by the HBox layout!");
-a=="width"?this.assertMatch(b,qx.ui.layout.Util.PERCENT_VALUE):(this.assertNumber(b),this.assert(b>=0))},
-renderLayout:function(i,q){this._invalidChildrenCache&&this.__VfnJe();
-var d=this.__yONi8,n=d.length,j=qx.ui.layout.Util,k=this.getSpacing(),e=this.getSeparator(),A,a,c,f,p,l,h,y,u,o,z,b,g,x,r,s,m,t,w,v;
-A=e?j.computeHorizontalSeparatorGaps(d,k,e):j.computeHorizontalGaps(d,k,true);
-l=[],h=A;
-for(a=0;
-a<n;
-a+=1)p=this.__qLqrC[a],f=p!=null?Math.floor((i-A)*p):d[a].getSizeHint().width,l.push(f),h+=f;
-if(this.__ItYVd&&h!=i){y={};
-for(a=0;
-a<n;
-a+=1)u=this.__mLFlJ[a],u>0&&(g=d[a].getSizeHint(),y[a]={min:g.minWidth,
-value:l[a],
-max:g.maxWidth,
-flex:u});
-z=j.computeFlexOffsets(y,i,h);
-for(a in z)o=z[a].offset,l[a]+=o,h+=o}b=d[0].getMarginLeft();
-h<i&&this.getAlignX()!="left"&&(b=i-h,this.getAlignX()==="center"&&(b=Math.round(b/2)));
-k=this.getSpacing();
-this._clearSeparators();
-e&&(w=qx.theme.manager.Decoration.getInstance().resolve(e).getInsets(),v=w.left+w.right);
-for(a=0;
-a<n;
-a+=1)c=d[a],f=l[a],g=c.getSizeHint(),m=c.getMarginTop(),t=c.getMarginBottom(),r=Math.max(g.minHeight,Math.min(q-m-t,g.maxHeight)),x=j.computeVerticalAlignOffset(c.getAlignY()||this.getAlignY(),r,q,m,t),a>0&&(e?(b+=s+k,this._renderSeparator(e,{left:b,
-top:0,
-width:v,
-height:q}),b+=v+k+c.getMarginLeft()):b+=j.collapseMargins(k,s,c.getMarginLeft())),c.renderLayout(b,x,f,r),b+=f,s=c.getMarginRight()},
-_computeSizeHint:function(){this._invalidChildrenCache&&this.__VfnJe();
-for(var n=qx.ui.layout.Util,e=this.__yONi8,d=0,l=0,i=0,k=0,j=0,f,a,b,c=0,p=e.length,q,m,o,g,h;
-c<p;
-c+=1)f=e[c],a=f.getSizeHint(),l+=a.width,q=this.__mLFlJ[c],m=this.__qLqrC[c],q?d+=a.minWidth:m?i=Math.max(i,Math.round(a.minWidth/m)):d+=a.width,b=f.getMarginTop()+f.getMarginBottom(),a.height+b>j&&(j=a.height+b),a.minHeight+b>k&&(k=a.minHeight+b);
-d+=i;
-o=this.getSpacing(),g=this.getSeparator();
-h=g?n.computeHorizontalSeparatorGaps(e,o,g):n.computeHorizontalGaps(e,o,true);
-this.assertInteger(h,"Layout utility returned invalid gaps. Used separator: "+g);
-return{minWidth:d+h,
-width:l+h,
-minHeight:k,
-height:j}}},
-destruct:function(){this.__qLqrC=this.__mLFlJ=this.__yONi8=null}});
 
 
 // qx.ui.core.Widget
@@ -8828,52 +8862,82 @@ this._disposeObjects("__contentBlocker","__blocker","__timer");
 this.__VI41X=this.__9hYDs=this.__2x0gW=this._widget=this.__bRCHEn=null}});
 
 
-// qx.ui.form.MModelProperty
-//   - Size: 104 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Mixin.define("qx.ui.form.MModelProperty",{properties:{model:{nullable:true,
-event:"changeModel"}}});
-
-
-// qx.ui.form.MForm
-//   - Size: 503 bytes
-//   - Modified: 2010-09-30T14:20:20
-qx.Mixin.define("qx.ui.form.MForm",{construct:function(){},
-properties:{valid:{check:"Boolean",
-init:true,
-apply:"_applyValid",
-event:"changeValid"},
-required:{check:"Boolean",
-init:false,
-event:"changeRequired"},
-invalidMessage:{check:"String",
-init:"",
-event:"changeInvalidMessage"},
-requiredInvalidMessage:{check:"String",
-nullable:true,
-event:"changeInvalidMessage"}},
-members:{_applyValid:function(a){a?this.removeState("invalid"):this.addState("invalid")},
-__7AESY:null},
-destruct:function(){}});
-
-
-// apiviewer.MWidgetRegistry
-//   - Size: 662 bytes
+// qx.ui.core.MNativeOverflow
+//   - Size: 465 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("apiviewer.MWidgetRegistry",{properties:{id:{check:"String",
-apply:"_applyId",
+qx.Mixin.define("qx.ui.core.MNativeOverflow",{properties:{overflowX:{check:["hidden","visible","scroll","auto"],
 nullable:true,
-init:null}},
-members:{_applyId:function(b,a){var c=apiviewer.MWidgetRegistry;
-a&&c.unregister(this,a);
-b&&c.register(this,b)},
-getWidgetById:function(a){return apiviewer.MWidgetRegistry.getWidgetById(a)}},
-statics:{__yALNM:{},
-getWidgetById:function(a){return this.__yALNM[a]},
-register:function(b,a){if(this.__yALNM[a])throw new Error("An object with the id '"+a+"' already exists.");
-this.__yALNM[a]=b},
-unregister:function(b,a){if(this.__yALNM[a]!==b)throw new Error("The object is not registered with the id '"+a+"'.");
-delete this.__yALNM[a]}}});
+apply:"_applyOverflowX"},
+overflowY:{check:["hidden","visible","scroll","auto"],
+nullable:true,
+apply:"_applyOverflowY"},
+overflow:{group:["overflowX","overflowY"]}},
+members:{_applyOverflowX:function(a){this.getContentElement().setStyle("overflowX",a)},
+_applyOverflowY:function(a){this.getContentElement().setStyle("overflowY",a)}}});
+
+
+// qx.ui.table.IColumnMenuItem
+//   - Size: 123 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.table.IColumnMenuItem",{properties:{visible:{}},
+events:{changeVisible:"qx.event.type.Data"}});
+
+
+// qx.util.format.IFormat
+//   - Size: 99 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.util.format.IFormat",{members:{format:function(){},
+parse:function(){}}});
+
+
+// qx.ui.core.scroll.IScrollBar
+//   - Size: 308 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.core.scroll.IScrollBar",{events:{scroll:"qx.event.type.Data"},
+properties:{orientation:{},
+maximum:{},
+position:{},
+knobFactor:{}},
+members:{scrollTo:function(a){this.assertNumber(a)},
+scrollBy:function(a){this.assertNumber(a)},
+scrollBySteps:function(a){this.assertNumber(a)}}});
+
+
+// qx.ui.table.ICellEditorFactory
+//   - Size: 152 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.table.ICellEditorFactory",{members:{createCellEditor:function(){return true},
+getCellEditorValue:function(){return true}}});
+
+
+// qx.ui.table.IColumnMenuButton
+//   - Size: 151 bytes
+//   - Modified: 2010-10-13T17:38:57
+qx.Interface.define("qx.ui.table.IColumnMenuButton",{properties:{menu:{}},
+members:{factory:function(){return true},
+empty:function(){return true}}});
+
+
+// qx.ui.table.ICellRenderer
+//   - Size: 105 bytes
+//   - Modified: 2010-07-17T16:42:24
+qx.Interface.define("qx.ui.table.ICellRenderer",{members:{createDataCellHtml:function(){return true}}});
+
+
+// qx.ui.table.IHeaderRenderer
+//   - Size: 147 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.table.IHeaderRenderer",{members:{createHeaderCell:function(){return true},
+updateHeaderCell:function(){return true}}});
+
+
+// qx.ui.table.IRowRenderer
+//   - Size: 182 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.table.IRowRenderer",{members:{updateDataRowElement:function(){},
+getRowHeightStyle:function(){},
+createRowStyle:function(){},
+getRowClass:function(){}}});
 
 
 // qx.ui.table.ITableModel
@@ -8900,19 +8964,6 @@ setValue:function(){},
 setValueById:function(){}}});
 
 
-// qx.ui.core.scroll.IScrollBar
-//   - Size: 308 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.core.scroll.IScrollBar",{events:{scroll:"qx.event.type.Data"},
-properties:{orientation:{},
-maximum:{},
-position:{},
-knobFactor:{}},
-members:{scrollTo:function(a){this.assertNumber(a)},
-scrollBy:function(a){this.assertNumber(a)},
-scrollBySteps:function(a){this.assertNumber(a)}}});
-
-
 // qx.ui.core.ISingleSelection
 //   - Size: 389 bytes
 //   - Modified: 2010-08-26T21:43:53
@@ -8932,12 +8983,26 @@ qx.Interface.define("qx.ui.core.ISingleSelectionProvider",{members:{getItems:fun
 isItemSelectable:function(){}}});
 
 
-// qx.ui.table.IColumnMenuButton
-//   - Size: 151 bytes
-//   - Modified: 2010-10-13T17:38:57
-qx.Interface.define("qx.ui.table.IColumnMenuButton",{properties:{menu:{}},
-members:{factory:function(){return true},
-empty:function(){return true}}});
+// qx.ui.form.IBooleanForm
+//   - Size: 199 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IBooleanForm",{events:{changeValue:"qx.event.type.Data"},
+members:{setValue:function(){return arguments.length==1},
+resetValue:function(){},
+getValue:function(){}}});
+
+
+// qx.ui.form.IRange
+//   - Size: 365 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IRange",{members:{setMinimum:function(){return arguments.length==1},
+getMinimum:function(){},
+setMaximum:function(){return arguments.length==1},
+getMaximum:function(){},
+setSingleStep:function(){return arguments.length==1},
+getSingleStep:function(){},
+setPageStep:function(){return arguments.length==1},
+getPageStep:function(){}}});
 
 
 // qx.ui.form.IForm
@@ -8959,60 +9024,6 @@ setRequiredInvalidMessage:function(){return arguments.length==1},
 getRequiredInvalidMessage:function(){}}});
 
 
-// qx.application.IApplication
-//   - Size: 149 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.application.IApplication",{members:{main:function(){},
-finalize:function(){},
-close:function(){},
-terminate:function(){}}});
-
-
-// qx.ui.form.IBooleanForm
-//   - Size: 199 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IBooleanForm",{events:{changeValue:"qx.event.type.Data"},
-members:{setValue:function(){return arguments.length==1},
-resetValue:function(){},
-getValue:function(){}}});
-
-
-// qx.ui.table.ICellRenderer
-//   - Size: 105 bytes
-//   - Modified: 2010-07-17T16:42:24
-qx.Interface.define("qx.ui.table.ICellRenderer",{members:{createDataCellHtml:function(){return true}}});
-
-
-// qx.ui.form.IModelSelection
-//   - Size: 126 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IModelSelection",{members:{setModelSelection:function(){},
-getModelSelection:function(){}}});
-
-
-// qx.ui.table.IHeaderRenderer
-//   - Size: 147 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.table.IHeaderRenderer",{members:{createHeaderCell:function(){return true},
-updateHeaderCell:function(){return true}}});
-
-
-// qx.ui.table.IRowRenderer
-//   - Size: 182 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.table.IRowRenderer",{members:{updateDataRowElement:function(){},
-getRowHeightStyle:function(){},
-createRowStyle:function(){},
-getRowClass:function(){}}});
-
-
-// qx.util.format.IFormat
-//   - Size: 99 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.util.format.IFormat",{members:{format:function(){},
-parse:function(){}}});
-
-
 // qx.ui.form.IModel
 //   - Size: 167 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -9022,31 +9033,13 @@ getModel:function(){},
 resetModel:function(){}}});
 
 
-// qx.ui.table.ICellEditorFactory
-//   - Size: 152 bytes
+// qx.application.IApplication
+//   - Size: 149 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.table.ICellEditorFactory",{members:{createCellEditor:function(){return true},
-getCellEditorValue:function(){return true}}});
-
-
-// qx.ui.form.IRange
-//   - Size: 365 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IRange",{members:{setMinimum:function(){return arguments.length==1},
-getMinimum:function(){},
-setMaximum:function(){return arguments.length==1},
-getMaximum:function(){},
-setSingleStep:function(){return arguments.length==1},
-getSingleStep:function(){},
-setPageStep:function(){return arguments.length==1},
-getPageStep:function(){}}});
-
-
-// qx.ui.table.IColumnMenuItem
-//   - Size: 123 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.table.IColumnMenuItem",{properties:{visible:{}},
-events:{changeVisible:"qx.event.type.Data"}});
+qx.Interface.define("qx.application.IApplication",{members:{main:function(){},
+finalize:function(){},
+close:function(){},
+terminate:function(){}}});
 
 
 // qx.ui.form.INumberForm
@@ -9056,6 +9049,13 @@ qx.Interface.define("qx.ui.form.INumberForm",{events:{changeValue:"qx.event.type
 members:{setValue:function(){return arguments.length==1},
 resetValue:function(){},
 getValue:function(){}}});
+
+
+// qx.ui.form.IModelSelection
+//   - Size: 126 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IModelSelection",{members:{setModelSelection:function(){},
+getModelSelection:function(){}}});
 
 
 // qx.ui.core.IMultiSelection
@@ -9493,65 +9493,86 @@ toText:function(a){return qx.bom.String.unescape(a.replace(/\s+|<([^>])+>/gi,fun
 defer:function(a){a.FROM_CHARCODE=qx.lang.Object.invert(a.TO_CHARCODE)}});
 
 
-// qx.ui.table.pane.Model
-//   - Size: 1709 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.pane.Model",{extend:qx.core.Object,
-construct:function(a){this.base(arguments);
-a.addListener("visibilityChangedPre",this._onColVisibilityChanged,this);
-this.__boH5Jq=a},
-events:{modelChanged:"qx.event.type.Event"},
-statics:{EVENT_TYPE_MODEL_CHANGED:"modelChanged"},
-properties:{firstColumnX:{check:"Integer",
-init:0,
-apply:"_applyFirstColumnX"},
-maxColumnCount:{check:"Number",
-init:-1,
-apply:"_applyMaxColumnCount"}},
-members:{__PMBsU:null,
-__boH5Jq:null,
-_applyFirstColumnX:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-_applyMaxColumnCount:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-setTableColumnModel:function(a){this.__boH5Jq=a;
-this.__PMBsU=null},
-_onColVisibilityChanged:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-getColumnCount:function(){if(this.__PMBsU==null){var c=this.getFirstColumnX(),a=this.getMaxColumnCount(),b=this.__boH5Jq.getVisibleColumnCount();
-this.__PMBsU=a==-1||c+a>b?b-c:a}return this.__PMBsU},
-getColumnAtX:function(a){var b=this.getFirstColumnX();
-return this.__boH5Jq.getVisibleColumnAtX(b+a)},
-getX:function(c){var d=this.getFirstColumnX(),b=this.getMaxColumnCount(),a=this.__boH5Jq.getVisibleX(c)-d;
-return a>=0&&(b==-1||a<b)?a:-1},
-getColumnLeft:function(d){for(var c=0,e=this.getColumnCount(),a=0,b;
-a<e;
-a++){b=this.getColumnAtX(a);
-if(b==d)return c;
-c+=this.__boH5Jq.getColumnWidth(b)}return-1},
-getTotalWidth:function(){for(var b=0,d=this.getColumnCount(),a=0,c;
-a<d;
-a++)c=this.getColumnAtX(a),b+=this.__boH5Jq.getColumnWidth(c);
-return b}},
-destruct:function(){this.__boH5Jq=null}});
-
-
-// qx.ui.table.columnmodel.resizebehavior.Abstract
-//   - Size: 872 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.columnmodel.resizebehavior.Abstract",{type:"abstract",
-extend:qx.core.Object,
-members:{_setNumColumns:function(){throw new Error("_setNumColumns is abstract")},
-onAppear:function(){throw new Error("onAppear is abstract")},
-onTableWidthChanged:function(){throw new Error("onTableWidthChanged is abstract")},
-onVerticalScrollBarChanged:function(){throw new Error("onVerticalScrollBarChanged is abstract")},
-onColumnWidthChanged:function(){throw new Error("onColumnWidthChanged is abstract")},
-onVisibilityChanged:function(){throw new Error("onVisibilityChanged is abstract")},
-_getAvailableWidth:function(){var e=this.getTableColumnModel(),c=e.getTable(),a=c._getPaneScrollerArr(),b,d;
-if(!a[0]||!a[0].getLayoutParent().getBounds())return null;
-b=a[0].getLayoutParent().getBounds().width,d=a[a.length-1];
-b-=d.getPaneInsetRight();
-return b}}});
+// apiviewer.TreeUtil
+//   - Size: 5289 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("apiviewer.TreeUtil",{extend:qx.core.Object,
+construct:function(){this.base(arguments)},
+statics:{getChild:function(a,c){if(a!=null&&a.children!=null)for(var b=0;
+b<a.children.length;
+b++)if(a.children[b].type==c)return a.children[b];
+return null},
+getChildByAttribute:function(b,e,d){if(b.children!=null)for(var c=0,a;
+c<b.children.length;
+c++){a=b.children[c];
+if(a.attributes&&a.attributes[e]==d)return a}return null},
+getIconUrl:function(a,d){var b,c=apiviewer.dao;
+if(a instanceof c.Package)b="ICON_PACKAGE";
+else if(a instanceof c.Class)switch(a.getType()){case"mixin":b="ICON_MIXIN";
+break;
+case"interface":b="ICON_INTERFACE";
+break;
+default:b="ICON_CLASS",a.isStatic()?b+="_STATIC":a.isAbstract()?b+="_ABSTRACT":a.isSingleton()&&(b+="_SINGLETON")}else if(a instanceof c.Property)b="ICON_PROPERTY",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV"),a.isThemeable()&&(b+="_THEMEABLE");
+else if(a instanceof c.Event)b="ICON_EVENT";
+else if(a instanceof c.Method)a.isConstructor()?b="ICON_CTOR":(b="ICON_METHOD",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV")),a.isStatic()?b+="_STATIC":a.isAbstract()&&(b+="_ABSTRACT"),a.getClass().getType()=="mixin"&&(b+="_MIXIN");
+else if(a instanceof c.Constant)b="ICON_CONSTANT";
+else if(a instanceof c.Appearance)b="ICON_APPEARANCE";
+else if(a instanceof c.ChildControl)b="ICON_CHILDCONTROL";
+else throw new Error("Unknown node type: "+a.type);
+a instanceof c.ClassItem&&(d?b+="_INHERITED":a.getOverriddenFrom&&a.getOverriddenFrom()&&(b+="_OVERRIDDEN"),a.getErrors().length>0&&(b+="_ERROR"));
+a.hasWarning()&&(b+="_WARN");
+return apiviewer.TreeUtil.iconNameToIconPath(b)},
+iconNameToIconPath:function(f){var b=apiviewer.TreeUtil[f],a,d,e,c,g;
+if(!b){a=f.split("_"),d=a[0]+"_"+a[1];
+a[2]=="PUB"||a[2]=="PROT"||a[2]=="PRIV"?(d+="_"+a[2],e=3):e=2;
+b=[apiviewer.TreeUtil[d]];
+if(b[0]==null)throw new Error("Unknown img constant: "+d);
+for(c=e;
+c<a.length;
+c++){g=apiviewer.TreeUtil["OVERLAY_"+a[c]];
+if(g==null)throw new Error("Unknown img constant: OVERLAY_"+a[c]);
+b.push(g)}}return b},
+ICON_BLANK:"apiviewer/image/blank.gif",
+OVERLAY_ABSTRACT:"apiviewer/image/overlay_abstract18.gif",
+OVERLAY_ERROR:"apiviewer/image/overlay_error18.gif",
+OVERLAY_INHERITED:"apiviewer/image/overlay_inherited18.gif",
+OVERLAY_OVERRIDDEN:"apiviewer/image/overlay_overridden18.gif",
+OVERLAY_THEMEABLE:"apiviewer/image/overlay_themeable18.gif",
+OVERLAY_STATIC:"apiviewer/image/overlay_static18.gif",
+OVERLAY_WARN:"apiviewer/image/overlay_warning18.gif",
+OVERLAY_MIXIN:"apiviewer/image/overlay_mixin18.gif",
+ICON_PACKAGE:"apiviewer/image/package18.gif",
+ICON_PACKAGE_WARN:"apiviewer/image/package_warning18.gif",
+ICON_CLASS:"apiviewer/image/class18.gif",
+ICON_CLASS_WARN:"apiviewer/image/class_warning18.gif",
+ICON_CLASS_ERROR:"apiviewer/image/class_warning18.gif",
+ICON_CLASS_STATIC:"apiviewer/image/class_static18.gif",
+ICON_CLASS_STATIC_WARN:"apiviewer/image/class_static_warning18.gif",
+ICON_CLASS_STATIC_ERROR:"apiviewer/image/class_static_warning18.gif",
+ICON_CLASS_ABSTRACT:"apiviewer/image/class_abstract18.gif",
+ICON_CLASS_ABSTRACT_WARN:"apiviewer/image/class_abstract_warning18.gif",
+ICON_CLASS_ABSTRACT_ERROR:"apiviewer/image/class_abstract_warning18.gif",
+ICON_CLASS_SINGLETON:"apiviewer/image/class_singleton18.gif",
+ICON_CLASS_SINGLETON_WARN:"apiviewer/image/class_singleton_warning18.gif",
+ICON_CLASS_SINGLETON_ERROR:"apiviewer/image/class_singleton_warning18.gif",
+ICON_PROPERTY_PUB:"apiviewer/image/property18.gif",
+ICON_PROPERTY_PROT:"apiviewer/image/property_protected18.gif",
+ICON_PROPERTY_PRIV:"apiviewer/image/property_private18.gif",
+ICON_PROPERTY_PUB_THEMEABLE:"apiviewer/image/property_themeable18.gif",
+ICON_EVENT:"apiviewer/image/event18.gif",
+ICON_INTERFACE:"apiviewer/image/interface18.gif",
+ICON_INTERFACE_WARN:"apiviewer/image/interface_warning18.gif",
+ICON_MIXIN:"apiviewer/image/mixin18.gif",
+ICON_MIXIN_WARN:"apiviewer/image/mixin_warning18.gif",
+ICON_METHOD_PUB:"apiviewer/image/method_public18.gif",
+ICON_METHOD_PUB_INHERITED:"apiviewer/image/method_public_inherited18.gif",
+ICON_CTOR:"apiviewer/image/constructor18.gif",
+ICON_METHOD_PROT:"apiviewer/image/method_protected18.gif",
+ICON_METHOD_PRIV:"apiviewer/image/method_private18.gif",
+ICON_CONSTANT:"apiviewer/image/constant18.gif",
+ICON_APPEARANCE:"apiviewer/image/constant18.gif",
+ICON_CHILDCONTROL:"apiviewer/image/childcontrol18.gif"},
+defer:function(a){a.PRELOAD_IMAGES=[a.ICON_INFO,a.ICON_SEARCH,a.OVERLAY_ABSTRACT,a.OVERLAY_ERROR,a.OVERLAY_INHERITED,a.OVERLAY_OVERRIDDEN,a.OVERLAY_STATIC,a.OVERLAY_WARN,a.OVERLAY_MIXIN,a.OVERLAY_THEMEABLE,a.ICON_PACKAGE,a.ICON_PACKAGE_WARN,a.ICON_CLASS,a.ICON_CLASS_WARN,a.ICON_CLASS_ERROR,a.ICON_CLASS_STATIC,a.ICON_CLASS_STATIC_WARN,a.ICON_CLASS_STATIC_ERROR,a.ICON_CLASS_ABSTRACT,a.ICON_CLASS_ABSTRACT_WARN,a.ICON_CLASS_ABSTRACT_ERROR,a.ICON_CLASS_SINGLETON,a.ICON_CLASS_SINGLETON_WARN,a.ICON_CLASS_SINGLETON_ERROR,a.ICON_PROPERTY_PUB,a.ICON_PROPERTY_PROT,a.ICON_PROPERTY_PRIV,a.ICON_PROPERTY_PUB_THEMEABLE,a.ICON_EVENT,a.ICON_INTERFACE,a.ICON_INTERFACE_WARN,a.ICON_MIXIN,a.ICON_MIXIN_WARN,a.ICON_METHOD_PUB,a.ICON_METHOD_PUB_INHERITED,a.ICON_CTOR,a.ICON_METHOD_PROT,a.ICON_METHOD_PRIV,a.ICON_CONSTANT,a.ICON_CHILDCONTROL]}});
 
 
 // qx.ui.table.selection.Model
@@ -9665,86 +9686,128 @@ _fireChangeSelection:function(){this.hasBatchMode()?this.__cNnwDS=true:this.fire
 destruct:function(){this.__bo6y46=null}});
 
 
-// apiviewer.TreeUtil
-//   - Size: 5289 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("apiviewer.TreeUtil",{extend:qx.core.Object,
-construct:function(){this.base(arguments)},
-statics:{getChild:function(a,c){if(a!=null&&a.children!=null)for(var b=0;
-b<a.children.length;
-b++)if(a.children[b].type==c)return a.children[b];
-return null},
-getChildByAttribute:function(b,e,d){if(b.children!=null)for(var c=0,a;
-c<b.children.length;
-c++){a=b.children[c];
-if(a.attributes&&a.attributes[e]==d)return a}return null},
-getIconUrl:function(a,d){var b,c=apiviewer.dao;
-if(a instanceof c.Package)b="ICON_PACKAGE";
-else if(a instanceof c.Class)switch(a.getType()){case"mixin":b="ICON_MIXIN";
-break;
-case"interface":b="ICON_INTERFACE";
-break;
-default:b="ICON_CLASS",a.isStatic()?b+="_STATIC":a.isAbstract()?b+="_ABSTRACT":a.isSingleton()&&(b+="_SINGLETON")}else if(a instanceof c.Property)b="ICON_PROPERTY",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV"),a.isThemeable()&&(b+="_THEMEABLE");
-else if(a instanceof c.Event)b="ICON_EVENT";
-else if(a instanceof c.Method)a.isConstructor()?b="ICON_CTOR":(b="ICON_METHOD",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV")),a.isStatic()?b+="_STATIC":a.isAbstract()&&(b+="_ABSTRACT"),a.getClass().getType()=="mixin"&&(b+="_MIXIN");
-else if(a instanceof c.Constant)b="ICON_CONSTANT";
-else if(a instanceof c.Appearance)b="ICON_APPEARANCE";
-else if(a instanceof c.ChildControl)b="ICON_CHILDCONTROL";
-else throw new Error("Unknown node type: "+a.type);
-a instanceof c.ClassItem&&(d?b+="_INHERITED":a.getOverriddenFrom&&a.getOverriddenFrom()&&(b+="_OVERRIDDEN"),a.getErrors().length>0&&(b+="_ERROR"));
-a.hasWarning()&&(b+="_WARN");
-return apiviewer.TreeUtil.iconNameToIconPath(b)},
-iconNameToIconPath:function(f){var b=apiviewer.TreeUtil[f],a,d,e,c,g;
-if(!b){a=f.split("_"),d=a[0]+"_"+a[1];
-a[2]=="PUB"||a[2]=="PROT"||a[2]=="PRIV"?(d+="_"+a[2],e=3):e=2;
-b=[apiviewer.TreeUtil[d]];
-if(b[0]==null)throw new Error("Unknown img constant: "+d);
-for(c=e;
-c<a.length;
-c++){g=apiviewer.TreeUtil["OVERLAY_"+a[c]];
-if(g==null)throw new Error("Unknown img constant: OVERLAY_"+a[c]);
-b.push(g)}}return b},
-ICON_BLANK:"apiviewer/image/blank.gif",
-OVERLAY_ABSTRACT:"apiviewer/image/overlay_abstract18.gif",
-OVERLAY_ERROR:"apiviewer/image/overlay_error18.gif",
-OVERLAY_INHERITED:"apiviewer/image/overlay_inherited18.gif",
-OVERLAY_OVERRIDDEN:"apiviewer/image/overlay_overridden18.gif",
-OVERLAY_THEMEABLE:"apiviewer/image/overlay_themeable18.gif",
-OVERLAY_STATIC:"apiviewer/image/overlay_static18.gif",
-OVERLAY_WARN:"apiviewer/image/overlay_warning18.gif",
-OVERLAY_MIXIN:"apiviewer/image/overlay_mixin18.gif",
-ICON_PACKAGE:"apiviewer/image/package18.gif",
-ICON_PACKAGE_WARN:"apiviewer/image/package_warning18.gif",
-ICON_CLASS:"apiviewer/image/class18.gif",
-ICON_CLASS_WARN:"apiviewer/image/class_warning18.gif",
-ICON_CLASS_ERROR:"apiviewer/image/class_warning18.gif",
-ICON_CLASS_STATIC:"apiviewer/image/class_static18.gif",
-ICON_CLASS_STATIC_WARN:"apiviewer/image/class_static_warning18.gif",
-ICON_CLASS_STATIC_ERROR:"apiviewer/image/class_static_warning18.gif",
-ICON_CLASS_ABSTRACT:"apiviewer/image/class_abstract18.gif",
-ICON_CLASS_ABSTRACT_WARN:"apiviewer/image/class_abstract_warning18.gif",
-ICON_CLASS_ABSTRACT_ERROR:"apiviewer/image/class_abstract_warning18.gif",
-ICON_CLASS_SINGLETON:"apiviewer/image/class_singleton18.gif",
-ICON_CLASS_SINGLETON_WARN:"apiviewer/image/class_singleton_warning18.gif",
-ICON_CLASS_SINGLETON_ERROR:"apiviewer/image/class_singleton_warning18.gif",
-ICON_PROPERTY_PUB:"apiviewer/image/property18.gif",
-ICON_PROPERTY_PROT:"apiviewer/image/property_protected18.gif",
-ICON_PROPERTY_PRIV:"apiviewer/image/property_private18.gif",
-ICON_PROPERTY_PUB_THEMEABLE:"apiviewer/image/property_themeable18.gif",
-ICON_EVENT:"apiviewer/image/event18.gif",
-ICON_INTERFACE:"apiviewer/image/interface18.gif",
-ICON_INTERFACE_WARN:"apiviewer/image/interface_warning18.gif",
-ICON_MIXIN:"apiviewer/image/mixin18.gif",
-ICON_MIXIN_WARN:"apiviewer/image/mixin_warning18.gif",
-ICON_METHOD_PUB:"apiviewer/image/method_public18.gif",
-ICON_METHOD_PUB_INHERITED:"apiviewer/image/method_public_inherited18.gif",
-ICON_CTOR:"apiviewer/image/constructor18.gif",
-ICON_METHOD_PROT:"apiviewer/image/method_protected18.gif",
-ICON_METHOD_PRIV:"apiviewer/image/method_private18.gif",
-ICON_CONSTANT:"apiviewer/image/constant18.gif",
-ICON_APPEARANCE:"apiviewer/image/constant18.gif",
-ICON_CHILDCONTROL:"apiviewer/image/childcontrol18.gif"},
-defer:function(a){a.PRELOAD_IMAGES=[a.ICON_INFO,a.ICON_SEARCH,a.OVERLAY_ABSTRACT,a.OVERLAY_ERROR,a.OVERLAY_INHERITED,a.OVERLAY_OVERRIDDEN,a.OVERLAY_STATIC,a.OVERLAY_WARN,a.OVERLAY_MIXIN,a.OVERLAY_THEMEABLE,a.ICON_PACKAGE,a.ICON_PACKAGE_WARN,a.ICON_CLASS,a.ICON_CLASS_WARN,a.ICON_CLASS_ERROR,a.ICON_CLASS_STATIC,a.ICON_CLASS_STATIC_WARN,a.ICON_CLASS_STATIC_ERROR,a.ICON_CLASS_ABSTRACT,a.ICON_CLASS_ABSTRACT_WARN,a.ICON_CLASS_ABSTRACT_ERROR,a.ICON_CLASS_SINGLETON,a.ICON_CLASS_SINGLETON_WARN,a.ICON_CLASS_SINGLETON_ERROR,a.ICON_PROPERTY_PUB,a.ICON_PROPERTY_PROT,a.ICON_PROPERTY_PRIV,a.ICON_PROPERTY_PUB_THEMEABLE,a.ICON_EVENT,a.ICON_INTERFACE,a.ICON_INTERFACE_WARN,a.ICON_MIXIN,a.ICON_MIXIN_WARN,a.ICON_METHOD_PUB,a.ICON_METHOD_PUB_INHERITED,a.ICON_CTOR,a.ICON_METHOD_PROT,a.ICON_METHOD_PRIV,a.ICON_CONSTANT,a.ICON_CHILDCONTROL]}});
+// qx.ui.table.pane.Model
+//   - Size: 1709 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.pane.Model",{extend:qx.core.Object,
+construct:function(a){this.base(arguments);
+a.addListener("visibilityChangedPre",this._onColVisibilityChanged,this);
+this.__boH5Jq=a},
+events:{modelChanged:"qx.event.type.Event"},
+statics:{EVENT_TYPE_MODEL_CHANGED:"modelChanged"},
+properties:{firstColumnX:{check:"Integer",
+init:0,
+apply:"_applyFirstColumnX"},
+maxColumnCount:{check:"Number",
+init:-1,
+apply:"_applyMaxColumnCount"}},
+members:{__PMBsU:null,
+__boH5Jq:null,
+_applyFirstColumnX:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+_applyMaxColumnCount:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+setTableColumnModel:function(a){this.__boH5Jq=a;
+this.__PMBsU=null},
+_onColVisibilityChanged:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+getColumnCount:function(){if(this.__PMBsU==null){var c=this.getFirstColumnX(),a=this.getMaxColumnCount(),b=this.__boH5Jq.getVisibleColumnCount();
+this.__PMBsU=a==-1||c+a>b?b-c:a}return this.__PMBsU},
+getColumnAtX:function(a){var b=this.getFirstColumnX();
+return this.__boH5Jq.getVisibleColumnAtX(b+a)},
+getX:function(c){var d=this.getFirstColumnX(),b=this.getMaxColumnCount(),a=this.__boH5Jq.getVisibleX(c)-d;
+return a>=0&&(b==-1||a<b)?a:-1},
+getColumnLeft:function(d){for(var c=0,e=this.getColumnCount(),a=0,b;
+a<e;
+a++){b=this.getColumnAtX(a);
+if(b==d)return c;
+c+=this.__boH5Jq.getColumnWidth(b)}return-1},
+getTotalWidth:function(){for(var b=0,d=this.getColumnCount(),a=0,c;
+a<d;
+a++)c=this.getColumnAtX(a),b+=this.__boH5Jq.getColumnWidth(c);
+return b}},
+destruct:function(){this.__boH5Jq=null}});
+
+
+// qx.ui.table.columnmodel.resizebehavior.Abstract
+//   - Size: 872 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.columnmodel.resizebehavior.Abstract",{type:"abstract",
+extend:qx.core.Object,
+members:{_setNumColumns:function(){throw new Error("_setNumColumns is abstract")},
+onAppear:function(){throw new Error("onAppear is abstract")},
+onTableWidthChanged:function(){throw new Error("onTableWidthChanged is abstract")},
+onVerticalScrollBarChanged:function(){throw new Error("onVerticalScrollBarChanged is abstract")},
+onColumnWidthChanged:function(){throw new Error("onColumnWidthChanged is abstract")},
+onVisibilityChanged:function(){throw new Error("onVisibilityChanged is abstract")},
+_getAvailableWidth:function(){var e=this.getTableColumnModel(),c=e.getTable(),a=c._getPaneScrollerArr(),b,d;
+if(!a[0]||!a[0].getLayoutParent().getBounds())return null;
+b=a[0].getLayoutParent().getBounds().width,d=a[a.length-1];
+b-=d.getPaneInsetRight();
+return b}}});
+
+
+// qx.ui.table.celleditor.AbstractField
+//   - Size: 696 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.celleditor.AbstractField",{extend:qx.core.Object,
+implement:qx.ui.table.ICellEditorFactory,
+type:"abstract",
+properties:{validationFunction:{check:"Function",
+nullable:true,
+init:null}},
+members:{_createEditor:function(){throw new Error("Abstract method call!")},
+createCellEditor:function(b){var a=this._createEditor();
+a.originalValue=b.value;
+(b.value===null||b.value===undefined)&&(b.value="");
+a.setValue(""+b.value);
+a.addListener("appear",function(){a.selectAllText()});
+return a},
+getCellEditorValue:function(b){var a=b.getValue(),c=this.getValidationFunction();
+c&&(a=c(a,b.originalValue));
+typeof b.originalValue=="number"&&(a=parseFloat(a));
+return a}}});
+
+
+// qx.ui.core.SingleSelectionManager
+//   - Size: 1641 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.ui.core.SingleSelectionManager",{extend:qx.core.Object,
+construct:function(a){this.base(arguments);
+qx.core.Assert.assertInterface(a,qx.ui.core.ISingleSelectionProvider,"Invalid selectionProvider!");
+this.__bzZEce=a},
+events:{changeSelected:"qx.event.type.Data"},
+properties:{allowEmptySelection:{check:"Boolean",
+init:true,
+apply:"_applyAllowEmptySelection"}},
+members:{__zbljM:null,
+__bzZEce:null,
+getSelected:function(){return this.__zbljM},
+setSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not select "+a+", because it is not a child element!");
+this.__PjbdU(a)},
+resetSelected:function(){this.__PjbdU(null)},
+isSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not check if "+a+" is selected,"+" because it is not a child element!");
+return this.__zbljM===a},
+isSelectionEmpty:function(){return this.__zbljM==null},
+getSelectables:function(d){for(var c=this.__bzZEce.getItems(),b=[],a=0;
+a<c.length;
+a++)this.__bzZEce.isItemSelectable(c[a])&&b.push(c[a]);
+if(!d)for(a=b.length-1;
+a>=0;
+a--)b[a].getEnabled()||b.splice(a,1);
+return b},
+_applyAllowEmptySelection:function(a){a||this.__PjbdU(this.__zbljM)},
+__PjbdU:function(d){var b=this.__zbljM,a=d,c;
+if(a!=null&&b===a)return;
+!this.isAllowEmptySelection()&&a==null&&(c=this.getSelectables(true)[0],c&&(a=c));
+this.__zbljM=a;
+this.fireDataEvent("changeSelected",a,b)},
+__7CRhB:function(c){for(var b=this.__bzZEce.getItems(),a=0;
+a<b.length;
+a++)if(b[a]===c)return true;
+return false}},
+destruct:function(){this.__bzZEce.toHashCode?this._disposeObjects("__selectionProvider"):this.__bzZEce=null;
+this._disposeObjects("__selected")}});
 
 
 // qx.ui.table.model.Abstract
@@ -9801,97 +9864,6 @@ if(a.length!=b.length)throw new Error("columnIdArr and columnNameArr have differ
 c&&(this.__98uYg=true,this.setColumnIds(a),this.__98uYg=false);
 this.setColumnNamesByIndex(b)}},
 destruct:function(){this.__O3vqJ=this.__2m0iZ=this.__9WoOR=null}});
-
-
-// qx.ui.core.SingleSelectionManager
-//   - Size: 1641 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.ui.core.SingleSelectionManager",{extend:qx.core.Object,
-construct:function(a){this.base(arguments);
-qx.core.Assert.assertInterface(a,qx.ui.core.ISingleSelectionProvider,"Invalid selectionProvider!");
-this.__bzZEce=a},
-events:{changeSelected:"qx.event.type.Data"},
-properties:{allowEmptySelection:{check:"Boolean",
-init:true,
-apply:"_applyAllowEmptySelection"}},
-members:{__zbljM:null,
-__bzZEce:null,
-getSelected:function(){return this.__zbljM},
-setSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not select "+a+", because it is not a child element!");
-this.__PjbdU(a)},
-resetSelected:function(){this.__PjbdU(null)},
-isSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not check if "+a+" is selected,"+" because it is not a child element!");
-return this.__zbljM===a},
-isSelectionEmpty:function(){return this.__zbljM==null},
-getSelectables:function(d){for(var c=this.__bzZEce.getItems(),b=[],a=0;
-a<c.length;
-a++)this.__bzZEce.isItemSelectable(c[a])&&b.push(c[a]);
-if(!d)for(a=b.length-1;
-a>=0;
-a--)b[a].getEnabled()||b.splice(a,1);
-return b},
-_applyAllowEmptySelection:function(a){a||this.__PjbdU(this.__zbljM)},
-__PjbdU:function(d){var b=this.__zbljM,a=d,c;
-if(a!=null&&b===a)return;
-!this.isAllowEmptySelection()&&a==null&&(c=this.getSelectables(true)[0],c&&(a=c));
-this.__zbljM=a;
-this.fireDataEvent("changeSelected",a,b)},
-__7CRhB:function(c){for(var b=this.__bzZEce.getItems(),a=0;
-a<b.length;
-a++)if(b[a]===c)return true;
-return false}},
-destruct:function(){this.__bzZEce.toHashCode?this._disposeObjects("__selectionProvider"):this.__bzZEce=null;
-this._disposeObjects("__selected")}});
-
-
-// qx.ui.table.celleditor.AbstractField
-//   - Size: 696 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.celleditor.AbstractField",{extend:qx.core.Object,
-implement:qx.ui.table.ICellEditorFactory,
-type:"abstract",
-properties:{validationFunction:{check:"Function",
-nullable:true,
-init:null}},
-members:{_createEditor:function(){throw new Error("Abstract method call!")},
-createCellEditor:function(b){var a=this._createEditor();
-a.originalValue=b.value;
-(b.value===null||b.value===undefined)&&(b.value="");
-a.setValue(""+b.value);
-a.addListener("appear",function(){a.selectAllText()});
-return a},
-getCellEditorValue:function(b){var a=b.getValue(),c=this.getValidationFunction();
-c&&(a=c(a,b.originalValue));
-typeof b.originalValue=="number"&&(a=parseFloat(a));
-return a}}});
-
-
-// qx.ui.core.MSingleSelectionHandling
-//   - Size: 1318 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Mixin.define("qx.ui.core.MSingleSelectionHandling",{events:{changeSelection:"qx.event.type.Data"},
-members:{__ugn3e:null,
-getSelection:function(){var a=this.__IwJpC().getSelected();
-return a?[a]:[]},
-setSelection:function(a){switch(a.length){case 0:this.resetSelection();
-break;
-case 1:this.__IwJpC().setSelected(a[0]);
-break;
-default:throw new Error("Could only select one item, but the selection  array contains "+a.length+" items!")}},
-resetSelection:function(){this.__IwJpC().resetSelected()},
-isSelected:function(a){return this.__IwJpC().isSelected(a)},
-isSelectionEmpty:function(){return this.__IwJpC().isSelectionEmpty()},
-getSelectables:function(a){return this.__IwJpC().getSelectables(a)},
-_onChangeSelected:function(c){var a=c.getData(),b=c.getOldData();
-a==null?a=[]:a=[a];
-b==null?b=[]:b=[b];
-this.fireDataEvent("changeSelection",a,b)},
-__IwJpC:function(){if(this.__ugn3e==null){var a=this;
-this.__ugn3e=new qx.ui.core.SingleSelectionManager({getItems:function(){return a._getItems()},
-isItemSelectable:function(b){return a._isItemSelectable?a._isItemSelectable(b):b.isVisible()}});
-this.__ugn3e.addListener("changeSelected",this._onChangeSelected,this)}this.__ugn3e.setAllowEmptySelection(this._isAllowEmptySelection());
-return this.__ugn3e}},
-destruct:function(){this._disposeObjects("__manager")}});
 
 
 // qx.ui.table.model.Simple
@@ -10022,27 +9994,32 @@ f[a]=c}return f}},
 destruct:function(){this.__qvtBo=this.__8iVLk=this.__Qj9qV=this.__bahQDi=null}});
 
 
-// qx.io.remote.Response
-//   - Size: 590 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.io.remote.Response",{extend:qx.event.type.Event,
-properties:{state:{check:"Integer",
-nullable:true},
-statusCode:{check:"Integer",
-nullable:true},
-content:{nullable:true},
-responseHeaders:{check:"Object",
-nullable:true}},
-members:{clone:function(b){var a=this.base(arguments,b);
-a.setType(this.getType());
-a.setState(this.getState());
-a.setStatusCode(this.getStatusCode());
-a.setContent(this.getContent());
-a.setResponseHeaders(this.getResponseHeaders());
-return a},
-getResponseHeader:function(b){var a=this.getResponseHeaders();
-if(a)return a[b]||null;
-return null}}});
+// qx.ui.core.MSingleSelectionHandling
+//   - Size: 1318 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Mixin.define("qx.ui.core.MSingleSelectionHandling",{events:{changeSelection:"qx.event.type.Data"},
+members:{__ugn3e:null,
+getSelection:function(){var a=this.__IwJpC().getSelected();
+return a?[a]:[]},
+setSelection:function(a){switch(a.length){case 0:this.resetSelection();
+break;
+case 1:this.__IwJpC().setSelected(a[0]);
+break;
+default:throw new Error("Could only select one item, but the selection  array contains "+a.length+" items!")}},
+resetSelection:function(){this.__IwJpC().resetSelected()},
+isSelected:function(a){return this.__IwJpC().isSelected(a)},
+isSelectionEmpty:function(){return this.__IwJpC().isSelectionEmpty()},
+getSelectables:function(a){return this.__IwJpC().getSelectables(a)},
+_onChangeSelected:function(c){var a=c.getData(),b=c.getOldData();
+a==null?a=[]:a=[a];
+b==null?b=[]:b=[b];
+this.fireDataEvent("changeSelection",a,b)},
+__IwJpC:function(){if(this.__ugn3e==null){var a=this;
+this.__ugn3e=new qx.ui.core.SingleSelectionManager({getItems:function(){return a._getItems()},
+isItemSelectable:function(b){return a._isItemSelectable?a._isItemSelectable(b):b.isVisible()}});
+this.__ugn3e.addListener("changeSelected",this._onChangeSelected,this)}this.__ugn3e.setAllowEmptySelection(this._isAllowEmptySelection());
+return this.__ugn3e}},
+destruct:function(){this._disposeObjects("__manager")}});
 
 
 // qx.event.AcceleratingTimer
@@ -10076,21 +10053,27 @@ this.fireEvent("interval")}},
 destruct:function(){this._disposeObjects("__timer")}});
 
 
-// qx.data.marshal.MEventBubbling
-//   - Size: 1181 bytes
+// qx.io.remote.Response
+//   - Size: 590 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.data.marshal.MEventBubbling",{events:{changeBubble:"qx.event.type.Data"},
-members:{_applyEventPropagation:function(a,c,b){this.fireDataEvent("changeBubble",{value:a,
-name:b,
-old:c});
-this._registerEventChaining(a,c,b)},
-_registerEventChaining:function(b,a,d){if(b instanceof qx.core.Object&&qx.Class.hasMixin(b.constructor,qx.data.marshal.MEventBubbling)){var e=qx.lang.Function.bind(this.__cmTSDc,this,d),c=b.addListener("changeBubble",e,this);
-b.setUserData("idBubble",c)}a!=null&&a.getUserData&&a.getUserData("idBubble")!=null&&a.removeListenerById(a.getUserData("idBubble"))},
-__cmTSDc:function(c,f){var a=f.getData(),i=a.value,h=a.old,d,e,g,b,j;
-qx.Class.hasInterface(f.getTarget().constructor,qx.data.IListData)?a.name.indexOf?(d=a.name.indexOf(".")!=-1?a.name.indexOf("."):a.name.length,e=a.name.indexOf("[")!=-1?a.name.indexOf("["):a.name.length,d<e?(g=a.name.substring(0,d),b=a.name.substring(d+1,a.name.length),b[0]!="["&&(b="."+b),j=c+"["+g+"]"+b):e<d?(g=a.name.substring(0,e),b=a.name.substring(e,a.name.length),j=c+"["+g+"]"+b):j=c+"["+a.name+"]"):j=c+"["+a.name+"]":j=c+"."+a.name;
-this.fireDataEvent("changeBubble",{value:i,
-name:j,
-old:h})}}});
+qx.Class.define("qx.io.remote.Response",{extend:qx.event.type.Event,
+properties:{state:{check:"Integer",
+nullable:true},
+statusCode:{check:"Integer",
+nullable:true},
+content:{nullable:true},
+responseHeaders:{check:"Object",
+nullable:true}},
+members:{clone:function(b){var a=this.base(arguments,b);
+a.setType(this.getType());
+a.setState(this.getState());
+a.setStatusCode(this.getStatusCode());
+a.setContent(this.getContent());
+a.setResponseHeaders(this.getResponseHeaders());
+return a},
+getResponseHeader:function(b){var a=this.getResponseHeaders();
+if(a)return a[b]||null;
+return null}}});
 
 
 // qx.bom.History
@@ -10153,6 +10136,23 @@ qx.lang.Type.isString(a)&&a!=this.getState()&&this._onHistoryLoad(a)},
 _readState:function(){return this._decode(this._getHash())},
 _writeState:function(a){this._setHash(this._encode(a))}},
 destruct:function(){this.__bpGRyj()}});
+
+
+// qx.data.marshal.MEventBubbling
+//   - Size: 1181 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.data.marshal.MEventBubbling",{events:{changeBubble:"qx.event.type.Data"},
+members:{_applyEventPropagation:function(a,c,b){this.fireDataEvent("changeBubble",{value:a,
+name:b,
+old:c});
+this._registerEventChaining(a,c,b)},
+_registerEventChaining:function(b,a,d){if(b instanceof qx.core.Object&&qx.Class.hasMixin(b.constructor,qx.data.marshal.MEventBubbling)){var e=qx.lang.Function.bind(this.__cmTSDc,this,d),c=b.addListener("changeBubble",e,this);
+b.setUserData("idBubble",c)}a!=null&&a.getUserData&&a.getUserData("idBubble")!=null&&a.removeListenerById(a.getUserData("idBubble"))},
+__cmTSDc:function(c,f){var a=f.getData(),i=a.value,h=a.old,d,e,g,b,j;
+qx.Class.hasInterface(f.getTarget().constructor,qx.data.IListData)?a.name.indexOf?(d=a.name.indexOf(".")!=-1?a.name.indexOf("."):a.name.length,e=a.name.indexOf("[")!=-1?a.name.indexOf("["):a.name.length,d<e?(g=a.name.substring(0,d),b=a.name.substring(d+1,a.name.length),b[0]!="["&&(b="."+b),j=c+"["+g+"]"+b):e<d?(g=a.name.substring(0,e),b=a.name.substring(e,a.name.length),j=c+"["+g+"]"+b):j=c+"["+a.name+"]"):j=c+"["+a.name+"]":j=c+"."+a.name;
+this.fireDataEvent("changeBubble",{value:i,
+name:j,
+old:h})}}});
 
 
 // qx.data.Array
@@ -10734,6 +10734,14 @@ break;
 default:a.add(b)}}return a.get()}}});
 
 
+// qx.locale.Number
+//   - Size: 398 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.locale.Number",{statics:{getDecimalSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_decimal_separator",[],a)},
+getGroupSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_group_separator",[],a)},
+getPercentFormat:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_percent_format",[],a)}}});
+
+
 // qx.locale.Date
 //   - Size: 3410 bytes
 //   - Modified: 2010-08-26T21:43:53
@@ -10886,14 +10894,6 @@ return c>b?a>=b&&a<=c:a>=b||a<=c},
 _getTerritory:function(a){if(a)var b=a.split("_")[1]||a;
 else b=this.__gQyZ7.getTerritory()||this.__gQyZ7.getLanguage();
 return b.toUpperCase()}}});
-
-
-// qx.locale.Number
-//   - Size: 398 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.locale.Number",{statics:{getDecimalSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_decimal_separator",[],a)},
-getGroupSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_group_separator",[],a)},
-getPercentFormat:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_percent_format",[],a)}}});
 
 
 // qx.ui.table.selection.Manager
@@ -11341,32 +11341,24 @@ a&&a.setValue(true)}},
 destruct:function(){this._disposeArray("__items")}});
 
 
-// qx.ui.table.pane.CellEvent
-//   - Size: 544 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.pane.CellEvent",{extend:qx.event.type.Mouse,
-properties:{row:{check:"Integer",
-nullable:true},
-column:{check:"Integer",
-nullable:true}},
-members:{init:function(b,d,a,c){d.clone(this);
-this.setBubbles(false);
-a!=null?this.setRow(a):this.setRow(b._getRowForPagePos(this.getDocumentLeft(),this.getDocumentTop()));
-c!=null?this.setColumn(c):this.setColumn(b._getColumnForPageX(this.getDocumentLeft()))},
-clone:function(b){var a=this.base(arguments,b);
-a.set({row:this.getRow(),
-column:this.getColumn()});
-return a}}});
-
-
-// qx.ui.form.IRadioItem
-//   - Size: 237 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IRadioItem",{events:{changeValue:"qx.event.type.Data"},
-members:{setValue:function(){},
-getValue:function(){},
-setGroup:function(a){this.assertInstance(a,qx.ui.form.RadioGroup)},
-getGroup:function(){}}});
+// apiviewer.UiModel
+//   - Size: 419 bytes
+//   - Modified: 2010-05-05T20:54:13
+qx.Class.define("apiviewer.UiModel",{extend:qx.core.Object,
+type:"singleton",
+include:[qx.data.MBinding],
+properties:{showInherited:{check:"Boolean",
+init:false,
+event:"changeShowInherited"},
+expandProperties:{check:"Boolean",
+init:false,
+event:"changeExpandProperties"},
+showProtected:{check:"Boolean",
+init:false,
+event:"changeShowProtected"},
+showPrivate:{check:"Boolean",
+init:false,
+event:"changeShowPrivate"}}});
 
 
 // qx.util.Json
@@ -11445,24 +11437,55 @@ qx.core.Setting.define("qx.jsonDebugging",false);
 a.__bn0U1J=Date.prototype.toJSON}});
 
 
-// apiviewer.UiModel
-//   - Size: 419 bytes
-//   - Modified: 2010-05-05T20:54:13
-qx.Class.define("apiviewer.UiModel",{extend:qx.core.Object,
-type:"singleton",
-include:[qx.data.MBinding],
-properties:{showInherited:{check:"Boolean",
-init:false,
-event:"changeShowInherited"},
-expandProperties:{check:"Boolean",
-init:false,
-event:"changeExpandProperties"},
-showProtected:{check:"Boolean",
-init:false,
-event:"changeShowProtected"},
-showPrivate:{check:"Boolean",
-init:false,
-event:"changeShowPrivate"}}});
+// qx.ui.table.pane.CellEvent
+//   - Size: 544 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.pane.CellEvent",{extend:qx.event.type.Mouse,
+properties:{row:{check:"Integer",
+nullable:true},
+column:{check:"Integer",
+nullable:true}},
+members:{init:function(b,d,a,c){d.clone(this);
+this.setBubbles(false);
+a!=null?this.setRow(a):this.setRow(b._getRowForPagePos(this.getDocumentLeft(),this.getDocumentTop()));
+c!=null?this.setColumn(c):this.setColumn(b._getColumnForPageX(this.getDocumentLeft()))},
+clone:function(b){var a=this.base(arguments,b);
+a.set({row:this.getRow(),
+column:this.getColumn()});
+return a}}});
+
+
+// qx.ui.form.IRadioItem
+//   - Size: 237 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IRadioItem",{events:{changeValue:"qx.event.type.Data"},
+members:{setValue:function(){},
+getValue:function(){},
+setGroup:function(a){this.assertInstance(a,qx.ui.form.RadioGroup)},
+getGroup:function(){}}});
+
+
+// qx.theme.manager.Meta
+//   - Size: 796 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.theme.manager.Meta",{type:"singleton",
+extend:qx.core.Object,
+properties:{theme:{check:"Theme",
+nullable:true,
+apply:"_applyTheme"}},
+members:{_applyTheme:function(a){var d=null,e=null,b=null,c=null,i,f,h,g;
+a&&(d=a.meta.color||null,e=a.meta.decoration||null,b=a.meta.font||null,c=a.meta.appearance||null);
+i=qx.theme.manager.Color.getInstance(),f=qx.theme.manager.Decoration.getInstance(),h=qx.theme.manager.Font.getInstance(),g=qx.theme.manager.Appearance.getInstance();
+i.setTheme(d);
+f.setTheme(e);
+h.setTheme(b);
+g.setTheme(c)},
+initialize:function(){var a,b;
+a="apiviewer.Theme";
+if(a){b=qx.Theme.getByName(a);
+if(!b)throw new Error("The theme to use is not available: "+a);
+this.setTheme(b)}}},
+defer:function(){qx.core.Setting.define("qx.theme","qx.theme.Modern")}});
 
 
 // apiviewer.dao.Node
@@ -11501,29 +11524,6 @@ case"errors":this._errors=this._createNodeList(a);
 break;
 default:return false}return true}},
 destruct:function(){this._docNode=this._errors=null}});
-
-
-// qx.theme.manager.Meta
-//   - Size: 796 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.theme.manager.Meta",{type:"singleton",
-extend:qx.core.Object,
-properties:{theme:{check:"Theme",
-nullable:true,
-apply:"_applyTheme"}},
-members:{_applyTheme:function(a){var d=null,e=null,b=null,c=null,i,f,h,g;
-a&&(d=a.meta.color||null,e=a.meta.decoration||null,b=a.meta.font||null,c=a.meta.appearance||null);
-i=qx.theme.manager.Color.getInstance(),f=qx.theme.manager.Decoration.getInstance(),h=qx.theme.manager.Font.getInstance(),g=qx.theme.manager.Appearance.getInstance();
-i.setTheme(d);
-f.setTheme(e);
-h.setTheme(b);
-g.setTheme(c)},
-initialize:function(){var a,b;
-a="apiviewer.Theme";
-if(a){b=qx.Theme.getByName(a);
-if(!b)throw new Error("The theme to use is not available: "+a);
-this.setTheme(b)}}},
-defer:function(){qx.core.Setting.define("qx.theme","qx.theme.Modern")}});
 
 
 // apiviewer.dao.ClassItem
@@ -11600,6 +11600,16 @@ construct:function(b,a,c){this.base(arguments,b,a,c)},
 members:{getValue:function(){return this._docNode.attributes.value}}});
 
 
+// apiviewer.dao.ThrowsEntry
+//   - Size: 311 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("apiviewer.dao.ThrowsEntry",{extend:apiviewer.dao.ClassItem,
+construct:function(b,a){this.base(arguments,b,a)},
+members:{getType:function(){return this._docNode.attributes.type||null},
+getDefaultType:function(){return"Error"},
+getDescription:function(){return this._docNode.attributes.text}}});
+
+
 // apiviewer.dao.ChildControl
 //   - Size: 410 bytes
 //   - Modified: 2010-05-05T19:22:41
@@ -11611,16 +11621,6 @@ b.type&&a.push({type:b.type});
 return a},
 getType:function(){return this._docNode.attributes.type},
 getDefaultValue:function(){return this._docNode.attributes.defaultValue}}});
-
-
-// apiviewer.dao.ThrowsEntry
-//   - Size: 311 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.dao.ThrowsEntry",{extend:apiviewer.dao.ClassItem,
-construct:function(b,a){this.base(arguments,b,a)},
-members:{getType:function(){return this._docNode.attributes.type||null},
-getDefaultType:function(){return"Error"},
-getDescription:function(){return this._docNode.attributes.text}}});
 
 
 // apiviewer.dao.Method
@@ -11840,18 +11840,6 @@ getTypes:function(){return[{type:this._docNode.attributes.type}]},
 getAppearance:function(){return this.getClass()},
 getStates:function(){return this._states||[]},
 _addChildNode:function(a){switch(a.type){case"states":this._states=this._createNodeList(a,apiviewer.dao.State,this);
-break;
-default:return this.base(arguments,a)}return true}}});
-
-
-// apiviewer.dao.Event
-//   - Size: 432 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.dao.Event",{extend:apiviewer.dao.ClassItem,
-construct:function(b,a,c){this.base(arguments,b,a,c)},
-members:{getType:function(){return apiviewer.dao.Class.getClassByName(this._type)},
-getTypes:function(){return this._type?[{type:this._type}]:null},
-_addChildNode:function(a){switch(a.type){case"types":this._type=a.children[0].attributes.type;
 break;
 default:return this.base(arguments,a)}return true}}});
 
@@ -12370,45 +12358,6 @@ this.error(g)}}},
 destruct:function(){this._titleElement=this._bodyElement=null}});
 
 
-// apiviewer.ui.panels.PropertyPanel
-//   - Size: 4354 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ui.panels.PropertyPanel",{extend:apiviewer.ui.panels.InfoPanel,
-members:{__c6s3cd:function(c,f){if(c.isRefined())return"";
-if(c.isPrivate())var b="__",a=c.getName().substring(2),d,e;
-else c.isProtected()?(b="_",a=c.getName().substring(1)):(b="",a=c.getName());
-a=qx.lang.String.firstUp(a);
-d=[];
-c.getPropertyType()=="fast"?d.push("{@link #"+b+"get"+a+"}</td><td> Get the property value."):(d.push("{@link #"+b+"set"+a+"}</td><td> Set the property value."),c.isPropertyGroup()||(d.push("{@link #"+b+"get"+a+"}</td><td> Get the property value."),d.push("{@link #"+b+"init"+a+"}</td><td> Call apply method with the init value.")),d.push("{@link #"+b+"reset"+a+"}</td><td> Reset the property value."),c.getType()=="Boolean"&&(d.push("{@link #"+b+"toggle"+a+"}</td><td> Toggle the property value."),d.push("{@link #"+b+"is"+a+"}</td><td> Check whether the property equals <code>true</code>.")));
-e=new qx.util.StringBuilder();
-e.add("<div class=\"item-detail-headline\">","Generated methods:","</div>","<div class=\"item-detail-text\">");
-e.add("<table><tr><td>");
-e.add(d.join("</td></tr><tr><td>"));
-e.add("</td></tr></table>");
-e.add("</div>");
-return apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(e.get(),f)},
-__b1nFg3:function(c){var a=[],b;
-c.isNullable()&&a.push("This property allows 'null' values");
-c.isInheritable()&&a.push("The property value can be inherited from a parent object.");
-c.isThemeable()&&a.push("The property value can be set using appearance themes.");
-c.isPropertyGroup()&&a.push("The property is a property group.");
-c.isRefined()&&a.push("The property refines the init value of an existing property.");
-if(a.length>0){b=new qx.util.StringBuilder();
-b.add("<div class=\"item-detail-headline\">","Property attributes:","</div>","<div class=\"item-detail-text\">");
-b.add("<ul><li>");
-b.add(a.join("</li><li>"));
-b.add("</li></ul>");
-b.add("</div>");
-return b.get()}return""},
-__b9qcXd:function(a){if(a.isRefined()){var b=new qx.util.StringBuilder("<div class=\"item-detail-headline\">","Refined property:","</div>","<div class=\"item-detail-text\">",apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getOverriddenFrom().getFullName()+"#"+a.getName()),"</div>");
-return b.get()}return""},
-getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createTypeHtml(a,"var")},
-getItemTitleHtml:function(a){return apiviewer.ui.panels.InfoPanel.setTitleClass(a,a.getName())},
-getItemTextHtml:function(a,d,g){var f=a.getDocNode(),b=new qx.util.StringBuilder(apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getClass(),g)),c,e;
-g&&(c=null,e=qx.lang.Array.clone(a.getPossibleValues()),e.length>0?(a.isNullable()&&e.push("null"),c="<code>"+e.join("</code>, <code>")+"</code>"):a.getClassname()?c="instances of "+a.getClassname():a.getInstance()?c="instances of "+a.getInstance()+" or sub classes":a.getType()&&(c="any "+a.getType()),c&&(b.add("<div class=\"item-detail-headline\">","Allowed values:","</div>","<div class=\"item-detail-text\">"),b.add(c,"</div>")),a.getCheck()&&b.add("<div class=\"item-detail-headline\">","Check:","</div>","<div class=\"javascript\">",qx.dev.Tokenizer.javaScriptToHtml(a.getCheck()),"</div>"),a.isPropertyGroup()||b.add("<div class=\"item-detail-headline\">","Init value:","</div>","<div class=\"item-detail-text\">","<code>",(a.getDefaultValue()?a.getDefaultValue():"null"),"</code>","</div>"),a.getEvent()&&!a.isRefined()&&b.add("<div class=\"item-detail-headline\">","Change event:","</div>","<div class=\"item-detail-text\">",apiviewer.ui.panels.InfoPanel.createItemLinkHtml("#"+a.getEvent(),a.getClass(),true,true),"</div>"),a.getApplyMethod()&&!a.isRefined()&&b.add("<div class=\"item-detail-headline\">","Apply method:","</div>","<div class=\"item-detail-text\">",apiviewer.ui.panels.InfoPanel.createItemLinkHtml("#"+a.getApplyMethod(),a.getClass(),true,true),"</div>"),b.add(this.__b1nFg3(a)),b.add(this.__c6s3cd(a,d)),b.add(apiviewer.ui.panels.InfoPanel.createIncludedFromHtml(a,d)),b.add(this.__b9qcXd(a)),b.add(apiviewer.ui.panels.InfoPanel.createInheritedFromHtml(a,d)),b.add(apiviewer.ui.panels.InfoPanel.createInfoRequiredByHtml(a)),b.add(apiviewer.ui.panels.InfoPanel.createSeeAlsoHtml(f)),b.add(apiviewer.ui.panels.InfoPanel.createErrorHtml(a,d)),b.add(apiviewer.ui.panels.InfoPanel.createDeprecationHtml(f,"property")));
-return b.get()}}});
-
-
 // apiviewer.ui.panels.MethodPanel
 //   - Size: 3538 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -12463,17 +12412,6 @@ itemHasDetails:function(a,d){var b=a.getDocNode(),c=b.getReturn()&&b.getReturn()
 return a.getClass()!=d||a.getOverriddenFrom()!=null||a.getRequiredBy().length>0||b.getParams().length>0||b.getThrows().length>0||c||a.getSee().length>0||a.getErrors().length>0||a.isDeprecated()||a.getApply()||apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)}}});
 
 
-// apiviewer.ui.panels.ChildControlsPanel
-//   - Size: 591 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("apiviewer.ui.panels.ChildControlsPanel",{extend:apiviewer.ui.panels.InfoPanel,
-members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createTypeHtml(a,"var",true)},
-getItemTitleHtml:function(a){return apiviewer.ui.panels.InfoPanel.setTitleClass(a,a.getName())},
-getItemTextHtml:function(a,d,c){var b=new qx.util.StringBuilder(a.getDescription());
-c&&b.add("<div class=\"item-detail-headline\">","Default value:","</div>","<div class=\"item-detail-text\">","<code>",(a.getDefaultValue()?a.getDefaultValue():"null"),"</code>","</div>");
-return b.get()}}});
-
-
 // apiviewer.ui.panels.ConstantPanel
 //   - Size: 1085 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -12498,6 +12436,56 @@ getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createTypeHtml(
 getItemTitleHtml:function(a){return apiviewer.ui.panels.InfoPanel.setTitleClass(a,a.getName())},
 getItemTextHtml:function(a,c,d){var b=new qx.util.StringBuilder(apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getClass(),d));
 d&&(b.add(apiviewer.ui.panels.InfoPanel.createInheritedFromHtml(a,c)),b.add(apiviewer.ui.panels.InfoPanel.createSeeAlsoHtml(a)),b.add(apiviewer.ui.panels.InfoPanel.createErrorHtml(a,c)),b.add(apiviewer.ui.panels.InfoPanel.createDeprecationHtml(a,"event")));
+return b.get()}}});
+
+
+// apiviewer.ui.panels.PropertyPanel
+//   - Size: 4354 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("apiviewer.ui.panels.PropertyPanel",{extend:apiviewer.ui.panels.InfoPanel,
+members:{__c6s3cd:function(c,f){if(c.isRefined())return"";
+if(c.isPrivate())var b="__",a=c.getName().substring(2),d,e;
+else c.isProtected()?(b="_",a=c.getName().substring(1)):(b="",a=c.getName());
+a=qx.lang.String.firstUp(a);
+d=[];
+c.getPropertyType()=="fast"?d.push("{@link #"+b+"get"+a+"}</td><td> Get the property value."):(d.push("{@link #"+b+"set"+a+"}</td><td> Set the property value."),c.isPropertyGroup()||(d.push("{@link #"+b+"get"+a+"}</td><td> Get the property value."),d.push("{@link #"+b+"init"+a+"}</td><td> Call apply method with the init value.")),d.push("{@link #"+b+"reset"+a+"}</td><td> Reset the property value."),c.getType()=="Boolean"&&(d.push("{@link #"+b+"toggle"+a+"}</td><td> Toggle the property value."),d.push("{@link #"+b+"is"+a+"}</td><td> Check whether the property equals <code>true</code>.")));
+e=new qx.util.StringBuilder();
+e.add("<div class=\"item-detail-headline\">","Generated methods:","</div>","<div class=\"item-detail-text\">");
+e.add("<table><tr><td>");
+e.add(d.join("</td></tr><tr><td>"));
+e.add("</td></tr></table>");
+e.add("</div>");
+return apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(e.get(),f)},
+__b1nFg3:function(c){var a=[],b;
+c.isNullable()&&a.push("This property allows 'null' values");
+c.isInheritable()&&a.push("The property value can be inherited from a parent object.");
+c.isThemeable()&&a.push("The property value can be set using appearance themes.");
+c.isPropertyGroup()&&a.push("The property is a property group.");
+c.isRefined()&&a.push("The property refines the init value of an existing property.");
+if(a.length>0){b=new qx.util.StringBuilder();
+b.add("<div class=\"item-detail-headline\">","Property attributes:","</div>","<div class=\"item-detail-text\">");
+b.add("<ul><li>");
+b.add(a.join("</li><li>"));
+b.add("</li></ul>");
+b.add("</div>");
+return b.get()}return""},
+__b9qcXd:function(a){if(a.isRefined()){var b=new qx.util.StringBuilder("<div class=\"item-detail-headline\">","Refined property:","</div>","<div class=\"item-detail-text\">",apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getOverriddenFrom().getFullName()+"#"+a.getName()),"</div>");
+return b.get()}return""},
+getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createTypeHtml(a,"var")},
+getItemTitleHtml:function(a){return apiviewer.ui.panels.InfoPanel.setTitleClass(a,a.getName())},
+getItemTextHtml:function(a,d,g){var f=a.getDocNode(),b=new qx.util.StringBuilder(apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getClass(),g)),c,e;
+g&&(c=null,e=qx.lang.Array.clone(a.getPossibleValues()),e.length>0?(a.isNullable()&&e.push("null"),c="<code>"+e.join("</code>, <code>")+"</code>"):a.getClassname()?c="instances of "+a.getClassname():a.getInstance()?c="instances of "+a.getInstance()+" or sub classes":a.getType()&&(c="any "+a.getType()),c&&(b.add("<div class=\"item-detail-headline\">","Allowed values:","</div>","<div class=\"item-detail-text\">"),b.add(c,"</div>")),a.getCheck()&&b.add("<div class=\"item-detail-headline\">","Check:","</div>","<div class=\"javascript\">",qx.dev.Tokenizer.javaScriptToHtml(a.getCheck()),"</div>"),a.isPropertyGroup()||b.add("<div class=\"item-detail-headline\">","Init value:","</div>","<div class=\"item-detail-text\">","<code>",(a.getDefaultValue()?a.getDefaultValue():"null"),"</code>","</div>"),a.getEvent()&&!a.isRefined()&&b.add("<div class=\"item-detail-headline\">","Change event:","</div>","<div class=\"item-detail-text\">",apiviewer.ui.panels.InfoPanel.createItemLinkHtml("#"+a.getEvent(),a.getClass(),true,true),"</div>"),a.getApplyMethod()&&!a.isRefined()&&b.add("<div class=\"item-detail-headline\">","Apply method:","</div>","<div class=\"item-detail-text\">",apiviewer.ui.panels.InfoPanel.createItemLinkHtml("#"+a.getApplyMethod(),a.getClass(),true,true),"</div>"),b.add(this.__b1nFg3(a)),b.add(this.__c6s3cd(a,d)),b.add(apiviewer.ui.panels.InfoPanel.createIncludedFromHtml(a,d)),b.add(this.__b9qcXd(a)),b.add(apiviewer.ui.panels.InfoPanel.createInheritedFromHtml(a,d)),b.add(apiviewer.ui.panels.InfoPanel.createInfoRequiredByHtml(a)),b.add(apiviewer.ui.panels.InfoPanel.createSeeAlsoHtml(f)),b.add(apiviewer.ui.panels.InfoPanel.createErrorHtml(a,d)),b.add(apiviewer.ui.panels.InfoPanel.createDeprecationHtml(f,"property")));
+return b.get()}}});
+
+
+// apiviewer.ui.panels.ChildControlsPanel
+//   - Size: 591 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("apiviewer.ui.panels.ChildControlsPanel",{extend:apiviewer.ui.panels.InfoPanel,
+members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createTypeHtml(a,"var",true)},
+getItemTitleHtml:function(a){return apiviewer.ui.panels.InfoPanel.setTitleClass(a,a.getName())},
+getItemTextHtml:function(a,d,c){var b=new qx.util.StringBuilder(a.getDescription());
+c&&b.add("<div class=\"item-detail-headline\">","Default value:","</div>","<div class=\"item-detail-text\">","<code>",(a.getDefaultValue()?a.getDefaultValue():"null"),"</code>","</div>");
 return b.get()}}});
 
 
@@ -12571,6 +12559,18 @@ isThemeable:function(){return this.getDocNode()._docNode.attributes.themeable||f
 isRefined:function(){return this._docNode.attributes.refine||false}}});
 
 
+// apiviewer.dao.Event
+//   - Size: 432 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("apiviewer.dao.Event",{extend:apiviewer.dao.ClassItem,
+construct:function(b,a,c){this.base(arguments,b,a,c)},
+members:{getType:function(){return apiviewer.dao.Class.getClassByName(this._type)},
+getTypes:function(){return this._type?[{type:this._type}]:null},
+_addChildNode:function(a){switch(a.type){case"types":this._type=a.children[0].attributes.type;
+break;
+default:return this.base(arguments,a)}return true}}});
+
+
 // qx.ui.table.cellrenderer.Abstract
 //   - Size: 1619 bytes
 //   - Modified: 2010-11-11T16:55:28
@@ -12603,6 +12603,43 @@ a+="width:"+Math.max(c,0)+"px;";
 a+="height:"+Math.max(b,0)+"px;";
 return a},
 createDataCellHtml:function(a,b){b.push("<div class=\"",this._getCellClass(a),"\" style=\"","left:",a.styleLeft,"px;",this._getCellSizeStyle(a.styleWidth,a.styleHeight,this._insetX,this._insetY),this._getCellStyle(a),"\" ",this._getCellAttributes(a),">"+this._getContentHtml(a),"</div>")}}});
+
+
+// qx.event.handler.Element
+//   - Size: 1363 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.handler.Element",{extend:qx.core.Object,
+implement:qx.event.IEventHandler,
+construct:function(a){this.base(arguments);
+this._manager=a;
+this._registeredEvents={}},
+statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
+SUPPORTED_TYPES:{abort:true,
+scroll:true,
+select:true,
+reset:true,
+submit:true},
+TARGET_CHECK:qx.event.IEventHandler.TARGET_DOMNODE,
+IGNORE_CAN_HANDLE:true},
+members:{canHandleEvent:function(){},
+registerEvent:function(b,a){var e=qx.core.ObjectRegistry.toHashCode(b),d=e+"-"+a,c=qx.lang.Function.listener(this._onNative,this,d);
+qx.bom.Event.addNativeListener(b,a,c);
+this._registeredEvents[d]={element:b,
+type:a,
+listener:c}},
+unregisterEvent:function(c,a){var f=this._registeredEvents,e,d,b;
+if(!f)return;
+e=qx.core.ObjectRegistry.toHashCode(c),d=e+"-"+a,b=this._registeredEvents[d];
+b&&qx.bom.Event.removeNativeListener(c,a,b.listener);
+delete this._registeredEvents[d]},
+_onNative:qx.event.GlobalError.observeMethod(function(d,c){var b=this._registeredEvents,a;
+if(!b)return;
+a=b[c];
+qx.event.Registration.fireNonBubblingEvent(a.element,a.type,qx.event.type.Native,[d])})},
+destruct:function(){var a,c=this._registeredEvents,b;
+for(b in c)a=c[b],qx.bom.Event.removeNativeListener(a.element,a.type,a.listener);
+this._manager=this._registeredEvents=null},
+defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.ui.core.selection.Widget
@@ -12756,41 +12793,39 @@ getRowAttributes:function(){return""}},
 destruct:function(){this.__qwQQT=this.__EudQp=this.__biXIkY=null}});
 
 
-// qx.event.handler.Element
-//   - Size: 1363 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.handler.Element",{extend:qx.core.Object,
-implement:qx.event.IEventHandler,
-construct:function(a){this.base(arguments);
-this._manager=a;
-this._registeredEvents={}},
-statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
-SUPPORTED_TYPES:{abort:true,
-scroll:true,
-select:true,
-reset:true,
-submit:true},
-TARGET_CHECK:qx.event.IEventHandler.TARGET_DOMNODE,
-IGNORE_CAN_HANDLE:true},
-members:{canHandleEvent:function(){},
-registerEvent:function(b,a){var e=qx.core.ObjectRegistry.toHashCode(b),d=e+"-"+a,c=qx.lang.Function.listener(this._onNative,this,d);
-qx.bom.Event.addNativeListener(b,a,c);
-this._registeredEvents[d]={element:b,
-type:a,
-listener:c}},
-unregisterEvent:function(c,a){var f=this._registeredEvents,e,d,b;
-if(!f)return;
-e=qx.core.ObjectRegistry.toHashCode(c),d=e+"-"+a,b=this._registeredEvents[d];
-b&&qx.bom.Event.removeNativeListener(c,a,b.listener);
-delete this._registeredEvents[d]},
-_onNative:qx.event.GlobalError.observeMethod(function(d,c){var b=this._registeredEvents,a;
-if(!b)return;
-a=b[c];
-qx.event.Registration.fireNonBubblingEvent(a.element,a.type,qx.event.type.Native,[d])})},
-destruct:function(){var a,c=this._registeredEvents,b;
-for(b in c)a=c[b],qx.bom.Event.removeNativeListener(a.element,a.type,a.listener);
-this._manager=this._registeredEvents=null},
-defer:function(a){qx.event.Registration.addHandler(a)}});
+// qx.ui.table.cellrenderer.AbstractImage
+//   - Size: 1648 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.ui.table.cellrenderer.AbstractImage",{extend:qx.ui.table.cellrenderer.Abstract,
+type:"abstract",
+construct:function(){this.base(arguments);
+var a=this.self(arguments);
+a.stylesheet||(a.stylesheet=qx.bom.Stylesheet.createElement(".qooxdoo-table-cell-icon {  text-align:center;  padding-top:1px;}"))},
+members:{__Vr1Zo:16,
+__1NwZZ:16,
+__C4eaS:null,
+_insetY:2,
+_identifyImage:function(){throw new Error("_identifyImage is abstract")},
+_getImageInfos:function(c){var a=this._identifyImage(c),b;
+(a==null||typeof a=="string")&&(a={url:a,
+tooltip:null});
+(!a.imageWidth||!a.imageHeight)&&(b=this.__UksBB(a.url),a.imageWidth=b.width,a.imageHeight=b.height);
+a.width=a.imageWidth;
+a.height=a.imageHeight;
+return a},
+__UksBB:function(a){var d=qx.util.ResourceManager.getInstance(),e=qx.io.ImageLoader,b,c;
+d.has(a)?(b=d.getImageWidth(a),c=d.getImageHeight(a)):e.isLoaded(a)?(b=e.getWidth(a),c=e.getHeight(a)):(b=this.__Vr1Zo,c=this.__1NwZZ);
+return{width:b,
+height:c}},
+createDataCellHtml:function(a,b){this.__C4eaS=this._getImageInfos(a);
+return this.base(arguments,a,b)},
+_getCellClass:function(){return this.base(arguments)+" qooxdoo-table-cell-icon"},
+_getContentHtml:function(){var c="<div></div>",a=this.__C4eaS,b;
+if(a.url){b=qx.bom.client.Engine.GECKO&&qx.bom.client.Engine.VERSION<1.9?"-moz-inline-box":"inline-block";
+return"<div style=\"width:"+a.width+"px;height:"+a.height+"px;display:"+b+";vertical-align:top;background-image:url("+a.url+");background-repeat: no-repeat;\"></div>"}return c},
+_getCellAttributes:function(){var a=this.__C4eaS.tooltip;
+return a?"title='"+a+"'":""}},
+destruct:function(){this.__C4eaS=null}});
 
 
 // qx.ui.core.selection.ScrollArea
@@ -12825,41 +12860,6 @@ break}}if(a==null){m=this._getLastSelectable();
 return m==c?null:m}if(a<=f){n+=e.getItemTop(c)-g;
 a=null;
 continue}return d[a]}}}}});
-
-
-// qx.ui.table.cellrenderer.AbstractImage
-//   - Size: 1648 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.ui.table.cellrenderer.AbstractImage",{extend:qx.ui.table.cellrenderer.Abstract,
-type:"abstract",
-construct:function(){this.base(arguments);
-var a=this.self(arguments);
-a.stylesheet||(a.stylesheet=qx.bom.Stylesheet.createElement(".qooxdoo-table-cell-icon {  text-align:center;  padding-top:1px;}"))},
-members:{__Vr1Zo:16,
-__1NwZZ:16,
-__C4eaS:null,
-_insetY:2,
-_identifyImage:function(){throw new Error("_identifyImage is abstract")},
-_getImageInfos:function(c){var a=this._identifyImage(c),b;
-(a==null||typeof a=="string")&&(a={url:a,
-tooltip:null});
-(!a.imageWidth||!a.imageHeight)&&(b=this.__UksBB(a.url),a.imageWidth=b.width,a.imageHeight=b.height);
-a.width=a.imageWidth;
-a.height=a.imageHeight;
-return a},
-__UksBB:function(a){var d=qx.util.ResourceManager.getInstance(),e=qx.io.ImageLoader,b,c;
-d.has(a)?(b=d.getImageWidth(a),c=d.getImageHeight(a)):e.isLoaded(a)?(b=e.getWidth(a),c=e.getHeight(a)):(b=this.__Vr1Zo,c=this.__1NwZZ);
-return{width:b,
-height:c}},
-createDataCellHtml:function(a,b){this.__C4eaS=this._getImageInfos(a);
-return this.base(arguments,a,b)},
-_getCellClass:function(){return this.base(arguments)+" qooxdoo-table-cell-icon"},
-_getContentHtml:function(){var c="<div></div>",a=this.__C4eaS,b;
-if(a.url){b=qx.bom.client.Engine.GECKO&&qx.bom.client.Engine.VERSION<1.9?"-moz-inline-box":"inline-block";
-return"<div style=\"width:"+a.width+"px;height:"+a.height+"px;display:"+b+";vertical-align:top;background-image:url("+a.url+");background-repeat: no-repeat;\"></div>"}return c},
-_getCellAttributes:function(){var a=this.__C4eaS.tooltip;
-return a?"title='"+a+"'":""}},
-destruct:function(){this.__C4eaS=null}});
 
 
 // qx.ui.table.cellrenderer.Image
@@ -13263,6 +13263,50 @@ if(a){a.onreadystatechange=qx.lang.Function.empty;
 switch(a.readyState){case 1:case 2:case 3:a.abort()}}this.__u3kLI=null}});
 
 
+// qx.bom.Input
+//   - Size: 1444 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.bom.Input",{statics:{__nhP4O:{text:1,
+textarea:1,
+select:1,
+checkbox:1,
+radio:1,
+password:1,
+hidden:1,
+submit:1,
+image:1,
+file:1,
+search:1,
+reset:1,
+button:1},
+create:function(a,b,d){qx.core.Assert.assertKeyInMap(a,this.__nhP4O,"Unsupported input type.");
+var b=b?qx.lang.Object.clone(b):{},c;
+a==="textarea"||a==="select"?c=a:(c="input",b.type=a);
+return qx.bom.Element.create(c,b,d)},
+setValue:function(a,b){var l=a.nodeName.toLowerCase(),e=a.type,h=qx.lang.Array,i=qx.lang.Type,j,g,d,c,f,k;
+typeof b==="number"&&(b+="");
+if(e==="checkbox"||e==="radio")a.checked=i.isArray(b)?h.contains(b,a.value):a.value==b;
+else if(l==="select"){j=i.isArray(b),g=a.options,f=0,k=g.length;
+for(;
+f<k;
+f++)d=g[f],c=d.getAttribute("value"),c==null&&(c=d.text),d.selected=j?h.contains(b,c):b==c;
+j&&b.length==0&&(a.selectedIndex=-1)}else e==="text"&&false?(a.$$inValueSet=true,a.value=b,a.$$inValueSet=null):a.value=b},
+getValue:function(a){var h=a.nodeName.toLowerCase(),d,g,f,e,j,b,c,k,i;
+if(h==="option")return(a.attributes.value||{}).specified?a.value:a.text;
+if(h==="select"){d=a.selectedIndex;
+if(d<0)return null;
+g=[],f=a.options,e=a.type=="select-one",j=qx.bom.Input,c=e?d:0,k=e?d+1:f.length;
+for(;
+c<k;
+c++){i=f[c];
+if(i.selected){b=j.getValue(i);
+if(e)return b;
+g.push(b)}}return g}return(a.value||"").replace(/\r/g,"")},
+setWrap:function(a,b){var c=b?"soft":"off",d=b?"":"auto";
+a.setAttribute("wrap",c);
+a.style.overflow=d}}});
+
+
 // qx.io.remote.RequestQueue
 //   - Size: 3433 bytes
 //   - Modified: 2010-10-13T17:38:57
@@ -13344,50 +13388,6 @@ b?b.abort():qx.lang.Array.contains(this.__m5bO4,a)&&qx.lang.Array.remove(this.__
 destruct:function(){this._disposeArray("__active");
 this._disposeObjects("__timer");
 this.__m5bO4=null}});
-
-
-// qx.bom.Input
-//   - Size: 1444 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.bom.Input",{statics:{__nhP4O:{text:1,
-textarea:1,
-select:1,
-checkbox:1,
-radio:1,
-password:1,
-hidden:1,
-submit:1,
-image:1,
-file:1,
-search:1,
-reset:1,
-button:1},
-create:function(a,b,d){qx.core.Assert.assertKeyInMap(a,this.__nhP4O,"Unsupported input type.");
-var b=b?qx.lang.Object.clone(b):{},c;
-a==="textarea"||a==="select"?c=a:(c="input",b.type=a);
-return qx.bom.Element.create(c,b,d)},
-setValue:function(a,b){var l=a.nodeName.toLowerCase(),e=a.type,h=qx.lang.Array,i=qx.lang.Type,j,g,d,c,f,k;
-typeof b==="number"&&(b+="");
-if(e==="checkbox"||e==="radio")a.checked=i.isArray(b)?h.contains(b,a.value):a.value==b;
-else if(l==="select"){j=i.isArray(b),g=a.options,f=0,k=g.length;
-for(;
-f<k;
-f++)d=g[f],c=d.getAttribute("value"),c==null&&(c=d.text),d.selected=j?h.contains(b,c):b==c;
-j&&b.length==0&&(a.selectedIndex=-1)}else e==="text"&&false?(a.$$inValueSet=true,a.value=b,a.$$inValueSet=null):a.value=b},
-getValue:function(a){var h=a.nodeName.toLowerCase(),d,g,f,e,j,b,c,k,i;
-if(h==="option")return(a.attributes.value||{}).specified?a.value:a.text;
-if(h==="select"){d=a.selectedIndex;
-if(d<0)return null;
-g=[],f=a.options,e=a.type=="select-one",j=qx.bom.Input,c=e?d:0,k=e?d+1:f.length;
-for(;
-c<k;
-c++){i=f[c];
-if(i.selected){b=j.getValue(i);
-if(e)return b;
-g.push(b)}}return g}return(a.value||"").replace(/\r/g,"")},
-setWrap:function(a,b){var c=b?"soft":"off",d=b?"":"auto";
-a.setAttribute("wrap",c);
-a.style.overflow=d}}});
 
 
 // qx.io.remote.Request
@@ -13917,28 +13917,14 @@ destruct:function(){this.__bqzRkj=this.__baJTDe=null;
 this._disposeObjects("__layout","__deferredComputeColumnsFlexWidth")}});
 
 
-// qx.ui.menu.Separator
-//   - Size: 166 bytes
+// qx.ui.splitpane.Slider
+//   - Size: 163 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.menu.Separator",{extend:qx.ui.core.Widget,
-properties:{appearance:{refine:true,
-init:"menu-separator"},
-anonymous:{refine:true,
-init:true}}});
-
-
-// qx.ui.toolbar.Separator
-//   - Size: 231 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.toolbar.Separator",{extend:qx.ui.core.Widget,
-properties:{appearance:{refine:true,
-init:"toolbar-separator"},
-anonymous:{refine:true,
-init:true},
-width:{refine:true,
-init:0},
-height:{refine:true,
-init:0}}});
+qx.Class.define("qx.ui.splitpane.Slider",{extend:qx.ui.core.Widget,
+properties:{allowShrinkX:{refine:true,
+init:false},
+allowShrinkY:{refine:true,
+init:false}}});
 
 
 // qx.ui.table.pane.Pane
@@ -14143,14 +14129,28 @@ _onSelectionChange:function(a){this.fireDataEvent("changeSelection",a.getData())
 destruct:function(){this._disposeObjects("__manager")}});
 
 
-// qx.ui.splitpane.Slider
-//   - Size: 163 bytes
+// qx.ui.menu.Separator
+//   - Size: 166 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.splitpane.Slider",{extend:qx.ui.core.Widget,
-properties:{allowShrinkX:{refine:true,
-init:false},
-allowShrinkY:{refine:true,
-init:false}}});
+qx.Class.define("qx.ui.menu.Separator",{extend:qx.ui.core.Widget,
+properties:{appearance:{refine:true,
+init:"menu-separator"},
+anonymous:{refine:true,
+init:true}}});
+
+
+// qx.ui.toolbar.Separator
+//   - Size: 231 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.toolbar.Separator",{extend:qx.ui.core.Widget,
+properties:{appearance:{refine:true,
+init:"toolbar-separator"},
+anonymous:{refine:true,
+init:true},
+width:{refine:true,
+init:0},
+height:{refine:true,
+init:0}}});
 
 
 // qx.ui.menu.Manager
@@ -14297,6 +14297,273 @@ a.removeListener(b,"keyup",this._onKeyUpDown,this,true);
 a.removeListener(b,"keypress",this._onKeyPress,this,true);
 this._disposeObjects("__openTimer","__closeTimer");
 this._disposeArray("__objects")}});
+
+
+// qx.ui.toolbar.ToolBar
+//   - Size: 3799 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.ui.toolbar.ToolBar",{extend:qx.ui.core.Widget,
+include:qx.ui.core.MChildrenHandling,
+construct:function(){this.base(arguments);
+this._setLayout(new qx.ui.layout.HBox());
+this.__WliO7=[];
+this.__bbixNX=[]},
+properties:{appearance:{refine:true,
+init:"toolbar"},
+openMenu:{check:"qx.ui.menu.Menu",
+event:"changeOpenMenu",
+nullable:true},
+show:{init:"both",
+check:["both","label","icon"],
+inheritable:true,
+event:"changeShow"},
+spacing:{nullable:true,
+check:"Integer",
+themeable:true,
+apply:"_applySpacing"},
+overflowIndicator:{check:"qx.ui.core.Widget",
+nullable:true,
+apply:"_applyOverflowIndicator"},
+overflowHandling:{init:false,
+check:"Boolean",
+apply:"_applyOverflowHandling"}},
+events:{hideItem:"qx.event.type.Data",
+showItem:"qx.event.type.Data"},
+members:{__WliO7:null,
+__bbixNX:null,
+_computeSizeHint:function(){var a=this.base(arguments),c,b;
+true&&this.getOverflowHandling()&&(c=0,b=this.getOverflowIndicator(),b&&(c=b.getSizeHint().width+this.getSpacing()),a.minWidth=c);
+return a},
+_onResize:function(a){this._recalculateOverflow(a.getData().width)},
+_recalculateOverflow:function(c){if(!this.getOverflowHandling())return;
+var a=this.getSizeHint().width,b=this.getOverflowIndicator(),g=0,e,h,i,d,f;
+b&&(g=b.getSizeHint().width);
+if(c<a)do{e=this._getNextToHide();
+if(!e)return;
+h=e.getMarginLeft()+e.getMarginRight(),i=e.getSizeHint().width+h;
+this.__CRiSn(e);
+a-=i;
+b&&b.getVisibility()!="visible"&&(b.setVisibility("visible"),a+=g)}while(a>c);
+else do{d=this.__WliO7[0];
+if(d){h=d.getMarginLeft()+d.getMarginRight(),f=d.getSizeHint().width+h;
+if(c>a+f+this.getSpacing()||this.__WliO7.length==1&&c>a+f-g+this.getSpacing())this.__D5cnU(d),c+=f,b&&this.__WliO7.length==0&&b.setVisibility("excluded");
+else return}}while(c>=a&&this.__WliO7.length>0)},
+__D5cnU:function(a){a.setVisibility("visible");
+this.__WliO7.shift();
+this.fireDataEvent("showItem",a)},
+__CRiSn:function(a){if(!a)return;
+this.__WliO7.unshift(a);
+a.setVisibility("excluded");
+this.fireDataEvent("hideItem",a)},
+_getNextToHide:function(){for(var a=this.__bbixNX.length-1,c,d,b;
+a>=0;
+a--){c=this.__bbixNX[a];
+if(c&&c.getVisibility&&c.getVisibility()=="visible")return c}d=this._getChildren(),a=d.length-1;
+for(;
+a>=0;
+a--){b=d[a];
+if(b==this.getOverflowIndicator())continue;
+if(b.getVisibility&&b.getVisibility()=="visible")return b}},
+setRemovePriority:function(c,a,b){if(!b&&this.__bbixNX[a]!=undefined)throw new Error("Priority already in use!");
+this.__bbixNX[a]=c},
+_applyOverflowHandling:function(e){this.invalidateLayoutCache();
+var c=this.getLayoutParent(),a,d,b;
+c&&c.invalidateLayoutCache();
+a=this.getBounds();
+a&&a.width&&this._recalculateOverflow(a.width);
+if(e)this.addListener("resize",this._onResize,this);
+else{this.removeListener("resize",this._onResize,this);
+d=this.getOverflowIndicator();
+d&&d.setVisibility("excluded");
+for(b=0;
+b<this.__WliO7.length;
+b++)this.__WliO7[b].setVisibility("visible");
+this.__WliO7=[]}},
+_applyOverflowIndicator:function(a,b){b&&this._remove(b);
+if(a){if(this._indexOf(a)==-1)throw new Error("Widget must be child of the toolbar.");
+a.setVisibility("excluded")}},
+__bG6IET:false,
+_setAllowMenuOpenHover:function(a){this.__bG6IET=a},
+_isAllowMenuOpenHover:function(){return this.__bG6IET},
+_applySpacing:function(a){var b=this._getLayout();
+a==null?b.resetSpacing():b.setSpacing(a)},
+addSpacer:function(){var a=new qx.ui.core.Spacer;
+this._add(a,{flex:1});
+return a},
+addSeparator:function(){this.add(new qx.ui.toolbar.Separator)},
+getMenuButtons:function(){for(var d=this.getChildren(),b=[],a,c=0,e=d.length;
+c<e;
+c++)a=d[c],a instanceof qx.ui.menubar.Button?b.push(a):a instanceof qx.ui.toolbar.Part&&b.push.apply(b,a.getMenuButtons());
+return b}},
+destruct:function(){this.hasListener("resize")&&this.removeListener("resize",this._onResize,this)}});
+
+
+// qx.ui.form.MenuButton
+//   - Size: 1410 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.form.MenuButton",{extend:qx.ui.form.Button,
+construct:function(c,b,a){this.base(arguments,c,b);
+a!=null&&this.setMenu(a)},
+properties:{menu:{check:"qx.ui.menu.Menu",
+nullable:true,
+apply:"_applyMenu",
+event:"changeMenu"}},
+members:{_applyMenu:function(a,b){b&&(b.removeListener("changeVisibility",this._onMenuChange,this),b.resetOpener());
+a&&(a.addListener("changeVisibility",this._onMenuChange,this),a.setOpener(this),a.removeState("submenu"),a.removeState("contextmenu"))},
+open:function(c){var a=this.getMenu(),b;
+a&&(qx.ui.menu.Manager.getInstance().hideAll(),a.setOpener(this),a.open(),c&&(b=a.getSelectables()[0],b&&a.setSelectedButton(b)))},
+_onMenuChange:function(){var a=this.getMenu();
+a.isVisible()?this.addState("pressed"):this.removeState("pressed")},
+_onMouseDown:function(b){var a=this.getMenu();
+a&&(a.isVisible()?a.exclude():this.open(),b.stopPropagation())},
+_onMouseUp:function(a){this.base(arguments,a);
+a.stopPropagation()},
+_onMouseOver:function(){this.addState("hovered")},
+_onMouseOut:function(){this.removeState("hovered")},
+_onKeyDown:function(b){switch(b.getKeyIdentifier()){case"Enter":this.removeState("abandoned");
+this.addState("pressed");
+var a=this.getMenu();
+a&&(a.isVisible()?a.exclude():this.open());
+b.stopPropagation()}},
+_onKeyUp:function(){}},
+destruct:function(){this.getMenu()&&(qx.core.ObjectRegistry.inShutDown||this.getMenu().destroy())}});
+
+
+// qx.ui.menubar.Button
+//   - Size: 1160 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.ui.menubar.Button",{extend:qx.ui.form.MenuButton,
+construct:function(b,a,c){this.base(arguments,b,a,c);
+this.removeListener("keydown",this._onKeyDown);
+this.removeListener("keyup",this._onKeyUp)},
+properties:{appearance:{refine:true,
+init:"menubar-button"},
+focusable:{refine:true,
+init:false}},
+members:{getMenuBar:function(){var a=this;
+while(a){if(a instanceof qx.ui.toolbar.ToolBar)return a;
+a=a.getLayoutParent()}return null},
+open:function(b){this.base(arguments,b);
+var a=this.getMenuBar();
+a._setAllowMenuOpenHover(true)},
+_onMenuChange:function(){var b=this.getMenu(),a=this.getMenuBar();
+b.isVisible()?(this.addState("pressed"),a&&a.setOpenMenu(b)):(this.removeState("pressed"),a&&a.getOpenMenu()==b&&(a.resetOpenMenu(),a._setAllowMenuOpenHover(false)))},
+_onMouseUp:function(b){this.base(arguments,b);
+var a=this.getMenu();
+a&&a.isVisible()&&!this.hasState("pressed")&&this.addState("pressed")},
+_onMouseOver:function(){this.addState("hovered");
+if(this.getMenu()){var a=this.getMenuBar();
+a._isAllowMenuOpenHover()&&(qx.ui.menu.Manager.getInstance().hideAll(),a._setAllowMenuOpenHover(true),this.isEnabled()&&this.open())}}}});
+
+
+// qx.ui.toolbar.PartContainer
+//   - Size: 326 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.toolbar.PartContainer",{extend:qx.ui.container.Composite,
+construct:function(){this.base(arguments);
+this._setLayout(new qx.ui.layout.HBox)},
+properties:{appearance:{refine:true,
+init:"toolbar/part/container"},
+show:{init:"both",
+check:["both","label","icon"],
+inheritable:true,
+event:"changeShow"}}});
+
+
+// qx.ui.toolbar.Part
+//   - Size: 1127 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.toolbar.Part",{extend:qx.ui.core.Widget,
+include:[qx.ui.core.MRemoteChildrenHandling],
+construct:function(){this.base(arguments);
+this._setLayout(new qx.ui.layout.HBox);
+this._createChildControl("handle")},
+properties:{appearance:{refine:true,
+init:"toolbar/part"},
+show:{init:"both",
+check:["both","label","icon"],
+inheritable:true,
+event:"changeShow"},
+spacing:{nullable:true,
+check:"Integer",
+themeable:true,
+apply:"_applySpacing"}},
+members:{_createChildControlImpl:function(b){var a;
+switch(b){case"handle":a=new qx.ui.basic.Image();
+a.setAlignY("middle");
+this._add(a);
+break;
+case"container":a=new qx.ui.toolbar.PartContainer;
+this._add(a);
+break}return a||this.base(arguments,b)},
+getChildrenContainer:function(){return this.getChildControl("container")},
+_applySpacing:function(a){var b=this.getChildControl("container").getLayout();
+a==null?b.resetSpacing():b.setSpacing(a)},
+addSeparator:function(){this.add(new qx.ui.toolbar.Separator)},
+getMenuButtons:function(){for(var c=this.getChildren(),d=[],a,b=0,e=c.length;
+b<e;
+b++)a=c[b],a instanceof qx.ui.menubar.Button&&d.push(a);
+return d}}});
+
+
+// qx.ui.menu.AbstractButton
+//   - Size: 2455 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.menu.AbstractButton",{extend:qx.ui.core.Widget,
+include:[qx.ui.core.MExecutable],
+implement:[qx.ui.form.IExecutable],
+type:"abstract",
+construct:function(){this.base(arguments);
+this._setLayout(new qx.ui.menu.ButtonLayout);
+this.addListener("mouseup",this._onMouseUp);
+this.addListener("keypress",this._onKeyPress);
+this.addListener("changeCommand",this._onChangeCommand,this)},
+properties:{blockToolTip:{refine:true,
+init:true},
+label:{check:"String",
+apply:"_applyLabel",
+nullable:true},
+menu:{check:"qx.ui.menu.Menu",
+apply:"_applyMenu",
+nullable:true},
+icon:{check:"String",
+apply:"_applyIcon",
+themeable:true,
+nullable:true}},
+members:{_createChildControlImpl:function(b){var a;
+switch(b){case"icon":a=new qx.ui.basic.Image;
+a.setAnonymous(true);
+this._add(a,{column:0});
+break;
+case"label":a=new qx.ui.basic.Label;
+a.setAnonymous(true);
+this._add(a,{column:1});
+break;
+case"shortcut":a=new qx.ui.basic.Label;
+a.setAnonymous(true);
+this._add(a,{column:2});
+break;
+case"arrow":a=new qx.ui.basic.Image;
+a.setAnonymous(true);
+this._add(a,{column:3});
+break}return a||this.base(arguments,b)},
+_forwardStates:{selected:1},
+getChildrenSizes:function(){var h=0,g=0,f=0,e=0,a,c,d,b;
+this._isChildControlVisible("icon")&&(a=this.getChildControl("icon"),h=a.getMarginLeft()+a.getSizeHint().width+a.getMarginRight());
+this._isChildControlVisible("label")&&(c=this.getChildControl("label"),g=c.getMarginLeft()+c.getSizeHint().width+c.getMarginRight());
+this._isChildControlVisible("shortcut")&&(d=this.getChildControl("shortcut"),f=d.getMarginLeft()+d.getSizeHint().width+d.getMarginRight());
+this._isChildControlVisible("arrow")&&(b=this.getChildControl("arrow"),e=b.getMarginLeft()+b.getSizeHint().width+b.getMarginRight());
+return[h,g,f,e]},
+_onMouseUp:function(){},
+_onKeyPress:function(){},
+_onChangeCommand:function(b){var a=b.getData(),c=a!=null?a.toString():"";
+this.getChildControl("shortcut").setValue(c)},
+_onChangeLocale:null,
+_applyIcon:function(a){a?this._showChildControl("icon").setSource(a):this._excludeChildControl("icon")},
+_applyLabel:function(a){a?this._showChildControl("label").setValue(a):this._excludeChildControl("label")},
+_applyMenu:function(a,b){b&&(b.resetOpener(),b.removeState("submenu"));
+a?(this._showChildControl("arrow"),a.setOpener(this),a.addState("submenu")):this._excludeChildControl("arrow")}},
+destruct:function(){this.getMenu()&&(qx.core.ObjectRegistry.inShutDown||this.getMenu().destroy())}});
 
 
 // qx.ui.core.scroll.ScrollPane
@@ -14732,66 +14999,6 @@ return{width:d,
 height:a}}}});
 
 
-// qx.ui.menu.AbstractButton
-//   - Size: 2455 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.menu.AbstractButton",{extend:qx.ui.core.Widget,
-include:[qx.ui.core.MExecutable],
-implement:[qx.ui.form.IExecutable],
-type:"abstract",
-construct:function(){this.base(arguments);
-this._setLayout(new qx.ui.menu.ButtonLayout);
-this.addListener("mouseup",this._onMouseUp);
-this.addListener("keypress",this._onKeyPress);
-this.addListener("changeCommand",this._onChangeCommand,this)},
-properties:{blockToolTip:{refine:true,
-init:true},
-label:{check:"String",
-apply:"_applyLabel",
-nullable:true},
-menu:{check:"qx.ui.menu.Menu",
-apply:"_applyMenu",
-nullable:true},
-icon:{check:"String",
-apply:"_applyIcon",
-themeable:true,
-nullable:true}},
-members:{_createChildControlImpl:function(b){var a;
-switch(b){case"icon":a=new qx.ui.basic.Image;
-a.setAnonymous(true);
-this._add(a,{column:0});
-break;
-case"label":a=new qx.ui.basic.Label;
-a.setAnonymous(true);
-this._add(a,{column:1});
-break;
-case"shortcut":a=new qx.ui.basic.Label;
-a.setAnonymous(true);
-this._add(a,{column:2});
-break;
-case"arrow":a=new qx.ui.basic.Image;
-a.setAnonymous(true);
-this._add(a,{column:3});
-break}return a||this.base(arguments,b)},
-_forwardStates:{selected:1},
-getChildrenSizes:function(){var h=0,g=0,f=0,e=0,a,c,d,b;
-this._isChildControlVisible("icon")&&(a=this.getChildControl("icon"),h=a.getMarginLeft()+a.getSizeHint().width+a.getMarginRight());
-this._isChildControlVisible("label")&&(c=this.getChildControl("label"),g=c.getMarginLeft()+c.getSizeHint().width+c.getMarginRight());
-this._isChildControlVisible("shortcut")&&(d=this.getChildControl("shortcut"),f=d.getMarginLeft()+d.getSizeHint().width+d.getMarginRight());
-this._isChildControlVisible("arrow")&&(b=this.getChildControl("arrow"),e=b.getMarginLeft()+b.getSizeHint().width+b.getMarginRight());
-return[h,g,f,e]},
-_onMouseUp:function(){},
-_onKeyPress:function(){},
-_onChangeCommand:function(b){var a=b.getData(),c=a!=null?a.toString():"";
-this.getChildControl("shortcut").setValue(c)},
-_onChangeLocale:null,
-_applyIcon:function(a){a?this._showChildControl("icon").setSource(a):this._excludeChildControl("icon")},
-_applyLabel:function(a){a?this._showChildControl("label").setValue(a):this._excludeChildControl("label")},
-_applyMenu:function(a,b){b&&(b.resetOpener(),b.removeState("submenu"));
-a?(this._showChildControl("arrow"),a.setOpener(this),a.addState("submenu")):this._excludeChildControl("arrow")}},
-destruct:function(){this.getMenu()&&(qx.core.ObjectRegistry.inShutDown||this.getMenu().destroy())}});
-
-
 // qx.ui.menu.Button
 //   - Size: 472 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -14806,213 +15013,6 @@ init:"menu-button"}},
 members:{_onMouseUp:function(a){if(a.isLeftPressed()){this.execute();
 if(this.getMenu())return}qx.ui.menu.Manager.getInstance().hideAll()},
 _onKeyPress:function(){this.execute()}}});
-
-
-// qx.ui.toolbar.ToolBar
-//   - Size: 3799 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.ui.toolbar.ToolBar",{extend:qx.ui.core.Widget,
-include:qx.ui.core.MChildrenHandling,
-construct:function(){this.base(arguments);
-this._setLayout(new qx.ui.layout.HBox());
-this.__WliO7=[];
-this.__bbixNX=[]},
-properties:{appearance:{refine:true,
-init:"toolbar"},
-openMenu:{check:"qx.ui.menu.Menu",
-event:"changeOpenMenu",
-nullable:true},
-show:{init:"both",
-check:["both","label","icon"],
-inheritable:true,
-event:"changeShow"},
-spacing:{nullable:true,
-check:"Integer",
-themeable:true,
-apply:"_applySpacing"},
-overflowIndicator:{check:"qx.ui.core.Widget",
-nullable:true,
-apply:"_applyOverflowIndicator"},
-overflowHandling:{init:false,
-check:"Boolean",
-apply:"_applyOverflowHandling"}},
-events:{hideItem:"qx.event.type.Data",
-showItem:"qx.event.type.Data"},
-members:{__WliO7:null,
-__bbixNX:null,
-_computeSizeHint:function(){var a=this.base(arguments),c,b;
-true&&this.getOverflowHandling()&&(c=0,b=this.getOverflowIndicator(),b&&(c=b.getSizeHint().width+this.getSpacing()),a.minWidth=c);
-return a},
-_onResize:function(a){this._recalculateOverflow(a.getData().width)},
-_recalculateOverflow:function(c){if(!this.getOverflowHandling())return;
-var a=this.getSizeHint().width,b=this.getOverflowIndicator(),g=0,e,h,i,d,f;
-b&&(g=b.getSizeHint().width);
-if(c<a)do{e=this._getNextToHide();
-if(!e)return;
-h=e.getMarginLeft()+e.getMarginRight(),i=e.getSizeHint().width+h;
-this.__CRiSn(e);
-a-=i;
-b&&b.getVisibility()!="visible"&&(b.setVisibility("visible"),a+=g)}while(a>c);
-else do{d=this.__WliO7[0];
-if(d){h=d.getMarginLeft()+d.getMarginRight(),f=d.getSizeHint().width+h;
-if(c>a+f+this.getSpacing()||this.__WliO7.length==1&&c>a+f-g+this.getSpacing())this.__D5cnU(d),c+=f,b&&this.__WliO7.length==0&&b.setVisibility("excluded");
-else return}}while(c>=a&&this.__WliO7.length>0)},
-__D5cnU:function(a){a.setVisibility("visible");
-this.__WliO7.shift();
-this.fireDataEvent("showItem",a)},
-__CRiSn:function(a){if(!a)return;
-this.__WliO7.unshift(a);
-a.setVisibility("excluded");
-this.fireDataEvent("hideItem",a)},
-_getNextToHide:function(){for(var a=this.__bbixNX.length-1,c,d,b;
-a>=0;
-a--){c=this.__bbixNX[a];
-if(c&&c.getVisibility&&c.getVisibility()=="visible")return c}d=this._getChildren(),a=d.length-1;
-for(;
-a>=0;
-a--){b=d[a];
-if(b==this.getOverflowIndicator())continue;
-if(b.getVisibility&&b.getVisibility()=="visible")return b}},
-setRemovePriority:function(c,a,b){if(!b&&this.__bbixNX[a]!=undefined)throw new Error("Priority already in use!");
-this.__bbixNX[a]=c},
-_applyOverflowHandling:function(e){this.invalidateLayoutCache();
-var c=this.getLayoutParent(),a,d,b;
-c&&c.invalidateLayoutCache();
-a=this.getBounds();
-a&&a.width&&this._recalculateOverflow(a.width);
-if(e)this.addListener("resize",this._onResize,this);
-else{this.removeListener("resize",this._onResize,this);
-d=this.getOverflowIndicator();
-d&&d.setVisibility("excluded");
-for(b=0;
-b<this.__WliO7.length;
-b++)this.__WliO7[b].setVisibility("visible");
-this.__WliO7=[]}},
-_applyOverflowIndicator:function(a,b){b&&this._remove(b);
-if(a){if(this._indexOf(a)==-1)throw new Error("Widget must be child of the toolbar.");
-a.setVisibility("excluded")}},
-__bG6IET:false,
-_setAllowMenuOpenHover:function(a){this.__bG6IET=a},
-_isAllowMenuOpenHover:function(){return this.__bG6IET},
-_applySpacing:function(a){var b=this._getLayout();
-a==null?b.resetSpacing():b.setSpacing(a)},
-addSpacer:function(){var a=new qx.ui.core.Spacer;
-this._add(a,{flex:1});
-return a},
-addSeparator:function(){this.add(new qx.ui.toolbar.Separator)},
-getMenuButtons:function(){for(var d=this.getChildren(),b=[],a,c=0,e=d.length;
-c<e;
-c++)a=d[c],a instanceof qx.ui.menubar.Button?b.push(a):a instanceof qx.ui.toolbar.Part&&b.push.apply(b,a.getMenuButtons());
-return b}},
-destruct:function(){this.hasListener("resize")&&this.removeListener("resize",this._onResize,this)}});
-
-
-// qx.ui.toolbar.PartContainer
-//   - Size: 326 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.toolbar.PartContainer",{extend:qx.ui.container.Composite,
-construct:function(){this.base(arguments);
-this._setLayout(new qx.ui.layout.HBox)},
-properties:{appearance:{refine:true,
-init:"toolbar/part/container"},
-show:{init:"both",
-check:["both","label","icon"],
-inheritable:true,
-event:"changeShow"}}});
-
-
-// qx.ui.form.MenuButton
-//   - Size: 1410 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.form.MenuButton",{extend:qx.ui.form.Button,
-construct:function(c,b,a){this.base(arguments,c,b);
-a!=null&&this.setMenu(a)},
-properties:{menu:{check:"qx.ui.menu.Menu",
-nullable:true,
-apply:"_applyMenu",
-event:"changeMenu"}},
-members:{_applyMenu:function(a,b){b&&(b.removeListener("changeVisibility",this._onMenuChange,this),b.resetOpener());
-a&&(a.addListener("changeVisibility",this._onMenuChange,this),a.setOpener(this),a.removeState("submenu"),a.removeState("contextmenu"))},
-open:function(c){var a=this.getMenu(),b;
-a&&(qx.ui.menu.Manager.getInstance().hideAll(),a.setOpener(this),a.open(),c&&(b=a.getSelectables()[0],b&&a.setSelectedButton(b)))},
-_onMenuChange:function(){var a=this.getMenu();
-a.isVisible()?this.addState("pressed"):this.removeState("pressed")},
-_onMouseDown:function(b){var a=this.getMenu();
-a&&(a.isVisible()?a.exclude():this.open(),b.stopPropagation())},
-_onMouseUp:function(a){this.base(arguments,a);
-a.stopPropagation()},
-_onMouseOver:function(){this.addState("hovered")},
-_onMouseOut:function(){this.removeState("hovered")},
-_onKeyDown:function(b){switch(b.getKeyIdentifier()){case"Enter":this.removeState("abandoned");
-this.addState("pressed");
-var a=this.getMenu();
-a&&(a.isVisible()?a.exclude():this.open());
-b.stopPropagation()}},
-_onKeyUp:function(){}},
-destruct:function(){this.getMenu()&&(qx.core.ObjectRegistry.inShutDown||this.getMenu().destroy())}});
-
-
-// qx.ui.menubar.Button
-//   - Size: 1160 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.ui.menubar.Button",{extend:qx.ui.form.MenuButton,
-construct:function(b,a,c){this.base(arguments,b,a,c);
-this.removeListener("keydown",this._onKeyDown);
-this.removeListener("keyup",this._onKeyUp)},
-properties:{appearance:{refine:true,
-init:"menubar-button"},
-focusable:{refine:true,
-init:false}},
-members:{getMenuBar:function(){var a=this;
-while(a){if(a instanceof qx.ui.toolbar.ToolBar)return a;
-a=a.getLayoutParent()}return null},
-open:function(b){this.base(arguments,b);
-var a=this.getMenuBar();
-a._setAllowMenuOpenHover(true)},
-_onMenuChange:function(){var b=this.getMenu(),a=this.getMenuBar();
-b.isVisible()?(this.addState("pressed"),a&&a.setOpenMenu(b)):(this.removeState("pressed"),a&&a.getOpenMenu()==b&&(a.resetOpenMenu(),a._setAllowMenuOpenHover(false)))},
-_onMouseUp:function(b){this.base(arguments,b);
-var a=this.getMenu();
-a&&a.isVisible()&&!this.hasState("pressed")&&this.addState("pressed")},
-_onMouseOver:function(){this.addState("hovered");
-if(this.getMenu()){var a=this.getMenuBar();
-a._isAllowMenuOpenHover()&&(qx.ui.menu.Manager.getInstance().hideAll(),a._setAllowMenuOpenHover(true),this.isEnabled()&&this.open())}}}});
-
-
-// qx.ui.toolbar.Part
-//   - Size: 1127 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.toolbar.Part",{extend:qx.ui.core.Widget,
-include:[qx.ui.core.MRemoteChildrenHandling],
-construct:function(){this.base(arguments);
-this._setLayout(new qx.ui.layout.HBox);
-this._createChildControl("handle")},
-properties:{appearance:{refine:true,
-init:"toolbar/part"},
-show:{init:"both",
-check:["both","label","icon"],
-inheritable:true,
-event:"changeShow"},
-spacing:{nullable:true,
-check:"Integer",
-themeable:true,
-apply:"_applySpacing"}},
-members:{_createChildControlImpl:function(b){var a;
-switch(b){case"handle":a=new qx.ui.basic.Image();
-a.setAlignY("middle");
-this._add(a);
-break;
-case"container":a=new qx.ui.toolbar.PartContainer;
-this._add(a);
-break}return a||this.base(arguments,b)},
-getChildrenContainer:function(){return this.getChildControl("container")},
-_applySpacing:function(a){var b=this.getChildControl("container").getLayout();
-a==null?b.resetSpacing():b.setSpacing(a)},
-addSeparator:function(){this.add(new qx.ui.toolbar.Separator)},
-getMenuButtons:function(){for(var c=this.getChildren(),d=[],a,b=0,e=c.length;
-b<e;
-b++)a=c[b],a instanceof qx.ui.menubar.Button&&d.push(a);
-return d}}});
 
 
 // qx.ui.core.scroll.NativeScrollBar
@@ -15116,16 +15116,6 @@ h==-1?(this.hide(),this.setRow(null),this.setColumn(null)):(c=this.__zCh7p.getTa
 destruct:function(){this.__zCh7p=null}});
 
 
-// qx.ui.table.pane.Clipper
-//   - Size: 314 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.pane.Clipper",{extend:qx.ui.container.Composite,
-construct:function(){this.base(arguments,new qx.ui.layout.Grow());
-this.setMinWidth(0)},
-members:{scrollToX:function(a){this.getContentElement().scrollToX(a,false)},
-scrollToY:function(a){this.getContentElement().scrollToY(a,true)}}});
-
-
 // qx.ui.container.Stack
 //   - Size: 1448 bytes
 //   - Modified: 2010-08-26T21:43:53
@@ -15161,6 +15151,16 @@ d=b[a];
 this.setSelection([d])},
 next:function(){var c=this.getSelection()[0],d=this._indexOf(c)+1,a=this._getChildren(),b=a[d]||a[0];
 this.setSelection([b])}}});
+
+
+// qx.ui.table.pane.Clipper
+//   - Size: 314 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.pane.Clipper",{extend:qx.ui.container.Composite,
+construct:function(){this.base(arguments,new qx.ui.layout.Grow());
+this.setMinWidth(0)},
+members:{scrollToX:function(a){this.getContentElement().scrollToX(a,false)},
+scrollToY:function(a){this.getContentElement().scrollToY(a,true)}}});
 
 
 // qx.ui.tree.FolderOpenButton
@@ -15567,19 +15567,6 @@ a?(this.addState("readonly"),this.setFocusable(false)):(this.removeState("readon
 destruct:function(){this.__PpeiQ=null}});
 
 
-// qx.ui.form.TextField
-//   - Size: 256 bytes
-//   - Modified: 2010-09-30T14:20:20
-qx.Class.define("qx.ui.form.TextField",{extend:qx.ui.form.AbstractField,
-properties:{appearance:{refine:true,
-init:"textfield"},
-allowGrowY:{refine:true,
-init:false},
-allowShrinkY:{refine:true,
-init:false}},
-members:{_renderContentElement:function(){}}});
-
-
 // qx.ui.splitpane.Pane
 //   - Size: 4856 bytes
 //   - Modified: 2010-11-10T13:22:29
@@ -15691,6 +15678,19 @@ this.__JEQTh=b}},
 destruct:function(){this.__yONi8=null}});
 
 
+// qx.ui.form.TextField
+//   - Size: 256 bytes
+//   - Modified: 2010-09-30T14:20:20
+qx.Class.define("qx.ui.form.TextField",{extend:qx.ui.form.AbstractField,
+properties:{appearance:{refine:true,
+init:"textfield"},
+allowGrowY:{refine:true,
+init:false},
+allowShrinkY:{refine:true,
+init:false}},
+members:{_renderContentElement:function(){}}});
+
+
 // qx.ui.table.celleditor.TextField
 //   - Size: 406 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -15702,6 +15702,29 @@ return a},
 _createEditor:function(){var a=new qx.ui.form.TextField();
 a.setAppearance("table-editor-textfield");
 return a}}});
+
+
+// qx.ui.menu.CheckBox
+//   - Size: 737 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.menu.CheckBox",{extend:qx.ui.menu.AbstractButton,
+implement:[qx.ui.form.IBooleanForm],
+construct:function(a,b){this.base(arguments);
+a!=null&&(a.translate?this.setLabel(a.translate()):this.setLabel(a));
+b!=null&&this.setMenu(b);
+this.addListener("execute",this._onExecute,this)},
+properties:{appearance:{refine:true,
+init:"menu-checkbox"},
+value:{check:"Boolean",
+init:false,
+apply:"_applyValue",
+event:"changeValue",
+nullable:true}},
+members:{_applyValue:function(a){a?this.addState("checked"):this.removeState("checked")},
+_onExecute:function(){this.toggleValue()},
+_onMouseUp:function(a){a.isLeftPressed()&&this.execute();
+qx.ui.menu.Manager.getInstance().hideAll()},
+_onKeyPress:function(){this.execute()}}});
 
 
 // qx.ui.table.headerrenderer.HeaderCell
@@ -15748,6 +15771,23 @@ allowShrinkX:true});
 this._add(a,{row:0,
 column:0});
 break}return a||this.base(arguments,b)}}});
+
+
+// qx.ui.table.columnmenu.MenuItem
+//   - Size: 474 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.columnmenu.MenuItem",{extend:qx.ui.menu.CheckBox,
+implement:qx.ui.table.IColumnMenuItem,
+properties:{visible:{check:"Boolean",
+init:true,
+apply:"_applyVisible",
+event:"changeVisible"}},
+construct:function(a){this.base(arguments,a);
+this.addListener("changeValue",function(a){this.bInListener=true;
+this.setVisible(a.getData());
+this.bInListener=false})},
+members:{__NpuhK:false,
+_applyVisible:function(a){this.bInListener||this.setValue(a)}}});
 
 
 // qx.ui.tree.AbstractTreeItem
@@ -15920,20 +15960,6 @@ destruct:function(){this._disposeArray("__children");
 this._disposeObjects("__spacer","__childrenContainer")}});
 
 
-// qx.ui.tree.TreeFolder
-//   - Size: 311 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.tree.TreeFolder",{extend:qx.ui.tree.AbstractTreeItem,
-construct:function(a){this.base(arguments);
-a&&this.setLabel(a)},
-properties:{appearance:{refine:true,
-init:"tree-folder"}},
-members:{_addWidgets:function(){this.addSpacer();
-this.addOpenButton();
-this.addIcon();
-this.addLabel()}}});
-
-
 // qx.ui.toolbar.MenuButton
 //   - Size: 506 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -15952,32 +15978,18 @@ break}return a||this.base(arguments,b)},
 _applyShowArrow:function(a){a?this._showChildControl("arrow"):this._excludeChildControl("arrow")}}});
 
 
-// apiviewer.ui.panels.ClassPanel
-//   - Size: 1204 bytes
+// qx.ui.tree.TreeFolder
+//   - Size: 311 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ui.panels.ClassPanel",{extend:apiviewer.ui.panels.InfoPanel,
-construct:function(c,a,b){this.base(arguments,c,a);
-this.setType(b)},
-properties:{type:{check:["class","mixin","interface"]}},
-members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getName(),a,false,true)},
-getItemTitleHtml:function(a){return a.getFullName()},
-getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getClass(),b)},
-getItemTooltip:function(b){if(b.isAbstract())var a="Abstract ";
-else a=b.isStatic()?"Static ":b.isSingleton()?"Singleton ":"";
-switch(b.getType()){case"mixin":a+="Mixin";
-break;
-case"interface":a+="Interface";
-break;
-default:a+="Class";
-break}return a},
-itemHasDetails:function(a){return apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)},
-update:function(f,d){if(!this.getElement())return;
-this.setDocNode(d);
-for(var e=d.getClasses(),b=[],a,c=0;
-c<e.length;
-c++)a=e[c].getType(),(a==="bootstrap"||a==="list")&&(a="class"),a===this.getType()&&b.push(e[c]);
-b&&b.length>0&&this._sortItems(b);
-this._displayNodes(b,d)}}});
+qx.Class.define("qx.ui.tree.TreeFolder",{extend:qx.ui.tree.AbstractTreeItem,
+construct:function(a){this.base(arguments);
+a&&this.setLabel(a)},
+properties:{appearance:{refine:true,
+init:"tree-folder"}},
+members:{_addWidgets:function(){this.addSpacer();
+this.addOpenButton();
+this.addIcon();
+this.addLabel()}}});
 
 
 // qx.ui.tooltip.ToolTip
@@ -16021,6 +16033,22 @@ _applyLabel:function(b){var a=this.getChildControl("atom");
 b==null?a.resetLabel():a.setLabel(b)},
 _applyRich:function(b){var a=this.getChildControl("atom");
 a.setRich(b)}}});
+
+
+// apiviewer.ui.panels.PackagePanel
+//   - Size: 754 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("apiviewer.ui.panels.PackagePanel",{extend:apiviewer.ui.panels.InfoPanel,
+members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getFullName(),null,false,true)},
+getItemTitleHtml:function(a){return a.getFullName()},
+getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getPackage(),b)},
+getItemTooltip:function(){return"Package"},
+itemHasDetails:function(a){return apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)},
+update:function(c,b){if(!this.getElement())return;
+this.setDocNode(b);
+var a=b.getPackages();
+a&&a.length>0&&this._sortItems(a);
+this._displayNodes(a,b)}}});
 
 
 // qx.ui.form.ToggleButton
@@ -16073,20 +16101,32 @@ _onKeyUp:function(a){if(!this.hasState("pressed"))return;
 switch(a.getKeyIdentifier()){case"Enter":case"Space":this.removeState("abandoned"),this.execute(),this.removeState("pressed"),a.stopPropagation()}}}});
 
 
-// apiviewer.ui.panels.PackagePanel
-//   - Size: 754 bytes
+// apiviewer.ui.panels.ClassPanel
+//   - Size: 1204 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ui.panels.PackagePanel",{extend:apiviewer.ui.panels.InfoPanel,
-members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getFullName(),null,false,true)},
+qx.Class.define("apiviewer.ui.panels.ClassPanel",{extend:apiviewer.ui.panels.InfoPanel,
+construct:function(c,a,b){this.base(arguments,c,a);
+this.setType(b)},
+properties:{type:{check:["class","mixin","interface"]}},
+members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getName(),a,false,true)},
 getItemTitleHtml:function(a){return a.getFullName()},
-getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getPackage(),b)},
-getItemTooltip:function(){return"Package"},
+getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getClass(),b)},
+getItemTooltip:function(b){if(b.isAbstract())var a="Abstract ";
+else a=b.isStatic()?"Static ":b.isSingleton()?"Singleton ":"";
+switch(b.getType()){case"mixin":a+="Mixin";
+break;
+case"interface":a+="Interface";
+break;
+default:a+="Class";
+break}return a},
 itemHasDetails:function(a){return apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)},
-update:function(c,b){if(!this.getElement())return;
-this.setDocNode(b);
-var a=b.getPackages();
-a&&a.length>0&&this._sortItems(a);
-this._displayNodes(a,b)}}});
+update:function(f,d){if(!this.getElement())return;
+this.setDocNode(d);
+for(var e=d.getClasses(),b=[],a,c=0;
+c<e.length;
+c++)a=e[c].getType(),(a==="bootstrap"||a==="list")&&(a="class"),a===this.getType()&&b.push(e[c]);
+b&&b.length>0&&this._sortItems(b);
+this._displayNodes(b,d)}}});
 
 
 // qx.ui.toolbar.CheckBox
@@ -16173,6 +16213,35 @@ a&&a==b.getToolTip()&&this.setCurrent(null)}},
 destruct:function(){qx.event.Registration.removeListener(document.body,"mouseover",this.__bhERW5,this,true);
 this._disposeObjects("__showTimer","__hideTimer","__sharedToolTip");
 this.__349cD=null}});
+
+
+// qx.ui.menu.RadioButton
+//   - Size: 915 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.menu.RadioButton",{extend:qx.ui.menu.AbstractButton,
+include:[qx.ui.form.MModelProperty],
+implement:[qx.ui.form.IRadioItem,qx.ui.form.IBooleanForm,qx.ui.form.IModel],
+construct:function(a,b){this.base(arguments);
+a!=null&&this.setLabel(a);
+b!=null&&this.setMenu(b);
+this.addListener("execute",this._onExecute,this)},
+properties:{appearance:{refine:true,
+init:"menu-radiobutton"},
+value:{check:"Boolean",
+nullable:true,
+event:"changeValue",
+apply:"_applyValue",
+init:false},
+group:{check:"qx.ui.form.RadioGroup",
+nullable:true,
+apply:"_applyGroup"}},
+members:{_applyValue:function(a){a?this.addState("checked"):this.removeState("checked")},
+_applyGroup:function(a,b){b&&b.remove(this);
+a&&a.add(this)},
+_onExecute:function(){this.setValue(true)},
+_onMouseUp:function(a){a.isLeftPressed()&&this.execute();
+qx.ui.menu.Manager.getInstance().hideAll()},
+_onKeyPress:function(){this.execute()}}});
 
 
 // qx.ui.tree.SelectionManager
@@ -16320,17 +16389,6 @@ b.sorted?a.addState(d.STATE_SORTED):a.removeState(d.STATE_SORTED);
 b.sortedAscending?a.addState(d.STATE_SORTED_ASCENDING):a.removeState(d.STATE_SORTED_ASCENDING)}}});
 
 
-// qx.ui.toolbar.RadioButton
-//   - Size: 288 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.ui.toolbar.RadioButton",{extend:qx.ui.toolbar.CheckBox,
-include:[qx.ui.form.MModelProperty],
-implement:[qx.ui.form.IModel,qx.ui.form.IRadioItem],
-members:{_applyValue:function(a,c){this.base(arguments,a,c);
-if(a){var b=this.getGroup();
-b&&b.setSelection([this])}}}});
-
-
 // qx.ui.form.RadioButton
 //   - Size: 1085 bytes
 //   - Modified: 2010-11-03T14:43:37
@@ -16364,6 +16422,17 @@ switch(b.getKeyIdentifier()){case"Left":case"Up":a.selectPrevious();
 break;
 case"Right":case"Down":a.selectNext();
 break}}}});
+
+
+// qx.ui.toolbar.RadioButton
+//   - Size: 288 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Class.define("qx.ui.toolbar.RadioButton",{extend:qx.ui.toolbar.CheckBox,
+include:[qx.ui.form.MModelProperty],
+implement:[qx.ui.form.IModel,qx.ui.form.IRadioItem],
+members:{_applyValue:function(a,c){this.base(arguments,a,c);
+if(a){var b=this.getGroup();
+b&&b.setSelection([this])}}}});
 
 
 // qx.ui.tabview.TabButton
@@ -16441,6 +16510,13 @@ _applyCenter:function(b){var a=this._getLayout();
 b?a.setColumnAlign(2,"center","middle"):a.setColumnAlign(2,"left","middle")}}});
 
 
+// qx.ui.core.scroll.MScrollBarFactory
+//   - Size: 277 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.core.Setting.define("qx.nativeScrollBars",false);
+qx.Mixin.define("qx.ui.core.scroll.MScrollBarFactory",{members:{_createScrollBar:function(a){return qx.core.Setting.get("qx.nativeScrollBars")?new qx.ui.core.scroll.NativeScrollBar(a):new qx.ui.core.scroll.ScrollBar(a)}}});
+
+
 // qx.application.AbstractGui
 //   - Size: 613 bytes
 //   - Modified: 2010-11-11T16:55:27
@@ -16459,13 +16535,6 @@ render:function(){qx.ui.core.queue.Manager.flush()},
 close:function(){},
 terminate:function(){}},
 destruct:function(){this.__jO4QN=null}});
-
-
-// qx.ui.core.scroll.MScrollBarFactory
-//   - Size: 277 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.core.Setting.define("qx.nativeScrollBars",false);
-qx.Mixin.define("qx.ui.core.scroll.MScrollBarFactory",{members:{_createScrollBar:function(a){return qx.core.Setting.get("qx.nativeScrollBars")?new qx.ui.core.scroll.NativeScrollBar(a):new qx.ui.core.scroll.ScrollBar(a)}}});
 
 
 // qx.ui.core.scroll.AbstractScrollArea
@@ -17020,13 +17089,6 @@ a<this.__18YOe.length;
 a++)this.__18YOe[a].headerRenderer.dispose(),this.__18YOe[a].dataRenderer.dispose(),this.__18YOe[a].editorFactory.dispose();
 this.__bqB3IN=this.__bqk0GG=this.__18YOe=this.__T6ZcG=null;
 this._disposeObjects("__headerRenderer","__dataRenderer","__editorFactory")}});
-
-
-// apiviewer.ui.tabview.ClassPage
-//   - Size: 169 bytes
-//   - Modified: 2010-07-17T16:42:24
-qx.Class.define("apiviewer.ui.tabview.ClassPage",{extend:apiviewer.ui.tabview.AbstractPage,
-members:{_createViewer:function(){return new apiviewer.ui.ClassViewer()}}});
 
 
 // qx.ui.tree.Tree
@@ -17651,27 +17713,11 @@ qx.Class.define("qx.application.Standalone",{extend:qx.application.AbstractGui,
 members:{_createRootWidget:function(){return new qx.ui.root.Application(document)}}});
 
 
-// qx.ui.menu.CheckBox
-//   - Size: 737 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.menu.CheckBox",{extend:qx.ui.menu.AbstractButton,
-implement:[qx.ui.form.IBooleanForm],
-construct:function(a,b){this.base(arguments);
-a!=null&&(a.translate?this.setLabel(a.translate()):this.setLabel(a));
-b!=null&&this.setMenu(b);
-this.addListener("execute",this._onExecute,this)},
-properties:{appearance:{refine:true,
-init:"menu-checkbox"},
-value:{check:"Boolean",
-init:false,
-apply:"_applyValue",
-event:"changeValue",
-nullable:true}},
-members:{_applyValue:function(a){a?this.addState("checked"):this.removeState("checked")},
-_onExecute:function(){this.toggleValue()},
-_onMouseUp:function(a){a.isLeftPressed()&&this.execute();
-qx.ui.menu.Manager.getInstance().hideAll()},
-_onKeyPress:function(){this.execute()}}});
+// apiviewer.ui.tabview.ClassPage
+//   - Size: 169 bytes
+//   - Modified: 2010-07-17T16:42:24
+qx.Class.define("apiviewer.ui.tabview.ClassPage",{extend:apiviewer.ui.tabview.AbstractPage,
+members:{_createViewer:function(){return new apiviewer.ui.ClassViewer()}}});
 
 
 // apiviewer.ui.tabview.PackagePage
@@ -17679,23 +17725,6 @@ _onKeyPress:function(){this.execute()}}});
 //   - Modified: 2010-07-17T16:42:24
 qx.Class.define("apiviewer.ui.tabview.PackagePage",{extend:apiviewer.ui.tabview.AbstractPage,
 members:{_createViewer:function(){return new apiviewer.ui.PackageViewer()}}});
-
-
-// qx.ui.table.columnmenu.MenuItem
-//   - Size: 474 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.columnmenu.MenuItem",{extend:qx.ui.menu.CheckBox,
-implement:qx.ui.table.IColumnMenuItem,
-properties:{visible:{check:"Boolean",
-init:true,
-apply:"_applyVisible",
-event:"changeVisible"}},
-construct:function(a){this.base(arguments,a);
-this.addListener("changeValue",function(a){this.bInListener=true;
-this.setVisible(a.getData());
-this.bInListener=false})},
-members:{__NpuhK:false,
-_applyVisible:function(a){this.bInListener||this.setValue(a)}}});
 
 
 // apiviewer.TabViewController
@@ -17759,35 +17788,6 @@ empty:function(){for(var d=this.getMenu(),a=d.getChildren(),b=0,c=a.length;
 b<c;
 b++)a[0].destroy()}},
 destruct:function(){this.__ukeJN.dispose()}});
-
-
-// qx.ui.menu.RadioButton
-//   - Size: 915 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.menu.RadioButton",{extend:qx.ui.menu.AbstractButton,
-include:[qx.ui.form.MModelProperty],
-implement:[qx.ui.form.IRadioItem,qx.ui.form.IBooleanForm,qx.ui.form.IModel],
-construct:function(a,b){this.base(arguments);
-a!=null&&this.setLabel(a);
-b!=null&&this.setMenu(b);
-this.addListener("execute",this._onExecute,this)},
-properties:{appearance:{refine:true,
-init:"menu-radiobutton"},
-value:{check:"Boolean",
-nullable:true,
-event:"changeValue",
-apply:"_applyValue",
-init:false},
-group:{check:"qx.ui.form.RadioGroup",
-nullable:true,
-apply:"_applyGroup"}},
-members:{_applyValue:function(a){a?this.addState("checked"):this.removeState("checked")},
-_applyGroup:function(a,b){b&&b.remove(this);
-a&&a.add(this)},
-_onExecute:function(){this.setValue(true)},
-_onMouseUp:function(a){a.isLeftPressed()&&this.execute();
-qx.ui.menu.Manager.getInstance().hideAll()},
-_onKeyPress:function(){this.execute()}}});
 
 
 // apiviewer.Controller
@@ -18595,59 +18595,6 @@ this.controller.load("script/apidata.json")}},
 destruct:function(){this._disposeObjects("viewer","controller")}});
 
 
-// qx.theme.Color
-//   - Size: 1623 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Theme.define("qx.theme.Color",{colors:{"background-application":"#DFDFDF",
-"background-pane":"#F3F3F3",
-"background-light":"#FCFCFC",
-"background-medium":"#EEEEEE",
-"background-splitpane":"#AFAFAF",
-"background-tip":"#ffffdd",
-"background-tip-error":"#C72B2B",
-"background-odd":"#E4E4E4",
-"text-light":"#909090",
-"text-gray":"#4a4a4a",
-"text-label":"#1a1a1a",
-"text-title":"#314a6e",
-"text-input":"#000000",
-"text-hovered":"#001533",
-"text-disabled":"#7B7A7E",
-"text-selected":"#fffefe",
-"text-active":"#26364D",
-"text-inactive":"#404955",
-"text-placeholder":"#CBC8CD",
-"border-main":"#4d4d4d",
-"border-separator":"#808080",
-"border-input":"#334866",
-"border-disabled":"#B6B6B6",
-"border-pane":"#00204D",
-"border-button":"#666666",
-"border-column":"#CCCCCC",
-"border-focused":"#99C3FE",
-invalid:"#990000",
-"border-focused-invalid":"#FF9999",
-"table-pane":"#F3F3F3",
-"table-focus-indicator":"#0880EF",
-"table-row-background-focused-selected":"#084FAB",
-"table-row-background-focused":"#80B4EF",
-"table-row-background-selected":"#084FAB",
-"table-row-background-even":"#F3F3F3",
-"table-row-background-odd":"#E4E4E4",
-"table-row-selected":"#fffefe",
-"table-row":"#1a1a1a",
-"table-row-line":"#CCCCCC",
-"table-column-line":"#CCCCCC",
-"progressive-table-header":"#AAAAAA",
-"progressive-table-row-background-even":"#F4F4F4",
-"progressive-table-row-background-odd":"#E4E4E4",
-"progressive-progressbar-background":"gray",
-"progressive-progressbar-indicator-done":"#CCCCCC",
-"progressive-progressbar-indicator-undone":"white",
-"progressive-progressbar-percent-background":"gray",
-"progressive-progressbar-percent-text":"white"}});
-
-
 // qx.theme.Appearance
 //   - Size: 27270 bytes
 //   - Modified: 2010-11-11T16:55:28
@@ -19259,6 +19206,59 @@ htmlarea:{include:"widget",
 style:function(){return{backgroundColor:"white"}}}}});
 
 
+// qx.theme.Color
+//   - Size: 1623 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Theme.define("qx.theme.Color",{colors:{"background-application":"#DFDFDF",
+"background-pane":"#F3F3F3",
+"background-light":"#FCFCFC",
+"background-medium":"#EEEEEE",
+"background-splitpane":"#AFAFAF",
+"background-tip":"#ffffdd",
+"background-tip-error":"#C72B2B",
+"background-odd":"#E4E4E4",
+"text-light":"#909090",
+"text-gray":"#4a4a4a",
+"text-label":"#1a1a1a",
+"text-title":"#314a6e",
+"text-input":"#000000",
+"text-hovered":"#001533",
+"text-disabled":"#7B7A7E",
+"text-selected":"#fffefe",
+"text-active":"#26364D",
+"text-inactive":"#404955",
+"text-placeholder":"#CBC8CD",
+"border-main":"#4d4d4d",
+"border-separator":"#808080",
+"border-input":"#334866",
+"border-disabled":"#B6B6B6",
+"border-pane":"#00204D",
+"border-button":"#666666",
+"border-column":"#CCCCCC",
+"border-focused":"#99C3FE",
+invalid:"#990000",
+"border-focused-invalid":"#FF9999",
+"table-pane":"#F3F3F3",
+"table-focus-indicator":"#0880EF",
+"table-row-background-focused-selected":"#084FAB",
+"table-row-background-focused":"#80B4EF",
+"table-row-background-selected":"#084FAB",
+"table-row-background-even":"#F3F3F3",
+"table-row-background-odd":"#E4E4E4",
+"table-row-selected":"#fffefe",
+"table-row":"#1a1a1a",
+"table-row-line":"#CCCCCC",
+"table-column-line":"#CCCCCC",
+"progressive-table-header":"#AAAAAA",
+"progressive-table-row-background-even":"#F4F4F4",
+"progressive-table-row-background-odd":"#E4E4E4",
+"progressive-progressbar-background":"gray",
+"progressive-progressbar-indicator-done":"#CCCCCC",
+"progressive-progressbar-indicator-undone":"white",
+"progressive-progressbar-percent-background":"gray",
+"progressive-progressbar-percent-text":"white"}});
+
+
 // apiviewer.Appearance
 //   - Size: 757 bytes
 //   - Modified: 2010-11-11T16:55:27
@@ -19441,39 +19441,6 @@ right:a.getImageWidth(b.r)}}},
 destruct:function(){this.__qyd51=this.__qd9wf=this.__msGX5=null}});
 
 
-// qx.ui.decoration.Background
-//   - Size: 1105 bytes
-//   - Modified: 2010-09-30T14:20:20
-qx.Class.define("qx.ui.decoration.Background",{extend:qx.ui.decoration.Abstract,
-include:[qx.ui.decoration.MBackgroundImage],
-construct:function(a){this.base(arguments);
-a!=null&&this.setBackgroundColor(a)},
-properties:{backgroundColor:{check:"Color",
-nullable:true,
-apply:"_applyStyle"}},
-members:{__qyd51:null,
-_getDefaultInsets:function(){return{top:0,
-right:0,
-bottom:0,
-left:0}},
-_isInitialized:function(){return!!this.__qyd51},
-getMarkup:function(){if(this.__qyd51)return this.__qyd51;
-var b={position:"absolute",
-top:0,
-left:0},a=this._generateBackgroundMarkup(b);
-return this.__qyd51=a},
-resize:function(b,d,c){var a=this.getInsets();
-b.style.width=(d-a.left-a.right)+"px";
-b.style.height=(c-a.top-a.bottom)+"px";
-b.style.left=-a.left+"px";
-b.style.top=-a.top+"px"},
-tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
-a==null&&(a=this.getBackgroundColor());
-b.style.backgroundColor=c.resolve(a)||""},
-_applyStyle:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
-destruct:function(){this.__qyd51=null}});
-
-
 // qx.ui.decoration.Single
 //   - Size: 3487 bytes
 //   - Modified: 2010-11-11T16:55:28
@@ -19572,6 +19539,39 @@ b.style.backgroundColor=c.resolve(a)||""},
 _applyWidth:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!");
 this._resetInsets()},
 _applyStyle:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
+destruct:function(){this.__qyd51=null}});
+
+
+// qx.ui.decoration.Background
+//   - Size: 1105 bytes
+//   - Modified: 2010-09-30T14:20:20
+qx.Class.define("qx.ui.decoration.Background",{extend:qx.ui.decoration.Abstract,
+include:[qx.ui.decoration.MBackgroundImage],
+construct:function(a){this.base(arguments);
+a!=null&&this.setBackgroundColor(a)},
+properties:{backgroundColor:{check:"Color",
+nullable:true,
+apply:"_applyStyle"}},
+members:{__qyd51:null,
+_getDefaultInsets:function(){return{top:0,
+right:0,
+bottom:0,
+left:0}},
+_isInitialized:function(){return!!this.__qyd51},
+getMarkup:function(){if(this.__qyd51)return this.__qyd51;
+var b={position:"absolute",
+top:0,
+left:0},a=this._generateBackgroundMarkup(b);
+return this.__qyd51=a},
+resize:function(b,d,c){var a=this.getInsets();
+b.style.width=(d-a.left-a.right)+"px";
+b.style.height=(c-a.top-a.bottom)+"px";
+b.style.left=-a.left+"px";
+b.style.top=-a.top+"px"},
+tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
+a==null&&(a=this.getBackgroundColor());
+b.style.backgroundColor=c.resolve(a)||""},
+_applyStyle:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
 destruct:function(){this.__qyd51=null}});
 
 

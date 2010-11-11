@@ -12,30 +12,13 @@ class Loader():
 
         
     def generate(self, bootCode):
-        config = "$LAB.setGlobalDefaults({AlwaysPreserveOrder:true});\n"
-        
-        result = ["$LAB"]
-        
-        pstart()
         logging.info("Generating loader...")
         
-        scripts = []
-        for classObj in self.__classList:
-            if classObj == "WAIT":
-                result.append('script(["%s"])' % '","'.join(scripts))
-                scripts = []
-                
-            else:
-                scripts.append(classObj.path)
-                
-        # Append remaining scripts
-        result.append('script(["%s"])' % '","'.join(scripts))
+        result = "$LAB.setGlobalDefaults({AlwaysPreserveOrder:true});"
+        result += '$LAB.script([%s])' % ",".join(['"%s"' % classObj.path for classObj in self.__classList])
                 
         if bootCode:
-            result.append("wait(function(){%s})" % bootCode)
-            
-        result = "%s%s" % (config, "\n.".join(result))
-        pstop()
+            result += ".wait(function(){%s})" % bootCode
         
         return result
 

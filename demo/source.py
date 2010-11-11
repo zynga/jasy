@@ -20,15 +20,13 @@ session.addLocale("en_US")
 resolver = Resolver(session)
 resolver.addClassName("apiviewer.Application")
 resolver.addClassName("apiviewer.Theme")
-classes = resolver.getIncludedClasses()
 
 # Collect Resources
-resources = Resources(session, classes)
+resources = Resources(session, resolver.getIncludedClasses())
 resourceCode = resources.export()
 
 # Generate Loader
-sorter = Sorter(classes)
-loader = Loader(sorter.getSortedClasses())
+loader = Loader(Sorter(resolver).getSortedClasses())
 loaderCode = loader.generate("qx.core.Init.boot(apiviewer.Application)")
 
 # Write file

@@ -120,6 +120,7 @@ class Class():
             
         return meta
         
+        
     def getCompressed(self, permutation=None, optimization=None, format=True):
         field = "compressed[%s]-%s-%s-%s" % (self.rel, permutation, optimization, format)
         field = hashlib.md5(field.encode("utf-8")).hexdigest()

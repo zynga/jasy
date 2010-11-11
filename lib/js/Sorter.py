@@ -66,33 +66,15 @@ class Sorter:
     def __addSorted(self, classObj, result, postponed=False):
         """ Adds a single class and its dependencies to the sorted result list """
 
-        wait = False
         loadDeps = self.__getLoadDeps(classObj)
         
         for depObj in loadDeps:
             if not depObj in result:
                 self.__addSorted(depObj, result)
-                wait = True
 
         if classObj in result:
             return
             
-        # Reprocess list to check whether all dependencies are after the last "WAIT"
-        if not wait:
-            for depObj in loadDeps:
-                if result.index(depObj) > self.__lastWait:
-                    wait = True
-                    break
-
-        # When this class had required classes when we need
-        # to wait for them being loaded. This is mainly information
-        # for a more granular system where you need more than
-        # just a final list of classes.
-        if wait and result[-1] != "WAIT":
-            logging.debug("Adding wait command")
-            self.__lastWait = len(result)
-            result.append("WAIT")
-
         logging.debug("Adding class: %s", classObj)
         result.append(classObj)
 

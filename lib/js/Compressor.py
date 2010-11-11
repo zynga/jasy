@@ -22,9 +22,6 @@ class Compressor():
         logging.info("Compressing classes...")
         
         for classObj in self.__classList:
-            if classObj == "WAIT":
-                continue
-            
             compressed = classObj.getCompressed(permutation, optimization, format=format)
             logging.debug("Adding %s: %s bytes", classObj, len(compressed))
             
