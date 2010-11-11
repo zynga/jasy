@@ -7,28 +7,31 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 # Import JavaScript tooling
 from js import *
 
-# Application specific code
+# Open Session
 session = Session()
-session.addProject(Project("../../qooxdoo/qooxdoo/framework"))
-session.addProject(Project("../../qooxdoo/qooxdoo/component/apiviewer"))
-session.addProject(Project("../../unify/framework"))
 
-# Locale data
-session.addLocale("en_US")
-
-# Variant data
-session.addVariant("qx.debug", [ '"on"' ])
-session.addVariant("qx.client", [ '"gecko"' ])
-session.addVariant("qx.dynlocale", [ '"off"' ])
-session.addVariant("qx.globalErrorHandling", [ '"off"' ])
-session.addVariant("qx.version", ["1.0"])
-session.addVariant("qx.theme", ['"apiviewer.Theme"'])
-
-# Create optimizer for improved speed/compression
-optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
-
-# Process every possible permutation
+# Protect session
 try:
+    # Application specific code
+    session.addProject(Project("../../qooxdoo/qooxdoo/framework"))
+    session.addProject(Project("../../qooxdoo/qooxdoo/component/apiviewer"))
+    session.addProject(Project("../../unify/framework"))
+
+    # Locale data
+    session.addLocale("en_US")
+
+    # Variant data
+    session.addVariant("qx.debug", [ '"on"' ])
+    session.addVariant("qx.client", [ '"gecko"' ])
+    session.addVariant("qx.dynlocale", [ '"off"' ])
+    session.addVariant("qx.globalErrorHandling", [ '"off"' ])
+    session.addVariant("qx.version", ["1.0"])
+    session.addVariant("qx.theme", ['"apiviewer.Theme"'])
+
+    # Create optimizer for improved speed/compression
+    optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
+    
+    # Process every possible permutation
     for permutation in session.getPermutations():
         logging.info("PERMUTATION: %s" % permutation)
     
@@ -37,15 +40,15 @@ try:
         resolver.addClassName("apiviewer.Application")
         resolver.addClassName("apiviewer.Theme")
         classes = resolver.getIncludedClasses()
-    
+
         # Collect Resources
         resources = Resources(session, classes, permutation)
         resourceCode = resources.export()    
 
         # Sorting classes
-        sorter = Sorter(classes, permutation)
+        sorter = Sorter(resolver, permutation)
         sortedClasses = sorter.getSortedClasses()
-    
+
         # Compiling classes
         compressor = Compressor(sortedClasses, permutation, optimization)
         compressed = compressor.compress()
@@ -65,7 +68,6 @@ try:
 except BaseException as ex:
     logging.error(ex)
     traceback.print_exc()
-    
 
 # Close session
 session.close()
