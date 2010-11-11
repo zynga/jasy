@@ -192,7 +192,7 @@ class Resources:
             assets = set()
             for classObj in self.__classes:
                 assets.update(classObj.getMeta(self.__permutation).assets)
-
+                
             # Compile regular expressions which is used to filter resource later on
             expr = re.compile("^%s$" % "|".join(["(%s)" % asset.replace("*", ".*") for asset in assets]))
             
@@ -207,18 +207,6 @@ class Resources:
             self.__filtered = result
             pstop()
             return result
-            
-            
-            
-            
-        
-    def __findPos(self, coll, item):
-        for pos, obj in enumerate(coll):
-            if obj == item:
-                return pos
-                
-        return -1
-        
             
             
     def getInfo(self, enableSprites=True, enableInlining=True):
