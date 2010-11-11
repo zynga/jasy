@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging, re, json, os, struct
+import logging, re, json, os, struct, zlib
 from js.core.Profiler import *
 
 __all__ = ["Resources"]
@@ -317,8 +317,9 @@ class Resources:
     def export(self, to="$$resources"):
         info = self.getInfo()
         code = json.dumps(info, separators=(',',':'))
+        gzipped = zlib.compress(code.encode("utf-8"))
         
-        logging.info("Generated %sKB of resource info" % (int(len(code)/1024)))
+        logging.info("Generated {:.2f}KB ({:.2f}KB zipped) of resource info".format(len(code)/1024, len(gzipped)/1024))
         
         return "(function(){this.%s=%s})();\n" % (to, code)
         
