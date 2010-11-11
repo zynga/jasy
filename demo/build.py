@@ -41,20 +41,15 @@ try:
         resolver.addClassName("apiviewer.Theme")
         classes = resolver.getIncludedClasses()
 
-        # Collect Resources
+        # Collecting Resources
         resources = Resources(session, classes, permutation)
-        resourceCode = resources.export()    
-
-        # Sorting classes
-        sorter = Sorter(resolver, permutation)
-        sortedClasses = sorter.getSortedClasses()
 
         # Compiling classes
-        compressor = Compressor(sortedClasses, permutation, optimization)
-        compressed = compressor.compress()
+        sorter = Sorter(resolver, permutation)
+        compressor = Compressor(sorter.getSortedClasses(), permutation, optimization)
 
-        # Combine result
-        buildCode = resourceCode + compressed + "qx.core.Init.boot(apiviewer.Application);"
+        # Combining result
+        buildCode = resources.export() + compressor.compress() + "qx.core.Init.boot(apiviewer.Application);"
 
         # Create filename
         # Based on permutation.getKey(), optimization, modification date, etc.

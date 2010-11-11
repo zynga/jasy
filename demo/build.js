@@ -118,59 +118,6 @@ error:function(){qx.Bootstrap.$$logs.push(["error",arguments])},
 trace:function(){}}});
 
 
-// qx.bom.client.Engine
-//   - Size: 1551 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Bootstrap.define("qx.bom.client.Engine",{statics:{NAME:"",
-FULLVERSION:"0.0.0",
-VERSION:0,
-OPERA:false,
-WEBKIT:false,
-GECKO:false,
-MSHTML:false,
-UNKNOWN_ENGINE:false,
-UNKNOWN_VERSION:false,
-DOCUMENT_MODE:null,
-__jA3lT:function(){var b="unknown",a="0.0.0",c=window.navigator.userAgent,f=false,d=false,g,e;
-window.opera&&Object.prototype.toString.call(window.opera)=="[object Opera]"?(b="opera",this.OPERA=true,/Opera[\s\/]([0-9]+)\.([0-9])([0-9]*)/.test(c)?(a=RegExp.$1+"."+RegExp.$2,RegExp.$3!=""&&(a+="."+RegExp.$3)):(d=true,a="9.6.0")):window.navigator.userAgent.indexOf("AppleWebKit/")!=-1?(b="webkit",this.WEBKIT=true,/AppleWebKit\/([^ ]+)/.test(c)?(a=RegExp.$1,g=RegExp("[^\\.0-9]").exec(a),g&&(a=a.slice(0,g.index))):(d=true,a="525.26")):window.controllers&&window.navigator.product==="Gecko"?(b="gecko",this.GECKO=true,/rv\:([^\);]+)(\)|;)/.test(c)?a=RegExp.$1:(d=true,a="1.9.0.0")):window.navigator.cpuClass&&/MSIE\s+([^\);]+)(\)|;)/.test(c)?(b="mshtml",a=RegExp.$1,document.documentMode&&(this.DOCUMENT_MODE=document.documentMode),a<8&&/Trident\/([^\);]+)(\)|;)/.test(c)&&RegExp.$1==="4.0"&&(a="8.0"),this.MSHTML=true):(e=window.qxFail,e&&typeof e==="function"?(b=e(),b.NAME&&b.FULLVERSION&&(b=b.NAME,this[b.toUpperCase()]=true,a=b.FULLVERSION)):(f=true,d=true,a="1.9.0.0",b="gecko",this.GECKO=true,qx.Bootstrap.warn("Unsupported client: "+c+"! Assumed gecko version 1.9.0.0 (Firefox 3.0).")));
-this.UNKNOWN_ENGINE=f;
-this.UNKNOWN_VERSION=d;
-this.NAME=b;
-this.FULLVERSION=a;
-this.VERSION=parseFloat(a)}},
-defer:function(a){a.__jA3lT()}});
-
-
-// qx.core.Setting
-//   - Size: 1333 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Bootstrap.define("qx.core.Setting",{statics:{__zP2zc:{},
-define:function(a,b){if(b===undefined)throw new Error("Default value of setting \""+a+"\" must be defined!");
-if(!this.__zP2zc[a])this.__zP2zc[a]={};
-else if(this.__zP2zc[a].defaultValue!==undefined)throw new Error("Setting \""+a+"\" is already defined!");
-this.__zP2zc[a].defaultValue=b},
-get:function(b){var a=this.__zP2zc[b];
-if(a===undefined)throw new Error("Setting \""+b+"\" is not defined.");
-if(a.value!==undefined)return a.value;
-return a.defaultValue},
-set:function(a,b){if((a.split(".")).length<2)throw new Error("Malformed settings key \""+a+"\". Must be following the schema \"namespace.key\".");
-this.__zP2zc[a]||(this.__zP2zc[a]={});
-this.__zP2zc[a].value=b},
-__jA3lT:function(){if(window.qxsettings){for(a in window.qxsettings)this.set(a,window.qxsettings[a]);
-window.qxsettings=undefined;
-try{delete window.qxsettings}catch(b){}this.__bg8Heh()}var a},
-__bg8Heh:function(){if(this.get("qx.allowUrlSettings")!=true)return;
-for(var c=document.location.search.slice(1).split("&"),b=0,a;
-b<c.length;
-b++){a=c[b].split(":");
-if(a.length!=3||a[0]!="qxsetting")continue;
-this.set(a[1],decodeURIComponent(a[2]))}}},
-defer:function(a){a.define("qx.allowUrlSettings",false);
-a.define("qx.allowUrlVariants",false);
-a.define("qx.propertyDebugLevel",0);
-a.__jA3lT()}});
-
-
 // qx.core.WindowError
 //   - Size: 356 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -233,9 +180,272 @@ getByProperty:function(a,b){while(a){if(a.$$properties&&a.$$properties[b])return
 a=a.superclass}return null}}});
 
 
+// qx.Mixin
+//   - Size: 3239 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Bootstrap.define("qx.Mixin",{statics:{define:function(c,a){if(a){a.include&&!(a.include instanceof Array)&&(a.include=[a.include]);
+this.__9AoUd(c,a);
+var b=a.statics?a.statics:{},d;
+qx.Bootstrap.setDisplayNames(b,c);
+for(d in b)b[d] instanceof Function&&(b[d].$$mixin=b);
+a.construct&&(b.$$constructor=a.construct,qx.Bootstrap.setDisplayName(a.construct,c,"constructor"));
+a.include&&(b.$$includes=a.include);
+a.properties&&(b.$$properties=a.properties);
+a.members&&(b.$$members=a.members,qx.Bootstrap.setDisplayNames(a.members,c+".prototype"));
+for(d in b.$$members)b.$$members[d] instanceof Function&&(b.$$members[d].$$mixin=b);
+a.events&&(b.$$events=a.events);
+a.destruct&&(b.$$destructor=a.destruct,qx.Bootstrap.setDisplayName(a.destruct,c,"destruct"))}else b={};
+b.$$type="Mixin";
+b.name=c;
+b.toString=this.genericToString;
+b.basename=qx.Bootstrap.createNamespace(c,b);
+this.$$registry[c]=b;
+return b},
+checkCompatibility:function(i){var h=this.flatten(i),g=h.length,e,d,c,b,f,a;
+if(g<2)return true;
+e={},d={},c={},f=0;
+for(;
+f<g;
+f++){b=h[f];
+for(a in b.events){if(c[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+c[a]+"\" in member \""+a+"\"!");
+c[a]=b.name}for(a in b.properties){if(e[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+e[a]+"\" in property \""+a+"\"!");
+e[a]=b.name}for(a in b.members){if(d[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+d[a]+"\" in member \""+a+"\"!");
+d[a]=b.name}}return true},
+isCompatible:function(c,b){var a=qx.Bootstrap.getMixins(b);
+a.push(c);
+return qx.Mixin.checkCompatibility(a)},
+getByName:function(a){return this.$$registry[a]},
+isDefined:function(a){return this.getByName(a)!==undefined},
+getTotalNumber:function(){return qx.Bootstrap.objectGetLength(this.$$registry)},
+flatten:function(a){if(!a)return[];
+for(var c=a.concat(),b=0,d=a.length;
+b<d;
+b++)a[b].$$includes&&c.push.apply(c,this.flatten(a[b].$$includes));
+return c},
+genericToString:function(){return"[Mixin "+this.name+"]"},
+$$registry:{},
+__PnQ3H:{include:"object",
+statics:"object",
+members:"object",
+properties:"object",
+events:"object",
+destruct:"function",
+construct:"function"},
+__9AoUd:function(d,b){var e=this.__PnQ3H,a,g,c,h,f;
+for(a in b){if(!e[a])throw new Error("The configuration key \""+a+"\" in mixin \""+d+"\" is not allowed!");
+if(b[a]==null)throw new Error("Invalid key \""+a+"\" in mixin \""+d+"\"! The value is undefined/null!");
+if(e[a]!==null&&typeof b[a]!==e[a])throw new Error("Invalid type of key \""+a+"\" in mixin \""+d+"\"! The type of the key must be \""+e[a]+"\"!")}g=["statics","members","properties","events"],c=0,h=g.length;
+for(;
+c<h;
+c++){a=g[c];
+if(b[a]!==undefined&&(b[a] instanceof Array||b[a] instanceof RegExp||b[a] instanceof Date||b[a].classname!==undefined))throw new Error("Invalid key \""+a+"\" in mixin \""+d+"\"! The value needs to be a map!")}if(b.include){for(c=0,f=b.include,h=f.length;
+c<h;
+c++){if(f[c]==null)throw new Error("Includes of mixins must be mixins. The include number '"+(c+1)+"' in mixin '"+d+"'is undefined/null!");
+if(f[c].$$type!=="Mixin")throw new Error("Includes of mixins must be mixins. The include number '"+(c+1)+"' in mixin '"+d+"'is not a mixin!")}this.checkCompatibility(b.include)}}}});
+
+
+// qx.Theme
+//   - Size: 4074 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Bootstrap.define("qx.Theme",{statics:{define:function(d,a){if(!a)var a={},b,c,e,f;
+a.include=this.__ba6rD1(a.include);
+a.patch=this.__ba6rD1(a.patch);
+this.__9AoUd(d,a);
+b={$$type:"Theme",
+name:d,
+title:a.title,
+toString:this.genericToString};
+a.extend&&(b.supertheme=a.extend);
+b.basename=qx.Bootstrap.createNamespace(d,b);
+this.__uNnVI(b,a);
+this.$$registry[d]=b;
+for(c=0,e=a.include,f=e.length;
+c<f;
+c++)this.include(b,e[c]);
+for(c=0,e=a.patch,f=e.length;
+c<f;
+c++)this.patch(b,e[c])},
+__ba6rD1:function(a){if(!a)return[];
+return qx.Bootstrap.isArray(a)?a:[a]},
+getAll:function(){return this.$$registry},
+getByName:function(a){return this.$$registry[a]},
+isDefined:function(a){return this.getByName(a)!==undefined},
+getTotalNumber:function(){return qx.Bootstrap.objectGetLength(this.$$registry)},
+genericToString:function(){return"[Theme "+this.name+"]"},
+__QriHM:function(d){for(var a=0,b=this.__bh2e6M,c=b.length;
+a<c;
+a++)if(d[b[a]])return b[a]},
+__uNnVI:function(f,a){var c=this.__QriHM(a),d,e,g,b;
+a.extend&&!c&&(c=a.extend.type);
+f.type=c||"other";
+if(!c)return;
+d=function(){};
+a.extend&&(d.prototype=new a.extend.$$clazz);
+e=d.prototype,g=a[c];
+for(b in g){e[b]=g[b];
+if(e[b].base){if(!a.extend)throw new Error("Found base flag in entry '"+b+"' of theme '"+a.name+"'. Base flags are not allowed for themes without a valid super theme!");
+e[b].base=a.extend}}f.$$clazz=d;
+f[c]=new d},
+$$registry:{},
+__bh2e6M:["colors","decorations","fonts","appearances","meta"],
+__PnQ3H:{title:"string",
+type:"string",
+extend:"object",
+colors:"object",
+decorations:"object",
+fonts:"object",
+appearances:"object",
+meta:"object",
+include:"object",
+patch:"object"},
+__yIb8g:{color:"object",
+decoration:"object",
+font:"object",
+appearance:"object"},
+__9AoUd:function(d,a){var f=this.__PnQ3H,b,g,c,h,i,e;
+for(b in a){if(f[b]===undefined)throw new Error("The configuration key \""+b+"\" in theme \""+d+"\" is not allowed!");
+if(a[b]==null)throw new Error("Invalid key \""+b+"\" in theme \""+d+"\"! The value is undefined/null!");
+if(f[b]!==null&&typeof a[b]!==f[b])throw new Error("Invalid type of key \""+b+"\" in theme \""+d+"\"! The type of the key must be \""+f[b]+"\"!")}g=["colors","decorations","fonts","appearances","meta"],c=0,h=g.length;
+for(;
+c<h;
+c++){b=g[c];
+if(a[b]!==undefined&&(a[b] instanceof Array||a[b] instanceof RegExp||a[b] instanceof Date||a[b].classname!==undefined))throw new Error("Invalid key \""+b+"\" in theme \""+d+"\"! The value needs to be a map!")}i=0,c=0,h=g.length;
+for(;
+c<h;
+c++){b=g[c];
+a[b]&&i++;
+if(i>1)throw new Error("You can only define one theme category per file! Invalid theme: "+d)}if(!a.extend&&i===0)throw new Error("You must define at least one entry in your theme configuration :"+d);
+if(a.meta)for(b in a.meta){e=a.meta[b];
+if(this.__yIb8g[b]===undefined)throw new Error("The key \""+b+"\" is not allowed inside a meta theme block.");
+if(typeof e!==this.__yIb8g[b])throw new Error("The type of the key \""+b+"\" inside the meta block is wrong.");
+if(!(typeof e==="object"&&e!==null&&e.$$type==="Theme"))throw new Error("The content of a meta theme must reference to other themes. The value for \""+b+"\" in theme \""+d+"\" is invalid: "+e)}if(a.extend&&a.extend.$$type!=="Theme")throw new Error("Invalid extend in theme \""+d+"\": "+a.extend);
+if(a.include)for(c=0,h=a.include.length;
+c<h;
+c++)if(typeof a.include[c]=="undefined"||a.include[c].$$type!=="Theme")throw new Error("Invalid include in theme \""+d+"\": "+a.include[c]);
+if(a.patch)for(c=0,h=a.patch.length;
+c<h;
+c++)if(typeof a.patch[c]=="undefined"||a.patch[c].$$type!=="Theme")throw new Error("Invalid patch in theme \""+d+"\": "+a.patch[c])},
+patch:function(b,c){var d=this.__QriHM(c),e,f,a;
+if(d!==this.__QriHM(b))throw new Error("The mixins '"+b.name+"' are not compatible '"+c.name+"'!");
+e=c[d],f=b.$$clazz.prototype;
+for(a in e)f[a]=e[a]},
+include:function(b,c){var d=c.type,f,e,a;
+if(d!==b.type)throw new Error("The mixins '"+b.name+"' are not compatible '"+c.name+"'!");
+f=c[d],e=b.$$clazz.prototype;
+for(a in f){if(e[a]!==undefined)continue;
+e[a]=f[a]}}}});
+
+
+// qx.lang.Core
+//   - Size: 2474 bytes
+//   - Modified: 2010-05-21T19:22:00
+qx.Bootstrap.define("qx.lang.Core",{statics:{errorToString:{"native":Error.prototype.toString,
+emulated:function(){return this.message}}[!Error.prototype.toString||Error.prototype.toString()=="[object Error]"?"emulated":"native"],
+arrayIndexOf:{"native":Array.prototype.indexOf,
+emulated:function(c,a){a==null?a=0:a<0&&(a=Math.max(0,this.length+a));
+for(var b=a;
+b<this.length;
+b++)if(this[b]===c)return b;
+return-1}}[Array.prototype.indexOf?"native":"emulated"],
+arrayLastIndexOf:{"native":Array.prototype.lastIndexOf,
+emulated:function(c,a){a==null?a=this.length-1:a<0&&(a=Math.max(0,this.length+a));
+for(var b=a;
+b>=0;
+b--)if(this[b]===c)return b;
+return-1}}[Array.prototype.lastIndexOf?"native":"emulated"],
+arrayForEach:{"native":Array.prototype.forEach,
+emulated:function(e,d){for(var c=this.length,a=0,b;
+a<c;
+a++)b=this[a],b!==undefined&&e.call(d||window,b,a,this)}}[Array.prototype.forEach?"native":"emulated"],
+arrayFilter:{"native":Array.prototype.filter,
+emulated:function(f,e){for(var c=[],d=this.length,a=0,b;
+a<d;
+a++)b=this[a],b!==undefined&&f.call(e||window,b,a,this)&&c.push(this[a]);
+return c}}[Array.prototype.filter?"native":"emulated"],
+arrayMap:{"native":Array.prototype.map,
+emulated:function(f,e){for(var c=[],d=this.length,a=0,b;
+a<d;
+a++)b=this[a],b!==undefined&&(c[a]=f.call(e||window,b,a,this));
+return c}}[Array.prototype.map?"native":"emulated"],
+arraySome:{"native":Array.prototype.some,
+emulated:function(e,d){for(var c=this.length,a=0,b;
+a<c;
+a++){b=this[a];
+if(b!==undefined)if(e.call(d||window,b,a,this))return true}return false}}[Array.prototype.some?"native":"emulated"],
+arrayEvery:{"native":Array.prototype.every,
+emulated:function(e,d){for(var c=this.length,a=0,b;
+a<c;
+a++){b=this[a];
+if(b!==undefined)if(!e.call(d||window,b,a,this))return false}return true}}[Array.prototype.every?"native":"emulated"],
+stringQuote:{"native":String.prototype.quote,
+emulated:function(){return"\""+this.replace(/\\/g,"\\\\").replace(/\"/g,"\\\"")+"\""}}[String.prototype.quote?"native":"emulated"]}});
+Error.prototype.toString=qx.lang.Core.errorToString;
+Array.prototype.indexOf=qx.lang.Core.arrayIndexOf;
+Array.prototype.lastIndexOf=qx.lang.Core.arrayLastIndexOf;
+Array.prototype.forEach=qx.lang.Core.arrayForEach;
+Array.prototype.filter=qx.lang.Core.arrayFilter;
+Array.prototype.map=qx.lang.Core.arrayMap;
+Array.prototype.some=qx.lang.Core.arraySome;
+Array.prototype.every=qx.lang.Core.arrayEvery;
+String.prototype.quote=qx.lang.Core.stringQuote;
+
+
+// qx.bom.client.Engine
+//   - Size: 1551 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Bootstrap.define("qx.bom.client.Engine",{statics:{NAME:"",
+FULLVERSION:"0.0.0",
+VERSION:0,
+OPERA:false,
+WEBKIT:false,
+GECKO:false,
+MSHTML:false,
+UNKNOWN_ENGINE:false,
+UNKNOWN_VERSION:false,
+DOCUMENT_MODE:null,
+__jA3lT:function(){var b="unknown",a="0.0.0",c=window.navigator.userAgent,f=false,d=false,g,e;
+window.opera&&Object.prototype.toString.call(window.opera)=="[object Opera]"?(b="opera",this.OPERA=true,/Opera[\s\/]([0-9]+)\.([0-9])([0-9]*)/.test(c)?(a=RegExp.$1+"."+RegExp.$2,RegExp.$3!=""&&(a+="."+RegExp.$3)):(d=true,a="9.6.0")):window.navigator.userAgent.indexOf("AppleWebKit/")!=-1?(b="webkit",this.WEBKIT=true,/AppleWebKit\/([^ ]+)/.test(c)?(a=RegExp.$1,g=RegExp("[^\\.0-9]").exec(a),g&&(a=a.slice(0,g.index))):(d=true,a="525.26")):window.controllers&&window.navigator.product==="Gecko"?(b="gecko",this.GECKO=true,/rv\:([^\);]+)(\)|;)/.test(c)?a=RegExp.$1:(d=true,a="1.9.0.0")):window.navigator.cpuClass&&/MSIE\s+([^\);]+)(\)|;)/.test(c)?(b="mshtml",a=RegExp.$1,document.documentMode&&(this.DOCUMENT_MODE=document.documentMode),a<8&&/Trident\/([^\);]+)(\)|;)/.test(c)&&RegExp.$1==="4.0"&&(a="8.0"),this.MSHTML=true):(e=window.qxFail,e&&typeof e==="function"?(b=e(),b.NAME&&b.FULLVERSION&&(b=b.NAME,this[b.toUpperCase()]=true,a=b.FULLVERSION)):(f=true,d=true,a="1.9.0.0",b="gecko",this.GECKO=true,qx.Bootstrap.warn("Unsupported client: "+c+"! Assumed gecko version 1.9.0.0 (Firefox 3.0).")));
+this.UNKNOWN_ENGINE=f;
+this.UNKNOWN_VERSION=d;
+this.NAME=b;
+this.FULLVERSION=a;
+this.VERSION=parseFloat(a)}},
+defer:function(a){a.__jA3lT()}});
+
+
+// qx.core.Setting
+//   - Size: 1333 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Bootstrap.define("qx.core.Setting",{statics:{__zP2zc:{},
+define:function(a,b){if(b===undefined)throw new Error("Default value of setting \""+a+"\" must be defined!");
+if(!this.__zP2zc[a])this.__zP2zc[a]={};
+else if(this.__zP2zc[a].defaultValue!==undefined)throw new Error("Setting \""+a+"\" is already defined!");
+this.__zP2zc[a].defaultValue=b},
+get:function(b){var a=this.__zP2zc[b];
+if(a===undefined)throw new Error("Setting \""+b+"\" is not defined.");
+if(a.value!==undefined)return a.value;
+return a.defaultValue},
+set:function(a,b){if((a.split(".")).length<2)throw new Error("Malformed settings key \""+a+"\". Must be following the schema \"namespace.key\".");
+this.__zP2zc[a]||(this.__zP2zc[a]={});
+this.__zP2zc[a].value=b},
+__jA3lT:function(){if(window.qxsettings){for(a in window.qxsettings)this.set(a,window.qxsettings[a]);
+window.qxsettings=undefined;
+try{delete window.qxsettings}catch(b){}this.__bg8Heh()}var a},
+__bg8Heh:function(){if(this.get("qx.allowUrlSettings")!=true)return;
+for(var c=document.location.search.slice(1).split("&"),b=0,a;
+b<c.length;
+b++){a=c[b].split(":");
+if(a.length!=3||a[0]!="qxsetting")continue;
+this.set(a[1],decodeURIComponent(a[2]))}}},
+defer:function(a){a.define("qx.allowUrlSettings",false);
+a.define("qx.allowUrlVariants",false);
+a.define("qx.propertyDebugLevel",0);
+a.__jA3lT()}});
+
+
 // qx.core.Type
 //   - Size: 2978 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:27
 qx.Bootstrap.define("qx.core.Type",{statics:{__mtv7d:{String:"$$isString"},
 __qxW2Q:{String:1,
 Number:1,
@@ -386,73 +596,9 @@ switch(typeof b.statics[a]){case"boolean":case"string":case"number":break;
 default:throw new Error("Invalid key \""+a+"\" in interface \""+d+"\"! Static constants must be all of a primitive type.")}}}}}});
 
 
-// qx.Mixin
-//   - Size: 3239 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Bootstrap.define("qx.Mixin",{statics:{define:function(c,a){if(a){a.include&&!(a.include instanceof Array)&&(a.include=[a.include]);
-this.__9AoUd(c,a);
-var b=a.statics?a.statics:{},d;
-qx.Bootstrap.setDisplayNames(b,c);
-for(d in b)b[d] instanceof Function&&(b[d].$$mixin=b);
-a.construct&&(b.$$constructor=a.construct,qx.Bootstrap.setDisplayName(a.construct,c,"constructor"));
-a.include&&(b.$$includes=a.include);
-a.properties&&(b.$$properties=a.properties);
-a.members&&(b.$$members=a.members,qx.Bootstrap.setDisplayNames(a.members,c+".prototype"));
-for(d in b.$$members)b.$$members[d] instanceof Function&&(b.$$members[d].$$mixin=b);
-a.events&&(b.$$events=a.events);
-a.destruct&&(b.$$destructor=a.destruct,qx.Bootstrap.setDisplayName(a.destruct,c,"destruct"))}else b={};
-b.$$type="Mixin";
-b.name=c;
-b.toString=this.genericToString;
-b.basename=qx.Bootstrap.createNamespace(c,b);
-this.$$registry[c]=b;
-return b},
-checkCompatibility:function(i){var h=this.flatten(i),g=h.length,e,d,c,b,f,a;
-if(g<2)return true;
-e={},d={},c={},f=0;
-for(;
-f<g;
-f++){b=h[f];
-for(a in b.events){if(c[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+c[a]+"\" in member \""+a+"\"!");
-c[a]=b.name}for(a in b.properties){if(e[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+e[a]+"\" in property \""+a+"\"!");
-e[a]=b.name}for(a in b.members){if(d[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+d[a]+"\" in member \""+a+"\"!");
-d[a]=b.name}}return true},
-isCompatible:function(c,b){var a=qx.Bootstrap.getMixins(b);
-a.push(c);
-return qx.Mixin.checkCompatibility(a)},
-getByName:function(a){return this.$$registry[a]},
-isDefined:function(a){return this.getByName(a)!==undefined},
-getTotalNumber:function(){return qx.Bootstrap.objectGetLength(this.$$registry)},
-flatten:function(a){if(!a)return[];
-for(var c=a.concat(),b=0,d=a.length;
-b<d;
-b++)a[b].$$includes&&c.push.apply(c,this.flatten(a[b].$$includes));
-return c},
-genericToString:function(){return"[Mixin "+this.name+"]"},
-$$registry:{},
-__PnQ3H:{include:"object",
-statics:"object",
-members:"object",
-properties:"object",
-events:"object",
-destruct:"function",
-construct:"function"},
-__9AoUd:function(d,b){var e=this.__PnQ3H,a,g,c,h,f;
-for(a in b){if(!e[a])throw new Error("The configuration key \""+a+"\" in mixin \""+d+"\" is not allowed!");
-if(b[a]==null)throw new Error("Invalid key \""+a+"\" in mixin \""+d+"\"! The value is undefined/null!");
-if(e[a]!==null&&typeof b[a]!==e[a])throw new Error("Invalid type of key \""+a+"\" in mixin \""+d+"\"! The type of the key must be \""+e[a]+"\"!")}g=["statics","members","properties","events"],c=0,h=g.length;
-for(;
-c<h;
-c++){a=g[c];
-if(b[a]!==undefined&&(b[a] instanceof Array||b[a] instanceof RegExp||b[a] instanceof Date||b[a].classname!==undefined))throw new Error("Invalid key \""+a+"\" in mixin \""+d+"\"! The value needs to be a map!")}if(b.include){for(c=0,f=b.include,h=f.length;
-c<h;
-c++){if(f[c]==null)throw new Error("Includes of mixins must be mixins. The include number '"+(c+1)+"' in mixin '"+d+"'is undefined/null!");
-if(f[c].$$type!=="Mixin")throw new Error("Includes of mixins must be mixins. The include number '"+(c+1)+"' in mixin '"+d+"'is not a mixin!")}this.checkCompatibility(b.include)}}}});
-
-
 // qx.core.property.Debug
 //   - Size: 2446 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:27
 qx.Bootstrap.define("qx.core.property.Debug",{statics:{checkSetter:function(a,c,d){var b=c.name,e,f;
 if(d.length==0)throw new Error("Called set() method of property "+b+" on object "+a+" with no arguments!");
 d.length>1&&(a.warn("Called set() method of property "+b+" on object "+a+" with too many arguments!"),a.trace());
@@ -488,7 +634,7 @@ if(e[a]!==null&&typeof d[a]!==e[a])throw new Error("Invalid type of key \""+a+"\
 
 // qx.core.property.Simple
 //   - Size: 1334 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:27
 qx.Bootstrap.define("qx.core.property.Simple",{statics:{__uSSUl:0,
 __brLhnR:{},
 add:function(q,c,b){var g,o=this,k="fireDataEvent",j="$$data",l,e,f,a,n,d,p,i,h,m;
@@ -530,7 +676,7 @@ b.check==="Boolean"&&(f["toggle"+d]=function(){this["set"+d](!this["get"+d]())},
 
 // qx.core.property.Multi
 //   - Size: 4298 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:27
 (function(){var k=0,d={},c={4:{},
 3:{},
 2:{get:"getThemedValue"},
@@ -644,7 +790,7 @@ h!==n&&(o=v[l],o.apply&&i[o.apply](h,n,l),o.event&&i.fireDataEvent(o.event,h,n),
 
 // qx.Class
 //   - Size: 10605 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Bootstrap.define("qx.Class",{statics:{define:function(f,a){if(!a)var a={},g,b,c,e;
 a.include&&!(a.include instanceof Array)&&(a.include=[a.include]);
 a.implement&&!(a.implement instanceof Array)&&(a.implement=[a.implement]);
@@ -856,150 +1002,37 @@ toString:function(){return this.__uzUwU+": "+this.message}}});
 qx.Class.define("qx.core.ValidationError",{extend:qx.type.BaseError});
 
 
-// qx.lang.Core
-//   - Size: 2474 bytes
-//   - Modified: 2010-05-21T19:22:00
-qx.Bootstrap.define("qx.lang.Core",{statics:{errorToString:{"native":Error.prototype.toString,
-emulated:function(){return this.message}}[!Error.prototype.toString||Error.prototype.toString()=="[object Error]"?"emulated":"native"],
-arrayIndexOf:{"native":Array.prototype.indexOf,
-emulated:function(c,a){a==null?a=0:a<0&&(a=Math.max(0,this.length+a));
-for(var b=a;
-b<this.length;
-b++)if(this[b]===c)return b;
-return-1}}[Array.prototype.indexOf?"native":"emulated"],
-arrayLastIndexOf:{"native":Array.prototype.lastIndexOf,
-emulated:function(c,a){a==null?a=this.length-1:a<0&&(a=Math.max(0,this.length+a));
-for(var b=a;
-b>=0;
-b--)if(this[b]===c)return b;
-return-1}}[Array.prototype.lastIndexOf?"native":"emulated"],
-arrayForEach:{"native":Array.prototype.forEach,
-emulated:function(e,d){for(var c=this.length,a=0,b;
-a<c;
-a++)b=this[a],b!==undefined&&e.call(d||window,b,a,this)}}[Array.prototype.forEach?"native":"emulated"],
-arrayFilter:{"native":Array.prototype.filter,
-emulated:function(f,e){for(var c=[],d=this.length,a=0,b;
-a<d;
-a++)b=this[a],b!==undefined&&f.call(e||window,b,a,this)&&c.push(this[a]);
-return c}}[Array.prototype.filter?"native":"emulated"],
-arrayMap:{"native":Array.prototype.map,
-emulated:function(f,e){for(var c=[],d=this.length,a=0,b;
-a<d;
-a++)b=this[a],b!==undefined&&(c[a]=f.call(e||window,b,a,this));
-return c}}[Array.prototype.map?"native":"emulated"],
-arraySome:{"native":Array.prototype.some,
-emulated:function(e,d){for(var c=this.length,a=0,b;
-a<c;
-a++){b=this[a];
-if(b!==undefined)if(e.call(d||window,b,a,this))return true}return false}}[Array.prototype.some?"native":"emulated"],
-arrayEvery:{"native":Array.prototype.every,
-emulated:function(e,d){for(var c=this.length,a=0,b;
-a<c;
-a++){b=this[a];
-if(b!==undefined)if(!e.call(d||window,b,a,this))return false}return true}}[Array.prototype.every?"native":"emulated"],
-stringQuote:{"native":String.prototype.quote,
-emulated:function(){return"\""+this.replace(/\\/g,"\\\\").replace(/\"/g,"\\\"")+"\""}}[String.prototype.quote?"native":"emulated"]}});
-Error.prototype.toString=qx.lang.Core.errorToString;
-Array.prototype.indexOf=qx.lang.Core.arrayIndexOf;
-Array.prototype.lastIndexOf=qx.lang.Core.arrayLastIndexOf;
-Array.prototype.forEach=qx.lang.Core.arrayForEach;
-Array.prototype.filter=qx.lang.Core.arrayFilter;
-Array.prototype.map=qx.lang.Core.arrayMap;
-Array.prototype.some=qx.lang.Core.arraySome;
-Array.prototype.every=qx.lang.Core.arrayEvery;
-String.prototype.quote=qx.lang.Core.stringQuote;
+// qx.ui.core.MNativeOverflow
+//   - Size: 465 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.ui.core.MNativeOverflow",{properties:{overflowX:{check:["hidden","visible","scroll","auto"],
+nullable:true,
+apply:"_applyOverflowX"},
+overflowY:{check:["hidden","visible","scroll","auto"],
+nullable:true,
+apply:"_applyOverflowY"},
+overflow:{group:["overflowX","overflowY"]}},
+members:{_applyOverflowX:function(a){this.getContentElement().setStyle("overflowX",a)},
+_applyOverflowY:function(a){this.getContentElement().setStyle("overflowY",a)}}});
 
 
-// qx.Theme
-//   - Size: 4074 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Bootstrap.define("qx.Theme",{statics:{define:function(d,a){if(!a)var a={},b,c,e,f;
-a.include=this.__ba6rD1(a.include);
-a.patch=this.__ba6rD1(a.patch);
-this.__9AoUd(d,a);
-b={$$type:"Theme",
-name:d,
-title:a.title,
-toString:this.genericToString};
-a.extend&&(b.supertheme=a.extend);
-b.basename=qx.Bootstrap.createNamespace(d,b);
-this.__uNnVI(b,a);
-this.$$registry[d]=b;
-for(c=0,e=a.include,f=e.length;
-c<f;
-c++)this.include(b,e[c]);
-for(c=0,e=a.patch,f=e.length;
-c<f;
-c++)this.patch(b,e[c])},
-__ba6rD1:function(a){if(!a)return[];
-return qx.Bootstrap.isArray(a)?a:[a]},
-getAll:function(){return this.$$registry},
-getByName:function(a){return this.$$registry[a]},
-isDefined:function(a){return this.getByName(a)!==undefined},
-getTotalNumber:function(){return qx.Bootstrap.objectGetLength(this.$$registry)},
-genericToString:function(){return"[Theme "+this.name+"]"},
-__QriHM:function(d){for(var a=0,b=this.__bh2e6M,c=b.length;
-a<c;
-a++)if(d[b[a]])return b[a]},
-__uNnVI:function(f,a){var c=this.__QriHM(a),d,e,g,b;
-a.extend&&!c&&(c=a.extend.type);
-f.type=c||"other";
-if(!c)return;
-d=function(){};
-a.extend&&(d.prototype=new a.extend.$$clazz);
-e=d.prototype,g=a[c];
-for(b in g){e[b]=g[b];
-if(e[b].base){if(!a.extend)throw new Error("Found base flag in entry '"+b+"' of theme '"+a.name+"'. Base flags are not allowed for themes without a valid super theme!");
-e[b].base=a.extend}}f.$$clazz=d;
-f[c]=new d},
-$$registry:{},
-__bh2e6M:["colors","decorations","fonts","appearances","meta"],
-__PnQ3H:{title:"string",
-type:"string",
-extend:"object",
-colors:"object",
-decorations:"object",
-fonts:"object",
-appearances:"object",
-meta:"object",
-include:"object",
-patch:"object"},
-__yIb8g:{color:"object",
-decoration:"object",
-font:"object",
-appearance:"object"},
-__9AoUd:function(d,a){var f=this.__PnQ3H,b,g,c,h,i,e;
-for(b in a){if(f[b]===undefined)throw new Error("The configuration key \""+b+"\" in theme \""+d+"\" is not allowed!");
-if(a[b]==null)throw new Error("Invalid key \""+b+"\" in theme \""+d+"\"! The value is undefined/null!");
-if(f[b]!==null&&typeof a[b]!==f[b])throw new Error("Invalid type of key \""+b+"\" in theme \""+d+"\"! The type of the key must be \""+f[b]+"\"!")}g=["colors","decorations","fonts","appearances","meta"],c=0,h=g.length;
-for(;
-c<h;
-c++){b=g[c];
-if(a[b]!==undefined&&(a[b] instanceof Array||a[b] instanceof RegExp||a[b] instanceof Date||a[b].classname!==undefined))throw new Error("Invalid key \""+b+"\" in theme \""+d+"\"! The value needs to be a map!")}i=0,c=0,h=g.length;
-for(;
-c<h;
-c++){b=g[c];
-a[b]&&i++;
-if(i>1)throw new Error("You can only define one theme category per file! Invalid theme: "+d)}if(!a.extend&&i===0)throw new Error("You must define at least one entry in your theme configuration :"+d);
-if(a.meta)for(b in a.meta){e=a.meta[b];
-if(this.__yIb8g[b]===undefined)throw new Error("The key \""+b+"\" is not allowed inside a meta theme block.");
-if(typeof e!==this.__yIb8g[b])throw new Error("The type of the key \""+b+"\" inside the meta block is wrong.");
-if(!(typeof e==="object"&&e!==null&&e.$$type==="Theme"))throw new Error("The content of a meta theme must reference to other themes. The value for \""+b+"\" in theme \""+d+"\" is invalid: "+e)}if(a.extend&&a.extend.$$type!=="Theme")throw new Error("Invalid extend in theme \""+d+"\": "+a.extend);
-if(a.include)for(c=0,h=a.include.length;
-c<h;
-c++)if(typeof a.include[c]=="undefined"||a.include[c].$$type!=="Theme")throw new Error("Invalid include in theme \""+d+"\": "+a.include[c]);
-if(a.patch)for(c=0,h=a.patch.length;
-c<h;
-c++)if(typeof a.patch[c]=="undefined"||a.patch[c].$$type!=="Theme")throw new Error("Invalid patch in theme \""+d+"\": "+a.patch[c])},
-patch:function(b,c){var d=this.__QriHM(c),e,f,a;
-if(d!==this.__QriHM(b))throw new Error("The mixins '"+b.name+"' are not compatible '"+c.name+"'!");
-e=c[d],f=b.$$clazz.prototype;
-for(a in e)f[a]=e[a]},
-include:function(b,c){var d=c.type,f,e,a;
-if(d!==b.type)throw new Error("The mixins '"+b.name+"' are not compatible '"+c.name+"'!");
-f=c[d],e=b.$$clazz.prototype;
-for(a in f){if(e[a]!==undefined)continue;
-e[a]=f[a]}}}});
+// apiviewer.MWidgetRegistry
+//   - Size: 662 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("apiviewer.MWidgetRegistry",{properties:{id:{check:"String",
+apply:"_applyId",
+nullable:true,
+init:null}},
+members:{_applyId:function(b,a){var c=apiviewer.MWidgetRegistry;
+a&&c.unregister(this,a);
+b&&c.register(this,b)},
+getWidgetById:function(a){return apiviewer.MWidgetRegistry.getWidgetById(a)}},
+statics:{__yALNM:{},
+getWidgetById:function(a){return this.__yALNM[a]},
+register:function(b,a){if(this.__yALNM[a])throw new Error("An object with the id '"+a+"' already exists.");
+this.__yALNM[a]=b},
+unregister:function(b,a){if(this.__yALNM[a]!==b)throw new Error("The object is not registered with the id '"+a+"'.");
+delete this.__yALNM[a]}}});
 
 
 // qx.ui.form.MModelProperty
@@ -1009,9 +1042,31 @@ qx.Mixin.define("qx.ui.form.MModelProperty",{properties:{model:{nullable:true,
 event:"changeModel"}}});
 
 
+// qx.ui.form.MForm
+//   - Size: 503 bytes
+//   - Modified: 2010-09-30T14:20:20
+qx.Mixin.define("qx.ui.form.MForm",{construct:function(){},
+properties:{valid:{check:"Boolean",
+init:true,
+apply:"_applyValid",
+event:"changeValid"},
+required:{check:"Boolean",
+init:false,
+event:"changeRequired"},
+invalidMessage:{check:"String",
+init:"",
+event:"changeInvalidMessage"},
+requiredInvalidMessage:{check:"String",
+nullable:true,
+event:"changeInvalidMessage"}},
+members:{_applyValid:function(a){a?this.removeState("invalid"):this.addState("invalid")},
+__7AESY:null},
+destruct:function(){}});
+
+
 // qx.bom.client.Feature
 //   - Size: 1736 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Bootstrap.define("qx.bom.client.Feature",{statics:{STANDARD_MODE:false,
 QUIRKS_MODE:false,
 CONTENT_BOX:false,
@@ -1044,787 +1099,9 @@ __VT4YB:function(){return qx.bom.client.Engine.MSHTML&&qx.bom.client.Engine.VERS
 defer:function(a){a.__jA3lT()}});
 
 
-// qx.ui.core.MChildrenHandling
-//   - Size: 777 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.ui.core.MChildrenHandling",{members:{getChildren:function(){return this._getChildren()},
-hasChildren:function(){return this._hasChildren()},
-indexOf:function(a){return this._indexOf(a)},
-add:function(a,b){this._add(a,b)},
-addAt:function(a,c,b){this._addAt(a,c,b)},
-addBefore:function(c,a,b){this._addBefore(c,a,b)},
-addAfter:function(a,c,b){this._addAfter(a,c,b)},
-remove:function(a){this._remove(a)},
-removeAt:function(a){return this._removeAt(a)},
-removeAll:function(){this._removeAll()}},
-statics:{remap:function(a){a.getChildren=a._getChildren;
-a.hasChildren=a._hasChildren;
-a.indexOf=a._indexOf;
-a.add=a._add;
-a.addAt=a._addAt;
-a.addBefore=a._addBefore;
-a.addAfter=a._addAfter;
-a.remove=a._remove;
-a.removeAt=a._removeAt;
-a.removeAll=a._removeAll}}});
-
-
-// qx.ui.core.MLayoutHandling
-//   - Size: 237 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.ui.core.MLayoutHandling",{members:{setLayout:function(a){return this._setLayout(a)},
-getLayout:function(){return this._getLayout()}},
-statics:{remap:function(a){a.getLayout=a._getLayout;
-a.setLayout=a._setLayout}}});
-
-
-// qx.ui.core.MNativeOverflow
-//   - Size: 465 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.ui.core.MNativeOverflow",{properties:{overflowX:{check:["hidden","visible","scroll","auto"],
-nullable:true,
-apply:"_applyOverflowX"},
-overflowY:{check:["hidden","visible","scroll","auto"],
-nullable:true,
-apply:"_applyOverflowY"},
-overflow:{group:["overflowX","overflowY"]}},
-members:{_applyOverflowX:function(a){this.getContentElement().setStyle("overflowX",a)},
-_applyOverflowY:function(a){this.getContentElement().setStyle("overflowY",a)}}});
-
-
-// qx.ui.core.MRemoteChildrenHandling
-//   - Size: 725 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.ui.core.MRemoteChildrenHandling",{members:{__uR3K4:function(a,e,c,d){var b=this.getChildrenContainer();
-b===this&&(a="_"+a);
-return(b[a])(e,c,d)},
-getChildren:function(){return this.__uR3K4("getChildren")},
-hasChildren:function(){return this.__uR3K4("hasChildren")},
-add:function(a,b){return this.__uR3K4("add",a,b)},
-remove:function(a){return this.__uR3K4("remove",a)},
-removeAll:function(){return this.__uR3K4("removeAll")},
-indexOf:function(a){return this.__uR3K4("indexOf",a)},
-addAt:function(a,c,b){this.__uR3K4("addAt",a,c,b)},
-addBefore:function(c,a,b){this.__uR3K4("addBefore",c,a,b)},
-addAfter:function(a,c,b){this.__uR3K4("addAfter",a,c,b)},
-removeAt:function(a){this.__uR3K4("removeAt",a)}}});
-
-
-// qx.ui.core.MRemoteLayoutHandling
-//   - Size: 206 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.ui.core.MRemoteLayoutHandling",{members:{setLayout:function(a){return this.getChildrenContainer().setLayout(a)},
-getLayout:function(){return this.getChildrenContainer().getLayout()}}});
-
-
-// qx.theme.Color
-//   - Size: 1623 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Theme.define("qx.theme.Color",{colors:{"background-application":"#DFDFDF",
-"background-pane":"#F3F3F3",
-"background-light":"#FCFCFC",
-"background-medium":"#EEEEEE",
-"background-splitpane":"#AFAFAF",
-"background-tip":"#ffffdd",
-"background-tip-error":"#C72B2B",
-"background-odd":"#E4E4E4",
-"text-light":"#909090",
-"text-gray":"#4a4a4a",
-"text-label":"#1a1a1a",
-"text-title":"#314a6e",
-"text-input":"#000000",
-"text-hovered":"#001533",
-"text-disabled":"#7B7A7E",
-"text-selected":"#fffefe",
-"text-active":"#26364D",
-"text-inactive":"#404955",
-"text-placeholder":"#CBC8CD",
-"border-main":"#4d4d4d",
-"border-separator":"#808080",
-"border-input":"#334866",
-"border-disabled":"#B6B6B6",
-"border-pane":"#00204D",
-"border-button":"#666666",
-"border-column":"#CCCCCC",
-"border-focused":"#99C3FE",
-invalid:"#990000",
-"border-focused-invalid":"#FF9999",
-"table-pane":"#F3F3F3",
-"table-focus-indicator":"#0880EF",
-"table-row-background-focused-selected":"#084FAB",
-"table-row-background-focused":"#80B4EF",
-"table-row-background-selected":"#084FAB",
-"table-row-background-even":"#F3F3F3",
-"table-row-background-odd":"#E4E4E4",
-"table-row-selected":"#fffefe",
-"table-row":"#1a1a1a",
-"table-row-line":"#CCCCCC",
-"table-column-line":"#CCCCCC",
-"progressive-table-header":"#AAAAAA",
-"progressive-table-row-background-even":"#F4F4F4",
-"progressive-table-row-background-odd":"#E4E4E4",
-"progressive-progressbar-background":"gray",
-"progressive-progressbar-indicator-done":"#CCCCCC",
-"progressive-progressbar-indicator-undone":"white",
-"progressive-progressbar-percent-background":"gray",
-"progressive-progressbar-percent-text":"white"}});
-
-
-// qx.theme.Appearance
-//   - Size: 27270 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Theme.define("qx.theme.Appearance",{appearances:{widget:{},
-root:{style:function(){return{backgroundColor:"background-application",
-textColor:"text-label",
-font:"default"}}},
-label:{style:function(a){return{textColor:a.disabled?"text-disabled":undefined}}},
-"move-frame":{style:function(){return{decorator:"main"}}},
-"resize-frame":"move-frame",
-"dragdrop-cursor":{style:function(b){var a="nodrop";
-b.copy?a="copy":b.move?a="move":b.alias&&(a="alias");
-return{source:"qx/decoration/cursors/"+a+".gif",
-position:"right-top",
-offset:[2,16,2,6]}}},
-image:{style:function(a){return{opacity:!a.replacement&&a.disabled?.3:1}}},
-atom:{},
-"atom/label":"label",
-"atom/icon":"image",
-popup:{style:function(){return{decorator:"main",
-backgroundColor:"background-light",
-shadow:"shadow-popup"}}},
-"button-frame":{alias:"atom",
-style:function(a){var b,c;
-a.checked&&a.focused&&!a.inner?(b="button-checked-focused",c=undefined):a.disabled?(b="button-disabled",c=undefined):a.pressed?(b="button-pressed",c="text-hovered"):a.checked?(b="button-checked",c=undefined):a.hovered?(b="button-hovered",c="text-hovered"):a.preselected&&a.focused&&!a.inner?(b="button-preselected-focused",c="text-hovered"):a.preselected?(b="button-preselected",c="text-hovered"):a.focused&&!a.inner?(b="button-focused",c=undefined):(b="button",c=undefined);
-return{decorator:b,
-textColor:c,
-shadow:a.invalid&&!a.disabled?"button-invalid-shadow":undefined}}},
-"button-frame/image":{style:function(a){return{opacity:!a.replacement&&a.disabled?.5:1}}},
-button:{alias:"button-frame",
-include:"button-frame",
-style:function(){return{padding:[2,8],
-center:true}}},
-"hover-button":{alias:"atom",
-include:"atom",
-style:function(a){return{decorator:a.hovered?"selected":undefined,
-textColor:a.hovered?"text-selected":undefined}}},
-splitbutton:{},
-"splitbutton/button":"button",
-"splitbutton/arrow":{alias:"button",
-include:"button",
-style:function(){return{icon:"qx/decoration/arrows/down.png",
-padding:2,
-marginLeft:1}}},
-checkbox:{alias:"atom",
-style:function(a){var b,c;
-b=a.checked&&a.focused?"checkbox-checked-focused":a.checked&&a.disabled?"checkbox-checked-disabled":a.checked&&a.pressed?"checkbox-checked-pressed":a.checked&&a.hovered?"checkbox-checked-hovered":a.checked?"checkbox-checked":a.focused?"checkbox-focused":a.pressed?"checkbox-pressed":a.hovered?"checkbox-hovered":"checkbox";
-c=a.invalid&&!a.disabled?"-invalid":"";
-return{icon:"qx/decoration/form/"+b+c+".png",
-gap:6}}},
-radiobutton:{alias:"atom",
-style:function(a){var b,c;
-b=a.checked&&a.focused?"radiobutton-checked-focused":a.checked&&a.disabled?"radiobutton-checked-disabled":a.checked&&a.pressed?"radiobutton-checked-pressed":a.checked&&a.hovered?"radiobutton-checked-hovered":a.checked?"radiobutton-checked":a.focused?"radiobutton-focused":a.pressed?"radiobutton-pressed":a.hovered?"radiobutton-hovered":"radiobutton";
-c=a.invalid&&!a.disabled?"-invalid":"";
-return{icon:"qx/decoration/form/"+b+c+".png",
-gap:6}}},
-textfield:{style:function(b){var a,f=!!b.focused,e=!!b.invalid,d=!!b.disabled,c;
-a=f&&e&&!d?"input-focused-invalid":f&&!e&&!d?"input-focused":d?"input-disabled":!f&&e&&!d?"border-invalid":"input";
-c=b.disabled?"text-disabled":b.showingPlaceholder?"text-placeholder":"text-input";
-return{decorator:a,
-padding:[2,4,1],
-textColor:c}}},
-textarea:{include:"textfield",
-style:function(){return{padding:4}}},
-spinner:{style:function(e){var a,d=!!e.focused,c=!!e.invalid,b=!!e.disabled;
-a=d&&c&&!b?"input-focused-invalid":d&&!c&&!b?"input-focused":b?"input-disabled":!d&&c&&!b?"border-invalid":"input";
-return{decorator:a}}},
-"spinner/textfield":{style:function(a){return{marginRight:2,
-padding:[2,4,1],
-textColor:a.disabled?"text-disabled":"text-input"}}},
-"spinner/upbutton":{alias:"button-frame",
-include:"button-frame",
-style:function(a){return{icon:"qx/decoration/arrows/up-small.png",
-padding:a.pressed?[2,2,0,4]:[1,3,1,3],
-shadow:undefined}}},
-"spinner/downbutton":{alias:"button-frame",
-include:"button-frame",
-style:function(a){return{icon:"qx/decoration/arrows/down-small.png",
-padding:a.pressed?[2,2,0,4]:[1,3,1,3],
-shadow:undefined}}},
-datefield:"combobox",
-"datefield/button":{alias:"combobox/button",
-include:"combobox/button",
-style:function(){return{icon:"qx/icon/16/apps/office-calendar.png",
-padding:[0,3],
-decorator:undefined}}},
-"datefield/textfield":"combobox/textfield",
-"datefield/list":{alias:"datechooser",
-include:"datechooser",
-style:function(){return{decorator:undefined}}},
-groupbox:{style:function(){return{legendPosition:"top"}}},
-"groupbox/legend":{alias:"atom",
-style:function(a){return{padding:[1,0,1,4],
-textColor:a.invalid?"invalid":"text-title",
-font:"bold"}}},
-"groupbox/frame":{style:function(){return{padding:12,
-decorator:"group"}}},
-"check-groupbox":"groupbox",
-"check-groupbox/legend":{alias:"checkbox",
-include:"checkbox",
-style:function(a){return{padding:[1,0,1,4],
-textColor:a.invalid?"invalid":"text-title",
-font:"bold"}}},
-"radio-groupbox":"groupbox",
-"radio-groupbox/legend":{alias:"radiobutton",
-include:"radiobutton",
-style:function(a){return{padding:[1,0,1,4],
-textColor:a.invalid?"invalid":"text-title",
-font:"bold"}}},
-scrollarea:{style:function(){return{minWidth:50,
-minHeight:50}}},
-"scrollarea/corner":{style:function(){return{backgroundColor:"background-application"}}},
-"scrollarea/pane":"widget",
-"scrollarea/scrollbar-x":"scrollbar",
-"scrollarea/scrollbar-y":"scrollbar",
-scrollbar:{style:function(a){if(a["native"])return{};
-return{width:a.horizontal?undefined:16,
-height:a.horizontal?16:undefined,
-decorator:a.horizontal?"scrollbar-horizontal":"scrollbar-vertical",
-padding:1}}},
-"scrollbar/slider":{alias:"slider",
-style:function(a){return{padding:a.horizontal?[0,1,0,1]:[1,0,1,0]}}},
-"scrollbar/slider/knob":{include:"button-frame",
-style:function(a){var b=a.horizontal?"scrollbar-slider-horizontal":"scrollbar-slider-vertical";
-a.disabled&&(b+="-disabled");
-return{decorator:b,
-minHeight:a.horizontal?undefined:9,
-minWidth:a.horizontal?9:undefined}}},
-"scrollbar/button":{alias:"button-frame",
-include:"button-frame",
-style:function(b){var a="qx/decoration/scrollbar/scrollbar-";
-a+=b.left?"left.png":b.right?"right.png":b.up?"up.png":"down.png";
-return b.left||b.right?{padding:[0,0,0,b.left?3:4],
-icon:a,
-width:15,
-height:14}:{padding:[0,0,0,2],
-icon:a,
-width:14,
-height:15}}},
-"scrollbar/button-begin":"scrollbar/button",
-"scrollbar/button-end":"scrollbar/button",
-slider:{style:function(e){var a,d=!!e.focused,c=!!e.invalid,b=!!e.disabled;
-a=d&&c&&!b?"input-focused-invalid":d&&!c&&!b?"input-focused":b?"input-disabled":!d&&c&&!b?"border-invalid":"input";
-return{decorator:a}}},
-"slider/knob":{include:"button-frame",
-style:function(a){return{decorator:a.disabled?"scrollbar-slider-horizontal-disabled":"scrollbar-slider-horizontal",
-shadow:undefined,
-height:14,
-width:14}}},
-list:{alias:"scrollarea",
-style:function(e){var a,d=!!e.focused,c=!!e.invalid,b=!!e.disabled;
-a=d&&c&&!b?"input-focused-invalid":d&&!c&&!b?"input-focused":b?"input-disabled":!d&&c&&!b?"border-invalid":"input";
-return{backgroundColor:"background-light",
-decorator:a}}},
-"list/pane":"widget",
-listitem:{alias:"atom",
-style:function(a){var b;
-b=a.dragover?a.selected?"selected-dragover":"dragover":a.selected?"selected":undefined;
-return{padding:a.dragover?[4,4,2,4]:4,
-textColor:a.selected?"text-selected":undefined,
-decorator:b}}},
-slidebar:{},
-"slidebar/scrollpane":{},
-"slidebar/content":{},
-"slidebar/button-forward":{alias:"button-frame",
-include:"button-frame",
-style:function(a){return{padding:5,
-center:true,
-icon:a.vertical?"qx/decoration/arrows/down.png":"qx/decoration/arrows/right.png"}}},
-"slidebar/button-backward":{alias:"button-frame",
-include:"button-frame",
-style:function(a){return{padding:5,
-center:true,
-icon:a.vertical?"qx/decoration/arrows/up.png":"qx/decoration/arrows/left.png"}}},
-tabview:{style:function(){return{contentPadding:16}}},
-"tabview/bar":{alias:"slidebar",
-style:function(a){var b={marginBottom:a.barTop?-1:0,
-marginTop:a.barBottom?-4:0,
-marginLeft:a.barRight?-3:0,
-marginRight:a.barLeft?-1:0,
-paddingTop:0,
-paddingRight:0,
-paddingBottom:0,
-paddingLeft:0};
-a.barTop||a.barBottom?(b.paddingLeft=5,b.paddingRight=7):(b.paddingTop=5,b.paddingBottom=7);
-return b}},
-"tabview/bar/button-forward":{include:"slidebar/button-forward",
-alias:"slidebar/button-forward",
-style:function(a){return a.barTop||a.barBottom?{marginTop:2,
-marginBottom:2,
-marginLeft:0,
-marginRight:0}:{marginLeft:2,
-marginRight:2,
-marginTop:0,
-marginBottom:0}}},
-"tabview/bar/button-backward":{include:"slidebar/button-backward",
-alias:"slidebar/button-backward",
-style:function(a){return a.barTop||a.barBottom?{marginTop:2,
-marginBottom:2,
-marginLeft:0,
-marginRight:0}:{marginLeft:2,
-marginRight:2,
-marginTop:0,
-marginBottom:0}}},
-"tabview/bar/scrollpane":{},
-"tabview/pane":{style:function(a){return{decorator:"tabview-pane",
-minHeight:100,
-marginBottom:a.barBottom?-1:0,
-marginTop:a.barTop?-1:0,
-marginLeft:a.barLeft?-1:0,
-marginRight:a.barRight?-1:0}}},
-"tabview-page":"widget",
-"tabview-page/button":{alias:"atom",
-style:function(a){var b,c=0,g=0,f=0,e=0,d=0;
-a.checked?a.barTop?(b="tabview-page-button-top-active",c=[6,14],e=a.firstTab?0:-5,d=a.lastTab?0:-5):a.barBottom?(b="tabview-page-button-bottom-active",c=[6,14],e=a.firstTab?0:-5,d=a.lastTab?0:-5):a.barRight?(b="tabview-page-button-right-active",c=[6,13],g=a.firstTab?0:-5,f=a.lastTab?0:-5):(b="tabview-page-button-left-active",c=[6,13],g=a.firstTab?0:-5,f=a.lastTab?0:-5):a.barTop?(b="tabview-page-button-top-inactive",c=[4,10],g=4,e=a.firstTab?5:1,d=1):a.barBottom?(b="tabview-page-button-bottom-inactive",c=[4,10],f=4,e=a.firstTab?5:1,d=1):a.barRight?(b="tabview-page-button-right-inactive",c=[4,10],d=5,g=a.firstTab?5:1,f=1,e=1):(b="tabview-page-button-left-inactive",c=[4,10],e=5,g=a.firstTab?5:1,f=1,d=1);
-return{zIndex:a.checked?10:5,
-decorator:b,
-padding:c,
-marginTop:g,
-marginBottom:f,
-marginLeft:e,
-marginRight:d,
-textColor:a.checked?"text-active":"text-inactive"}}},
-"tabview-page/button/label":{alias:"label",
-style:function(){return{padding:[0,1,0,1]}}},
-"tabview-page/button/close-button":{alias:"atom",
-style:function(){return{icon:"qx/icon/16/actions/window-close.png"}}},
-toolbar:{style:function(){return{decorator:"toolbar",
-spacing:2}}},
-"toolbar/part":{style:function(){return{decorator:"toolbar-part",
-spacing:2}}},
-"toolbar/part/container":{style:function(){return{paddingLeft:2,
-paddingRight:2}}},
-"toolbar/part/handle":{style:function(){return{source:"qx/decoration/toolbar/toolbar-handle-knob.gif",
-marginLeft:3,
-marginRight:3}}},
-"toolbar-button":{alias:"atom",
-style:function(a){return{marginTop:2,
-marginBottom:2,
-padding:(a.pressed||a.checked||a.hovered)&&!a.disabled||a.disabled&&a.checked?3:5,
-decorator:a.pressed||a.checked&&!a.hovered||a.checked&&a.disabled?"toolbar-button-checked":a.hovered&&!a.disabled?"toolbar-button-hovered":undefined}}},
-"toolbar-menubutton":{alias:"toolbar-button",
-include:"toolbar-button",
-style:function(){return{showArrow:true}}},
-"toolbar-menubutton/arrow":{alias:"image",
-include:"image",
-style:function(){return{source:"qx/decoration/arrows/down-small.png"}}},
-"toolbar-splitbutton":{style:function(){return{marginTop:2,
-marginBottom:2}}},
-"toolbar-splitbutton/button":{alias:"toolbar-button",
-include:"toolbar-button",
-style:function(){return{icon:"qx/decoration/arrows/down.png",
-marginTop:undefined,
-marginBottom:undefined}}},
-"toolbar-splitbutton/arrow":{alias:"toolbar-button",
-include:"toolbar-button",
-style:function(a){if(a.pressed||a.checked||a.hovered&&!a.disabled)var b=1;
-else b=3;
-return{padding:b,
-icon:"qx/decoration/arrows/down.png",
-marginTop:undefined,
-marginBottom:undefined}}},
-"toolbar-separator":{style:function(){return{decorator:"toolbar-separator",
-margin:7}}},
-tree:"list",
-"tree-item":{style:function(a){return{padding:[2,6],
-textColor:a.selected?"text-selected":undefined,
-decorator:a.selected?"selected":undefined}}},
-"tree-item/icon":{include:"image",
-style:function(){return{paddingRight:5}}},
-"tree-item/label":"label",
-"tree-item/open":{include:"image",
-style:function(b){var a;
-a=b.selected&&b.opened?"qx/decoration/tree/open-selected.png":b.selected&&!b.opened?"qx/decoration/tree/closed-selected.png":b.opened?"qx/decoration/tree/open.png":"qx/decoration/tree/closed.png";
-return{padding:[0,5,0,2],
-source:a}}},
-"tree-folder":{include:"tree-item",
-alias:"tree-item",
-style:function(a){var b;
-b=a.small?a.opened?"qx/icon/16/places/folder-open.png":"qx/icon/16/places/folder.png":a.large?a.opened?"qx/icon/32/places/folder-open.png":"qx/icon/32/places/folder.png":a.opened?"qx/icon/22/places/folder-open.png":"qx/icon/22/places/folder.png";
-return{icon:b}}},
-"tree-file":{include:"tree-item",
-alias:"tree-item",
-style:function(a){return{icon:a.small?"qx/icon/16/mimetypes/office-document.png":a.large?"qx/icon/32/mimetypes/office-document.png":"qx/icon/22/mimetypes/office-document.png"}}},
-treevirtual:"table",
-"treevirtual-folder":{style:function(a){return{icon:a.opened?"qx/icon/16/places/folder-open.png":"qx/icon/16/places/folder.png"}}},
-"treevirtual-file":{include:"treevirtual-folder",
-alias:"treevirtual-folder",
-style:function(){return{icon:"qx/icon/16/mimetypes/office-document.png"}}},
-"treevirtual-line":{style:function(){return{icon:"qx/static/blank.gif"}}},
-"treevirtual-contract":{style:function(){return{icon:"qx/decoration/tree/open.png",
-paddingLeft:5,
-paddingTop:2}}},
-"treevirtual-expand":{style:function(){return{icon:"qx/decoration/tree/closed.png",
-paddingLeft:5,
-paddingTop:2}}},
-"treevirtual-only-contract":"treevirtual-contract",
-"treevirtual-only-expand":"treevirtual-expand",
-"treevirtual-start-contract":"treevirtual-contract",
-"treevirtual-start-expand":"treevirtual-expand",
-"treevirtual-end-contract":"treevirtual-contract",
-"treevirtual-end-expand":"treevirtual-expand",
-"treevirtual-cross-contract":"treevirtual-contract",
-"treevirtual-cross-expand":"treevirtual-expand",
-"treevirtual-end":{style:function(){return{icon:"qx/static/blank.gif"}}},
-"treevirtual-cross":{style:function(){return{icon:"qx/static/blank.gif"}}},
-tooltip:{include:"popup",
-style:function(){return{backgroundColor:"background-tip",
-padding:[1,3,2,3],
-offset:[15,5,5,5]}}},
-"tooltip/atom":"atom",
-"tooltip-error":{include:"tooltip",
-style:function(){return{textColor:"text-selected",
-placeMethod:"widget",
-offset:[0,0,0,14],
-marginTop:-2,
-position:"right-top",
-showTimeout:100,
-hideTimeout:10000,
-decorator:"tooltip-error",
-shadow:"tooltip-error-arrow",
-font:"bold"}}},
-"tooltip-error/atom":"atom",
-window:{style:function(){return{shadow:"shadow-window",
-contentPadding:[10,10,10,10]}}},
-"window/pane":{style:function(){return{decorator:"window"}}},
-"window/captionbar":{style:function(a){return{decorator:a.active?"window-captionbar-active":"window-captionbar-inactive",
-textColor:a.active?"white":"text-gray",
-minHeight:26,
-paddingRight:2}}},
-"window/icon":{style:function(){return{margin:[5,0,3,6]}}},
-"window/title":{style:function(){return{alignY:"middle",
-font:"bold",
-marginLeft:6,
-marginRight:12}}},
-"window/minimize-button":{alias:"atom",
-style:function(a){return{icon:a.active?a.hovered?"qx/decoration/window/minimize-active-hovered.png":"qx/decoration/window/minimize-active.png":"qx/decoration/window/minimize-inactive.png",
-margin:[4,8,2,0]}}},
-"window/restore-button":{alias:"atom",
-style:function(a){return{icon:a.active?a.hovered?"qx/decoration/window/restore-active-hovered.png":"qx/decoration/window/restore-active.png":"qx/decoration/window/restore-inactive.png",
-margin:[5,8,2,0]}}},
-"window/maximize-button":{alias:"atom",
-style:function(a){return{icon:a.active?a.hovered?"qx/decoration/window/maximize-active-hovered.png":"qx/decoration/window/maximize-active.png":"qx/decoration/window/maximize-inactive.png",
-margin:[4,8,2,0]}}},
-"window/close-button":{alias:"atom",
-style:function(a){return{icon:a.active?a.hovered?"qx/decoration/window/close-active-hovered.png":"qx/decoration/window/close-active.png":"qx/decoration/window/close-inactive.png",
-margin:[4,8,2,0]}}},
-"window/statusbar":{style:function(){return{padding:[2,6],
-decorator:"window-statusbar",
-minHeight:18}}},
-"window/statusbar-text":{style:function(){return{font:"small"}}},
-iframe:{style:function(){return{decorator:"main"}}},
-resizer:{style:function(){return{decorator:"pane"}}},
-splitpane:{style:function(){return{decorator:"splitpane"}}},
-"splitpane/splitter":{style:function(a){return{width:a.horizontal?3:undefined,
-height:a.vertical?3:undefined,
-backgroundColor:"background-splitpane"}}},
-"splitpane/splitter/knob":{style:function(a){return{source:a.horizontal?"qx/decoration/splitpane/knob-horizontal.png":"qx/decoration/splitpane/knob-vertical.png"}}},
-"splitpane/slider":{style:function(a){return{width:a.horizontal?3:undefined,
-height:a.vertical?3:undefined,
-backgroundColor:"background-splitpane"}}},
-selectbox:{alias:"button-frame",
-include:"button-frame",
-style:function(){return{padding:[2,8]}}},
-"selectbox/atom":"atom",
-"selectbox/popup":"popup",
-"selectbox/list":{alias:"list"},
-"selectbox/arrow":{include:"image",
-style:function(){return{source:"qx/decoration/arrows/down.png",
-paddingLeft:5}}},
-datechooser:{style:function(e){var a,d=!!e.focused,c=!!e.invalid,b=!!e.disabled;
-a=d&&c&&!b?"input-focused-invalid":d&&!c&&!b?"input-focused":b?"input-disabled":!d&&c&&!b?"border-invalid":"input";
-return{padding:2,
-decorator:a,
-backgroundColor:"background-light"}}},
-"datechooser/navigation-bar":{},
-"datechooser/nav-button":{include:"button-frame",
-alias:"button-frame",
-style:function(b){var a={padding:[2,4],
-shadow:undefined};
-b.lastYear?(a.icon="qx/decoration/arrows/rewind.png",a.marginRight=1):b.lastMonth?a.icon="qx/decoration/arrows/left.png":b.nextYear?(a.icon="qx/decoration/arrows/forward.png",a.marginLeft=1):b.nextMonth&&(a.icon="qx/decoration/arrows/right.png");
-return a}},
-"datechooser/last-year-button-tooltip":"tooltip",
-"datechooser/last-month-button-tooltip":"tooltip",
-"datechooser/next-year-button-tooltip":"tooltip",
-"datechooser/next-month-button-tooltip":"tooltip",
-"datechooser/last-year-button":"datechooser/nav-button",
-"datechooser/last-month-button":"datechooser/nav-button",
-"datechooser/next-month-button":"datechooser/nav-button",
-"datechooser/next-year-button":"datechooser/nav-button",
-"datechooser/month-year-label":{style:function(a){return{font:"bold",
-textAlign:"center",
-textColor:a.disabled?"text-disabled":undefined}}},
-"datechooser/date-pane":{style:function(a){return{textColor:a.disabled?"text-disabled":undefined,
-marginTop:2}}},
-"datechooser/weekday":{style:function(a){return{textColor:a.disabled?"text-disabled":a.weekend?"text-light":undefined,
-textAlign:"center",
-paddingTop:2,
-backgroundColor:"background-medium"}}},
-"datechooser/week":{style:function(){return{textAlign:"center",
-padding:[2,4],
-backgroundColor:"background-medium"}}},
-"datechooser/day":{style:function(a){return{textAlign:"center",
-decorator:a.disabled?undefined:a.selected?"selected":undefined,
-textColor:a.disabled?"text-disabled":a.selected?"text-selected":a.otherMonth?"text-light":undefined,
-font:a.today?"bold":undefined,
-padding:[2,4]}}},
-combobox:{style:function(e){var a,d=!!e.focused,c=!!e.invalid,b=!!e.disabled;
-a=d&&c&&!b?"input-focused-invalid":d&&!c&&!b?"input-focused":b?"input-disabled":!d&&c&&!b?"border-invalid":"input";
-return{decorator:a}}},
-"combobox/popup":"popup",
-"combobox/list":{alias:"list"},
-"combobox/button":{include:"button-frame",
-alias:"button-frame",
-style:function(b){var a={icon:"qx/decoration/arrows/down.png",
-padding:2};
-b.selected&&(a.decorator="button-focused");
-return a}},
-"combobox/textfield":{include:"textfield",
-style:function(){return{decorator:undefined}}},
-menu:{style:function(b){var a={decorator:"menu",
-shadow:"shadow-popup",
-spacingX:6,
-spacingY:1,
-iconColumnWidth:16,
-arrowColumnWidth:4,
-placementModeY:b.submenu||b.contextmenu?"best-fit":"keep-align"};
-b.submenu&&(a.position="right-top",a.offset=[-2,-3]);
-return a}},
-"menu/slidebar":"menu-slidebar",
-"menu-slidebar":"widget",
-"menu-slidebar-button":{style:function(a){return{decorator:a.hovered?"selected":undefined,
-padding:7,
-center:true}}},
-"menu-slidebar/button-backward":{include:"menu-slidebar-button",
-style:function(a){return{icon:a.hovered?"qx/decoration/arrows/up-invert.png":"qx/decoration/arrows/up.png"}}},
-"menu-slidebar/button-forward":{include:"menu-slidebar-button",
-style:function(a){return{icon:a.hovered?"qx/decoration/arrows/down-invert.png":"qx/decoration/arrows/down.png"}}},
-"menu-separator":{style:function(){return{height:0,
-decorator:"menu-separator",
-margin:[4,2]}}},
-"menu-button":{alias:"atom",
-style:function(a){return{decorator:a.selected?"selected":undefined,
-textColor:a.selected?"text-selected":undefined,
-padding:[4,6]}}},
-"menu-button/icon":{include:"image",
-style:function(){return{alignY:"middle"}}},
-"menu-button/label":{include:"label",
-style:function(){return{alignY:"middle",
-padding:1}}},
-"menu-button/shortcut":{include:"label",
-style:function(){return{alignY:"middle",
-marginLeft:14,
-padding:1}}},
-"menu-button/arrow":{include:"image",
-style:function(a){return{source:a.selected?"qx/decoration/arrows/right-invert.png":"qx/decoration/arrows/right.png",
-alignY:"middle"}}},
-"menu-checkbox":{alias:"menu-button",
-include:"menu-button",
-style:function(a){return{icon:a.checked?a.selected?"qx/decoration/menu/checkbox-invert.gif":"qx/decoration/menu/checkbox.gif":undefined}}},
-"menu-radiobutton":{alias:"menu-button",
-include:"menu-button",
-style:function(a){return{icon:a.checked?a.selected?"qx/decoration/menu/radiobutton-invert.gif":"qx/decoration/menu/radiobutton.gif":undefined}}},
-menubar:{style:function(){return{decorator:"menubar"}}},
-"menubar-button":{alias:"atom",
-style:function(a){return{decorator:(a.pressed||a.hovered)&&!a.disabled?"selected":undefined,
-textColor:a.pressed||a.hovered?"text-selected":undefined,
-padding:[3,8]}}},
-colorselector:"widget",
-"colorselector/control-bar":"widget",
-"colorselector/control-pane":"widget",
-"colorselector/visual-pane":"groupbox",
-"colorselector/preset-grid":"widget",
-"colorselector/colorbucket":{style:function(){return{decorator:"main",
-width:16,
-height:16}}},
-"colorselector/preset-field-set":"groupbox",
-"colorselector/input-field-set":"groupbox",
-"colorselector/preview-field-set":"groupbox",
-"colorselector/hex-field-composite":"widget",
-"colorselector/hex-field":"textfield",
-"colorselector/rgb-spinner-composite":"widget",
-"colorselector/rgb-spinner-red":"spinner",
-"colorselector/rgb-spinner-green":"spinner",
-"colorselector/rgb-spinner-blue":"spinner",
-"colorselector/hsb-spinner-composite":"widget",
-"colorselector/hsb-spinner-hue":"spinner",
-"colorselector/hsb-spinner-saturation":"spinner",
-"colorselector/hsb-spinner-brightness":"spinner",
-"colorselector/preview-content-old":{style:function(){return{decorator:"main",
-width:50,
-height:10}}},
-"colorselector/preview-content-new":{style:function(){return{decorator:"main",
-backgroundColor:"background-light",
-width:50,
-height:10}}},
-"colorselector/hue-saturation-field":{style:function(){return{decorator:"main",
-margin:5}}},
-"colorselector/brightness-field":{style:function(){return{decorator:"main",
-margin:[5,7]}}},
-"colorselector/hue-saturation-pane":"widget",
-"colorselector/hue-saturation-handle":"widget",
-"colorselector/brightness-pane":"widget",
-"colorselector/brightness-handle":"widget",
-colorpopup:{alias:"popup",
-include:"popup",
-style:function(){return{padding:5,
-backgroundColor:"background-application"}}},
-"colorpopup/field":{style:function(){return{decorator:"main",
-margin:2,
-width:14,
-height:14,
-backgroundColor:"background-light"}}},
-"colorpopup/selector-button":"button",
-"colorpopup/auto-button":"button",
-"colorpopup/preview-pane":"groupbox",
-"colorpopup/current-preview":{style:function(){return{height:20,
-padding:4,
-marginLeft:4,
-decorator:"main",
-allowGrowX:true}}},
-"colorpopup/selected-preview":{style:function(){return{height:20,
-padding:4,
-marginRight:4,
-decorator:"main",
-allowGrowX:true}}},
-"colorpopup/colorselector-okbutton":{alias:"button",
-include:"button",
-style:function(){return{icon:"qx/icon/16/actions/dialog-ok.png"}}},
-"colorpopup/colorselector-cancelbutton":{alias:"button",
-include:"button",
-style:function(){return{icon:"qx/icon/16/actions/dialog-cancel.png"}}},
-table:{alias:"widget",
-style:function(){return{decorator:"table"}}},
-"table-header":{},
-"table/statusbar":{style:function(){return{decorator:"table-statusbar",
-padding:[0,2]}}},
-"table/column-button":{alias:"button-frame",
-style:function(){return{decorator:"table-column-button",
-padding:3,
-icon:"qx/decoration/table/select-column-order.png"}}},
-"table-column-reset-button":{include:"menu-button",
-alias:"menu-button",
-style:function(){return{icon:"qx/icon/16/actions/view-refresh.png"}}},
-"table-scroller":"widget",
-"table-scroller/scrollbar-x":"scrollbar",
-"table-scroller/scrollbar-y":"scrollbar",
-"table-scroller/header":{style:function(){return{decorator:"table-scroller-header"}}},
-"table-scroller/pane":{style:function(){return{backgroundColor:"table-pane"}}},
-"table-scroller/focus-indicator":{style:function(){return{decorator:"table-scroller-focus-indicator"}}},
-"table-scroller/resize-line":{style:function(){return{backgroundColor:"border-separator",
-width:2}}},
-"table-header-cell":{alias:"atom",
-style:function(a){return{minWidth:13,
-minHeight:20,
-padding:a.hovered?[3,4,2,4]:[3,4],
-decorator:a.hovered?"table-header-cell-hovered":"table-header-cell",
-sortIcon:a.sorted?a.sortedAscending?"qx/decoration/table/ascending.png":"qx/decoration/table/descending.png":undefined}}},
-"table-header-cell/label":{style:function(){return{minWidth:0,
-alignY:"middle",
-paddingRight:5}}},
-"table-header-cell/sort-icon":{style:function(){return{alignY:"middle",
-alignX:"right"}}},
-"table-header-cell/icon":{style:function(){return{minWidth:0,
-alignY:"middle",
-paddingRight:5}}},
-"table-editor-textfield":{include:"textfield",
-style:function(){return{decorator:undefined,
-padding:[2,2],
-backgroundColor:"background-light"}}},
-"table-editor-selectbox":{include:"selectbox",
-alias:"selectbox",
-style:function(){return{padding:[0,2],
-backgroundColor:"background-light"}}},
-"table-editor-combobox":{include:"combobox",
-alias:"combobox",
-style:function(){return{decorator:undefined,
-backgroundColor:"background-light"}}},
-"progressive-table-header":{alias:"widget",
-style:function(){return{decorator:"progressive-table-header"}}},
-"progressive-table-header-cell":{alias:"atom",
-style:function(){return{minWidth:40,
-minHeight:25,
-paddingLeft:6,
-decorator:"progressive-table-header-cell"}}},
-"app-header":{style:function(){return{font:"bold",
-textColor:"text-selected",
-padding:[8,12],
-decorator:"app-header"}}},
-"virtual-list":"list",
-"virtual-list/row-layer":"row-layer",
-"row-layer":{style:function(){return{colorEven:"white",
-colorOdd:"white"}}},
-"column-layer":"widget",
-cell:{style:function(a){return{textColor:a.selected?"text-selected":"text-label",
-padding:[3,6],
-font:"default"}}},
-"cell-string":"cell",
-"cell-number":{include:"cell",
-style:function(){return{textAlign:"right"}}},
-"cell-image":"cell",
-"cell-boolean":{include:"cell",
-style:function(){return{iconTrue:"qx/decoration/table/boolean-true.png",
-iconFalse:"qx/decoration/table/boolean-false.png"}}},
-"cell-atom":"cell",
-"cell-date":"cell",
-"cell-html":"cell",
-htmlarea:{include:"widget",
-style:function(){return{backgroundColor:"white"}}}}});
-
-
-// apiviewer.MWidgetRegistry
-//   - Size: 662 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("apiviewer.MWidgetRegistry",{properties:{id:{check:"String",
-apply:"_applyId",
-nullable:true,
-init:null}},
-members:{_applyId:function(b,a){var c=apiviewer.MWidgetRegistry;
-a&&c.unregister(this,a);
-b&&c.register(this,b)},
-getWidgetById:function(a){return apiviewer.MWidgetRegistry.getWidgetById(a)}},
-statics:{__yALNM:{},
-getWidgetById:function(a){return this.__yALNM[a]},
-register:function(b,a){if(this.__yALNM[a])throw new Error("An object with the id '"+a+"' already exists.");
-this.__yALNM[a]=b},
-unregister:function(b,a){if(this.__yALNM[a]!==b)throw new Error("The object is not registered with the id '"+a+"'.");
-delete this.__yALNM[a]}}});
-
-
-// qx.ui.form.MForm
-//   - Size: 503 bytes
-//   - Modified: 2010-09-30T14:20:20
-qx.Mixin.define("qx.ui.form.MForm",{construct:function(){},
-properties:{valid:{check:"Boolean",
-init:true,
-apply:"_applyValid",
-event:"changeValid"},
-required:{check:"Boolean",
-init:false,
-event:"changeRequired"},
-invalidMessage:{check:"String",
-init:"",
-event:"changeInvalidMessage"},
-requiredInvalidMessage:{check:"String",
-nullable:true,
-event:"changeInvalidMessage"}},
-members:{_applyValid:function(a){a?this.removeState("invalid"):this.addState("invalid")},
-__7AESY:null},
-destruct:function(){}});
-
-
 // qx.ui.core.MBlocker
 //   - Size: 994 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Mixin.define("qx.ui.core.MBlocker",{construct:function(){this.__ukeJN=new qx.ui.core.Blocker(this)},
 properties:{blockerColor:{check:"Color",
 init:null,
@@ -1884,6 +1161,65 @@ _applyContentPadding:function(b,f,c){var a=this._getContentPaddingTarget(),e,d;
 b==null?(e=this.__cm5qGh[c],a[e]()):(d=this.__b1yWhg[c],a[d](b))}}});
 
 
+// qx.ui.core.MChildrenHandling
+//   - Size: 777 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.ui.core.MChildrenHandling",{members:{getChildren:function(){return this._getChildren()},
+hasChildren:function(){return this._hasChildren()},
+indexOf:function(a){return this._indexOf(a)},
+add:function(a,b){this._add(a,b)},
+addAt:function(a,c,b){this._addAt(a,c,b)},
+addBefore:function(c,a,b){this._addBefore(c,a,b)},
+addAfter:function(a,c,b){this._addAfter(a,c,b)},
+remove:function(a){this._remove(a)},
+removeAt:function(a){return this._removeAt(a)},
+removeAll:function(){this._removeAll()}},
+statics:{remap:function(a){a.getChildren=a._getChildren;
+a.hasChildren=a._hasChildren;
+a.indexOf=a._indexOf;
+a.add=a._add;
+a.addAt=a._addAt;
+a.addBefore=a._addBefore;
+a.addAfter=a._addAfter;
+a.remove=a._remove;
+a.removeAt=a._removeAt;
+a.removeAll=a._removeAll}}});
+
+
+// qx.ui.core.MLayoutHandling
+//   - Size: 237 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.ui.core.MLayoutHandling",{members:{setLayout:function(a){return this._setLayout(a)},
+getLayout:function(){return this._getLayout()}},
+statics:{remap:function(a){a.getLayout=a._getLayout;
+a.setLayout=a._setLayout}}});
+
+
+// qx.ui.core.MRemoteChildrenHandling
+//   - Size: 725 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.ui.core.MRemoteChildrenHandling",{members:{__uR3K4:function(a,e,c,d){var b=this.getChildrenContainer();
+b===this&&(a="_"+a);
+return(b[a])(e,c,d)},
+getChildren:function(){return this.__uR3K4("getChildren")},
+hasChildren:function(){return this.__uR3K4("hasChildren")},
+add:function(a,b){return this.__uR3K4("add",a,b)},
+remove:function(a){return this.__uR3K4("remove",a)},
+removeAll:function(){return this.__uR3K4("removeAll")},
+indexOf:function(a){return this.__uR3K4("indexOf",a)},
+addAt:function(a,c,b){this.__uR3K4("addAt",a,c,b)},
+addBefore:function(c,a,b){this.__uR3K4("addBefore",c,a,b)},
+addAfter:function(a,c,b){this.__uR3K4("addAfter",a,c,b)},
+removeAt:function(a){this.__uR3K4("removeAt",a)}}});
+
+
+// qx.ui.core.MRemoteLayoutHandling
+//   - Size: 206 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.ui.core.MRemoteLayoutHandling",{members:{setLayout:function(a){return this.getChildrenContainer().setLayout(a)},
+getLayout:function(){return this.getChildrenContainer().getLayout()}}});
+
+
 // qx.event.IEventHandler
 //   - Size: 226 bytes
 //   - Modified: 2010-11-03T14:43:37
@@ -1894,6 +1230,59 @@ TARGET_DOCUMENT:8},
 members:{canHandleEvent:function(){},
 registerEvent:function(){},
 unregisterEvent:function(){}}});
+
+
+// qx.data.IListData
+//   - Size: 261 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.data.IListData",{events:{change:"qx.event.type.Data",
+changeLength:"qx.event.type.Event"},
+members:{getItem:function(){},
+setItem:function(){},
+splice:function(){},
+contains:function(){},
+getLength:function(){},
+toArray:function(){}}});
+
+
+// qx.ui.decoration.IDecorator
+//   - Size: 151 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.decoration.IDecorator",{members:{getMarkup:function(){},
+resize:function(){},
+tint:function(){},
+getInsets:function(){}}});
+
+
+// qx.ui.form.IExecutable
+//   - Size: 195 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IExecutable",{events:{execute:"qx.event.type.Data"},
+members:{setCommand:function(){return arguments.length==1},
+getCommand:function(){},
+execute:function(){}}});
+
+
+// qx.ui.form.IStringForm
+//   - Size: 198 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IStringForm",{events:{changeValue:"qx.event.type.Data"},
+members:{setValue:function(){return arguments.length==1},
+resetValue:function(){},
+getValue:function(){}}});
+
+
+// qx.event.GlobalError
+//   - Size: 454 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Bootstrap.define("qx.event.GlobalError",{statics:{setErrorHandler:function(b,a){this.__yn7yy=b||null;
+this.__uOt7U=a||window},
+__2AKLi:function(c,b,a){if(this.__yn7yy){this.handleError(new qx.core.WindowError(c,b,a));
+return true}},
+observeMethod:function(a){return a},
+handleError:function(a){this.__yn7yy&&this.__yn7yy.call(this.__uOt7U,a)}},
+defer:function(a){qx.core.Setting.define("qx.globalErrorHandling","on");
+a.setErrorHandler(null,null)}});
 
 
 // qx.ui.window.IWindowManager
@@ -1915,19 +1304,6 @@ supportsMaximize:function(){},
 blockContent:function(a){this.assertInteger(a)},
 unblockContent:function(){},
 isContentBlocked:function(){}}});
-
-
-// qx.data.IListData
-//   - Size: 261 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.data.IListData",{events:{change:"qx.event.type.Data",
-changeLength:"qx.event.type.Event"},
-members:{getItem:function(){},
-setItem:function(){},
-splice:function(){},
-contains:function(){},
-getLength:function(){},
-toArray:function(){}}});
 
 
 // qx.ui.core.MExecutable
@@ -1958,44 +1334,112 @@ e++)a=this._bindableProperties[e],d!=null&&b[a]!=null&&(d.removeBinding(b[a]),b[
 destruct:function(){this.__b0TXYK=null}});
 
 
-// qx.ui.decoration.IDecorator
-//   - Size: 151 bytes
+// qx.lang.Type
+//   - Size: 617 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.decoration.IDecorator",{members:{getMarkup:function(){},
-resize:function(){},
-tint:function(){},
-getInsets:function(){}}});
+qx.Class.define("qx.lang.Type",{statics:{getClass:qx.Bootstrap.getClass,
+isString:qx.Bootstrap.isString,
+isArray:qx.Bootstrap.isArray,
+isObject:qx.Bootstrap.isObject,
+isFunction:qx.Bootstrap.isFunction,
+isRegExp:function(a){return this.getClass(a)=="RegExp"},
+isNumber:function(a){return a!==null&&(this.getClass(a)=="Number"||a instanceof Number)},
+isBoolean:function(a){return a!==null&&(this.getClass(a)=="Boolean"||a instanceof Boolean)},
+isDate:function(a){return a!==null&&(this.getClass(a)=="Date"||a instanceof Date)},
+isError:function(a){return a!==null&&(this.getClass(a)=="Error"||a instanceof Error)}}});
 
 
-// qx.event.GlobalError
-//   - Size: 454 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Bootstrap.define("qx.event.GlobalError",{statics:{setErrorHandler:function(b,a){this.__yn7yy=b||null;
-this.__uOt7U=a||window},
-__2AKLi:function(c,b,a){if(this.__yn7yy){this.handleError(new qx.core.WindowError(c,b,a));
-return true}},
-observeMethod:function(a){return a},
-handleError:function(a){this.__yn7yy&&this.__yn7yy.call(this.__uOt7U,a)}},
-defer:function(a){qx.core.Setting.define("qx.globalErrorHandling","on");
-a.setErrorHandler(null,null)}});
+// qx.bom.client.Locale
+//   - Size: 288 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.bom.client.Locale",{statics:{LOCALE:"",
+VARIANT:"",
+__jA3lT:function(){var a=(navigator.userLanguage||navigator.language).toLowerCase(),c="",b=a.indexOf("-");
+b!=-1&&(c=a.substr(b+1),a=a.substr(0,b));
+this.LOCALE=a;
+this.VARIANT=c}},
+defer:function(a){a.__jA3lT()}});
 
 
-// qx.ui.form.IExecutable
-//   - Size: 195 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IExecutable",{events:{execute:"qx.event.type.Data"},
-members:{setCommand:function(){return arguments.length==1},
-getCommand:function(){},
-execute:function(){}}});
+// qx.lang.RingBuffer
+//   - Size: 1181 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.lang.RingBuffer",{extend:Object,
+construct:function(a){this.setMaxEntries(a||50)},
+members:{__bHMv5N:0,
+__3Ng1e:0,
+__UksBG:false,
+__cofKxn:0,
+__uPjgP:null,
+__Jk3m7:null,
+setMaxEntries:function(a){this.__Jk3m7=a;
+this.clear()},
+getMaxEntries:function(){return this.__Jk3m7},
+addEntry:function(b){this.__uPjgP[this.__bHMv5N]=b;
+this.__bHMv5N=this.__HDJCN(this.__bHMv5N,1);
+var a=this.getMaxEntries();
+this.__3Ng1e<a&&this.__3Ng1e++;
+this.__UksBG&&this.__cofKxn<a&&this.__cofKxn++},
+mark:function(){this.__UksBG=true;
+this.__cofKxn=0},
+clearMark:function(){this.__UksBG=false},
+getAllEntries:function(){return this.getEntries(this.getMaxEntries(),false)},
+getEntries:function(a,e){a>this.__3Ng1e&&(a=this.__3Ng1e);
+e&&this.__UksBG&&a>this.__cofKxn&&(a=this.__cofKxn);
+if(a>0){var c=this.__HDJCN(this.__bHMv5N,-1),d=this.__HDJCN(c,-a+1),b;
+b=d<=c?this.__uPjgP.slice(d,c+1):this.__uPjgP.slice(d,this.__3Ng1e).concat(this.__uPjgP.slice(0,c+1))}else b=[];
+return b},
+clear:function(){this.__uPjgP=new Array(this.getMaxEntries());
+this.__3Ng1e=0;
+this.__cofKxn=0;
+this.__bHMv5N=0},
+__HDJCN:function(c,d){var b=this.getMaxEntries(),a=(c+d)%b;
+a<0&&(a+=b);
+return a}}});
 
 
-// qx.ui.form.IStringForm
-//   - Size: 198 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IStringForm",{events:{changeValue:"qx.event.type.Data"},
-members:{setValue:function(){return arguments.length==1},
-resetValue:function(){},
-getValue:function(){}}});
+// qx.dom.Node
+//   - Size: 1594 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Class.define("qx.dom.Node",{statics:{ELEMENT:1,
+ATTRIBUTE:2,
+TEXT:3,
+CDATA_SECTION:4,
+ENTITY_REFERENCE:5,
+ENTITY:6,
+PROCESSING_INSTRUCTION:7,
+COMMENT:8,
+DOCUMENT:9,
+DOCUMENT_TYPE:10,
+DOCUMENT_FRAGMENT:11,
+NOTATION:12,
+getDocument:function(a){return a.nodeType===this.DOCUMENT?a:a.ownerDocument||a.document},
+getWindow:function(a){if(a.nodeType==null)return a;
+a.nodeType!==this.DOCUMENT&&(a=a.ownerDocument);
+return a.defaultView||a.parentWindow||null},
+getDocumentElement:function(a){return this.getDocument(a).documentElement},
+getBodyElement:function(a){return this.getDocument(a).body},
+isNode:function(a){return!!(a&&a.nodeType!=null)},
+isElement:function(a){return!!(a&&a.nodeType===this.ELEMENT)},
+isDocument:function(a){return!!(a&&a.nodeType===this.DOCUMENT)},
+isText:function(a){return!!(a&&a.nodeType===this.TEXT)},
+isWindow:function(a){return!!(a&&a.history&&a.location&&a.document)},
+isNodeName:function(a,b){if(!b||!a||!a.nodeName)return false;
+return b.toLowerCase()==qx.dom.Node.getName(a)},
+getName:function(a){return a&&a.nodeName&&a.nodeName.toLowerCase()||null},
+getText:function(a){if(!a||!a.nodeType)return null;
+switch(a.nodeType){case 1:var b,c=[],d=a.childNodes,e=d.length;
+for(b=0;
+b<e;
+b++)c[b]=this.getText(d[b]);
+return c.join("");
+case 2:return a.nodeValue;
+break;
+case 3:return a.nodeValue;
+break}return null},
+isBlockNode:function(a){if(!qx.dom.Node.isElement(a))return false;
+a=qx.dom.Node.getName(a);
+return/^(body|form|textarea|fieldset|ul|ol|dl|dt|dd|li|div|hr|p|h[1-6]|quote|pre|table|thead|tbody|tfoot|tr|td|th|iframe|address|blockquote)$/.test(a)}}});
 
 
 // qx.bom.Selector
@@ -2290,45 +1734,6 @@ n.query=function(a,c){return b(a,c)};
 n.matches=function(a,c){return b(a,null,null,c)}})();
 
 
-// qx.bom.Viewport
-//   - Size: 698 bytes
-//   - Modified: 2010-09-18T15:10:19
-qx.Class.define("qx.bom.Viewport",{statics:{getWidth:function(b){var a=(b||window).document;
-return qx.bom.Document.isStandardMode(b)?a.documentElement.clientWidth:a.body.clientWidth},
-getHeight:function(b){var a=(b||window).document;
-return qx.bom.Document.isStandardMode(b)?a.documentElement.clientHeight:a.body.clientHeight},
-getScrollLeft:function(a){return(a||window).pageXOffset},
-getScrollTop:function(a){return(a||window).pageYOffset},
-getOrientation:function(b){var a=(b||window).orientation;
-a==null&&(a=this.getWidth(b)>this.getHeight(b)?90:0);
-return a},
-isLandscape:function(a){return Math.abs(this.getOrientation(a))==90},
-isPortrait:function(a){return this.getOrientation(a)==0}}});
-
-
-// qx.bom.Document
-//   - Size: 540 bytes
-//   - Modified: 2010-07-17T16:42:24
-qx.Class.define("qx.bom.Document",{statics:{isQuirksMode:function(a){return(a||window).document.compatMode!=="CSS1Compat"},
-isStandardMode:function(a){return!this.isQuirksMode(a)},
-getWidth:function(a){var b=(a||window).document,d=qx.bom.Viewport.getWidth(a),c=this.isStandardMode(a)?b.documentElement.scrollWidth:b.body.scrollWidth;
-return Math.max(c,d)},
-getHeight:function(a){var b=(a||window).document,d=qx.bom.Viewport.getHeight(a),c=this.isStandardMode(a)?b.documentElement.scrollHeight:b.body.scrollHeight;
-return Math.max(c,d)}}});
-
-
-// qx.bom.client.Locale
-//   - Size: 288 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Class.define("qx.bom.client.Locale",{statics:{LOCALE:"",
-VARIANT:"",
-__jA3lT:function(){var a=(navigator.userLanguage||navigator.language).toLowerCase(),c="",b=a.indexOf("-");
-b!=-1&&(c=a.substr(b+1),a=a.substr(0,b));
-this.LOCALE=a;
-this.VARIANT=c}},
-defer:function(a){a.__jA3lT()}});
-
-
 // qx.bom.client.Platform
 //   - Size: 691 bytes
 //   - Modified: 2010-06-18T23:08:09
@@ -2434,7 +1839,7 @@ reset:function(a,b){this.set(a,b,null)}}});
 
 // qx.bom.element.BoxSizing
 //   - Size: 749 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("qx.bom.element.BoxSizing",{statics:{__bkeUqL:["MozBoxSizing"],
 __3tKx7:["-moz-box-sizing"],
 __bhqzo1:{tags:{button:true,
@@ -2462,6 +1867,159 @@ if(a)for(b=0,e=a.length;
 b<e;
 b++)c.style[a[b]]=d},
 reset:function(a){this.set(a,"")}}});
+
+
+// qx.bom.element.Cursor
+//   - Size: 292 bytes
+//   - Modified: 2010-10-15T14:15:43
+qx.Class.define("qx.bom.element.Cursor",{statics:{__gMIjx:{},
+compile:function(a){return"cursor:"+(this.__gMIjx[a]||a)+";"},
+get:function(a,b){return qx.bom.element.Style.get(a,"cursor",b,false)},
+set:function(b,a){b.style.cursor=this.__gMIjx[a]||a},
+reset:function(a){a.style.cursor=""}}});
+
+
+// qx.bom.element.Opacity
+//   - Size: 730 bytes
+//   - Modified: 2010-10-15T14:16:07
+qx.Class.define("qx.bom.element.Opacity",{statics:{SUPPORT_CSS3_OPACITY:false,
+compile:function(a){a>=1&&(a=.999999);
+return qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?"opacity:"+a+";":"-moz-opacity:"+a+";"},
+set:function(b,a){a>=1&&(a=.999999);
+qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?b.style.opacity=a:b.style.MozOpacity=a},
+reset:function(a){qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?a.style.opacity="":a.style.MozOpacity=""},
+get:function(b,c){var a=qx.bom.element.Style.get(b,qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?"opacity":"MozOpacity",c,false);
+a==.999999&&(a=1);
+if(a!=null)return parseFloat(a);
+return 1}},
+defer:function(a){a.SUPPORT_CSS3_OPACITY=typeof document.documentElement.style.opacity=="string"}});
+
+
+// qx.lang.Date
+//   - Size: 78 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.lang.Date",{statics:{now:function(){return +new Date}}});
+
+
+// qx.bom.element.Overflow
+//   - Size: 2063 bytes
+//   - Modified: 2010-10-15T14:17:24
+qx.Class.define("qx.bom.element.Overflow",{statics:{__3wL46:null,
+getScrollbarWidth:function(){if(this.__3wL46!==null)return this.__3wL46;
+var b=qx.bom.element.Style,f=function(c,a){return parseInt(b.get(c,a))||0},d=function(a){return b.get(a,"borderRightStyle")=="none"?0:f(a,"borderRightWidth")},i=function(a){return b.get(a,"borderLeftStyle")=="none"?0:f(a,"borderLeftWidth")},g=function(a){if(a.clientWidth==0){var c=b.get(a,"overflow"),e=(c=="scroll"||c=="-moz-scrollbars-vertical"?16:0);
+return Math.max(0,d(a)+e)}return Math.max(0,(a.offsetWidth-a.clientWidth-i(a)))},h=function(a){return g(a)-d(a)},a=document.createElement("div"),c=a.style,e;
+c.height=c.width="100px";
+c.overflow="scroll";
+document.body.appendChild(a);
+e=h(a);
+this.__3wL46=e?e:16;
+document.body.removeChild(a);
+return this.__3wL46},
+_compile:qx.bom.client.Engine.VERSION<1.8?function(b,a){a=="hidden"&&(a="-moz-scrollbars-none");
+return"overflow:"+a+";"}:function(a,b){return a+":"+b+";"},
+compileX:function(a){return this._compile("overflow-x",a)},
+compileY:function(a){return this._compile("overflow-y",a)},
+getX:qx.bom.client.Engine.VERSION<1.8?function(b,c){var a=qx.bom.element.Style.get(b,"overflow",c,false);
+a==="-moz-scrollbars-none"&&(a="hidden");
+return a}:function(a,b){return qx.bom.element.Style.get(a,"overflowX",b,false)},
+setX:qx.bom.client.Engine.VERSION<1.8?function(b,a){a=="hidden"&&(a="-moz-scrollbars-none");
+b.style.overflow=a}:function(a,b){a.style.overflowX=b},
+resetX:qx.bom.client.Engine.VERSION<1.8?function(a){a.style.overflow=""}:function(a){a.style.overflowX=""},
+getY:qx.bom.client.Engine.VERSION<1.8?function(b,c){var a=qx.bom.element.Style.get(b,"overflow",c,false);
+a==="-moz-scrollbars-none"&&(a="hidden");
+return a}:function(a,b){return qx.bom.element.Style.get(a,"overflowY",b,false)},
+setY:qx.bom.client.Engine.VERSION<1.8?function(b,a){a==="hidden"&&(a="-moz-scrollbars-none");
+b.style.overflow=a}:function(a,b){a.style.overflowY=b},
+resetY:qx.bom.client.Engine.VERSION<1.8?function(a){a.style.overflow=""}:function(a){a.style.overflowY=""}}});
+
+
+// qx.core.Assert
+//   - Size: 7031 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.core.Assert",{statics:{__yM80Z:true,
+__jkPsB:function(e){for(var a="",b=1,f=arguments.length,c,d;
+b<f;
+b++)a=a+this.__zpmOH(arguments[b]);
+c="Assertion error! "+e+": "+a;
+this.__yM80Z&&qx.Bootstrap.error(c);
+if(qx.Class.isDefined("qx.core.AssertionError")){d=new qx.core.AssertionError(e,a);
+this.__yM80Z&&qx.Bootstrap.error("Stack trace: \n"+d.getStackTrace());
+throw d}throw new Error(c)},
+__zpmOH:function(a){var b;
+if(a===null)b="null";
+else if(qx.lang.Type.isArray(a)&&a.length>10)b="Array["+a.length+"]";
+else if(a instanceof Object&&a.toString==null)b=qx.lang.Json.stringify(a,null,2);
+else try{b=a.toString()}catch(c){b=""}return b},
+assert:function(a,b){a==true||this.__jkPsB(b||"","Called assert with 'false'")},
+fail:function(a){this.__jkPsB(a||"","Called fail().")},
+assertTrue:function(a,b){a===true||this.__jkPsB(b||"","Called assertTrue with '",a,"'")},
+assertFalse:function(a,b){a===false||this.__jkPsB(b||"","Called assertFalse with '",a,"'")},
+assertEquals:function(b,a,c){b==a||this.__jkPsB(c||"","Expected '",b,"' but found '",a,"'!")},
+assertNotEquals:function(b,a,c){b!=a||this.__jkPsB(c||"","Expected '",b,"' to be not equal with '",a,"'!")},
+assertIdentical:function(b,a,c){b===a||this.__jkPsB(c||"","Expected '",b,"' (identical) but found '",a,"'!")},
+assertNotIdentical:function(b,a,c){b!==a||this.__jkPsB(c||"","Expected '",b,"' to be not identical with '",a,"'!")},
+assertNotUndefined:function(a,b){a!==undefined||this.__jkPsB(b||"","Expected value not to be undefined but found ",a,"!")},
+assertUndefined:function(a,b){a===undefined||this.__jkPsB(b||"","Expected value to be undefined but found ",a,"!")},
+assertNotNull:function(a,b){a!==null||this.__jkPsB(b||"","Expected value not to be null but found ",a,"!")},
+assertNull:function(a,b){a===null||this.__jkPsB(b||"","Expected value to be null but found ",a,"!")},
+assertJsonEquals:function(c,b,a){this.assertEquals(qx.lang.Json.stringify(c),qx.lang.Json.stringify(b),a)},
+assertMatch:function(b,a,c){this.assertString(b);
+this.assert(qx.lang.Type.isRegExp(a)||qx.lang.Type.isString(a),"The parameter 're' must be a string or a regular expression.");
+b.search(a)>=0||this.__jkPsB(c||"","The String '",b,"' does not match the regular expression '",a.toString(),"'!")},
+assertArgumentsCount:function(d,c,a,e){var b=d.length;
+b>=c&&b<=a||this.__jkPsB(e||"","Wrong number of arguments given. Expected '",c,"' to '",a,"' arguments but found '",arguments.length,"' arguments.")},
+assertEventFired:function(a,b,f,c,h){var d=false,i=function(b){c&&c.call(a,b);
+d=true},e;
+try{e=a.addListener(b,i,a);
+f.call()}catch(g){throw g}finally{try{a.removeListenerById(e)}catch(g){}}d===true||this.__jkPsB(h||"","Event (",b,") not fired.")},
+assertEventNotFired:function(a,c,e,f){var b=false,g=function(){b=true},d=a.addListener(c,g,a);
+e.call();
+b===false||this.__jkPsB(f||"","Event (",c,") was fired.");
+a.removeListenerById(d)},
+assertException:function(f,c,d,b){var c=c||Error,a;
+try{this.__yM80Z=false;
+f()}catch(e){a=e}finally{this.__yM80Z=true}a==null&&this.__jkPsB(b||"","The function did not raise an exception!");
+a instanceof c||this.__jkPsB(b||"","The raised exception does not have the expected type! ",c," != ",a);
+d&&this.assertMatch(a.toString(),d,b)},
+assertInArray:function(a,b,c){b.indexOf(a)!==-1||this.__jkPsB(c||"","The value '",a,"' must have any of the values defined in the array '",b,"'")},
+assertArrayEquals:function(c,d,a){this.assertArray(c,a);
+this.assertArray(d,a);
+this.assertEquals(c.length,d.length,a);
+for(var b=0;
+b<c.length;
+b++)this.assertIdentical(c[b],d[b],a)},
+assertKeyInMap:function(a,b,c){b[a]!==undefined||this.__jkPsB(c||"","The value '",a,"' must must be a key of the map '",b,"'")},
+assertFunction:function(a,b){qx.lang.Type.isFunction(a)||this.__jkPsB(b||"","Expected value to be typeof function but found ",a,"!")},
+assertString:function(a,b){qx.lang.Type.isString(a)||this.__jkPsB(b||"","Expected value to be a string but found ",a,"!")},
+assertBoolean:function(a,b){qx.lang.Type.isBoolean(a)||this.__jkPsB(b||"","Expected value to be a boolean but found ",a,"!")},
+assertNumber:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)||this.__jkPsB(b||"","Expected value to be a number but found ",a,"!")},
+assertPositiveNumber:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)&&a>=0||this.__jkPsB(b||"","Expected value to be a number >= 0 but found ",a,"!")},
+assertInteger:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)&&a%1===0||this.__jkPsB(b||"","Expected value to be an integer but found ",a,"!")},
+assertPositiveInteger:function(a,c){var b=(qx.lang.Type.isNumber(a)&&isFinite(a)&&a%1===0&&a>=0);
+b||this.__jkPsB(c||"","Expected value to be an integer >= 0 but found ",a,"!")},
+assertInRange:function(a,b,c,d){a>=b&&a<=c||this.__jkPsB(d||"",qx.lang.String.format("Expected value '%1' to be in the range '%2'..'%3'!",[a,b,c]))},
+assertObject:function(a,c){var b=a!==null&&(qx.lang.Type.isObject(a)||typeof a==="object");
+b||this.__jkPsB(c||"","Expected value to be typeof object but found ",(a),"!")},
+assertArray:function(a,b){qx.lang.Type.isArray(a)||this.__jkPsB(b||"","Expected value to be an array but found ",a,"!")},
+assertMap:function(a,b){qx.lang.Type.isObject(a)||this.__jkPsB(b||"","Expected value to be a map but found ",a,"!")},
+assertRegExp:function(a,b){qx.lang.Type.isRegExp(a)||this.__jkPsB(b||"","Expected value to be a regular expression but found ",a,"!")},
+assertType:function(b,a,c){this.assertString(a,"Invalid argument 'type'");
+typeof b===a||this.__jkPsB(c||"","Expected value to be typeof '",a,"' but found ",b,"!")},
+assertInstance:function(b,a,d){var c=a.classname||a+"";
+b instanceof a||this.__jkPsB(d||"","Expected value to be instanceof '",c,"' but found ",b,"!")},
+assertInterface:function(a,b,c){qx.Class.implementsInterface(a,b)||this.__jkPsB(c||"","Expected object '",a,"' to implement the interface '",b,"'!")},
+assertCssColor:function(e,c,f){var d=qx.Class.getByName("qx.util.ColorUtil"),a,b,g;
+if(!d)throw new Error("qx.util.ColorUtil not available! Your code must have a dependency on 'qx.util.ColorUtil'");
+a=d.stringToRgb(e);
+try{b=d.stringToRgb(c)}catch(h){this.__jkPsB(f||"","Expected value to be the CSS color '",e,"' (rgb(",a.join(","),")), but found value '",c,"', which cannot be converted to a CSS color!")}g=a[0]==b[0]&&a[1]==b[1]&&a[2]==b[2];
+g||this.__jkPsB(f||"","Expected value to be the CSS color '",a,"' (rgb(",a.join(","),")), but found value '",c,"' (rgb(",b.join(","),"))!")},
+assertElement:function(a,b){!!(a&&a.nodeType===1)||this.__jkPsB(b||"","Expected value to be a DOM element but found  '",a,"'!")},
+assertQxObject:function(a,b){this.__VkBFl(a,"qx.core.Object")||this.__jkPsB(b||"","Expected value to be a qooxdoo object but found ",a,"!")},
+assertQxWidget:function(a,b){this.__VkBFl(a,"qx.ui.core.Widget")||this.__jkPsB(b||"","Expected value to be a qooxdoo widget but found ",a,"!")},
+__VkBFl:function(b,c){if(!b)return false;
+var a=b.constructor;
+while(a){if(a.classname===c)return true;
+a=a.superclass}return false}}});
 
 
 // qx.core.ObjectRegistry
@@ -2505,97 +2063,6 @@ if(a!==e){a++;
 continue}}break}qx.Bootstrap.debug(this,"Disposed "+e+" objects");
 delete this.__zAUSy},
 getRegistry:function(){return this.__zAUSy}}});
-
-
-// qx.lang.Type
-//   - Size: 617 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.lang.Type",{statics:{getClass:qx.Bootstrap.getClass,
-isString:qx.Bootstrap.isString,
-isArray:qx.Bootstrap.isArray,
-isObject:qx.Bootstrap.isObject,
-isFunction:qx.Bootstrap.isFunction,
-isRegExp:function(a){return this.getClass(a)=="RegExp"},
-isNumber:function(a){return a!==null&&(this.getClass(a)=="Number"||a instanceof Number)},
-isBoolean:function(a){return a!==null&&(this.getClass(a)=="Boolean"||a instanceof Boolean)},
-isDate:function(a){return a!==null&&(this.getClass(a)=="Date"||a instanceof Date)},
-isError:function(a){return a!==null&&(this.getClass(a)=="Error"||a instanceof Error)}}});
-
-
-// qx.dom.Node
-//   - Size: 1594 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.dom.Node",{statics:{ELEMENT:1,
-ATTRIBUTE:2,
-TEXT:3,
-CDATA_SECTION:4,
-ENTITY_REFERENCE:5,
-ENTITY:6,
-PROCESSING_INSTRUCTION:7,
-COMMENT:8,
-DOCUMENT:9,
-DOCUMENT_TYPE:10,
-DOCUMENT_FRAGMENT:11,
-NOTATION:12,
-getDocument:function(a){return a.nodeType===this.DOCUMENT?a:a.ownerDocument||a.document},
-getWindow:function(a){if(a.nodeType==null)return a;
-a.nodeType!==this.DOCUMENT&&(a=a.ownerDocument);
-return a.defaultView||a.parentWindow||null},
-getDocumentElement:function(a){return this.getDocument(a).documentElement},
-getBodyElement:function(a){return this.getDocument(a).body},
-isNode:function(a){return!!(a&&a.nodeType!=null)},
-isElement:function(a){return!!(a&&a.nodeType===this.ELEMENT)},
-isDocument:function(a){return!!(a&&a.nodeType===this.DOCUMENT)},
-isText:function(a){return!!(a&&a.nodeType===this.TEXT)},
-isWindow:function(a){return!!(a&&a.history&&a.location&&a.document)},
-isNodeName:function(a,b){if(!b||!a||!a.nodeName)return false;
-return b.toLowerCase()==qx.dom.Node.getName(a)},
-getName:function(a){return a&&a.nodeName&&a.nodeName.toLowerCase()||null},
-getText:function(a){if(!a||!a.nodeType)return null;
-switch(a.nodeType){case 1:var b,c=[],d=a.childNodes,e=d.length;
-for(b=0;
-b<e;
-b++)c[b]=this.getText(d[b]);
-return c.join("");
-case 2:return a.nodeValue;
-break;
-case 3:return a.nodeValue;
-break}return null},
-isBlockNode:function(a){if(!qx.dom.Node.isElement(a))return false;
-a=qx.dom.Node.getName(a);
-return/^(body|form|textarea|fieldset|ul|ol|dl|dt|dd|li|div|hr|p|h[1-6]|quote|pre|table|thead|tbody|tfoot|tr|td|th|iframe|address|blockquote)$/.test(a)}}});
-
-
-// qx.bom.element.Cursor
-//   - Size: 292 bytes
-//   - Modified: 2010-10-15T14:15:43
-qx.Class.define("qx.bom.element.Cursor",{statics:{__gMIjx:{},
-compile:function(a){return"cursor:"+(this.__gMIjx[a]||a)+";"},
-get:function(a,b){return qx.bom.element.Style.get(a,"cursor",b,false)},
-set:function(b,a){b.style.cursor=this.__gMIjx[a]||a},
-reset:function(a){a.style.cursor=""}}});
-
-
-// qx.bom.element.Opacity
-//   - Size: 730 bytes
-//   - Modified: 2010-10-15T14:16:07
-qx.Class.define("qx.bom.element.Opacity",{statics:{SUPPORT_CSS3_OPACITY:false,
-compile:function(a){a>=1&&(a=.999999);
-return qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?"opacity:"+a+";":"-moz-opacity:"+a+";"},
-set:function(b,a){a>=1&&(a=.999999);
-qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?b.style.opacity=a:b.style.MozOpacity=a},
-reset:function(a){qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?a.style.opacity="":a.style.MozOpacity=""},
-get:function(b,c){var a=qx.bom.element.Style.get(b,qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?"opacity":"MozOpacity",c,false);
-a==.999999&&(a=1);
-if(a!=null)return parseFloat(a);
-return 1}},
-defer:function(a){a.SUPPORT_CSS3_OPACITY=typeof document.documentElement.style.opacity=="string"}});
-
-
-// qx.lang.Date
-//   - Size: 78 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.lang.Date",{statics:{now:function(){return +new Date}}});
 
 
 // qx.lang.Array
@@ -2662,7 +2129,7 @@ for(b in e)try{delete e[b][d]}catch(o){try{e[b][d]=null}catch(o){throw new Error
 
 // qx.lang.Function
 //   - Size: 2546 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.lang.Function",{statics:{getCaller:function(a){return a.caller?a.caller.callee:a.callee.caller},
 getName:function(a){if(a.displayName)return a.displayName;
 if(a.$$original||a.wrapper||a.classname)return a.classname+".constructor()";
@@ -2705,6 +2172,49 @@ args:arguments.length>3?qx.lang.Array.fromArguments(arguments,3):null})()},
 periodical:function(a,b,c){return this.create(a,{periodical:b,
 self:c,
 args:arguments.length>3?qx.lang.Array.fromArguments(arguments,3):null})()}}});
+
+
+// qx.dev.StackTrace
+//   - Size: 1128 bytes
+//   - Modified: 2010-11-10T13:22:29
+qx.Class.define("qx.dev.StackTrace",{statics:{getStackTrace:function(){try{throw new Error()}catch(n){var a=this.getStackTraceFromError(n),c,j,b,i,e,l,k,o,f,g,m,h,d;
+qx.lang.Array.removeAt(a,0);
+c=this.getStackTraceFromCaller(arguments),j=c.length>a.length?c:a,b=0;
+for(;
+b<Math.min(c.length,a.length);
+b++){i=c[b];
+if(i.indexOf("anonymous")>=0)continue;
+e=i.split(":");
+if(e.length!=2)continue;
+l=e[0],k=e[1],o=a[b],f=o.split(":"),g=f[0],m=f[1];
+h=qx.Class.getByName(g)?g:l;
+d=h+":";
+k&&(d+=k+":");
+d+=m;
+j[b]=d}return j}},
+getStackTraceFromCaller:function(e){var b=[],a=qx.lang.Function.getCaller(e),d={},f,c;
+while(a){f=qx.lang.Function.getName(a);
+b.push(f);
+try{a=a.caller}catch(g){break}if(!a)break;
+c=qx.core.ObjectRegistry.toHashCode(a);
+if(d[c]){b.push("...");
+break}d[c]=a}return b},
+getStackTraceFromError:function(b){if(!b.stack)return[];
+var f=/@(.+):(\d+)$/gm,a,c=[],e,d,g;
+while((a=f.exec(b.stack))!=null)e=a[1],d=a[2],g=this.__bMVLSw(e),c.push(g+":"+d);
+return c},
+__bMVLSw:function(a){var b="/source/class/",c=a.indexOf(b),d=c==-1?a:a.substring(c+b.length).replace(/\//g,".").replace(/\.js$/,"");
+return d}}});
+
+
+// qx.core.AssertionError
+//   - Size: 248 bytes
+//   - Modified: 2010-08-30T22:23:15
+qx.Class.define("qx.core.AssertionError",{extend:qx.type.BaseError,
+construct:function(b,a){qx.type.BaseError.call(this,b,a);
+this.__mSOCg=qx.dev.StackTrace.getStackTrace()},
+members:{__mSOCg:null,
+getStackTrace:function(){return this.__mSOCg}}});
 
 
 // qx.lang.String
@@ -2813,39 +2323,6 @@ if(a&&typeof a==="object")for(b in a)Object.hasOwnProperty.call(a,b)&&(d=this.__
 return f.call(c,e,a)}}});
 
 
-// qx.dev.StackTrace
-//   - Size: 1128 bytes
-//   - Modified: 2010-11-10T13:22:29
-qx.Class.define("qx.dev.StackTrace",{statics:{getStackTrace:function(){try{throw new Error()}catch(n){var a=this.getStackTraceFromError(n),c,j,b,i,e,l,k,o,f,g,m,h,d;
-qx.lang.Array.removeAt(a,0);
-c=this.getStackTraceFromCaller(arguments),j=c.length>a.length?c:a,b=0;
-for(;
-b<Math.min(c.length,a.length);
-b++){i=c[b];
-if(i.indexOf("anonymous")>=0)continue;
-e=i.split(":");
-if(e.length!=2)continue;
-l=e[0],k=e[1],o=a[b],f=o.split(":"),g=f[0],m=f[1];
-h=qx.Class.getByName(g)?g:l;
-d=h+":";
-k&&(d+=k+":");
-d+=m;
-j[b]=d}return j}},
-getStackTraceFromCaller:function(e){var b=[],a=qx.lang.Function.getCaller(e),d={},f,c;
-while(a){f=qx.lang.Function.getName(a);
-b.push(f);
-try{a=a.caller}catch(g){break}if(!a)break;
-c=qx.core.ObjectRegistry.toHashCode(a);
-if(d[c]){b.push("...");
-break}d[c]=a}return b},
-getStackTraceFromError:function(b){if(!b.stack)return[];
-var f=/@(.+):(\d+)$/gm,a,c=[],e,d,g;
-while((a=f.exec(b.stack))!=null)e=a[1],d=a[2],g=this.__bMVLSw(e),c.push(g+":"+d);
-return c},
-__bMVLSw:function(a){var b="/source/class/",c=a.indexOf(b),d=c==-1?a:a.substring(c+b.length).replace(/\//g,".").replace(/\.js$/,"");
-return d}}});
-
-
 // qx.lang.Json
 //   - Size: 258 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -2856,140 +2333,9 @@ defer:function(a){a.stringify=a.JSON.stringify;
 a.parse=a.JSON.parse}});
 
 
-// qx.core.AssertionError
-//   - Size: 248 bytes
-//   - Modified: 2010-08-30T22:23:15
-qx.Class.define("qx.core.AssertionError",{extend:qx.type.BaseError,
-construct:function(b,a){qx.type.BaseError.call(this,b,a);
-this.__mSOCg=qx.dev.StackTrace.getStackTrace()},
-members:{__mSOCg:null,
-getStackTrace:function(){return this.__mSOCg}}});
-
-
-// qx.core.Assert
-//   - Size: 7031 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Class.define("qx.core.Assert",{statics:{__yM80Z:true,
-__jkPsB:function(e){for(var a="",b=1,f=arguments.length,c,d;
-b<f;
-b++)a=a+this.__zpmOH(arguments[b]);
-c="Assertion error! "+e+": "+a;
-this.__yM80Z&&qx.Bootstrap.error(c);
-if(qx.Class.isDefined("qx.core.AssertionError")){d=new qx.core.AssertionError(e,a);
-this.__yM80Z&&qx.Bootstrap.error("Stack trace: \n"+d.getStackTrace());
-throw d}throw new Error(c)},
-__zpmOH:function(a){var b;
-if(a===null)b="null";
-else if(qx.lang.Type.isArray(a)&&a.length>10)b="Array["+a.length+"]";
-else if(a instanceof Object&&a.toString==null)b=qx.lang.Json.stringify(a,null,2);
-else try{b=a.toString()}catch(c){b=""}return b},
-assert:function(a,b){a==true||this.__jkPsB(b||"","Called assert with 'false'")},
-fail:function(a){this.__jkPsB(a||"","Called fail().")},
-assertTrue:function(a,b){a===true||this.__jkPsB(b||"","Called assertTrue with '",a,"'")},
-assertFalse:function(a,b){a===false||this.__jkPsB(b||"","Called assertFalse with '",a,"'")},
-assertEquals:function(b,a,c){b==a||this.__jkPsB(c||"","Expected '",b,"' but found '",a,"'!")},
-assertNotEquals:function(b,a,c){b!=a||this.__jkPsB(c||"","Expected '",b,"' to be not equal with '",a,"'!")},
-assertIdentical:function(b,a,c){b===a||this.__jkPsB(c||"","Expected '",b,"' (identical) but found '",a,"'!")},
-assertNotIdentical:function(b,a,c){b!==a||this.__jkPsB(c||"","Expected '",b,"' to be not identical with '",a,"'!")},
-assertNotUndefined:function(a,b){a!==undefined||this.__jkPsB(b||"","Expected value not to be undefined but found ",a,"!")},
-assertUndefined:function(a,b){a===undefined||this.__jkPsB(b||"","Expected value to be undefined but found ",a,"!")},
-assertNotNull:function(a,b){a!==null||this.__jkPsB(b||"","Expected value not to be null but found ",a,"!")},
-assertNull:function(a,b){a===null||this.__jkPsB(b||"","Expected value to be null but found ",a,"!")},
-assertJsonEquals:function(c,b,a){this.assertEquals(qx.lang.Json.stringify(c),qx.lang.Json.stringify(b),a)},
-assertMatch:function(b,a,c){this.assertString(b);
-this.assert(qx.lang.Type.isRegExp(a)||qx.lang.Type.isString(a),"The parameter 're' must be a string or a regular expression.");
-b.search(a)>=0||this.__jkPsB(c||"","The String '",b,"' does not match the regular expression '",a.toString(),"'!")},
-assertArgumentsCount:function(d,c,a,e){var b=d.length;
-b>=c&&b<=a||this.__jkPsB(e||"","Wrong number of arguments given. Expected '",c,"' to '",a,"' arguments but found '",arguments.length,"' arguments.")},
-assertEventFired:function(a,b,f,c,h){var d=false,i=function(b){c&&c.call(a,b);
-d=true},e;
-try{e=a.addListener(b,i,a);
-f.call()}catch(g){throw g}finally{try{a.removeListenerById(e)}catch(g){}}d===true||this.__jkPsB(h||"","Event (",b,") not fired.")},
-assertEventNotFired:function(a,c,e,f){var b=false,g=function(){b=true},d=a.addListener(c,g,a);
-e.call();
-b===false||this.__jkPsB(f||"","Event (",c,") was fired.");
-a.removeListenerById(d)},
-assertException:function(f,c,d,b){var c=c||Error,a;
-try{this.__yM80Z=false;
-f()}catch(e){a=e}finally{this.__yM80Z=true}a==null&&this.__jkPsB(b||"","The function did not raise an exception!");
-a instanceof c||this.__jkPsB(b||"","The raised exception does not have the expected type! ",c," != ",a);
-d&&this.assertMatch(a.toString(),d,b)},
-assertInArray:function(a,b,c){b.indexOf(a)!==-1||this.__jkPsB(c||"","The value '",a,"' must have any of the values defined in the array '",b,"'")},
-assertArrayEquals:function(c,d,a){this.assertArray(c,a);
-this.assertArray(d,a);
-this.assertEquals(c.length,d.length,a);
-for(var b=0;
-b<c.length;
-b++)this.assertIdentical(c[b],d[b],a)},
-assertKeyInMap:function(a,b,c){b[a]!==undefined||this.__jkPsB(c||"","The value '",a,"' must must be a key of the map '",b,"'")},
-assertFunction:function(a,b){qx.lang.Type.isFunction(a)||this.__jkPsB(b||"","Expected value to be typeof function but found ",a,"!")},
-assertString:function(a,b){qx.lang.Type.isString(a)||this.__jkPsB(b||"","Expected value to be a string but found ",a,"!")},
-assertBoolean:function(a,b){qx.lang.Type.isBoolean(a)||this.__jkPsB(b||"","Expected value to be a boolean but found ",a,"!")},
-assertNumber:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)||this.__jkPsB(b||"","Expected value to be a number but found ",a,"!")},
-assertPositiveNumber:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)&&a>=0||this.__jkPsB(b||"","Expected value to be a number >= 0 but found ",a,"!")},
-assertInteger:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)&&a%1===0||this.__jkPsB(b||"","Expected value to be an integer but found ",a,"!")},
-assertPositiveInteger:function(a,c){var b=(qx.lang.Type.isNumber(a)&&isFinite(a)&&a%1===0&&a>=0);
-b||this.__jkPsB(c||"","Expected value to be an integer >= 0 but found ",a,"!")},
-assertInRange:function(a,b,c,d){a>=b&&a<=c||this.__jkPsB(d||"",qx.lang.String.format("Expected value '%1' to be in the range '%2'..'%3'!",[a,b,c]))},
-assertObject:function(a,c){var b=a!==null&&(qx.lang.Type.isObject(a)||typeof a==="object");
-b||this.__jkPsB(c||"","Expected value to be typeof object but found ",(a),"!")},
-assertArray:function(a,b){qx.lang.Type.isArray(a)||this.__jkPsB(b||"","Expected value to be an array but found ",a,"!")},
-assertMap:function(a,b){qx.lang.Type.isObject(a)||this.__jkPsB(b||"","Expected value to be a map but found ",a,"!")},
-assertRegExp:function(a,b){qx.lang.Type.isRegExp(a)||this.__jkPsB(b||"","Expected value to be a regular expression but found ",a,"!")},
-assertType:function(b,a,c){this.assertString(a,"Invalid argument 'type'");
-typeof b===a||this.__jkPsB(c||"","Expected value to be typeof '",a,"' but found ",b,"!")},
-assertInstance:function(b,a,d){var c=a.classname||a+"";
-b instanceof a||this.__jkPsB(d||"","Expected value to be instanceof '",c,"' but found ",b,"!")},
-assertInterface:function(a,b,c){qx.Class.implementsInterface(a,b)||this.__jkPsB(c||"","Expected object '",a,"' to implement the interface '",b,"'!")},
-assertCssColor:function(e,c,f){var d=qx.Class.getByName("qx.util.ColorUtil"),a,b,g;
-if(!d)throw new Error("qx.util.ColorUtil not available! Your code must have a dependency on 'qx.util.ColorUtil'");
-a=d.stringToRgb(e);
-try{b=d.stringToRgb(c)}catch(h){this.__jkPsB(f||"","Expected value to be the CSS color '",e,"' (rgb(",a.join(","),")), but found value '",c,"', which cannot be converted to a CSS color!")}g=a[0]==b[0]&&a[1]==b[1]&&a[2]==b[2];
-g||this.__jkPsB(f||"","Expected value to be the CSS color '",a,"' (rgb(",a.join(","),")), but found value '",c,"' (rgb(",b.join(","),"))!")},
-assertElement:function(a,b){!!(a&&a.nodeType===1)||this.__jkPsB(b||"","Expected value to be a DOM element but found  '",a,"'!")},
-assertQxObject:function(a,b){this.__VkBFl(a,"qx.core.Object")||this.__jkPsB(b||"","Expected value to be a qooxdoo object but found ",a,"!")},
-assertQxWidget:function(a,b){this.__VkBFl(a,"qx.ui.core.Widget")||this.__jkPsB(b||"","Expected value to be a qooxdoo widget but found ",a,"!")},
-__VkBFl:function(b,c){if(!b)return false;
-var a=b.constructor;
-while(a){if(a.classname===c)return true;
-a=a.superclass}return false}}});
-
-
-// qx.bom.element.Overflow
-//   - Size: 2063 bytes
-//   - Modified: 2010-10-15T14:17:24
-qx.Class.define("qx.bom.element.Overflow",{statics:{__3wL46:null,
-getScrollbarWidth:function(){if(this.__3wL46!==null)return this.__3wL46;
-var b=qx.bom.element.Style,f=function(c,a){return parseInt(b.get(c,a))||0},d=function(a){return b.get(a,"borderRightStyle")=="none"?0:f(a,"borderRightWidth")},i=function(a){return b.get(a,"borderLeftStyle")=="none"?0:f(a,"borderLeftWidth")},g=function(a){if(a.clientWidth==0){var c=b.get(a,"overflow"),e=(c=="scroll"||c=="-moz-scrollbars-vertical"?16:0);
-return Math.max(0,d(a)+e)}return Math.max(0,(a.offsetWidth-a.clientWidth-i(a)))},h=function(a){return g(a)-d(a)},a=document.createElement("div"),c=a.style,e;
-c.height=c.width="100px";
-c.overflow="scroll";
-document.body.appendChild(a);
-e=h(a);
-this.__3wL46=e?e:16;
-document.body.removeChild(a);
-return this.__3wL46},
-_compile:qx.bom.client.Engine.VERSION<1.8?function(b,a){a=="hidden"&&(a="-moz-scrollbars-none");
-return"overflow:"+a+";"}:function(a,b){return a+":"+b+";"},
-compileX:function(a){return this._compile("overflow-x",a)},
-compileY:function(a){return this._compile("overflow-y",a)},
-getX:qx.bom.client.Engine.VERSION<1.8?function(b,c){var a=qx.bom.element.Style.get(b,"overflow",c,false);
-a==="-moz-scrollbars-none"&&(a="hidden");
-return a}:function(a,b){return qx.bom.element.Style.get(a,"overflowX",b,false)},
-setX:qx.bom.client.Engine.VERSION<1.8?function(b,a){a=="hidden"&&(a="-moz-scrollbars-none");
-b.style.overflow=a}:function(a,b){a.style.overflowX=b},
-resetX:qx.bom.client.Engine.VERSION<1.8?function(a){a.style.overflow=""}:function(a){a.style.overflowX=""},
-getY:qx.bom.client.Engine.VERSION<1.8?function(b,c){var a=qx.bom.element.Style.get(b,"overflow",c,false);
-a==="-moz-scrollbars-none"&&(a="hidden");
-return a}:function(a,b){return qx.bom.element.Style.get(a,"overflowY",b,false)},
-setY:qx.bom.client.Engine.VERSION<1.8?function(b,a){a==="hidden"&&(a="-moz-scrollbars-none");
-b.style.overflow=a}:function(a,b){a.style.overflowY=b},
-resetY:qx.bom.client.Engine.VERSION<1.8?function(a){a.style.overflow=""}:function(a){a.style.overflowY=""}}});
-
-
 // qx.bom.element.Style
 //   - Size: 3374 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("qx.bom.element.Style",{statics:{__cnanzb:function(){for(var i=["appearance","userSelect","textOverflow","borderImage","transition","transform"],c={},h=document.documentElement.style,f=["Moz","Webkit","Khtml","O","Ms"],e=0,k=i.length,a,b,d,j,g;
 e<k;
 e++){a=i[e],b=a;
@@ -3056,6 +2402,33 @@ return d?d[a]:""}}},
 defer:function(a){a.__cnanzb()}});
 
 
+// qx.bom.Viewport
+//   - Size: 698 bytes
+//   - Modified: 2010-09-18T15:10:19
+qx.Class.define("qx.bom.Viewport",{statics:{getWidth:function(b){var a=(b||window).document;
+return qx.bom.Document.isStandardMode(b)?a.documentElement.clientWidth:a.body.clientWidth},
+getHeight:function(b){var a=(b||window).document;
+return qx.bom.Document.isStandardMode(b)?a.documentElement.clientHeight:a.body.clientHeight},
+getScrollLeft:function(a){return(a||window).pageXOffset},
+getScrollTop:function(a){return(a||window).pageYOffset},
+getOrientation:function(b){var a=(b||window).orientation;
+a==null&&(a=this.getWidth(b)>this.getHeight(b)?90:0);
+return a},
+isLandscape:function(a){return Math.abs(this.getOrientation(a))==90},
+isPortrait:function(a){return this.getOrientation(a)==0}}});
+
+
+// qx.bom.Document
+//   - Size: 540 bytes
+//   - Modified: 2010-07-17T16:42:24
+qx.Class.define("qx.bom.Document",{statics:{isQuirksMode:function(a){return(a||window).document.compatMode!=="CSS1Compat"},
+isStandardMode:function(a){return!this.isQuirksMode(a)},
+getWidth:function(a){var b=(a||window).document,d=qx.bom.Viewport.getWidth(a),c=this.isStandardMode(a)?b.documentElement.scrollWidth:b.body.scrollWidth;
+return Math.max(c,d)},
+getHeight:function(a){var b=(a||window).document,d=qx.bom.Viewport.getHeight(a),c=this.isStandardMode(a)?b.documentElement.scrollHeight:b.body.scrollHeight;
+return Math.max(c,d)}}});
+
+
 // qx.xml.Document
 //   - Size: 412 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -3066,69 +2439,6 @@ create:function(b,a){return document.implementation.createDocument(b||"",a||"",n
 fromString:function(a){var b=new DOMParser();
 return b.parseFromString(a,"text/xml")}},
 defer:function(){}});
-
-
-// qx.lang.RingBuffer
-//   - Size: 1181 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.lang.RingBuffer",{extend:Object,
-construct:function(a){this.setMaxEntries(a||50)},
-members:{__bHMv5N:0,
-__3Ng1e:0,
-__UksBG:false,
-__cofKxn:0,
-__uPjgP:null,
-__Jk3m7:null,
-setMaxEntries:function(a){this.__Jk3m7=a;
-this.clear()},
-getMaxEntries:function(){return this.__Jk3m7},
-addEntry:function(b){this.__uPjgP[this.__bHMv5N]=b;
-this.__bHMv5N=this.__HDJCN(this.__bHMv5N,1);
-var a=this.getMaxEntries();
-this.__3Ng1e<a&&this.__3Ng1e++;
-this.__UksBG&&this.__cofKxn<a&&this.__cofKxn++},
-mark:function(){this.__UksBG=true;
-this.__cofKxn=0},
-clearMark:function(){this.__UksBG=false},
-getAllEntries:function(){return this.getEntries(this.getMaxEntries(),false)},
-getEntries:function(a,e){a>this.__3Ng1e&&(a=this.__3Ng1e);
-e&&this.__UksBG&&a>this.__cofKxn&&(a=this.__cofKxn);
-if(a>0){var c=this.__HDJCN(this.__bHMv5N,-1),d=this.__HDJCN(c,-a+1),b;
-b=d<=c?this.__uPjgP.slice(d,c+1):this.__uPjgP.slice(d,this.__3Ng1e).concat(this.__uPjgP.slice(0,c+1))}else b=[];
-return b},
-clear:function(){this.__uPjgP=new Array(this.getMaxEntries());
-this.__3Ng1e=0;
-this.__cofKxn=0;
-this.__bHMv5N=0},
-__HDJCN:function(c,d){var b=this.getMaxEntries(),a=(c+d)%b;
-a<0&&(a+=b);
-return a}}});
-
-
-// qx.util.DisposeUtil
-//   - Size: 1120 bytes
-//   - Modified: 2010-08-29T12:27:35
-qx.Class.define("qx.util.DisposeUtil",{statics:{disposeObjects:function(b,d,f){for(var a,c=0,e=d.length;
-c<e;
-c++){a=d[c];
-if(b[a]==null||!b.hasOwnProperty(a))continue;
-if(!qx.core.ObjectRegistry.inShutDown){if(b[a].dispose){if(!f&&b[a].constructor.$$instance)throw new Error("The object stored in key "+a+" is a singleton! Please use disposeSingleton instead.");
-b[a].dispose()}else throw new Error("Has no disposable object under key: "+a+"!")}b[a]=null}},
-disposeArray:function(b,c){var a=b[c],d,e;
-if(!a)return;
-if(qx.core.ObjectRegistry.inShutDown){b[c]=null;
-return}try{e=a.length-1;
-for(;
-e>=0;
-e--)d=a[e],d&&d.dispose()}catch(f){throw new Error("The array field: "+c+" of object: "+b+" has non disposable entries: "+f)}a.length=0;
-b[c]=null},
-disposeMap:function(b,c){var a=b[c],d;
-if(!a)return;
-if(qx.core.ObjectRegistry.inShutDown){b[c]=null;
-return}try{for(d in a)a.hasOwnProperty(d)&&a[d].dispose()}catch(e){throw new Error("The map field: "+c+" of object: "+b+" has non disposable entries: "+e)}b[c]=null},
-disposeTriggeredBy:function(c,a){var b=a.dispose;
-a.dispose=function(){b.call(a);
-c.dispose()}}}});
 
 
 // qx.log.appender.RingBuffer
@@ -3163,6 +2473,130 @@ return b.fireEvent("on"+c,a)},
 supportsEvent:function(a,d){var c="on"+d,b=(c in a);
 b||(b=typeof a[c]=="function",!b&&a.setAttribute&&(a.setAttribute(c,"return;"),b=typeof a[c]=="function",a.removeAttribute(c)));
 return b}}});
+
+
+// qx.util.DisposeUtil
+//   - Size: 1120 bytes
+//   - Modified: 2010-08-29T12:27:35
+qx.Class.define("qx.util.DisposeUtil",{statics:{disposeObjects:function(b,d,f){for(var a,c=0,e=d.length;
+c<e;
+c++){a=d[c];
+if(b[a]==null||!b.hasOwnProperty(a))continue;
+if(!qx.core.ObjectRegistry.inShutDown){if(b[a].dispose){if(!f&&b[a].constructor.$$instance)throw new Error("The object stored in key "+a+" is a singleton! Please use disposeSingleton instead.");
+b[a].dispose()}else throw new Error("Has no disposable object under key: "+a+"!")}b[a]=null}},
+disposeArray:function(b,c){var a=b[c],d,e;
+if(!a)return;
+if(qx.core.ObjectRegistry.inShutDown){b[c]=null;
+return}try{e=a.length-1;
+for(;
+e>=0;
+e--)d=a[e],d&&d.dispose()}catch(f){throw new Error("The array field: "+c+" of object: "+b+" has non disposable entries: "+f)}a.length=0;
+b[c]=null},
+disposeMap:function(b,c){var a=b[c],d;
+if(!a)return;
+if(qx.core.ObjectRegistry.inShutDown){b[c]=null;
+return}try{for(d in a)a.hasOwnProperty(d)&&a[d].dispose()}catch(e){throw new Error("The map field: "+c+" of object: "+b+" has non disposable entries: "+e)}b[c]=null},
+disposeTriggeredBy:function(c,a){var b=a.dispose;
+a.dispose=function(){b.call(a);
+c.dispose()}}}});
+
+
+// qx.core.MAssert
+//   - Size: 2747 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Mixin.define("qx.core.MAssert",{members:{assert:function(a,b){qx.core.Assert.assert(a,b)},
+fail:function(a){qx.core.Assert.fail(a)},
+assertTrue:function(a,b){qx.core.Assert.assertTrue(a,b)},
+assertFalse:function(a,b){qx.core.Assert.assertFalse(a,b)},
+assertEquals:function(c,b,a){qx.core.Assert.assertEquals(c,b,a)},
+assertNotEquals:function(c,b,a){qx.core.Assert.assertNotEquals(c,b,a)},
+assertIdentical:function(c,b,a){qx.core.Assert.assertIdentical(c,b,a)},
+assertNotIdentical:function(c,b,a){qx.core.Assert.assertNotIdentical(c,b,a)},
+assertNotUndefined:function(a,b){qx.core.Assert.assertNotUndefined(a,b)},
+assertUndefined:function(a,b){qx.core.Assert.assertUndefined(a,b)},
+assertNotNull:function(a,b){qx.core.Assert.assertNotNull(a,b)},
+assertNull:function(a,b){qx.core.Assert.assertNull(a,b)},
+assertJsonEquals:function(c,b,a){qx.core.Assert.assertJsonEquals(c,b,a)},
+assertMatch:function(a,b,c){qx.core.Assert.assertMatch(a,b,c)},
+assertArgumentsCount:function(b,c,a,d){qx.core.Assert.assertArgumentsCount(b,c,a,d)},
+assertEventFired:function(c,b,e,d,a){qx.core.Assert.assertEventFired(c,b,e,d,a)},
+assertEventNotFired:function(b,a,d,c){qx.core.Assert.assertEventNotFired(b,a,d,c)},
+assertException:function(c,b,a,d){qx.core.Assert.assertException(c,b,a,d)},
+assertInArray:function(a,b,c){qx.core.Assert.assertInArray(a,b,c)},
+assertArrayEquals:function(c,b,a){qx.core.Assert.assertArrayEquals(c,b,a)},
+assertKeyInMap:function(a,b,c){qx.core.Assert.assertKeyInMap(a,b,c)},
+assertFunction:function(a,b){qx.core.Assert.assertFunction(a,b)},
+assertString:function(a,b){qx.core.Assert.assertString(a,b)},
+assertBoolean:function(a,b){qx.core.Assert.assertBoolean(a,b)},
+assertNumber:function(a,b){qx.core.Assert.assertNumber(a,b)},
+assertPositiveNumber:function(a,b){qx.core.Assert.assertPositiveNumber(a,b)},
+assertInteger:function(a,b){qx.core.Assert.assertInteger(a,b)},
+assertPositiveInteger:function(a,b){qx.core.Assert.assertPositiveInteger(a,b)},
+assertInRange:function(b,a,c,d){qx.core.Assert.assertInRange(b,a,c,d)},
+assertObject:function(a,b){qx.core.Assert.assertObject(a,b)},
+assertArray:function(a,b){qx.core.Assert.assertArray(a,b)},
+assertMap:function(a,b){qx.core.Assert.assertMap(a,b)},
+assertRegExp:function(a,b){qx.core.Assert.assertRegExp(a,b)},
+assertType:function(a,b,c){qx.core.Assert.assertType(a,b,c)},
+assertInstance:function(b,a,c){qx.core.Assert.assertInstance(b,a,c)},
+assertInterface:function(a,b,c){qx.core.Assert.assertInterface(a,b,c)},
+assertCssColor:function(c,a,b){qx.core.Assert.assertCssColor(c,a,b)},
+assertElement:function(a,b){qx.core.Assert.assertElement(a,b)},
+assertQxObject:function(a,b){qx.core.Assert.assertQxObject(a,b)},
+assertQxWidget:function(a,b){qx.core.Assert.assertQxWidget(a,b)}}});
+
+
+// qx.lang.Object
+//   - Size: 2617 bytes
+//   - Modified: 2010-06-18T23:08:09
+qx.Class.define("qx.lang.Object",{statics:{empty:function(a){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
+for(var b in a)a.hasOwnProperty(b)&&delete a[b]},
+isEmpty:qx.bom.client.Feature.ECMA_OBJECT_COUNT?function(a){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
+return a.__count__===0}:function(a){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
+for(var b in a)return false;
+return true},
+hasMinLength:qx.bom.client.Feature.ECMA_OBJECT_COUNT?function(b,a){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'map'"),qx.core.Assert&&qx.core.Assert.assertInteger(a,"Invalid argument 'minLength'");
+return b.__count__>=a}:function(b,a){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'map'"),qx.core.Assert&&qx.core.Assert.assertInteger(a,"Invalid argument 'minLength'");
+if(a<=0)return true;
+var d=0,c;
+for(c in b)if(++d>=a)return true;
+return false},
+getLength:qx.Bootstrap.objectGetLength,
+getKeys:qx.Bootstrap.getKeys,
+getKeysAsString:qx.Bootstrap.getKeysAsString,
+findWinnerKey:function(c,b,a){if(!(b in c))return a in c?a:null;
+if(!(a in c))return b in c?b:null;
+for(var d in c){if(d==b)return b;
+if(d==a)return a}return null},
+getValues:function(b){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'map'");
+for(var c=[],d=this.getKeys(b),a=0,e=d.length;
+a<e;
+a++)c.push(b[d[a]]);
+return c},
+merge:function(c){qx.core.Assert&&qx.core.Assert.assertMap(c,"Invalid argument 'target'");
+for(var e=arguments.length,d,b,a=1;
+a<e;
+a++){d=arguments[a];
+for(b in d)c[b]=d[b]}return c},
+clone:function(b){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'source'");
+var c={},a;
+for(a in b)c[a]=b[a];
+return c},
+invert:function(b){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'map'");
+var c={},a;
+for(a in b)c[b[a].toString()]=a;
+return c},
+getKeyFromValue:function(b,c){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'map'");
+for(var a in b)if(b.hasOwnProperty(a)&&b[a]===c)return a;
+return null},
+contains:function(a,b){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
+return this.getKeyFromValue(a,b)!==null},
+select:function(b,a){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
+return a[b]},
+fromArray:function(b){qx.core.Assert&&qx.core.Assert.assertArray(b,"Invalid argument 'array'");
+for(var c={},a=0,d=b.length;
+a<d;
+a++){switch(typeof b[a]){case"object":case"function":case"undefined":throw new Error("Could not convert complex objects like "+b[a]+" at array index "+a+" to map syntax")}c[b[a].toString()]=true}return c}}});
 
 
 // qx.dom.Hierarchy
@@ -3260,6 +2694,201 @@ c<h;
 c+=2)e[c].call(e[c+1],d,a)}),
 __yHD19:function(a){return a.naturalWidth},
 __Dbnsa:function(a){return a.naturalHeight}}});
+
+
+// qx.core.Object
+//   - Size: 4415 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.core.Object",{extend:Object,
+construct:function(){qx.core.ObjectRegistry.register(this)},
+statics:{$$type:"Object"},
+members:{toHashCode:function(){return this.$$hash},
+toString:function(){return this.classname+"["+this.$$hash+"]"},
+base:function(a){if(!qx.Bootstrap.isFunction(a.callee.base))throw new Error("Cannot call super class. Method is not derived: "+a.callee.displayName);
+return arguments.length===1?a.callee.base.call(this):a.callee.base.apply(this,Array.prototype.slice.call(arguments,1))},
+self:function(a){return a.callee.self},
+set:function(b,f){var e=qx.Bootstrap,a,d=this,c;
+if(typeof b==="string"){a="set"+(e.$$firstUp[b]||e.firstUp(b));
+if(!d[a])throw new Error(this.toString()+" Could not find generic setter for: "+b);
+return d[a](f)}for(c in b){a="set"+(e.$$firstUp[c]||e.firstUp(c));
+if(!d[a])throw new Error(this.toString()+" Could not find generic setter for: "+c);
+d[a](b[c])}return d},
+reset:function(a){var c=qx.Bootstrap,b="reset"+(c.$$firstUp[a]||c.firstUp(a));
+if(!this[b])throw new Error(this.toString()+" Could not find generic resetter for: "+a);
+return this[b]()},
+get:function(a){var c=qx.Bootstrap,b="get"+(c.$$firstUp[a]||qx.Bootstrap.firstUp(a));
+if(!this[b])throw new Error(this.toString()+" Could not find generic getter for: "+a);
+return this[b]()},
+addListener:function(a,d,b,c){if(!this.$$disposed)return qx.event.Registration.addListener(this,a,d,b,c);
+return null},
+addListenerOnce:function(b,e,d,c){var a=function(f){this.removeListener(b,a,this,c);
+e.call(d||this,f)};
+return this.addListener(b,a,this,c)},
+removeListener:function(a,d,b,c){if(!this.$$disposed)return qx.event.Registration.removeListener(this,a,d,b,c);
+return false},
+removeListenerById:function(a){if(!this.$$disposed)return qx.event.Registration.removeListenerById(this,a);
+return false},
+hasListener:function(a,b){return qx.event.Registration.hasListener(this,a,b)},
+dispatchEvent:function(a){if(!this.$$disposed)return qx.event.Registration.dispatchEvent(this,a);
+return true},
+fireEvent:function(b,a,c){if(!this.$$disposed)return qx.event.Registration.fireEvent(this,b,a,c);
+return true},
+fireNonBubblingEvent:function(b,a,c){if(!this.$$disposed)return qx.event.Registration.fireNonBubblingEvent(this,b,a,c);
+return true},
+fireDataEvent:function(d,c,a,b){if(!this.$$disposed){a===undefined&&(a=null);
+return qx.event.Registration.fireNonBubblingEvent(this,d,qx.event.type.Data,[c,a,!!b])}return true},
+__y6FtY:null,
+setUserData:function(b,a){this.__y6FtY||(this.__y6FtY={});
+this.__y6FtY[b]=a},
+getUserData:function(b){var a=this.__y6FtY&&this.__y6FtY[b];
+return a===undefined?null:a},
+debug:function(){this.__I6tL0("debug",arguments)},
+info:function(){this.__I6tL0("info",arguments)},
+warn:function(){this.__I6tL0("warn",arguments)},
+error:function(){this.__I6tL0("error",arguments)},
+trace:function(){qx.log.Logger.trace(this)},
+__I6tL0:function(c,b){var a=qx.lang.Array.fromArguments(b);
+a.unshift(this);
+qx.log.Logger[c].apply(qx.log.Logger,a)},
+isDisposed:function(){return this.$$disposed||false},
+dispose:function(){if(this.$$disposed)return;
+this.$$disposed=true;
+this.$$instance=null;
+this.$$allowconstruct=null;
+qx.core.Setting.get("qx.disposerDebugging")&&qx.Bootstrap.debug(this,"Disposing "+this);
+var a=this.constructor,d,e,f,b,c;
+while(a.superclass){a.$$destructor&&a.$$destructor.call(this);
+if(a.$$includes){d=a.$$flatIncludes;
+for(e=0,f=d.length;
+e<f;
+e++)d[e].$$destructor&&d[e].$$destructor.call(this)}a=a.superclass}this.$$data&&(this.$$data=null);
+if(qx.core.Setting.get("qx.disposerDebugging"))for(b in this)this.hasOwnProperty(b)&&(c=this[b],c!=null&&typeof c=="object"&&(qx.Bootstrap.warn(this,"Missing destruct definition for '"+b+"' in "+this.classname+"["+this.toHashCode()+"]: "+c),this[b]=null))},
+_disposeObjects:function(){qx.util.DisposeUtil.disposeObjects(this,arguments)},
+_disposeSingletonObjects:function(){qx.util.DisposeUtil.disposeObjects(this,arguments,true)},
+_disposeArray:function(a){qx.util.DisposeUtil.disposeArray(this,a)},
+_disposeMap:function(a){qx.util.DisposeUtil.disposeMap(this,a)}},
+defer:function(a){qx.core.Setting.define("qx.disposerDebugging",false);
+qx.Class.include(a,qx.core.MAssert)},
+destruct:function(){qx.core.ObjectRegistry.inShutDown?qx.event.Registration.deleteAllListeners(this):qx.event.Registration.removeAllListeners(this);
+qx.core.ObjectRegistry.unregister(this);
+this.__y6FtY&&(this.__y6FtY=null)}});
+
+
+// qx.util.ObjectPool
+//   - Size: 838 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.util.ObjectPool",{extend:qx.core.Object,
+construct:function(a){this.base(arguments);
+this.__jKF37={};
+a!=null&&this.setSize(a)},
+properties:{size:{check:"Integer",
+init:Infinity}},
+members:{__jKF37:null,
+getObject:function(b){if(this.$$disposed)return new b;
+if(!b)throw new Error("Class needs to be defined!");
+var a=null,c=this.__jKF37[b.classname];
+c&&(a=c.pop());
+a?a.$$pooled=false:a=new b;
+return a},
+poolObject:function(a){if(!this.__jKF37)return;
+var c=a.classname,b=this.__jKF37[c];
+if(a.$$pooled)throw new Error("Object is already pooled: "+a);
+b||(this.__jKF37[c]=b=[]);
+if(b.length>this.getSize()){a.destroy?a.destroy():a.dispose();
+return}a.$$pooled=true;
+b.push(a)}},
+destruct:function(){var c=this.__jKF37,e,b,a,d;
+for(e in c){b=c[e];
+for(a=0,d=b.length;
+a<d;
+a++)b[a].dispose()}delete this.__jKF37}});
+
+
+// qx.event.Pool
+//   - Size: 127 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.Pool",{extend:qx.util.ObjectPool,
+type:"singleton",
+construct:function(){this.base(arguments,30)}});
+
+
+// qx.event.type.Event
+//   - Size: 2498 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.event.type.Event",{extend:qx.core.Object,
+statics:{CAPTURING_PHASE:1,
+AT_TARGET:2,
+BUBBLING_PHASE:3},
+members:{init:function(a,b){a!==undefined&&qx.core.Assert.assertBoolean(a,"Invalid argument value 'canBubble'."),b!==undefined&&qx.core.Assert.assertBoolean(b,"Invalid argument value 'cancelable'.");
+this._type=null;
+this._target=null;
+this._currentTarget=null;
+this._relatedTarget=null;
+this._originalTarget=null;
+this._stopPropagation=false;
+this._preventDefault=false;
+this._bubbles=!!a;
+this._cancelable=!!b;
+this._timeStamp=new Date().getTime();
+this._eventPhase=null;
+return this},
+clone:function(b){if(b)var a=b;
+else a=qx.event.Pool.getInstance().getObject(this.constructor);
+a._type=this._type;
+a._target=this._target;
+a._currentTarget=this._currentTarget;
+a._relatedTarget=this._relatedTarget;
+a._originalTarget=this._originalTarget;
+a._stopPropagation=this._stopPropagation;
+a._bubbles=this._bubbles;
+a._preventDefault=this._preventDefault;
+a._cancelable=this._cancelable;
+return a},
+stop:function(){this._bubbles&&this.stopPropagation();
+this._cancelable&&this.preventDefault()},
+stopPropagation:function(){this.assertTrue(this._bubbles,"Cannot stop propagation on a non bubbling event: "+this.getType());
+this._stopPropagation=true},
+getPropagationStopped:function(){return!!this._stopPropagation},
+preventDefault:function(){this.assertTrue(this._cancelable,"Cannot prevent default action on a non cancelable event: "+this.getType());
+this._preventDefault=true},
+getDefaultPrevented:function(){return!!this._preventDefault},
+getType:function(){return this._type},
+setType:function(a){this._type=a},
+getEventPhase:function(){return this._eventPhase},
+setEventPhase:function(a){this._eventPhase=a},
+getTimeStamp:function(){return this._timeStamp},
+getTarget:function(){return this._target},
+setTarget:function(a){this._target=a},
+getCurrentTarget:function(){return this._currentTarget||this._target},
+setCurrentTarget:function(a){this._currentTarget=a},
+getRelatedTarget:function(){return this._relatedTarget},
+setRelatedTarget:function(a){this._relatedTarget=a},
+getOriginalTarget:function(){return this._originalTarget},
+setOriginalTarget:function(a){this._originalTarget=a},
+getBubbles:function(){return this._bubbles},
+setBubbles:function(a){this._bubbles=a},
+isCancelable:function(){return this._cancelable},
+setCancelable:function(a){this._cancelable=a}},
+destruct:function(){this._target=this._currentTarget=this._relatedTarget=this._originalTarget=null}});
+
+
+// qx.event.type.Data
+//   - Size: 448 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.type.Data",{extend:qx.event.type.Event,
+members:{__jlEBF:null,
+__gQ654:null,
+init:function(b,a,c){this.base(arguments,false,c);
+this.__jlEBF=b;
+this.__gQ654=a;
+return this},
+clone:function(b){var a=this.base(arguments,b);
+a.__jlEBF=this.__jlEBF;
+a.__gQ654=this.__gQ654;
+return a},
+getData:function(){return this.__jlEBF},
+getOldData:function(){return this.__gQ654}},
+destruct:function(){this.__jlEBF=this.__gQ654=null}});
 
 
 // qx.log.Logger
@@ -3386,276 +3015,6 @@ qx.Bootstrap.error=a.error;
 qx.Bootstrap.trace=a.trace}});
 
 
-// qx.bom.element2.Style
-//   - Size: 1159 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Class.define("qx.bom.element2.Style",{statics:{__I7iU2:document.createElement("div"),
-__CRiSe:{},
-__bgSKno:{},
-__WqwKR:"Moz",
-get:function(b,a,e){var d=b.style,c;
-a=d[a]!==undefined&&a||this.__CRiSe[a]||this.property(a);
-if(!e)return d[a];
-c=b.ownerDocument.defaultView;
-if(c)return c.getComputedStyle(b,null)[a];
-if(b.currentStyle)return b.currentStyle[a]},
-set:function(f,a,c){var d=f.style,e=this.__CRiSe,b;
-if(typeof a=="string")a=a in d&&a||e[a]||this.property(a),a&&(d[a]=c==null?"":c);
-else for(b in a)c=a[b],b=b in d&&b||e[b]||this.property(b),b&&(d[b]=c==null?"":c);
-return this},
-property:function(a){var f=this.__I7iU2.style,b,e,d,c;
-if(f[a]!==b)return a;
-e=this.__CRiSe,d=e[a];
-if(d!==b)return d;
-c=this.__WqwKR+a.charAt(0).toUpperCase()+a.substring(1);
-if(f[c]!==b)return e[a]=c;
-qx.log.Logger.warn("Style property \""+a+"\" is not supported by the client!")},
-compile:function(e){var c=[],h=this.__I7iU2.style,f=this.__CRiSe,d=this.__bgSKno,a,g,b;
-for(a in e)g=e[a],b=d[a],b==null&&(b=d[a]=qx.lang.String.hyphenate(b in h&&b||f[a]||this.property(a))),c.push(b+":"+g);
-return c.join(";")}},
-defer:function(a){a.__CRiSe["float"]="cssFloat"}});
-
-
-// qx.core.MAssert
-//   - Size: 2747 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Mixin.define("qx.core.MAssert",{members:{assert:function(a,b){qx.core.Assert.assert(a,b)},
-fail:function(a){qx.core.Assert.fail(a)},
-assertTrue:function(a,b){qx.core.Assert.assertTrue(a,b)},
-assertFalse:function(a,b){qx.core.Assert.assertFalse(a,b)},
-assertEquals:function(c,b,a){qx.core.Assert.assertEquals(c,b,a)},
-assertNotEquals:function(c,b,a){qx.core.Assert.assertNotEquals(c,b,a)},
-assertIdentical:function(c,b,a){qx.core.Assert.assertIdentical(c,b,a)},
-assertNotIdentical:function(c,b,a){qx.core.Assert.assertNotIdentical(c,b,a)},
-assertNotUndefined:function(a,b){qx.core.Assert.assertNotUndefined(a,b)},
-assertUndefined:function(a,b){qx.core.Assert.assertUndefined(a,b)},
-assertNotNull:function(a,b){qx.core.Assert.assertNotNull(a,b)},
-assertNull:function(a,b){qx.core.Assert.assertNull(a,b)},
-assertJsonEquals:function(c,b,a){qx.core.Assert.assertJsonEquals(c,b,a)},
-assertMatch:function(a,b,c){qx.core.Assert.assertMatch(a,b,c)},
-assertArgumentsCount:function(b,c,a,d){qx.core.Assert.assertArgumentsCount(b,c,a,d)},
-assertEventFired:function(c,b,e,d,a){qx.core.Assert.assertEventFired(c,b,e,d,a)},
-assertEventNotFired:function(b,a,d,c){qx.core.Assert.assertEventNotFired(b,a,d,c)},
-assertException:function(c,b,a,d){qx.core.Assert.assertException(c,b,a,d)},
-assertInArray:function(a,b,c){qx.core.Assert.assertInArray(a,b,c)},
-assertArrayEquals:function(c,b,a){qx.core.Assert.assertArrayEquals(c,b,a)},
-assertKeyInMap:function(a,b,c){qx.core.Assert.assertKeyInMap(a,b,c)},
-assertFunction:function(a,b){qx.core.Assert.assertFunction(a,b)},
-assertString:function(a,b){qx.core.Assert.assertString(a,b)},
-assertBoolean:function(a,b){qx.core.Assert.assertBoolean(a,b)},
-assertNumber:function(a,b){qx.core.Assert.assertNumber(a,b)},
-assertPositiveNumber:function(a,b){qx.core.Assert.assertPositiveNumber(a,b)},
-assertInteger:function(a,b){qx.core.Assert.assertInteger(a,b)},
-assertPositiveInteger:function(a,b){qx.core.Assert.assertPositiveInteger(a,b)},
-assertInRange:function(b,a,c,d){qx.core.Assert.assertInRange(b,a,c,d)},
-assertObject:function(a,b){qx.core.Assert.assertObject(a,b)},
-assertArray:function(a,b){qx.core.Assert.assertArray(a,b)},
-assertMap:function(a,b){qx.core.Assert.assertMap(a,b)},
-assertRegExp:function(a,b){qx.core.Assert.assertRegExp(a,b)},
-assertType:function(a,b,c){qx.core.Assert.assertType(a,b,c)},
-assertInstance:function(b,a,c){qx.core.Assert.assertInstance(b,a,c)},
-assertInterface:function(a,b,c){qx.core.Assert.assertInterface(a,b,c)},
-assertCssColor:function(c,a,b){qx.core.Assert.assertCssColor(c,a,b)},
-assertElement:function(a,b){qx.core.Assert.assertElement(a,b)},
-assertQxObject:function(a,b){qx.core.Assert.assertQxObject(a,b)},
-assertQxWidget:function(a,b){qx.core.Assert.assertQxWidget(a,b)}}});
-
-
-// qx.core.Object
-//   - Size: 4415 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Class.define("qx.core.Object",{extend:Object,
-construct:function(){qx.core.ObjectRegistry.register(this)},
-statics:{$$type:"Object"},
-members:{toHashCode:function(){return this.$$hash},
-toString:function(){return this.classname+"["+this.$$hash+"]"},
-base:function(a){if(!qx.Bootstrap.isFunction(a.callee.base))throw new Error("Cannot call super class. Method is not derived: "+a.callee.displayName);
-return arguments.length===1?a.callee.base.call(this):a.callee.base.apply(this,Array.prototype.slice.call(arguments,1))},
-self:function(a){return a.callee.self},
-set:function(b,f){var e=qx.Bootstrap,a,d=this,c;
-if(typeof b==="string"){a="set"+(e.$$firstUp[b]||e.firstUp(b));
-if(!d[a])throw new Error(this.toString()+" Could not find generic setter for: "+b);
-return d[a](f)}for(c in b){a="set"+(e.$$firstUp[c]||e.firstUp(c));
-if(!d[a])throw new Error(this.toString()+" Could not find generic setter for: "+c);
-d[a](b[c])}return d},
-reset:function(a){var c=qx.Bootstrap,b="reset"+(c.$$firstUp[a]||c.firstUp(a));
-if(!this[b])throw new Error(this.toString()+" Could not find generic resetter for: "+a);
-return this[b]()},
-get:function(a){var c=qx.Bootstrap,b="get"+(c.$$firstUp[a]||qx.Bootstrap.firstUp(a));
-if(!this[b])throw new Error(this.toString()+" Could not find generic getter for: "+a);
-return this[b]()},
-addListener:function(a,d,b,c){if(!this.$$disposed)return qx.event.Registration.addListener(this,a,d,b,c);
-return null},
-addListenerOnce:function(b,e,d,c){var a=function(f){this.removeListener(b,a,this,c);
-e.call(d||this,f)};
-return this.addListener(b,a,this,c)},
-removeListener:function(a,d,b,c){if(!this.$$disposed)return qx.event.Registration.removeListener(this,a,d,b,c);
-return false},
-removeListenerById:function(a){if(!this.$$disposed)return qx.event.Registration.removeListenerById(this,a);
-return false},
-hasListener:function(a,b){return qx.event.Registration.hasListener(this,a,b)},
-dispatchEvent:function(a){if(!this.$$disposed)return qx.event.Registration.dispatchEvent(this,a);
-return true},
-fireEvent:function(b,a,c){if(!this.$$disposed)return qx.event.Registration.fireEvent(this,b,a,c);
-return true},
-fireNonBubblingEvent:function(b,a,c){if(!this.$$disposed)return qx.event.Registration.fireNonBubblingEvent(this,b,a,c);
-return true},
-fireDataEvent:function(d,c,a,b){if(!this.$$disposed){a===undefined&&(a=null);
-return qx.event.Registration.fireNonBubblingEvent(this,d,qx.event.type.Data,[c,a,!!b])}return true},
-__y6FtY:null,
-setUserData:function(b,a){this.__y6FtY||(this.__y6FtY={});
-this.__y6FtY[b]=a},
-getUserData:function(b){var a=this.__y6FtY&&this.__y6FtY[b];
-return a===undefined?null:a},
-debug:function(){this.__I6tL0("debug",arguments)},
-info:function(){this.__I6tL0("info",arguments)},
-warn:function(){this.__I6tL0("warn",arguments)},
-error:function(){this.__I6tL0("error",arguments)},
-trace:function(){qx.log.Logger.trace(this)},
-__I6tL0:function(c,b){var a=qx.lang.Array.fromArguments(b);
-a.unshift(this);
-qx.log.Logger[c].apply(qx.log.Logger,a)},
-isDisposed:function(){return this.$$disposed||false},
-dispose:function(){if(this.$$disposed)return;
-this.$$disposed=true;
-this.$$instance=null;
-this.$$allowconstruct=null;
-qx.core.Setting.get("qx.disposerDebugging")&&qx.Bootstrap.debug(this,"Disposing "+this);
-var a=this.constructor,d,e,f,b,c;
-while(a.superclass){a.$$destructor&&a.$$destructor.call(this);
-if(a.$$includes){d=a.$$flatIncludes;
-for(e=0,f=d.length;
-e<f;
-e++)d[e].$$destructor&&d[e].$$destructor.call(this)}a=a.superclass}this.$$data&&(this.$$data=null);
-if(qx.core.Setting.get("qx.disposerDebugging"))for(b in this)this.hasOwnProperty(b)&&(c=this[b],c!=null&&typeof c=="object"&&(qx.Bootstrap.warn(this,"Missing destruct definition for '"+b+"' in "+this.classname+"["+this.toHashCode()+"]: "+c),this[b]=null))},
-_disposeObjects:function(){qx.util.DisposeUtil.disposeObjects(this,arguments)},
-_disposeSingletonObjects:function(){qx.util.DisposeUtil.disposeObjects(this,arguments,true)},
-_disposeArray:function(a){qx.util.DisposeUtil.disposeArray(this,a)},
-_disposeMap:function(a){qx.util.DisposeUtil.disposeMap(this,a)}},
-defer:function(a){qx.core.Setting.define("qx.disposerDebugging",false);
-qx.Class.include(a,qx.core.MAssert)},
-destruct:function(){qx.core.ObjectRegistry.inShutDown?qx.event.Registration.deleteAllListeners(this):qx.event.Registration.removeAllListeners(this);
-qx.core.ObjectRegistry.unregister(this);
-this.__y6FtY&&(this.__y6FtY=null)}});
-
-
-// qx.util.ObjectPool
-//   - Size: 838 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.util.ObjectPool",{extend:qx.core.Object,
-construct:function(a){this.base(arguments);
-this.__jKF37={};
-a!=null&&this.setSize(a)},
-properties:{size:{check:"Integer",
-init:Infinity}},
-members:{__jKF37:null,
-getObject:function(b){if(this.$$disposed)return new b;
-if(!b)throw new Error("Class needs to be defined!");
-var a=null,c=this.__jKF37[b.classname];
-c&&(a=c.pop());
-a?a.$$pooled=false:a=new b;
-return a},
-poolObject:function(a){if(!this.__jKF37)return;
-var c=a.classname,b=this.__jKF37[c];
-if(a.$$pooled)throw new Error("Object is already pooled: "+a);
-b||(this.__jKF37[c]=b=[]);
-if(b.length>this.getSize()){a.destroy?a.destroy():a.dispose();
-return}a.$$pooled=true;
-b.push(a)}},
-destruct:function(){var c=this.__jKF37,e,b,a,d;
-for(e in c){b=c[e];
-for(a=0,d=b.length;
-a<d;
-a++)b[a].dispose()}delete this.__jKF37}});
-
-
-// qx.event.Pool
-//   - Size: 127 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.Pool",{extend:qx.util.ObjectPool,
-type:"singleton",
-construct:function(){this.base(arguments,30)}});
-
-
-// qx.event.type.Event
-//   - Size: 2498 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Class.define("qx.event.type.Event",{extend:qx.core.Object,
-statics:{CAPTURING_PHASE:1,
-AT_TARGET:2,
-BUBBLING_PHASE:3},
-members:{init:function(a,b){a!==undefined&&qx.core.Assert.assertBoolean(a,"Invalid argument value 'canBubble'."),b!==undefined&&qx.core.Assert.assertBoolean(b,"Invalid argument value 'cancelable'.");
-this._type=null;
-this._target=null;
-this._currentTarget=null;
-this._relatedTarget=null;
-this._originalTarget=null;
-this._stopPropagation=false;
-this._preventDefault=false;
-this._bubbles=!!a;
-this._cancelable=!!b;
-this._timeStamp=new Date().getTime();
-this._eventPhase=null;
-return this},
-clone:function(b){if(b)var a=b;
-else a=qx.event.Pool.getInstance().getObject(this.constructor);
-a._type=this._type;
-a._target=this._target;
-a._currentTarget=this._currentTarget;
-a._relatedTarget=this._relatedTarget;
-a._originalTarget=this._originalTarget;
-a._stopPropagation=this._stopPropagation;
-a._bubbles=this._bubbles;
-a._preventDefault=this._preventDefault;
-a._cancelable=this._cancelable;
-return a},
-stop:function(){this._bubbles&&this.stopPropagation();
-this._cancelable&&this.preventDefault()},
-stopPropagation:function(){this.assertTrue(this._bubbles,"Cannot stop propagation on a non bubbling event: "+this.getType());
-this._stopPropagation=true},
-getPropagationStopped:function(){return!!this._stopPropagation},
-preventDefault:function(){this.assertTrue(this._cancelable,"Cannot prevent default action on a non cancelable event: "+this.getType());
-this._preventDefault=true},
-getDefaultPrevented:function(){return!!this._preventDefault},
-getType:function(){return this._type},
-setType:function(a){this._type=a},
-getEventPhase:function(){return this._eventPhase},
-setEventPhase:function(a){this._eventPhase=a},
-getTimeStamp:function(){return this._timeStamp},
-getTarget:function(){return this._target},
-setTarget:function(a){this._target=a},
-getCurrentTarget:function(){return this._currentTarget||this._target},
-setCurrentTarget:function(a){this._currentTarget=a},
-getRelatedTarget:function(){return this._relatedTarget},
-setRelatedTarget:function(a){this._relatedTarget=a},
-getOriginalTarget:function(){return this._originalTarget},
-setOriginalTarget:function(a){this._originalTarget=a},
-getBubbles:function(){return this._bubbles},
-setBubbles:function(a){this._bubbles=a},
-isCancelable:function(){return this._cancelable},
-setCancelable:function(a){this._cancelable=a}},
-destruct:function(){this._target=this._currentTarget=this._relatedTarget=this._originalTarget=null}});
-
-
-// qx.event.type.Data
-//   - Size: 448 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.type.Data",{extend:qx.event.type.Event,
-members:{__jlEBF:null,
-__gQ654:null,
-init:function(b,a,c){this.base(arguments,false,c);
-this.__jlEBF=b;
-this.__gQ654=a;
-return this},
-clone:function(b){var a=this.base(arguments,b);
-a.__jlEBF=this.__jlEBF;
-a.__gQ654=this.__gQ654;
-return a},
-getData:function(){return this.__jlEBF},
-getOldData:function(){return this.__gQ654}},
-destruct:function(){this.__jlEBF=this.__gQ654=null}});
-
-
 // qx.event.IEventDispatcher
 //   - Size: 258 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -3667,7 +3026,7 @@ this.assertString(b)}}});
 
 // qx.event.Manager
 //   - Size: 6920 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("qx.event.Manager",{extend:Object,
 construct:function(a,b){this.__qOaV1=a;
 this.__zt2DU=qx.core.ObjectRegistry.toHashCode(a);
@@ -3819,7 +3178,7 @@ this.__W9lJC=this.__UDqYD=null}}});
 
 // qx.event.Registration
 //   - Size: 2916 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("qx.event.Registration",{statics:{__yRxNx:{},
 getManager:function(a){a==null?(qx.log.Logger.error("qx.event.Registration.getManager(null) was called!"),qx.log.Logger.trace(this),a=window):a.nodeType?a=qx.dom.Node.getWindow(a):qx.dom.Node.isWindow(a)||(a=window);
 var c=a.$$hash||qx.core.ObjectRegistry.toHashCode(a),b=this.__yRxNx[c];
@@ -3899,59 +3258,6 @@ d++)h=c[d].context||a,c[d].handler.call(h,b)}},
 defer:function(a){qx.event.Registration.addDispatcher(a)}});
 
 
-// qx.lang.Object
-//   - Size: 2617 bytes
-//   - Modified: 2010-06-18T23:08:09
-qx.Class.define("qx.lang.Object",{statics:{empty:function(a){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
-for(var b in a)a.hasOwnProperty(b)&&delete a[b]},
-isEmpty:qx.bom.client.Feature.ECMA_OBJECT_COUNT?function(a){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
-return a.__count__===0}:function(a){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
-for(var b in a)return false;
-return true},
-hasMinLength:qx.bom.client.Feature.ECMA_OBJECT_COUNT?function(b,a){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'map'"),qx.core.Assert&&qx.core.Assert.assertInteger(a,"Invalid argument 'minLength'");
-return b.__count__>=a}:function(b,a){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'map'"),qx.core.Assert&&qx.core.Assert.assertInteger(a,"Invalid argument 'minLength'");
-if(a<=0)return true;
-var d=0,c;
-for(c in b)if(++d>=a)return true;
-return false},
-getLength:qx.Bootstrap.objectGetLength,
-getKeys:qx.Bootstrap.getKeys,
-getKeysAsString:qx.Bootstrap.getKeysAsString,
-findWinnerKey:function(c,b,a){if(!(b in c))return a in c?a:null;
-if(!(a in c))return b in c?b:null;
-for(var d in c){if(d==b)return b;
-if(d==a)return a}return null},
-getValues:function(b){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'map'");
-for(var c=[],d=this.getKeys(b),a=0,e=d.length;
-a<e;
-a++)c.push(b[d[a]]);
-return c},
-merge:function(c){qx.core.Assert&&qx.core.Assert.assertMap(c,"Invalid argument 'target'");
-for(var e=arguments.length,d,b,a=1;
-a<e;
-a++){d=arguments[a];
-for(b in d)c[b]=d[b]}return c},
-clone:function(b){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'source'");
-var c={},a;
-for(a in b)c[a]=b[a];
-return c},
-invert:function(b){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'map'");
-var c={},a;
-for(a in b)c[b[a].toString()]=a;
-return c},
-getKeyFromValue:function(b,c){qx.core.Assert&&qx.core.Assert.assertMap(b,"Invalid argument 'map'");
-for(var a in b)if(b.hasOwnProperty(a)&&b[a]===c)return a;
-return null},
-contains:function(a,b){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
-return this.getKeyFromValue(a,b)!==null},
-select:function(b,a){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
-return a[b]},
-fromArray:function(b){qx.core.Assert&&qx.core.Assert.assertArray(b,"Invalid argument 'array'");
-for(var c={},a=0,d=b.length;
-a<d;
-a++){switch(typeof b[a]){case"object":case"function":case"undefined":throw new Error("Could not convert complex objects like "+b[a]+" at array index "+a+" to map syntax")}c[b[a].toString()]=true}return c}}});
-
-
 // qx.theme.manager.Appearance
 //   - Size: 1681 bytes
 //   - Modified: 2010-06-18T23:08:09
@@ -4006,51 +3312,9 @@ return n[l]=d||null}},
 destruct:function(){this.__JRMbw=this.__ynipn=null}});
 
 
-// qx.event.Timer
-//   - Size: 1321 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.Timer",{extend:qx.core.Object,
-construct:function(a){this.base(arguments);
-this.setEnabled(false);
-a!=null&&this.setInterval(a);
-var b=this;
-this.__KCwvZ=function(){b._oninterval.call(b)}},
-events:{interval:"qx.event.type.Event"},
-statics:{once:function(c,b,d){var a=new qx.event.Timer(d);
-a.__yECuy=c;
-a.addListener("interval",function(d){a.stop();
-c.call(b,d);
-a.dispose();
-b=null},b);
-a.start();
-return a}},
-properties:{enabled:{init:true,
-check:"Boolean",
-apply:"_applyEnabled"},
-interval:{check:"Integer",
-init:1000,
-apply:"_applyInterval"}},
-members:{__bioe1m:null,
-__KCwvZ:null,
-_applyInterval:function(){this.getEnabled()&&this.restart()},
-_applyEnabled:function(a,b){b?(window.clearInterval(this.__bioe1m),this.__bioe1m=null):a&&(this.__bioe1m=window.setInterval(this.__KCwvZ,this.getInterval()))},
-start:function(){this.setEnabled(true)},
-startWith:function(a){this.setInterval(a);
-this.start()},
-stop:function(){this.setEnabled(false)},
-restart:function(){this.stop();
-this.start()},
-restartWith:function(a){this.stop();
-this.startWith(a)},
-_oninterval:qx.event.GlobalError.observeMethod(function(){if(this.$$disposed)return;
-this.getEnabled()&&this.fireEvent("interval")})},
-destruct:function(){this.__bioe1m&&window.clearInterval(this.__bioe1m);
-this.__bioe1m=this.__KCwvZ=null}});
-
-
 // qx.util.ResourceManager
 //   - Size: 1090 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:29
 qx.Class.define("qx.util.ResourceManager",{extend:qx.core.Object,
 type:"singleton",
 statics:{__EoIRE:{}},
@@ -4083,76 +3347,6 @@ c=$$resources.roots[b.join?b[0]:b],d=c+"/"+a;
 return d}}});
 
 
-// qx.bom.Font
-//   - Size: 1937 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.bom.Font",{extend:qx.core.Object,
-construct:function(a,b){this.base(arguments);
-a!==undefined&&this.setSize(a);
-b!==undefined&&this.setFamily(b)},
-statics:{fromString:function(g){for(var a=new qx.bom.Font(),f=g.split(/\s+/),d=[],b,c=0,e;
-c<f.length;
-c++)switch(b=f[c]){case"bold":a.setBold(true);
-break;
-case"italic":a.setItalic(true);
-break;
-case"underline":a.setDecoration("underline");
-break;
-default:e=parseInt(b,10);
-e==b||qx.lang.String.contains(b,"px")?a.setSize(e):d.push(b);
-break}d.length>0&&a.setFamily(d);
-return a},
-fromConfig:function(b){var a=new qx.bom.Font;
-a.set(b);
-return a},
-__2J6qy:{fontFamily:"",
-fontSize:"",
-fontWeight:"",
-fontStyle:"",
-textDecoration:"",
-lineHeight:1.2},
-getDefaultStyles:function(){return this.__2J6qy}},
-properties:{size:{check:"Integer",
-nullable:true,
-apply:"_applySize"},
-lineHeight:{check:"Number",
-nullable:true,
-apply:"_applyLineHeight"},
-family:{check:"Array",
-nullable:true,
-apply:"_applyFamily"},
-bold:{check:"Boolean",
-nullable:true,
-apply:"_applyBold"},
-italic:{check:"Boolean",
-nullable:true,
-apply:"_applyItalic"},
-decoration:{check:["underline","line-through","overline"],
-nullable:true,
-apply:"_applyDecoration"}},
-members:{__jM9vq:null,
-__qc3kj:null,
-__jrqDs:null,
-__qpHzB:null,
-__JrEx1:null,
-__IKKUm:null,
-_applySize:function(a){this.__jM9vq=a===null?null:a+"px"},
-_applyLineHeight:function(a){this.__IKKUm=a===null?null:a},
-_applyFamily:function(b){for(var c="",a=0,d=b.length;
-a<d;
-a++)c+=b[a].indexOf(" ")>0?"\""+b[a]+"\"":b[a],a!==d-1&&(c+=",");
-this.__qc3kj=c},
-_applyBold:function(a){this.__jrqDs=a===null?null:a?"bold":"normal"},
-_applyItalic:function(a){this.__qpHzB=a===null?null:a?"italic":"normal"},
-_applyDecoration:function(a){this.__JrEx1=a===null?null:a},
-getStyles:function(){return{fontFamily:this.__qc3kj,
-fontSize:this.__jM9vq,
-fontWeight:this.__jrqDs,
-fontStyle:this.__qpHzB,
-textDecoration:this.__JrEx1,
-lineHeight:this.__IKKUm}}}});
-
-
 // qx.util.ValueManager
 //   - Size: 479 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -4168,6 +3362,44 @@ return a},
 _setDynamic:function(a){this._dynamic=a},
 _getDynamic:function(){return this._dynamic}},
 destruct:function(){this._dynamic=null}});
+
+
+// qx.theme.manager.Decoration
+//   - Size: 1131 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.theme.manager.Decoration",{type:"singleton",
+extend:qx.core.Object,
+construct:function(){this.base(arguments);
+qx.core.Type.add("Decorator",this.isValidPropertyValue,this)},
+properties:{theme:{check:"Theme",
+nullable:true,
+apply:"_applyTheme",
+event:"changeTheme"}},
+members:{__uFGym:null,
+resolve:function(a){if(!a)return null;
+if(typeof a==="object")return a;
+var d=this.getTheme(),b,f,c,e;
+if(!d)return null;
+d=this.getTheme();
+if(!d)return null;
+b=this.__uFGym;
+b||(b=this.__uFGym={});
+f=b[a];
+if(f)return f;
+c=d.decorations[a];
+if(!c)return null;
+e=c.decorator;
+if(e==null)throw new Error("Missing definition of which decorator to use in entry: "+a+"!");
+return b[a]=(new e).set(c.style)},
+isValidPropertyValue:function(a){if(typeof a==="string")return this.isDynamic(a);
+if(typeof a==="object"){var b=a.constructor;
+return qx.Class.hasInterface(b,qx.ui.decoration.IDecorator)}return false},
+isDynamic:function(a){if(!a)return false;
+var b=this.getTheme();
+if(!b)return false;
+return!!b.decorations[a]},
+_applyTheme:function(a){a||(this.__uFGym={})}},
+destruct:function(){this._disposeMap("__dynamic")}});
 
 
 // qx.theme.manager.Color
@@ -4344,44 +3576,6 @@ return this.rgbToRgbString([c,a,b])}},
 defer:function(a){qx.core.Type.add("Color",a.isValidPropertyValue,a)}});
 
 
-// qx.theme.manager.Decoration
-//   - Size: 1131 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Class.define("qx.theme.manager.Decoration",{type:"singleton",
-extend:qx.core.Object,
-construct:function(){this.base(arguments);
-qx.core.Type.add("Decorator",this.isValidPropertyValue,this)},
-properties:{theme:{check:"Theme",
-nullable:true,
-apply:"_applyTheme",
-event:"changeTheme"}},
-members:{__uFGym:null,
-resolve:function(a){if(!a)return null;
-if(typeof a==="object")return a;
-var d=this.getTheme(),b,f,c,e;
-if(!d)return null;
-d=this.getTheme();
-if(!d)return null;
-b=this.__uFGym;
-b||(b=this.__uFGym={});
-f=b[a];
-if(f)return f;
-c=d.decorations[a];
-if(!c)return null;
-e=c.decorator;
-if(e==null)throw new Error("Missing definition of which decorator to use in entry: "+a+"!");
-return b[a]=(new e).set(c.style)},
-isValidPropertyValue:function(a){if(typeof a==="string")return this.isDynamic(a);
-if(typeof a==="object"){var b=a.constructor;
-return qx.Class.hasInterface(b,qx.ui.decoration.IDecorator)}return false},
-isDynamic:function(a){if(!a)return false;
-var b=this.getTheme();
-if(!b)return false;
-return!!b.decorations[a]},
-_applyTheme:function(a){a||(this.__uFGym={})}},
-destruct:function(){this._disposeMap("__dynamic")}});
-
-
 // qx.ui.layout.Util
 //   - Size: 2618 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -4455,6 +3649,364 @@ arrangeIdeals:function(e,b,d,f,a,c){(b<e||a<f)&&(b<e&&a<f?(b=e,a=f):b<e?(a-=e-b,
 (b>d||a>c)&&(b>d&&a>c?(b=d,a=c):b>d?(a+=b-d,b=d,a>c&&(a=c)):a>c&&(b+=a-c,a=c,b>d&&(b=d)));
 return{begin:b,
 end:a}}}});
+
+
+// qx.event.Timer
+//   - Size: 1321 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.Timer",{extend:qx.core.Object,
+construct:function(a){this.base(arguments);
+this.setEnabled(false);
+a!=null&&this.setInterval(a);
+var b=this;
+this.__KCwvZ=function(){b._oninterval.call(b)}},
+events:{interval:"qx.event.type.Event"},
+statics:{once:function(c,b,d){var a=new qx.event.Timer(d);
+a.__yECuy=c;
+a.addListener("interval",function(d){a.stop();
+c.call(b,d);
+a.dispose();
+b=null},b);
+a.start();
+return a}},
+properties:{enabled:{init:true,
+check:"Boolean",
+apply:"_applyEnabled"},
+interval:{check:"Integer",
+init:1000,
+apply:"_applyInterval"}},
+members:{__bioe1m:null,
+__KCwvZ:null,
+_applyInterval:function(){this.getEnabled()&&this.restart()},
+_applyEnabled:function(a,b){b?(window.clearInterval(this.__bioe1m),this.__bioe1m=null):a&&(this.__bioe1m=window.setInterval(this.__KCwvZ,this.getInterval()))},
+start:function(){this.setEnabled(true)},
+startWith:function(a){this.setInterval(a);
+this.start()},
+stop:function(){this.setEnabled(false)},
+restart:function(){this.stop();
+this.start()},
+restartWith:function(a){this.stop();
+this.startWith(a)},
+_oninterval:qx.event.GlobalError.observeMethod(function(){if(this.$$disposed)return;
+this.getEnabled()&&this.fireEvent("interval")})},
+destruct:function(){this.__bioe1m&&window.clearInterval(this.__bioe1m);
+this.__bioe1m=this.__KCwvZ=null}});
+
+
+// qx.event.type.Focus
+//   - Size: 183 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.type.Focus",{extend:qx.event.type.Event,
+members:{init:function(a,c,b){this.base(arguments,b,false);
+this._target=a;
+this._relatedTarget=c;
+return this}}});
+
+
+// qx.bom.Font
+//   - Size: 1937 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.bom.Font",{extend:qx.core.Object,
+construct:function(a,b){this.base(arguments);
+a!==undefined&&this.setSize(a);
+b!==undefined&&this.setFamily(b)},
+statics:{fromString:function(g){for(var a=new qx.bom.Font(),f=g.split(/\s+/),d=[],b,c=0,e;
+c<f.length;
+c++)switch(b=f[c]){case"bold":a.setBold(true);
+break;
+case"italic":a.setItalic(true);
+break;
+case"underline":a.setDecoration("underline");
+break;
+default:e=parseInt(b,10);
+e==b||qx.lang.String.contains(b,"px")?a.setSize(e):d.push(b);
+break}d.length>0&&a.setFamily(d);
+return a},
+fromConfig:function(b){var a=new qx.bom.Font;
+a.set(b);
+return a},
+__2J6qy:{fontFamily:"",
+fontSize:"",
+fontWeight:"",
+fontStyle:"",
+textDecoration:"",
+lineHeight:1.2},
+getDefaultStyles:function(){return this.__2J6qy}},
+properties:{size:{check:"Integer",
+nullable:true,
+apply:"_applySize"},
+lineHeight:{check:"Number",
+nullable:true,
+apply:"_applyLineHeight"},
+family:{check:"Array",
+nullable:true,
+apply:"_applyFamily"},
+bold:{check:"Boolean",
+nullable:true,
+apply:"_applyBold"},
+italic:{check:"Boolean",
+nullable:true,
+apply:"_applyItalic"},
+decoration:{check:["underline","line-through","overline"],
+nullable:true,
+apply:"_applyDecoration"}},
+members:{__jM9vq:null,
+__qc3kj:null,
+__jrqDs:null,
+__qpHzB:null,
+__JrEx1:null,
+__IKKUm:null,
+_applySize:function(a){this.__jM9vq=a===null?null:a+"px"},
+_applyLineHeight:function(a){this.__IKKUm=a===null?null:a},
+_applyFamily:function(b){for(var c="",a=0,d=b.length;
+a<d;
+a++)c+=b[a].indexOf(" ")>0?"\""+b[a]+"\"":b[a],a!==d-1&&(c+=",");
+this.__qc3kj=c},
+_applyBold:function(a){this.__jrqDs=a===null?null:a?"bold":"normal"},
+_applyItalic:function(a){this.__qpHzB=a===null?null:a?"italic":"normal"},
+_applyDecoration:function(a){this.__JrEx1=a===null?null:a},
+getStyles:function(){return{fontFamily:this.__qc3kj,
+fontSize:this.__jM9vq,
+fontWeight:this.__jrqDs,
+fontStyle:this.__qpHzB,
+textDecoration:this.__JrEx1,
+lineHeight:this.__IKKUm}}}});
+
+
+// qx.event.dispatch.AbstractBubbling
+//   - Size: 1340 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.dispatch.AbstractBubbling",{extend:qx.core.Object,
+implement:qx.event.IEventDispatcher,
+type:"abstract",
+construct:function(a){this._manager=a},
+members:{_getParent:function(){throw new Error("Missing implementation")},
+canDispatchEvent:function(b,a){return a.getBubbles()},
+dispatchEvent:function(j,a,l){var f=j,n=this._manager,k,g,e,c,h,i,m=[],o,t,p,s,b,d,q,r;
+k=n.getListeners(j,l,true);
+g=n.getListeners(j,l,false);
+k&&m.push(k);
+g&&m.push(g);
+f=this._getParent(j),o=[],t=[],p=[],s=[];
+while(f!=null)k=n.getListeners(f,l,true),k&&(p.push(k),s.push(f)),g=n.getListeners(f,l,false),g&&(o.push(g),t.push(f)),f=this._getParent(f);
+a.setEventPhase(qx.event.type.Event.CAPTURING_PHASE);
+for(b=p.length-1;
+b>=0;
+b--){i=s[b];
+a.setCurrentTarget(i);
+e=p[b];
+for(d=0,q=e.length;
+d<q;
+d++)c=e[d],h=c.context||i,c.handler.call(h,a);
+if(a.getPropagationStopped())return}a.setEventPhase(qx.event.type.Event.AT_TARGET);
+a.setCurrentTarget(j);
+for(b=0,r=m.length;
+b<r;
+b++){e=m[b];
+for(d=0,q=e.length;
+d<q;
+d++)c=e[d],h=c.context||j,c.handler.call(h,a);
+if(a.getPropagationStopped())return}a.setEventPhase(qx.event.type.Event.BUBBLING_PHASE);
+for(b=0,r=o.length;
+b<r;
+b++){i=t[b];
+a.setCurrentTarget(i);
+e=o[b];
+for(d=0,q=e.length;
+d<q;
+d++)c=e[d],h=c.context||i,c.handler.call(h,a);
+if(a.getPropagationStopped())return}}}});
+
+
+// qx.bom.element2.Style
+//   - Size: 1159 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.bom.element2.Style",{statics:{__I7iU2:document.createElement("div"),
+__CRiSe:{},
+__bgSKno:{},
+__WqwKR:"Moz",
+get:function(b,a,e){var d=b.style,c;
+a=d[a]!==undefined&&a||this.__CRiSe[a]||this.property(a);
+if(!e)return d[a];
+c=b.ownerDocument.defaultView;
+if(c)return c.getComputedStyle(b,null)[a];
+if(b.currentStyle)return b.currentStyle[a]},
+set:function(f,a,c){var d=f.style,e=this.__CRiSe,b;
+if(typeof a=="string")a=a in d&&a||e[a]||this.property(a),a&&(d[a]=c==null?"":c);
+else for(b in a)c=a[b],b=b in d&&b||e[b]||this.property(b),b&&(d[b]=c==null?"":c);
+return this},
+property:function(a){var f=this.__I7iU2.style,b,e,d,c;
+if(f[a]!==b)return a;
+e=this.__CRiSe,d=e[a];
+if(d!==b)return d;
+c=this.__WqwKR+a.charAt(0).toUpperCase()+a.substring(1);
+if(f[c]!==b)return e[a]=c;
+qx.log.Logger.warn("Style property \""+a+"\" is not supported by the client!")},
+compile:function(e){var c=[],h=this.__I7iU2.style,f=this.__CRiSe,d=this.__bgSKno,a,g,b;
+for(a in e)g=e[a],b=d[a],b==null&&(b=d[a]=qx.lang.String.hyphenate(b in h&&b||f[a]||this.property(a))),c.push(b+":"+g);
+return c.join(";")}},
+defer:function(a){a.__CRiSe["float"]="cssFloat"}});
+
+
+// qx.util.DeferredCallManager
+//   - Size: 1115 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.util.DeferredCallManager",{extend:qx.core.Object,
+type:"singleton",
+construct:function(){this.__muCjq={};
+this.__bbKRP9=qx.lang.Function.bind(this.__uZ2bi,this);
+this.__x5qek=false},
+members:{__EEWKl:null,
+__WYlL1:null,
+__muCjq:null,
+__x5qek:null,
+__bbKRP9:null,
+schedule:function(a){this.__EEWKl==null&&(this.__EEWKl=window.setTimeout(this.__bbKRP9,0));
+var b=a.toHashCode();
+if(this.__WYlL1&&this.__WYlL1[b])return;
+this.__muCjq[b]=a;
+this.__x5qek=true},
+cancel:function(b){var a=b.toHashCode();
+if(this.__WYlL1&&this.__WYlL1[a]){this.__WYlL1[a]=null;
+return}delete this.__muCjq[a];
+qx.lang.Object.isEmpty(this.__muCjq)&&this.__EEWKl!=null&&(window.clearTimeout(this.__EEWKl),this.__EEWKl=null)},
+__uZ2bi:qx.event.GlobalError.observeMethod(function(){this.__EEWKl=null;
+while(this.__x5qek){this.__WYlL1=qx.lang.Object.clone(this.__muCjq);
+this.__muCjq={};
+this.__x5qek=false;
+for(a in this.__WYlL1){var b=this.__WYlL1[a],a;
+b&&(this.__WYlL1[a]=null,b.call())}}this.__WYlL1=null})},
+destruct:function(){this.__EEWKl!=null&&window.clearTimeout(this.__EEWKl);
+this.__bbKRP9=this.__muCjq=null}});
+
+
+// qx.util.DeferredCall
+//   - Size: 514 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.util.DeferredCall",{extend:qx.core.Object,
+construct:function(b,a){this.base(arguments);
+this.__yn7yy=b;
+this.__uOt7U=a||null;
+this.__ugn3e=qx.util.DeferredCallManager.getInstance()},
+members:{__yn7yy:null,
+__uOt7U:null,
+__ugn3e:null,
+cancel:function(){this.__ugn3e.cancel(this)},
+schedule:function(){this.__ugn3e.schedule(this)},
+call:function(){this.__uOt7U?this.__yn7yy.apply(this.__uOt7U):this.__yn7yy()}},
+destruct:function(){this.cancel();
+this.__uOt7U=this.__yn7yy=this.__ugn3e=null}});
+
+
+// qx.bom.element.Dimension
+//   - Size: 1440 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Class.define("qx.bom.element.Dimension",{statics:{getWidth:function(a){if(a.getBoundingClientRect){var b=a.getBoundingClientRect();
+return Math.round(b.right)-Math.round(b.left)}return a.offsetWidth},
+getHeight:function(a){if(a.getBoundingClientRect){var b=a.getBoundingClientRect();
+return Math.round(b.bottom)-Math.round(b.top)}return a.offsetHeight},
+getSize:function(a){return{width:this.getWidth(a),
+height:this.getHeight(a)}},
+__bo0366:{visible:true,
+hidden:true},
+getContentWidth:function(a){var f=qx.bom.element.Style,h=qx.bom.element.Overflow.getX(a),d=parseInt(f.get(a,"paddingLeft")||"0px",10),b=parseInt(f.get(a,"paddingRight")||"0px",10),c,e,g;
+if(this.__bo0366[h]){c=a.clientWidth;
+qx.dom.Node.isBlockNode(a)&&(c=c-d-b);
+return c}if(a.clientWidth>=a.scrollWidth)return Math.max(a.clientWidth,a.scrollWidth)-d-b;
+e=a.scrollWidth-d,g=qx.bom.client.Engine;
+g.NAME==="mshtml"&&g.VERSION==6&&(e-=b);
+return e},
+getContentHeight:function(a){var e=qx.bom.element.Style,g=qx.bom.element.Overflow.getY(a),b=parseInt(e.get(a,"paddingTop")||"0px",10),c=parseInt(e.get(a,"paddingBottom")||"0px",10),d,f;
+if(this.__bo0366[g])return a.clientHeight-b-c;
+if(a.clientHeight>=a.scrollHeight)return Math.max(a.clientHeight,a.scrollHeight)-b-c;
+d=a.scrollHeight-b,f=qx.bom.client.Engine;
+f.NAME==="mshtml"&&f.VERSION==6&&(d-=c);
+return d},
+getContentSize:function(a){return{width:this.getContentWidth(a),
+height:this.getContentHeight(a)}}}});
+
+
+// qx.event.type.Native
+//   - Size: 861 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.type.Native",{extend:qx.event.type.Event,
+members:{init:function(a,b,d,c,e){this.base(arguments,c,e);
+this._target=b||qx.bom.Event.getTarget(a);
+this._relatedTarget=d||qx.bom.Event.getRelatedTarget(a);
+a.timeStamp&&(this._timeStamp=a.timeStamp);
+this._native=a;
+this._returnValue=null;
+return this},
+clone:function(c){var a=this.base(arguments,c),b={};
+a._native=this._cloneNativeEvent(this._native,b);
+a._returnValue=this._returnValue;
+return a},
+_cloneNativeEvent:function(b,a){a.preventDefault=qx.lang.Function.empty;
+return a},
+preventDefault:function(){this.base(arguments);
+qx.bom.Event.preventDefault(this._native)},
+getNativeEvent:function(){return this._native},
+setReturnValue:function(a){this._returnValue=a},
+getReturnValue:function(){return this._returnValue}},
+destruct:function(){this._native=this._returnValue=null}});
+
+
+// qx.bom.element.Location
+//   - Size: 3635 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.bom.element.Location",{statics:{__nioaO:function(a,b){return qx.bom.element.Style.get(a,b,qx.bom.element.Style.COMPUTED_MODE,false)},
+__gXIg7:function(a,b){return parseInt(qx.bom.element.Style.get(a,b,qx.bom.element.Style.COMPUTED_MODE,false),10)||0},
+__3BZ0V:function(a){var b=0,c=0,d,e;
+if(a.getBoundingClientRect&&!qx.bom.client.Engine.OPERA)d=qx.dom.Node.getWindow(a),b-=qx.bom.Viewport.getScrollLeft(d),c-=qx.bom.Viewport.getScrollTop(d);
+else{e=qx.dom.Node.getDocument(a).body;
+a=a.parentNode;
+while(a&&a!=e)b+=a.scrollLeft,c+=a.scrollTop,a=a.parentNode}return{left:b,
+top:c}},
+__PRyli:function(d){var a=qx.dom.Node.getDocument(d).body,b=a.offsetLeft,c=a.offsetTop;
+qx.bom.client.Engine.VERSION<1.9&&(b+=this.__gXIg7(a,"marginLeft"),c+=this.__gXIg7(a,"marginTop"));
+qx.bom.element.BoxSizing.get(a)!=="border-box"&&(b+=this.__gXIg7(a,"borderLeftWidth"),c+=this.__gXIg7(a,"borderTopWidth"));
+return{left:b,
+top:c}},
+__3nYv9:function(a){if(a.getBoundingClientRect)var d=a.getBoundingClientRect(),b=Math.round(d.left),c=Math.round(d.top),f,e;
+else{b=0,c=0,f=qx.dom.Node.getDocument(a).body,e=qx.bom.element.BoxSizing;
+e.get(a)!=="border-box"&&(b-=this.__gXIg7(a,"borderLeftWidth"),c-=this.__gXIg7(a,"borderTopWidth"));
+while(a&&a!==f)b+=a.offsetLeft,c+=a.offsetTop,e.get(a)!=="border-box"&&(b+=this.__gXIg7(a,"borderLeftWidth"),c+=this.__gXIg7(a,"borderTopWidth")),a.parentNode&&this.__nioaO(a.parentNode,"overflow")!="visible"&&(b+=this.__gXIg7(a.parentNode,"borderLeftWidth"),c+=this.__gXIg7(a.parentNode,"borderTopWidth")),a=a.offsetParent}return{left:b,
+top:c}},
+get:function(a,f){if(a.tagName=="BODY")var g=this.__bf0iHy(a),b=g.left,c=g.top,l,k,h,e,d,i,j;
+else l=this.__PRyli(a),k=this.__3nYv9(a),h=this.__3BZ0V(a),b=k.left+l.left-h.left,c=k.top+l.top-h.top;
+e=b+a.offsetWidth,d=c+a.offsetHeight;
+if(f){(f=="padding"||f=="scroll")&&(i=qx.bom.element.Overflow.getX(a),(i=="scroll"||i=="auto")&&(e+=a.scrollWidth-a.offsetWidth+this.__gXIg7(a,"borderLeftWidth")+this.__gXIg7(a,"borderRightWidth")),j=qx.bom.element.Overflow.getY(a),(j=="scroll"||j=="auto")&&(d+=a.scrollHeight-a.offsetHeight+this.__gXIg7(a,"borderTopWidth")+this.__gXIg7(a,"borderBottomWidth")));
+switch(f){case"padding":b+=this.__gXIg7(a,"paddingLeft"),c+=this.__gXIg7(a,"paddingTop"),e-=this.__gXIg7(a,"paddingRight"),d-=this.__gXIg7(a,"paddingBottom");
+case"scroll":b-=a.scrollLeft,c-=a.scrollTop,e-=a.scrollLeft,d-=a.scrollTop;
+case"border":b+=this.__gXIg7(a,"borderLeftWidth");
+c+=this.__gXIg7(a,"borderTopWidth");
+e-=this.__gXIg7(a,"borderRightWidth");
+d-=this.__gXIg7(a,"borderBottomWidth");
+break;
+case"margin":b-=this.__gXIg7(a,"marginLeft");
+c-=this.__gXIg7(a,"marginTop");
+e+=this.__gXIg7(a,"marginRight");
+d+=this.__gXIg7(a,"marginBottom");
+break}}return{left:b,
+top:c,
+right:e,
+bottom:d}},
+__bf0iHy:function(a){var c=a.offsetTop+this.__gXIg7(a,"marginTop")+this.__gXIg7(a,"borderLeftWidth"),b=a.offsetLeft+this.__gXIg7(a,"marginLeft")+this.__gXIg7(a,"borderTopWidth");
+return{left:b,
+top:c}},
+getLeft:function(b,a){return this.get(b,a).left},
+getTop:function(b,a){return this.get(b,a).top},
+getRight:function(b,a){return this.get(b,a).right},
+getBottom:function(b,a){return this.get(b,a).bottom},
+getRelative:function(c,d,e,f){var a=this.get(c,e),b=this.get(d,f);
+return{left:a.left-b.left,
+top:a.top-b.top,
+right:a.right-b.right,
+bottom:a.bottom-b.bottom}},
+getPosition:function(a){return this.getRelative(a,this.getOffsetParent(a))},
+getOffsetParent:function(b){var a=b.offsetParent||document.body,c=qx.bom.element.Style;
+while(a&&(!/^body|html$/i.test(a.tagName)&&c.get(a,"position")==="static"))a=a.offsetParent;
+return a}}});
 
 
 // qx.data.SingleValueBinding
@@ -4616,123 +4168,9 @@ b<this.__yQrBp[a].length;
 b++)this.showBindingInLog(c,this.__yQrBp[a][b][0])}}});
 
 
-// qx.event.type.Focus
-//   - Size: 183 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.type.Focus",{extend:qx.event.type.Event,
-members:{init:function(a,c,b){this.base(arguments,b,false);
-this._target=a;
-this._relatedTarget=c;
-return this}}});
-
-
-// qx.util.DeferredCallManager
-//   - Size: 1115 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.util.DeferredCallManager",{extend:qx.core.Object,
-type:"singleton",
-construct:function(){this.__muCjq={};
-this.__bbKRP9=qx.lang.Function.bind(this.__uZ2bi,this);
-this.__x5qek=false},
-members:{__EEWKl:null,
-__WYlL1:null,
-__muCjq:null,
-__x5qek:null,
-__bbKRP9:null,
-schedule:function(a){this.__EEWKl==null&&(this.__EEWKl=window.setTimeout(this.__bbKRP9,0));
-var b=a.toHashCode();
-if(this.__WYlL1&&this.__WYlL1[b])return;
-this.__muCjq[b]=a;
-this.__x5qek=true},
-cancel:function(b){var a=b.toHashCode();
-if(this.__WYlL1&&this.__WYlL1[a]){this.__WYlL1[a]=null;
-return}delete this.__muCjq[a];
-qx.lang.Object.isEmpty(this.__muCjq)&&this.__EEWKl!=null&&(window.clearTimeout(this.__EEWKl),this.__EEWKl=null)},
-__uZ2bi:qx.event.GlobalError.observeMethod(function(){this.__EEWKl=null;
-while(this.__x5qek){this.__WYlL1=qx.lang.Object.clone(this.__muCjq);
-this.__muCjq={};
-this.__x5qek=false;
-for(a in this.__WYlL1){var b=this.__WYlL1[a],a;
-b&&(this.__WYlL1[a]=null,b.call())}}this.__WYlL1=null})},
-destruct:function(){this.__EEWKl!=null&&window.clearTimeout(this.__EEWKl);
-this.__bbKRP9=this.__muCjq=null}});
-
-
-// qx.data.MBinding
-//   - Size: 393 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.data.MBinding",{members:{bind:function(d,a,c,b){return qx.data.SingleValueBinding.bind(this,d,a,c,b)},
-removeBinding:function(a){qx.data.SingleValueBinding.removeBindingFromObject(this,a)},
-removeAllBindings:function(){qx.data.SingleValueBinding.removeAllBindingsForObject(this)},
-getBindings:function(){return qx.data.SingleValueBinding.getAllBindingsForObject(this)}}});
-
-
-// qx.util.DeferredCall
-//   - Size: 514 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Class.define("qx.util.DeferredCall",{extend:qx.core.Object,
-construct:function(b,a){this.base(arguments);
-this.__yn7yy=b;
-this.__uOt7U=a||null;
-this.__ugn3e=qx.util.DeferredCallManager.getInstance()},
-members:{__yn7yy:null,
-__uOt7U:null,
-__ugn3e:null,
-cancel:function(){this.__ugn3e.cancel(this)},
-schedule:function(){this.__ugn3e.schedule(this)},
-call:function(){this.__uOt7U?this.__yn7yy.apply(this.__uOt7U):this.__yn7yy()}},
-destruct:function(){this.cancel();
-this.__uOt7U=this.__yn7yy=this.__ugn3e=null}});
-
-
-// qx.event.dispatch.AbstractBubbling
-//   - Size: 1340 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.dispatch.AbstractBubbling",{extend:qx.core.Object,
-implement:qx.event.IEventDispatcher,
-type:"abstract",
-construct:function(a){this._manager=a},
-members:{_getParent:function(){throw new Error("Missing implementation")},
-canDispatchEvent:function(b,a){return a.getBubbles()},
-dispatchEvent:function(j,a,l){var f=j,n=this._manager,k,g,e,c,h,i,m=[],o,t,p,s,b,d,q,r;
-k=n.getListeners(j,l,true);
-g=n.getListeners(j,l,false);
-k&&m.push(k);
-g&&m.push(g);
-f=this._getParent(j),o=[],t=[],p=[],s=[];
-while(f!=null)k=n.getListeners(f,l,true),k&&(p.push(k),s.push(f)),g=n.getListeners(f,l,false),g&&(o.push(g),t.push(f)),f=this._getParent(f);
-a.setEventPhase(qx.event.type.Event.CAPTURING_PHASE);
-for(b=p.length-1;
-b>=0;
-b--){i=s[b];
-a.setCurrentTarget(i);
-e=p[b];
-for(d=0,q=e.length;
-d<q;
-d++)c=e[d],h=c.context||i,c.handler.call(h,a);
-if(a.getPropagationStopped())return}a.setEventPhase(qx.event.type.Event.AT_TARGET);
-a.setCurrentTarget(j);
-for(b=0,r=m.length;
-b<r;
-b++){e=m[b];
-for(d=0,q=e.length;
-d<q;
-d++)c=e[d],h=c.context||j,c.handler.call(h,a);
-if(a.getPropagationStopped())return}a.setEventPhase(qx.event.type.Event.BUBBLING_PHASE);
-for(b=0,r=o.length;
-b<r;
-b++){i=t[b];
-a.setCurrentTarget(i);
-e=o[b];
-for(d=0,q=e.length;
-d<q;
-d++)c=e[d],h=c.context||i,c.handler.call(h,a);
-if(a.getPropagationStopped())return}}}});
-
-
 // qx.locale.Manager
 //   - Size: 2202 bytes
-//   - Modified: 2010-11-10T13:22:30
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.locale.Manager",{type:"singleton",
 extend:qx.core.Object,
 construct:function(){this.base(arguments);
@@ -4798,59 +4236,6 @@ a=qx.lang.String.format(a,i)}return a}},
 destruct:function(){this.__XruXR=this.__uqPUA=null}});
 
 
-// qx.bom.element.Dimension
-//   - Size: 1440 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.bom.element.Dimension",{statics:{getWidth:function(a){if(a.getBoundingClientRect){var b=a.getBoundingClientRect();
-return Math.round(b.right)-Math.round(b.left)}return a.offsetWidth},
-getHeight:function(a){if(a.getBoundingClientRect){var b=a.getBoundingClientRect();
-return Math.round(b.bottom)-Math.round(b.top)}return a.offsetHeight},
-getSize:function(a){return{width:this.getWidth(a),
-height:this.getHeight(a)}},
-__bo0366:{visible:true,
-hidden:true},
-getContentWidth:function(a){var f=qx.bom.element.Style,h=qx.bom.element.Overflow.getX(a),d=parseInt(f.get(a,"paddingLeft")||"0px",10),b=parseInt(f.get(a,"paddingRight")||"0px",10),c,e,g;
-if(this.__bo0366[h]){c=a.clientWidth;
-qx.dom.Node.isBlockNode(a)&&(c=c-d-b);
-return c}if(a.clientWidth>=a.scrollWidth)return Math.max(a.clientWidth,a.scrollWidth)-d-b;
-e=a.scrollWidth-d,g=qx.bom.client.Engine;
-g.NAME==="mshtml"&&g.VERSION==6&&(e-=b);
-return e},
-getContentHeight:function(a){var e=qx.bom.element.Style,g=qx.bom.element.Overflow.getY(a),b=parseInt(e.get(a,"paddingTop")||"0px",10),c=parseInt(e.get(a,"paddingBottom")||"0px",10),d,f;
-if(this.__bo0366[g])return a.clientHeight-b-c;
-if(a.clientHeight>=a.scrollHeight)return Math.max(a.clientHeight,a.scrollHeight)-b-c;
-d=a.scrollHeight-b,f=qx.bom.client.Engine;
-f.NAME==="mshtml"&&f.VERSION==6&&(d-=c);
-return d},
-getContentSize:function(a){return{width:this.getContentWidth(a),
-height:this.getContentHeight(a)}}}});
-
-
-// qx.event.type.Native
-//   - Size: 861 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.type.Native",{extend:qx.event.type.Event,
-members:{init:function(a,b,d,c,e){this.base(arguments,c,e);
-this._target=b||qx.bom.Event.getTarget(a);
-this._relatedTarget=d||qx.bom.Event.getRelatedTarget(a);
-a.timeStamp&&(this._timeStamp=a.timeStamp);
-this._native=a;
-this._returnValue=null;
-return this},
-clone:function(c){var a=this.base(arguments,c),b={};
-a._native=this._cloneNativeEvent(this._native,b);
-a._returnValue=this._returnValue;
-return a},
-_cloneNativeEvent:function(b,a){a.preventDefault=qx.lang.Function.empty;
-return a},
-preventDefault:function(){this.base(arguments);
-qx.bom.Event.preventDefault(this._native)},
-getNativeEvent:function(){return this._native},
-setReturnValue:function(a){this._returnValue=a},
-getReturnValue:function(){return this._returnValue}},
-destruct:function(){this._native=this._returnValue=null}});
-
-
 // qx.theme.manager.Font
 //   - Size: 1195 bytes
 //   - Modified: 2010-06-18T23:08:09
@@ -4885,62 +4270,18 @@ if(d){c=d.fonts,e=qx.bom.Font;
 for(a in c)c[a].include&&c[c[a].include]&&this.__ba0WFb(c,a),b[a]=(new e).set(c[a]),b[a].themed=true}this._setDynamic(b)}}});
 
 
-// qx.bom.element.Location
-//   - Size: 3635 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.bom.element.Location",{statics:{__nioaO:function(a,b){return qx.bom.element.Style.get(a,b,qx.bom.element.Style.COMPUTED_MODE,false)},
-__gXIg7:function(a,b){return parseInt(qx.bom.element.Style.get(a,b,qx.bom.element.Style.COMPUTED_MODE,false),10)||0},
-__3BZ0V:function(a){var b=0,c=0,d,e;
-if(a.getBoundingClientRect&&!qx.bom.client.Engine.OPERA)d=qx.dom.Node.getWindow(a),b-=qx.bom.Viewport.getScrollLeft(d),c-=qx.bom.Viewport.getScrollTop(d);
-else{e=qx.dom.Node.getDocument(a).body;
-a=a.parentNode;
-while(a&&a!=e)b+=a.scrollLeft,c+=a.scrollTop,a=a.parentNode}return{left:b,
-top:c}},
-__PRyli:function(d){var a=qx.dom.Node.getDocument(d).body,b=a.offsetLeft,c=a.offsetTop;
-qx.bom.client.Engine.VERSION<1.9&&(b+=this.__gXIg7(a,"marginLeft"),c+=this.__gXIg7(a,"marginTop"));
-qx.bom.element.BoxSizing.get(a)!=="border-box"&&(b+=this.__gXIg7(a,"borderLeftWidth"),c+=this.__gXIg7(a,"borderTopWidth"));
-return{left:b,
-top:c}},
-__3nYv9:function(a){if(a.getBoundingClientRect)var d=a.getBoundingClientRect(),b=Math.round(d.left),c=Math.round(d.top),f,e;
-else{b=0,c=0,f=qx.dom.Node.getDocument(a).body,e=qx.bom.element.BoxSizing;
-e.get(a)!=="border-box"&&(b-=this.__gXIg7(a,"borderLeftWidth"),c-=this.__gXIg7(a,"borderTopWidth"));
-while(a&&a!==f)b+=a.offsetLeft,c+=a.offsetTop,e.get(a)!=="border-box"&&(b+=this.__gXIg7(a,"borderLeftWidth"),c+=this.__gXIg7(a,"borderTopWidth")),a.parentNode&&this.__nioaO(a.parentNode,"overflow")!="visible"&&(b+=this.__gXIg7(a.parentNode,"borderLeftWidth"),c+=this.__gXIg7(a.parentNode,"borderTopWidth")),a=a.offsetParent}return{left:b,
-top:c}},
-get:function(a,f){if(a.tagName=="BODY")var g=this.__bf0iHy(a),b=g.left,c=g.top,l,k,h,e,d,i,j;
-else l=this.__PRyli(a),k=this.__3nYv9(a),h=this.__3BZ0V(a),b=k.left+l.left-h.left,c=k.top+l.top-h.top;
-e=b+a.offsetWidth,d=c+a.offsetHeight;
-if(f){(f=="padding"||f=="scroll")&&(i=qx.bom.element.Overflow.getX(a),(i=="scroll"||i=="auto")&&(e+=a.scrollWidth-a.offsetWidth+this.__gXIg7(a,"borderLeftWidth")+this.__gXIg7(a,"borderRightWidth")),j=qx.bom.element.Overflow.getY(a),(j=="scroll"||j=="auto")&&(d+=a.scrollHeight-a.offsetHeight+this.__gXIg7(a,"borderTopWidth")+this.__gXIg7(a,"borderBottomWidth")));
-switch(f){case"padding":b+=this.__gXIg7(a,"paddingLeft"),c+=this.__gXIg7(a,"paddingTop"),e-=this.__gXIg7(a,"paddingRight"),d-=this.__gXIg7(a,"paddingBottom");
-case"scroll":b-=a.scrollLeft,c-=a.scrollTop,e-=a.scrollLeft,d-=a.scrollTop;
-case"border":b+=this.__gXIg7(a,"borderLeftWidth");
-c+=this.__gXIg7(a,"borderTopWidth");
-e-=this.__gXIg7(a,"borderRightWidth");
-d-=this.__gXIg7(a,"borderBottomWidth");
-break;
-case"margin":b-=this.__gXIg7(a,"marginLeft");
-c-=this.__gXIg7(a,"marginTop");
-e+=this.__gXIg7(a,"marginRight");
-d+=this.__gXIg7(a,"marginBottom");
-break}}return{left:b,
-top:c,
-right:e,
-bottom:d}},
-__bf0iHy:function(a){var c=a.offsetTop+this.__gXIg7(a,"marginTop")+this.__gXIg7(a,"borderLeftWidth"),b=a.offsetLeft+this.__gXIg7(a,"marginLeft")+this.__gXIg7(a,"borderTopWidth");
-return{left:b,
-top:c}},
-getLeft:function(b,a){return this.get(b,a).left},
-getTop:function(b,a){return this.get(b,a).top},
-getRight:function(b,a){return this.get(b,a).right},
-getBottom:function(b,a){return this.get(b,a).bottom},
-getRelative:function(c,d,e,f){var a=this.get(c,e),b=this.get(d,f);
-return{left:a.left-b.left,
-top:a.top-b.top,
-right:a.right-b.right,
-bottom:a.bottom-b.bottom}},
-getPosition:function(a){return this.getRelative(a,this.getOffsetParent(a))},
-getOffsetParent:function(b){var a=b.offsetParent||document.body,c=qx.bom.element.Style;
-while(a&&(!/^body|html$/i.test(a.tagName)&&c.get(a,"position")==="static"))a=a.offsetParent;
-return a}}});
+// qx.bom.element.Decoration
+//   - Size: 476 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.bom.element.Decoration",{statics:{getStyles:function(b,e){var d=qx.util.ResourceManager.getInstance(),c=d.getImageSize(b)||qx.io.ImageLoader.getSize(b),a,f;
+if(c==null){qx.log.Logger.warn("Image without dimensions: "+b);
+return{}}e!="repeat"&&(a=d.getImageSprite(b));
+f={width:c.width+"px",
+height:c.height+"px",
+backgroundImage:"url("+(a?a.uri:d.toUri(b))+")",
+backgroundRepeat:e,
+backgroundPosition:a?-a.left+"px "+(-a.top-.01)+"px":null};
+return f}}});
 
 
 // qx.locale.MTranslation
@@ -4960,18 +4301,13 @@ if(a)return a.marktr.apply(a,arguments);
 throw new Error("To enable localization please include qx.locale.Manager into your build!")}}});
 
 
-// qx.bom.element.Decoration
-//   - Size: 476 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Class.define("qx.bom.element.Decoration",{statics:{getStyles:function(b,e){var d=qx.util.ResourceManager.getInstance(),c=d.getImageSize(b)||qx.io.ImageLoader.getSize(b),a,f;
-if(c==null){qx.log.Logger.warn("Image without dimensions: "+b);
-return{}}e!="repeat"&&(a=d.getImageSprite(b));
-f={width:c.width+"px",
-height:c.height+"px",
-backgroundImage:"url("+(a?a.uri:d.toUri(b))+")",
-backgroundRepeat:e,
-backgroundPosition:a?-a.left+"px "+(-a.top-.01)+"px":null};
-return f}}});
+// qx.data.MBinding
+//   - Size: 393 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.data.MBinding",{members:{bind:function(d,a,c,b){return qx.data.SingleValueBinding.bind(this,d,a,c,b)},
+removeBinding:function(a){qx.data.SingleValueBinding.removeBindingFromObject(this,a)},
+removeAllBindings:function(){qx.data.SingleValueBinding.removeAllBindingsForObject(this)},
+getBindings:function(){return qx.data.SingleValueBinding.getAllBindingsForObject(this)}}});
 
 
 // qx.event.type.Dom
@@ -5084,46 +4420,6 @@ destruct:function(){this.__ugn3e=this.__qOaV1=null},
 defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
-// qx.event.handler.Window
-//   - Size: 1494 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.event.handler.Window",{extend:qx.core.Object,
-implement:qx.event.IEventHandler,
-construct:function(a){this.base(arguments);
-this._manager=a;
-this._window=a.getWindow();
-this._initWindowObserver()},
-statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
-SUPPORTED_TYPES:{error:1,
-load:1,
-beforeunload:1,
-unload:1,
-resize:1,
-scroll:1,
-beforeshutdown:1},
-TARGET_CHECK:qx.event.IEventHandler.TARGET_WINDOW,
-IGNORE_CAN_HANDLE:true},
-members:{canHandleEvent:function(){},
-registerEvent:function(){},
-unregisterEvent:function(){},
-_initWindowObserver:function(){this._onNativeWrapper=qx.lang.Function.listener(this._onNative,this);
-var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
-for(a in b)qx.bom.Event.addNativeListener(this._window,a,this._onNativeWrapper)},
-_stopWindowObserver:function(){var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
-for(a in b)qx.bom.Event.removeNativeListener(this._window,a,this._onNativeWrapper)},
-_onNative:qx.event.GlobalError.observeMethod(function(c){if(this.isDisposed())return;
-var a=this._window,f,g,b,e,d;
-try{f=a.document}catch(c){return}g=f.documentElement,b=qx.bom.Event.getTarget(c);
-if(b==null||b===a||b===f||b===g){e=qx.event.Registration.createEvent(c.type,qx.event.type.Native,[c,a]);
-qx.event.Registration.dispatchEvent(a,e);
-d=e.getReturnValue();
-if(d!=null){c.returnValue=d;
-return d}}})},
-destruct:function(){this._stopWindowObserver();
-this._manager=this._window=null},
-defer:function(a){qx.event.Registration.addHandler(a)}});
-
-
 // qx.event.dispatch.DomBubbling
 //   - Size: 345 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -5136,7 +4432,7 @@ defer:function(a){qx.event.Registration.addDispatcher(a)}});
 
 // qx.event.handler.DragDrop
 //   - Size: 5593 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.event.handler.DragDrop",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -5267,9 +4563,49 @@ getCurrentType:function(){return this.getManager().getCurrentType()},
 getCurrentAction:function(){return this.getManager().getCurrentAction()}}});
 
 
+// qx.event.handler.Window
+//   - Size: 1494 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Class.define("qx.event.handler.Window",{extend:qx.core.Object,
+implement:qx.event.IEventHandler,
+construct:function(a){this.base(arguments);
+this._manager=a;
+this._window=a.getWindow();
+this._initWindowObserver()},
+statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
+SUPPORTED_TYPES:{error:1,
+load:1,
+beforeunload:1,
+unload:1,
+resize:1,
+scroll:1,
+beforeshutdown:1},
+TARGET_CHECK:qx.event.IEventHandler.TARGET_WINDOW,
+IGNORE_CAN_HANDLE:true},
+members:{canHandleEvent:function(){},
+registerEvent:function(){},
+unregisterEvent:function(){},
+_initWindowObserver:function(){this._onNativeWrapper=qx.lang.Function.listener(this._onNative,this);
+var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
+for(a in b)qx.bom.Event.addNativeListener(this._window,a,this._onNativeWrapper)},
+_stopWindowObserver:function(){var b=qx.event.handler.Window.SUPPORTED_TYPES,a;
+for(a in b)qx.bom.Event.removeNativeListener(this._window,a,this._onNativeWrapper)},
+_onNative:qx.event.GlobalError.observeMethod(function(c){if(this.isDisposed())return;
+var a=this._window,f,g,b,e,d;
+try{f=a.document}catch(c){return}g=f.documentElement,b=qx.bom.Event.getTarget(c);
+if(b==null||b===a||b===f||b===g){e=qx.event.Registration.createEvent(c.type,qx.event.type.Native,[c,a]);
+qx.event.Registration.dispatchEvent(a,e);
+d=e.getReturnValue();
+if(d!=null){c.returnValue=d;
+return d}}})},
+destruct:function(){this._stopWindowObserver();
+this._manager=this._window=null},
+defer:function(a){qx.event.Registration.addHandler(a)}});
+
+
 // qx.core.Init
 //   - Size: 476 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("qx.core.Init",{statics:{getApplication:function(){return this.__PJiSt||null},
 boot:function(b){if(this.__PJiSt)return;
 var a=this.__PJiSt=new b;
@@ -5285,7 +4621,7 @@ qx.event.Registration.addListener(window,"beforeunload",a.__mJbUf,a)}});
 
 // qx.event.handler.Focus
 //   - Size: 5075 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.event.handler.Focus",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -5449,7 +4785,7 @@ e++)b=c[e],l.addListener(j,b.type,b.handler,b.self,b.capture)}}}return f}}});
 
 // qx.event.dispatch.MouseCapture
 //   - Size: 1849 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("qx.event.dispatch.MouseCapture",{extend:qx.event.dispatch.AbstractBubbling,
 construct:function(a,b){this.base(arguments,a);
 this.__qOaV1=a.getWindow();
@@ -5554,7 +4890,7 @@ this.intoViewY(a,b,d)}}});
 
 // qx.event.handler.Keyboard
 //   - Size: 6070 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.event.handler.Keyboard",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -5767,7 +5103,7 @@ return b}}});
 
 // qx.html.Element
 //   - Size: 17141 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.html.Element",{extend:qx.core.Object,
 construct:function(a,c,b){this.base(arguments);
 this.__yyimE=a||"div";
@@ -6185,7 +5521,7 @@ destruct:function(){this.__DWFSo=null}});
 
 // qx.ui.core.queue.Manager
 //   - Size: 1646 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.core.queue.Manager",{statics:{__D9j7A:false,
 __jyQXx:{},
 __uZt45:0,
@@ -6405,7 +5741,7 @@ destruct:function(){this._disposeObjects("__desktop")}});
 
 // qx.html.Image
 //   - Size: 868 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.html.Image",{extend:qx.html.Element,
 members:{_applyProperty:function(c,d){this.base(arguments,c,d);
 if(c==="source"){var a=this._getProperty("source"),b;
@@ -7077,7 +6413,7 @@ destruct:function(){this.__jxKLh=this.__usc9t=this.__tKdjT=this.__yElrO=this.__z
 
 // qx.ui.core.Widget
 //   - Size: 29236 bytes
-//   - Modified: 2010-11-10T13:22:30
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.core.Widget",{extend:qx.ui.core.LayoutItem,
 include:[qx.locale.MTranslation,qx.data.MBinding],
 construct:function(){this.base(arguments);
@@ -7728,11 +7064,15 @@ case"align-end":return b.end-a.end-c}},
 _isInRange:function(a,b,c){return a>=0&&a+b<=c}}});
 
 
-// qx.util.placement.DirectAxis
-//   - Size: 175 bytes
+// qx.util.placement.KeepAlignAxis
+//   - Size: 342 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.util.placement.DirectAxis",{extend:qx.util.placement.AbstractAxis,
-members:{computeStart:function(c,b,a,e,d){return this._moveToEdgeAndAlign(c,b,a,d)}}});
+qx.Class.define("qx.util.placement.KeepAlignAxis",{extend:qx.util.placement.AbstractAxis,
+members:{computeStart:function(f,c,b,h,g){var a=this._moveToEdgeAndAlign(f,c,b,g),e,d;
+if(this._isInRange(a,f,h))return a;
+g=="edge-start"||g=="edge-end"?(e=c.start-b.end,d=c.end+b.start):(e=c.end-b.end,d=c.start+b.start);
+a=e>h-d?e-f:d;
+return a}}});
 
 
 // qx.util.placement.BestFitAxis
@@ -7746,15 +7086,11 @@ a+b>c&&(a=Math.max(0,c-b));
 return a}}});
 
 
-// qx.util.placement.KeepAlignAxis
-//   - Size: 342 bytes
+// qx.util.placement.DirectAxis
+//   - Size: 175 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.util.placement.KeepAlignAxis",{extend:qx.util.placement.AbstractAxis,
-members:{computeStart:function(f,c,b,h,g){var a=this._moveToEdgeAndAlign(f,c,b,g),e,d;
-if(this._isInRange(a,f,h))return a;
-g=="edge-start"||g=="edge-end"?(e=c.start-b.end,d=c.end+b.start):(e=c.end-b.end,d=c.start+b.start);
-a=e>h-d?e-f:d;
-return a}}});
+qx.Class.define("qx.util.placement.DirectAxis",{extend:qx.util.placement.AbstractAxis,
+members:{computeStart:function(c,b,a,e,d){return this._moveToEdgeAndAlign(c,b,a,d)}}});
 
 
 // qx.event.Idle
@@ -7919,7 +7255,7 @@ destruct:function(){this.__boPNF4()}});
 
 // qx.ui.basic.Image
 //   - Size: 3538 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.basic.Image",{extend:qx.ui.core.Widget,
 construct:function(a){this.__big5KR={};
 this.base(arguments);
@@ -8021,7 +7357,7 @@ a&&this.addState(a)}}});
 
 // qx.bom.client.System
 //   - Size: 2069 bytes
-//   - Modified: 2010-11-10T13:22:30
+//   - Modified: 2010-11-11T16:55:27
 qx.Bootstrap.define("qx.bom.client.System",{statics:{NAME:"",
 SP1:false,
 SP2:false,
@@ -8195,7 +7531,7 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 // qx.event.handler.Capture
 //   - Size: 440 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.event.handler.Capture",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
@@ -8211,7 +7547,7 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 // qx.event.handler.Mouse
 //   - Size: 4075 bytes
-//   - Modified: 2010-11-10T13:22:30
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.event.handler.Mouse",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -8306,7 +7642,7 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 // qx.ui.core.EventHandler
 //   - Size: 2891 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.core.EventHandler",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(){this.base(arguments);
@@ -8601,7 +7937,7 @@ qx.ui.core.MLayoutHandling.remap(a)}});
 
 // qx.ui.core.FocusHandler
 //   - Size: 3797 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.core.FocusHandler",{extend:qx.core.Object,
 type:"singleton",
 construct:function(){this.base(arguments);
@@ -8828,7 +8164,7 @@ height:f}}return j}}});
 
 // qx.ui.basic.Atom
 //   - Size: 2274 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.basic.Atom",{extend:qx.ui.core.Widget,
 construct:function(b,a){this.assertArgumentsCount(arguments,0,2);
 this.base(arguments);
@@ -9156,7 +8492,7 @@ this.getChildControl("close-button").reset()}}});
 
 // qx.bom.Stylesheet
 //   - Size: 1069 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("qx.bom.Stylesheet",{statics:{includeFile:function(c,b){b||(b=document);
 var a=b.createElement("link"),d;
 a.type="text/css";
@@ -9342,7 +8678,7 @@ defer:function(b,a){qx.ui.core.MChildrenHandling.remap(a)}});
 
 // qx.ui.root.Application
 //   - Size: 1563 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.root.Application",{extend:qx.ui.root.Abstract,
 construct:function(a){this.__qOaV1=qx.dom.Node.getWindow(a);
 this.__gJpI1=a;
@@ -9534,88 +8870,6 @@ this._disposeObjects("__contentBlocker","__blocker","__timer");
 this.__VI41X=this.__9hYDs=this.__2x0gW=this._widget=this.__bRCHEn=null}});
 
 
-// qx.ui.table.ICellRenderer
-//   - Size: 105 bytes
-//   - Modified: 2010-07-17T16:42:24
-qx.Interface.define("qx.ui.table.ICellRenderer",{members:{createDataCellHtml:function(){return true}}});
-
-
-// qx.ui.table.IHeaderRenderer
-//   - Size: 147 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.table.IHeaderRenderer",{members:{createHeaderCell:function(){return true},
-updateHeaderCell:function(){return true}}});
-
-
-// qx.ui.table.IRowRenderer
-//   - Size: 182 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.table.IRowRenderer",{members:{updateDataRowElement:function(){},
-getRowHeightStyle:function(){},
-createRowStyle:function(){},
-getRowClass:function(){}}});
-
-
-// qx.ui.table.ITableModel
-//   - Size: 616 bytes
-//   - Modified: 2010-08-26T21:43:54
-qx.Interface.define("qx.ui.table.ITableModel",{events:{dataChanged:"qx.event.type.Data",
-metaDataChanged:"qx.event.type.Event",
-sorted:"qx.event.type.Data"},
-members:{getRowCount:function(){},
-getRowData:function(){},
-getColumnCount:function(){},
-getColumnId:function(){},
-getColumnIndexById:function(){},
-getColumnName:function(){},
-isColumnEditable:function(){},
-isColumnSortable:function(){},
-sortByColumn:function(){},
-getSortColumnIndex:function(){},
-isSortAscending:function(){},
-prefetchRows:function(){},
-getValue:function(){},
-getValueById:function(){},
-setValue:function(){},
-setValueById:function(){}}});
-
-
-// qx.ui.table.ICellEditorFactory
-//   - Size: 152 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.table.ICellEditorFactory",{members:{createCellEditor:function(){return true},
-getCellEditorValue:function(){return true}}});
-
-
-// qx.ui.table.IColumnMenuButton
-//   - Size: 151 bytes
-//   - Modified: 2010-10-13T17:38:57
-qx.Interface.define("qx.ui.table.IColumnMenuButton",{properties:{menu:{}},
-members:{factory:function(){return true},
-empty:function(){return true}}});
-
-
-// qx.ui.table.IColumnMenuItem
-//   - Size: 123 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.table.IColumnMenuItem",{properties:{visible:{}},
-events:{changeVisible:"qx.event.type.Data"}});
-
-
-// qx.util.format.IFormat
-//   - Size: 99 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.util.format.IFormat",{members:{format:function(){},
-parse:function(){}}});
-
-
-// qx.ui.core.ISingleSelectionProvider
-//   - Size: 125 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.core.ISingleSelectionProvider",{members:{getItems:function(){},
-isItemSelectable:function(){}}});
-
-
 // qx.ui.form.IBooleanForm
 //   - Size: 199 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -9644,22 +8898,13 @@ setRequiredInvalidMessage:function(){return arguments.length==1},
 getRequiredInvalidMessage:function(){}}});
 
 
-// qx.ui.form.IModel
-//   - Size: 167 bytes
+// qx.application.IApplication
+//   - Size: 149 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IModel",{events:{changeModel:"qx.event.type.Data"},
-members:{setModel:function(){},
-getModel:function(){},
-resetModel:function(){}}});
-
-
-// qx.ui.form.INumberForm
-//   - Size: 198 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.INumberForm",{events:{changeValue:"qx.event.type.Data"},
-members:{setValue:function(){return arguments.length==1},
-resetValue:function(){},
-getValue:function(){}}});
+qx.Interface.define("qx.application.IApplication",{members:{main:function(){},
+finalize:function(){},
+close:function(){},
+terminate:function(){}}});
 
 
 // qx.ui.form.IModelSelection
@@ -9667,6 +8912,15 @@ getValue:function(){}}});
 //   - Modified: 2010-04-29T21:34:05
 qx.Interface.define("qx.ui.form.IModelSelection",{members:{setModelSelection:function(){},
 getModelSelection:function(){}}});
+
+
+// qx.ui.form.IModel
+//   - Size: 167 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IModel",{events:{changeModel:"qx.event.type.Data"},
+members:{setModel:function(){},
+getModel:function(){},
+resetModel:function(){}}});
 
 
 // qx.ui.form.IRange
@@ -9682,6 +8936,78 @@ setPageStep:function(){return arguments.length==1},
 getPageStep:function(){}}});
 
 
+// qx.ui.core.ISingleSelection
+//   - Size: 389 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Interface.define("qx.ui.core.ISingleSelection",{events:{changeSelection:"qx.event.type.Data"},
+members:{getSelection:function(){return true},
+setSelection:function(){return arguments.length==1},
+resetSelection:function(){return true},
+isSelected:function(){return arguments.length==1},
+isSelectionEmpty:function(){return true},
+getSelectables:function(){return arguments.length==1}}});
+
+
+// qx.ui.table.IColumnMenuButton
+//   - Size: 151 bytes
+//   - Modified: 2010-10-13T17:38:57
+qx.Interface.define("qx.ui.table.IColumnMenuButton",{properties:{menu:{}},
+members:{factory:function(){return true},
+empty:function(){return true}}});
+
+
+// qx.ui.core.ISingleSelectionProvider
+//   - Size: 125 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.core.ISingleSelectionProvider",{members:{getItems:function(){},
+isItemSelectable:function(){}}});
+
+
+// qx.ui.table.IColumnMenuItem
+//   - Size: 123 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.table.IColumnMenuItem",{properties:{visible:{}},
+events:{changeVisible:"qx.event.type.Data"}});
+
+
+// qx.ui.table.IHeaderRenderer
+//   - Size: 147 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.table.IHeaderRenderer",{members:{createHeaderCell:function(){return true},
+updateHeaderCell:function(){return true}}});
+
+
+// qx.ui.table.IRowRenderer
+//   - Size: 182 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.table.IRowRenderer",{members:{updateDataRowElement:function(){},
+getRowHeightStyle:function(){},
+createRowStyle:function(){},
+getRowClass:function(){}}});
+
+
+// qx.util.format.IFormat
+//   - Size: 99 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.util.format.IFormat",{members:{format:function(){},
+parse:function(){}}});
+
+
+// qx.ui.form.INumberForm
+//   - Size: 198 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.INumberForm",{events:{changeValue:"qx.event.type.Data"},
+members:{setValue:function(){return arguments.length==1},
+resetValue:function(){},
+getValue:function(){}}});
+
+
+// qx.ui.table.ICellRenderer
+//   - Size: 105 bytes
+//   - Modified: 2010-07-17T16:42:24
+qx.Interface.define("qx.ui.table.ICellRenderer",{members:{createDataCellHtml:function(){return true}}});
+
+
 // qx.ui.core.scroll.IScrollBar
 //   - Size: 308 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -9695,48 +9021,35 @@ scrollBy:function(a){this.assertNumber(a)},
 scrollBySteps:function(a){this.assertNumber(a)}}});
 
 
-// qx.ui.core.ISingleSelection
-//   - Size: 389 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Interface.define("qx.ui.core.ISingleSelection",{events:{changeSelection:"qx.event.type.Data"},
-members:{getSelection:function(){return true},
-setSelection:function(){return arguments.length==1},
-resetSelection:function(){return true},
-isSelected:function(){return arguments.length==1},
-isSelectionEmpty:function(){return true},
-getSelectables:function(){return arguments.length==1}}});
-
-
-// apiviewer.Appearance
-//   - Size: 757 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Theme.define("apiviewer.Appearance",{title:"Theme for API Viewer",
-extend:qx.theme.Appearance,
-appearances:{toggleview:{style:function(){return{width:240,
-decorator:"main"}}},
-detailviewer:{style:function(){return{backgroundColor:"white",
-decorator:"main"}}},
-legend:{include:"scrollarea",
-alias:"scrollarea",
-style:function(){return{contentPadding:[10,10,10,10]}}},
-"legendview-label-important":{style:function(){return{textColor:"#134275",
-font:"bold"}}},
-"legendview-label":{style:function(){return{textColor:"#134275"}}},
-tabview:{style:function(){return{contentPadding:0}}},
-"tabview/pane":{style:function(a){return{minHeight:100,
-marginBottom:a.barBottom?-1:0,
-marginTop:a.barTop?-1:0,
-marginLeft:a.barLeft?-1:0,
-marginRight:a.barRight?-1:0}}}}});
-
-
-// qx.application.IApplication
-//   - Size: 149 bytes
+// qx.ui.table.ICellEditorFactory
+//   - Size: 152 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.application.IApplication",{members:{main:function(){},
-finalize:function(){},
-close:function(){},
-terminate:function(){}}});
+qx.Interface.define("qx.ui.table.ICellEditorFactory",{members:{createCellEditor:function(){return true},
+getCellEditorValue:function(){return true}}});
+
+
+// qx.ui.table.ITableModel
+//   - Size: 616 bytes
+//   - Modified: 2010-08-26T21:43:54
+qx.Interface.define("qx.ui.table.ITableModel",{events:{dataChanged:"qx.event.type.Data",
+metaDataChanged:"qx.event.type.Event",
+sorted:"qx.event.type.Data"},
+members:{getRowCount:function(){},
+getRowData:function(){},
+getColumnCount:function(){},
+getColumnId:function(){},
+getColumnIndexById:function(){},
+getColumnName:function(){},
+isColumnEditable:function(){},
+isColumnSortable:function(){},
+sortByColumn:function(){},
+getSortColumnIndex:function(){},
+isSortAscending:function(){},
+prefetchRows:function(){},
+getValue:function(){},
+getValueById:function(){},
+setValue:function(){},
+setValueById:function(){}}});
 
 
 // qx.ui.core.IMultiSelection
@@ -9746,36 +9059,6 @@ qx.Interface.define("qx.ui.core.IMultiSelection",{extend:qx.ui.core.ISingleSelec
 members:{selectAll:function(){return true},
 addToSelection:function(){return arguments.length==1},
 removeFromSelection:function(){return arguments.length==1}}});
-
-
-// qx.util.StringEscape
-//   - Size: 574 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.util.StringEscape",{statics:{escape:function(d,g){for(var b,e="",c=0,h=d.length,f,a;
-c<h;
-c++)f=d.charAt(c),a=f.charCodeAt(0),b=g[a]?"&"+g[a]+";":a>0x7F?"&#"+a+";":f,e+=b;
-return e},
-unescape:function(b,a){return b.replace(/&[#\w]+;/gi,function(b){var d=b,b=b.substring(1,b.length-1),c=a[b];
-c?d=String.fromCharCode(c):b.charAt(0)=="#"&&(b.charAt(1).toUpperCase()=="X"?(c=b.substring(2),c.match(/^[0-9A-Fa-f]+$/gi)&&(d=String.fromCharCode(parseInt(c,16)))):(c=b.substring(1),c.match(/^\d+$/gi)&&(d=String.fromCharCode(parseInt(c,10)))));
-return d})}}});
-
-
-// qx.bom.element2.Clip
-//   - Size: 367 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Class.define("qx.bom.element2.Clip",{statics:{compileValue:function(c){if(!c)return"rect(auto,auto,auto,auto)";
-var a=c.left,b=c.top,e=c.width,d=c.height,g,f;
-a==null?(g=e==null?"auto":e+"px",a="auto"):(g=e==null?"auto":a+e+"px",a=a+"px");
-b==null?(f=d==null?"auto":d+"px",b="auto"):(f=d==null?"auto":b+d+"px",b=b+"px");
-return"rect("+b+","+g+","+f+","+a+")"}}});
-
-
-// qx.lang.Number
-//   - Size: 204 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.lang.Number",{statics:{isInRange:function(a,b,c){return a>=b&&a<=c},
-isBetweenRange:function(a,b,c){return a>b&&a<c},
-limit:function(b,a,c){return c!=null&&b>c?c:a!=null&&b<a?a:b}}});
 
 
 // qx.log.appender.Util
@@ -9828,29 +9111,29 @@ f++)e.push(b[f].text);
 d.type==="map"?c.push("{",e.join(", "),"}"):c.push("[",e.join(", "),"]")}else c.push(b)}return c}}});
 
 
-// apiviewer.ObjectRegistry
-//   - Size: 212 bytes
+// qx.lang.Number
+//   - Size: 204 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ObjectRegistry",{statics:{__yALNM:{},
-register:function(a){var b=qx.core.ObjectRegistry.toHashCode(a);
-this.__yALNM[b]=a},
-getObjectFromHashCode:function(a){return this.__yALNM[a]}}});
+qx.Class.define("qx.lang.Number",{statics:{isInRange:function(a,b,c){return a>=b&&a<=c},
+isBetweenRange:function(a,b,c){return a>b&&a<c},
+limit:function(b,a,c){return c!=null&&b>c?c:a!=null&&b<a?a:b}}});
 
 
-// qx.bom.client.Transport
-//   - Size: 357 bytes
+// qx.util.StringEscape
+//   - Size: 574 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.bom.client.Transport",{statics:{getMaxConcurrentRequestCount:function(){var b,d=qx.bom.client.Engine,a=d.FULLVERSION.split("."),c=0,e=0,f=0;
-a[0]&&(c=a[0]);
-a[1]&&(e=a[1]);
-a[2]&&(f=a[2]);
-b=window.maxConnectionsPerServer?window.maxConnectionsPerServer:d.OPERA?8:d.WEBKIT?4:d.GECKO&&(c>1||c==1&&e>9||c==1&&e==9&&f>=1)?6:2;
-return b}}});
+qx.Class.define("qx.util.StringEscape",{statics:{escape:function(d,g){for(var b,e="",c=0,h=d.length,f,a;
+c<h;
+c++)f=d.charAt(c),a=f.charCodeAt(0),b=g[a]?"&"+g[a]+";":a>0x7F?"&#"+a+";":f,e+=b;
+return e},
+unescape:function(b,a){return b.replace(/&[#\w]+;/gi,function(b){var d=b,b=b.substring(1,b.length-1),c=a[b];
+c?d=String.fromCharCode(c):b.charAt(0)=="#"&&(b.charAt(1).toUpperCase()=="X"?(c=b.substring(2),c.match(/^[0-9A-Fa-f]+$/gi)&&(d=String.fromCharCode(parseInt(c,16)))):(c=b.substring(1),c.match(/^\d+$/gi)&&(d=String.fromCharCode(parseInt(c,10)))));
+return d})}}});
 
 
 // qx.type.BaseArray
 //   - Size: 1948 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.type.BaseArray",{extend:Array,
 construct:function(){},
 members:{toArray:null,
@@ -9907,6 +9190,26 @@ a.prototype.length=0;
 qx.type.BaseArray=c(a)})();
 
 
+// apiviewer.ObjectRegistry
+//   - Size: 212 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("apiviewer.ObjectRegistry",{statics:{__yALNM:{},
+register:function(a){var b=qx.core.ObjectRegistry.toHashCode(a);
+this.__yALNM[b]=a},
+getObjectFromHashCode:function(a){return this.__yALNM[a]}}});
+
+
+// qx.bom.client.Transport
+//   - Size: 357 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.bom.client.Transport",{statics:{getMaxConcurrentRequestCount:function(){var b,d=qx.bom.client.Engine,a=d.FULLVERSION.split("."),c=0,e=0,f=0;
+a[0]&&(c=a[0]);
+a[1]&&(e=a[1]);
+a[2]&&(f=a[2]);
+b=window.maxConnectionsPerServer?window.maxConnectionsPerServer:d.OPERA?8:d.WEBKIT?4:d.GECKO&&(c>1||c==1&&e>9||c==1&&e==9&&f>=1)?6:2;
+return b}}});
+
+
 // qx.util.StringBuilder
 //   - Size: 320 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -9919,368 +9222,6 @@ size:function(){return this.join("").length}},
 defer:function(b,a){a.add=a.push;
 a.toString=a.get;
 a.valueOf=a.get}});
-
-
-// qx.theme.Font
-//   - Size: 1113 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Theme.define("qx.theme.Font",{fonts:{"default":{size:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?12:11,
-lineHeight:1.4,
-family:qx.bom.client.Platform.MAC?["Lucida Grande"]:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?["Segoe UI","Candara"]:["Tahoma","Liberation Sans","Arial","sans-serif"]},
-bold:{size:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?12:11,
-lineHeight:1.4,
-family:qx.bom.client.Platform.MAC?["Lucida Grande"]:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?["Segoe UI","Candara"]:["Tahoma","Liberation Sans","Arial","sans-serif"],
-bold:true},
-small:{size:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?11:10,
-lineHeight:1.4,
-family:qx.bom.client.Platform.MAC?["Lucida Grande"]:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?["Segoe UI","Candara"]:["Tahoma","Liberation Sans","Arial","sans-serif"]},
-monospace:{size:11,
-lineHeight:1.4,
-family:qx.bom.client.Platform.MAC?["Lucida Console","Monaco"]:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?["Consolas"]:["Consolas","DejaVu Sans Mono","Courier New","monospace"]}}});
-
-
-// qx.log.appender.Native
-//   - Size: 275 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Class.define("qx.log.appender.Native",{statics:{process:function(c){var b=window.debug||window.console||window.air&&window.air.Introspector.Console,a;
-b&&(a=c.level,a in b||(a="log"),b[a](qx.log.appender.Util.toText(c)))}},
-defer:function(a){qx.log.Logger.register(a)}});
-
-
-// apiviewer.TreeUtil
-//   - Size: 5289 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("apiviewer.TreeUtil",{extend:qx.core.Object,
-construct:function(){this.base(arguments)},
-statics:{getChild:function(a,c){if(a!=null&&a.children!=null)for(var b=0;
-b<a.children.length;
-b++)if(a.children[b].type==c)return a.children[b];
-return null},
-getChildByAttribute:function(b,e,d){if(b.children!=null)for(var c=0,a;
-c<b.children.length;
-c++){a=b.children[c];
-if(a.attributes&&a.attributes[e]==d)return a}return null},
-getIconUrl:function(a,d){var b,c=apiviewer.dao;
-if(a instanceof c.Package)b="ICON_PACKAGE";
-else if(a instanceof c.Class)switch(a.getType()){case"mixin":b="ICON_MIXIN";
-break;
-case"interface":b="ICON_INTERFACE";
-break;
-default:b="ICON_CLASS",a.isStatic()?b+="_STATIC":a.isAbstract()?b+="_ABSTRACT":a.isSingleton()&&(b+="_SINGLETON")}else if(a instanceof c.Property)b="ICON_PROPERTY",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV"),a.isThemeable()&&(b+="_THEMEABLE");
-else if(a instanceof c.Event)b="ICON_EVENT";
-else if(a instanceof c.Method)a.isConstructor()?b="ICON_CTOR":(b="ICON_METHOD",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV")),a.isStatic()?b+="_STATIC":a.isAbstract()&&(b+="_ABSTRACT"),a.getClass().getType()=="mixin"&&(b+="_MIXIN");
-else if(a instanceof c.Constant)b="ICON_CONSTANT";
-else if(a instanceof c.Appearance)b="ICON_APPEARANCE";
-else if(a instanceof c.ChildControl)b="ICON_CHILDCONTROL";
-else throw new Error("Unknown node type: "+a.type);
-a instanceof c.ClassItem&&(d?b+="_INHERITED":a.getOverriddenFrom&&a.getOverriddenFrom()&&(b+="_OVERRIDDEN"),a.getErrors().length>0&&(b+="_ERROR"));
-a.hasWarning()&&(b+="_WARN");
-return apiviewer.TreeUtil.iconNameToIconPath(b)},
-iconNameToIconPath:function(f){var b=apiviewer.TreeUtil[f],a,d,e,c,g;
-if(!b){a=f.split("_"),d=a[0]+"_"+a[1];
-a[2]=="PUB"||a[2]=="PROT"||a[2]=="PRIV"?(d+="_"+a[2],e=3):e=2;
-b=[apiviewer.TreeUtil[d]];
-if(b[0]==null)throw new Error("Unknown img constant: "+d);
-for(c=e;
-c<a.length;
-c++){g=apiviewer.TreeUtil["OVERLAY_"+a[c]];
-if(g==null)throw new Error("Unknown img constant: OVERLAY_"+a[c]);
-b.push(g)}}return b},
-ICON_BLANK:"apiviewer/image/blank.gif",
-OVERLAY_ABSTRACT:"apiviewer/image/overlay_abstract18.gif",
-OVERLAY_ERROR:"apiviewer/image/overlay_error18.gif",
-OVERLAY_INHERITED:"apiviewer/image/overlay_inherited18.gif",
-OVERLAY_OVERRIDDEN:"apiviewer/image/overlay_overridden18.gif",
-OVERLAY_THEMEABLE:"apiviewer/image/overlay_themeable18.gif",
-OVERLAY_STATIC:"apiviewer/image/overlay_static18.gif",
-OVERLAY_WARN:"apiviewer/image/overlay_warning18.gif",
-OVERLAY_MIXIN:"apiviewer/image/overlay_mixin18.gif",
-ICON_PACKAGE:"apiviewer/image/package18.gif",
-ICON_PACKAGE_WARN:"apiviewer/image/package_warning18.gif",
-ICON_CLASS:"apiviewer/image/class18.gif",
-ICON_CLASS_WARN:"apiviewer/image/class_warning18.gif",
-ICON_CLASS_ERROR:"apiviewer/image/class_warning18.gif",
-ICON_CLASS_STATIC:"apiviewer/image/class_static18.gif",
-ICON_CLASS_STATIC_WARN:"apiviewer/image/class_static_warning18.gif",
-ICON_CLASS_STATIC_ERROR:"apiviewer/image/class_static_warning18.gif",
-ICON_CLASS_ABSTRACT:"apiviewer/image/class_abstract18.gif",
-ICON_CLASS_ABSTRACT_WARN:"apiviewer/image/class_abstract_warning18.gif",
-ICON_CLASS_ABSTRACT_ERROR:"apiviewer/image/class_abstract_warning18.gif",
-ICON_CLASS_SINGLETON:"apiviewer/image/class_singleton18.gif",
-ICON_CLASS_SINGLETON_WARN:"apiviewer/image/class_singleton_warning18.gif",
-ICON_CLASS_SINGLETON_ERROR:"apiviewer/image/class_singleton_warning18.gif",
-ICON_PROPERTY_PUB:"apiviewer/image/property18.gif",
-ICON_PROPERTY_PROT:"apiviewer/image/property_protected18.gif",
-ICON_PROPERTY_PRIV:"apiviewer/image/property_private18.gif",
-ICON_PROPERTY_PUB_THEMEABLE:"apiviewer/image/property_themeable18.gif",
-ICON_EVENT:"apiviewer/image/event18.gif",
-ICON_INTERFACE:"apiviewer/image/interface18.gif",
-ICON_INTERFACE_WARN:"apiviewer/image/interface_warning18.gif",
-ICON_MIXIN:"apiviewer/image/mixin18.gif",
-ICON_MIXIN_WARN:"apiviewer/image/mixin_warning18.gif",
-ICON_METHOD_PUB:"apiviewer/image/method_public18.gif",
-ICON_METHOD_PUB_INHERITED:"apiviewer/image/method_public_inherited18.gif",
-ICON_CTOR:"apiviewer/image/constructor18.gif",
-ICON_METHOD_PROT:"apiviewer/image/method_protected18.gif",
-ICON_METHOD_PRIV:"apiviewer/image/method_private18.gif",
-ICON_CONSTANT:"apiviewer/image/constant18.gif",
-ICON_APPEARANCE:"apiviewer/image/constant18.gif",
-ICON_CHILDCONTROL:"apiviewer/image/childcontrol18.gif"},
-defer:function(a){a.PRELOAD_IMAGES=[a.ICON_INFO,a.ICON_SEARCH,a.OVERLAY_ABSTRACT,a.OVERLAY_ERROR,a.OVERLAY_INHERITED,a.OVERLAY_OVERRIDDEN,a.OVERLAY_STATIC,a.OVERLAY_WARN,a.OVERLAY_MIXIN,a.OVERLAY_THEMEABLE,a.ICON_PACKAGE,a.ICON_PACKAGE_WARN,a.ICON_CLASS,a.ICON_CLASS_WARN,a.ICON_CLASS_ERROR,a.ICON_CLASS_STATIC,a.ICON_CLASS_STATIC_WARN,a.ICON_CLASS_STATIC_ERROR,a.ICON_CLASS_ABSTRACT,a.ICON_CLASS_ABSTRACT_WARN,a.ICON_CLASS_ABSTRACT_ERROR,a.ICON_CLASS_SINGLETON,a.ICON_CLASS_SINGLETON_WARN,a.ICON_CLASS_SINGLETON_ERROR,a.ICON_PROPERTY_PUB,a.ICON_PROPERTY_PROT,a.ICON_PROPERTY_PRIV,a.ICON_PROPERTY_PUB_THEMEABLE,a.ICON_EVENT,a.ICON_INTERFACE,a.ICON_INTERFACE_WARN,a.ICON_MIXIN,a.ICON_MIXIN_WARN,a.ICON_METHOD_PUB,a.ICON_METHOD_PUB_INHERITED,a.ICON_CTOR,a.ICON_METHOD_PROT,a.ICON_METHOD_PRIV,a.ICON_CONSTANT,a.ICON_CHILDCONTROL]}});
-
-
-// qx.ui.table.columnmodel.resizebehavior.Abstract
-//   - Size: 872 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.columnmodel.resizebehavior.Abstract",{type:"abstract",
-extend:qx.core.Object,
-members:{_setNumColumns:function(){throw new Error("_setNumColumns is abstract")},
-onAppear:function(){throw new Error("onAppear is abstract")},
-onTableWidthChanged:function(){throw new Error("onTableWidthChanged is abstract")},
-onVerticalScrollBarChanged:function(){throw new Error("onVerticalScrollBarChanged is abstract")},
-onColumnWidthChanged:function(){throw new Error("onColumnWidthChanged is abstract")},
-onVisibilityChanged:function(){throw new Error("onVisibilityChanged is abstract")},
-_getAvailableWidth:function(){var e=this.getTableColumnModel(),c=e.getTable(),a=c._getPaneScrollerArr(),b,d;
-if(!a[0]||!a[0].getLayoutParent().getBounds())return null;
-b=a[0].getLayoutParent().getBounds().width,d=a[a.length-1];
-b-=d.getPaneInsetRight();
-return b}}});
-
-
-// qx.ui.table.pane.Model
-//   - Size: 1709 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.pane.Model",{extend:qx.core.Object,
-construct:function(a){this.base(arguments);
-a.addListener("visibilityChangedPre",this._onColVisibilityChanged,this);
-this.__boH5Jq=a},
-events:{modelChanged:"qx.event.type.Event"},
-statics:{EVENT_TYPE_MODEL_CHANGED:"modelChanged"},
-properties:{firstColumnX:{check:"Integer",
-init:0,
-apply:"_applyFirstColumnX"},
-maxColumnCount:{check:"Number",
-init:-1,
-apply:"_applyMaxColumnCount"}},
-members:{__PMBsU:null,
-__boH5Jq:null,
-_applyFirstColumnX:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-_applyMaxColumnCount:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-setTableColumnModel:function(a){this.__boH5Jq=a;
-this.__PMBsU=null},
-_onColVisibilityChanged:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-getColumnCount:function(){if(this.__PMBsU==null){var c=this.getFirstColumnX(),a=this.getMaxColumnCount(),b=this.__boH5Jq.getVisibleColumnCount();
-this.__PMBsU=a==-1||c+a>b?b-c:a}return this.__PMBsU},
-getColumnAtX:function(a){var b=this.getFirstColumnX();
-return this.__boH5Jq.getVisibleColumnAtX(b+a)},
-getX:function(c){var d=this.getFirstColumnX(),b=this.getMaxColumnCount(),a=this.__boH5Jq.getVisibleX(c)-d;
-return a>=0&&(b==-1||a<b)?a:-1},
-getColumnLeft:function(d){for(var c=0,e=this.getColumnCount(),a=0,b;
-a<e;
-a++){b=this.getColumnAtX(a);
-if(b==d)return c;
-c+=this.__boH5Jq.getColumnWidth(b)}return-1},
-getTotalWidth:function(){for(var b=0,d=this.getColumnCount(),a=0,c;
-a<d;
-a++)c=this.getColumnAtX(a),b+=this.__boH5Jq.getColumnWidth(c);
-return b}},
-destruct:function(){this.__boH5Jq=null}});
-
-
-// qx.ui.table.selection.Model
-//   - Size: 4221 bytes
-//   - Modified: 2010-09-30T14:20:20
-qx.Class.define("qx.ui.table.selection.Model",{extend:qx.core.Object,
-construct:function(){this.base(arguments);
-this.__bo6y46=[];
-this.__b0yNdI=-1;
-this.__bFyKAh=-1;
-this.hasBatchModeRefCount=0;
-this.__cNnwDS=false},
-events:{changeSelection:"qx.event.type.Event"},
-statics:{NO_SELECTION:1,
-SINGLE_SELECTION:2,
-SINGLE_INTERVAL_SELECTION:3,
-MULTIPLE_INTERVAL_SELECTION:4,
-MULTIPLE_INTERVAL_SELECTION_TOGGLE:5},
-properties:{selectionMode:{init:2,
-check:[1,2,3,4,5],
-apply:"_applySelectionMode"}},
-members:{__cNnwDS:null,
-__b0yNdI:null,
-__bFyKAh:null,
-__bo6y46:null,
-_applySelectionMode:function(){this.resetSelection()},
-setBatchMode:function(a){if(a)this.hasBatchModeRefCount+=1;
-else{if(this.hasBatchModeRefCount==0)throw new Error("Try to turn off batch mode althoug it was not turned on.");
-this.hasBatchModeRefCount-=1;
-this.__cNnwDS&&(this.__cNnwDS=false,this._fireChangeSelection())}return this.hasBatchMode()},
-hasBatchMode:function(){return this.hasBatchModeRefCount>0},
-getAnchorSelectionIndex:function(){return this.__b0yNdI},
-_setAnchorSelectionIndex:function(a){this.__b0yNdI=a},
-getLeadSelectionIndex:function(){return this.__bFyKAh},
-_setLeadSelectionIndex:function(a){this.__bFyKAh=a},
-_getSelectedRangeArr:function(){return this.__bo6y46},
-resetSelection:function(){this.isSelectionEmpty()||(this._resetSelection(),this._fireChangeSelection())},
-isSelectionEmpty:function(){return this.__bo6y46.length==0},
-getSelectedCount:function(){for(var b=0,a=0,c;
-a<this.__bo6y46.length;
-a++)c=this.__bo6y46[a],b+=c.maxIndex-c.minIndex+1;
-return b},
-isSelectedIndex:function(c){for(var a=0,b;
-a<this.__bo6y46.length;
-a++){b=this.__bo6y46[a];
-if(c>=b.minIndex&&c<=b.maxIndex)return true}return false},
-getSelectedRanges:function(){for(var b=[],a=0;
-a<this.__bo6y46.length;
-a++)b.push({minIndex:this.__bo6y46[a].minIndex,
-maxIndex:this.__bo6y46[a].maxIndex});
-return b},
-iterateSelection:function(c,d){for(var a=0,b;
-a<this.__bo6y46.length;
-a++)for(b=this.__bo6y46[a].minIndex;
-b<=this.__bo6y46[a].maxIndex;
-b++)c.call(d,b)},
-setSelectionInterval:function(c,b){var d=this.self(arguments),a;
-switch(this.getSelectionMode()){case d.NO_SELECTION:return;
-case d.SINGLE_SELECTION:if(this.isSelectedIndex(b))return;
-c=b;
-break;
-case d.MULTIPLE_INTERVAL_SELECTION_TOGGLE:this.setBatchMode(true);
-try{for(a=c;
-a<=b;
-a++)this.isSelectedIndex(a)?this.removeSelectionInterval(a,a):this._addSelectionInterval(a,a)}catch(e){throw e}finally{this.setBatchMode(false)};
-this._fireChangeSelection();
-return}this._resetSelection();
-this._addSelectionInterval(c,b);
-this._fireChangeSelection()},
-addSelectionInterval:function(b,c){var a=qx.ui.table.selection.Model;
-switch(this.getSelectionMode()){case a.NO_SELECTION:return;
-case a.MULTIPLE_INTERVAL_SELECTION:case a.MULTIPLE_INTERVAL_SELECTION_TOGGLE:this._addSelectionInterval(b,c);
-this._fireChangeSelection();
-break;
-default:this.setSelectionInterval(b,c);
-break}},
-removeSelectionInterval:function(e,f){this.__b0yNdI=e;
-this.__bFyKAh=f;
-for(var d=Math.min(e,f),c=Math.max(e,f),b=0,a,g,h,i;
-b<this.__bo6y46.length;
-b++){a=this.__bo6y46[b];
-if(a.minIndex>c)break;
-else if(a.maxIndex>=d){g=a.minIndex>=d&&a.minIndex<=c,h=a.maxIndex>=d&&a.maxIndex<=c;
-if(g&&h)this.__bo6y46.splice(b,1),b--;
-else if(g)a.minIndex=c+1;
-else if(h)a.maxIndex=d-1;
-else{i={minIndex:c+1,
-maxIndex:a.maxIndex};
-this.__bo6y46.splice(b+1,0,i);
-a.maxIndex=d-1;
-break}}}this._fireChangeSelection()},
-_resetSelection:function(){this.__bo6y46=[];
-this.__b0yNdI=-1;
-this.__bFyKAh=-1},
-_addSelectionInterval:function(e,f){this.__b0yNdI=e;
-this.__bFyKAh=f;
-for(var g=Math.min(e,f),h=Math.max(e,f),d=0,c,b,a;
-d<this.__bo6y46.length;
-d++){c=this.__bo6y46[d];
-if(c.minIndex>g)break}this.__bo6y46.splice(d,0,{minIndex:g,
-maxIndex:h});
-b=this.__bo6y46[0],a=1;
-for(;
-a<this.__bo6y46.length;
-a++)c=this.__bo6y46[a],b.maxIndex+1>=c.minIndex?(b.maxIndex=Math.max(b.maxIndex,c.maxIndex),this.__bo6y46.splice(a,1),a--):b=c},
-_dumpRanges:function(){for(var c="Ranges:",a=0,b;
-a<this.__bo6y46.length;
-a++)b=this.__bo6y46[a],c+=" ["+b.minIndex+".."+b.maxIndex+"]";
-this.debug(c)},
-_fireChangeSelection:function(){this.hasBatchMode()?this.__cNnwDS=true:this.fireEvent("changeSelection")}},
-destruct:function(){this.__bo6y46=null}});
-
-
-// qx.io.remote.transport.Abstract
-//   - Size: 2772 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.io.remote.transport.Abstract",{type:"abstract",
-extend:qx.core.Object,
-construct:function(){this.base(arguments);
-this.setRequestHeaders({});
-this.setParameters({});
-this.setFormFields({})},
-events:{created:"qx.event.type.Event",
-configured:"qx.event.type.Event",
-sending:"qx.event.type.Event",
-receiving:"qx.event.type.Event",
-completed:"qx.event.type.Event",
-aborted:"qx.event.type.Event",
-failed:"qx.event.type.Event",
-timeout:"qx.event.type.Event"},
-properties:{url:{check:"String",
-nullable:true},
-method:{check:"String",
-nullable:true,
-init:"GET"},
-asynchronous:{check:"Boolean",
-nullable:true,
-init:true},
-data:{check:"String",
-nullable:true},
-username:{check:"String",
-nullable:true},
-password:{check:"String",
-nullable:true},
-state:{check:["created","configured","sending","receiving","completed","aborted","timeout","failed"],
-init:"created",
-event:"changeState",
-apply:"_applyState"},
-requestHeaders:{check:"Object",
-nullable:true},
-parameters:{check:"Object",
-nullable:true},
-formFields:{check:"Object",
-nullable:true},
-responseType:{check:"String",
-nullable:true},
-useBasicHttpAuth:{check:"Boolean",
-nullable:true}},
-members:{send:function(){throw new Error("send is abstract")},
-abort:function(){qx.core.Setting.get("qx.ioRemoteDebug")&&this.warn("Aborting...");
-this.setState("aborted")},
-timeout:function(){qx.core.Setting.get("qx.ioRemoteDebug")&&this.warn("Timeout...");
-this.setState("timeout")},
-failed:function(){qx.core.Setting.get("qx.ioRemoteDebug")&&this.warn("Failed...");
-this.setState("failed")},
-setRequestHeader:function(){throw new Error("setRequestHeader is abstract")},
-getResponseHeader:function(){throw new Error("getResponseHeader is abstract")},
-getResponseHeaders:function(){throw new Error("getResponseHeaders is abstract")},
-getStatusCode:function(){throw new Error("getStatusCode is abstract")},
-getStatusText:function(){throw new Error("getStatusText is abstract")},
-getResponseText:function(){throw new Error("getResponseText is abstract")},
-getResponseXml:function(){throw new Error("getResponseXml is abstract")},
-getFetchedLength:function(){throw new Error("getFetchedLength is abstract")},
-_applyState:function(a){qx.core.Setting.get("qx.ioRemoteDebug")&&this.debug("State: "+a);
-switch(a){case"created":this.fireEvent("created");
-break;
-case"configured":this.fireEvent("configured");
-break;
-case"sending":this.fireEvent("sending");
-break;
-case"receiving":this.fireEvent("receiving");
-break;
-case"completed":this.fireEvent("completed");
-break;
-case"aborted":this.fireEvent("aborted");
-break;
-case"failed":this.fireEvent("failed");
-break;
-case"timeout":this.fireEvent("timeout");
-break}return true}},
-destruct:function(){this.setRequestHeaders(null);
-this.setParameters(null);
-this.setFormFields(null)}});
 
 
 // qx.bom.String
@@ -10546,115 +9487,258 @@ toText:function(a){return qx.bom.String.unescape(a.replace(/\s+|<([^>])+>/gi,fun
 defer:function(a){a.FROM_CHARCODE=qx.lang.Object.invert(a.TO_CHARCODE)}});
 
 
-// qx.ui.table.celleditor.AbstractField
-//   - Size: 696 bytes
+// qx.ui.table.columnmodel.resizebehavior.Abstract
+//   - Size: 872 bytes
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.celleditor.AbstractField",{extend:qx.core.Object,
-implement:qx.ui.table.ICellEditorFactory,
-type:"abstract",
-properties:{validationFunction:{check:"Function",
-nullable:true,
-init:null}},
-members:{_createEditor:function(){throw new Error("Abstract method call!")},
-createCellEditor:function(b){var a=this._createEditor();
-a.originalValue=b.value;
-(b.value===null||b.value===undefined)&&(b.value="");
-a.setValue(""+b.value);
-a.addListener("appear",function(){a.selectAllText()});
-return a},
-getCellEditorValue:function(b){var a=b.getValue(),c=this.getValidationFunction();
-c&&(a=c(a,b.originalValue));
-typeof b.originalValue=="number"&&(a=parseFloat(a));
-return a}}});
+qx.Class.define("qx.ui.table.columnmodel.resizebehavior.Abstract",{type:"abstract",
+extend:qx.core.Object,
+members:{_setNumColumns:function(){throw new Error("_setNumColumns is abstract")},
+onAppear:function(){throw new Error("onAppear is abstract")},
+onTableWidthChanged:function(){throw new Error("onTableWidthChanged is abstract")},
+onVerticalScrollBarChanged:function(){throw new Error("onVerticalScrollBarChanged is abstract")},
+onColumnWidthChanged:function(){throw new Error("onColumnWidthChanged is abstract")},
+onVisibilityChanged:function(){throw new Error("onVisibilityChanged is abstract")},
+_getAvailableWidth:function(){var e=this.getTableColumnModel(),c=e.getTable(),a=c._getPaneScrollerArr(),b,d;
+if(!a[0]||!a[0].getLayoutParent().getBounds())return null;
+b=a[0].getLayoutParent().getBounds().width,d=a[a.length-1];
+b-=d.getPaneInsetRight();
+return b}}});
 
 
-// qx.ui.core.SingleSelectionManager
-//   - Size: 1641 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Class.define("qx.ui.core.SingleSelectionManager",{extend:qx.core.Object,
-construct:function(a){this.base(arguments);
-qx.core.Assert.assertInterface(a,qx.ui.core.ISingleSelectionProvider,"Invalid selectionProvider!");
-this.__bzZEce=a},
-events:{changeSelected:"qx.event.type.Data"},
-properties:{allowEmptySelection:{check:"Boolean",
-init:true,
-apply:"_applyAllowEmptySelection"}},
-members:{__zbljM:null,
-__bzZEce:null,
-getSelected:function(){return this.__zbljM},
-setSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not select "+a+", because it is not a child element!");
-this.__PjbdU(a)},
-resetSelected:function(){this.__PjbdU(null)},
-isSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not check if "+a+" is selected,"+" because it is not a child element!");
-return this.__zbljM===a},
-isSelectionEmpty:function(){return this.__zbljM==null},
-getSelectables:function(d){for(var c=this.__bzZEce.getItems(),b=[],a=0;
-a<c.length;
-a++)this.__bzZEce.isItemSelectable(c[a])&&b.push(c[a]);
-if(!d)for(a=b.length-1;
-a>=0;
-a--)b[a].getEnabled()||b.splice(a,1);
-return b},
-_applyAllowEmptySelection:function(a){a||this.__PjbdU(this.__zbljM)},
-__PjbdU:function(d){var b=this.__zbljM,a=d,c;
-if(a!=null&&b===a)return;
-!this.isAllowEmptySelection()&&a==null&&(c=this.getSelectables(true)[0],c&&(a=c));
-this.__zbljM=a;
-this.fireDataEvent("changeSelected",a,b)},
-__7CRhB:function(c){for(var b=this.__bzZEce.getItems(),a=0;
-a<b.length;
-a++)if(b[a]===c)return true;
-return false}},
-destruct:function(){this.__bzZEce.toHashCode?this._disposeObjects("__selectionProvider"):this.__bzZEce=null;
-this._disposeObjects("__selected")}});
-
-
-// qx.data.marshal.MEventBubbling
-//   - Size: 1181 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.data.marshal.MEventBubbling",{events:{changeBubble:"qx.event.type.Data"},
-members:{_applyEventPropagation:function(a,c,b){this.fireDataEvent("changeBubble",{value:a,
-name:b,
-old:c});
-this._registerEventChaining(a,c,b)},
-_registerEventChaining:function(b,a,d){if(b instanceof qx.core.Object&&qx.Class.hasMixin(b.constructor,qx.data.marshal.MEventBubbling)){var e=qx.lang.Function.bind(this.__cmTSDc,this,d),c=b.addListener("changeBubble",e,this);
-b.setUserData("idBubble",c)}a!=null&&a.getUserData&&a.getUserData("idBubble")!=null&&a.removeListenerById(a.getUserData("idBubble"))},
-__cmTSDc:function(c,f){var a=f.getData(),i=a.value,h=a.old,d,e,g,b,j;
-qx.Class.hasInterface(f.getTarget().constructor,qx.data.IListData)?a.name.indexOf?(d=a.name.indexOf(".")!=-1?a.name.indexOf("."):a.name.length,e=a.name.indexOf("[")!=-1?a.name.indexOf("["):a.name.length,d<e?(g=a.name.substring(0,d),b=a.name.substring(d+1,a.name.length),b[0]!="["&&(b="."+b),j=c+"["+g+"]"+b):e<d?(g=a.name.substring(0,e),b=a.name.substring(e,a.name.length),j=c+"["+g+"]"+b):j=c+"["+a.name+"]"):j=c+"["+a.name+"]":j=c+"."+a.name;
-this.fireDataEvent("changeBubble",{value:i,
-name:j,
-old:h})}}});
-
-
-// qx.event.AcceleratingTimer
-//   - Size: 946 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.AcceleratingTimer",{extend:qx.core.Object,
+// qx.ui.table.selection.Model
+//   - Size: 4221 bytes
+//   - Modified: 2010-09-30T14:20:20
+qx.Class.define("qx.ui.table.selection.Model",{extend:qx.core.Object,
 construct:function(){this.base(arguments);
-this.__mXur6=new qx.event.Timer(this.getInterval());
-this.__mXur6.addListener("interval",this._onInterval,this)},
-events:{interval:"qx.event.type.Event"},
-properties:{interval:{check:"Integer",
-init:100},
-firstInterval:{check:"Integer",
-init:500},
-minimum:{check:"Integer",
-init:20},
-decrease:{check:"Integer",
-init:2}},
-members:{__mXur6:null,
-__bjkOrP:null,
-start:function(){this.__mXur6.setInterval(this.getFirstInterval());
-this.__mXur6.start()},
-stop:function(){this.__mXur6.stop();
-this.__bjkOrP=null},
-_onInterval:function(){this.__mXur6.stop();
-this.__bjkOrP==null&&(this.__bjkOrP=this.getInterval());
-this.__bjkOrP=Math.max(this.getMinimum(),this.__bjkOrP-this.getDecrease());
-this.__mXur6.setInterval(this.__bjkOrP);
-this.__mXur6.start();
-this.fireEvent("interval")}},
-destruct:function(){this._disposeObjects("__timer")}});
+this.__bo6y46=[];
+this.__b0yNdI=-1;
+this.__bFyKAh=-1;
+this.hasBatchModeRefCount=0;
+this.__cNnwDS=false},
+events:{changeSelection:"qx.event.type.Event"},
+statics:{NO_SELECTION:1,
+SINGLE_SELECTION:2,
+SINGLE_INTERVAL_SELECTION:3,
+MULTIPLE_INTERVAL_SELECTION:4,
+MULTIPLE_INTERVAL_SELECTION_TOGGLE:5},
+properties:{selectionMode:{init:2,
+check:[1,2,3,4,5],
+apply:"_applySelectionMode"}},
+members:{__cNnwDS:null,
+__b0yNdI:null,
+__bFyKAh:null,
+__bo6y46:null,
+_applySelectionMode:function(){this.resetSelection()},
+setBatchMode:function(a){if(a)this.hasBatchModeRefCount+=1;
+else{if(this.hasBatchModeRefCount==0)throw new Error("Try to turn off batch mode althoug it was not turned on.");
+this.hasBatchModeRefCount-=1;
+this.__cNnwDS&&(this.__cNnwDS=false,this._fireChangeSelection())}return this.hasBatchMode()},
+hasBatchMode:function(){return this.hasBatchModeRefCount>0},
+getAnchorSelectionIndex:function(){return this.__b0yNdI},
+_setAnchorSelectionIndex:function(a){this.__b0yNdI=a},
+getLeadSelectionIndex:function(){return this.__bFyKAh},
+_setLeadSelectionIndex:function(a){this.__bFyKAh=a},
+_getSelectedRangeArr:function(){return this.__bo6y46},
+resetSelection:function(){this.isSelectionEmpty()||(this._resetSelection(),this._fireChangeSelection())},
+isSelectionEmpty:function(){return this.__bo6y46.length==0},
+getSelectedCount:function(){for(var b=0,a=0,c;
+a<this.__bo6y46.length;
+a++)c=this.__bo6y46[a],b+=c.maxIndex-c.minIndex+1;
+return b},
+isSelectedIndex:function(c){for(var a=0,b;
+a<this.__bo6y46.length;
+a++){b=this.__bo6y46[a];
+if(c>=b.minIndex&&c<=b.maxIndex)return true}return false},
+getSelectedRanges:function(){for(var b=[],a=0;
+a<this.__bo6y46.length;
+a++)b.push({minIndex:this.__bo6y46[a].minIndex,
+maxIndex:this.__bo6y46[a].maxIndex});
+return b},
+iterateSelection:function(c,d){for(var a=0,b;
+a<this.__bo6y46.length;
+a++)for(b=this.__bo6y46[a].minIndex;
+b<=this.__bo6y46[a].maxIndex;
+b++)c.call(d,b)},
+setSelectionInterval:function(c,b){var d=this.self(arguments),a;
+switch(this.getSelectionMode()){case d.NO_SELECTION:return;
+case d.SINGLE_SELECTION:if(this.isSelectedIndex(b))return;
+c=b;
+break;
+case d.MULTIPLE_INTERVAL_SELECTION_TOGGLE:this.setBatchMode(true);
+try{for(a=c;
+a<=b;
+a++)this.isSelectedIndex(a)?this.removeSelectionInterval(a,a):this._addSelectionInterval(a,a)}catch(e){throw e}finally{this.setBatchMode(false)};
+this._fireChangeSelection();
+return}this._resetSelection();
+this._addSelectionInterval(c,b);
+this._fireChangeSelection()},
+addSelectionInterval:function(b,c){var a=qx.ui.table.selection.Model;
+switch(this.getSelectionMode()){case a.NO_SELECTION:return;
+case a.MULTIPLE_INTERVAL_SELECTION:case a.MULTIPLE_INTERVAL_SELECTION_TOGGLE:this._addSelectionInterval(b,c);
+this._fireChangeSelection();
+break;
+default:this.setSelectionInterval(b,c);
+break}},
+removeSelectionInterval:function(e,f){this.__b0yNdI=e;
+this.__bFyKAh=f;
+for(var d=Math.min(e,f),c=Math.max(e,f),b=0,a,g,h,i;
+b<this.__bo6y46.length;
+b++){a=this.__bo6y46[b];
+if(a.minIndex>c)break;
+else if(a.maxIndex>=d){g=a.minIndex>=d&&a.minIndex<=c,h=a.maxIndex>=d&&a.maxIndex<=c;
+if(g&&h)this.__bo6y46.splice(b,1),b--;
+else if(g)a.minIndex=c+1;
+else if(h)a.maxIndex=d-1;
+else{i={minIndex:c+1,
+maxIndex:a.maxIndex};
+this.__bo6y46.splice(b+1,0,i);
+a.maxIndex=d-1;
+break}}}this._fireChangeSelection()},
+_resetSelection:function(){this.__bo6y46=[];
+this.__b0yNdI=-1;
+this.__bFyKAh=-1},
+_addSelectionInterval:function(e,f){this.__b0yNdI=e;
+this.__bFyKAh=f;
+for(var g=Math.min(e,f),h=Math.max(e,f),d=0,c,b,a;
+d<this.__bo6y46.length;
+d++){c=this.__bo6y46[d];
+if(c.minIndex>g)break}this.__bo6y46.splice(d,0,{minIndex:g,
+maxIndex:h});
+b=this.__bo6y46[0],a=1;
+for(;
+a<this.__bo6y46.length;
+a++)c=this.__bo6y46[a],b.maxIndex+1>=c.minIndex?(b.maxIndex=Math.max(b.maxIndex,c.maxIndex),this.__bo6y46.splice(a,1),a--):b=c},
+_dumpRanges:function(){for(var c="Ranges:",a=0,b;
+a<this.__bo6y46.length;
+a++)b=this.__bo6y46[a],c+=" ["+b.minIndex+".."+b.maxIndex+"]";
+this.debug(c)},
+_fireChangeSelection:function(){this.hasBatchMode()?this.__cNnwDS=true:this.fireEvent("changeSelection")}},
+destruct:function(){this.__bo6y46=null}});
+
+
+// qx.ui.table.pane.Model
+//   - Size: 1709 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.pane.Model",{extend:qx.core.Object,
+construct:function(a){this.base(arguments);
+a.addListener("visibilityChangedPre",this._onColVisibilityChanged,this);
+this.__boH5Jq=a},
+events:{modelChanged:"qx.event.type.Event"},
+statics:{EVENT_TYPE_MODEL_CHANGED:"modelChanged"},
+properties:{firstColumnX:{check:"Integer",
+init:0,
+apply:"_applyFirstColumnX"},
+maxColumnCount:{check:"Number",
+init:-1,
+apply:"_applyMaxColumnCount"}},
+members:{__PMBsU:null,
+__boH5Jq:null,
+_applyFirstColumnX:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+_applyMaxColumnCount:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+setTableColumnModel:function(a){this.__boH5Jq=a;
+this.__PMBsU=null},
+_onColVisibilityChanged:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+getColumnCount:function(){if(this.__PMBsU==null){var c=this.getFirstColumnX(),a=this.getMaxColumnCount(),b=this.__boH5Jq.getVisibleColumnCount();
+this.__PMBsU=a==-1||c+a>b?b-c:a}return this.__PMBsU},
+getColumnAtX:function(a){var b=this.getFirstColumnX();
+return this.__boH5Jq.getVisibleColumnAtX(b+a)},
+getX:function(c){var d=this.getFirstColumnX(),b=this.getMaxColumnCount(),a=this.__boH5Jq.getVisibleX(c)-d;
+return a>=0&&(b==-1||a<b)?a:-1},
+getColumnLeft:function(d){for(var c=0,e=this.getColumnCount(),a=0,b;
+a<e;
+a++){b=this.getColumnAtX(a);
+if(b==d)return c;
+c+=this.__boH5Jq.getColumnWidth(b)}return-1},
+getTotalWidth:function(){for(var b=0,d=this.getColumnCount(),a=0,c;
+a<d;
+a++)c=this.getColumnAtX(a),b+=this.__boH5Jq.getColumnWidth(c);
+return b}},
+destruct:function(){this.__boH5Jq=null}});
+
+
+// apiviewer.TreeUtil
+//   - Size: 5289 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("apiviewer.TreeUtil",{extend:qx.core.Object,
+construct:function(){this.base(arguments)},
+statics:{getChild:function(a,c){if(a!=null&&a.children!=null)for(var b=0;
+b<a.children.length;
+b++)if(a.children[b].type==c)return a.children[b];
+return null},
+getChildByAttribute:function(b,e,d){if(b.children!=null)for(var c=0,a;
+c<b.children.length;
+c++){a=b.children[c];
+if(a.attributes&&a.attributes[e]==d)return a}return null},
+getIconUrl:function(a,d){var b,c=apiviewer.dao;
+if(a instanceof c.Package)b="ICON_PACKAGE";
+else if(a instanceof c.Class)switch(a.getType()){case"mixin":b="ICON_MIXIN";
+break;
+case"interface":b="ICON_INTERFACE";
+break;
+default:b="ICON_CLASS",a.isStatic()?b+="_STATIC":a.isAbstract()?b+="_ABSTRACT":a.isSingleton()&&(b+="_SINGLETON")}else if(a instanceof c.Property)b="ICON_PROPERTY",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV"),a.isThemeable()&&(b+="_THEMEABLE");
+else if(a instanceof c.Event)b="ICON_EVENT";
+else if(a instanceof c.Method)a.isConstructor()?b="ICON_CTOR":(b="ICON_METHOD",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV")),a.isStatic()?b+="_STATIC":a.isAbstract()&&(b+="_ABSTRACT"),a.getClass().getType()=="mixin"&&(b+="_MIXIN");
+else if(a instanceof c.Constant)b="ICON_CONSTANT";
+else if(a instanceof c.Appearance)b="ICON_APPEARANCE";
+else if(a instanceof c.ChildControl)b="ICON_CHILDCONTROL";
+else throw new Error("Unknown node type: "+a.type);
+a instanceof c.ClassItem&&(d?b+="_INHERITED":a.getOverriddenFrom&&a.getOverriddenFrom()&&(b+="_OVERRIDDEN"),a.getErrors().length>0&&(b+="_ERROR"));
+a.hasWarning()&&(b+="_WARN");
+return apiviewer.TreeUtil.iconNameToIconPath(b)},
+iconNameToIconPath:function(f){var b=apiviewer.TreeUtil[f],a,d,e,c,g;
+if(!b){a=f.split("_"),d=a[0]+"_"+a[1];
+a[2]=="PUB"||a[2]=="PROT"||a[2]=="PRIV"?(d+="_"+a[2],e=3):e=2;
+b=[apiviewer.TreeUtil[d]];
+if(b[0]==null)throw new Error("Unknown img constant: "+d);
+for(c=e;
+c<a.length;
+c++){g=apiviewer.TreeUtil["OVERLAY_"+a[c]];
+if(g==null)throw new Error("Unknown img constant: OVERLAY_"+a[c]);
+b.push(g)}}return b},
+ICON_BLANK:"apiviewer/image/blank.gif",
+OVERLAY_ABSTRACT:"apiviewer/image/overlay_abstract18.gif",
+OVERLAY_ERROR:"apiviewer/image/overlay_error18.gif",
+OVERLAY_INHERITED:"apiviewer/image/overlay_inherited18.gif",
+OVERLAY_OVERRIDDEN:"apiviewer/image/overlay_overridden18.gif",
+OVERLAY_THEMEABLE:"apiviewer/image/overlay_themeable18.gif",
+OVERLAY_STATIC:"apiviewer/image/overlay_static18.gif",
+OVERLAY_WARN:"apiviewer/image/overlay_warning18.gif",
+OVERLAY_MIXIN:"apiviewer/image/overlay_mixin18.gif",
+ICON_PACKAGE:"apiviewer/image/package18.gif",
+ICON_PACKAGE_WARN:"apiviewer/image/package_warning18.gif",
+ICON_CLASS:"apiviewer/image/class18.gif",
+ICON_CLASS_WARN:"apiviewer/image/class_warning18.gif",
+ICON_CLASS_ERROR:"apiviewer/image/class_warning18.gif",
+ICON_CLASS_STATIC:"apiviewer/image/class_static18.gif",
+ICON_CLASS_STATIC_WARN:"apiviewer/image/class_static_warning18.gif",
+ICON_CLASS_STATIC_ERROR:"apiviewer/image/class_static_warning18.gif",
+ICON_CLASS_ABSTRACT:"apiviewer/image/class_abstract18.gif",
+ICON_CLASS_ABSTRACT_WARN:"apiviewer/image/class_abstract_warning18.gif",
+ICON_CLASS_ABSTRACT_ERROR:"apiviewer/image/class_abstract_warning18.gif",
+ICON_CLASS_SINGLETON:"apiviewer/image/class_singleton18.gif",
+ICON_CLASS_SINGLETON_WARN:"apiviewer/image/class_singleton_warning18.gif",
+ICON_CLASS_SINGLETON_ERROR:"apiviewer/image/class_singleton_warning18.gif",
+ICON_PROPERTY_PUB:"apiviewer/image/property18.gif",
+ICON_PROPERTY_PROT:"apiviewer/image/property_protected18.gif",
+ICON_PROPERTY_PRIV:"apiviewer/image/property_private18.gif",
+ICON_PROPERTY_PUB_THEMEABLE:"apiviewer/image/property_themeable18.gif",
+ICON_EVENT:"apiviewer/image/event18.gif",
+ICON_INTERFACE:"apiviewer/image/interface18.gif",
+ICON_INTERFACE_WARN:"apiviewer/image/interface_warning18.gif",
+ICON_MIXIN:"apiviewer/image/mixin18.gif",
+ICON_MIXIN_WARN:"apiviewer/image/mixin_warning18.gif",
+ICON_METHOD_PUB:"apiviewer/image/method_public18.gif",
+ICON_METHOD_PUB_INHERITED:"apiviewer/image/method_public_inherited18.gif",
+ICON_CTOR:"apiviewer/image/constructor18.gif",
+ICON_METHOD_PROT:"apiviewer/image/method_protected18.gif",
+ICON_METHOD_PRIV:"apiviewer/image/method_private18.gif",
+ICON_CONSTANT:"apiviewer/image/constant18.gif",
+ICON_APPEARANCE:"apiviewer/image/constant18.gif",
+ICON_CHILDCONTROL:"apiviewer/image/childcontrol18.gif"},
+defer:function(a){a.PRELOAD_IMAGES=[a.ICON_INFO,a.ICON_SEARCH,a.OVERLAY_ABSTRACT,a.OVERLAY_ERROR,a.OVERLAY_INHERITED,a.OVERLAY_OVERRIDDEN,a.OVERLAY_STATIC,a.OVERLAY_WARN,a.OVERLAY_MIXIN,a.OVERLAY_THEMEABLE,a.ICON_PACKAGE,a.ICON_PACKAGE_WARN,a.ICON_CLASS,a.ICON_CLASS_WARN,a.ICON_CLASS_ERROR,a.ICON_CLASS_STATIC,a.ICON_CLASS_STATIC_WARN,a.ICON_CLASS_STATIC_ERROR,a.ICON_CLASS_ABSTRACT,a.ICON_CLASS_ABSTRACT_WARN,a.ICON_CLASS_ABSTRACT_ERROR,a.ICON_CLASS_SINGLETON,a.ICON_CLASS_SINGLETON_WARN,a.ICON_CLASS_SINGLETON_ERROR,a.ICON_PROPERTY_PUB,a.ICON_PROPERTY_PROT,a.ICON_PROPERTY_PRIV,a.ICON_PROPERTY_PUB_THEMEABLE,a.ICON_EVENT,a.ICON_INTERFACE,a.ICON_INTERFACE_WARN,a.ICON_MIXIN,a.ICON_MIXIN_WARN,a.ICON_METHOD_PUB,a.ICON_METHOD_PUB_INHERITED,a.ICON_CTOR,a.ICON_METHOD_PROT,a.ICON_METHOD_PRIV,a.ICON_CONSTANT,a.ICON_CHILDCONTROL]}});
 
 
 // qx.ui.table.model.Abstract
@@ -10713,44 +9797,299 @@ this.setColumnNamesByIndex(b)}},
 destruct:function(){this.__O3vqJ=this.__2m0iZ=this.__9WoOR=null}});
 
 
-// qx.ui.decoration.Abstract
-//   - Size: 1258 bytes
-//   - Modified: 2010-06-18T23:08:09
-qx.Class.define("qx.ui.decoration.Abstract",{extend:qx.core.Object,
-implement:[qx.ui.decoration.IDecorator],
+// qx.ui.table.celleditor.AbstractField
+//   - Size: 696 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.celleditor.AbstractField",{extend:qx.core.Object,
+implement:qx.ui.table.ICellEditorFactory,
 type:"abstract",
-properties:{insetLeft:{check:"Number",
+properties:{validationFunction:{check:"Function",
 nullable:true,
-apply:"_applyInsets"},
-insetRight:{check:"Number",
-nullable:true,
-apply:"_applyInsets"},
-insetBottom:{check:"Number",
-nullable:true,
-apply:"_applyInsets"},
-insetTop:{check:"Number",
-nullable:true,
-apply:"_applyInsets"},
-insets:{group:["insetTop","insetRight","insetBottom","insetLeft"],
-shorthand:true}},
-members:{__qFVs1:null,
-_getDefaultInsets:function(){throw new Error("Abstract method called.")},
-_isInitialized:function(){throw new Error("Abstract method called.")},
-_resetInsets:function(){this.__qFVs1=null},
-getInsets:function(){if(this.__qFVs1)return this.__qFVs1;
-var a=this._getDefaultInsets();
-return this.__qFVs1={left:this.getInsetLeft()==null?a.left:this.getInsetLeft(),
-right:this.getInsetRight()==null?a.right:this.getInsetRight(),
-bottom:this.getInsetBottom()==null?a.bottom:this.getInsetBottom(),
-top:this.getInsetTop()==null?a.top:this.getInsetTop()}},
-_applyInsets:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!");
-this.__qFVs1=null}},
-destruct:function(){this.__qFVs1=null}});
+init:null}},
+members:{_createEditor:function(){throw new Error("Abstract method call!")},
+createCellEditor:function(b){var a=this._createEditor();
+a.originalValue=b.value;
+(b.value===null||b.value===undefined)&&(b.value="");
+a.setValue(""+b.value);
+a.addListener("appear",function(){a.selectAllText()});
+return a},
+getCellEditorValue:function(b){var a=b.getValue(),c=this.getValidationFunction();
+c&&(a=c(a,b.originalValue));
+typeof b.originalValue=="number"&&(a=parseFloat(a));
+return a}}});
+
+
+// qx.ui.core.SingleSelectionManager
+//   - Size: 1641 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.ui.core.SingleSelectionManager",{extend:qx.core.Object,
+construct:function(a){this.base(arguments);
+qx.core.Assert.assertInterface(a,qx.ui.core.ISingleSelectionProvider,"Invalid selectionProvider!");
+this.__bzZEce=a},
+events:{changeSelected:"qx.event.type.Data"},
+properties:{allowEmptySelection:{check:"Boolean",
+init:true,
+apply:"_applyAllowEmptySelection"}},
+members:{__zbljM:null,
+__bzZEce:null,
+getSelected:function(){return this.__zbljM},
+setSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not select "+a+", because it is not a child element!");
+this.__PjbdU(a)},
+resetSelected:function(){this.__PjbdU(null)},
+isSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not check if "+a+" is selected,"+" because it is not a child element!");
+return this.__zbljM===a},
+isSelectionEmpty:function(){return this.__zbljM==null},
+getSelectables:function(d){for(var c=this.__bzZEce.getItems(),b=[],a=0;
+a<c.length;
+a++)this.__bzZEce.isItemSelectable(c[a])&&b.push(c[a]);
+if(!d)for(a=b.length-1;
+a>=0;
+a--)b[a].getEnabled()||b.splice(a,1);
+return b},
+_applyAllowEmptySelection:function(a){a||this.__PjbdU(this.__zbljM)},
+__PjbdU:function(d){var b=this.__zbljM,a=d,c;
+if(a!=null&&b===a)return;
+!this.isAllowEmptySelection()&&a==null&&(c=this.getSelectables(true)[0],c&&(a=c));
+this.__zbljM=a;
+this.fireDataEvent("changeSelected",a,b)},
+__7CRhB:function(c){for(var b=this.__bzZEce.getItems(),a=0;
+a<b.length;
+a++)if(b[a]===c)return true;
+return false}},
+destruct:function(){this.__bzZEce.toHashCode?this._disposeObjects("__selectionProvider"):this.__bzZEce=null;
+this._disposeObjects("__selected")}});
+
+
+// qx.ui.table.model.Simple
+//   - Size: 6096 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Class.define("qx.ui.table.model.Simple",{extend:qx.ui.table.model.Abstract,
+construct:function(){this.base(arguments);
+this.__qvtBo=[];
+this.__biI8JZ=-1;
+this.__Qj9qV=[];
+this.__8iVLk=null},
+properties:{caseSensitiveSorting:{check:"Boolean",
+init:true}},
+statics:{_defaultSortComparatorAscending:function(e,d){var b=e[arguments.callee.columnIndex],a=d[arguments.callee.columnIndex],c;
+if(qx.lang.Type.isNumber(b)&&qx.lang.Type.isNumber(a)){c=isNaN(b)?isNaN(a)?0:1:isNaN(a)?-1:null;
+if(c!=null)return c}return b>a?1:b==a?0:-1},
+_defaultSortComparatorInsensitiveAscending:function(d,c){var b=(d[arguments.callee.columnIndex].toLowerCase?d[arguments.callee.columnIndex].toLowerCase():d[arguments.callee.columnIndex]),a=(c[arguments.callee.columnIndex].toLowerCase?c[arguments.callee.columnIndex].toLowerCase():c[arguments.callee.columnIndex]),e;
+if(qx.lang.Type.isNumber(b)&&qx.lang.Type.isNumber(a)){e=isNaN(b)?isNaN(a)?0:1:isNaN(a)?-1:null;
+if(e!=null)return e}return b>a?1:b==a?0:-1},
+_defaultSortComparatorDescending:function(e,d){var b=e[arguments.callee.columnIndex],a=d[arguments.callee.columnIndex],c;
+if(qx.lang.Type.isNumber(b)&&qx.lang.Type.isNumber(a)){c=isNaN(b)?isNaN(a)?0:1:isNaN(a)?-1:null;
+if(c!=null)return c}return b<a?1:b==a?0:-1},
+_defaultSortComparatorInsensitiveDescending:function(d,c){var b=(d[arguments.callee.columnIndex].toLowerCase?d[arguments.callee.columnIndex].toLowerCase():d[arguments.callee.columnIndex]),a=(c[arguments.callee.columnIndex].toLowerCase?c[arguments.callee.columnIndex].toLowerCase():c[arguments.callee.columnIndex]),e;
+if(qx.lang.Type.isNumber(b)&&qx.lang.Type.isNumber(a)){e=isNaN(b)?isNaN(a)?0:1:isNaN(a)?-1:null;
+if(e!=null)return e}return b<a?1:b==a?0:-1}},
+members:{__qvtBo:null,
+__8iVLk:null,
+__bahQDi:null,
+__Qj9qV:null,
+__biI8JZ:null,
+__3aMal:null,
+getRowData:function(b){var a=this.__qvtBo[b];
+return a==null||a.originalData==null?a:a.originalData},
+getRowDataAsMap:function(e){var a=this.__qvtBo[e],d,c,b;
+if(a!=null){d={},c=0;
+for(;
+c<this.getColumnCount();
+c++)d[this.getColumnId(c)]=a[c];
+if(a.originalData!=null)for(b in a.originalData)d[b]==undefined&&(d[b]=a.originalData[b]);
+return d}return a&&a.originalData?a.originalData:null},
+getDataAsMapArray:function(){for(var c=this.getRowCount(),b=[],a=0;
+a<c;
+a++)b.push(this.getRowDataAsMap(a));
+return b},
+setEditable:function(b){this.__8iVLk=[];
+for(var a=0;
+a<this.getColumnCount();
+a++)this.__8iVLk[a]=b;
+this.fireEvent("metaDataChanged")},
+setColumnEditable:function(b,a){a!=this.isColumnEditable(b)&&(this.__8iVLk==null&&(this.__8iVLk=[]),this.__8iVLk[b]=a,this.fireEvent("metaDataChanged"))},
+isColumnEditable:function(a){return this.__8iVLk?this.__8iVLk[a]==true:false},
+setColumnSortable:function(b,a){a!=this.isColumnSortable(b)&&(this.__bahQDi==null&&(this.__bahQDi=[]),this.__bahQDi[b]=a,this.fireEvent("metaDataChanged"))},
+isColumnSortable:function(a){return this.__bahQDi?this.__bahQDi[a]!==false:true},
+sortByColumn:function(c,a){var b,d=this.__Qj9qV[c],e;
+b=d?a?d.ascending:d.descending:this.getCaseSensitiveSorting()?a?qx.ui.table.model.Simple._defaultSortComparatorAscending:qx.ui.table.model.Simple._defaultSortComparatorDescending:a?qx.ui.table.model.Simple._defaultSortComparatorInsensitiveAscending:qx.ui.table.model.Simple._defaultSortComparatorInsensitiveDescending;
+b.columnIndex=c;
+this.__qvtBo.sort(b);
+this.__biI8JZ=c;
+this.__3aMal=a;
+e={columnIndex:c,
+ascending:a};
+this.fireDataEvent("sorted",e);
+this.fireEvent("metaDataChanged")},
+setSortMethods:function(c,a){var b;
+b=qx.lang.Type.isFunction(a)?{ascending:a,
+descending:function(c,b){return a(b,c)}}:a;
+this.__Qj9qV[c]=b},
+getSortMethods:function(a){return this.__Qj9qV[a]},
+clearSorting:function(){this.__biI8JZ!=-1&&(this.__biI8JZ=-1,this.__3aMal=true,this.fireEvent("metaDataChanged"))},
+getSortColumnIndex:function(){return this.__biI8JZ},
+_setSortColumnIndex:function(a){this.__biI8JZ=a},
+isSortAscending:function(){return this.__3aMal},
+_setSortAscending:function(a){this.__3aMal=a},
+getRowCount:function(){return this.__qvtBo.length},
+getValue:function(b,a){if(a<0||a>=this.__qvtBo.length)throw new Error("this.__rowArr out of bounds: "+a+" (0.."+this.__qvtBo.length+")");
+return this.__qvtBo[a][b]},
+setValue:function(a,b,c){if(this.__qvtBo[b][a]!=c){this.__qvtBo[b][a]=c;
+if(this.hasListener("dataChanged")){var d={firstRow:b,
+lastRow:b,
+firstColumn:a,
+lastColumn:a};
+this.fireDataEvent("dataChanged",d)}a==this.__biI8JZ&&this.clearSorting()}},
+setData:function(a,c){this.__qvtBo=a;
+if(this.hasListener("dataChanged")){var b={firstRow:0,
+lastRow:a.length-1,
+firstColumn:0,
+lastColumn:this.getColumnCount()-1};
+this.fireDataEvent("dataChanged",b)}c!==false&&this.clearSorting()},
+getData:function(){return this.__qvtBo},
+setDataAsMapArray:function(b,c,a){this.setData(this._mapArray2RowArr(b,c),a)},
+addRows:function(b,a,d){a==null&&(a=this.__qvtBo.length);
+b.splice(0,0,a,0);
+Array.prototype.splice.apply(this.__qvtBo,b);
+var c={firstRow:a,
+lastRow:this.__qvtBo.length-1,
+firstColumn:0,
+lastColumn:this.getColumnCount()-1};
+this.fireDataEvent("dataChanged",c);
+d!==false&&this.clearSorting()},
+addRowsAsMapArray:function(c,b,d,a){this.addRows(this._mapArray2RowArr(c,d),b,a)},
+setRows:function(b,a,d){a==null&&(a=0);
+b.splice(0,0,a,b.length);
+Array.prototype.splice.apply(this.__qvtBo,b);
+var c={firstRow:a,
+lastRow:this.__qvtBo.length-1,
+firstColumn:0,
+lastColumn:this.getColumnCount()-1};
+this.fireDataEvent("dataChanged",c);
+d!==false&&this.clearSorting()},
+setRowsAsMapArray:function(c,b,d,a){this.setRows(this._mapArray2RowArr(c,d),b,a)},
+removeRows:function(a,b,d){this.__qvtBo.splice(a,b);
+var c={firstRow:a,
+lastRow:this.__qvtBo.length-1,
+firstColumn:0,
+lastColumn:this.getColumnCount()-1,
+removeStart:a,
+removeCount:b};
+this.fireDataEvent("dataChanged",c);
+d!==false&&this.clearSorting()},
+_mapArray2RowArr:function(d,g){for(var e=d.length,h=this.getColumnCount(),f=new Array(e),c,a=0,b;
+a<e;
+++a){c=[];
+g&&(c.originalData=d[a]);
+for(b=0;
+b<h;
+++b)c[b]=d[a][this.getColumnId(b)];
+f[a]=c}return f}},
+destruct:function(){this.__qvtBo=this.__8iVLk=this.__Qj9qV=this.__bahQDi=null}});
+
+
+// qx.ui.core.MSingleSelectionHandling
+//   - Size: 1318 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Mixin.define("qx.ui.core.MSingleSelectionHandling",{events:{changeSelection:"qx.event.type.Data"},
+members:{__ugn3e:null,
+getSelection:function(){var a=this.__IwJpC().getSelected();
+return a?[a]:[]},
+setSelection:function(a){switch(a.length){case 0:this.resetSelection();
+break;
+case 1:this.__IwJpC().setSelected(a[0]);
+break;
+default:throw new Error("Could only select one item, but the selection  array contains "+a.length+" items!")}},
+resetSelection:function(){this.__IwJpC().resetSelected()},
+isSelected:function(a){return this.__IwJpC().isSelected(a)},
+isSelectionEmpty:function(){return this.__IwJpC().isSelectionEmpty()},
+getSelectables:function(a){return this.__IwJpC().getSelectables(a)},
+_onChangeSelected:function(c){var a=c.getData(),b=c.getOldData();
+a==null?a=[]:a=[a];
+b==null?b=[]:b=[b];
+this.fireDataEvent("changeSelection",a,b)},
+__IwJpC:function(){if(this.__ugn3e==null){var a=this;
+this.__ugn3e=new qx.ui.core.SingleSelectionManager({getItems:function(){return a._getItems()},
+isItemSelectable:function(b){return a._isItemSelectable?a._isItemSelectable(b):b.isVisible()}});
+this.__ugn3e.addListener("changeSelected",this._onChangeSelected,this)}this.__ugn3e.setAllowEmptySelection(this._isAllowEmptySelection());
+return this.__ugn3e}},
+destruct:function(){this._disposeObjects("__manager")}});
+
+
+// qx.io.remote.Response
+//   - Size: 590 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.io.remote.Response",{extend:qx.event.type.Event,
+properties:{state:{check:"Integer",
+nullable:true},
+statusCode:{check:"Integer",
+nullable:true},
+content:{nullable:true},
+responseHeaders:{check:"Object",
+nullable:true}},
+members:{clone:function(b){var a=this.base(arguments,b);
+a.setType(this.getType());
+a.setState(this.getState());
+a.setStatusCode(this.getStatusCode());
+a.setContent(this.getContent());
+a.setResponseHeaders(this.getResponseHeaders());
+return a},
+getResponseHeader:function(b){var a=this.getResponseHeaders();
+if(a)return a[b]||null;
+return null}}});
+
+
+// qx.event.AcceleratingTimer
+//   - Size: 946 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.AcceleratingTimer",{extend:qx.core.Object,
+construct:function(){this.base(arguments);
+this.__mXur6=new qx.event.Timer(this.getInterval());
+this.__mXur6.addListener("interval",this._onInterval,this)},
+events:{interval:"qx.event.type.Event"},
+properties:{interval:{check:"Integer",
+init:100},
+firstInterval:{check:"Integer",
+init:500},
+minimum:{check:"Integer",
+init:20},
+decrease:{check:"Integer",
+init:2}},
+members:{__mXur6:null,
+__bjkOrP:null,
+start:function(){this.__mXur6.setInterval(this.getFirstInterval());
+this.__mXur6.start()},
+stop:function(){this.__mXur6.stop();
+this.__bjkOrP=null},
+_onInterval:function(){this.__mXur6.stop();
+this.__bjkOrP==null&&(this.__bjkOrP=this.getInterval());
+this.__bjkOrP=Math.max(this.getMinimum(),this.__bjkOrP-this.getDecrease());
+this.__mXur6.setInterval(this.__bjkOrP);
+this.__mXur6.start();
+this.fireEvent("interval")}},
+destruct:function(){this._disposeObjects("__timer")}});
+
+
+// qx.data.marshal.MEventBubbling
+//   - Size: 1181 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Mixin.define("qx.data.marshal.MEventBubbling",{events:{changeBubble:"qx.event.type.Data"},
+members:{_applyEventPropagation:function(a,c,b){this.fireDataEvent("changeBubble",{value:a,
+name:b,
+old:c});
+this._registerEventChaining(a,c,b)},
+_registerEventChaining:function(b,a,d){if(b instanceof qx.core.Object&&qx.Class.hasMixin(b.constructor,qx.data.marshal.MEventBubbling)){var e=qx.lang.Function.bind(this.__cmTSDc,this,d),c=b.addListener("changeBubble",e,this);
+b.setUserData("idBubble",c)}a!=null&&a.getUserData&&a.getUserData("idBubble")!=null&&a.removeListenerById(a.getUserData("idBubble"))},
+__cmTSDc:function(c,f){var a=f.getData(),i=a.value,h=a.old,d,e,g,b,j;
+qx.Class.hasInterface(f.getTarget().constructor,qx.data.IListData)?a.name.indexOf?(d=a.name.indexOf(".")!=-1?a.name.indexOf("."):a.name.length,e=a.name.indexOf("[")!=-1?a.name.indexOf("["):a.name.length,d<e?(g=a.name.substring(0,d),b=a.name.substring(d+1,a.name.length),b[0]!="["&&(b="."+b),j=c+"["+g+"]"+b):e<d?(g=a.name.substring(0,e),b=a.name.substring(e,a.name.length),j=c+"["+g+"]"+b):j=c+"["+a.name+"]"):j=c+"["+a.name+"]":j=c+"."+a.name;
+this.fireDataEvent("changeBubble",{value:i,
+name:j,
+old:h})}}});
 
 
 // qx.bom.History
 //   - Size: 1950 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("qx.bom.History",{extend:qx.core.Object,
 type:"abstract",
 construct:function(){this.base(arguments);
@@ -10810,32 +10149,12 @@ _writeState:function(a){this._setHash(this._encode(a))}},
 destruct:function(){this.__bpGRyj()}});
 
 
-// qx.ui.core.MSingleSelectionHandling
-//   - Size: 1318 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Mixin.define("qx.ui.core.MSingleSelectionHandling",{events:{changeSelection:"qx.event.type.Data"},
-members:{__ugn3e:null,
-getSelection:function(){var a=this.__IwJpC().getSelected();
-return a?[a]:[]},
-setSelection:function(a){switch(a.length){case 0:this.resetSelection();
-break;
-case 1:this.__IwJpC().setSelected(a[0]);
-break;
-default:throw new Error("Could only select one item, but the selection  array contains "+a.length+" items!")}},
-resetSelection:function(){this.__IwJpC().resetSelected()},
-isSelected:function(a){return this.__IwJpC().isSelected(a)},
-isSelectionEmpty:function(){return this.__IwJpC().isSelectionEmpty()},
-getSelectables:function(a){return this.__IwJpC().getSelectables(a)},
-_onChangeSelected:function(c){var a=c.getData(),b=c.getOldData();
-a==null?a=[]:a=[a];
-b==null?b=[]:b=[b];
-this.fireDataEvent("changeSelection",a,b)},
-__IwJpC:function(){if(this.__ugn3e==null){var a=this;
-this.__ugn3e=new qx.ui.core.SingleSelectionManager({getItems:function(){return a._getItems()},
-isItemSelectable:function(b){return a._isItemSelectable?a._isItemSelectable(b):b.isVisible()}});
-this.__ugn3e.addListener("changeSelected",this._onChangeSelected,this)}this.__ugn3e.setAllowEmptySelection(this._isAllowEmptySelection());
-return this.__ugn3e}},
-destruct:function(){this._disposeObjects("__manager")}});
+// qx.log.appender.Native
+//   - Size: 275 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.log.appender.Native",{statics:{process:function(c){var b=window.debug||window.console||window.air&&window.air.Introspector.Console,a;
+b&&(a=c.level,a in b||(a="log"),b[a](qx.log.appender.Util.toText(c)))}},
+defer:function(a){qx.log.Logger.register(a)}});
 
 
 // qx.data.Array
@@ -10998,134 +10317,6 @@ a++)this._applyEventPropagation(null,this.__mK7fC[a],a);
 this.__mK7fC=null}});
 
 
-// qx.ui.table.model.Simple
-//   - Size: 6096 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.ui.table.model.Simple",{extend:qx.ui.table.model.Abstract,
-construct:function(){this.base(arguments);
-this.__qvtBo=[];
-this.__biI8JZ=-1;
-this.__Qj9qV=[];
-this.__8iVLk=null},
-properties:{caseSensitiveSorting:{check:"Boolean",
-init:true}},
-statics:{_defaultSortComparatorAscending:function(e,d){var b=e[arguments.callee.columnIndex],a=d[arguments.callee.columnIndex],c;
-if(qx.lang.Type.isNumber(b)&&qx.lang.Type.isNumber(a)){c=isNaN(b)?isNaN(a)?0:1:isNaN(a)?-1:null;
-if(c!=null)return c}return b>a?1:b==a?0:-1},
-_defaultSortComparatorInsensitiveAscending:function(d,c){var b=(d[arguments.callee.columnIndex].toLowerCase?d[arguments.callee.columnIndex].toLowerCase():d[arguments.callee.columnIndex]),a=(c[arguments.callee.columnIndex].toLowerCase?c[arguments.callee.columnIndex].toLowerCase():c[arguments.callee.columnIndex]),e;
-if(qx.lang.Type.isNumber(b)&&qx.lang.Type.isNumber(a)){e=isNaN(b)?isNaN(a)?0:1:isNaN(a)?-1:null;
-if(e!=null)return e}return b>a?1:b==a?0:-1},
-_defaultSortComparatorDescending:function(e,d){var b=e[arguments.callee.columnIndex],a=d[arguments.callee.columnIndex],c;
-if(qx.lang.Type.isNumber(b)&&qx.lang.Type.isNumber(a)){c=isNaN(b)?isNaN(a)?0:1:isNaN(a)?-1:null;
-if(c!=null)return c}return b<a?1:b==a?0:-1},
-_defaultSortComparatorInsensitiveDescending:function(d,c){var b=(d[arguments.callee.columnIndex].toLowerCase?d[arguments.callee.columnIndex].toLowerCase():d[arguments.callee.columnIndex]),a=(c[arguments.callee.columnIndex].toLowerCase?c[arguments.callee.columnIndex].toLowerCase():c[arguments.callee.columnIndex]),e;
-if(qx.lang.Type.isNumber(b)&&qx.lang.Type.isNumber(a)){e=isNaN(b)?isNaN(a)?0:1:isNaN(a)?-1:null;
-if(e!=null)return e}return b<a?1:b==a?0:-1}},
-members:{__qvtBo:null,
-__8iVLk:null,
-__bahQDi:null,
-__Qj9qV:null,
-__biI8JZ:null,
-__3aMal:null,
-getRowData:function(b){var a=this.__qvtBo[b];
-return a==null||a.originalData==null?a:a.originalData},
-getRowDataAsMap:function(e){var a=this.__qvtBo[e],d,c,b;
-if(a!=null){d={},c=0;
-for(;
-c<this.getColumnCount();
-c++)d[this.getColumnId(c)]=a[c];
-if(a.originalData!=null)for(b in a.originalData)d[b]==undefined&&(d[b]=a.originalData[b]);
-return d}return a&&a.originalData?a.originalData:null},
-getDataAsMapArray:function(){for(var c=this.getRowCount(),b=[],a=0;
-a<c;
-a++)b.push(this.getRowDataAsMap(a));
-return b},
-setEditable:function(b){this.__8iVLk=[];
-for(var a=0;
-a<this.getColumnCount();
-a++)this.__8iVLk[a]=b;
-this.fireEvent("metaDataChanged")},
-setColumnEditable:function(b,a){a!=this.isColumnEditable(b)&&(this.__8iVLk==null&&(this.__8iVLk=[]),this.__8iVLk[b]=a,this.fireEvent("metaDataChanged"))},
-isColumnEditable:function(a){return this.__8iVLk?this.__8iVLk[a]==true:false},
-setColumnSortable:function(b,a){a!=this.isColumnSortable(b)&&(this.__bahQDi==null&&(this.__bahQDi=[]),this.__bahQDi[b]=a,this.fireEvent("metaDataChanged"))},
-isColumnSortable:function(a){return this.__bahQDi?this.__bahQDi[a]!==false:true},
-sortByColumn:function(c,a){var b,d=this.__Qj9qV[c],e;
-b=d?a?d.ascending:d.descending:this.getCaseSensitiveSorting()?a?qx.ui.table.model.Simple._defaultSortComparatorAscending:qx.ui.table.model.Simple._defaultSortComparatorDescending:a?qx.ui.table.model.Simple._defaultSortComparatorInsensitiveAscending:qx.ui.table.model.Simple._defaultSortComparatorInsensitiveDescending;
-b.columnIndex=c;
-this.__qvtBo.sort(b);
-this.__biI8JZ=c;
-this.__3aMal=a;
-e={columnIndex:c,
-ascending:a};
-this.fireDataEvent("sorted",e);
-this.fireEvent("metaDataChanged")},
-setSortMethods:function(c,a){var b;
-b=qx.lang.Type.isFunction(a)?{ascending:a,
-descending:function(c,b){return a(b,c)}}:a;
-this.__Qj9qV[c]=b},
-getSortMethods:function(a){return this.__Qj9qV[a]},
-clearSorting:function(){this.__biI8JZ!=-1&&(this.__biI8JZ=-1,this.__3aMal=true,this.fireEvent("metaDataChanged"))},
-getSortColumnIndex:function(){return this.__biI8JZ},
-_setSortColumnIndex:function(a){this.__biI8JZ=a},
-isSortAscending:function(){return this.__3aMal},
-_setSortAscending:function(a){this.__3aMal=a},
-getRowCount:function(){return this.__qvtBo.length},
-getValue:function(b,a){if(a<0||a>=this.__qvtBo.length)throw new Error("this.__rowArr out of bounds: "+a+" (0.."+this.__qvtBo.length+")");
-return this.__qvtBo[a][b]},
-setValue:function(a,b,c){if(this.__qvtBo[b][a]!=c){this.__qvtBo[b][a]=c;
-if(this.hasListener("dataChanged")){var d={firstRow:b,
-lastRow:b,
-firstColumn:a,
-lastColumn:a};
-this.fireDataEvent("dataChanged",d)}a==this.__biI8JZ&&this.clearSorting()}},
-setData:function(a,c){this.__qvtBo=a;
-if(this.hasListener("dataChanged")){var b={firstRow:0,
-lastRow:a.length-1,
-firstColumn:0,
-lastColumn:this.getColumnCount()-1};
-this.fireDataEvent("dataChanged",b)}c!==false&&this.clearSorting()},
-getData:function(){return this.__qvtBo},
-setDataAsMapArray:function(b,c,a){this.setData(this._mapArray2RowArr(b,c),a)},
-addRows:function(b,a,d){a==null&&(a=this.__qvtBo.length);
-b.splice(0,0,a,0);
-Array.prototype.splice.apply(this.__qvtBo,b);
-var c={firstRow:a,
-lastRow:this.__qvtBo.length-1,
-firstColumn:0,
-lastColumn:this.getColumnCount()-1};
-this.fireDataEvent("dataChanged",c);
-d!==false&&this.clearSorting()},
-addRowsAsMapArray:function(c,b,d,a){this.addRows(this._mapArray2RowArr(c,d),b,a)},
-setRows:function(b,a,d){a==null&&(a=0);
-b.splice(0,0,a,b.length);
-Array.prototype.splice.apply(this.__qvtBo,b);
-var c={firstRow:a,
-lastRow:this.__qvtBo.length-1,
-firstColumn:0,
-lastColumn:this.getColumnCount()-1};
-this.fireDataEvent("dataChanged",c);
-d!==false&&this.clearSorting()},
-setRowsAsMapArray:function(c,b,d,a){this.setRows(this._mapArray2RowArr(c,d),b,a)},
-removeRows:function(a,b,d){this.__qvtBo.splice(a,b);
-var c={firstRow:a,
-lastRow:this.__qvtBo.length-1,
-firstColumn:0,
-lastColumn:this.getColumnCount()-1,
-removeStart:a,
-removeCount:b};
-this.fireDataEvent("dataChanged",c);
-d!==false&&this.clearSorting()},
-_mapArray2RowArr:function(d,g){for(var e=d.length,h=this.getColumnCount(),f=new Array(e),c,a=0,b;
-a<e;
-++a){c=[];
-g&&(c.originalData=d[a]);
-for(b=0;
-b<h;
-++b)c[b]=d[a][this.getColumnId(b)];
-f[a]=c}return f}},
-destruct:function(){this.__qvtBo=this.__8iVLk=this.__Qj9qV=this.__bahQDi=null}});
-
-
 // qx.ui.form.MModelSelection
 //   - Size: 1227 bytes
 //   - Modified: 2010-08-26T21:43:53
@@ -11160,191 +10351,6 @@ a.unshift(0);
 var b=this.__9y1Fq.splice.apply(this.__9y1Fq,a);
 b.dispose()}},
 destruct:function(){this._disposeObjects("__modelSelection")}});
-
-
-// qx.io.remote.Response
-//   - Size: 590 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.io.remote.Response",{extend:qx.event.type.Event,
-properties:{state:{check:"Integer",
-nullable:true},
-statusCode:{check:"Integer",
-nullable:true},
-content:{nullable:true},
-responseHeaders:{check:"Object",
-nullable:true}},
-members:{clone:function(b){var a=this.base(arguments,b);
-a.setType(this.getType());
-a.setState(this.getState());
-a.setStatusCode(this.getStatusCode());
-a.setContent(this.getContent());
-a.setResponseHeaders(this.getResponseHeaders());
-return a},
-getResponseHeader:function(b){var a=this.getResponseHeaders();
-if(a)return a[b]||null;
-return null}}});
-
-
-// qx.locale.Date
-//   - Size: 3410 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.locale.Date",{statics:{__gQyZ7:qx.locale.Manager.getInstance(),
-getAmMarker:function(a){return this.__gQyZ7.localize("cldr_am",[],a)},
-getPmMarker:function(a){return this.__gQyZ7.localize("cldr_pm",[],a)},
-getDayNames:function(d,f,a){var a=a?a:"format",e,c,b,g;
-qx.core.Assert.assertInArray(d,["abbreviated","narrow","wide"]),qx.core.Assert.assertInArray(a,["format","stand-alone"]);
-e=["sun","mon","tue","wed","thu","fri","sat"],c=[],b=0;
-for(;
-b<e.length;
-b++)g="cldr_day_"+a+"_"+d+"_"+e[b],c.push(this.__gQyZ7.localize(g,[],f));
-return c},
-getDayName:function(c,b,e,a){var a=a?a:"format",d,f;
-qx.core.Assert.assertInArray(c,["abbreviated","narrow","wide"]),qx.core.Assert.assertInteger(b),qx.core.Assert.assertInRange(b,0,6),qx.core.Assert.assertInArray(a,["format","stand-alone"]);
-d=["sun","mon","tue","wed","thu","fri","sat"],f="cldr_day_"+a+"_"+c+"_"+d[b];
-return this.__gQyZ7.localize(f,[],e)},
-getMonthNames:function(d,e,a){var a=a?a:"format",c,b,f;
-qx.core.Assert.assertInArray(d,["abbreviated","narrow","wide"]),qx.core.Assert.assertInArray(a,["format","stand-alone"]);
-c=[],b=0;
-for(;
-b<12;
-b++)f="cldr_month_"+a+"_"+d+"_"+(b+1),c.push(this.__gQyZ7.localize(f,[],e));
-return c},
-getMonthName:function(b,c,d,a){var a=a?a:"format",e;
-qx.core.Assert.assertInArray(b,["abbreviated","narrow","wide"]),qx.core.Assert.assertInArray(a,["format","stand-alone"]);
-e="cldr_month_"+a+"_"+b+"_"+(c+1);
-return this.__gQyZ7.localize(e,[],d)},
-getDateFormat:function(a,c){qx.core.Assert.assertInArray(a,["short","medium","long","full"]);
-var b="cldr_date_format_"+a;
-return this.__gQyZ7.localize(b,[],c)},
-getDateTimeFormat:function(c,d,e){var b="cldr_date_time_format_"+c,a=this.__gQyZ7.localize(b,[],e);
-a==b&&(a=d);
-return a},
-getTimeFormat:function(a,d){qx.core.Assert.assertInArray(a,["short","medium","long","full"]);
-var b="cldr_time_format_"+a,c=this.__gQyZ7.localize(b,[],d);
-if(c!=b)return c;
-switch(a){case"short":case"medium":return qx.locale.Date.getDateTimeFormat("HHmm","HH:mm");
-case"long":return qx.locale.Date.getDateTimeFormat("HHmmss","HH:mm:ss");
-case"full":return qx.locale.Date.getDateTimeFormat("HHmmsszz","HH:mm:ss zz");
-default:throw new Error("This case should never happen.")}},
-getWeekStart:function(c){var b={MV:5,
-AE:6,
-AF:6,
-BH:6,
-DJ:6,
-DZ:6,
-EG:6,
-ER:6,
-ET:6,
-IQ:6,
-IR:6,
-JO:6,
-KE:6,
-KW:6,
-LB:6,
-LY:6,
-MA:6,
-OM:6,
-QA:6,
-SA:6,
-SD:6,
-SO:6,
-TN:6,
-YE:6,
-AS:0,
-AU:0,
-AZ:0,
-BW:0,
-CA:0,
-CN:0,
-FO:0,
-GE:0,
-GL:0,
-GU:0,
-HK:0,
-IE:0,
-IL:0,
-IS:0,
-JM:0,
-JP:0,
-KG:0,
-KR:0,
-LA:0,
-MH:0,
-MN:0,
-MO:0,
-MP:0,
-MT:0,
-NZ:0,
-PH:0,
-PK:0,
-SG:0,
-TH:0,
-TT:0,
-TW:0,
-UM:0,
-US:0,
-UZ:0,
-VI:0,
-ZA:0,
-ZW:0,
-MW:0,
-NG:0,
-TJ:0},a=qx.locale.Date._getTerritory(c);
-return b[a]!=null?b[a]:1},
-getWeekendStart:function(c){var a={EG:5,
-IL:5,
-SY:5,
-IN:0,
-AE:4,
-BH:4,
-DZ:4,
-IQ:4,
-JO:4,
-KW:4,
-LB:4,
-LY:4,
-MA:4,
-OM:4,
-QA:4,
-SA:4,
-SD:4,
-TN:4,
-YE:4},b=qx.locale.Date._getTerritory(c);
-return a[b]!=null?a[b]:6},
-getWeekendEnd:function(c){var b={AE:5,
-BH:5,
-DZ:5,
-IQ:5,
-JO:5,
-KW:5,
-LB:5,
-LY:5,
-MA:5,
-OM:5,
-QA:5,
-SA:5,
-SD:5,
-TN:5,
-YE:5,
-AF:5,
-IR:5,
-EG:6,
-IL:6,
-SY:6},a=qx.locale.Date._getTerritory(c);
-return b[a]!=null?b[a]:0},
-isWeekend:function(a,d){var b=qx.locale.Date.getWeekendStart(d),c=qx.locale.Date.getWeekendEnd(d);
-return c>b?a>=b&&a<=c:a>=b||a<=c},
-_getTerritory:function(a){if(a)var b=a.split("_")[1]||a;
-else b=this.__gQyZ7.getTerritory()||this.__gQyZ7.getLanguage();
-return b.toUpperCase()}}});
-
-
-// qx.locale.Number
-//   - Size: 398 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.locale.Number",{statics:{getDecimalSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_decimal_separator",[],a)},
-getGroupSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_group_separator",[],a)},
-getPercentFormat:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_percent_format",[],a)}}});
 
 
 // qx.ui.core.selection.Abstract
@@ -11639,24 +10645,271 @@ this.__EoIRJ=this.__bRkypK=this.__I2C5B=null;
 this.__ycir2=null}});
 
 
-// apiviewer.UiModel
-//   - Size: 419 bytes
-//   - Modified: 2010-05-05T20:54:13
-qx.Class.define("apiviewer.UiModel",{extend:qx.core.Object,
-type:"singleton",
-include:[qx.data.MBinding],
-properties:{showInherited:{check:"Boolean",
-init:false,
-event:"changeShowInherited"},
-expandProperties:{check:"Boolean",
-init:false,
-event:"changeExpandProperties"},
-showProtected:{check:"Boolean",
-init:false,
-event:"changeShowProtected"},
-showPrivate:{check:"Boolean",
-init:false,
-event:"changeShowPrivate"}}});
+// qx.dev.Tokenizer
+//   - Size: 2775 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.dev.Tokenizer",{extend:qx.core.Object,
+statics:{tokenizeJavaScript:function(D){for(var r={"break":1,
+"case":1,
+"catch":1,
+"continue":1,
+"default":1,
+"delete":1,
+"do":1,
+"else":1,
+"finally":1,
+"for":1,
+"function":1,
+"if":1,
+"in":1,
+"instanceof":1,
+"new":1,
+"return":1,
+"switch":1,
+"throw":1,
+"try":1,
+"typeof":1,
+"var":1,
+"while":1,
+"with":1},w={"void":1,
+"null":1,
+"true":1,
+"false":1,
+NaN:1,
+Infinity:1,
+"this":1},y={statics:1,
+members:1,
+construct:1,
+destruct:1,
+events:1,
+properties:1,
+extend:1,
+implement:1},c=function(a){return new RegExp("^"+a+"$")},g="\\/\\/.*?[\\n\\r$]",m="\\/\\*(?:.|[\\n\\r])*?\\*\\/",o="[a-zA-Z_][a-zA-Z0-9_]*\\b",k="[+-]?\\d+",q="[+-]?\\d+(([.]\\d+)*([eE][+-]?\\d+))?",j="[\"][^\"]*[\"]",f="['][^']*[']",p="\\t",n="\\r\\n|\\r|\\n",i="\\s",d="(?:\\/(?!\\*)[^\\t\\n\\r\\f\\v\\/]+?\\/[mgi]*)",l=["\\.(?:match|search|split)\\s*\\(\\s*\\(*\\s*"+d+"\\s*\\)*\\s*\\)","\\.(?:replace)\\s*\\(\\s*\\(*\\s*"+d+"\\s*\\)*\\s*?,?","\\s*\\(*\\s*"+d+"\\)*\\.(?:test|exec)\\s*\\(\\s*","(?::|=|\\?)\\s*\\(*\\s*"+d+"\\s*\\)*","[\\(,]\\s*"+d+"\\s*[,\\)]"].join("|"),t=c(g),B=c(m),v=c(o),E=c(k),s=c(q),F=c(j),G=c(f),u=c(p),A=c(n),z=c(i),C=c(l),x=new RegExp([g,m,o,k,q,j,f,f,p,n,i,l,"."].join("|"),"g"),b=[],h=D.match(x),e=0,a;
+e<h.length;
+e++)a=h[e],a.match(t)?b.push({type:"linecomment",
+value:a}):a.match(B)?b.push({type:"fullcomment",
+value:a}):a.match(C)?b.push({type:"regexp",
+value:a}):a.match(G)?b.push({type:"qstr",
+value:a}):a.match(F)?b.push({type:"qqstr",
+value:a}):r[a]?b.push({type:"keyword",
+value:a}):w[a]?b.push({type:"atom",
+value:a}):y[a]?b.push({type:"qxkey",
+value:a}):a.match(v)?b.push({type:"ident",
+value:a}):a.match(s)?b.push({type:"real",
+value:a}):a.match(E)?b.push({type:"int",
+value:a}):a.match(A)?b.push({type:"nl",
+value:a}):a.match(c(z))?b.push({type:"ws",
+value:a}):a.match(u)?b.push({type:"tab",
+value:a}):a==">"?b.push({type:"sym",
+value:">"}):a=="<"?b.push({type:"sym",
+value:"<"}):a=="&"?b.push({type:"sym",
+value:"&"}):b.push({type:"sym",
+value:a});
+return b},
+javaScriptToHtml:function(g){for(var e=qx.dev.Tokenizer.tokenizeJavaScript(g),a=new qx.util.StringBuilder(),d=0,c,b,h,f;
+d<e.length;
+d++){c=e[d],b=qx.bom.String.escape(c.value);
+switch(c.type){case"regexp":a.add("<span class='regexp'>",b,"</span>");
+break;
+case"ident":a.add("<span class='ident'>",b,"</span>");
+break;
+case"linecomment":case"fullcomment":a.add("<span class='comment'>",b,"</span>");
+break;
+case"qstr":case"qqstr":a.add("<span class='string'>",b,"</span>");
+break;
+case"keyword":case"atom":case"qxkey":a.add("<span class='",c.type,"'>",b,"</span>");
+break;
+case"nl":h=qx.bom.client.Engine.MSHTML?"<br>":"\n";
+a.add(h);
+break;
+case"ws":f=qx.bom.client.Engine.MSHTML?"&nbsp;":" ";
+a.add(f);
+break;
+default:a.add(b)}}return a.get()}}});
+
+
+// qx.locale.Date
+//   - Size: 3410 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.locale.Date",{statics:{__gQyZ7:qx.locale.Manager.getInstance(),
+getAmMarker:function(a){return this.__gQyZ7.localize("cldr_am",[],a)},
+getPmMarker:function(a){return this.__gQyZ7.localize("cldr_pm",[],a)},
+getDayNames:function(d,f,a){var a=a?a:"format",e,c,b,g;
+qx.core.Assert.assertInArray(d,["abbreviated","narrow","wide"]),qx.core.Assert.assertInArray(a,["format","stand-alone"]);
+e=["sun","mon","tue","wed","thu","fri","sat"],c=[],b=0;
+for(;
+b<e.length;
+b++)g="cldr_day_"+a+"_"+d+"_"+e[b],c.push(this.__gQyZ7.localize(g,[],f));
+return c},
+getDayName:function(c,b,e,a){var a=a?a:"format",d,f;
+qx.core.Assert.assertInArray(c,["abbreviated","narrow","wide"]),qx.core.Assert.assertInteger(b),qx.core.Assert.assertInRange(b,0,6),qx.core.Assert.assertInArray(a,["format","stand-alone"]);
+d=["sun","mon","tue","wed","thu","fri","sat"],f="cldr_day_"+a+"_"+c+"_"+d[b];
+return this.__gQyZ7.localize(f,[],e)},
+getMonthNames:function(d,e,a){var a=a?a:"format",c,b,f;
+qx.core.Assert.assertInArray(d,["abbreviated","narrow","wide"]),qx.core.Assert.assertInArray(a,["format","stand-alone"]);
+c=[],b=0;
+for(;
+b<12;
+b++)f="cldr_month_"+a+"_"+d+"_"+(b+1),c.push(this.__gQyZ7.localize(f,[],e));
+return c},
+getMonthName:function(b,c,d,a){var a=a?a:"format",e;
+qx.core.Assert.assertInArray(b,["abbreviated","narrow","wide"]),qx.core.Assert.assertInArray(a,["format","stand-alone"]);
+e="cldr_month_"+a+"_"+b+"_"+(c+1);
+return this.__gQyZ7.localize(e,[],d)},
+getDateFormat:function(a,c){qx.core.Assert.assertInArray(a,["short","medium","long","full"]);
+var b="cldr_date_format_"+a;
+return this.__gQyZ7.localize(b,[],c)},
+getDateTimeFormat:function(c,d,e){var b="cldr_date_time_format_"+c,a=this.__gQyZ7.localize(b,[],e);
+a==b&&(a=d);
+return a},
+getTimeFormat:function(a,d){qx.core.Assert.assertInArray(a,["short","medium","long","full"]);
+var b="cldr_time_format_"+a,c=this.__gQyZ7.localize(b,[],d);
+if(c!=b)return c;
+switch(a){case"short":case"medium":return qx.locale.Date.getDateTimeFormat("HHmm","HH:mm");
+case"long":return qx.locale.Date.getDateTimeFormat("HHmmss","HH:mm:ss");
+case"full":return qx.locale.Date.getDateTimeFormat("HHmmsszz","HH:mm:ss zz");
+default:throw new Error("This case should never happen.")}},
+getWeekStart:function(c){var b={MV:5,
+AE:6,
+AF:6,
+BH:6,
+DJ:6,
+DZ:6,
+EG:6,
+ER:6,
+ET:6,
+IQ:6,
+IR:6,
+JO:6,
+KE:6,
+KW:6,
+LB:6,
+LY:6,
+MA:6,
+OM:6,
+QA:6,
+SA:6,
+SD:6,
+SO:6,
+TN:6,
+YE:6,
+AS:0,
+AU:0,
+AZ:0,
+BW:0,
+CA:0,
+CN:0,
+FO:0,
+GE:0,
+GL:0,
+GU:0,
+HK:0,
+IE:0,
+IL:0,
+IS:0,
+JM:0,
+JP:0,
+KG:0,
+KR:0,
+LA:0,
+MH:0,
+MN:0,
+MO:0,
+MP:0,
+MT:0,
+NZ:0,
+PH:0,
+PK:0,
+SG:0,
+TH:0,
+TT:0,
+TW:0,
+UM:0,
+US:0,
+UZ:0,
+VI:0,
+ZA:0,
+ZW:0,
+MW:0,
+NG:0,
+TJ:0},a=qx.locale.Date._getTerritory(c);
+return b[a]!=null?b[a]:1},
+getWeekendStart:function(c){var a={EG:5,
+IL:5,
+SY:5,
+IN:0,
+AE:4,
+BH:4,
+DZ:4,
+IQ:4,
+JO:4,
+KW:4,
+LB:4,
+LY:4,
+MA:4,
+OM:4,
+QA:4,
+SA:4,
+SD:4,
+TN:4,
+YE:4},b=qx.locale.Date._getTerritory(c);
+return a[b]!=null?a[b]:6},
+getWeekendEnd:function(c){var b={AE:5,
+BH:5,
+DZ:5,
+IQ:5,
+JO:5,
+KW:5,
+LB:5,
+LY:5,
+MA:5,
+OM:5,
+QA:5,
+SA:5,
+SD:5,
+TN:5,
+YE:5,
+AF:5,
+IR:5,
+EG:6,
+IL:6,
+SY:6},a=qx.locale.Date._getTerritory(c);
+return b[a]!=null?b[a]:0},
+isWeekend:function(a,d){var b=qx.locale.Date.getWeekendStart(d),c=qx.locale.Date.getWeekendEnd(d);
+return c>b?a>=b&&a<=c:a>=b||a<=c},
+_getTerritory:function(a){if(a)var b=a.split("_")[1]||a;
+else b=this.__gQyZ7.getTerritory()||this.__gQyZ7.getLanguage();
+return b.toUpperCase()}}});
+
+
+// qx.locale.Number
+//   - Size: 398 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.locale.Number",{statics:{getDecimalSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_decimal_separator",[],a)},
+getGroupSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_group_separator",[],a)},
+getPercentFormat:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_percent_format",[],a)}}});
+
+
+// qx.ui.table.selection.Manager
+//   - Size: 1375 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.selection.Manager",{extend:qx.core.Object,
+construct:function(){this.base(arguments)},
+properties:{selectionModel:{check:"qx.ui.table.selection.Model"}},
+members:{__b0SAJI:null,
+handleMouseDown:function(a,b){if(b.isLeftPressed()){var c=this.getSelectionModel();
+c.isSelectedIndex(a)?this.__b0SAJI=false:(this._handleSelectEvent(a,b),this.__b0SAJI=true)}else b.isRightPressed()&&b.getModifiers()==0&&(c=this.getSelectionModel(),c.isSelectedIndex(a)||c.setSelectionInterval(a,a))},
+handleMouseUp:function(b,a){a.isLeftPressed()&&!this.__b0SAJI&&this._handleSelectEvent(b,a)},
+handleClick:function(){},
+handleSelectKeyDown:function(b,a){this._handleSelectEvent(b,a)},
+handleMoveKeyDown:function(a,d){var b=this.getSelectionModel(),c;
+switch(d.getModifiers()){case 0:b.setSelectionInterval(a,a);
+break;
+case qx.event.type.Dom.SHIFT_MASK:c=b.getAnchorSelectionIndex();
+c==-1?b.setSelectionInterval(a,a):b.setSelectionInterval(c,a);
+break}},
+_handleSelectEvent:function(a,d){var b=this.getSelectionModel(),e=b.getLeadSelectionIndex(),c=b.getAnchorSelectionIndex();
+d.isShiftPressed()?(a!=e||b.isSelectionEmpty())&&(c==-1&&(c=a),d.isCtrlOrCommandPressed()?b.addSelectionInterval(c,a):b.setSelectionInterval(c,a)):d.isCtrlOrCommandPressed()?b.isSelectedIndex(a)?b.removeSelectionInterval(a,a):b.addSelectionInterval(a,a):b.setSelectionInterval(a,a)}}});
 
 
 // qx.util.format.DateFormat
@@ -11942,29 +11195,6 @@ manipulator:m})}},
 destruct:function(){this.__JNnpk=this.__DJKy2=this.__JMPjt=null}});
 
 
-// qx.ui.decoration.MBackgroundImage
-//   - Size: 1276 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Mixin.define("qx.ui.decoration.MBackgroundImage",{properties:{backgroundImage:{check:"String",
-nullable:true,
-apply:"_applyBackground"},
-backgroundRepeat:{check:["repeat","repeat-x","repeat-y","no-repeat","scale"],
-init:"repeat",
-apply:"_applyBackground"},
-backgroundPositionX:{nullable:true,
-apply:"_applyBackground"},
-backgroundPositionY:{nullable:true,
-apply:"_applyBackground"},
-backgroundPosition:{group:["backgroundPositionY","backgroundPositionX"]}},
-members:{_generateBackgroundMarkup:function(e){var c=qx.bom.element2.Style,d=this.getBackgroundImage(),b,a,g,f;
-if(d){g=qx.bom.element.Decoration,f=this.getBackgroundRepeat();
-if(f=="scale"){if(this.getBackgroundPositionX()!=null||this.getBackgroundPositionY()!=null)throw new Error("Does not support background position on scaled backgroud images.");
-a=c.compile(e);
-b="<img style='"+a+"' src='"+qx.util.ResourceManager.getInstance().toUri(d)+"'/>"}else a=c.compile(e)+c.compile(qx.bom.element.Decoration.getStyles(d,f)),b="<div style='font-size:0;line-height:0;"+a+"'></div>"}else a=c.compile(e),b="<div style='font-size:0;line-height:0;"+a+"'></div>";
-return b},
-_applyBackground:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!")}}});
-
-
 // qx.util.format.NumberFormat
 //   - Size: 2620 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -12021,187 +11251,6 @@ c=c.replace(new RegExp(e,"g"),"");
 g=(h?"-":"")+c;
 a!=null&&a.length!=0&&(a=a.replace(new RegExp(f),""),g+="."+a);
 return parseFloat(g)}}});
-
-
-// qx.dev.Tokenizer
-//   - Size: 2775 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.dev.Tokenizer",{extend:qx.core.Object,
-statics:{tokenizeJavaScript:function(D){for(var r={"break":1,
-"case":1,
-"catch":1,
-"continue":1,
-"default":1,
-"delete":1,
-"do":1,
-"else":1,
-"finally":1,
-"for":1,
-"function":1,
-"if":1,
-"in":1,
-"instanceof":1,
-"new":1,
-"return":1,
-"switch":1,
-"throw":1,
-"try":1,
-"typeof":1,
-"var":1,
-"while":1,
-"with":1},w={"void":1,
-"null":1,
-"true":1,
-"false":1,
-NaN:1,
-Infinity:1,
-"this":1},y={statics:1,
-members:1,
-construct:1,
-destruct:1,
-events:1,
-properties:1,
-extend:1,
-implement:1},c=function(a){return new RegExp("^"+a+"$")},g="\\/\\/.*?[\\n\\r$]",m="\\/\\*(?:.|[\\n\\r])*?\\*\\/",o="[a-zA-Z_][a-zA-Z0-9_]*\\b",k="[+-]?\\d+",q="[+-]?\\d+(([.]\\d+)*([eE][+-]?\\d+))?",j="[\"][^\"]*[\"]",f="['][^']*[']",p="\\t",n="\\r\\n|\\r|\\n",i="\\s",d="(?:\\/(?!\\*)[^\\t\\n\\r\\f\\v\\/]+?\\/[mgi]*)",l=["\\.(?:match|search|split)\\s*\\(\\s*\\(*\\s*"+d+"\\s*\\)*\\s*\\)","\\.(?:replace)\\s*\\(\\s*\\(*\\s*"+d+"\\s*\\)*\\s*?,?","\\s*\\(*\\s*"+d+"\\)*\\.(?:test|exec)\\s*\\(\\s*","(?::|=|\\?)\\s*\\(*\\s*"+d+"\\s*\\)*","[\\(,]\\s*"+d+"\\s*[,\\)]"].join("|"),t=c(g),B=c(m),v=c(o),E=c(k),s=c(q),F=c(j),G=c(f),u=c(p),A=c(n),z=c(i),C=c(l),x=new RegExp([g,m,o,k,q,j,f,f,p,n,i,l,"."].join("|"),"g"),b=[],h=D.match(x),e=0,a;
-e<h.length;
-e++)a=h[e],a.match(t)?b.push({type:"linecomment",
-value:a}):a.match(B)?b.push({type:"fullcomment",
-value:a}):a.match(C)?b.push({type:"regexp",
-value:a}):a.match(G)?b.push({type:"qstr",
-value:a}):a.match(F)?b.push({type:"qqstr",
-value:a}):r[a]?b.push({type:"keyword",
-value:a}):w[a]?b.push({type:"atom",
-value:a}):y[a]?b.push({type:"qxkey",
-value:a}):a.match(v)?b.push({type:"ident",
-value:a}):a.match(s)?b.push({type:"real",
-value:a}):a.match(E)?b.push({type:"int",
-value:a}):a.match(A)?b.push({type:"nl",
-value:a}):a.match(c(z))?b.push({type:"ws",
-value:a}):a.match(u)?b.push({type:"tab",
-value:a}):a==">"?b.push({type:"sym",
-value:">"}):a=="<"?b.push({type:"sym",
-value:"<"}):a=="&"?b.push({type:"sym",
-value:"&"}):b.push({type:"sym",
-value:a});
-return b},
-javaScriptToHtml:function(g){for(var e=qx.dev.Tokenizer.tokenizeJavaScript(g),a=new qx.util.StringBuilder(),d=0,c,b,h,f;
-d<e.length;
-d++){c=e[d],b=qx.bom.String.escape(c.value);
-switch(c.type){case"regexp":a.add("<span class='regexp'>",b,"</span>");
-break;
-case"ident":a.add("<span class='ident'>",b,"</span>");
-break;
-case"linecomment":case"fullcomment":a.add("<span class='comment'>",b,"</span>");
-break;
-case"qstr":case"qqstr":a.add("<span class='string'>",b,"</span>");
-break;
-case"keyword":case"atom":case"qxkey":a.add("<span class='",c.type,"'>",b,"</span>");
-break;
-case"nl":h=qx.bom.client.Engine.MSHTML?"<br>":"\n";
-a.add(h);
-break;
-case"ws":f=qx.bom.client.Engine.MSHTML?"&nbsp;":" ";
-a.add(f);
-break;
-default:a.add(b)}}return a.get()}}});
-
-
-// qx.ui.table.selection.Manager
-//   - Size: 1375 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.selection.Manager",{extend:qx.core.Object,
-construct:function(){this.base(arguments)},
-properties:{selectionModel:{check:"qx.ui.table.selection.Model"}},
-members:{__b0SAJI:null,
-handleMouseDown:function(a,b){if(b.isLeftPressed()){var c=this.getSelectionModel();
-c.isSelectedIndex(a)?this.__b0SAJI=false:(this._handleSelectEvent(a,b),this.__b0SAJI=true)}else b.isRightPressed()&&b.getModifiers()==0&&(c=this.getSelectionModel(),c.isSelectedIndex(a)||c.setSelectionInterval(a,a))},
-handleMouseUp:function(b,a){a.isLeftPressed()&&!this.__b0SAJI&&this._handleSelectEvent(b,a)},
-handleClick:function(){},
-handleSelectKeyDown:function(b,a){this._handleSelectEvent(b,a)},
-handleMoveKeyDown:function(a,d){var b=this.getSelectionModel(),c;
-switch(d.getModifiers()){case 0:b.setSelectionInterval(a,a);
-break;
-case qx.event.type.Dom.SHIFT_MASK:c=b.getAnchorSelectionIndex();
-c==-1?b.setSelectionInterval(a,a):b.setSelectionInterval(c,a);
-break}},
-_handleSelectEvent:function(a,d){var b=this.getSelectionModel(),e=b.getLeadSelectionIndex(),c=b.getAnchorSelectionIndex();
-d.isShiftPressed()?(a!=e||b.isSelectionEmpty())&&(c==-1&&(c=a),d.isCtrlOrCommandPressed()?b.addSelectionInterval(c,a):b.setSelectionInterval(c,a)):d.isCtrlOrCommandPressed()?b.isSelectedIndex(a)?b.removeSelectionInterval(a,a):b.addSelectionInterval(a,a):b.setSelectionInterval(a,a)}}});
-
-
-// qx.util.Json
-//   - Size: 3785 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Class.define("qx.util.Json",{statics:{__bn0U1J:null,
-BEAUTIFYING_INDENT:"  ",
-BEAUTIFYING_LINE_END:"\n",
-CONVERT_DATES:null,
-__gMIjx:{"function":"__convertFunction",
-"boolean":"__convertBoolean",
-number:"__convertNumber",
-string:"__convertString",
-object:"__convertObject",
-undefined:"__convertUndefined"},
-__bi1y1y:function(a){return String(a)},
-__baFLTE:function(a){return String(a)},
-__3Etsb:function(a){return isFinite(a)?String(a):"null"},
-__3Yx1L:function(b){var a;
-a=/["\\\x00-\x1f]/.test(b)?b.replace(/([\x00-\x1f\\"])/g,qx.util.Json.__bThgTH):b;
-return"\""+a+"\""},
-__bTbLUO:{"\b":"\\b",
-"\t":"\\t",
-"\n":"\\n",
-"\f":"\\f",
-"\r":"\\r",
-"\"":"\\\"",
-"\\":"\\\\"},
-__bThgTH:function(c,b){var a=qx.util.Json.__bTbLUO[b];
-if(a)return a;
-a=b.charCodeAt();
-return"\\u00"+Math.floor(a/16).toString(16)+(a%16).toString(16)},
-__WsI9b:function(g){var a=[],f=true,e,b,d=qx.util.Json.__yTKbY,c,h;
-a.push("[");
-d&&(qx.util.Json.__qmoZp+=qx.util.Json.BEAUTIFYING_INDENT,a.push(qx.util.Json.__qmoZp));
-for(c=0,h=g.length;
-c<h;
-c++)b=g[c],e=this.__gMIjx[typeof b],e&&(b=this[e](b,c+""),typeof b=="string"&&(f||(a.push(","),d&&a.push(qx.util.Json.__qmoZp)),a.push(b),f=false));
-d&&(qx.util.Json.__qmoZp=qx.util.Json.__qmoZp.substring(0,qx.util.Json.__qmoZp.length-qx.util.Json.BEAUTIFYING_INDENT.length),a.push(qx.util.Json.__qmoZp));
-a.push("]");
-return a.join("")},
-__PNHEE:function(a){if(!qx.util.Json.CONVERT_DATES){if(a.toJSON&&!qx.bom.client.Engine.OPERA)return a.toJSON();
-var b=qx.util.format.NumberFormat.getInstance(),c,d;
-b.setMinimumIntegerDigits(2);
-c=a.getUTCFullYear()+"-"+b.format(a.getUTCMonth()+1)+"-"+b.format(a.getUTCDate())+"T"+b.format(a.getUTCHours())+":"+b.format(a.getUTCMinutes())+":"+b.format(a.getUTCSeconds())+".";
-b.setMinimumIntegerDigits(3);
-return c+b.format(a.getUTCMilliseconds())+"Z"}d=a.getUTCFullYear()+","+a.getUTCMonth()+","+a.getUTCDate()+","+a.getUTCHours()+","+a.getUTCMinutes()+","+a.getUTCSeconds()+","+a.getUTCMilliseconds();
-return"new Date(Date.UTC("+d+"))"},
-__JWZ7y:function(g,c){var a=[],f=true,e,b,d=qx.util.Json.__yTKbY,c;
-a.push("{");
-d&&(qx.util.Json.__qmoZp+=qx.util.Json.BEAUTIFYING_INDENT,a.push(qx.util.Json.__qmoZp));
-for(c in g)b=g[c],e=this.__gMIjx[typeof b],e&&(b=this[e](b,c),typeof b=="string"&&(f||(a.push(","),d&&a.push(qx.util.Json.__qmoZp)),a.push(this.__3Yx1L(c),":",b),f=false));
-d&&(qx.util.Json.__qmoZp=qx.util.Json.__qmoZp.substring(0,qx.util.Json.__qmoZp.length-qx.util.Json.BEAUTIFYING_INDENT.length),a.push(qx.util.Json.__qmoZp));
-a.push("}");
-return a.join("")},
-__3eCQR:function(a,b){if(a){if(qx.lang.Type.isFunction(a.toJSON)&&a.toJSON!==this.__bn0U1J)return this.__uNnVI(a.toJSON(b),b);
-if(qx.lang.Type.isDate(a))return this.__PNHEE(a,b);
-if(qx.lang.Type.isArray(a))return this.__WsI9b(a,b);
-if(qx.lang.Type.isObject(a))return this.__JWZ7y(a,b);
-return""}return"null"},
-__bq8erK:function(){if(qx.core.Setting.get("qx.jsonEncodeUndefined"))return"null"},
-__uNnVI:function(a,b){return this[this.__gMIjx[typeof a]](a,b)},
-stringify:function(b,c){this.__yTKbY=c;
-this.__qmoZp=this.BEAUTIFYING_LINE_END;
-var a=this.__uNnVI(b,"");
-typeof a!="string"&&(a=null);
-qx.core.Setting.get("qx.jsonDebugging")&&qx.log.Logger.debug(this,"JSON request: "+a);
-return a},
-parse:function(a,b){b===undefined&&(b=true);
-qx.core.Setting.get("qx.jsonDebugging")&&qx.log.Logger.debug(this,"JSON response: "+a);
-if(b)if(/[^,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/.test(a.replace(/"(\\.|[^"\\])*"/g,"")))throw new Error("Could not parse JSON string!");
-try{var d=a&&a.length>0?eval("("+a+")"):null;
-return d}catch(c){throw new Error("Could not evaluate JSON string: "+c.message)}}},
-defer:function(a){qx.core.Setting.define("qx.jsonEncodeUndefined",true);
-qx.core.Setting.define("qx.jsonDebugging",false);
-a.__bn0U1J=Date.prototype.toJSON}});
 
 
 // qx.ui.form.RadioGroup
@@ -12286,6 +11335,130 @@ a&&a.setValue(true)}},
 destruct:function(){this._disposeArray("__items")}});
 
 
+// qx.util.Json
+//   - Size: 3785 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.util.Json",{statics:{__bn0U1J:null,
+BEAUTIFYING_INDENT:"  ",
+BEAUTIFYING_LINE_END:"\n",
+CONVERT_DATES:null,
+__gMIjx:{"function":"__convertFunction",
+"boolean":"__convertBoolean",
+number:"__convertNumber",
+string:"__convertString",
+object:"__convertObject",
+undefined:"__convertUndefined"},
+__bi1y1y:function(a){return String(a)},
+__baFLTE:function(a){return String(a)},
+__3Etsb:function(a){return isFinite(a)?String(a):"null"},
+__3Yx1L:function(b){var a;
+a=/["\\\x00-\x1f]/.test(b)?b.replace(/([\x00-\x1f\\"])/g,qx.util.Json.__bThgTH):b;
+return"\""+a+"\""},
+__bTbLUO:{"\b":"\\b",
+"\t":"\\t",
+"\n":"\\n",
+"\f":"\\f",
+"\r":"\\r",
+"\"":"\\\"",
+"\\":"\\\\"},
+__bThgTH:function(c,b){var a=qx.util.Json.__bTbLUO[b];
+if(a)return a;
+a=b.charCodeAt();
+return"\\u00"+Math.floor(a/16).toString(16)+(a%16).toString(16)},
+__WsI9b:function(g){var a=[],f=true,e,b,d=qx.util.Json.__yTKbY,c,h;
+a.push("[");
+d&&(qx.util.Json.__qmoZp+=qx.util.Json.BEAUTIFYING_INDENT,a.push(qx.util.Json.__qmoZp));
+for(c=0,h=g.length;
+c<h;
+c++)b=g[c],e=this.__gMIjx[typeof b],e&&(b=this[e](b,c+""),typeof b=="string"&&(f||(a.push(","),d&&a.push(qx.util.Json.__qmoZp)),a.push(b),f=false));
+d&&(qx.util.Json.__qmoZp=qx.util.Json.__qmoZp.substring(0,qx.util.Json.__qmoZp.length-qx.util.Json.BEAUTIFYING_INDENT.length),a.push(qx.util.Json.__qmoZp));
+a.push("]");
+return a.join("")},
+__PNHEE:function(a){if(!qx.util.Json.CONVERT_DATES){if(a.toJSON&&!qx.bom.client.Engine.OPERA)return a.toJSON();
+var b=qx.util.format.NumberFormat.getInstance(),c,d;
+b.setMinimumIntegerDigits(2);
+c=a.getUTCFullYear()+"-"+b.format(a.getUTCMonth()+1)+"-"+b.format(a.getUTCDate())+"T"+b.format(a.getUTCHours())+":"+b.format(a.getUTCMinutes())+":"+b.format(a.getUTCSeconds())+".";
+b.setMinimumIntegerDigits(3);
+return c+b.format(a.getUTCMilliseconds())+"Z"}d=a.getUTCFullYear()+","+a.getUTCMonth()+","+a.getUTCDate()+","+a.getUTCHours()+","+a.getUTCMinutes()+","+a.getUTCSeconds()+","+a.getUTCMilliseconds();
+return"new Date(Date.UTC("+d+"))"},
+__JWZ7y:function(g,c){var a=[],f=true,e,b,d=qx.util.Json.__yTKbY,c;
+a.push("{");
+d&&(qx.util.Json.__qmoZp+=qx.util.Json.BEAUTIFYING_INDENT,a.push(qx.util.Json.__qmoZp));
+for(c in g)b=g[c],e=this.__gMIjx[typeof b],e&&(b=this[e](b,c),typeof b=="string"&&(f||(a.push(","),d&&a.push(qx.util.Json.__qmoZp)),a.push(this.__3Yx1L(c),":",b),f=false));
+d&&(qx.util.Json.__qmoZp=qx.util.Json.__qmoZp.substring(0,qx.util.Json.__qmoZp.length-qx.util.Json.BEAUTIFYING_INDENT.length),a.push(qx.util.Json.__qmoZp));
+a.push("}");
+return a.join("")},
+__3eCQR:function(a,b){if(a){if(qx.lang.Type.isFunction(a.toJSON)&&a.toJSON!==this.__bn0U1J)return this.__uNnVI(a.toJSON(b),b);
+if(qx.lang.Type.isDate(a))return this.__PNHEE(a,b);
+if(qx.lang.Type.isArray(a))return this.__WsI9b(a,b);
+if(qx.lang.Type.isObject(a))return this.__JWZ7y(a,b);
+return""}return"null"},
+__bq8erK:function(){if(qx.core.Setting.get("qx.jsonEncodeUndefined"))return"null"},
+__uNnVI:function(a,b){return this[this.__gMIjx[typeof a]](a,b)},
+stringify:function(b,c){this.__yTKbY=c;
+this.__qmoZp=this.BEAUTIFYING_LINE_END;
+var a=this.__uNnVI(b,"");
+typeof a!="string"&&(a=null);
+qx.core.Setting.get("qx.jsonDebugging")&&qx.log.Logger.debug(this,"JSON request: "+a);
+return a},
+parse:function(a,b){b===undefined&&(b=true);
+qx.core.Setting.get("qx.jsonDebugging")&&qx.log.Logger.debug(this,"JSON response: "+a);
+if(b)if(/[^,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/.test(a.replace(/"(\\.|[^"\\])*"/g,"")))throw new Error("Could not parse JSON string!");
+try{var d=a&&a.length>0?eval("("+a+")"):null;
+return d}catch(c){throw new Error("Could not evaluate JSON string: "+c.message)}}},
+defer:function(a){qx.core.Setting.define("qx.jsonEncodeUndefined",true);
+qx.core.Setting.define("qx.jsonDebugging",false);
+a.__bn0U1J=Date.prototype.toJSON}});
+
+
+// qx.ui.form.IRadioItem
+//   - Size: 237 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Interface.define("qx.ui.form.IRadioItem",{events:{changeValue:"qx.event.type.Data"},
+members:{setValue:function(){},
+getValue:function(){},
+setGroup:function(a){this.assertInstance(a,qx.ui.form.RadioGroup)},
+getGroup:function(){}}});
+
+
+// apiviewer.UiModel
+//   - Size: 419 bytes
+//   - Modified: 2010-05-05T20:54:13
+qx.Class.define("apiviewer.UiModel",{extend:qx.core.Object,
+type:"singleton",
+include:[qx.data.MBinding],
+properties:{showInherited:{check:"Boolean",
+init:false,
+event:"changeShowInherited"},
+expandProperties:{check:"Boolean",
+init:false,
+event:"changeExpandProperties"},
+showProtected:{check:"Boolean",
+init:false,
+event:"changeShowProtected"},
+showPrivate:{check:"Boolean",
+init:false,
+event:"changeShowPrivate"}}});
+
+
+// qx.ui.table.pane.CellEvent
+//   - Size: 544 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.pane.CellEvent",{extend:qx.event.type.Mouse,
+properties:{row:{check:"Integer",
+nullable:true},
+column:{check:"Integer",
+nullable:true}},
+members:{init:function(b,d,a,c){d.clone(this);
+this.setBubbles(false);
+a!=null?this.setRow(a):this.setRow(b._getRowForPagePos(this.getDocumentLeft(),this.getDocumentTop()));
+c!=null?this.setColumn(c):this.setColumn(b._getColumnForPageX(this.getDocumentLeft()))},
+clone:function(b){var a=this.base(arguments,b);
+a.set({row:this.getRow(),
+column:this.getColumn()});
+return a}}});
+
+
 // apiviewer.dao.Node
 //   - Size: 1615 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -12324,82 +11497,9 @@ default:return false}return true}},
 destruct:function(){this._docNode=this._errors=null}});
 
 
-// qx.ui.decoration.Grid
-//   - Size: 3516 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Class.define("qx.ui.decoration.Grid",{extend:qx.ui.decoration.Abstract,
-construct:function(a,b){this.base(arguments);
-a!=null&&this.setBaseImage(a);
-b!=null&&this.setInsets(b)},
-properties:{baseImage:{check:"String",
-nullable:true,
-apply:"_applyBaseImage"}},
-members:{__qyd51:null,
-__qd9wf:null,
-__msGX5:null,
-_getDefaultInsets:function(){return{top:0,
-right:0,
-bottom:0,
-left:0}},
-_isInitialized:function(){return!!this.__qyd51},
-getMarkup:function(){if(this.__qyd51)return this.__qyd51;
-var e=qx.bom.element.Decoration,d=qx.bom.element2.Style,f=qx.util.ResourceManager.getInstance(),b=this.__qd9wf,c=this.__msGX5,a=[];
-a.push("<div style=\"position:absolute;top:0;left:0;overflow:hidden;font-size:0;line-height:0;\">");
-a.push("<div style='position:absolute;top:0;left:0;",d.compile(e.getStyles(b.tl,"no-repeat")),"'></div>");
-a.push(this.__bfjo39(b.t,c.left,false));
-a.push("<div style='position:absolute;top:0;right:0;",d.compile(e.getStyles(b.tr,"no-repeat")),"'></div>");
-a.push("<div style='position:absolute;bottom:0;left:0;",d.compile(e.getStyles(b.bl,"no-repeat")),"'></div>");
-a.push(this.__bfjo39(b.b,c.right,true));
-a.push("<div style='position:absolute;bottom:0;right:0;",d.compile(e.getStyles(b.br,"no-repeat")),"'></div>");
-a.push(this.__bflkpo(b.l,c.top,false));
-a.push("<img src='"+f.toUri(b.c)+"' style='position:absolute;top:",c.top,"px;left:",c.left,"px;'/>");
-a.push(this.__bflkpo(b.r,c.bottom,true));
-a.push("</div>");
-return this.__qyd51=a.join("")},
-resize:function(a,f,e){var d=this.__msGX5,b=f-d.left-d.right,c=e-d.top-d.bottom;
-b<0&&(b=0);
-c<0&&(c=0);
-a.style.width=f+"px";
-a.style.height=e+"px";
-a.childNodes[1].style.width=b+"px";
-a.childNodes[4].style.width=b+"px";
-a.childNodes[7].style.width=b+"px";
-a.childNodes[6].style.height=c+"px";
-a.childNodes[7].style.height=c+"px";
-a.childNodes[8].style.height=c+"px"},
-tint:function(){},
-_applyBaseImage:function(c){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!");
-if(c){var d=/(.*)(\.[a-z]+)$/.exec(c),a=d[1],b=d[2],e=this.__qd9wf={tl:a+"-tl"+b,
-t:a+"-t"+b,
-tr:a+"-tr"+b,
-bl:a+"-bl"+b,
-b:a+"-b"+b,
-br:a+"-br"+b,
-l:a+"-l"+b,
-c:a+"-c"+b,
-r:a+"-r"+b};
-this.__msGX5=this._computeEdgeSizes(e)}},
-__bfjo39:function(b,e,h){var d=qx.util.ResourceManager.getInstance(),g=d.getImageWidth(b),c=d.getImageHeight(b),a=d.getImageSprite(b),i,f;
-if(a){i=qx.bom.element2.Clip.compileValue({top:a.top,
-height:c}),f=h?"bottom:"+(c-a.height+a.top)+"px":"top:"+-a.top+"px";
-return"<img src='"+a.uri+"' style='position:absolute;left:"+e+"px;"+f+";width:"+g+"px;height:"+a.height+"px;clip:"+i+"'/>"}f=h?"bottom:0":"top:0";
-return"<img src='"+b+"' style='position:absolute;left:"+e+"px;"+f+";width:"+g+"px;height:"+c+";'/>"},
-__bflkpo:function(b,g,h){var d=qx.util.ResourceManager.getInstance(),c=d.getImageWidth(b),f=d.getImageHeight(b),a=d.getImageSprite(b),i,e;
-if(a){i=qx.bom.element2.Clip.compileValue({left:a.left,
-width:c}),e=h?"right:"+(c-a.width+a.left)+"px":"left:"+-a.left+"px";
-return"<img src='"+a.uri+"' style='position:absolute;top:"+g+"px;"+e+";height:"+f+"px;width:"+a.width+"px;clip:"+i+"'/>"}e=h?"right:0":"left:0";
-return"<img src='"+b+"' style='position:absolute;top:"+g+"px;"+e+";height:"+f+"px;width:"+c+";'/>"},
-_computeEdgeSizes:function(b){var a=qx.util.ResourceManager.getInstance();
-return{top:a.getImageHeight(b.t),
-bottom:a.getImageHeight(b.b),
-left:a.getImageWidth(b.l),
-right:a.getImageWidth(b.r)}}},
-destruct:function(){this.__qyd51=this.__qd9wf=this.__msGX5=null}});
-
-
 // qx.theme.manager.Meta
 //   - Size: 796 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.theme.manager.Meta",{type:"singleton",
 extend:qx.core.Object,
 properties:{theme:{check:"Theme",
@@ -12420,70 +11520,9 @@ this.setTheme(b)}}},
 defer:function(){qx.core.Setting.define("qx.theme","qx.theme.Modern")}});
 
 
-// qx.ui.table.pane.CellEvent
-//   - Size: 544 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.pane.CellEvent",{extend:qx.event.type.Mouse,
-properties:{row:{check:"Integer",
-nullable:true},
-column:{check:"Integer",
-nullable:true}},
-members:{init:function(b,d,a,c){d.clone(this);
-this.setBubbles(false);
-a!=null?this.setRow(a):this.setRow(b._getRowForPagePos(this.getDocumentLeft(),this.getDocumentTop()));
-c!=null?this.setColumn(c):this.setColumn(b._getColumnForPageX(this.getDocumentLeft()))},
-clone:function(b){var a=this.base(arguments,b);
-a.set({row:this.getRow(),
-column:this.getColumn()});
-return a}}});
-
-
-// qx.ui.form.IRadioItem
-//   - Size: 237 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IRadioItem",{events:{changeValue:"qx.event.type.Data"},
-members:{setValue:function(){},
-getValue:function(){},
-setGroup:function(a){this.assertInstance(a,qx.ui.form.RadioGroup)},
-getGroup:function(){}}});
-
-
-// qx.ui.decoration.Background
-//   - Size: 1105 bytes
-//   - Modified: 2010-09-30T14:20:20
-qx.Class.define("qx.ui.decoration.Background",{extend:qx.ui.decoration.Abstract,
-include:[qx.ui.decoration.MBackgroundImage],
-construct:function(a){this.base(arguments);
-a!=null&&this.setBackgroundColor(a)},
-properties:{backgroundColor:{check:"Color",
-nullable:true,
-apply:"_applyStyle"}},
-members:{__qyd51:null,
-_getDefaultInsets:function(){return{top:0,
-right:0,
-bottom:0,
-left:0}},
-_isInitialized:function(){return!!this.__qyd51},
-getMarkup:function(){if(this.__qyd51)return this.__qyd51;
-var b={position:"absolute",
-top:0,
-left:0},a=this._generateBackgroundMarkup(b);
-return this.__qyd51=a},
-resize:function(b,d,c){var a=this.getInsets();
-b.style.width=(d-a.left-a.right)+"px";
-b.style.height=(c-a.top-a.bottom)+"px";
-b.style.left=-a.left+"px";
-b.style.top=-a.top+"px"},
-tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
-a==null&&(a=this.getBackgroundColor());
-b.style.backgroundColor=c.resolve(a)||""},
-_applyStyle:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
-destruct:function(){this.__qyd51=null}});
-
-
 // apiviewer.dao.ClassItem
 //   - Size: 1940 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("apiviewer.dao.ClassItem",{extend:apiviewer.dao.Node,
 construct:function(b,a,c){this._class=a;
 this._listName=c;
@@ -12610,7 +11649,7 @@ this._disposeObjects("_return")}});
 
 // apiviewer.dao.Class
 //   - Size: 7792 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("apiviewer.dao.Class",{extend:apiviewer.dao.Node,
 construct:function(b,a){this.base(arguments,b);
 this.self(arguments).registerClass(this);
@@ -12929,7 +11968,7 @@ this._disposeArray("_infoPanels",1)}});
 
 // apiviewer.ui.ClassViewer
 //   - Size: 7090 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("apiviewer.ui.ClassViewer",{extend:apiviewer.ui.AbstractViewer,
 construct:function(){this.base(arguments);
 this.addInfoPanel(new apiviewer.ui.panels.MethodPanel("constructor","constructor"));
@@ -13526,110 +12565,9 @@ isThemeable:function(){return this.getDocNode()._docNode.attributes.themeable||f
 isRefined:function(){return this._docNode.attributes.refine||false}}});
 
 
-// qx.ui.decoration.Single
-//   - Size: 3487 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Class.define("qx.ui.decoration.Single",{extend:qx.ui.decoration.Abstract,
-include:[qx.ui.decoration.MBackgroundImage],
-construct:function(b,a,c){this.base(arguments);
-b!=null&&this.setWidth(b);
-a!=null&&this.setStyle(a);
-c!=null&&this.setColor(c)},
-properties:{widthTop:{check:"Number",
-init:0,
-apply:"_applyWidth"},
-widthRight:{check:"Number",
-init:0,
-apply:"_applyWidth"},
-widthBottom:{check:"Number",
-init:0,
-apply:"_applyWidth"},
-widthLeft:{check:"Number",
-init:0,
-apply:"_applyWidth"},
-styleTop:{nullable:true,
-check:["solid","dotted","dashed","double"],
-init:"solid",
-apply:"_applyStyle"},
-styleRight:{nullable:true,
-check:["solid","dotted","dashed","double"],
-init:"solid",
-apply:"_applyStyle"},
-styleBottom:{nullable:true,
-check:["solid","dotted","dashed","double"],
-init:"solid",
-apply:"_applyStyle"},
-styleLeft:{nullable:true,
-check:["solid","dotted","dashed","double"],
-init:"solid",
-apply:"_applyStyle"},
-colorTop:{nullable:true,
-check:"Color",
-apply:"_applyStyle"},
-colorRight:{nullable:true,
-check:"Color",
-apply:"_applyStyle"},
-colorBottom:{nullable:true,
-check:"Color",
-apply:"_applyStyle"},
-colorLeft:{nullable:true,
-check:"Color",
-apply:"_applyStyle"},
-backgroundColor:{check:"Color",
-nullable:true,
-apply:"_applyStyle"},
-left:{group:["widthLeft","styleLeft","colorLeft"]},
-right:{group:["widthRight","styleRight","colorRight"]},
-top:{group:["widthTop","styleTop","colorTop"]},
-bottom:{group:["widthBottom","styleBottom","colorBottom"]},
-width:{group:["widthTop","widthRight","widthBottom","widthLeft"],
-shorthand:true},
-style:{group:["styleTop","styleRight","styleBottom","styleLeft"],
-shorthand:true},
-color:{group:["colorTop","colorRight","colorBottom","colorLeft"],
-shorthand:true}},
-members:{__qyd51:null,
-_getDefaultInsets:function(){return{top:this.getWidthTop(),
-right:this.getWidthRight(),
-bottom:this.getWidthBottom(),
-left:this.getWidthLeft()}},
-_isInitialized:function(){return!!this.__qyd51},
-getMarkup:function(){if(this.__qyd51)return this.__qyd51;
-var c=qx.theme.manager.Color.getInstance(),a={},b=this.getWidthTop(),d;
-b>0&&(a.borderTop=b+"px "+this.getStyleTop()+" "+(c.resolve(this.getColorTop())||""));
-b=this.getWidthRight();
-b>0&&(a.borderRight=b+"px "+this.getStyleRight()+" "+(c.resolve(this.getColorRight())||""));
-b=this.getWidthBottom();
-b>0&&(a.borderBottom=b+"px "+this.getStyleBottom()+" "+(c.resolve(this.getColorBottom())||""));
-b=this.getWidthLeft();
-b>0&&(a.borderLeft=b+"px "+this.getStyleLeft()+" "+(c.resolve(this.getColorLeft())||""));
-if(a.length===0)throw new Error("Invalid Single decorator (zero border width). Use qx.ui.decorator.Background instead!");
-a.position="absolute";
-a.top=0;
-a.left=0;
-d=this._generateBackgroundMarkup(a);
-return this.__qyd51=d},
-resize:function(a,d,c){var b=this.getInsets();
-d-=b.left+b.right;
-c-=b.top+b.bottom;
-d<0&&(d=0);
-c<0&&(c=0);
-a.style.width=d+"px";
-a.style.height=c+"px";
-a.style.left=(parseInt(a.style.left)+b.left-this.getWidthLeft())+"px";
-a.style.top=(parseInt(a.style.top)+b.top-this.getWidthTop())+"px"},
-tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
-a==null&&(a=this.getBackgroundColor());
-b.style.backgroundColor=c.resolve(a)||""},
-_applyWidth:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!");
-this._resetInsets()},
-_applyStyle:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
-destruct:function(){this.__qyd51=null}});
-
-
 // qx.ui.table.cellrenderer.Abstract
 //   - Size: 1619 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.table.cellrenderer.Abstract",{type:"abstract",
 implement:qx.ui.table.ICellRenderer,
 extend:qx.core.Object,
@@ -13661,55 +12599,102 @@ return a},
 createDataCellHtml:function(a,b){b.push("<div class=\"",this._getCellClass(a),"\" style=\"","left:",a.styleLeft,"px;",this._getCellSizeStyle(a.styleWidth,a.styleHeight,this._insetX,this._insetY),this._getCellStyle(a),"\" ",this._getCellAttributes(a),">"+this._getContentHtml(a),"</div>")}}});
 
 
-// qx.ui.decoration.Uniform
-//   - Size: 1847 bytes
-//   - Modified: 2010-11-10T00:54:42
-qx.Class.define("qx.ui.decoration.Uniform",{extend:qx.ui.decoration.Abstract,
-include:[qx.ui.decoration.MBackgroundImage],
-construct:function(b,a,c){this.base(arguments);
-b!=null&&this.setWidth(b);
-a!=null&&this.setStyle(a);
-c!=null&&this.setColor(c)},
-properties:{width:{check:"PositiveInteger",
-init:0,
-apply:"_applyWidth"},
-style:{nullable:true,
-check:["solid","dotted","dashed","double"],
-init:"solid",
-apply:"_applyStyle"},
-color:{nullable:true,
-check:"Color",
-apply:"_applyStyle"},
-backgroundColor:{check:"Color",
-nullable:true,
-apply:"_applyStyle"}},
-members:{__qyd51:null,
-_getDefaultInsets:function(){var a=this.getWidth();
-return{top:a,
-right:a,
-bottom:a,
-left:a}},
-_isInitialized:function(){return!!this.__qyd51},
-getMarkup:function(){if(this.__qyd51)return this.__qyd51;
-var b={position:"absolute",
-top:0,
-left:0},a=this.getWidth(),c,d;
-if(a===0)throw new Error("Invalid Uniform decorator (zero border width). Use qx.ui.decorator.Background instead!");
-c=qx.theme.manager.Color.getInstance();
-b.border=a+"px "+this.getStyle()+" "+(c.resolve(this.getColor())||"");
-d=this._generateBackgroundMarkup(b);
-return this.__qyd51=d},
-resize:function(c,b,a){var e=this.getBackgroundImage()&&this.getBackgroundRepeat()=="scale",d;
-(e||qx.bom.client.Feature.CONTENT_BOX)&&(d=this.getWidth()*2,b-=d,a-=d,b<0&&(b=0),a<0&&(a=0));
-c.style.width=b+"px";
-c.style.height=a+"px"},
-tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
-a==null&&(a=this.getBackgroundColor());
-b.style.backgroundColor=c.resolve(a)||""},
-_applyWidth:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!");
-this._resetInsets()},
-_applyStyle:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
-destruct:function(){this.__qyd51=null}});
+// qx.event.handler.Element
+//   - Size: 1363 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.event.handler.Element",{extend:qx.core.Object,
+implement:qx.event.IEventHandler,
+construct:function(a){this.base(arguments);
+this._manager=a;
+this._registeredEvents={}},
+statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
+SUPPORTED_TYPES:{abort:true,
+scroll:true,
+select:true,
+reset:true,
+submit:true},
+TARGET_CHECK:qx.event.IEventHandler.TARGET_DOMNODE,
+IGNORE_CAN_HANDLE:true},
+members:{canHandleEvent:function(){},
+registerEvent:function(b,a){var e=qx.core.ObjectRegistry.toHashCode(b),d=e+"-"+a,c=qx.lang.Function.listener(this._onNative,this,d);
+qx.bom.Event.addNativeListener(b,a,c);
+this._registeredEvents[d]={element:b,
+type:a,
+listener:c}},
+unregisterEvent:function(c,a){var f=this._registeredEvents,e,d,b;
+if(!f)return;
+e=qx.core.ObjectRegistry.toHashCode(c),d=e+"-"+a,b=this._registeredEvents[d];
+b&&qx.bom.Event.removeNativeListener(c,a,b.listener);
+delete this._registeredEvents[d]},
+_onNative:qx.event.GlobalError.observeMethod(function(d,c){var b=this._registeredEvents,a;
+if(!b)return;
+a=b[c];
+qx.event.Registration.fireNonBubblingEvent(a.element,a.type,qx.event.type.Native,[d])})},
+destruct:function(){var a,c=this._registeredEvents,b;
+for(b in c)a=c[b],qx.bom.Event.removeNativeListener(a.element,a.type,a.listener);
+this._manager=this._registeredEvents=null},
+defer:function(a){qx.event.Registration.addHandler(a)}});
+
+
+// qx.ui.core.selection.Widget
+//   - Size: 2469 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.ui.core.selection.Widget",{extend:qx.ui.core.selection.Abstract,
+construct:function(a){this.base(arguments);
+this.__qzkhX=a},
+members:{__qzkhX:null,
+_isSelectable:function(a){return this._isItemSelectable(a)&&a.getLayoutParent()===this.__qzkhX},
+_selectableToHashCode:function(a){return a.$$hash},
+_styleSelectable:function(b,a,c){c?b.addState(a):b.removeState(a)},
+_capture:function(){this.__qzkhX.capture()},
+_releaseCapture:function(){this.__qzkhX.releaseCapture()},
+_isItemSelectable:function(a){return this._userInteraction?a.isVisible()&&a.isEnabled():a.isVisible()},
+_getWidget:function(){return this.__qzkhX},
+_getLocation:function(){var a=this.__qzkhX.getContentElement().getDomElement();
+return a?qx.bom.element.Location.get(a):null},
+_getDimension:function(){return this.__qzkhX.getInnerSize()},
+_getSelectableLocationX:function(b){var a=b.getBounds();
+if(a)return{left:a.left,
+right:a.left+a.width}},
+_getSelectableLocationY:function(b){var a=b.getBounds();
+if(a)return{top:a.top,
+bottom:a.top+a.height}},
+_getScroll:function(){return{left:0,
+top:0}},
+_scrollBy:function(){},
+_scrollItemIntoView:function(a){this.__qzkhX.scrollChildIntoView(a)},
+getSelectables:function(g){var e=false,c,d,b,a,f;
+g||(e=this._userInteraction,this._userInteraction=true);
+c=this.__qzkhX.getChildren(),d=[],a=0,f=c.length;
+for(;
+a<f;
+a++)b=c[a],this._isItemSelectable(b)&&d.push(b);
+this._userInteraction=e;
+return d},
+_getSelectableRange:function(e,g){if(e===g)return[e];
+for(var f=this.__qzkhX.getChildren(),c=[],b=false,a,d=0,h=f.length;
+d<h;
+d++){a=f[d];
+if(a===e||a===g){if(b){c.push(a);
+break}else b=true}b&&this._isItemSelectable(a)&&c.push(a)}return c},
+_getFirstSelectable:function(){for(var b=this.__qzkhX.getChildren(),a=0,c=b.length;
+a<c;
+a++)if(this._isItemSelectable(b[a]))return b[a];
+return null},
+_getLastSelectable:function(){for(var b=this.__qzkhX.getChildren(),a=b.length-1;
+a>0;
+a--)if(this._isItemSelectable(b[a]))return b[a];
+return null},
+_getRelatedSelectable:function(g,e){var d=this.__qzkhX.getOrientation()==="vertical",c=this.__qzkhX.getChildren(),f=c.indexOf(g),b,a;
+if(d&&e==="above"||!d&&e==="left")for(a=f-1;
+a>=0;
+a--){b=c[a];
+if(this._isItemSelectable(b))return b}else if(d&&e==="under"||!d&&e==="right")for(a=f+1;
+a<c.length;
+a++){b=c[a];
+if(this._isItemSelectable(b))return b}return null},
+_getPage:function(b,a){return a?this._getFirstSelectable():this._getLastSelectable()}},
+destruct:function(){this.__qzkhX=null}});
 
 
 // qx.event.handler.Input
@@ -13802,139 +12787,6 @@ getRowAttributes:function(){return""}},
 destruct:function(){this.__qwQQT=this.__EudQp=this.__biXIkY=null}});
 
 
-// qx.ui.core.selection.Widget
-//   - Size: 2469 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.ui.core.selection.Widget",{extend:qx.ui.core.selection.Abstract,
-construct:function(a){this.base(arguments);
-this.__qzkhX=a},
-members:{__qzkhX:null,
-_isSelectable:function(a){return this._isItemSelectable(a)&&a.getLayoutParent()===this.__qzkhX},
-_selectableToHashCode:function(a){return a.$$hash},
-_styleSelectable:function(b,a,c){c?b.addState(a):b.removeState(a)},
-_capture:function(){this.__qzkhX.capture()},
-_releaseCapture:function(){this.__qzkhX.releaseCapture()},
-_isItemSelectable:function(a){return this._userInteraction?a.isVisible()&&a.isEnabled():a.isVisible()},
-_getWidget:function(){return this.__qzkhX},
-_getLocation:function(){var a=this.__qzkhX.getContentElement().getDomElement();
-return a?qx.bom.element.Location.get(a):null},
-_getDimension:function(){return this.__qzkhX.getInnerSize()},
-_getSelectableLocationX:function(b){var a=b.getBounds();
-if(a)return{left:a.left,
-right:a.left+a.width}},
-_getSelectableLocationY:function(b){var a=b.getBounds();
-if(a)return{top:a.top,
-bottom:a.top+a.height}},
-_getScroll:function(){return{left:0,
-top:0}},
-_scrollBy:function(){},
-_scrollItemIntoView:function(a){this.__qzkhX.scrollChildIntoView(a)},
-getSelectables:function(g){var e=false,c,d,b,a,f;
-g||(e=this._userInteraction,this._userInteraction=true);
-c=this.__qzkhX.getChildren(),d=[],a=0,f=c.length;
-for(;
-a<f;
-a++)b=c[a],this._isItemSelectable(b)&&d.push(b);
-this._userInteraction=e;
-return d},
-_getSelectableRange:function(e,g){if(e===g)return[e];
-for(var f=this.__qzkhX.getChildren(),c=[],b=false,a,d=0,h=f.length;
-d<h;
-d++){a=f[d];
-if(a===e||a===g){if(b){c.push(a);
-break}else b=true}b&&this._isItemSelectable(a)&&c.push(a)}return c},
-_getFirstSelectable:function(){for(var b=this.__qzkhX.getChildren(),a=0,c=b.length;
-a<c;
-a++)if(this._isItemSelectable(b[a]))return b[a];
-return null},
-_getLastSelectable:function(){for(var b=this.__qzkhX.getChildren(),a=b.length-1;
-a>0;
-a--)if(this._isItemSelectable(b[a]))return b[a];
-return null},
-_getRelatedSelectable:function(g,e){var d=this.__qzkhX.getOrientation()==="vertical",c=this.__qzkhX.getChildren(),f=c.indexOf(g),b,a;
-if(d&&e==="above"||!d&&e==="left")for(a=f-1;
-a>=0;
-a--){b=c[a];
-if(this._isItemSelectable(b))return b}else if(d&&e==="under"||!d&&e==="right")for(a=f+1;
-a<c.length;
-a++){b=c[a];
-if(this._isItemSelectable(b))return b}return null},
-_getPage:function(b,a){return a?this._getFirstSelectable():this._getLastSelectable()}},
-destruct:function(){this.__qzkhX=null}});
-
-
-// qx.event.handler.Element
-//   - Size: 1363 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.handler.Element",{extend:qx.core.Object,
-implement:qx.event.IEventHandler,
-construct:function(a){this.base(arguments);
-this._manager=a;
-this._registeredEvents={}},
-statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
-SUPPORTED_TYPES:{abort:true,
-scroll:true,
-select:true,
-reset:true,
-submit:true},
-TARGET_CHECK:qx.event.IEventHandler.TARGET_DOMNODE,
-IGNORE_CAN_HANDLE:true},
-members:{canHandleEvent:function(){},
-registerEvent:function(b,a){var e=qx.core.ObjectRegistry.toHashCode(b),d=e+"-"+a,c=qx.lang.Function.listener(this._onNative,this,d);
-qx.bom.Event.addNativeListener(b,a,c);
-this._registeredEvents[d]={element:b,
-type:a,
-listener:c}},
-unregisterEvent:function(c,a){var f=this._registeredEvents,e,d,b;
-if(!f)return;
-e=qx.core.ObjectRegistry.toHashCode(c),d=e+"-"+a,b=this._registeredEvents[d];
-b&&qx.bom.Event.removeNativeListener(c,a,b.listener);
-delete this._registeredEvents[d]},
-_onNative:qx.event.GlobalError.observeMethod(function(d,c){var b=this._registeredEvents,a;
-if(!b)return;
-a=b[c];
-qx.event.Registration.fireNonBubblingEvent(a.element,a.type,qx.event.type.Native,[d])})},
-destruct:function(){var a,c=this._registeredEvents,b;
-for(b in c)a=c[b],qx.bom.Event.removeNativeListener(a.element,a.type,a.listener);
-this._manager=this._registeredEvents=null},
-defer:function(a){qx.event.Registration.addHandler(a)}});
-
-
-// qx.ui.table.cellrenderer.AbstractImage
-//   - Size: 1648 bytes
-//   - Modified: 2010-11-10T13:22:30
-qx.Class.define("qx.ui.table.cellrenderer.AbstractImage",{extend:qx.ui.table.cellrenderer.Abstract,
-type:"abstract",
-construct:function(){this.base(arguments);
-var a=this.self(arguments);
-a.stylesheet||(a.stylesheet=qx.bom.Stylesheet.createElement(".qooxdoo-table-cell-icon {  text-align:center;  padding-top:1px;}"))},
-members:{__Vr1Zo:16,
-__1NwZZ:16,
-__C4eaS:null,
-_insetY:2,
-_identifyImage:function(){throw new Error("_identifyImage is abstract")},
-_getImageInfos:function(c){var a=this._identifyImage(c),b;
-(a==null||typeof a=="string")&&(a={url:a,
-tooltip:null});
-(!a.imageWidth||!a.imageHeight)&&(b=this.__UksBB(a.url),a.imageWidth=b.width,a.imageHeight=b.height);
-a.width=a.imageWidth;
-a.height=a.imageHeight;
-return a},
-__UksBB:function(a){var d=qx.util.ResourceManager.getInstance(),e=qx.io.ImageLoader,b,c;
-d.has(a)?(b=d.getImageWidth(a),c=d.getImageHeight(a)):e.isLoaded(a)?(b=e.getWidth(a),c=e.getHeight(a)):(b=this.__Vr1Zo,c=this.__1NwZZ);
-return{width:b,
-height:c}},
-createDataCellHtml:function(a,b){this.__C4eaS=this._getImageInfos(a);
-return this.base(arguments,a,b)},
-_getCellClass:function(){return this.base(arguments)+" qooxdoo-table-cell-icon"},
-_getContentHtml:function(){var c="<div></div>",a=this.__C4eaS,b;
-if(a.url){b=qx.bom.client.Engine.GECKO&&qx.bom.client.Engine.VERSION<1.9?"-moz-inline-box":"inline-block";
-return"<div style=\"width:"+a.width+"px;height:"+a.height+"px;display:"+b+";vertical-align:top;background-image:url("+a.url+");background-repeat: no-repeat;\"></div>"}return c},
-_getCellAttributes:function(){var a=this.__C4eaS.tooltip;
-return a?"title='"+a+"'":""}},
-destruct:function(){this.__C4eaS=null}});
-
-
 // qx.ui.core.selection.ScrollArea
 //   - Size: 1109 bytes
 //   - Modified: 2010-08-26T21:43:53
@@ -13969,91 +12821,44 @@ a=null;
 continue}return d[a]}}}}});
 
 
-// qx.ui.decoration.Beveled
-//   - Size: 2532 bytes
-//   - Modified: 2010-09-17T21:15:51
-qx.Class.define("qx.ui.decoration.Beveled",{extend:qx.ui.decoration.Abstract,
-include:[qx.ui.decoration.MBackgroundImage],
-construct:function(b,a,c){this.base(arguments);
-b!=null&&this.setOuterColor(b);
-a!=null&&this.setInnerColor(a);
-c!=null&&this.setInnerOpacity(c)},
-properties:{innerColor:{check:"Color",
-nullable:true,
-apply:"_applyStyle"},
-innerOpacity:{check:"Number",
-init:1,
-apply:"_applyStyle"},
-outerColor:{check:"Color",
-nullable:true,
-apply:"_applyStyle"},
-backgroundColor:{check:"Color",
-nullable:true,
-apply:"_applyStyle"}},
-members:{__qyd51:null,
-_getDefaultInsets:function(){return{top:2,
-right:2,
-bottom:2,
-left:2}},
-_isInitialized:function(){return!!this.__qyd51},
-_applyStyle:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!")},
-getMarkup:function(){if(this.__qyd51)return this.__qyd51;
-var c=qx.theme.manager.Color.getInstance(),a=[],b="1px solid "+c.resolve(this.getOuterColor())+";",d="1px solid "+c.resolve(this.getInnerColor())+";",e;
-a.push("<div style=\"overflow:hidden;font-size:0;line-height:0;\">");
-a.push("<div style=\"");
-a.push("border:",b);
-a.push(qx.bom.element.Opacity.compile(.35));
-a.push("\"></div>");
-a.push("<div style=\"position:absolute;top:1px;left:0px;");
-a.push("border-left:",b);
-a.push("border-right:",b);
-a.push(qx.bom.element.Opacity.compile(1));
-a.push("\"></div>");
-a.push("<div style=\"");
-a.push("position:absolute;top:0px;left:1px;");
-a.push("border-top:",b);
-a.push("border-bottom:",b);
-a.push(qx.bom.element.Opacity.compile(1));
-a.push("\"></div>");
-e={position:"absolute",
-top:"1px",
-left:"1px",
-opacity:1};
-a.push(this._generateBackgroundMarkup(e));
-a.push("<div style=\"position:absolute;top:1px;left:1px;");
-a.push("border:",d);
-a.push(qx.bom.element.Opacity.compile(this.getInnerOpacity()));
-a.push("\"></div>");
-a.push("</div>");
-return this.__qyd51=a.join("")},
-resize:function(d,c,b){c<4&&(c=4);
-b<4&&(b=4);
-if(qx.bom.client.Feature.CONTENT_BOX)var g=c-2,h=b-2,e=g,f=h,o=c-4,n=b-4,a,j,k,l,m,i;
-else g=c,h=b,e=c-2,f=b-2,o=e,n=f;
-a="px",j=d.childNodes[0].style;
-j.width=g+a;
-j.height=h+a;
-k=d.childNodes[1].style;
-k.width=g+a;
-k.height=f+a;
-l=d.childNodes[2].style;
-l.width=e+a;
-l.height=h+a;
-m=d.childNodes[3].style;
-m.width=e+a;
-m.height=f+a;
-i=d.childNodes[4].style;
-i.width=o+a;
-i.height=n+a},
-tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
-a==null&&(a=this.getBackgroundColor());
-b.childNodes[3].style.backgroundColor=c.resolve(a)||""}},
-destruct:function(){this.__qyd51=null}});
+// qx.ui.table.cellrenderer.AbstractImage
+//   - Size: 1648 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.ui.table.cellrenderer.AbstractImage",{extend:qx.ui.table.cellrenderer.Abstract,
+type:"abstract",
+construct:function(){this.base(arguments);
+var a=this.self(arguments);
+a.stylesheet||(a.stylesheet=qx.bom.Stylesheet.createElement(".qooxdoo-table-cell-icon {  text-align:center;  padding-top:1px;}"))},
+members:{__Vr1Zo:16,
+__1NwZZ:16,
+__C4eaS:null,
+_insetY:2,
+_identifyImage:function(){throw new Error("_identifyImage is abstract")},
+_getImageInfos:function(c){var a=this._identifyImage(c),b;
+(a==null||typeof a=="string")&&(a={url:a,
+tooltip:null});
+(!a.imageWidth||!a.imageHeight)&&(b=this.__UksBB(a.url),a.imageWidth=b.width,a.imageHeight=b.height);
+a.width=a.imageWidth;
+a.height=a.imageHeight;
+return a},
+__UksBB:function(a){var d=qx.util.ResourceManager.getInstance(),e=qx.io.ImageLoader,b,c;
+d.has(a)?(b=d.getImageWidth(a),c=d.getImageHeight(a)):e.isLoaded(a)?(b=e.getWidth(a),c=e.getHeight(a)):(b=this.__Vr1Zo,c=this.__1NwZZ);
+return{width:b,
+height:c}},
+createDataCellHtml:function(a,b){this.__C4eaS=this._getImageInfos(a);
+return this.base(arguments,a,b)},
+_getCellClass:function(){return this.base(arguments)+" qooxdoo-table-cell-icon"},
+_getContentHtml:function(){var c="<div></div>",a=this.__C4eaS,b;
+if(a.url){b=qx.bom.client.Engine.GECKO&&qx.bom.client.Engine.VERSION<1.9?"-moz-inline-box":"inline-block";
+return"<div style=\"width:"+a.width+"px;height:"+a.height+"px;display:"+b+";vertical-align:top;background-image:url("+a.url+");background-repeat: no-repeat;\"></div>"}return c},
+_getCellAttributes:function(){var a=this.__C4eaS.tooltip;
+return a?"title='"+a+"'":""}},
+destruct:function(){this.__C4eaS=null}});
 
 
 // qx.ui.table.cellrenderer.Image
 //   - Size: 417 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.table.cellrenderer.Image",{extend:qx.ui.table.cellrenderer.AbstractImage,
 construct:function(b,a){this.base(arguments);
 b&&(this.__IQ418=b);
@@ -14069,7 +12874,7 @@ return a}}});
 
 // qx.io.remote.Exchange
 //   - Size: 8758 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.io.remote.Exchange",{extend:qx.core.Object,
 construct:function(a){this.base(arguments);
 this.setRequest(a);
@@ -14244,6 +13049,88 @@ a&&(this.setImplementation(null),a.dispose());
 this.setRequest(null)}});
 
 
+// qx.io.remote.transport.Abstract
+//   - Size: 2772 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.io.remote.transport.Abstract",{type:"abstract",
+extend:qx.core.Object,
+construct:function(){this.base(arguments);
+this.setRequestHeaders({});
+this.setParameters({});
+this.setFormFields({})},
+events:{created:"qx.event.type.Event",
+configured:"qx.event.type.Event",
+sending:"qx.event.type.Event",
+receiving:"qx.event.type.Event",
+completed:"qx.event.type.Event",
+aborted:"qx.event.type.Event",
+failed:"qx.event.type.Event",
+timeout:"qx.event.type.Event"},
+properties:{url:{check:"String",
+nullable:true},
+method:{check:"String",
+nullable:true,
+init:"GET"},
+asynchronous:{check:"Boolean",
+nullable:true,
+init:true},
+data:{check:"String",
+nullable:true},
+username:{check:"String",
+nullable:true},
+password:{check:"String",
+nullable:true},
+state:{check:["created","configured","sending","receiving","completed","aborted","timeout","failed"],
+init:"created",
+event:"changeState",
+apply:"_applyState"},
+requestHeaders:{check:"Object",
+nullable:true},
+parameters:{check:"Object",
+nullable:true},
+formFields:{check:"Object",
+nullable:true},
+responseType:{check:"String",
+nullable:true},
+useBasicHttpAuth:{check:"Boolean",
+nullable:true}},
+members:{send:function(){throw new Error("send is abstract")},
+abort:function(){qx.core.Setting.get("qx.ioRemoteDebug")&&this.warn("Aborting...");
+this.setState("aborted")},
+timeout:function(){qx.core.Setting.get("qx.ioRemoteDebug")&&this.warn("Timeout...");
+this.setState("timeout")},
+failed:function(){qx.core.Setting.get("qx.ioRemoteDebug")&&this.warn("Failed...");
+this.setState("failed")},
+setRequestHeader:function(){throw new Error("setRequestHeader is abstract")},
+getResponseHeader:function(){throw new Error("getResponseHeader is abstract")},
+getResponseHeaders:function(){throw new Error("getResponseHeaders is abstract")},
+getStatusCode:function(){throw new Error("getStatusCode is abstract")},
+getStatusText:function(){throw new Error("getStatusText is abstract")},
+getResponseText:function(){throw new Error("getResponseText is abstract")},
+getResponseXml:function(){throw new Error("getResponseXml is abstract")},
+getFetchedLength:function(){throw new Error("getFetchedLength is abstract")},
+_applyState:function(a){qx.core.Setting.get("qx.ioRemoteDebug")&&this.debug("State: "+a);
+switch(a){case"created":this.fireEvent("created");
+break;
+case"configured":this.fireEvent("configured");
+break;
+case"sending":this.fireEvent("sending");
+break;
+case"receiving":this.fireEvent("receiving");
+break;
+case"completed":this.fireEvent("completed");
+break;
+case"aborted":this.fireEvent("aborted");
+break;
+case"failed":this.fireEvent("failed");
+break;
+case"timeout":this.fireEvent("timeout");
+break}return true}},
+destruct:function(){this.setRequestHeaders(null);
+this.setParameters(null);
+this.setFormFields(null)}});
+
+
 // qx.io.remote.transport.XmlHttp
 //   - Size: 7044 bytes
 //   - Modified: 2010-10-25T16:53:25
@@ -14370,6 +13257,50 @@ if(a){a.onreadystatechange=qx.lang.Function.empty;
 switch(a.readyState){case 1:case 2:case 3:a.abort()}}this.__u3kLI=null}});
 
 
+// qx.bom.Input
+//   - Size: 1444 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.bom.Input",{statics:{__nhP4O:{text:1,
+textarea:1,
+select:1,
+checkbox:1,
+radio:1,
+password:1,
+hidden:1,
+submit:1,
+image:1,
+file:1,
+search:1,
+reset:1,
+button:1},
+create:function(a,b,d){qx.core.Assert.assertKeyInMap(a,this.__nhP4O,"Unsupported input type.");
+var b=b?qx.lang.Object.clone(b):{},c;
+a==="textarea"||a==="select"?c=a:(c="input",b.type=a);
+return qx.bom.Element.create(c,b,d)},
+setValue:function(a,b){var l=a.nodeName.toLowerCase(),e=a.type,h=qx.lang.Array,i=qx.lang.Type,j,g,d,c,f,k;
+typeof b==="number"&&(b+="");
+if(e==="checkbox"||e==="radio")a.checked=i.isArray(b)?h.contains(b,a.value):a.value==b;
+else if(l==="select"){j=i.isArray(b),g=a.options,f=0,k=g.length;
+for(;
+f<k;
+f++)d=g[f],c=d.getAttribute("value"),c==null&&(c=d.text),d.selected=j?h.contains(b,c):b==c;
+j&&b.length==0&&(a.selectedIndex=-1)}else e==="text"&&false?(a.$$inValueSet=true,a.value=b,a.$$inValueSet=null):a.value=b},
+getValue:function(a){var h=a.nodeName.toLowerCase(),d,g,f,e,j,b,c,k,i;
+if(h==="option")return(a.attributes.value||{}).specified?a.value:a.text;
+if(h==="select"){d=a.selectedIndex;
+if(d<0)return null;
+g=[],f=a.options,e=a.type=="select-one",j=qx.bom.Input,c=e?d:0,k=e?d+1:f.length;
+for(;
+c<k;
+c++){i=f[c];
+if(i.selected){b=j.getValue(i);
+if(e)return b;
+g.push(b)}}return g}return(a.value||"").replace(/\r/g,"")},
+setWrap:function(a,b){var c=b?"soft":"off",d=b?"":"auto";
+a.setAttribute("wrap",c);
+a.style.overflow=d}}});
+
+
 // qx.io.remote.RequestQueue
 //   - Size: 3433 bytes
 //   - Modified: 2010-10-13T17:38:57
@@ -14451,50 +13382,6 @@ b?b.abort():qx.lang.Array.contains(this.__m5bO4,a)&&qx.lang.Array.remove(this.__
 destruct:function(){this._disposeArray("__active");
 this._disposeObjects("__timer");
 this.__m5bO4=null}});
-
-
-// qx.bom.Input
-//   - Size: 1444 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Class.define("qx.bom.Input",{statics:{__nhP4O:{text:1,
-textarea:1,
-select:1,
-checkbox:1,
-radio:1,
-password:1,
-hidden:1,
-submit:1,
-image:1,
-file:1,
-search:1,
-reset:1,
-button:1},
-create:function(a,b,d){qx.core.Assert.assertKeyInMap(a,this.__nhP4O,"Unsupported input type.");
-var b=b?qx.lang.Object.clone(b):{},c;
-a==="textarea"||a==="select"?c=a:(c="input",b.type=a);
-return qx.bom.Element.create(c,b,d)},
-setValue:function(a,b){var l=a.nodeName.toLowerCase(),e=a.type,h=qx.lang.Array,i=qx.lang.Type,j,g,d,c,f,k;
-typeof b==="number"&&(b+="");
-if(e==="checkbox"||e==="radio")a.checked=i.isArray(b)?h.contains(b,a.value):a.value==b;
-else if(l==="select"){j=i.isArray(b),g=a.options,f=0,k=g.length;
-for(;
-f<k;
-f++)d=g[f],c=d.getAttribute("value"),c==null&&(c=d.text),d.selected=j?h.contains(b,c):b==c;
-j&&b.length==0&&(a.selectedIndex=-1)}else e==="text"&&false?(a.$$inValueSet=true,a.value=b,a.$$inValueSet=null):a.value=b},
-getValue:function(a){var h=a.nodeName.toLowerCase(),d,g,f,e,j,b,c,k,i;
-if(h==="option")return(a.attributes.value||{}).specified?a.value:a.text;
-if(h==="select"){d=a.selectedIndex;
-if(d<0)return null;
-g=[],f=a.options,e=a.type=="select-one",j=qx.bom.Input,c=e?d:0,k=e?d+1:f.length;
-for(;
-c<k;
-c++){i=f[c];
-if(i.selected){b=j.getValue(i);
-if(e)return b;
-g.push(b)}}return g}return(a.value||"").replace(/\r/g,"")},
-setWrap:function(a,b){var c=b?"soft":"off",d=b?"":"auto";
-a.setAttribute("wrap",c);
-a.style.overflow=d}}});
 
 
 // qx.io.remote.Request
@@ -14623,268 +13510,6 @@ destruct:function(){this.setTransport(null);
 this.__baOQvM=this.__24r2U=this.__8xMpR=this.__I6KO6=null}});
 
 
-// qx.theme.Decoration
-//   - Size: 10101 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Theme.define("qx.theme.Decoration",{decorations:{main:{decorator:qx.ui.decoration.Uniform,
-style:{width:1,
-color:"border-main"}},
-selected:{decorator:qx.ui.decoration.Background,
-style:{backgroundImage:"qx/decoration/selection.png",
-backgroundRepeat:"scale"}},
-"selected-dragover":{decorator:qx.ui.decoration.Single,
-style:{backgroundImage:"qx/decoration/selection.png",
-backgroundRepeat:"scale",
-bottom:[2,"solid","#33508D"]}},
-dragover:{decorator:qx.ui.decoration.Single,
-style:{bottom:[2,"solid","#33508D"]}},
-pane:{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/pane/pane.png",
-insets:[0,2,3,0]}},
-group:{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/groupbox/groupbox.png"}},
-"border-invalid":{decorator:qx.ui.decoration.Beveled,
-style:{outerColor:"invalid",
-innerColor:"white",
-innerOpacity:.5,
-backgroundImage:"qx/decoration/form/input.png",
-backgroundRepeat:"repeat-x",
-backgroundColor:"background-light"}},
-"keyboard-focus":{decorator:qx.ui.decoration.Single,
-style:{width:1,
-color:"black",
-style:"dotted"}},
-"separator-horizontal":{decorator:qx.ui.decoration.Single,
-style:{widthLeft:1,
-colorLeft:"border-separator"}},
-"separator-vertical":{decorator:qx.ui.decoration.Single,
-style:{widthTop:1,
-colorTop:"border-separator"}},
-"tooltip-error":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/form/tooltip-error.png",
-insets:[2,5,5,2]}},
-"tooltip-error-arrow":{decorator:qx.ui.decoration.Background,
-style:{backgroundImage:"qx/decoration/form/tooltip-error-arrow.png",
-backgroundPositionY:"center",
-backgroundRepeat:"no-repeat",
-insets:[0,0,0,10]}},
-"shadow-window":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/shadow/shadow.png",
-insets:[4,8,8,4]}},
-"shadow-popup":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/shadow/shadow-small.png",
-insets:[0,3,3,0]}},
-"scrollbar-horizontal":{decorator:qx.ui.decoration.Background,
-style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-bg-horizontal.png",
-backgroundRepeat:"repeat-x"}},
-"scrollbar-vertical":{decorator:qx.ui.decoration.Background,
-style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-bg-vertical.png",
-backgroundRepeat:"repeat-y"}},
-"scrollbar-slider-horizontal":{decorator:qx.ui.decoration.Beveled,
-style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-button-bg-horizontal.png",
-backgroundRepeat:"scale",
-outerColor:"border-main",
-innerColor:"white",
-innerOpacity:.5}},
-"scrollbar-slider-horizontal-disabled":{decorator:qx.ui.decoration.Beveled,
-style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-button-bg-horizontal.png",
-backgroundRepeat:"scale",
-outerColor:"border-disabled",
-innerColor:"white",
-innerOpacity:.3}},
-"scrollbar-slider-vertical":{decorator:qx.ui.decoration.Beveled,
-style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-button-bg-vertical.png",
-backgroundRepeat:"scale",
-outerColor:"border-main",
-innerColor:"white",
-innerOpacity:.5}},
-"scrollbar-slider-vertical-disabled":{decorator:qx.ui.decoration.Beveled,
-style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-button-bg-vertical.png",
-backgroundRepeat:"scale",
-outerColor:"border-disabled",
-innerColor:"white",
-innerOpacity:.3}},
-button:{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/form/button.png",
-insets:2}},
-"button-disabled":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/form/button-disabled.png",
-insets:2}},
-"button-focused":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/form/button-focused.png",
-insets:2}},
-"button-hovered":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/form/button-hovered.png",
-insets:2}},
-"button-pressed":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/form/button-pressed.png",
-insets:2}},
-"button-checked":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/form/button-checked.png",
-insets:2}},
-"button-checked-focused":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/form/button-checked-focused.png",
-insets:2}},
-"button-invalid-shadow":{decorator:qx.ui.decoration.Beveled,
-style:{outerColor:"invalid",
-innerColor:"border-focused-invalid",
-insets:[1]}},
-"checkbox-invalid-shadow":{decorator:qx.ui.decoration.Beveled,
-style:{outerColor:"invalid",
-innerColor:"border-focused-invalid",
-insets:[0]}},
-input:{decorator:qx.ui.decoration.Beveled,
-style:{outerColor:"border-input",
-innerColor:"white",
-innerOpacity:.5,
-backgroundImage:"qx/decoration/form/input.png",
-backgroundRepeat:"repeat-x",
-backgroundColor:"background-light"}},
-"input-focused":{decorator:qx.ui.decoration.Beveled,
-style:{outerColor:"border-input",
-innerColor:"border-focused",
-backgroundImage:"qx/decoration/form/input-focused.png",
-backgroundRepeat:"repeat-x",
-backgroundColor:"background-light"}},
-"input-focused-invalid":{decorator:qx.ui.decoration.Beveled,
-style:{outerColor:"invalid",
-innerColor:"border-focused-invalid",
-backgroundImage:"qx/decoration/form/input-focused.png",
-backgroundRepeat:"repeat-x",
-backgroundColor:"background-light",
-insets:[2]}},
-"input-disabled":{decorator:qx.ui.decoration.Beveled,
-style:{outerColor:"border-disabled",
-innerColor:"white",
-innerOpacity:.5,
-backgroundImage:"qx/decoration/form/input.png",
-backgroundRepeat:"repeat-x",
-backgroundColor:"background-light"}},
-toolbar:{decorator:qx.ui.decoration.Background,
-style:{backgroundImage:"qx/decoration/toolbar/toolbar-gradient.png",
-backgroundRepeat:"scale"}},
-"toolbar-button-hovered":{decorator:qx.ui.decoration.Beveled,
-style:{outerColor:"#b6b6b6",
-innerColor:"#f8f8f8",
-backgroundImage:"qx/decoration/form/button-c.png",
-backgroundRepeat:"scale"}},
-"toolbar-button-checked":{decorator:qx.ui.decoration.Beveled,
-style:{outerColor:"#b6b6b6",
-innerColor:"#f8f8f8",
-backgroundImage:"qx/decoration/form/button-checked-c.png",
-backgroundRepeat:"scale"}},
-"toolbar-separator":{decorator:qx.ui.decoration.Single,
-style:{widthLeft:1,
-widthRight:1,
-colorLeft:"#b8b8b8",
-colorRight:"#f4f4f4",
-styleLeft:"solid",
-styleRight:"solid"}},
-"toolbar-part":{decorator:qx.ui.decoration.Background,
-style:{backgroundImage:"qx/decoration/toolbar/toolbar-part.gif",
-backgroundRepeat:"repeat-y"}},
-"tabview-pane":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/tabview/tabview-pane.png",
-insets:[4,6,7,4]}},
-"tabview-page-button-top-active":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/tabview/tab-button-top-active.png"}},
-"tabview-page-button-top-inactive":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/tabview/tab-button-top-inactive.png"}},
-"tabview-page-button-bottom-active":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/tabview/tab-button-bottom-active.png"}},
-"tabview-page-button-bottom-inactive":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/tabview/tab-button-bottom-inactive.png"}},
-"tabview-page-button-left-active":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/tabview/tab-button-left-active.png"}},
-"tabview-page-button-left-inactive":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/tabview/tab-button-left-inactive.png"}},
-"tabview-page-button-right-active":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/tabview/tab-button-right-active.png"}},
-"tabview-page-button-right-inactive":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/tabview/tab-button-right-inactive.png"}},
-splitpane:{decorator:qx.ui.decoration.Uniform,
-style:{backgroundColor:"background-pane",
-width:3,
-color:"background-splitpane",
-style:"solid"}},
-window:{decorator:qx.ui.decoration.Single,
-style:{backgroundColor:"background-pane",
-width:1,
-color:"border-main",
-widthTop:0}},
-"window-captionbar-active":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/window/captionbar-active.png"}},
-"window-captionbar-inactive":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/window/captionbar-inactive.png"}},
-"window-statusbar":{decorator:qx.ui.decoration.Grid,
-style:{baseImage:"qx/decoration/window/statusbar.png"}},
-table:{decorator:qx.ui.decoration.Single,
-style:{width:1,
-color:"border-main",
-style:"solid"}},
-"table-statusbar":{decorator:qx.ui.decoration.Single,
-style:{widthTop:1,
-colorTop:"border-main",
-style:"solid"}},
-"table-scroller-header":{decorator:qx.ui.decoration.Single,
-style:{backgroundImage:"qx/decoration/table/header-cell.png",
-backgroundRepeat:"scale",
-widthBottom:1,
-colorBottom:"border-main",
-style:"solid"}},
-"table-header-cell":{decorator:qx.ui.decoration.Single,
-style:{widthRight:1,
-colorRight:"border-separator",
-styleRight:"solid"}},
-"table-header-cell-hovered":{decorator:qx.ui.decoration.Single,
-style:{widthRight:1,
-colorRight:"border-separator",
-styleRight:"solid",
-widthBottom:1,
-colorBottom:"white",
-styleBottom:"solid"}},
-"table-column-button":{decorator:qx.ui.decoration.Single,
-style:{backgroundImage:"qx/decoration/table/header-cell.png",
-backgroundRepeat:"scale",
-widthBottom:1,
-colorBottom:"border-main",
-style:"solid"}},
-"table-scroller-focus-indicator":{decorator:qx.ui.decoration.Single,
-style:{width:2,
-color:"table-focus-indicator",
-style:"solid"}},
-"progressive-table-header":{decorator:qx.ui.decoration.Single,
-style:{width:1,
-color:"border-main",
-style:"solid"}},
-"progressive-table-header-cell":{decorator:qx.ui.decoration.Single,
-style:{backgroundImage:"qx/decoration/table/header-cell.png",
-backgroundRepeat:"scale",
-widthRight:1,
-colorRight:"#F2F2F2",
-style:"solid"}},
-menu:{decorator:qx.ui.decoration.Single,
-style:{backgroundImage:"qx/decoration/menu/background.png",
-backgroundRepeat:"scale",
-width:1,
-color:"border-main",
-style:"solid"}},
-"menu-separator":{decorator:qx.ui.decoration.Single,
-style:{widthTop:1,
-colorTop:"#C5C5C5",
-widthBottom:1,
-colorBottom:"#FAFAFA"}},
-menubar:{decorator:qx.ui.decoration.Single,
-style:{backgroundImage:"qx/decoration/menu/bar-background.png",
-backgroundRepeat:"scale",
-width:1,
-color:"border-separator",
-style:"solid"}},
-"app-header":{decorator:qx.ui.decoration.Background,
-style:{backgroundImage:"qx/decoration/app-header.png",
-backgroundRepeat:"scale"}}}});
-
-
 // qx.ui.table.cellrenderer.Default
 //   - Size: 1334 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -14912,19 +13537,9 @@ typeof a=="number"?(qx.ui.table.cellrenderer.Default._numberFormat||(qx.ui.table
 return b}}});
 
 
-// apiviewer.Theme
-//   - Size: 176 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Theme.define("apiviewer.Theme",{title:"APIViewer theme",
-meta:{color:qx.theme.Color,
-decoration:qx.theme.Decoration,
-font:qx.theme.Font,
-appearance:apiviewer.Appearance}});
-
-
 // qx.log.appender.Console
 //   - Size: 4332 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.log.appender.Console",{statics:{init:function(){var d=[".qxconsole{z-index:10000;width:600px;height:300px;top:0px;right:0px;position:absolute;border-left:1px solid black;color:black;border-bottom:1px solid black;color:black;font-family:Consolas,Monaco,monospace;font-size:11px;line-height:1.2;}",".qxconsole .control{background:#cdcdcd;border-bottom:1px solid black;padding:4px 8px;}",".qxconsole .control a{text-decoration:none;color:black;}",".qxconsole .messages{background:white;height:100%;width:100%;overflow:auto;}",".qxconsole .messages div{padding:0px 4px;}",".qxconsole .messages .user-command{color:blue}",".qxconsole .messages .user-result{background:white}",".qxconsole .messages .user-error{background:#FFE2D5}",".qxconsole .messages .level-debug{background:white}",".qxconsole .messages .level-info{background:#DEEDFA}",".qxconsole .messages .level-warn{background:#FFF7D5}",".qxconsole .messages .level-error{background:#FFE2D5}",".qxconsole .messages .level-user{background:#E3EFE9}",".qxconsole .messages .type-string{color:black;font-weight:normal;}",".qxconsole .messages .type-number{color:#155791;font-weight:normal;}",".qxconsole .messages .type-boolean{color:#15BC91;font-weight:normal;}",".qxconsole .messages .type-array{color:#CC3E8A;font-weight:bold;}",".qxconsole .messages .type-map{color:#CC3E8A;font-weight:bold;}",".qxconsole .messages .type-key{color:#565656;font-style:italic}",".qxconsole .messages .type-class{color:#5F3E8A;font-weight:bold}",".qxconsole .messages .type-instance{color:#565656;font-weight:bold}",".qxconsole .messages .type-stringify{color:#565656;font-weight:bold}",".qxconsole .command{background:white;padding:2px 4px;border-top:1px solid black;}",".qxconsole .command input{width:100%;border:0 none;font-family:Consolas,Monaco,monospace;font-size:11px;line-height:1.2;}",".qxconsole .command input:focus{outline:none;}"],c,a,b;
 qx.bom.Stylesheet.createElement(d.join(""));
 c=["<div class=\"qxconsole\">","<div class=\"control\"><a href=\"javascript:qx.log.appender.Console.clear()\">Clear</a> | <a href=\"javascript:qx.log.appender.Console.toggle()\">Hide</a></div>","<div class=\"messages\">","</div>","<div class=\"command\">","<input type=\"text\"/>","</div>","</div>"],a=document.createElement("DIV");
@@ -15055,7 +13670,7 @@ throw new Error("Text wrapping is only support by textareas!")}}});
 
 // qx.ui.core.ColumnData
 //   - Size: 648 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.core.ColumnData",{extend:qx.ui.core.LayoutItem,
 construct:function(){this.base(arguments);
 this.setColumnWidth("auto")},
@@ -15207,7 +13822,7 @@ destruct:function(){this.__P0T0F=null}});
 
 // qx.ui.table.columnmodel.resizebehavior.Default
 //   - Size: 3507 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.table.columnmodel.resizebehavior.Default",{extend:qx.ui.table.columnmodel.resizebehavior.Abstract,
 construct:function(){this.base(arguments);
 this.__bqzRkj=[];
@@ -15294,16 +13909,6 @@ d<f&&(e=a[a.length-1],i=f-(d-b.getColumnWidth(e)),b.setColumnWidth(e,i))},
 _getResizeColumnData:function(){return this.__bqzRkj}},
 destruct:function(){this.__bqzRkj=this.__baJTDe=null;
 this._disposeObjects("__layout","__deferredComputeColumnsFlexWidth")}});
-
-
-// qx.ui.splitpane.Slider
-//   - Size: 163 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.splitpane.Slider",{extend:qx.ui.core.Widget,
-properties:{allowShrinkX:{refine:true,
-init:false},
-allowShrinkY:{refine:true,
-init:false}}});
 
 
 // qx.ui.core.MMultiSelectionHandling
@@ -15508,6 +14113,26 @@ this.fireEvent("paneUpdated")}},
 destruct:function(){this.__827Zu=this.__VtpeD=this.__yLuIh=null}});
 
 
+// qx.ui.menu.Separator
+//   - Size: 166 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.menu.Separator",{extend:qx.ui.core.Widget,
+properties:{appearance:{refine:true,
+init:"menu-separator"},
+anonymous:{refine:true,
+init:true}}});
+
+
+// qx.ui.splitpane.Slider
+//   - Size: 163 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.splitpane.Slider",{extend:qx.ui.core.Widget,
+properties:{allowShrinkX:{refine:true,
+init:false},
+allowShrinkY:{refine:true,
+init:false}}});
+
+
 // qx.ui.toolbar.Separator
 //   - Size: 231 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -15522,19 +14147,74 @@ height:{refine:true,
 init:0}}});
 
 
-// qx.ui.menu.Separator
-//   - Size: 166 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.menu.Separator",{extend:qx.ui.core.Widget,
-properties:{appearance:{refine:true,
-init:"menu-separator"},
-anonymous:{refine:true,
-init:true}}});
+// qx.ui.core.scroll.ScrollPane
+//   - Size: 2545 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.ui.core.scroll.ScrollPane",{extend:qx.ui.core.Widget,
+construct:function(){this.base(arguments);
+this.set({minWidth:0,
+minHeight:0});
+this._setLayout(new qx.ui.layout.Grow());
+this.addListener("resize",this._onUpdate);
+var a=this.getContentElement();
+a.addListener("scroll",this._onScroll,this);
+a.addListener("appear",this._onAppear,this)},
+events:{update:"qx.event.type.Event"},
+properties:{scrollX:{check:function(a){qx.core.Type.check(a,"Integer");
+return a<=this.getScrollMaxX()},
+apply:"_applyScrollX",
+event:"scrollX",
+init:0},
+scrollY:{check:function(a){qx.core.Type.check(a,"Integer");
+return a<=this.getScrollMaxY()},
+apply:"_applyScrollY",
+event:"scrollY",
+init:0}},
+members:{add:function(b){var a=this._getChildren()[0];
+a&&(this._remove(a),a.removeListener("resize",this._onUpdate,this));
+b&&(this._add(b),b.addListener("resize",this._onUpdate,this))},
+remove:function(a){a&&(this._remove(a),a.removeListener("resize",this._onUpdate,this))},
+getChildren:function(){return this._getChildren()},
+_onUpdate:function(){this.fireEvent("update")},
+_onScroll:function(){var a=this.getContentElement();
+this.setScrollX(a.getScrollX());
+this.setScrollY(a.getScrollY())},
+_onAppear:function(){var a=this.getContentElement(),c=this.getScrollX(),e=a.getScrollX(),b,d;
+c!=e&&a.scrollToX(c);
+b=this.getScrollY(),d=a.getScrollY();
+b!=d&&a.scrollToY(b)},
+getItemTop:function(a){var b=0;
+do{b+=a.getBounds().top,a=a.getLayoutParent();
+}while(a&&a!==this);
+return b},
+getItemBottom:function(a){return this.getItemTop(a)+a.getBounds().height},
+getItemLeft:function(a){var c=0,b;
+do{c+=a.getBounds().left,b=a.getLayoutParent(),b&&(c+=b.getInsets().left),a=b;
+}while(a&&a!==this);
+return c},
+getItemRight:function(a){return this.getItemLeft(a)+a.getBounds().width},
+getScrollSize:function(){return this.getChildren()[0].getBounds()},
+getScrollMaxX:function(){var a=this.getInnerSize(),b=this.getScrollSize();
+if(a&&b)return Math.max(0,b.width-a.width);
+return 0},
+getScrollMaxY:function(){var a=this.getInnerSize(),b=this.getScrollSize();
+if(a&&b)return Math.max(0,b.height-a.height);
+return 0},
+scrollToX:function(a){var b=this.getScrollMaxX();
+a<0?a=0:a>b&&(a=b);
+this.setScrollX(a)},
+scrollToY:function(a){var b=this.getScrollMaxY();
+a<0?a=0:a>b&&(a=b);
+this.setScrollY(a)},
+scrollByX:function(a){this.scrollToX(this.getScrollX()+a)},
+scrollByY:function(a){this.scrollToY(this.getScrollY()+a)},
+_applyScrollX:function(a){this.getContentElement().scrollToX(a)},
+_applyScrollY:function(a){this.getContentElement().scrollToY(a)}}});
 
 
 // qx.ui.menu.Manager
 //   - Size: 5826 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.menu.Manager",{type:"singleton",
 extend:qx.core.Object,
 construct:function(){this.base(arguments);
@@ -15676,71 +14356,6 @@ a.removeListener(b,"keyup",this._onKeyUpDown,this,true);
 a.removeListener(b,"keypress",this._onKeyPress,this,true);
 this._disposeObjects("__openTimer","__closeTimer");
 this._disposeArray("__objects")}});
-
-
-// qx.ui.core.scroll.ScrollPane
-//   - Size: 2545 bytes
-//   - Modified: 2010-11-10T13:21:49
-qx.Class.define("qx.ui.core.scroll.ScrollPane",{extend:qx.ui.core.Widget,
-construct:function(){this.base(arguments);
-this.set({minWidth:0,
-minHeight:0});
-this._setLayout(new qx.ui.layout.Grow());
-this.addListener("resize",this._onUpdate);
-var a=this.getContentElement();
-a.addListener("scroll",this._onScroll,this);
-a.addListener("appear",this._onAppear,this)},
-events:{update:"qx.event.type.Event"},
-properties:{scrollX:{check:function(a){qx.core.Type.check(a,"Integer");
-return a<=this.getScrollMaxX()},
-apply:"_applyScrollX",
-event:"scrollX",
-init:0},
-scrollY:{check:function(a){qx.core.Type.check(a,"Integer");
-return a<=this.getScrollMaxY()},
-apply:"_applyScrollY",
-event:"scrollY",
-init:0}},
-members:{add:function(b){var a=this._getChildren()[0];
-a&&(this._remove(a),a.removeListener("resize",this._onUpdate,this));
-b&&(this._add(b),b.addListener("resize",this._onUpdate,this))},
-remove:function(a){a&&(this._remove(a),a.removeListener("resize",this._onUpdate,this))},
-getChildren:function(){return this._getChildren()},
-_onUpdate:function(){this.fireEvent("update")},
-_onScroll:function(){var a=this.getContentElement();
-this.setScrollX(a.getScrollX());
-this.setScrollY(a.getScrollY())},
-_onAppear:function(){var a=this.getContentElement(),c=this.getScrollX(),e=a.getScrollX(),b,d;
-c!=e&&a.scrollToX(c);
-b=this.getScrollY(),d=a.getScrollY();
-b!=d&&a.scrollToY(b)},
-getItemTop:function(a){var b=0;
-do{b+=a.getBounds().top,a=a.getLayoutParent();
-}while(a&&a!==this);
-return b},
-getItemBottom:function(a){return this.getItemTop(a)+a.getBounds().height},
-getItemLeft:function(a){var c=0,b;
-do{c+=a.getBounds().left,b=a.getLayoutParent(),b&&(c+=b.getInsets().left),a=b;
-}while(a&&a!==this);
-return c},
-getItemRight:function(a){return this.getItemLeft(a)+a.getBounds().width},
-getScrollSize:function(){return this.getChildren()[0].getBounds()},
-getScrollMaxX:function(){var a=this.getInnerSize(),b=this.getScrollSize();
-if(a&&b)return Math.max(0,b.width-a.width);
-return 0},
-getScrollMaxY:function(){var a=this.getInnerSize(),b=this.getScrollSize();
-if(a&&b)return Math.max(0,b.height-a.height);
-return 0},
-scrollToX:function(a){var b=this.getScrollMaxX();
-a<0?a=0:a>b&&(a=b);
-this.setScrollX(a)},
-scrollToY:function(a){var b=this.getScrollMaxY();
-a<0?a=0:a>b&&(a=b);
-this.setScrollY(a)},
-scrollByX:function(a){this.scrollToX(this.getScrollX()+a)},
-scrollByY:function(a){this.scrollToY(this.getScrollY()+a)},
-_applyScrollX:function(a){this.getContentElement().scrollToX(a)},
-_applyScrollY:function(a){this.getContentElement().scrollToY(a)}}});
 
 
 // qx.ui.form.HoverButton
@@ -16189,7 +14804,7 @@ _onKeyPress:function(){this.execute()}}});
 
 // qx.ui.toolbar.ToolBar
 //   - Size: 3799 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.toolbar.ToolBar",{extend:qx.ui.core.Widget,
 include:qx.ui.core.MChildrenHandling,
 construct:function(){this.base(arguments);
@@ -16396,7 +15011,7 @@ return d}}});
 
 // qx.ui.core.scroll.NativeScrollBar
 //   - Size: 2842 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.core.scroll.NativeScrollBar",{extend:qx.ui.core.Widget,
 implement:qx.ui.core.scroll.IScrollBar,
 construct:function(a){this.base(arguments);
@@ -16495,6 +15110,16 @@ h==-1?(this.hide(),this.setRow(null),this.setColumn(null)):(c=this.__zCh7p.getTa
 destruct:function(){this.__zCh7p=null}});
 
 
+// qx.ui.table.pane.Clipper
+//   - Size: 314 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("qx.ui.table.pane.Clipper",{extend:qx.ui.container.Composite,
+construct:function(){this.base(arguments,new qx.ui.layout.Grow());
+this.setMinWidth(0)},
+members:{scrollToX:function(a){this.getContentElement().scrollToX(a,false)},
+scrollToY:function(a){this.getContentElement().scrollToY(a,true)}}});
+
+
 // qx.ui.container.Stack
 //   - Size: 1448 bytes
 //   - Modified: 2010-08-26T21:43:53
@@ -16530,16 +15155,6 @@ d=b[a];
 this.setSelection([d])},
 next:function(){var c=this.getSelection()[0],d=this._indexOf(c)+1,a=this._getChildren(),b=a[d]||a[0];
 this.setSelection([b])}}});
-
-
-// qx.ui.table.pane.Clipper
-//   - Size: 314 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.pane.Clipper",{extend:qx.ui.container.Composite,
-construct:function(){this.base(arguments,new qx.ui.layout.Grow());
-this.setMinWidth(0)},
-members:{scrollToX:function(a){this.getContentElement().scrollToX(a,false)},
-scrollToY:function(a){this.getContentElement().scrollToY(a,true)}}});
 
 
 // qx.ui.tree.FolderOpenButton
@@ -16735,6 +15350,18 @@ _applyMaximum:function(a){this.getValue()>a&&this.setValue(a);
 this._updateKnobPosition()}}});
 
 
+// qx.ui.core.scroll.ScrollSlider
+//   - Size: 360 bytes
+//   - Modified: 2010-08-26T21:43:53
+qx.Class.define("qx.ui.core.scroll.ScrollSlider",{extend:qx.ui.form.Slider,
+construct:function(a){this.base(arguments,a);
+this.removeListener("keypress",this._onKeyPress);
+this.removeListener("mousewheel",this._onMouseWheel)},
+members:{getSizeHint:function(){var a=this.base(arguments);
+this.getOrientation()==="horizontal"?a.width=0:a.height=0;
+return a}}});
+
+
 // qx.ui.splitpane.Splitter
 //   - Size: 612 bytes
 //   - Modified: 2010-04-29T21:34:05
@@ -16750,18 +15377,6 @@ members:{_createChildControlImpl:function(b){var a;
 switch(b){case"knob":a=new qx.ui.basic.Image;
 this._add(a);
 break}return a||this.base(arguments,b)}}});
-
-
-// qx.ui.core.scroll.ScrollSlider
-//   - Size: 360 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.ui.core.scroll.ScrollSlider",{extend:qx.ui.form.Slider,
-construct:function(a){this.base(arguments,a);
-this.removeListener("keypress",this._onKeyPress);
-this.removeListener("mousewheel",this._onMouseWheel)},
-members:{getSizeHint:function(){var a=this.base(arguments);
-this.getOrientation()==="horizontal"?a.width=0:a.height=0;
-return a}}});
 
 
 // qx.ui.popup.Popup
@@ -16816,7 +15431,7 @@ this._disposeMap("__objects")}});
 
 // qx.ui.form.AbstractField
 //   - Size: 6496 bytes
-//   - Modified: 2010-11-10T13:21:49
+//   - Modified: 2010-11-11T16:55:28
 qx.Class.define("qx.ui.form.AbstractField",{extend:qx.ui.core.Widget,
 implement:[qx.ui.form.IStringForm,qx.ui.form.IForm],
 include:[qx.ui.form.MForm],
@@ -16946,6 +15561,19 @@ a?(this.addState("readonly"),this.setFocusable(false)):(this.removeState("readon
 destruct:function(){this.__PpeiQ=null}});
 
 
+// qx.ui.form.TextField
+//   - Size: 256 bytes
+//   - Modified: 2010-09-30T14:20:20
+qx.Class.define("qx.ui.form.TextField",{extend:qx.ui.form.AbstractField,
+properties:{appearance:{refine:true,
+init:"textfield"},
+allowGrowY:{refine:true,
+init:false},
+allowShrinkY:{refine:true,
+init:false}},
+members:{_renderContentElement:function(){}}});
+
+
 // qx.ui.splitpane.Pane
 //   - Size: 4856 bytes
 //   - Modified: 2010-11-10T13:22:29
@@ -17055,19 +15683,6 @@ _isActiveDragSession:function(){return this.__bxdvzd},
 _setLastMousePosition:function(a,b){this.__JEzQe=a;
 this.__JEQTh=b}},
 destruct:function(){this.__yONi8=null}});
-
-
-// qx.ui.form.TextField
-//   - Size: 256 bytes
-//   - Modified: 2010-09-30T14:20:20
-qx.Class.define("qx.ui.form.TextField",{extend:qx.ui.form.AbstractField,
-properties:{appearance:{refine:true,
-init:"textfield"},
-allowGrowY:{refine:true,
-init:false},
-allowShrinkY:{refine:true,
-init:false}},
-members:{_renderContentElement:function(){}}});
 
 
 // qx.ui.table.celleditor.TextField
@@ -17331,6 +15946,22 @@ this.addIcon();
 this.addLabel()}}});
 
 
+// apiviewer.ui.panels.PackagePanel
+//   - Size: 754 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.Class.define("apiviewer.ui.panels.PackagePanel",{extend:apiviewer.ui.panels.InfoPanel,
+members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getFullName(),null,false,true)},
+getItemTitleHtml:function(a){return a.getFullName()},
+getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getPackage(),b)},
+getItemTooltip:function(){return"Package"},
+itemHasDetails:function(a){return apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)},
+update:function(c,b){if(!this.getElement())return;
+this.setDocNode(b);
+var a=b.getPackages();
+a&&a.length>0&&this._sortItems(a);
+this._displayNodes(a,b)}}});
+
+
 // qx.ui.form.ToggleButton
 //   - Size: 2082 bytes
 //   - Modified: 2010-11-03T14:43:37
@@ -17422,22 +16053,6 @@ _applyLabel:function(b){var a=this.getChildControl("atom");
 b==null?a.resetLabel():a.setLabel(b)},
 _applyRich:function(b){var a=this.getChildControl("atom");
 a.setRich(b)}}});
-
-
-// apiviewer.ui.panels.PackagePanel
-//   - Size: 754 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ui.panels.PackagePanel",{extend:apiviewer.ui.panels.InfoPanel,
-members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getFullName(),null,false,true)},
-getItemTitleHtml:function(a){return a.getFullName()},
-getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getPackage(),b)},
-getItemTooltip:function(){return"Package"},
-itemHasDetails:function(a){return apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)},
-update:function(c,b){if(!this.getElement())return;
-this.setDocNode(b);
-var a=b.getPackages();
-a&&a.length>0&&this._sortItems(a);
-this._displayNodes(a,b)}}});
 
 
 // apiviewer.ui.panels.ClassPanel
@@ -17588,6 +16203,27 @@ case"left":case"right":break}if(!a)return null;
 return this._isSelectable(a)?a:this._getRelatedSelectable(a,b)}}});
 
 
+// apiviewer.ui.PackageViewer
+//   - Size: 980 bytes
+//   - Modified: 2010-07-17T16:42:24
+qx.Class.define("apiviewer.ui.PackageViewer",{extend:apiviewer.ui.AbstractViewer,
+construct:function(){this.base(arguments);
+this.addInfoPanel(new apiviewer.ui.panels.MethodPanel("functions","functions"));
+this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","classes","class"));
+this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","interfaces","interface"));
+this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","mixins","mixin"));
+this.addInfoPanel(new apiviewer.ui.panels.PackagePanel("packages","packages"));
+this.getContentElement().setAttribute("class","ClassViewer");
+this._init(new apiviewer.dao.Package({}))},
+members:{_getTitleHtml:function(b){var a="";
+a+="<small>package</small>";
+a+=b.getFullName();
+return a},
+_getDescriptionHtml:function(b){var c=new qx.util.StringBuilder(),a=b.getDescription();
+a!=""&&c.add("<div class=\"class-description\">",apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a,b),"</div>");
+return c.get()}}});
+
+
 // qx.ui.core.scroll.ScrollBar
 //   - Size: 3224 bytes
 //   - Modified: 2010-08-26T21:43:53
@@ -17657,25 +16293,15 @@ this.getOrientation()=="vertical"?d.height<c.minHeight+this.__qt6mo&&(a=true):d.
 a?b.exclude():b.show()}}});
 
 
-// apiviewer.ui.PackageViewer
-//   - Size: 980 bytes
-//   - Modified: 2010-07-17T16:42:24
-qx.Class.define("apiviewer.ui.PackageViewer",{extend:apiviewer.ui.AbstractViewer,
-construct:function(){this.base(arguments);
-this.addInfoPanel(new apiviewer.ui.panels.MethodPanel("functions","functions"));
-this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","classes","class"));
-this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","interfaces","interface"));
-this.addInfoPanel(new apiviewer.ui.panels.ClassPanel("classes","mixins","mixin"));
-this.addInfoPanel(new apiviewer.ui.panels.PackagePanel("packages","packages"));
-this.getContentElement().setAttribute("class","ClassViewer");
-this._init(new apiviewer.dao.Package({}))},
-members:{_getTitleHtml:function(b){var a="";
-a+="<small>package</small>";
-a+=b.getFullName();
-return a},
-_getDescriptionHtml:function(b){var c=new qx.util.StringBuilder(),a=b.getDescription();
-a!=""&&c.add("<div class=\"class-description\">",apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a,b),"</div>");
-return c.get()}}});
+// qx.ui.toolbar.RadioButton
+//   - Size: 288 bytes
+//   - Modified: 2010-11-03T14:43:37
+qx.Class.define("qx.ui.toolbar.RadioButton",{extend:qx.ui.toolbar.CheckBox,
+include:[qx.ui.form.MModelProperty],
+implement:[qx.ui.form.IModel,qx.ui.form.IRadioItem],
+members:{_applyValue:function(a,c){this.base(arguments,a,c);
+if(a){var b=this.getGroup();
+b&&b.setSelection([this])}}}});
 
 
 // qx.ui.form.RadioButton
@@ -17734,15 +16360,31 @@ b.sorted?a.addState(d.STATE_SORTED):a.removeState(d.STATE_SORTED);
 b.sortedAscending?a.addState(d.STATE_SORTED_ASCENDING):a.removeState(d.STATE_SORTED_ASCENDING)}}});
 
 
-// qx.ui.toolbar.RadioButton
-//   - Size: 288 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.ui.toolbar.RadioButton",{extend:qx.ui.toolbar.CheckBox,
-include:[qx.ui.form.MModelProperty],
-implement:[qx.ui.form.IModel,qx.ui.form.IRadioItem],
-members:{_applyValue:function(a,c){this.base(arguments,a,c);
-if(a){var b=this.getGroup();
-b&&b.setSelection([this])}}}});
+// qx.ui.core.scroll.MScrollBarFactory
+//   - Size: 277 bytes
+//   - Modified: 2010-04-29T21:34:05
+qx.core.Setting.define("qx.nativeScrollBars",false);
+qx.Mixin.define("qx.ui.core.scroll.MScrollBarFactory",{members:{_createScrollBar:function(a){return qx.core.Setting.get("qx.nativeScrollBars")?new qx.ui.core.scroll.NativeScrollBar(a):new qx.ui.core.scroll.ScrollBar(a)}}});
+
+
+// qx.application.AbstractGui
+//   - Size: 613 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.application.AbstractGui",{type:"abstract",
+extend:qx.core.Object,
+implement:[qx.application.IApplication],
+include:qx.locale.MTranslation,
+members:{__jO4QN:null,
+_createRootWidget:function(){throw new Error("Abstract method call")},
+getRoot:function(){return this.__jO4QN},
+main:function(){qx.theme.manager.Meta.getInstance().initialize();
+qx.ui.tooltip.Manager.getInstance();
+this.__jO4QN=this._createRootWidget()},
+finalize:function(){this.render()},
+render:function(){qx.ui.core.queue.Manager.flush()},
+close:function(){},
+terminate:function(){}},
+destruct:function(){this.__jO4QN=null}});
 
 
 // qx.ui.tabview.TabButton
@@ -17818,33 +16460,6 @@ _onCloseButtonClick:function(){this.fireDataEvent("close",this)},
 _applyShowCloseButton:function(a){a?this._showChildControl("close-button"):this._excludeChildControl("close-button")},
 _applyCenter:function(b){var a=this._getLayout();
 b?a.setColumnAlign(2,"center","middle"):a.setColumnAlign(2,"left","middle")}}});
-
-
-// qx.ui.core.scroll.MScrollBarFactory
-//   - Size: 277 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.core.Setting.define("qx.nativeScrollBars",false);
-qx.Mixin.define("qx.ui.core.scroll.MScrollBarFactory",{members:{_createScrollBar:function(a){return qx.core.Setting.get("qx.nativeScrollBars")?new qx.ui.core.scroll.NativeScrollBar(a):new qx.ui.core.scroll.ScrollBar(a)}}});
-
-
-// qx.application.AbstractGui
-//   - Size: 613 bytes
-//   - Modified: 2010-11-10T13:21:48
-qx.Class.define("qx.application.AbstractGui",{type:"abstract",
-extend:qx.core.Object,
-implement:[qx.application.IApplication],
-include:qx.locale.MTranslation,
-members:{__jO4QN:null,
-_createRootWidget:function(){throw new Error("Abstract method call")},
-getRoot:function(){return this.__jO4QN},
-main:function(){qx.theme.manager.Meta.getInstance().initialize();
-qx.ui.tooltip.Manager.getInstance();
-this.__jO4QN=this._createRootWidget()},
-finalize:function(){this.render()},
-render:function(){qx.ui.core.queue.Manager.flush()},
-close:function(){},
-terminate:function(){}},
-destruct:function(){this.__jO4QN=null}});
 
 
 // qx.ui.core.scroll.AbstractScrollArea
@@ -18399,6 +17014,13 @@ a<this.__18YOe.length;
 a++)this.__18YOe[a].headerRenderer.dispose(),this.__18YOe[a].dataRenderer.dispose(),this.__18YOe[a].editorFactory.dispose();
 this.__bqB3IN=this.__bqk0GG=this.__18YOe=this.__T6ZcG=null;
 this._disposeObjects("__headerRenderer","__dataRenderer","__editorFactory")}});
+
+
+// apiviewer.ui.tabview.ClassPage
+//   - Size: 169 bytes
+//   - Modified: 2010-07-17T16:42:24
+qx.Class.define("apiviewer.ui.tabview.ClassPage",{extend:apiviewer.ui.tabview.AbstractPage,
+members:{_createViewer:function(){return new apiviewer.ui.ClassViewer()}}});
 
 
 // qx.ui.table.columnmodel.Resize
@@ -19018,16 +17640,9 @@ this._disposeObjects("__root")}});
 
 // qx.application.Standalone
 //   - Size: 167 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("qx.application.Standalone",{extend:qx.application.AbstractGui,
 members:{_createRootWidget:function(){return new qx.ui.root.Application(document)}}});
-
-
-// apiviewer.ui.tabview.ClassPage
-//   - Size: 169 bytes
-//   - Modified: 2010-07-17T16:42:24
-qx.Class.define("apiviewer.ui.tabview.ClassPage",{extend:apiviewer.ui.tabview.AbstractPage,
-members:{_createViewer:function(){return new apiviewer.ui.ClassViewer()}}});
 
 
 // qx.ui.menu.CheckBox
@@ -19828,7 +18443,7 @@ this._disposeArray("listdata")}});
 
 // apiviewer.Viewer
 //   - Size: 5314 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("apiviewer.Viewer",{extend:qx.ui.container.Composite,
 construct:function(){this.base(arguments);
 this.__2y6sS={};
@@ -19959,7 +18574,7 @@ this._disposeObjects("_tree","_detailLoader","_classViewer","_packageViewer","_s
 
 // apiviewer.Application
 //   - Size: 619 bytes
-//   - Modified: 2010-11-10T13:21:48
+//   - Modified: 2010-11-11T16:55:27
 qx.Class.define("apiviewer.Application",{extend:qx.application.Standalone,
 construct:function(){this.base(arguments);
 qx.bom.Stylesheet.includeFile("apiviewer/css/apiviewer.css")},
@@ -19972,4 +18587,1389 @@ this.getRoot().add(this.viewer,{edge:0})},
 finalize:function(){this.base(arguments);
 this.controller.load("script/apidata.json")}},
 destruct:function(){this._disposeObjects("viewer","controller")}});
+
+
+// qx.theme.Color
+//   - Size: 1623 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Theme.define("qx.theme.Color",{colors:{"background-application":"#DFDFDF",
+"background-pane":"#F3F3F3",
+"background-light":"#FCFCFC",
+"background-medium":"#EEEEEE",
+"background-splitpane":"#AFAFAF",
+"background-tip":"#ffffdd",
+"background-tip-error":"#C72B2B",
+"background-odd":"#E4E4E4",
+"text-light":"#909090",
+"text-gray":"#4a4a4a",
+"text-label":"#1a1a1a",
+"text-title":"#314a6e",
+"text-input":"#000000",
+"text-hovered":"#001533",
+"text-disabled":"#7B7A7E",
+"text-selected":"#fffefe",
+"text-active":"#26364D",
+"text-inactive":"#404955",
+"text-placeholder":"#CBC8CD",
+"border-main":"#4d4d4d",
+"border-separator":"#808080",
+"border-input":"#334866",
+"border-disabled":"#B6B6B6",
+"border-pane":"#00204D",
+"border-button":"#666666",
+"border-column":"#CCCCCC",
+"border-focused":"#99C3FE",
+invalid:"#990000",
+"border-focused-invalid":"#FF9999",
+"table-pane":"#F3F3F3",
+"table-focus-indicator":"#0880EF",
+"table-row-background-focused-selected":"#084FAB",
+"table-row-background-focused":"#80B4EF",
+"table-row-background-selected":"#084FAB",
+"table-row-background-even":"#F3F3F3",
+"table-row-background-odd":"#E4E4E4",
+"table-row-selected":"#fffefe",
+"table-row":"#1a1a1a",
+"table-row-line":"#CCCCCC",
+"table-column-line":"#CCCCCC",
+"progressive-table-header":"#AAAAAA",
+"progressive-table-row-background-even":"#F4F4F4",
+"progressive-table-row-background-odd":"#E4E4E4",
+"progressive-progressbar-background":"gray",
+"progressive-progressbar-indicator-done":"#CCCCCC",
+"progressive-progressbar-indicator-undone":"white",
+"progressive-progressbar-percent-background":"gray",
+"progressive-progressbar-percent-text":"white"}});
+
+
+// qx.theme.Appearance
+//   - Size: 27270 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Theme.define("qx.theme.Appearance",{appearances:{widget:{},
+root:{style:function(){return{backgroundColor:"background-application",
+textColor:"text-label",
+font:"default"}}},
+label:{style:function(a){return{textColor:a.disabled?"text-disabled":undefined}}},
+"move-frame":{style:function(){return{decorator:"main"}}},
+"resize-frame":"move-frame",
+"dragdrop-cursor":{style:function(b){var a="nodrop";
+b.copy?a="copy":b.move?a="move":b.alias&&(a="alias");
+return{source:"qx/decoration/cursors/"+a+".gif",
+position:"right-top",
+offset:[2,16,2,6]}}},
+image:{style:function(a){return{opacity:!a.replacement&&a.disabled?.3:1}}},
+atom:{},
+"atom/label":"label",
+"atom/icon":"image",
+popup:{style:function(){return{decorator:"main",
+backgroundColor:"background-light",
+shadow:"shadow-popup"}}},
+"button-frame":{alias:"atom",
+style:function(a){var b,c;
+a.checked&&a.focused&&!a.inner?(b="button-checked-focused",c=undefined):a.disabled?(b="button-disabled",c=undefined):a.pressed?(b="button-pressed",c="text-hovered"):a.checked?(b="button-checked",c=undefined):a.hovered?(b="button-hovered",c="text-hovered"):a.preselected&&a.focused&&!a.inner?(b="button-preselected-focused",c="text-hovered"):a.preselected?(b="button-preselected",c="text-hovered"):a.focused&&!a.inner?(b="button-focused",c=undefined):(b="button",c=undefined);
+return{decorator:b,
+textColor:c,
+shadow:a.invalid&&!a.disabled?"button-invalid-shadow":undefined}}},
+"button-frame/image":{style:function(a){return{opacity:!a.replacement&&a.disabled?.5:1}}},
+button:{alias:"button-frame",
+include:"button-frame",
+style:function(){return{padding:[2,8],
+center:true}}},
+"hover-button":{alias:"atom",
+include:"atom",
+style:function(a){return{decorator:a.hovered?"selected":undefined,
+textColor:a.hovered?"text-selected":undefined}}},
+splitbutton:{},
+"splitbutton/button":"button",
+"splitbutton/arrow":{alias:"button",
+include:"button",
+style:function(){return{icon:"qx/decoration/arrows/down.png",
+padding:2,
+marginLeft:1}}},
+checkbox:{alias:"atom",
+style:function(a){var b,c;
+b=a.checked&&a.focused?"checkbox-checked-focused":a.checked&&a.disabled?"checkbox-checked-disabled":a.checked&&a.pressed?"checkbox-checked-pressed":a.checked&&a.hovered?"checkbox-checked-hovered":a.checked?"checkbox-checked":a.focused?"checkbox-focused":a.pressed?"checkbox-pressed":a.hovered?"checkbox-hovered":"checkbox";
+c=a.invalid&&!a.disabled?"-invalid":"";
+return{icon:"qx/decoration/form/"+b+c+".png",
+gap:6}}},
+radiobutton:{alias:"atom",
+style:function(a){var b,c;
+b=a.checked&&a.focused?"radiobutton-checked-focused":a.checked&&a.disabled?"radiobutton-checked-disabled":a.checked&&a.pressed?"radiobutton-checked-pressed":a.checked&&a.hovered?"radiobutton-checked-hovered":a.checked?"radiobutton-checked":a.focused?"radiobutton-focused":a.pressed?"radiobutton-pressed":a.hovered?"radiobutton-hovered":"radiobutton";
+c=a.invalid&&!a.disabled?"-invalid":"";
+return{icon:"qx/decoration/form/"+b+c+".png",
+gap:6}}},
+textfield:{style:function(b){var a,f=!!b.focused,e=!!b.invalid,d=!!b.disabled,c;
+a=f&&e&&!d?"input-focused-invalid":f&&!e&&!d?"input-focused":d?"input-disabled":!f&&e&&!d?"border-invalid":"input";
+c=b.disabled?"text-disabled":b.showingPlaceholder?"text-placeholder":"text-input";
+return{decorator:a,
+padding:[2,4,1],
+textColor:c}}},
+textarea:{include:"textfield",
+style:function(){return{padding:4}}},
+spinner:{style:function(e){var a,d=!!e.focused,c=!!e.invalid,b=!!e.disabled;
+a=d&&c&&!b?"input-focused-invalid":d&&!c&&!b?"input-focused":b?"input-disabled":!d&&c&&!b?"border-invalid":"input";
+return{decorator:a}}},
+"spinner/textfield":{style:function(a){return{marginRight:2,
+padding:[2,4,1],
+textColor:a.disabled?"text-disabled":"text-input"}}},
+"spinner/upbutton":{alias:"button-frame",
+include:"button-frame",
+style:function(a){return{icon:"qx/decoration/arrows/up-small.png",
+padding:a.pressed?[2,2,0,4]:[1,3,1,3],
+shadow:undefined}}},
+"spinner/downbutton":{alias:"button-frame",
+include:"button-frame",
+style:function(a){return{icon:"qx/decoration/arrows/down-small.png",
+padding:a.pressed?[2,2,0,4]:[1,3,1,3],
+shadow:undefined}}},
+datefield:"combobox",
+"datefield/button":{alias:"combobox/button",
+include:"combobox/button",
+style:function(){return{icon:"qx/icon/16/apps/office-calendar.png",
+padding:[0,3],
+decorator:undefined}}},
+"datefield/textfield":"combobox/textfield",
+"datefield/list":{alias:"datechooser",
+include:"datechooser",
+style:function(){return{decorator:undefined}}},
+groupbox:{style:function(){return{legendPosition:"top"}}},
+"groupbox/legend":{alias:"atom",
+style:function(a){return{padding:[1,0,1,4],
+textColor:a.invalid?"invalid":"text-title",
+font:"bold"}}},
+"groupbox/frame":{style:function(){return{padding:12,
+decorator:"group"}}},
+"check-groupbox":"groupbox",
+"check-groupbox/legend":{alias:"checkbox",
+include:"checkbox",
+style:function(a){return{padding:[1,0,1,4],
+textColor:a.invalid?"invalid":"text-title",
+font:"bold"}}},
+"radio-groupbox":"groupbox",
+"radio-groupbox/legend":{alias:"radiobutton",
+include:"radiobutton",
+style:function(a){return{padding:[1,0,1,4],
+textColor:a.invalid?"invalid":"text-title",
+font:"bold"}}},
+scrollarea:{style:function(){return{minWidth:50,
+minHeight:50}}},
+"scrollarea/corner":{style:function(){return{backgroundColor:"background-application"}}},
+"scrollarea/pane":"widget",
+"scrollarea/scrollbar-x":"scrollbar",
+"scrollarea/scrollbar-y":"scrollbar",
+scrollbar:{style:function(a){if(a["native"])return{};
+return{width:a.horizontal?undefined:16,
+height:a.horizontal?16:undefined,
+decorator:a.horizontal?"scrollbar-horizontal":"scrollbar-vertical",
+padding:1}}},
+"scrollbar/slider":{alias:"slider",
+style:function(a){return{padding:a.horizontal?[0,1,0,1]:[1,0,1,0]}}},
+"scrollbar/slider/knob":{include:"button-frame",
+style:function(a){var b=a.horizontal?"scrollbar-slider-horizontal":"scrollbar-slider-vertical";
+a.disabled&&(b+="-disabled");
+return{decorator:b,
+minHeight:a.horizontal?undefined:9,
+minWidth:a.horizontal?9:undefined}}},
+"scrollbar/button":{alias:"button-frame",
+include:"button-frame",
+style:function(b){var a="qx/decoration/scrollbar/scrollbar-";
+a+=b.left?"left.png":b.right?"right.png":b.up?"up.png":"down.png";
+return b.left||b.right?{padding:[0,0,0,b.left?3:4],
+icon:a,
+width:15,
+height:14}:{padding:[0,0,0,2],
+icon:a,
+width:14,
+height:15}}},
+"scrollbar/button-begin":"scrollbar/button",
+"scrollbar/button-end":"scrollbar/button",
+slider:{style:function(e){var a,d=!!e.focused,c=!!e.invalid,b=!!e.disabled;
+a=d&&c&&!b?"input-focused-invalid":d&&!c&&!b?"input-focused":b?"input-disabled":!d&&c&&!b?"border-invalid":"input";
+return{decorator:a}}},
+"slider/knob":{include:"button-frame",
+style:function(a){return{decorator:a.disabled?"scrollbar-slider-horizontal-disabled":"scrollbar-slider-horizontal",
+shadow:undefined,
+height:14,
+width:14}}},
+list:{alias:"scrollarea",
+style:function(e){var a,d=!!e.focused,c=!!e.invalid,b=!!e.disabled;
+a=d&&c&&!b?"input-focused-invalid":d&&!c&&!b?"input-focused":b?"input-disabled":!d&&c&&!b?"border-invalid":"input";
+return{backgroundColor:"background-light",
+decorator:a}}},
+"list/pane":"widget",
+listitem:{alias:"atom",
+style:function(a){var b;
+b=a.dragover?a.selected?"selected-dragover":"dragover":a.selected?"selected":undefined;
+return{padding:a.dragover?[4,4,2,4]:4,
+textColor:a.selected?"text-selected":undefined,
+decorator:b}}},
+slidebar:{},
+"slidebar/scrollpane":{},
+"slidebar/content":{},
+"slidebar/button-forward":{alias:"button-frame",
+include:"button-frame",
+style:function(a){return{padding:5,
+center:true,
+icon:a.vertical?"qx/decoration/arrows/down.png":"qx/decoration/arrows/right.png"}}},
+"slidebar/button-backward":{alias:"button-frame",
+include:"button-frame",
+style:function(a){return{padding:5,
+center:true,
+icon:a.vertical?"qx/decoration/arrows/up.png":"qx/decoration/arrows/left.png"}}},
+tabview:{style:function(){return{contentPadding:16}}},
+"tabview/bar":{alias:"slidebar",
+style:function(a){var b={marginBottom:a.barTop?-1:0,
+marginTop:a.barBottom?-4:0,
+marginLeft:a.barRight?-3:0,
+marginRight:a.barLeft?-1:0,
+paddingTop:0,
+paddingRight:0,
+paddingBottom:0,
+paddingLeft:0};
+a.barTop||a.barBottom?(b.paddingLeft=5,b.paddingRight=7):(b.paddingTop=5,b.paddingBottom=7);
+return b}},
+"tabview/bar/button-forward":{include:"slidebar/button-forward",
+alias:"slidebar/button-forward",
+style:function(a){return a.barTop||a.barBottom?{marginTop:2,
+marginBottom:2,
+marginLeft:0,
+marginRight:0}:{marginLeft:2,
+marginRight:2,
+marginTop:0,
+marginBottom:0}}},
+"tabview/bar/button-backward":{include:"slidebar/button-backward",
+alias:"slidebar/button-backward",
+style:function(a){return a.barTop||a.barBottom?{marginTop:2,
+marginBottom:2,
+marginLeft:0,
+marginRight:0}:{marginLeft:2,
+marginRight:2,
+marginTop:0,
+marginBottom:0}}},
+"tabview/bar/scrollpane":{},
+"tabview/pane":{style:function(a){return{decorator:"tabview-pane",
+minHeight:100,
+marginBottom:a.barBottom?-1:0,
+marginTop:a.barTop?-1:0,
+marginLeft:a.barLeft?-1:0,
+marginRight:a.barRight?-1:0}}},
+"tabview-page":"widget",
+"tabview-page/button":{alias:"atom",
+style:function(a){var b,c=0,g=0,f=0,e=0,d=0;
+a.checked?a.barTop?(b="tabview-page-button-top-active",c=[6,14],e=a.firstTab?0:-5,d=a.lastTab?0:-5):a.barBottom?(b="tabview-page-button-bottom-active",c=[6,14],e=a.firstTab?0:-5,d=a.lastTab?0:-5):a.barRight?(b="tabview-page-button-right-active",c=[6,13],g=a.firstTab?0:-5,f=a.lastTab?0:-5):(b="tabview-page-button-left-active",c=[6,13],g=a.firstTab?0:-5,f=a.lastTab?0:-5):a.barTop?(b="tabview-page-button-top-inactive",c=[4,10],g=4,e=a.firstTab?5:1,d=1):a.barBottom?(b="tabview-page-button-bottom-inactive",c=[4,10],f=4,e=a.firstTab?5:1,d=1):a.barRight?(b="tabview-page-button-right-inactive",c=[4,10],d=5,g=a.firstTab?5:1,f=1,e=1):(b="tabview-page-button-left-inactive",c=[4,10],e=5,g=a.firstTab?5:1,f=1,d=1);
+return{zIndex:a.checked?10:5,
+decorator:b,
+padding:c,
+marginTop:g,
+marginBottom:f,
+marginLeft:e,
+marginRight:d,
+textColor:a.checked?"text-active":"text-inactive"}}},
+"tabview-page/button/label":{alias:"label",
+style:function(){return{padding:[0,1,0,1]}}},
+"tabview-page/button/close-button":{alias:"atom",
+style:function(){return{icon:"qx/icon/16/actions/window-close.png"}}},
+toolbar:{style:function(){return{decorator:"toolbar",
+spacing:2}}},
+"toolbar/part":{style:function(){return{decorator:"toolbar-part",
+spacing:2}}},
+"toolbar/part/container":{style:function(){return{paddingLeft:2,
+paddingRight:2}}},
+"toolbar/part/handle":{style:function(){return{source:"qx/decoration/toolbar/toolbar-handle-knob.gif",
+marginLeft:3,
+marginRight:3}}},
+"toolbar-button":{alias:"atom",
+style:function(a){return{marginTop:2,
+marginBottom:2,
+padding:(a.pressed||a.checked||a.hovered)&&!a.disabled||a.disabled&&a.checked?3:5,
+decorator:a.pressed||a.checked&&!a.hovered||a.checked&&a.disabled?"toolbar-button-checked":a.hovered&&!a.disabled?"toolbar-button-hovered":undefined}}},
+"toolbar-menubutton":{alias:"toolbar-button",
+include:"toolbar-button",
+style:function(){return{showArrow:true}}},
+"toolbar-menubutton/arrow":{alias:"image",
+include:"image",
+style:function(){return{source:"qx/decoration/arrows/down-small.png"}}},
+"toolbar-splitbutton":{style:function(){return{marginTop:2,
+marginBottom:2}}},
+"toolbar-splitbutton/button":{alias:"toolbar-button",
+include:"toolbar-button",
+style:function(){return{icon:"qx/decoration/arrows/down.png",
+marginTop:undefined,
+marginBottom:undefined}}},
+"toolbar-splitbutton/arrow":{alias:"toolbar-button",
+include:"toolbar-button",
+style:function(a){if(a.pressed||a.checked||a.hovered&&!a.disabled)var b=1;
+else b=3;
+return{padding:b,
+icon:"qx/decoration/arrows/down.png",
+marginTop:undefined,
+marginBottom:undefined}}},
+"toolbar-separator":{style:function(){return{decorator:"toolbar-separator",
+margin:7}}},
+tree:"list",
+"tree-item":{style:function(a){return{padding:[2,6],
+textColor:a.selected?"text-selected":undefined,
+decorator:a.selected?"selected":undefined}}},
+"tree-item/icon":{include:"image",
+style:function(){return{paddingRight:5}}},
+"tree-item/label":"label",
+"tree-item/open":{include:"image",
+style:function(b){var a;
+a=b.selected&&b.opened?"qx/decoration/tree/open-selected.png":b.selected&&!b.opened?"qx/decoration/tree/closed-selected.png":b.opened?"qx/decoration/tree/open.png":"qx/decoration/tree/closed.png";
+return{padding:[0,5,0,2],
+source:a}}},
+"tree-folder":{include:"tree-item",
+alias:"tree-item",
+style:function(a){var b;
+b=a.small?a.opened?"qx/icon/16/places/folder-open.png":"qx/icon/16/places/folder.png":a.large?a.opened?"qx/icon/32/places/folder-open.png":"qx/icon/32/places/folder.png":a.opened?"qx/icon/22/places/folder-open.png":"qx/icon/22/places/folder.png";
+return{icon:b}}},
+"tree-file":{include:"tree-item",
+alias:"tree-item",
+style:function(a){return{icon:a.small?"qx/icon/16/mimetypes/office-document.png":a.large?"qx/icon/32/mimetypes/office-document.png":"qx/icon/22/mimetypes/office-document.png"}}},
+treevirtual:"table",
+"treevirtual-folder":{style:function(a){return{icon:a.opened?"qx/icon/16/places/folder-open.png":"qx/icon/16/places/folder.png"}}},
+"treevirtual-file":{include:"treevirtual-folder",
+alias:"treevirtual-folder",
+style:function(){return{icon:"qx/icon/16/mimetypes/office-document.png"}}},
+"treevirtual-line":{style:function(){return{icon:"qx/static/blank.gif"}}},
+"treevirtual-contract":{style:function(){return{icon:"qx/decoration/tree/open.png",
+paddingLeft:5,
+paddingTop:2}}},
+"treevirtual-expand":{style:function(){return{icon:"qx/decoration/tree/closed.png",
+paddingLeft:5,
+paddingTop:2}}},
+"treevirtual-only-contract":"treevirtual-contract",
+"treevirtual-only-expand":"treevirtual-expand",
+"treevirtual-start-contract":"treevirtual-contract",
+"treevirtual-start-expand":"treevirtual-expand",
+"treevirtual-end-contract":"treevirtual-contract",
+"treevirtual-end-expand":"treevirtual-expand",
+"treevirtual-cross-contract":"treevirtual-contract",
+"treevirtual-cross-expand":"treevirtual-expand",
+"treevirtual-end":{style:function(){return{icon:"qx/static/blank.gif"}}},
+"treevirtual-cross":{style:function(){return{icon:"qx/static/blank.gif"}}},
+tooltip:{include:"popup",
+style:function(){return{backgroundColor:"background-tip",
+padding:[1,3,2,3],
+offset:[15,5,5,5]}}},
+"tooltip/atom":"atom",
+"tooltip-error":{include:"tooltip",
+style:function(){return{textColor:"text-selected",
+placeMethod:"widget",
+offset:[0,0,0,14],
+marginTop:-2,
+position:"right-top",
+showTimeout:100,
+hideTimeout:10000,
+decorator:"tooltip-error",
+shadow:"tooltip-error-arrow",
+font:"bold"}}},
+"tooltip-error/atom":"atom",
+window:{style:function(){return{shadow:"shadow-window",
+contentPadding:[10,10,10,10]}}},
+"window/pane":{style:function(){return{decorator:"window"}}},
+"window/captionbar":{style:function(a){return{decorator:a.active?"window-captionbar-active":"window-captionbar-inactive",
+textColor:a.active?"white":"text-gray",
+minHeight:26,
+paddingRight:2}}},
+"window/icon":{style:function(){return{margin:[5,0,3,6]}}},
+"window/title":{style:function(){return{alignY:"middle",
+font:"bold",
+marginLeft:6,
+marginRight:12}}},
+"window/minimize-button":{alias:"atom",
+style:function(a){return{icon:a.active?a.hovered?"qx/decoration/window/minimize-active-hovered.png":"qx/decoration/window/minimize-active.png":"qx/decoration/window/minimize-inactive.png",
+margin:[4,8,2,0]}}},
+"window/restore-button":{alias:"atom",
+style:function(a){return{icon:a.active?a.hovered?"qx/decoration/window/restore-active-hovered.png":"qx/decoration/window/restore-active.png":"qx/decoration/window/restore-inactive.png",
+margin:[5,8,2,0]}}},
+"window/maximize-button":{alias:"atom",
+style:function(a){return{icon:a.active?a.hovered?"qx/decoration/window/maximize-active-hovered.png":"qx/decoration/window/maximize-active.png":"qx/decoration/window/maximize-inactive.png",
+margin:[4,8,2,0]}}},
+"window/close-button":{alias:"atom",
+style:function(a){return{icon:a.active?a.hovered?"qx/decoration/window/close-active-hovered.png":"qx/decoration/window/close-active.png":"qx/decoration/window/close-inactive.png",
+margin:[4,8,2,0]}}},
+"window/statusbar":{style:function(){return{padding:[2,6],
+decorator:"window-statusbar",
+minHeight:18}}},
+"window/statusbar-text":{style:function(){return{font:"small"}}},
+iframe:{style:function(){return{decorator:"main"}}},
+resizer:{style:function(){return{decorator:"pane"}}},
+splitpane:{style:function(){return{decorator:"splitpane"}}},
+"splitpane/splitter":{style:function(a){return{width:a.horizontal?3:undefined,
+height:a.vertical?3:undefined,
+backgroundColor:"background-splitpane"}}},
+"splitpane/splitter/knob":{style:function(a){return{source:a.horizontal?"qx/decoration/splitpane/knob-horizontal.png":"qx/decoration/splitpane/knob-vertical.png"}}},
+"splitpane/slider":{style:function(a){return{width:a.horizontal?3:undefined,
+height:a.vertical?3:undefined,
+backgroundColor:"background-splitpane"}}},
+selectbox:{alias:"button-frame",
+include:"button-frame",
+style:function(){return{padding:[2,8]}}},
+"selectbox/atom":"atom",
+"selectbox/popup":"popup",
+"selectbox/list":{alias:"list"},
+"selectbox/arrow":{include:"image",
+style:function(){return{source:"qx/decoration/arrows/down.png",
+paddingLeft:5}}},
+datechooser:{style:function(e){var a,d=!!e.focused,c=!!e.invalid,b=!!e.disabled;
+a=d&&c&&!b?"input-focused-invalid":d&&!c&&!b?"input-focused":b?"input-disabled":!d&&c&&!b?"border-invalid":"input";
+return{padding:2,
+decorator:a,
+backgroundColor:"background-light"}}},
+"datechooser/navigation-bar":{},
+"datechooser/nav-button":{include:"button-frame",
+alias:"button-frame",
+style:function(b){var a={padding:[2,4],
+shadow:undefined};
+b.lastYear?(a.icon="qx/decoration/arrows/rewind.png",a.marginRight=1):b.lastMonth?a.icon="qx/decoration/arrows/left.png":b.nextYear?(a.icon="qx/decoration/arrows/forward.png",a.marginLeft=1):b.nextMonth&&(a.icon="qx/decoration/arrows/right.png");
+return a}},
+"datechooser/last-year-button-tooltip":"tooltip",
+"datechooser/last-month-button-tooltip":"tooltip",
+"datechooser/next-year-button-tooltip":"tooltip",
+"datechooser/next-month-button-tooltip":"tooltip",
+"datechooser/last-year-button":"datechooser/nav-button",
+"datechooser/last-month-button":"datechooser/nav-button",
+"datechooser/next-month-button":"datechooser/nav-button",
+"datechooser/next-year-button":"datechooser/nav-button",
+"datechooser/month-year-label":{style:function(a){return{font:"bold",
+textAlign:"center",
+textColor:a.disabled?"text-disabled":undefined}}},
+"datechooser/date-pane":{style:function(a){return{textColor:a.disabled?"text-disabled":undefined,
+marginTop:2}}},
+"datechooser/weekday":{style:function(a){return{textColor:a.disabled?"text-disabled":a.weekend?"text-light":undefined,
+textAlign:"center",
+paddingTop:2,
+backgroundColor:"background-medium"}}},
+"datechooser/week":{style:function(){return{textAlign:"center",
+padding:[2,4],
+backgroundColor:"background-medium"}}},
+"datechooser/day":{style:function(a){return{textAlign:"center",
+decorator:a.disabled?undefined:a.selected?"selected":undefined,
+textColor:a.disabled?"text-disabled":a.selected?"text-selected":a.otherMonth?"text-light":undefined,
+font:a.today?"bold":undefined,
+padding:[2,4]}}},
+combobox:{style:function(e){var a,d=!!e.focused,c=!!e.invalid,b=!!e.disabled;
+a=d&&c&&!b?"input-focused-invalid":d&&!c&&!b?"input-focused":b?"input-disabled":!d&&c&&!b?"border-invalid":"input";
+return{decorator:a}}},
+"combobox/popup":"popup",
+"combobox/list":{alias:"list"},
+"combobox/button":{include:"button-frame",
+alias:"button-frame",
+style:function(b){var a={icon:"qx/decoration/arrows/down.png",
+padding:2};
+b.selected&&(a.decorator="button-focused");
+return a}},
+"combobox/textfield":{include:"textfield",
+style:function(){return{decorator:undefined}}},
+menu:{style:function(b){var a={decorator:"menu",
+shadow:"shadow-popup",
+spacingX:6,
+spacingY:1,
+iconColumnWidth:16,
+arrowColumnWidth:4,
+placementModeY:b.submenu||b.contextmenu?"best-fit":"keep-align"};
+b.submenu&&(a.position="right-top",a.offset=[-2,-3]);
+return a}},
+"menu/slidebar":"menu-slidebar",
+"menu-slidebar":"widget",
+"menu-slidebar-button":{style:function(a){return{decorator:a.hovered?"selected":undefined,
+padding:7,
+center:true}}},
+"menu-slidebar/button-backward":{include:"menu-slidebar-button",
+style:function(a){return{icon:a.hovered?"qx/decoration/arrows/up-invert.png":"qx/decoration/arrows/up.png"}}},
+"menu-slidebar/button-forward":{include:"menu-slidebar-button",
+style:function(a){return{icon:a.hovered?"qx/decoration/arrows/down-invert.png":"qx/decoration/arrows/down.png"}}},
+"menu-separator":{style:function(){return{height:0,
+decorator:"menu-separator",
+margin:[4,2]}}},
+"menu-button":{alias:"atom",
+style:function(a){return{decorator:a.selected?"selected":undefined,
+textColor:a.selected?"text-selected":undefined,
+padding:[4,6]}}},
+"menu-button/icon":{include:"image",
+style:function(){return{alignY:"middle"}}},
+"menu-button/label":{include:"label",
+style:function(){return{alignY:"middle",
+padding:1}}},
+"menu-button/shortcut":{include:"label",
+style:function(){return{alignY:"middle",
+marginLeft:14,
+padding:1}}},
+"menu-button/arrow":{include:"image",
+style:function(a){return{source:a.selected?"qx/decoration/arrows/right-invert.png":"qx/decoration/arrows/right.png",
+alignY:"middle"}}},
+"menu-checkbox":{alias:"menu-button",
+include:"menu-button",
+style:function(a){return{icon:a.checked?a.selected?"qx/decoration/menu/checkbox-invert.gif":"qx/decoration/menu/checkbox.gif":undefined}}},
+"menu-radiobutton":{alias:"menu-button",
+include:"menu-button",
+style:function(a){return{icon:a.checked?a.selected?"qx/decoration/menu/radiobutton-invert.gif":"qx/decoration/menu/radiobutton.gif":undefined}}},
+menubar:{style:function(){return{decorator:"menubar"}}},
+"menubar-button":{alias:"atom",
+style:function(a){return{decorator:(a.pressed||a.hovered)&&!a.disabled?"selected":undefined,
+textColor:a.pressed||a.hovered?"text-selected":undefined,
+padding:[3,8]}}},
+colorselector:"widget",
+"colorselector/control-bar":"widget",
+"colorselector/control-pane":"widget",
+"colorselector/visual-pane":"groupbox",
+"colorselector/preset-grid":"widget",
+"colorselector/colorbucket":{style:function(){return{decorator:"main",
+width:16,
+height:16}}},
+"colorselector/preset-field-set":"groupbox",
+"colorselector/input-field-set":"groupbox",
+"colorselector/preview-field-set":"groupbox",
+"colorselector/hex-field-composite":"widget",
+"colorselector/hex-field":"textfield",
+"colorselector/rgb-spinner-composite":"widget",
+"colorselector/rgb-spinner-red":"spinner",
+"colorselector/rgb-spinner-green":"spinner",
+"colorselector/rgb-spinner-blue":"spinner",
+"colorselector/hsb-spinner-composite":"widget",
+"colorselector/hsb-spinner-hue":"spinner",
+"colorselector/hsb-spinner-saturation":"spinner",
+"colorselector/hsb-spinner-brightness":"spinner",
+"colorselector/preview-content-old":{style:function(){return{decorator:"main",
+width:50,
+height:10}}},
+"colorselector/preview-content-new":{style:function(){return{decorator:"main",
+backgroundColor:"background-light",
+width:50,
+height:10}}},
+"colorselector/hue-saturation-field":{style:function(){return{decorator:"main",
+margin:5}}},
+"colorselector/brightness-field":{style:function(){return{decorator:"main",
+margin:[5,7]}}},
+"colorselector/hue-saturation-pane":"widget",
+"colorselector/hue-saturation-handle":"widget",
+"colorselector/brightness-pane":"widget",
+"colorselector/brightness-handle":"widget",
+colorpopup:{alias:"popup",
+include:"popup",
+style:function(){return{padding:5,
+backgroundColor:"background-application"}}},
+"colorpopup/field":{style:function(){return{decorator:"main",
+margin:2,
+width:14,
+height:14,
+backgroundColor:"background-light"}}},
+"colorpopup/selector-button":"button",
+"colorpopup/auto-button":"button",
+"colorpopup/preview-pane":"groupbox",
+"colorpopup/current-preview":{style:function(){return{height:20,
+padding:4,
+marginLeft:4,
+decorator:"main",
+allowGrowX:true}}},
+"colorpopup/selected-preview":{style:function(){return{height:20,
+padding:4,
+marginRight:4,
+decorator:"main",
+allowGrowX:true}}},
+"colorpopup/colorselector-okbutton":{alias:"button",
+include:"button",
+style:function(){return{icon:"qx/icon/16/actions/dialog-ok.png"}}},
+"colorpopup/colorselector-cancelbutton":{alias:"button",
+include:"button",
+style:function(){return{icon:"qx/icon/16/actions/dialog-cancel.png"}}},
+table:{alias:"widget",
+style:function(){return{decorator:"table"}}},
+"table-header":{},
+"table/statusbar":{style:function(){return{decorator:"table-statusbar",
+padding:[0,2]}}},
+"table/column-button":{alias:"button-frame",
+style:function(){return{decorator:"table-column-button",
+padding:3,
+icon:"qx/decoration/table/select-column-order.png"}}},
+"table-column-reset-button":{include:"menu-button",
+alias:"menu-button",
+style:function(){return{icon:"qx/icon/16/actions/view-refresh.png"}}},
+"table-scroller":"widget",
+"table-scroller/scrollbar-x":"scrollbar",
+"table-scroller/scrollbar-y":"scrollbar",
+"table-scroller/header":{style:function(){return{decorator:"table-scroller-header"}}},
+"table-scroller/pane":{style:function(){return{backgroundColor:"table-pane"}}},
+"table-scroller/focus-indicator":{style:function(){return{decorator:"table-scroller-focus-indicator"}}},
+"table-scroller/resize-line":{style:function(){return{backgroundColor:"border-separator",
+width:2}}},
+"table-header-cell":{alias:"atom",
+style:function(a){return{minWidth:13,
+minHeight:20,
+padding:a.hovered?[3,4,2,4]:[3,4],
+decorator:a.hovered?"table-header-cell-hovered":"table-header-cell",
+sortIcon:a.sorted?a.sortedAscending?"qx/decoration/table/ascending.png":"qx/decoration/table/descending.png":undefined}}},
+"table-header-cell/label":{style:function(){return{minWidth:0,
+alignY:"middle",
+paddingRight:5}}},
+"table-header-cell/sort-icon":{style:function(){return{alignY:"middle",
+alignX:"right"}}},
+"table-header-cell/icon":{style:function(){return{minWidth:0,
+alignY:"middle",
+paddingRight:5}}},
+"table-editor-textfield":{include:"textfield",
+style:function(){return{decorator:undefined,
+padding:[2,2],
+backgroundColor:"background-light"}}},
+"table-editor-selectbox":{include:"selectbox",
+alias:"selectbox",
+style:function(){return{padding:[0,2],
+backgroundColor:"background-light"}}},
+"table-editor-combobox":{include:"combobox",
+alias:"combobox",
+style:function(){return{decorator:undefined,
+backgroundColor:"background-light"}}},
+"progressive-table-header":{alias:"widget",
+style:function(){return{decorator:"progressive-table-header"}}},
+"progressive-table-header-cell":{alias:"atom",
+style:function(){return{minWidth:40,
+minHeight:25,
+paddingLeft:6,
+decorator:"progressive-table-header-cell"}}},
+"app-header":{style:function(){return{font:"bold",
+textColor:"text-selected",
+padding:[8,12],
+decorator:"app-header"}}},
+"virtual-list":"list",
+"virtual-list/row-layer":"row-layer",
+"row-layer":{style:function(){return{colorEven:"white",
+colorOdd:"white"}}},
+"column-layer":"widget",
+cell:{style:function(a){return{textColor:a.selected?"text-selected":"text-label",
+padding:[3,6],
+font:"default"}}},
+"cell-string":"cell",
+"cell-number":{include:"cell",
+style:function(){return{textAlign:"right"}}},
+"cell-image":"cell",
+"cell-boolean":{include:"cell",
+style:function(){return{iconTrue:"qx/decoration/table/boolean-true.png",
+iconFalse:"qx/decoration/table/boolean-false.png"}}},
+"cell-atom":"cell",
+"cell-date":"cell",
+"cell-html":"cell",
+htmlarea:{include:"widget",
+style:function(){return{backgroundColor:"white"}}}}});
+
+
+// apiviewer.Appearance
+//   - Size: 757 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Theme.define("apiviewer.Appearance",{title:"Theme for API Viewer",
+extend:qx.theme.Appearance,
+appearances:{toggleview:{style:function(){return{width:240,
+decorator:"main"}}},
+detailviewer:{style:function(){return{backgroundColor:"white",
+decorator:"main"}}},
+legend:{include:"scrollarea",
+alias:"scrollarea",
+style:function(){return{contentPadding:[10,10,10,10]}}},
+"legendview-label-important":{style:function(){return{textColor:"#134275",
+font:"bold"}}},
+"legendview-label":{style:function(){return{textColor:"#134275"}}},
+tabview:{style:function(){return{contentPadding:0}}},
+"tabview/pane":{style:function(a){return{minHeight:100,
+marginBottom:a.barBottom?-1:0,
+marginTop:a.barTop?-1:0,
+marginLeft:a.barLeft?-1:0,
+marginRight:a.barRight?-1:0}}}}});
+
+
+// qx.bom.element2.Clip
+//   - Size: 367 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Class.define("qx.bom.element2.Clip",{statics:{compileValue:function(c){if(!c)return"rect(auto,auto,auto,auto)";
+var a=c.left,b=c.top,e=c.width,d=c.height,g,f;
+a==null?(g=e==null?"auto":e+"px",a="auto"):(g=e==null?"auto":a+e+"px",a=a+"px");
+b==null?(f=d==null?"auto":d+"px",b="auto"):(f=d==null?"auto":b+d+"px",b=b+"px");
+return"rect("+b+","+g+","+f+","+a+")"}}});
+
+
+// qx.theme.Font
+//   - Size: 1113 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Theme.define("qx.theme.Font",{fonts:{"default":{size:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?12:11,
+lineHeight:1.4,
+family:qx.bom.client.Platform.MAC?["Lucida Grande"]:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?["Segoe UI","Candara"]:["Tahoma","Liberation Sans","Arial","sans-serif"]},
+bold:{size:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?12:11,
+lineHeight:1.4,
+family:qx.bom.client.Platform.MAC?["Lucida Grande"]:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?["Segoe UI","Candara"]:["Tahoma","Liberation Sans","Arial","sans-serif"],
+bold:true},
+small:{size:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?11:10,
+lineHeight:1.4,
+family:qx.bom.client.Platform.MAC?["Lucida Grande"]:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?["Segoe UI","Candara"]:["Tahoma","Liberation Sans","Arial","sans-serif"]},
+monospace:{size:11,
+lineHeight:1.4,
+family:qx.bom.client.Platform.MAC?["Lucida Console","Monaco"]:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?["Consolas"]:["Consolas","DejaVu Sans Mono","Courier New","monospace"]}}});
+
+
+// qx.ui.decoration.Abstract
+//   - Size: 1258 bytes
+//   - Modified: 2010-06-18T23:08:09
+qx.Class.define("qx.ui.decoration.Abstract",{extend:qx.core.Object,
+implement:[qx.ui.decoration.IDecorator],
+type:"abstract",
+properties:{insetLeft:{check:"Number",
+nullable:true,
+apply:"_applyInsets"},
+insetRight:{check:"Number",
+nullable:true,
+apply:"_applyInsets"},
+insetBottom:{check:"Number",
+nullable:true,
+apply:"_applyInsets"},
+insetTop:{check:"Number",
+nullable:true,
+apply:"_applyInsets"},
+insets:{group:["insetTop","insetRight","insetBottom","insetLeft"],
+shorthand:true}},
+members:{__qFVs1:null,
+_getDefaultInsets:function(){throw new Error("Abstract method called.")},
+_isInitialized:function(){throw new Error("Abstract method called.")},
+_resetInsets:function(){this.__qFVs1=null},
+getInsets:function(){if(this.__qFVs1)return this.__qFVs1;
+var a=this._getDefaultInsets();
+return this.__qFVs1={left:this.getInsetLeft()==null?a.left:this.getInsetLeft(),
+right:this.getInsetRight()==null?a.right:this.getInsetRight(),
+bottom:this.getInsetBottom()==null?a.bottom:this.getInsetBottom(),
+top:this.getInsetTop()==null?a.top:this.getInsetTop()}},
+_applyInsets:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!");
+this.__qFVs1=null}},
+destruct:function(){this.__qFVs1=null}});
+
+
+// qx.ui.decoration.MBackgroundImage
+//   - Size: 1276 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Mixin.define("qx.ui.decoration.MBackgroundImage",{properties:{backgroundImage:{check:"String",
+nullable:true,
+apply:"_applyBackground"},
+backgroundRepeat:{check:["repeat","repeat-x","repeat-y","no-repeat","scale"],
+init:"repeat",
+apply:"_applyBackground"},
+backgroundPositionX:{nullable:true,
+apply:"_applyBackground"},
+backgroundPositionY:{nullable:true,
+apply:"_applyBackground"},
+backgroundPosition:{group:["backgroundPositionY","backgroundPositionX"]}},
+members:{_generateBackgroundMarkup:function(e){var c=qx.bom.element2.Style,d=this.getBackgroundImage(),b,a,g,f;
+if(d){g=qx.bom.element.Decoration,f=this.getBackgroundRepeat();
+if(f=="scale"){if(this.getBackgroundPositionX()!=null||this.getBackgroundPositionY()!=null)throw new Error("Does not support background position on scaled backgroud images.");
+a=c.compile(e);
+b="<img style='"+a+"' src='"+qx.util.ResourceManager.getInstance().toUri(d)+"'/>"}else a=c.compile(e)+c.compile(qx.bom.element.Decoration.getStyles(d,f)),b="<div style='font-size:0;line-height:0;"+a+"'></div>"}else a=c.compile(e),b="<div style='font-size:0;line-height:0;"+a+"'></div>";
+return b},
+_applyBackground:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!")}}});
+
+
+// qx.ui.decoration.Grid
+//   - Size: 3516 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.ui.decoration.Grid",{extend:qx.ui.decoration.Abstract,
+construct:function(a,b){this.base(arguments);
+a!=null&&this.setBaseImage(a);
+b!=null&&this.setInsets(b)},
+properties:{baseImage:{check:"String",
+nullable:true,
+apply:"_applyBaseImage"}},
+members:{__qyd51:null,
+__qd9wf:null,
+__msGX5:null,
+_getDefaultInsets:function(){return{top:0,
+right:0,
+bottom:0,
+left:0}},
+_isInitialized:function(){return!!this.__qyd51},
+getMarkup:function(){if(this.__qyd51)return this.__qyd51;
+var e=qx.bom.element.Decoration,d=qx.bom.element2.Style,f=qx.util.ResourceManager.getInstance(),b=this.__qd9wf,c=this.__msGX5,a=[];
+a.push("<div style=\"position:absolute;top:0;left:0;overflow:hidden;font-size:0;line-height:0;\">");
+a.push("<div style='position:absolute;top:0;left:0;",d.compile(e.getStyles(b.tl,"no-repeat")),"'></div>");
+a.push(this.__bfjo39(b.t,c.left,false));
+a.push("<div style='position:absolute;top:0;right:0;",d.compile(e.getStyles(b.tr,"no-repeat")),"'></div>");
+a.push("<div style='position:absolute;bottom:0;left:0;",d.compile(e.getStyles(b.bl,"no-repeat")),"'></div>");
+a.push(this.__bfjo39(b.b,c.right,true));
+a.push("<div style='position:absolute;bottom:0;right:0;",d.compile(e.getStyles(b.br,"no-repeat")),"'></div>");
+a.push(this.__bflkpo(b.l,c.top,false));
+a.push("<img src='"+f.toUri(b.c)+"' style='position:absolute;top:",c.top,"px;left:",c.left,"px;'/>");
+a.push(this.__bflkpo(b.r,c.bottom,true));
+a.push("</div>");
+return this.__qyd51=a.join("")},
+resize:function(a,f,e){var d=this.__msGX5,b=f-d.left-d.right,c=e-d.top-d.bottom;
+b<0&&(b=0);
+c<0&&(c=0);
+a.style.width=f+"px";
+a.style.height=e+"px";
+a.childNodes[1].style.width=b+"px";
+a.childNodes[4].style.width=b+"px";
+a.childNodes[7].style.width=b+"px";
+a.childNodes[6].style.height=c+"px";
+a.childNodes[7].style.height=c+"px";
+a.childNodes[8].style.height=c+"px"},
+tint:function(){},
+_applyBaseImage:function(c){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!");
+if(c){var d=/(.*)(\.[a-z]+)$/.exec(c),a=d[1],b=d[2],e=this.__qd9wf={tl:a+"-tl"+b,
+t:a+"-t"+b,
+tr:a+"-tr"+b,
+bl:a+"-bl"+b,
+b:a+"-b"+b,
+br:a+"-br"+b,
+l:a+"-l"+b,
+c:a+"-c"+b,
+r:a+"-r"+b};
+this.__msGX5=this._computeEdgeSizes(e)}},
+__bfjo39:function(b,e,h){var d=qx.util.ResourceManager.getInstance(),g=d.getImageWidth(b),c=d.getImageHeight(b),a=d.getImageSprite(b),i,f;
+if(a){i=qx.bom.element2.Clip.compileValue({top:a.top,
+height:c}),f=h?"bottom:"+(c-a.height+a.top)+"px":"top:"+-a.top+"px";
+return"<img src='"+a.uri+"' style='position:absolute;left:"+e+"px;"+f+";width:"+g+"px;height:"+a.height+"px;clip:"+i+"'/>"}f=h?"bottom:0":"top:0";
+return"<img src='"+b+"' style='position:absolute;left:"+e+"px;"+f+";width:"+g+"px;height:"+c+";'/>"},
+__bflkpo:function(b,g,h){var d=qx.util.ResourceManager.getInstance(),c=d.getImageWidth(b),f=d.getImageHeight(b),a=d.getImageSprite(b),i,e;
+if(a){i=qx.bom.element2.Clip.compileValue({left:a.left,
+width:c}),e=h?"right:"+(c-a.width+a.left)+"px":"left:"+-a.left+"px";
+return"<img src='"+a.uri+"' style='position:absolute;top:"+g+"px;"+e+";height:"+f+"px;width:"+a.width+"px;clip:"+i+"'/>"}e=h?"right:0":"left:0";
+return"<img src='"+b+"' style='position:absolute;top:"+g+"px;"+e+";height:"+f+"px;width:"+c+";'/>"},
+_computeEdgeSizes:function(b){var a=qx.util.ResourceManager.getInstance();
+return{top:a.getImageHeight(b.t),
+bottom:a.getImageHeight(b.b),
+left:a.getImageWidth(b.l),
+right:a.getImageWidth(b.r)}}},
+destruct:function(){this.__qyd51=this.__qd9wf=this.__msGX5=null}});
+
+
+// qx.ui.decoration.Single
+//   - Size: 3487 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Class.define("qx.ui.decoration.Single",{extend:qx.ui.decoration.Abstract,
+include:[qx.ui.decoration.MBackgroundImage],
+construct:function(b,a,c){this.base(arguments);
+b!=null&&this.setWidth(b);
+a!=null&&this.setStyle(a);
+c!=null&&this.setColor(c)},
+properties:{widthTop:{check:"Number",
+init:0,
+apply:"_applyWidth"},
+widthRight:{check:"Number",
+init:0,
+apply:"_applyWidth"},
+widthBottom:{check:"Number",
+init:0,
+apply:"_applyWidth"},
+widthLeft:{check:"Number",
+init:0,
+apply:"_applyWidth"},
+styleTop:{nullable:true,
+check:["solid","dotted","dashed","double"],
+init:"solid",
+apply:"_applyStyle"},
+styleRight:{nullable:true,
+check:["solid","dotted","dashed","double"],
+init:"solid",
+apply:"_applyStyle"},
+styleBottom:{nullable:true,
+check:["solid","dotted","dashed","double"],
+init:"solid",
+apply:"_applyStyle"},
+styleLeft:{nullable:true,
+check:["solid","dotted","dashed","double"],
+init:"solid",
+apply:"_applyStyle"},
+colorTop:{nullable:true,
+check:"Color",
+apply:"_applyStyle"},
+colorRight:{nullable:true,
+check:"Color",
+apply:"_applyStyle"},
+colorBottom:{nullable:true,
+check:"Color",
+apply:"_applyStyle"},
+colorLeft:{nullable:true,
+check:"Color",
+apply:"_applyStyle"},
+backgroundColor:{check:"Color",
+nullable:true,
+apply:"_applyStyle"},
+left:{group:["widthLeft","styleLeft","colorLeft"]},
+right:{group:["widthRight","styleRight","colorRight"]},
+top:{group:["widthTop","styleTop","colorTop"]},
+bottom:{group:["widthBottom","styleBottom","colorBottom"]},
+width:{group:["widthTop","widthRight","widthBottom","widthLeft"],
+shorthand:true},
+style:{group:["styleTop","styleRight","styleBottom","styleLeft"],
+shorthand:true},
+color:{group:["colorTop","colorRight","colorBottom","colorLeft"],
+shorthand:true}},
+members:{__qyd51:null,
+_getDefaultInsets:function(){return{top:this.getWidthTop(),
+right:this.getWidthRight(),
+bottom:this.getWidthBottom(),
+left:this.getWidthLeft()}},
+_isInitialized:function(){return!!this.__qyd51},
+getMarkup:function(){if(this.__qyd51)return this.__qyd51;
+var c=qx.theme.manager.Color.getInstance(),a={},b=this.getWidthTop(),d;
+b>0&&(a.borderTop=b+"px "+this.getStyleTop()+" "+(c.resolve(this.getColorTop())||""));
+b=this.getWidthRight();
+b>0&&(a.borderRight=b+"px "+this.getStyleRight()+" "+(c.resolve(this.getColorRight())||""));
+b=this.getWidthBottom();
+b>0&&(a.borderBottom=b+"px "+this.getStyleBottom()+" "+(c.resolve(this.getColorBottom())||""));
+b=this.getWidthLeft();
+b>0&&(a.borderLeft=b+"px "+this.getStyleLeft()+" "+(c.resolve(this.getColorLeft())||""));
+if(a.length===0)throw new Error("Invalid Single decorator (zero border width). Use qx.ui.decorator.Background instead!");
+a.position="absolute";
+a.top=0;
+a.left=0;
+d=this._generateBackgroundMarkup(a);
+return this.__qyd51=d},
+resize:function(a,d,c){var b=this.getInsets();
+d-=b.left+b.right;
+c-=b.top+b.bottom;
+d<0&&(d=0);
+c<0&&(c=0);
+a.style.width=d+"px";
+a.style.height=c+"px";
+a.style.left=(parseInt(a.style.left)+b.left-this.getWidthLeft())+"px";
+a.style.top=(parseInt(a.style.top)+b.top-this.getWidthTop())+"px"},
+tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
+a==null&&(a=this.getBackgroundColor());
+b.style.backgroundColor=c.resolve(a)||""},
+_applyWidth:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!");
+this._resetInsets()},
+_applyStyle:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
+destruct:function(){this.__qyd51=null}});
+
+
+// qx.ui.decoration.Background
+//   - Size: 1105 bytes
+//   - Modified: 2010-09-30T14:20:20
+qx.Class.define("qx.ui.decoration.Background",{extend:qx.ui.decoration.Abstract,
+include:[qx.ui.decoration.MBackgroundImage],
+construct:function(a){this.base(arguments);
+a!=null&&this.setBackgroundColor(a)},
+properties:{backgroundColor:{check:"Color",
+nullable:true,
+apply:"_applyStyle"}},
+members:{__qyd51:null,
+_getDefaultInsets:function(){return{top:0,
+right:0,
+bottom:0,
+left:0}},
+_isInitialized:function(){return!!this.__qyd51},
+getMarkup:function(){if(this.__qyd51)return this.__qyd51;
+var b={position:"absolute",
+top:0,
+left:0},a=this._generateBackgroundMarkup(b);
+return this.__qyd51=a},
+resize:function(b,d,c){var a=this.getInsets();
+b.style.width=(d-a.left-a.right)+"px";
+b.style.height=(c-a.top-a.bottom)+"px";
+b.style.left=-a.left+"px";
+b.style.top=-a.top+"px"},
+tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
+a==null&&(a=this.getBackgroundColor());
+b.style.backgroundColor=c.resolve(a)||""},
+_applyStyle:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
+destruct:function(){this.__qyd51=null}});
+
+
+// qx.ui.decoration.Uniform
+//   - Size: 1847 bytes
+//   - Modified: 2010-11-10T00:54:42
+qx.Class.define("qx.ui.decoration.Uniform",{extend:qx.ui.decoration.Abstract,
+include:[qx.ui.decoration.MBackgroundImage],
+construct:function(b,a,c){this.base(arguments);
+b!=null&&this.setWidth(b);
+a!=null&&this.setStyle(a);
+c!=null&&this.setColor(c)},
+properties:{width:{check:"PositiveInteger",
+init:0,
+apply:"_applyWidth"},
+style:{nullable:true,
+check:["solid","dotted","dashed","double"],
+init:"solid",
+apply:"_applyStyle"},
+color:{nullable:true,
+check:"Color",
+apply:"_applyStyle"},
+backgroundColor:{check:"Color",
+nullable:true,
+apply:"_applyStyle"}},
+members:{__qyd51:null,
+_getDefaultInsets:function(){var a=this.getWidth();
+return{top:a,
+right:a,
+bottom:a,
+left:a}},
+_isInitialized:function(){return!!this.__qyd51},
+getMarkup:function(){if(this.__qyd51)return this.__qyd51;
+var b={position:"absolute",
+top:0,
+left:0},a=this.getWidth(),c,d;
+if(a===0)throw new Error("Invalid Uniform decorator (zero border width). Use qx.ui.decorator.Background instead!");
+c=qx.theme.manager.Color.getInstance();
+b.border=a+"px "+this.getStyle()+" "+(c.resolve(this.getColor())||"");
+d=this._generateBackgroundMarkup(b);
+return this.__qyd51=d},
+resize:function(c,b,a){var e=this.getBackgroundImage()&&this.getBackgroundRepeat()=="scale",d;
+(e||qx.bom.client.Feature.CONTENT_BOX)&&(d=this.getWidth()*2,b-=d,a-=d,b<0&&(b=0),a<0&&(a=0));
+c.style.width=b+"px";
+c.style.height=a+"px"},
+tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
+a==null&&(a=this.getBackgroundColor());
+b.style.backgroundColor=c.resolve(a)||""},
+_applyWidth:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!");
+this._resetInsets()},
+_applyStyle:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
+destruct:function(){this.__qyd51=null}});
+
+
+// qx.ui.decoration.Beveled
+//   - Size: 2532 bytes
+//   - Modified: 2010-09-17T21:15:51
+qx.Class.define("qx.ui.decoration.Beveled",{extend:qx.ui.decoration.Abstract,
+include:[qx.ui.decoration.MBackgroundImage],
+construct:function(b,a,c){this.base(arguments);
+b!=null&&this.setOuterColor(b);
+a!=null&&this.setInnerColor(a);
+c!=null&&this.setInnerOpacity(c)},
+properties:{innerColor:{check:"Color",
+nullable:true,
+apply:"_applyStyle"},
+innerOpacity:{check:"Number",
+init:1,
+apply:"_applyStyle"},
+outerColor:{check:"Color",
+nullable:true,
+apply:"_applyStyle"},
+backgroundColor:{check:"Color",
+nullable:true,
+apply:"_applyStyle"}},
+members:{__qyd51:null,
+_getDefaultInsets:function(){return{top:2,
+right:2,
+bottom:2,
+left:2}},
+_isInitialized:function(){return!!this.__qyd51},
+_applyStyle:function(){if(this.__qyd51)throw new Error("This decorator is already in-use. Modification is not possible anymore!")},
+getMarkup:function(){if(this.__qyd51)return this.__qyd51;
+var c=qx.theme.manager.Color.getInstance(),a=[],b="1px solid "+c.resolve(this.getOuterColor())+";",d="1px solid "+c.resolve(this.getInnerColor())+";",e;
+a.push("<div style=\"overflow:hidden;font-size:0;line-height:0;\">");
+a.push("<div style=\"");
+a.push("border:",b);
+a.push(qx.bom.element.Opacity.compile(.35));
+a.push("\"></div>");
+a.push("<div style=\"position:absolute;top:1px;left:0px;");
+a.push("border-left:",b);
+a.push("border-right:",b);
+a.push(qx.bom.element.Opacity.compile(1));
+a.push("\"></div>");
+a.push("<div style=\"");
+a.push("position:absolute;top:0px;left:1px;");
+a.push("border-top:",b);
+a.push("border-bottom:",b);
+a.push(qx.bom.element.Opacity.compile(1));
+a.push("\"></div>");
+e={position:"absolute",
+top:"1px",
+left:"1px",
+opacity:1};
+a.push(this._generateBackgroundMarkup(e));
+a.push("<div style=\"position:absolute;top:1px;left:1px;");
+a.push("border:",d);
+a.push(qx.bom.element.Opacity.compile(this.getInnerOpacity()));
+a.push("\"></div>");
+a.push("</div>");
+return this.__qyd51=a.join("")},
+resize:function(d,c,b){c<4&&(c=4);
+b<4&&(b=4);
+if(qx.bom.client.Feature.CONTENT_BOX)var g=c-2,h=b-2,e=g,f=h,o=c-4,n=b-4,a,j,k,l,m,i;
+else g=c,h=b,e=c-2,f=b-2,o=e,n=f;
+a="px",j=d.childNodes[0].style;
+j.width=g+a;
+j.height=h+a;
+k=d.childNodes[1].style;
+k.width=g+a;
+k.height=f+a;
+l=d.childNodes[2].style;
+l.width=e+a;
+l.height=h+a;
+m=d.childNodes[3].style;
+m.width=e+a;
+m.height=f+a;
+i=d.childNodes[4].style;
+i.width=o+a;
+i.height=n+a},
+tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
+a==null&&(a=this.getBackgroundColor());
+b.childNodes[3].style.backgroundColor=c.resolve(a)||""}},
+destruct:function(){this.__qyd51=null}});
+
+
+// qx.theme.Decoration
+//   - Size: 10101 bytes
+//   - Modified: 2010-11-11T16:55:28
+qx.Theme.define("qx.theme.Decoration",{decorations:{main:{decorator:qx.ui.decoration.Uniform,
+style:{width:1,
+color:"border-main"}},
+selected:{decorator:qx.ui.decoration.Background,
+style:{backgroundImage:"qx/decoration/selection.png",
+backgroundRepeat:"scale"}},
+"selected-dragover":{decorator:qx.ui.decoration.Single,
+style:{backgroundImage:"qx/decoration/selection.png",
+backgroundRepeat:"scale",
+bottom:[2,"solid","#33508D"]}},
+dragover:{decorator:qx.ui.decoration.Single,
+style:{bottom:[2,"solid","#33508D"]}},
+pane:{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/pane/pane.png",
+insets:[0,2,3,0]}},
+group:{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/groupbox/groupbox.png"}},
+"border-invalid":{decorator:qx.ui.decoration.Beveled,
+style:{outerColor:"invalid",
+innerColor:"white",
+innerOpacity:.5,
+backgroundImage:"qx/decoration/form/input.png",
+backgroundRepeat:"repeat-x",
+backgroundColor:"background-light"}},
+"keyboard-focus":{decorator:qx.ui.decoration.Single,
+style:{width:1,
+color:"black",
+style:"dotted"}},
+"separator-horizontal":{decorator:qx.ui.decoration.Single,
+style:{widthLeft:1,
+colorLeft:"border-separator"}},
+"separator-vertical":{decorator:qx.ui.decoration.Single,
+style:{widthTop:1,
+colorTop:"border-separator"}},
+"tooltip-error":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/form/tooltip-error.png",
+insets:[2,5,5,2]}},
+"tooltip-error-arrow":{decorator:qx.ui.decoration.Background,
+style:{backgroundImage:"qx/decoration/form/tooltip-error-arrow.png",
+backgroundPositionY:"center",
+backgroundRepeat:"no-repeat",
+insets:[0,0,0,10]}},
+"shadow-window":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/shadow/shadow.png",
+insets:[4,8,8,4]}},
+"shadow-popup":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/shadow/shadow-small.png",
+insets:[0,3,3,0]}},
+"scrollbar-horizontal":{decorator:qx.ui.decoration.Background,
+style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-bg-horizontal.png",
+backgroundRepeat:"repeat-x"}},
+"scrollbar-vertical":{decorator:qx.ui.decoration.Background,
+style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-bg-vertical.png",
+backgroundRepeat:"repeat-y"}},
+"scrollbar-slider-horizontal":{decorator:qx.ui.decoration.Beveled,
+style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-button-bg-horizontal.png",
+backgroundRepeat:"scale",
+outerColor:"border-main",
+innerColor:"white",
+innerOpacity:.5}},
+"scrollbar-slider-horizontal-disabled":{decorator:qx.ui.decoration.Beveled,
+style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-button-bg-horizontal.png",
+backgroundRepeat:"scale",
+outerColor:"border-disabled",
+innerColor:"white",
+innerOpacity:.3}},
+"scrollbar-slider-vertical":{decorator:qx.ui.decoration.Beveled,
+style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-button-bg-vertical.png",
+backgroundRepeat:"scale",
+outerColor:"border-main",
+innerColor:"white",
+innerOpacity:.5}},
+"scrollbar-slider-vertical-disabled":{decorator:qx.ui.decoration.Beveled,
+style:{backgroundImage:"qx/decoration/scrollbar/scrollbar-button-bg-vertical.png",
+backgroundRepeat:"scale",
+outerColor:"border-disabled",
+innerColor:"white",
+innerOpacity:.3}},
+button:{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/form/button.png",
+insets:2}},
+"button-disabled":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/form/button-disabled.png",
+insets:2}},
+"button-focused":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/form/button-focused.png",
+insets:2}},
+"button-hovered":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/form/button-hovered.png",
+insets:2}},
+"button-pressed":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/form/button-pressed.png",
+insets:2}},
+"button-checked":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/form/button-checked.png",
+insets:2}},
+"button-checked-focused":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/form/button-checked-focused.png",
+insets:2}},
+"button-invalid-shadow":{decorator:qx.ui.decoration.Beveled,
+style:{outerColor:"invalid",
+innerColor:"border-focused-invalid",
+insets:[1]}},
+"checkbox-invalid-shadow":{decorator:qx.ui.decoration.Beveled,
+style:{outerColor:"invalid",
+innerColor:"border-focused-invalid",
+insets:[0]}},
+input:{decorator:qx.ui.decoration.Beveled,
+style:{outerColor:"border-input",
+innerColor:"white",
+innerOpacity:.5,
+backgroundImage:"qx/decoration/form/input.png",
+backgroundRepeat:"repeat-x",
+backgroundColor:"background-light"}},
+"input-focused":{decorator:qx.ui.decoration.Beveled,
+style:{outerColor:"border-input",
+innerColor:"border-focused",
+backgroundImage:"qx/decoration/form/input-focused.png",
+backgroundRepeat:"repeat-x",
+backgroundColor:"background-light"}},
+"input-focused-invalid":{decorator:qx.ui.decoration.Beveled,
+style:{outerColor:"invalid",
+innerColor:"border-focused-invalid",
+backgroundImage:"qx/decoration/form/input-focused.png",
+backgroundRepeat:"repeat-x",
+backgroundColor:"background-light",
+insets:[2]}},
+"input-disabled":{decorator:qx.ui.decoration.Beveled,
+style:{outerColor:"border-disabled",
+innerColor:"white",
+innerOpacity:.5,
+backgroundImage:"qx/decoration/form/input.png",
+backgroundRepeat:"repeat-x",
+backgroundColor:"background-light"}},
+toolbar:{decorator:qx.ui.decoration.Background,
+style:{backgroundImage:"qx/decoration/toolbar/toolbar-gradient.png",
+backgroundRepeat:"scale"}},
+"toolbar-button-hovered":{decorator:qx.ui.decoration.Beveled,
+style:{outerColor:"#b6b6b6",
+innerColor:"#f8f8f8",
+backgroundImage:"qx/decoration/form/button-c.png",
+backgroundRepeat:"scale"}},
+"toolbar-button-checked":{decorator:qx.ui.decoration.Beveled,
+style:{outerColor:"#b6b6b6",
+innerColor:"#f8f8f8",
+backgroundImage:"qx/decoration/form/button-checked-c.png",
+backgroundRepeat:"scale"}},
+"toolbar-separator":{decorator:qx.ui.decoration.Single,
+style:{widthLeft:1,
+widthRight:1,
+colorLeft:"#b8b8b8",
+colorRight:"#f4f4f4",
+styleLeft:"solid",
+styleRight:"solid"}},
+"toolbar-part":{decorator:qx.ui.decoration.Background,
+style:{backgroundImage:"qx/decoration/toolbar/toolbar-part.gif",
+backgroundRepeat:"repeat-y"}},
+"tabview-pane":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/tabview/tabview-pane.png",
+insets:[4,6,7,4]}},
+"tabview-page-button-top-active":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/tabview/tab-button-top-active.png"}},
+"tabview-page-button-top-inactive":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/tabview/tab-button-top-inactive.png"}},
+"tabview-page-button-bottom-active":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/tabview/tab-button-bottom-active.png"}},
+"tabview-page-button-bottom-inactive":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/tabview/tab-button-bottom-inactive.png"}},
+"tabview-page-button-left-active":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/tabview/tab-button-left-active.png"}},
+"tabview-page-button-left-inactive":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/tabview/tab-button-left-inactive.png"}},
+"tabview-page-button-right-active":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/tabview/tab-button-right-active.png"}},
+"tabview-page-button-right-inactive":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/tabview/tab-button-right-inactive.png"}},
+splitpane:{decorator:qx.ui.decoration.Uniform,
+style:{backgroundColor:"background-pane",
+width:3,
+color:"background-splitpane",
+style:"solid"}},
+window:{decorator:qx.ui.decoration.Single,
+style:{backgroundColor:"background-pane",
+width:1,
+color:"border-main",
+widthTop:0}},
+"window-captionbar-active":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/window/captionbar-active.png"}},
+"window-captionbar-inactive":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/window/captionbar-inactive.png"}},
+"window-statusbar":{decorator:qx.ui.decoration.Grid,
+style:{baseImage:"qx/decoration/window/statusbar.png"}},
+table:{decorator:qx.ui.decoration.Single,
+style:{width:1,
+color:"border-main",
+style:"solid"}},
+"table-statusbar":{decorator:qx.ui.decoration.Single,
+style:{widthTop:1,
+colorTop:"border-main",
+style:"solid"}},
+"table-scroller-header":{decorator:qx.ui.decoration.Single,
+style:{backgroundImage:"qx/decoration/table/header-cell.png",
+backgroundRepeat:"scale",
+widthBottom:1,
+colorBottom:"border-main",
+style:"solid"}},
+"table-header-cell":{decorator:qx.ui.decoration.Single,
+style:{widthRight:1,
+colorRight:"border-separator",
+styleRight:"solid"}},
+"table-header-cell-hovered":{decorator:qx.ui.decoration.Single,
+style:{widthRight:1,
+colorRight:"border-separator",
+styleRight:"solid",
+widthBottom:1,
+colorBottom:"white",
+styleBottom:"solid"}},
+"table-column-button":{decorator:qx.ui.decoration.Single,
+style:{backgroundImage:"qx/decoration/table/header-cell.png",
+backgroundRepeat:"scale",
+widthBottom:1,
+colorBottom:"border-main",
+style:"solid"}},
+"table-scroller-focus-indicator":{decorator:qx.ui.decoration.Single,
+style:{width:2,
+color:"table-focus-indicator",
+style:"solid"}},
+"progressive-table-header":{decorator:qx.ui.decoration.Single,
+style:{width:1,
+color:"border-main",
+style:"solid"}},
+"progressive-table-header-cell":{decorator:qx.ui.decoration.Single,
+style:{backgroundImage:"qx/decoration/table/header-cell.png",
+backgroundRepeat:"scale",
+widthRight:1,
+colorRight:"#F2F2F2",
+style:"solid"}},
+menu:{decorator:qx.ui.decoration.Single,
+style:{backgroundImage:"qx/decoration/menu/background.png",
+backgroundRepeat:"scale",
+width:1,
+color:"border-main",
+style:"solid"}},
+"menu-separator":{decorator:qx.ui.decoration.Single,
+style:{widthTop:1,
+colorTop:"#C5C5C5",
+widthBottom:1,
+colorBottom:"#FAFAFA"}},
+menubar:{decorator:qx.ui.decoration.Single,
+style:{backgroundImage:"qx/decoration/menu/bar-background.png",
+backgroundRepeat:"scale",
+width:1,
+color:"border-separator",
+style:"solid"}},
+"app-header":{decorator:qx.ui.decoration.Background,
+style:{backgroundImage:"qx/decoration/app-header.png",
+backgroundRepeat:"scale"}}}});
+
+
+// apiviewer.Theme
+//   - Size: 176 bytes
+//   - Modified: 2010-11-11T16:55:27
+qx.Theme.define("apiviewer.Theme",{title:"APIViewer theme",
+meta:{color:qx.theme.Color,
+decoration:qx.theme.Decoration,
+font:qx.theme.Font,
+appearance:apiviewer.Appearance}});
 qx.core.Init.boot(apiviewer.Application);

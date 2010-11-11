@@ -17,11 +17,13 @@ class CircularDependencyBreaker(Exception):
 
 
 class Sorter:
-    def __init__(self, classes, permutation=None):
+    def __init__(self, resolver, permutation=None):
         # Keep classes/permutation reference
         # Classes is set(classObj, ...)
-        self.__classes = classes
+        self.__resolver = resolver
         self.__permutation = permutation
+        
+        classes = self.__resolver.getIncludedClasses()
 
         # Build class name dict
         self.__names = dict([(classObj.getName(), classObj) for classObj in classes])
@@ -40,14 +42,15 @@ class Sorter:
         if not self.__sortedClasses:
             pstart()
             logging.info("Computing load dependencies...")
-            for classObj in self.__classes:
-                self.__getLoadDeps(classObj)
+            classNames = self.__names
+            for className in classNames:
+                self.__getLoadDeps(classNames[className])
             pstop()
 
             logging.info("Sorting classes for final loading...")
             result = []
-            self.__classes = list(sorted(self.__classes, key=lambda depObj: len(self.__loadDeps[depObj])))
-            for classObj in self.__classes:
+            requiredClasses = self.__resolver.getRequiredClasses()
+            for classObj in requiredClasses:
                 if not classObj in result:
                     logging.debug("Start adding with: %s", classObj)
                     self.__addSorted(classObj, result)
