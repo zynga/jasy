@@ -8,8 +8,8 @@
 (function(){this.$$resources={"files":{"apiviewer/image":{"event18.gif":[1,18,18,0,198],"property_themeable18.gif":[1,18,18,0,396],"blank.gif":[1,1,1],"search18.png":[1,18,18],"constructor18.gif":[1,18,18,0,558],"class_abstract_warning18.gif":[1,18,18,0,306],"class_warning18.gif":[1,18,18,0,342],"class_abstract18.gif":[1,18,18,0,486],"overlay_overridden18.gif":[1,18,18,0,288],"overlay_themeable18.gif":[1,18,18,0,360],"information18.png":[1,18,18],"childcontrol18.gif":[1,18,18,0,540],"class_singleton_warning18.gif":[1,18,18,0,252],"overlay_abstract18.gif":[1,18,18,0,0],"property_private18.gif":[1,18,18,0,72],"overlay_mixin18.gif":[1,18,18,0,180],"overlay_warning18.gif":[1,18,18,0,594],"constant18.gif":[1,18,18,0,504],"method_public18.gif":[1,18,18,0,126],"overlay_error18.gif":[1,18,18,0,414],"class_static18.gif":[1,18,18,0,234],"method_protected18.gif":[1,18,18,0,216],"overlay_constructor18.gif":[1,18,18,0,36],"vline.gif":[1,18,18],"class18.gif":[1,18,18,0,324],"interface18.gif":[1,18,18,0,432],"nextlevel.gif":[1,18,18],"mixin18.gif":[1,18,18,0,162],"class_singleton18.gif":[1,18,18,0,612],"package18.gif":[1,18,18,0,54],"method_private18.gif":[1,18,18,0,270],"class_static_warning18.gif":[1,18,18,0,144],"overlay_static18.gif":[1,18,18,0,378],"property18.gif":[1,18,18,0,522],"method_public_inherited18.gif":[1,18,18,0,18],"package_warning18.gif":[1,18,18,0,90],"interface_warning18.gif":[1,18,18,0,450],"overlay_inherited18.gif":[1,18,18,0,576],"open.gif":[1,17,13],"property_protected18.gif":[1,18,18,0,468],"colorstrip.gif":[1,192,10],"close.gif":[1,17,13],"mixin_warning18.gif":[1,18,18,0,108],"cross.gif":[1,18,18]},"qx/decoration/cursors":{"nodrop.gif":[0,20,20,0,0],"alias.gif":[0,19,15,0,52],"copy.gif":[0,19,15,0,33],"move.gif":[0,13,9,0,20]},"qx/decoration/window":{"captionbar-active-c.png":[0,40,9],"captionbar-active-bl.png":[0,6,6,2,24],"captionbar-inactive-c.png":[0,40,9],"captionbar-active-tl.png":[0,6,6,2,0],"statusbar-l.png":[0,4,7,3,4],"captionbar-active-l.png":[0,6,9,0,6],"close-active.png":[0,9,9,5,9],"captionbar-active-r.png":[0,6,9,0,0],"captionbar-inactive-br.png":[0,6,6,1,30],"captionbar-inactive-tl.png":[0,6,6,1,12],"captionbar-inactive-l.png":[0,6,9,4,0],"captionbar-inactive-r.png":[0,6,9,4,6],"captionbar-active-br.png":[0,6,6,2,12],"statusbar-b.png":[0,4,4,6,16],"maximize-active.png":[0,9,9,5,81],"close-inactive.png":[0,9,9,5,90],"restore-active-hovered.png":[0,9,8,5,0],"maximize-inactive.png":[0,9,9,5,54],"statusbar.png":[0,369,15],"captionbar-inactive-bl.png":[0,6,6,1,6],"captionbar-active-t.png":[0,6,6,2,6],"restore-active.png":[0,9,8,5,99],"statusbar-tr.png":[0,4,4,6,12],"captionbar-inactive-t.png":[0,6,6,1,0],"statusbar-tl.png":[0,4,4,6,8],"captionbar-active.png":[0,69,21],"captionbar-active-b.png":[0,6,6,2,18],"captionbar-inactive-tr.png":[0,6,6,1,18],"statusbar-c.png":[0,40,7],"statusbar-bl.png":[0,4,4,6,20],"statusbar-t.png":[0,4,4,6,0],"minimize-active.png":[0,9,9,5,72],"captionbar-active-tr.png":[0,6,6,2,30],"minimize-active-hovered.png":[0,9,9,5,63],"captionbar-inactive.png":[0,69,21],"statusbar-r.png":[0,4,7,3,0],"restore-inactive.png":[0,9,8,5,45],"minimize-inactive.png":[0,9,9,5,36],"captionbar-inactive-b.png":[0,6,6,1,24],"maximize-active-hovered.png":[0,9,9,5,18],"close-active-hovered.png":[0,9,9,5,27],"statusbar-br.png":[0,4,4,6,4]},"qx/decoration/tree":{"open-selected.png":[0,8,8,0,8],"closed.png":[0,8,8,0,16],"closed-selected.png":[0,8,8,0,24],"open.png":[0,8,8,0,0]},"qx/decoration/tabview":{"tab-button-bottom-inactive-tl.png":[0,3,3,1,0],"tab-button-bottom-active-br.png":[0,5,5,20,5],"tab-button-right-active-l.png":[0,5,37,2,0],"tab-button-left-inactive-b.png":[0,3,3,3,0],"tabview-pane-tr.png":[0,30,30,18,90],"tab-button-left-inactive.png":[0,20,45],"tab-button-left-active-r.png":[0,5,37,14,5],"tab-button-right-inactive-br.png":[0,3,3,19,6],"tabview-pane-b.png":[0,30,30,18,60],"tab-button-bottom-active-l.png":[0,5,14,17,0],"tab-button-top-inactive-tr.png":[0,3,3,7,6],"tab-button-top-active-bl.png":[0,5,5,8,15],"tab-button-left-active-t.png":[0,5,5,6,15],"tab-button-right-active-br.png":[0,5,5,12,20],"tab-button-top-active-l.png":[0,5,12,21,0],"tab-button-top-inactive-l.png":[0,3,15,10,0],"tab-button-left-inactive-bl.png":[0,3,3,3,6],"tab-button-top-inactive-c.png":[0,40,15],"tab-button-right-inactive-l.png":[0,3,39,5,0],"tab-button-left-inactive-tr.png":[0,3,3,13,6],"tabview-pane-l.png":[0,30,2,15,0],"tab-button-bottom-inactive.png":[0,45,21],"tab-button-left-active-l.png":[0,5,37,14,0],"tab-button-top-inactive-r.png":[0,3,15,10,3],"tab-button-bottom-inactive-l.png":[0,3,15,4,3],"tab-button-right-inactive-r.png":[0,3,39,5,3],"tab-button-top-active-tr.png":[0,5,5,8,5],"tab-button-top-active-br.png":[0,5,5,8,10],"tab-button-top-inactive-t.png":[0,3,3,7,3],"tab-button-right-inactive-t.png":[0,3,3,16,0],"tab-button-left-active-br.png":[0,5,5,6,25],"tab-button-bottom-active-t.png":[0,5,5,20,20],"tab-button-left-inactive-l.png":[0,3,39,11,3],"tab-button-right-inactive.png":[0,20,45],"tab-button-bottom-inactive-br.png":[0,3,3,9,3],"tab-button-right-inactive-c.png":[0,40,39],"tab-button-left-inactive-c.png":[0,40,39],"tab-button-right-active-c.png":[0,40,37],"tab-button-left-inactive-t.png":[0,3,3,13,3],"tab-button-left-active.png":[0,22,47],"tab-button-top-active-c.png":[0,40,14],"tab-button-left-active-c.png":[0,40,37],"tabview-pane-t.png":[0,30,30,18,150],"tab-button-top-active-t.png":[0,5,5,8,0],"tab-button-left-inactive-tl.png":[0,3,3,13,0],"tab-button-bottom-active-tr.png":[0,5,5,20,0],"tab-button-top-active.png":[0,48,22],"tab-button-bottom-inactive-t.png":[0,3,3,1,3],"tab-button-bottom-active-bl.png":[0,5,5,20,15],"tab-button-bottom-active-b.png":[0,5,5,20,10],"tab-button-top-active-tl.png":[0,5,5,8,25],"tab-button-bottom-active-tl.png":[0,5,5,20,25],"tab-button-top-inactive.png":[0,45,21],"tab-button-left-active-tl.png":[0,5,5,6,10],"tab-button-bottom-inactive-tr.png":[0,3,3,1,6],"tab-button-top-active-b.png":[0,5,5,8,20],"tab-button-right-active.png":[0,22,47],"tab-button-right-active-t.png":[0,5,5,12,5],"tab-button-left-active-b.png":[0,5,5,6,5],"tabview-pane-tl.png":[0,30,30,18,30],"tab-button-top-active-r.png":[0,5,12,21,5],"tab-button-bottom-inactive-b.png":[0,3,3,9,0],"tab-button-right-active-tr.png":[0,5,5,12,10],"tab-button-right-active-r.png":[0,5,37,2,5],"tabview-pane-bl.png":[0,30,30,18,0],"tab-button-left-inactive-br.png":[0,3,3,3,3],"tab-button-right-active-b.png":[0,5,5,12,25],"tabview-pane-br.png":[0,30,30,18,120],"tab-button-bottom-active-r.png":[0,5,14,17,5],"tab-button-top-inactive-bl.png":[0,3,3,0,3],"tab-button-bottom-inactive-r.png":[0,3,15,4,0],"tab-button-bottom-active-c.png":[0,40,14],"tab-button-top-inactive-br.png":[0,3,3,0,0],"tabview-pane.png":[0,185,250],"tab-button-top-inactive-tl.png":[0,3,3,7,0],"tab-button-bottom-active.png":[0,49,24],"tab-button-top-inactive-b.png":[0,3,3,0,6],"tab-button-bottom-inactive-bl.png":[0,3,3,9,6],"tabview-pane-r.png":[0,30,2,15,30],"tab-button-bottom-inactive-c.png":[0,40,15],"tabview-pane-c.png":[0,40,120],"tab-button-left-inactive-r.png":[0,3,39,11,0],"tab-button-right-active-tl.png":[0,5,5,12,15],"tab-button-right-active-bl.png":[0,5,5,12,0],"tab-button-right-inactive-tl.png":[0,3,3,16,3],"tab-button-right-inactive-tr.png":[0,3,3,16,6],"tab-button-right-inactive-bl.png":[0,3,3,19,0],"tab-button-left-active-bl.png":[0,5,5,6,0],"tab-button-left-active-tr.png":[0,5,5,6,20],"tab-button-right-inactive-b.png":[0,3,3,19,3]},"qx/icon/16/actions":{"dialog-ok.png":[0,16,16],"view-refresh.png":[0,16,16],"window-close.png":[0,16,16],"dialog-cancel.png":[0,16,16]},"qx/icon/32/mimetypes":{"office-document.png":[0,32,32]},"qx/decoration/scrollbar":{"scrollbar-bg-pressed-horizontal.png":[0,19,10],"scrollbar-left.png":[0,4,6,0,50],"scrollbar-bg-horizontal.png":[0,76,15],"scrollbar-button-bg-horizontal.png":[0,12,10,0,34],"scrollbar-right.png":[0,4,6,0,46],"slider-knob-background.png":[0,12,10,0,16],"scrollbar-down.png":[0,6,4,0,28],"scrollbar-button-bg-vertical.png":[0,10,12,0,6],"scrollbar-bg-pressed-vertical.png":[0,10,19],"scrollbar-bg-vertical.png":[0,15,76],"scrollbar-up.png":[0,6,4,0,0]},"qx/decoration/pane":{"pane-br.png":[0,6,6,0,12],"pane-t.png":[0,6,6,0,0],"pane-r.png":[0,6,238,1,6],"pane-tl.png":[0,6,6,0,24],"pane-l.png":[0,6,238,1,0],"pane-tr.png":[0,6,6,0,6],"pane-bl.png":[0,6,6,0,18],"pane.png":[0,185,250],"pane-b.png":[0,6,6,0,30],"pane-c.png":[0,40,238]},"qx/decoration/shadow":{"shadow-b.png":[0,15,15,2,30],"shadow-small-b.png":[0,5,5,1,20],"shadow-tl.png":[0,15,15,2,75],"shadow-small-r.png":[0,5,136,0,5],"shadow-br.png":[0,15,15,2,45],"shadow-small.png":[0,114,146],"shadow.png":[0,381,412],"shadow-r.png":[0,15,382,3,15],"shadow-small-br.png":[0,5,5,1,10],"shadow-bl.png":[0,15,15,2,15],"shadow-small-t.png":[0,5,5,1,5],"shadow-tr.png":[0,15,15,2,0],"shadow-c.png":[0,40,382],"shadow-t.png":[0,15,15,2,60],"shadow-small-c.png":[0,40,136],"shadow-small-l.png":[0,5,136,0,0],"shadow-small-tl.png":[0,5,5,1,0],"shadow-l.png":[0,15,382,3,0],"shadow-small-bl.png":[0,5,5,1,15],"shadow-small-tr.png":[0,5,5,1,25]},"qx/decoration/splitpane":{"knob-vertical.png":[0,8,1,0,0],"knob-horizontal.png":[0,1,8,0,1]},"qx/decoration/menu":{"checkbox-invert.gif":[0,16,7,1,16],"radiobutton-invert.gif":[0,16,5,1,32],"checkbox.gif":[0,16,7,1,48],"bar-background.png":[0,40,20,0,0],"background.png":[0,40,49,0,40],"radiobutton.gif":[0,16,5,1,0]},"qx/icon/22/actions":{"media-seek-forward.png":[0,22,22],"edit-find.png":[0,22,22]},"qx/decoration/form":{"button-r.png":[0,4,52,3,0],"tooltip-error-bl.png":[0,6,6,0,24],"button-focused-r.png":[0,4,52,3,44],"checkbox-hovered.png":[0,14,14,2,238],"input-focused.png":[0,40,12],"button-hovered.png":[0,80,60],"radiobutton-checked-focused.png":[0,14,14,2,98],"radiobutton-checked-disabled.png":[0,14,14,2,196],"button-preselected-bl.png":[0,4,4,1,176],"button-checked.png":[0,80,60],"tooltip-error-t.png":[0,6,6,0,6],"radiobutton-disabled.png":[0,14,14,2,336],"radiobutton-invalid.png":[0,14,14,2,154],"button-checked-focused-t.png":[0,4,4,1,28],"button-pressed-l.png":[0,4,52,3,52],"button-pressed-c.png":[0,40,52],"button-preselected-t.png":[0,4,4,1,96],"button-preselected-focused-t.png":[0,4,4,1,196],"button-checked-focused-l.png":[0,4,52,3,40],"button-bl.png":[0,4,4,1,204],"button-hovered-t.png":[0,4,4,1,44],"button-pressed-b.png":[0,4,4,1,12],"checkbox-checked.png":[0,14,14,2,182],"button-preselected-r.png":[0,4,52,3,64],"tooltip-error-arrow.png":[0,11,14],"radiobutton-checked.png":[0,14,14,2,252],"button-focused-tl.png":[0,4,4,1,148],"button-hovered-br.png":[0,4,4,1,128],"button-preselected-c.png":[0,40,52],"checkbox-invalid.png":[0,14,14,2,462],"button-disabled-tl.png":[0,4,4,1,168],"button-checked-l.png":[0,4,52,3,16],"button-preselected-br.png":[0,4,4,1,200],"button-preselected-focused-br.png":[0,4,4,1,152],"checkbox.png":[0,14,14,2,140],"button-checked-focused-tr.png":[0,4,4,1,48],"radiobutton-checked-focused-invalid.png":[0,14,14,2,168],"checkbox-checked-focused.png":[0,14,14,2,294],"button-preselected-focused-b.png":[0,4,4,1,0],"tooltip-error.png":[0,127,30],"radiobutton-pressed-invalid.png":[0,14,14,2,434],"button-disabled-bl.png":[0,4,4,1,136],"input.png":[0,84,12],"button-disabled-br.png":[0,4,4,1,16],"checkbox-disabled.png":[0,14,14,2,42],"button-pressed-br.png":[0,4,4,1,20],"button-preselected-focused.png":[0,80,60],"button-focused-c.png":[0,40,52],"button-checked-b.png":[0,4,4,1,36],"button-preselected-tl.png":[0,4,4,1,80],"checkbox-checked-disabled.png":[0,14,14,2,126],"button-checked-focused-tl.png":[0,4,4,1,24],"button-checked-bl.png":[0,4,4,1,84],"button-hovered-l.png":[0,4,52,3,20],"button-pressed-r.png":[0,4,52,3,12],"button-preselected.png":[0,80,60],"button-hovered-tl.png":[0,4,4,1,76],"button-b.png":[0,4,4,1,72],"radiobutton-checked-invalid.png":[0,14,14,2,28],"button-hovered-r.png":[0,4,52,3,48],"tooltip-error-tr.png":[0,6,6,0,12],"button-hovered-tr.png":[0,4,4,1,88],"button-focused-b.png":[0,4,4,1,68],"button-pressed-bl.png":[0,4,4,1,52],"button-checked-t.png":[0,4,4,1,140],"button-focused-l.png":[0,4,52,3,24],"button-checked-focused-c.png":[0,40,52],"button-preselected-focused-r.png":[0,4,52,3,36],"button-pressed-tr.png":[0,4,4,1,64],"button-focused-br.png":[0,4,4,1,8],"button.png":[0,80,60],"checkbox-focused-invalid.png":[0,14,14,2,392],"radiobutton-checked-hovered.png":[0,14,14,2,406],"button-pressed-t.png":[0,4,4,1,100],"button-disabled-t.png":[0,4,4,1,116],"checkbox-checked-hovered.png":[0,14,14,2,490],"button-disabled-b.png":[0,4,4,1,40],"button-hovered-b.png":[0,4,4,1,108],"button-focused-bl.png":[0,4,4,1,144],"radiobutton-hovered.png":[0,14,14,2,0],"button-focused-t.png":[0,4,4,1,192],"checkbox-pressed-invalid.png":[0,14,14,2,112],"tooltip-error-r.png":[0,6,18,4,0],"tooltip-error-br.png":[0,6,6,0,0],"button-l.png":[0,4,52,3,56],"button-preselected-focused-tl.png":[0,4,4,1,164],"button-preselected-l.png":[0,4,52,3,8],"radiobutton.png":[0,14,14,2,70],"checkbox-pressed.png":[0,14,14,2,448],"button-checked-tr.png":[0,4,4,1,112],"button-checked-c.png":[0,40,52],"checkbox-checked-pressed-invalid.png":[0,14,14,2,378],"button-preselected-focused-l.png":[0,4,52,3,28],"button-preselected-focused-c.png":[0,40,52],"button-checked-focused-b.png":[0,4,4,1,156],"button-checked-focused-r.png":[0,4,52,3,32],"button-pressed.png":[0,80,60],"button-tr.png":[0,4,4,1,180],"checkbox-checked-hovered-invalid.png":[0,14,14,2,364],"button-t.png":[0,4,4,1,92],"radiobutton-checked-pressed-invalid.png":[0,14,14,2,350],"button-preselected-tr.png":[0,4,4,1,132],"tooltip-error-tl.png":[0,6,6,0,18],"button-disabled-c.png":[0,40,52],"button-preselected-b.png":[0,4,4,1,124],"button-c.png":[0,40,52],"checkbox-hovered-invalid.png":[0,14,14,2,14],"radiobutton-checked-pressed.png":[0,14,14,2,266],"radiobutton-checked-hovered-invalid.png":[0,14,14,2,308],"button-hovered-bl.png":[0,4,4,1,32],"tooltip-error-b.png":[0,6,6,0,30],"button-checked-tl.png":[0,4,4,1,56],"button-focused.png":[0,80,60],"button-disabled-l.png":[0,4,52,3,68],"button-disabled-tr.png":[0,4,4,1,60],"button-br.png":[0,4,4,1,188],"tooltip-error-c.png":[0,40,18],"button-hovered-c.png":[0,40,52],"checkbox-checked-pressed.png":[0,14,14,2,84],"button-checked-r.png":[0,4,52,3,60],"button-checked-focused-bl.png":[0,4,4,1,208],"button-checked-focused.png":[0,80,60],"button-disabled-r.png":[0,4,52,3,4],"checkbox-checked-focused-invalid.png":[0,14,14,2,322],"button-checked-br.png":[0,4,4,1,184],"radiobutton-focused.png":[0,14,14,2,420],"button-checked-focused-br.png":[0,4,4,1,160],"radiobutton-focused-invalid.png":[0,14,14,2,476],"radiobutton-pressed.png":[0,14,14,2,280],"button-tl.png":[0,4,4,1,120],"checkbox-focused.png":[0,14,14,2,210],"checkbox-checked-invalid.png":[0,14,14,2,224],"tooltip-error-l.png":[0,6,18,4,6],"button-focused-tr.png":[0,4,4,1,104],"button-preselected-focused-bl.png":[0,4,4,1,4],"button-pressed-tl.png":[0,4,4,1,172],"button-disabled.png":[0,80,60],"radiobutton-hovered-invalid.png":[0,14,14,2,56],"button-preselected-focused-tr.png":[0,4,4,1,212]},"qx/decoration/arrows":{"down-small-invert.png":[0,5,3,0,69],"up-invert.png":[0,8,5,0,28],"right.png":[0,5,8,0,54],"down-invert.png":[0,8,5,0,74],"up.png":[0,8,5,0,36],"left-invert.png":[0,5,8,0,0],"forward.png":[0,10,8,0,59],"left.png":[0,5,8,0,44],"up-small.png":[0,5,3,0,82],"right-invert.png":[0,5,8,0,5],"down.png":[0,8,5,0,20],"rewind.png":[0,10,8,0,10],"down-small.png":[0,5,3,0,49]},"apiviewer/css":{"apiviewer.css":1},"qx/static":{"blank.gif":[0,1,1],"blank.html":0},"qx/decoration/table":{"boolean-false.png":[0,14,14,0,80],"ascending.png":[0,8,5,0,0],"boolean-true.png":[0,14,14,0,26],"header-cell.png":[0,40,18,0,40],"descending.png":[0,8,5,0,18],"select-column-order.png":[0,10,9,0,8]},"qx/icon/22/mimetypes":{"office-document.png":[0,22,22]},"qx/icon/16/places":{"folder.png":[0,16,16],"folder-open.png":[0,16,16]},"qx/decoration/groupbox":{"groupbox-b.png":[0,4,4,1,12],"groupbox-br.png":[0,4,4,1,8],"groupbox-c.png":[0,40,51],"groupbox-tr.png":[0,4,4,1,20],"groupbox-l.png":[0,4,51,0,4],"groupbox-r.png":[0,4,51,0,0],"groupbox-t.png":[0,4,4,1,4],"groupbox.png":[0,255,59],"groupbox-tl.png":[0,4,4,1,0],"groupbox-bl.png":[0,4,4,1,16]},"qx/decoration":{"app-header.png":[0,110,20],"selection.png":[0,110,20]},"qx/icon/16/mimetypes":{"office-document.png":[0,16,16]},"qx/icon/22/apps":{"utilities-graphics-viewer.png":[0,22,22],"utilities-help.png":[0,22,22],"utilities-dictionary.png":[0,22,22]},"qx/icon/22/places":{"folder.png":[0,22,22],"folder-open.png":[0,22,22]},"qx/icon/16/apps":{"office-calendar.png":[0,16,16],"utilities-color-chooser.png":[0,16,16]},"qx/decoration/colorselector":{"brightness-handle.gif":[0,35,11,0,0],"huesaturation-field.jpg":[0,256,256],"brightness-field.png":[0,19,256],"huesaturation-handle.gif":[0,11,11,0,35]},"qx/decoration/toolbar":{"toolbar-gradient.png":[0,40,130,0,0],"toolbar-part.gif":[0,7,1],"toolbar-handle-knob.gif":[0,1,8],"toolbar-gradient-blue.png":[0,40,130,0,40]},"qx/icon/32/places":{"folder.png":[0,32,32],"folder-open.png":[0,32,32]}},"sprites":{"apiviewer/image":[["symbols.gif",1,18,630,0,1]],"qx/decoration/window":[["window-captionbar-lr-active-combined.png",0,12,9,1,0],["window-captionbar-tb-inactive-combined.png",0,6,36,0,1],["window-captionbar-tb-active-combined.png",0,6,36,0,1],["window-statusbar-lr-combined.png",0,8,7,1,0],["window-captionbar-lr-inactive-combined.png",0,12,9,1,0],["window-captionbar-buttons-combined.png",0,108,9,1,0],["window-statusbar-tb-combined.png",0,4,24,0,1]],"qx/decoration/groupbox":[["groupbox-lr-combined.png",0,8,51,1,0],["groupbox-tb-combined.png",0,4,24,0,1]],"qx/decoration/pane":[["pane-tb-combined.png",0,6,36,0,1],["pane-lr-combined.png",0,12,238,1,0]],"qx/decoration/tree":[["tree-combined.png",0,32,8,1,0]],"qx/decoration/shadow":[["shadow-small-lr-combined.png",0,10,136,1,0],["shadow-small-tb-combined.png",0,5,30,0,1],["shadow-tb-combined.png",0,15,90,0,1],["shadow-lr-combined.png",0,30,382,1,0]],"qx/decoration/splitpane":[["splitpane-knobs-combined.png",0,8,9,0,1]],"qx/decoration/tabview":[["tabview-button-top-inactive-b-combined.png",0,3,9,0,1],["tabview-button-bottom-inactive-t-combined.png",0,3,9,0,1],["tabview-button-right-active-lr-combined.png",0,10,37,1,0],["tabview-button-left-inactive-b-combined.png",0,3,9,0,1],["tabview-button-bottom-inactive-lr-combined.png",0,6,15,1,0],["tabview-button-right-inactive-lr-combined.png",0,6,39,1,0],["tabview-button-left-active-tb-combined.png",0,5,30,0,1],["tabview-button-top-inactive-t-combined.png",0,3,9,0,1],["tabview-button-top-active-tb-combined.png",0,5,30,0,1],["tabview-button-bottom-inactive-b-combined.png",0,3,9,0,1],["tabview-button-top-inactive-lr-combined.png",0,6,15,1,0],["tabview-button-left-inactive-lr-combined.png",0,6,39,1,0],["tabview-button-right-active-tb-combined.png",0,5,30,0,1],["tabview-button-left-inactive-t-combined.png",0,3,9,0,1],["tabview-button-left-active-lr-combined.png",0,10,37,1,0],["tabview-pane-lr-combined.png",0,60,2,1,0],["tabview-button-right-inactive-t-combined.png",0,3,9,0,1],["tabview-button-bottom-active-lr-combined.png",0,10,14,1,0],["tabview-pane-tb-combined.png",0,30,180,0,1],["tabview-button-right-inactive-b-combined.png",0,3,9,0,1],["tabview-button-bottom-active-tb-combined.png",0,5,30,0,1],["tabview-button-top-active-lr-combined.png",0,10,12,1,0]],"qx/decoration/colorselector":[["colorselector-combined.gif",0,46,11,1,0]],"qx/decoration/table":[["table-combined.png",0,94,18,1,0]],"qx/decoration/form":[["tooltip-error-tb-combined.png",0,6,36,0,1],["button-tb-combined.png",0,4,216,0,1],["checkradio-combined.png",0,504,14,1,0],["button-lr-combined.png",0,72,52,1,0],["tooltip-error-lr-combined.png",0,12,18,1,0]],"qx/decoration/cursors":[["cursors-combined.gif",0,71,20,1,0]],"qx/decoration/toolbar":[["toolbar-combined.png",0,80,130,1,0]],"qx/decoration/scrollbar":[["scrollbar-combined.png",0,54,12,1,0]],"qx/decoration/menu":[["menu-background-combined.png",0,80,49,1,0],["menu-checkradio-combined.gif",0,64,7,1,0]],"qx/decoration/arrows":[["arrows-combined.png",0,87,8,1,0]]},"roots":["../../qooxdoo/qooxdoo/framework/source/resource","../../qooxdoo/qooxdoo/component/apiviewer/source/resource","../../unify/framework/source/resource"]}})();
 
 // qx.Bootstrap
-//   - Size: 4732 bytes
 //   - Modified: 2010-10-14T23:42:57
+//   - Size: 4.62KB (1.69KB zipped => 36.48%)
 window.qx||(window.qx={});
 qx.Bootstrap={genericToString:function(){return"[Class "+this.classname+"]"},
 createNamespace:function(g,f){for(var c=g.split("."),a=window,b=c[0],d=0,e=c.length-1;
@@ -125,8 +125,8 @@ trace:function(){}}});
 
 
 // qx.core.Setting
-//   - Size: 1333 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.30KB (0.59KB zipped => 45.24%)
 qx.Bootstrap.define("qx.core.Setting",{statics:{__zP2zc:{},
 define:function(a,b){if(b===undefined)throw new Error("Default value of setting \""+a+"\" must be defined!");
 if(!this.__zP2zc[a])this.__zP2zc[a]={};
@@ -155,8 +155,8 @@ a.__jA3lT()}});
 
 
 // qx.core.Type
-//   - Size: 2978 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 2.91KB (1.16KB zipped => 39.89%)
 qx.Bootstrap.define("qx.core.Type",{statics:{__mtv7d:{String:"$$isString"},
 __qxW2Q:{String:1,
 Number:1,
@@ -229,104 +229,9 @@ if(b==null)throw new d("Unsupported check: "+a);
 throw new d("Value: '"+c+"' does not validates as: "+a)}}}});
 
 
-// qx.core.property.Core
-//   - Size: 87 bytes
-//   - Modified: 2010-06-18T23:08:09
-qx.Bootstrap.define("qx.core.property.Core",{statics:{RUNTIME_OVERRIDE:false,
-ID:0}});
-
-
-// qx.core.property.Group
-//   - Size: 656 bytes
-//   - Modified: 2010-09-18T15:03:07
-qx.Bootstrap.define("qx.core.property.Group",{statics:{expandShortHand:function(b){var a=b instanceof Array?b.concat():Array.prototype.slice.call(b);
-switch(a.length){case 1:a[1]=a[2]=a[3]=a[0];
-break;
-case 2:a[2]=a[0];
-case 3:a[3]=a[1]}return a},
-add:function(a,g,b){var f=qx.Bootstrap.firstUp(g),d=a.prototype,h=a.$$propertyGroups,j,c,e,i;
-h||(h=a.$$propertyGroups={});
-a.$$propertyGroups[g]=b;
-j=b.shorthand,c=b.group,e=c.length,i=this;
-d["set"+f]=function(d){var b=d instanceof Array?d:arguments,f,a;
-j&&(b=i.expandShortHand(b));
-f={},a=0;
-for(;
-a<e;
-a++)f[c[a]]=b[a];
-this.set(f)};
-d["reset"+f]=function(){for(var a=0;
-a<e;
-a++)this.reset(c[a])}}}});
-
-
-// qx.Mixin
-//   - Size: 3239 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Bootstrap.define("qx.Mixin",{statics:{define:function(c,a){if(a){a.include&&!(a.include instanceof Array)&&(a.include=[a.include]);
-this.__9AoUd(c,a);
-var b=a.statics?a.statics:{},d;
-qx.Bootstrap.setDisplayNames(b,c);
-for(d in b)b[d] instanceof Function&&(b[d].$$mixin=b);
-a.construct&&(b.$$constructor=a.construct,qx.Bootstrap.setDisplayName(a.construct,c,"constructor"));
-a.include&&(b.$$includes=a.include);
-a.properties&&(b.$$properties=a.properties);
-a.members&&(b.$$members=a.members,qx.Bootstrap.setDisplayNames(a.members,c+".prototype"));
-for(d in b.$$members)b.$$members[d] instanceof Function&&(b.$$members[d].$$mixin=b);
-a.events&&(b.$$events=a.events);
-a.destruct&&(b.$$destructor=a.destruct,qx.Bootstrap.setDisplayName(a.destruct,c,"destruct"))}else b={};
-b.$$type="Mixin";
-b.name=c;
-b.toString=this.genericToString;
-b.basename=qx.Bootstrap.createNamespace(c,b);
-this.$$registry[c]=b;
-return b},
-checkCompatibility:function(i){var h=this.flatten(i),g=h.length,e,d,c,b,f,a;
-if(g<2)return true;
-e={},d={},c={},f=0;
-for(;
-f<g;
-f++){b=h[f];
-for(a in b.events){if(c[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+c[a]+"\" in member \""+a+"\"!");
-c[a]=b.name}for(a in b.properties){if(e[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+e[a]+"\" in property \""+a+"\"!");
-e[a]=b.name}for(a in b.members){if(d[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+d[a]+"\" in member \""+a+"\"!");
-d[a]=b.name}}return true},
-isCompatible:function(c,b){var a=qx.Bootstrap.getMixins(b);
-a.push(c);
-return qx.Mixin.checkCompatibility(a)},
-getByName:function(a){return this.$$registry[a]},
-isDefined:function(a){return this.getByName(a)!==undefined},
-getTotalNumber:function(){return qx.Bootstrap.objectGetLength(this.$$registry)},
-flatten:function(a){if(!a)return[];
-for(var c=a.concat(),b=0,d=a.length;
-b<d;
-b++)a[b].$$includes&&c.push.apply(c,this.flatten(a[b].$$includes));
-return c},
-genericToString:function(){return"[Mixin "+this.name+"]"},
-$$registry:{},
-__PnQ3H:{include:"object",
-statics:"object",
-members:"object",
-properties:"object",
-events:"object",
-destruct:"function",
-construct:"function"},
-__9AoUd:function(d,b){var e=this.__PnQ3H,a,g,c,h,f;
-for(a in b){if(!e[a])throw new Error("The configuration key \""+a+"\" in mixin \""+d+"\" is not allowed!");
-if(b[a]==null)throw new Error("Invalid key \""+a+"\" in mixin \""+d+"\"! The value is undefined/null!");
-if(e[a]!==null&&typeof b[a]!==e[a])throw new Error("Invalid type of key \""+a+"\" in mixin \""+d+"\"! The type of the key must be \""+e[a]+"\"!")}g=["statics","members","properties","events"],c=0,h=g.length;
-for(;
-c<h;
-c++){a=g[c];
-if(b[a]!==undefined&&(b[a] instanceof Array||b[a] instanceof RegExp||b[a] instanceof Date||b[a].classname!==undefined))throw new Error("Invalid key \""+a+"\" in mixin \""+d+"\"! The value needs to be a map!")}if(b.include){for(c=0,f=b.include,h=f.length;
-c<h;
-c++){if(f[c]==null)throw new Error("Includes of mixins must be mixins. The include number '"+(c+1)+"' in mixin '"+d+"'is undefined/null!");
-if(f[c].$$type!=="Mixin")throw new Error("Includes of mixins must be mixins. The include number '"+(c+1)+"' in mixin '"+d+"'is not a mixin!")}this.checkCompatibility(b.include)}}}});
-
-
 // qx.core.property.Util
-//   - Size: 501 bytes
 //   - Modified: 2010-06-18T23:08:09
+//   - Size: 0.49KB (0.24KB zipped => 49.70%)
 qx.Bootstrap.define("qx.core.property.Util",{statics:{getPropertyDefinition:function(a,c){var b;
 while(a){b=a.$$properties;
 if(b&&b[c])return b[c];
@@ -340,8 +245,8 @@ a=a.superclass}return null}}});
 
 
 // qx.Interface
-//   - Size: 4266 bytes
 //   - Modified: 2010-08-28T00:14:34
+//   - Size: 4.17KB (1.51KB zipped => 36.15%)
 qx.Bootstrap.define("qx.Interface",{statics:{define:function(c,a){if(a){a.extend&&!(a.extend instanceof Array)&&(a.extend=[a.extend]);
 this.__9AoUd(c,a);
 var b=a.statics?a.statics:{};
@@ -417,9 +322,104 @@ switch(typeof b.statics[a]){case"boolean":case"string":case"number":break;
 default:throw new Error("Invalid key \""+a+"\" in interface \""+d+"\"! Static constants must be all of a primitive type.")}}}}}});
 
 
+// qx.core.property.Core
+//   - Modified: 2010-06-18T23:08:09
+//   - Size: 0.08KB (0.09KB zipped => 106.90%)
+qx.Bootstrap.define("qx.core.property.Core",{statics:{RUNTIME_OVERRIDE:false,
+ID:0}});
+
+
+// qx.core.property.Group
+//   - Modified: 2010-09-18T15:03:07
+//   - Size: 0.64KB (0.38KB zipped => 59.30%)
+qx.Bootstrap.define("qx.core.property.Group",{statics:{expandShortHand:function(b){var a=b instanceof Array?b.concat():Array.prototype.slice.call(b);
+switch(a.length){case 1:a[1]=a[2]=a[3]=a[0];
+break;
+case 2:a[2]=a[0];
+case 3:a[3]=a[1]}return a},
+add:function(a,g,b){var f=qx.Bootstrap.firstUp(g),d=a.prototype,h=a.$$propertyGroups,j,c,e,i;
+h||(h=a.$$propertyGroups={});
+a.$$propertyGroups[g]=b;
+j=b.shorthand,c=b.group,e=c.length,i=this;
+d["set"+f]=function(d){var b=d instanceof Array?d:arguments,f,a;
+j&&(b=i.expandShortHand(b));
+f={},a=0;
+for(;
+a<e;
+a++)f[c[a]]=b[a];
+this.set(f)};
+d["reset"+f]=function(){for(var a=0;
+a<e;
+a++)this.reset(c[a])}}}});
+
+
+// qx.Mixin
+//   - Modified: 2010-08-26T21:43:53
+//   - Size: 3.16KB (1.14KB zipped => 35.94%)
+qx.Bootstrap.define("qx.Mixin",{statics:{define:function(c,a){if(a){a.include&&!(a.include instanceof Array)&&(a.include=[a.include]);
+this.__9AoUd(c,a);
+var b=a.statics?a.statics:{},d;
+qx.Bootstrap.setDisplayNames(b,c);
+for(d in b)b[d] instanceof Function&&(b[d].$$mixin=b);
+a.construct&&(b.$$constructor=a.construct,qx.Bootstrap.setDisplayName(a.construct,c,"constructor"));
+a.include&&(b.$$includes=a.include);
+a.properties&&(b.$$properties=a.properties);
+a.members&&(b.$$members=a.members,qx.Bootstrap.setDisplayNames(a.members,c+".prototype"));
+for(d in b.$$members)b.$$members[d] instanceof Function&&(b.$$members[d].$$mixin=b);
+a.events&&(b.$$events=a.events);
+a.destruct&&(b.$$destructor=a.destruct,qx.Bootstrap.setDisplayName(a.destruct,c,"destruct"))}else b={};
+b.$$type="Mixin";
+b.name=c;
+b.toString=this.genericToString;
+b.basename=qx.Bootstrap.createNamespace(c,b);
+this.$$registry[c]=b;
+return b},
+checkCompatibility:function(i){var h=this.flatten(i),g=h.length,e,d,c,b,f,a;
+if(g<2)return true;
+e={},d={},c={},f=0;
+for(;
+f<g;
+f++){b=h[f];
+for(a in b.events){if(c[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+c[a]+"\" in member \""+a+"\"!");
+c[a]=b.name}for(a in b.properties){if(e[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+e[a]+"\" in property \""+a+"\"!");
+e[a]=b.name}for(a in b.members){if(d[a])throw new Error("Conflict between mixin \""+b.name+"\" and \""+d[a]+"\" in member \""+a+"\"!");
+d[a]=b.name}}return true},
+isCompatible:function(c,b){var a=qx.Bootstrap.getMixins(b);
+a.push(c);
+return qx.Mixin.checkCompatibility(a)},
+getByName:function(a){return this.$$registry[a]},
+isDefined:function(a){return this.getByName(a)!==undefined},
+getTotalNumber:function(){return qx.Bootstrap.objectGetLength(this.$$registry)},
+flatten:function(a){if(!a)return[];
+for(var c=a.concat(),b=0,d=a.length;
+b<d;
+b++)a[b].$$includes&&c.push.apply(c,this.flatten(a[b].$$includes));
+return c},
+genericToString:function(){return"[Mixin "+this.name+"]"},
+$$registry:{},
+__PnQ3H:{include:"object",
+statics:"object",
+members:"object",
+properties:"object",
+events:"object",
+destruct:"function",
+construct:"function"},
+__9AoUd:function(d,b){var e=this.__PnQ3H,a,g,c,h,f;
+for(a in b){if(!e[a])throw new Error("The configuration key \""+a+"\" in mixin \""+d+"\" is not allowed!");
+if(b[a]==null)throw new Error("Invalid key \""+a+"\" in mixin \""+d+"\"! The value is undefined/null!");
+if(e[a]!==null&&typeof b[a]!==e[a])throw new Error("Invalid type of key \""+a+"\" in mixin \""+d+"\"! The type of the key must be \""+e[a]+"\"!")}g=["statics","members","properties","events"],c=0,h=g.length;
+for(;
+c<h;
+c++){a=g[c];
+if(b[a]!==undefined&&(b[a] instanceof Array||b[a] instanceof RegExp||b[a] instanceof Date||b[a].classname!==undefined))throw new Error("Invalid key \""+a+"\" in mixin \""+d+"\"! The value needs to be a map!")}if(b.include){for(c=0,f=b.include,h=f.length;
+c<h;
+c++){if(f[c]==null)throw new Error("Includes of mixins must be mixins. The include number '"+(c+1)+"' in mixin '"+d+"'is undefined/null!");
+if(f[c].$$type!=="Mixin")throw new Error("Includes of mixins must be mixins. The include number '"+(c+1)+"' in mixin '"+d+"'is not a mixin!")}this.checkCompatibility(b.include)}}}});
+
+
 // qx.core.property.Debug
-//   - Size: 2446 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 2.39KB (0.86KB zipped => 36.06%)
 qx.Bootstrap.define("qx.core.property.Debug",{statics:{checkSetter:function(a,c,d){var b=c.name,e,f;
 if(d.length==0)throw new Error("Called set() method of property "+b+" on object "+a+" with no arguments!");
 d.length>1&&(a.warn("Called set() method of property "+b+" on object "+a+" with too many arguments!"),a.trace());
@@ -453,9 +453,51 @@ if(d[a]===undefined)throw new Error("Invalid key \""+a+"\" of property \""+b+"\"
 if(e[a]!==null&&typeof d[a]!==e[a])throw new Error("Invalid type of key \""+a+"\" of property \""+b+"\" in class \""+c.classname+"\"! The type of the key must be \""+e[a]+"\"!")}}}});
 
 
-// qx.core.property.Multi
-//   - Size: 4298 bytes
+// qx.core.property.Simple
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 1.30KB (0.64KB zipped => 49.10%)
+qx.Bootstrap.define("qx.core.property.Simple",{statics:{__uSSUl:0,
+__brLhnR:{},
+add:function(q,c,b){var g,o=this,k="fireDataEvent",j="$$data",l,e,f,a,n,d,p,i,h,m;
+o.__uSSUl++;
+l=o.__brLhnR;
+e=l[c];
+e||(e=l[c]=qx.core.property.Core.ID,qx.core.property.Core.ID++);
+f=q.prototype;
+b.init!==g&&(a="$$init-"+c,f[a]=b.init);
+n=qx.Bootstrap,d=n.$$firstUp[c]||n.firstUp(c),p=b.nullable,i=b.event,h=b.apply,m=b.validate;
+f["get"+d]=function(){var d,h,f;
+d=this;
+qx.core.property.Debug.checkGetter(d,b,arguments);
+h=d[j];
+h&&(f=h[e]);
+if(f===g){if(a)return d[a];
+p||d.error("Missing value for: "+c+" (during get())");
+f=null}return f};
+a&&(f["init"+d]=function(){var b=this,d=b[j];
+(!d||d[e]===g)&&(h&&b[h](b[a],g,c),i&&b[k](i,b[a],g))});
+f["set"+d]=function(f){var d,n,l;
+d=this;
+qx.core.property.Debug.checkSetter(d,b,arguments);
+m&&qx.core.Type.check(f,m,d,qx.core.ValidationError);
+n=d[j];
+n?l=n[e]:n=d[j]={};
+f!==l&&(l===g&&a&&(l=d[a]),n[e]=f,h&&d[h](f,l,c),i&&d[k](i,f,l));
+return f};
+f["reset"+d]=function(){var d,m,l,f;
+d=this;
+qx.core.property.Debug.checkResetter(d,b,arguments);
+m=d[j];
+if(!m)return;
+l=m[e];
+f=g;
+l!==f&&(m[e]=f,a?f=d[a]:p||d.error("Missing value for: "+c+" (during reset())"),h&&d[h](f,l,c),i&&d[k](i,f,l))};
+b.check==="Boolean"&&(f["toggle"+d]=function(){this["set"+d](!this["get"+d]())},f["is"+d]=f["get"+d])}}});
+
+
+// qx.core.property.Multi
+//   - Modified: 2010-11-11T16:55:27
+//   - Size: 4.20KB (1.95KB zipped => 46.35%)
 (function(){var k=0,d={},c={4:{},
 3:{},
 2:{get:"getThemedValue"},
@@ -567,51 +609,9 @@ h===a?(h=i[p],k[m]!==a&&(k[m]=a)):k[m]=t;
 h!==n&&(o=v[l],o.apply&&i[o.apply](h,n,l),o.event&&i.fireDataEvent(o.event,h,n),e(i,h,n,o))}}}})})();
 
 
-// qx.core.property.Simple
-//   - Size: 1334 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Bootstrap.define("qx.core.property.Simple",{statics:{__uSSUl:0,
-__brLhnR:{},
-add:function(q,c,b){var g,o=this,k="fireDataEvent",j="$$data",l,e,f,a,n,d,p,i,h,m;
-o.__uSSUl++;
-l=o.__brLhnR;
-e=l[c];
-e||(e=l[c]=qx.core.property.Core.ID,qx.core.property.Core.ID++);
-f=q.prototype;
-b.init!==g&&(a="$$init-"+c,f[a]=b.init);
-n=qx.Bootstrap,d=n.$$firstUp[c]||n.firstUp(c),p=b.nullable,i=b.event,h=b.apply,m=b.validate;
-f["get"+d]=function(){var d,h,f;
-d=this;
-qx.core.property.Debug.checkGetter(d,b,arguments);
-h=d[j];
-h&&(f=h[e]);
-if(f===g){if(a)return d[a];
-p||d.error("Missing value for: "+c+" (during get())");
-f=null}return f};
-a&&(f["init"+d]=function(){var b=this,d=b[j];
-(!d||d[e]===g)&&(h&&b[h](b[a],g,c),i&&b[k](i,b[a],g))});
-f["set"+d]=function(f){var d,n,l;
-d=this;
-qx.core.property.Debug.checkSetter(d,b,arguments);
-m&&qx.core.Type.check(f,m,d,qx.core.ValidationError);
-n=d[j];
-n?l=n[e]:n=d[j]={};
-f!==l&&(l===g&&a&&(l=d[a]),n[e]=f,h&&d[h](f,l,c),i&&d[k](i,f,l));
-return f};
-f["reset"+d]=function(){var d,m,l,f;
-d=this;
-qx.core.property.Debug.checkResetter(d,b,arguments);
-m=d[j];
-if(!m)return;
-l=m[e];
-f=g;
-l!==f&&(m[e]=f,a?f=d[a]:p||d.error("Missing value for: "+c+" (during reset())"),h&&d[h](f,l,c),i&&d[k](i,f,l))};
-b.check==="Boolean"&&(f["toggle"+d]=function(){this["set"+d](!this["get"+d]())},f["is"+d]=f["get"+d])}}});
-
-
 // qx.Class
-//   - Size: 10605 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 10.36KB (3.49KB zipped => 33.66%)
 qx.Bootstrap.define("qx.Class",{statics:{define:function(f,a){if(!a)var a={},g,b,c,e;
 a.include&&!(a.include instanceof Array)&&(a.include=[a.include]);
 a.implement&&!(a.implement instanceof Array)&&(a.implement=[a.implement]);
@@ -804,8 +804,8 @@ qx.core.property.Debug;
 
 
 // qx.type.BaseError
-//   - Size: 344 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.34KB (0.21KB zipped => 62.21%)
 qx.Class.define("qx.type.BaseError",{extend:Error,
 construct:function(b,a){Error.call(this,a);
 this.__uzUwU=b||"";
@@ -818,14 +818,14 @@ toString:function(){return this.__uzUwU+": "+this.message}}});
 
 
 // qx.core.ValidationError
-//   - Size: 71 bytes
 //   - Modified: 2010-11-01T15:46:16
+//   - Size: 0.07KB (0.07KB zipped => 105.63%)
 qx.Class.define("qx.core.ValidationError",{extend:qx.type.BaseError});
 
 
 // qx.core.WindowError
-//   - Size: 356 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.35KB (0.21KB zipped => 60.96%)
 qx.Bootstrap.define("qx.core.WindowError",{extend:Error,
 construct:function(b,c,a){Error.call(this,b);
 this.__OnqWO=b;
@@ -840,8 +840,8 @@ getLineNumber:function(){return this.__JeJe8}}});
 
 
 // qx.lang.Core
-//   - Size: 2474 bytes
 //   - Modified: 2010-05-21T19:22:00
+//   - Size: 2.42KB (0.64KB zipped => 26.35%)
 qx.Bootstrap.define("qx.lang.Core",{statics:{errorToString:{"native":Error.prototype.toString,
 emulated:function(){return this.message}}[!Error.prototype.toString||Error.prototype.toString()=="[object Error]"?"emulated":"native"],
 arrayIndexOf:{"native":Array.prototype.indexOf,
@@ -893,9 +893,32 @@ Array.prototype.every=qx.lang.Core.arrayEvery;
 String.prototype.quote=qx.lang.Core.stringQuote;
 
 
+// qx.bom.client.Engine
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.51KB (0.78KB zipped => 51.26%)
+qx.Bootstrap.define("qx.bom.client.Engine",{statics:{NAME:"",
+FULLVERSION:"0.0.0",
+VERSION:0,
+OPERA:false,
+WEBKIT:false,
+GECKO:false,
+MSHTML:false,
+UNKNOWN_ENGINE:false,
+UNKNOWN_VERSION:false,
+DOCUMENT_MODE:null,
+__jA3lT:function(){var b="unknown",a="0.0.0",c=window.navigator.userAgent,f=false,d=false,g,e;
+window.opera&&Object.prototype.toString.call(window.opera)=="[object Opera]"?(b="opera",this.OPERA=true,/Opera[\s\/]([0-9]+)\.([0-9])([0-9]*)/.test(c)?(a=RegExp.$1+"."+RegExp.$2,RegExp.$3!=""&&(a+="."+RegExp.$3)):(d=true,a="9.6.0")):window.navigator.userAgent.indexOf("AppleWebKit/")!=-1?(b="webkit",this.WEBKIT=true,/AppleWebKit\/([^ ]+)/.test(c)?(a=RegExp.$1,g=RegExp("[^\\.0-9]").exec(a),g&&(a=a.slice(0,g.index))):(d=true,a="525.26")):window.controllers&&window.navigator.product==="Gecko"?(b="gecko",this.GECKO=true,/rv\:([^\);]+)(\)|;)/.test(c)?a=RegExp.$1:(d=true,a="1.9.0.0")):window.navigator.cpuClass&&/MSIE\s+([^\);]+)(\)|;)/.test(c)?(b="mshtml",a=RegExp.$1,document.documentMode&&(this.DOCUMENT_MODE=document.documentMode),a<8&&/Trident\/([^\);]+)(\)|;)/.test(c)&&RegExp.$1==="4.0"&&(a="8.0"),this.MSHTML=true):(e=window.qxFail,e&&typeof e==="function"?(b=e(),b.NAME&&b.FULLVERSION&&(b=b.NAME,this[b.toUpperCase()]=true,a=b.FULLVERSION)):(f=true,d=true,a="1.9.0.0",b="gecko",this.GECKO=true,qx.Bootstrap.warn("Unsupported client: "+c+"! Assumed gecko version 1.9.0.0 (Firefox 3.0).")));
+this.UNKNOWN_ENGINE=f;
+this.UNKNOWN_VERSION=d;
+this.NAME=b;
+this.FULLVERSION=a;
+this.VERSION=parseFloat(a)}},
+defer:function(a){a.__jA3lT()}});
+
+
 // qx.Theme
-//   - Size: 4074 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 3.98KB (1.43KB zipped => 35.86%)
 qx.Bootstrap.define("qx.Theme",{statics:{define:function(d,a){if(!a)var a={},b,c,e,f;
 a.include=this.__ba6rD1(a.include);
 a.patch=this.__ba6rD1(a.patch);
@@ -985,103 +1008,9 @@ for(a in f){if(e[a]!==undefined)continue;
 e[a]=f[a]}}}});
 
 
-// qx.bom.client.Engine
-//   - Size: 1551 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Bootstrap.define("qx.bom.client.Engine",{statics:{NAME:"",
-FULLVERSION:"0.0.0",
-VERSION:0,
-OPERA:false,
-WEBKIT:false,
-GECKO:false,
-MSHTML:false,
-UNKNOWN_ENGINE:false,
-UNKNOWN_VERSION:false,
-DOCUMENT_MODE:null,
-__jA3lT:function(){var b="unknown",a="0.0.0",c=window.navigator.userAgent,f=false,d=false,g,e;
-window.opera&&Object.prototype.toString.call(window.opera)=="[object Opera]"?(b="opera",this.OPERA=true,/Opera[\s\/]([0-9]+)\.([0-9])([0-9]*)/.test(c)?(a=RegExp.$1+"."+RegExp.$2,RegExp.$3!=""&&(a+="."+RegExp.$3)):(d=true,a="9.6.0")):window.navigator.userAgent.indexOf("AppleWebKit/")!=-1?(b="webkit",this.WEBKIT=true,/AppleWebKit\/([^ ]+)/.test(c)?(a=RegExp.$1,g=RegExp("[^\\.0-9]").exec(a),g&&(a=a.slice(0,g.index))):(d=true,a="525.26")):window.controllers&&window.navigator.product==="Gecko"?(b="gecko",this.GECKO=true,/rv\:([^\);]+)(\)|;)/.test(c)?a=RegExp.$1:(d=true,a="1.9.0.0")):window.navigator.cpuClass&&/MSIE\s+([^\);]+)(\)|;)/.test(c)?(b="mshtml",a=RegExp.$1,document.documentMode&&(this.DOCUMENT_MODE=document.documentMode),a<8&&/Trident\/([^\);]+)(\)|;)/.test(c)&&RegExp.$1==="4.0"&&(a="8.0"),this.MSHTML=true):(e=window.qxFail,e&&typeof e==="function"?(b=e(),b.NAME&&b.FULLVERSION&&(b=b.NAME,this[b.toUpperCase()]=true,a=b.FULLVERSION)):(f=true,d=true,a="1.9.0.0",b="gecko",this.GECKO=true,qx.Bootstrap.warn("Unsupported client: "+c+"! Assumed gecko version 1.9.0.0 (Firefox 3.0).")));
-this.UNKNOWN_ENGINE=f;
-this.UNKNOWN_VERSION=d;
-this.NAME=b;
-this.FULLVERSION=a;
-this.VERSION=parseFloat(a)}},
-defer:function(a){a.__jA3lT()}});
-
-
-// qx.ui.core.MContentPadding
-//   - Size: 1066 bytes
-//   - Modified: 2010-06-18T23:08:09
-qx.Mixin.define("qx.ui.core.MContentPadding",{properties:{contentPaddingTop:{check:"Integer",
-init:0,
-apply:"_applyContentPadding",
-themeable:true},
-contentPaddingRight:{check:"Integer",
-init:0,
-apply:"_applyContentPadding",
-themeable:true},
-contentPaddingBottom:{check:"Integer",
-init:0,
-apply:"_applyContentPadding",
-themeable:true},
-contentPaddingLeft:{check:"Integer",
-init:0,
-apply:"_applyContentPadding",
-themeable:true},
-contentPadding:{group:["contentPaddingTop","contentPaddingRight","contentPaddingBottom","contentPaddingLeft"],
-shorthand:true,
-themeable:true}},
-members:{__b1yWhg:{contentPaddingTop:"setPaddingTop",
-contentPaddingRight:"setPaddingRight",
-contentPaddingBottom:"setPaddingBottom",
-contentPaddingLeft:"setPaddingLeft"},
-__cm5qGh:{contentPaddingTop:"resetPaddingTop",
-contentPaddingRight:"resetPaddingRight",
-contentPaddingBottom:"resetPaddingBottom",
-contentPaddingLeft:"resetPaddingLeft"},
-_applyContentPadding:function(b,f,c){var a=this._getContentPaddingTarget(),e,d;
-b==null?(e=this.__cm5qGh[c],a[e]()):(d=this.__b1yWhg[c],a[d](b))}}});
-
-
-// apiviewer.MWidgetRegistry
-//   - Size: 662 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("apiviewer.MWidgetRegistry",{properties:{id:{check:"String",
-apply:"_applyId",
-nullable:true,
-init:null}},
-members:{_applyId:function(b,a){var c=apiviewer.MWidgetRegistry;
-a&&c.unregister(this,a);
-b&&c.register(this,b)},
-getWidgetById:function(a){return apiviewer.MWidgetRegistry.getWidgetById(a)}},
-statics:{__yALNM:{},
-getWidgetById:function(a){return this.__yALNM[a]},
-register:function(b,a){if(this.__yALNM[a])throw new Error("An object with the id '"+a+"' already exists.");
-this.__yALNM[a]=b},
-unregister:function(b,a){if(this.__yALNM[a]!==b)throw new Error("The object is not registered with the id '"+a+"'.");
-delete this.__yALNM[a]}}});
-
-
-// qx.ui.core.MRemoteChildrenHandling
-//   - Size: 725 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.ui.core.MRemoteChildrenHandling",{members:{__uR3K4:function(a,e,c,d){var b=this.getChildrenContainer();
-b===this&&(a="_"+a);
-return(b[a])(e,c,d)},
-getChildren:function(){return this.__uR3K4("getChildren")},
-hasChildren:function(){return this.__uR3K4("hasChildren")},
-add:function(a,b){return this.__uR3K4("add",a,b)},
-remove:function(a){return this.__uR3K4("remove",a)},
-removeAll:function(){return this.__uR3K4("removeAll")},
-indexOf:function(a){return this.__uR3K4("indexOf",a)},
-addAt:function(a,c,b){this.__uR3K4("addAt",a,c,b)},
-addBefore:function(c,a,b){this.__uR3K4("addBefore",c,a,b)},
-addAfter:function(a,c,b){this.__uR3K4("addAfter",a,c,b)},
-removeAt:function(a){this.__uR3K4("removeAt",a)}}});
-
-
 // qx.ui.form.MForm
-//   - Size: 503 bytes
 //   - Modified: 2010-09-30T14:20:20
+//   - Size: 0.49KB (0.25KB zipped => 51.09%)
 qx.Mixin.define("qx.ui.form.MForm",{construct:function(){},
 properties:{valid:{check:"Boolean",
 init:true,
@@ -1102,15 +1031,33 @@ destruct:function(){}});
 
 
 // qx.ui.form.MModelProperty
-//   - Size: 104 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.10KB (0.10KB zipped => 98.08%)
 qx.Mixin.define("qx.ui.form.MModelProperty",{properties:{model:{nullable:true,
 event:"changeModel"}}});
 
 
+// qx.ui.core.MRemoteChildrenHandling
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.71KB (0.28KB zipped => 39.86%)
+qx.Mixin.define("qx.ui.core.MRemoteChildrenHandling",{members:{__uR3K4:function(a,e,c,d){var b=this.getChildrenContainer();
+b===this&&(a="_"+a);
+return(b[a])(e,c,d)},
+getChildren:function(){return this.__uR3K4("getChildren")},
+hasChildren:function(){return this.__uR3K4("hasChildren")},
+add:function(a,b){return this.__uR3K4("add",a,b)},
+remove:function(a){return this.__uR3K4("remove",a)},
+removeAll:function(){return this.__uR3K4("removeAll")},
+indexOf:function(a){return this.__uR3K4("indexOf",a)},
+addAt:function(a,c,b){this.__uR3K4("addAt",a,c,b)},
+addBefore:function(c,a,b){this.__uR3K4("addBefore",c,a,b)},
+addAfter:function(a,c,b){this.__uR3K4("addAfter",a,c,b)},
+removeAt:function(a){this.__uR3K4("removeAt",a)}}});
+
+
 // qx.bom.client.Feature
-//   - Size: 1736 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 1.70KB (0.83KB zipped => 48.68%)
 qx.Bootstrap.define("qx.bom.client.Feature",{statics:{STANDARD_MODE:false,
 QUIRKS_MODE:false,
 CONTENT_BOX:false,
@@ -1144,8 +1091,8 @@ defer:function(a){a.__jA3lT()}});
 
 
 // qx.ui.core.MBlocker
-//   - Size: 994 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 0.97KB (0.33KB zipped => 33.70%)
 qx.Mixin.define("qx.ui.core.MBlocker",{construct:function(){this.__ukeJN=new qx.ui.core.Blocker(this)},
 properties:{blockerColor:{check:"Color",
 init:null,
@@ -1172,8 +1119,8 @@ destruct:function(){this._disposeObjects("__blocker")}});
 
 
 // qx.ui.core.MLayoutHandling
-//   - Size: 237 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.23KB (0.14KB zipped => 60.34%)
 qx.Mixin.define("qx.ui.core.MLayoutHandling",{members:{setLayout:function(a){return this._setLayout(a)},
 getLayout:function(){return this._getLayout()}},
 statics:{remap:function(a){a.getLayout=a._getLayout;
@@ -1181,8 +1128,8 @@ a.setLayout=a._setLayout}}});
 
 
 // qx.ui.core.MChildrenHandling
-//   - Size: 777 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.76KB (0.28KB zipped => 37.19%)
 qx.Mixin.define("qx.ui.core.MChildrenHandling",{members:{getChildren:function(){return this._getChildren()},
 hasChildren:function(){return this._hasChildren()},
 indexOf:function(a){return this._indexOf(a)},
@@ -1206,15 +1153,84 @@ a.removeAll=a._removeAll}}});
 
 
 // qx.ui.core.MRemoteLayoutHandling
-//   - Size: 206 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.20KB (0.13KB zipped => 66.50%)
 qx.Mixin.define("qx.ui.core.MRemoteLayoutHandling",{members:{setLayout:function(a){return this.getChildrenContainer().setLayout(a)},
 getLayout:function(){return this.getChildrenContainer().getLayout()}}});
 
 
-// qx.data.IListData
-//   - Size: 261 bytes
+// qx.ui.core.MContentPadding
+//   - Modified: 2010-06-18T23:08:09
+//   - Size: 1.04KB (0.32KB zipped => 31.14%)
+qx.Mixin.define("qx.ui.core.MContentPadding",{properties:{contentPaddingTop:{check:"Integer",
+init:0,
+apply:"_applyContentPadding",
+themeable:true},
+contentPaddingRight:{check:"Integer",
+init:0,
+apply:"_applyContentPadding",
+themeable:true},
+contentPaddingBottom:{check:"Integer",
+init:0,
+apply:"_applyContentPadding",
+themeable:true},
+contentPaddingLeft:{check:"Integer",
+init:0,
+apply:"_applyContentPadding",
+themeable:true},
+contentPadding:{group:["contentPaddingTop","contentPaddingRight","contentPaddingBottom","contentPaddingLeft"],
+shorthand:true,
+themeable:true}},
+members:{__b1yWhg:{contentPaddingTop:"setPaddingTop",
+contentPaddingRight:"setPaddingRight",
+contentPaddingBottom:"setPaddingBottom",
+contentPaddingLeft:"setPaddingLeft"},
+__cm5qGh:{contentPaddingTop:"resetPaddingTop",
+contentPaddingRight:"resetPaddingRight",
+contentPaddingBottom:"resetPaddingBottom",
+contentPaddingLeft:"resetPaddingLeft"},
+_applyContentPadding:function(b,f,c){var a=this._getContentPaddingTarget(),e,d;
+b==null?(e=this.__cm5qGh[c],a[e]()):(d=this.__b1yWhg[c],a[d](b))}}});
+
+
+// qx.event.IEventHandler
+//   - Modified: 2010-11-03T14:43:37
+//   - Size: 0.22KB (0.16KB zipped => 71.24%)
+qx.Interface.define("qx.event.IEventHandler",{statics:{TARGET_DOMNODE:1,
+TARGET_WINDOW:2,
+TARGET_OBJECT:4,
+TARGET_DOCUMENT:8},
+members:{canHandleEvent:function(){},
+registerEvent:function(){},
+unregisterEvent:function(){}}});
+
+
+// qx.ui.window.IWindowManager
+//   - Modified: 2010-10-13T22:40:51
+//   - Size: 0.32KB (0.17KB zipped => 52.57%)
+qx.Interface.define("qx.ui.window.IWindowManager",{members:{setDesktop:function(a){this.assertInterface(a,qx.ui.window.IDesktop)},
+changeActiveWindow:function(){},
+updateStack:function(){},
+bringToFront:function(a){this.assertInstance(a,qx.ui.window.Window)},
+sendToBack:function(a){this.assertInstance(a,qx.ui.window.Window)}}});
+
+
+// qx.event.GlobalError
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.44KB (0.25KB zipped => 57.05%)
+qx.Bootstrap.define("qx.event.GlobalError",{statics:{setErrorHandler:function(b,a){this.__yn7yy=b||null;
+this.__uOt7U=a||window},
+__2AKLi:function(c,b,a){if(this.__yn7yy){this.handleError(new qx.core.WindowError(c,b,a));
+return true}},
+observeMethod:function(a){return a},
+handleError:function(a){this.__yn7yy&&this.__yn7yy.call(this.__uOt7U,a)}},
+defer:function(a){qx.core.Setting.define("qx.globalErrorHandling","on");
+a.setErrorHandler(null,null)}});
+
+
+// qx.data.IListData
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.25KB (0.15KB zipped => 57.47%)
 qx.Interface.define("qx.data.IListData",{events:{change:"qx.event.type.Data",
 changeLength:"qx.event.type.Event"},
 members:{getItem:function(){},
@@ -1226,8 +1242,8 @@ toArray:function(){}}});
 
 
 // qx.ui.core.MExecutable
-//   - Size: 1095 bytes
 //   - Modified: 2010-06-18T23:08:09
+//   - Size: 1.07KB (0.53KB zipped => 49.59%)
 qx.Mixin.define("qx.ui.core.MExecutable",{events:{execute:"qx.event.type.Event"},
 properties:{command:{check:"qx.ui.core.Command",
 apply:"_applyCommand",
@@ -1253,44 +1269,9 @@ e++)a=this._bindableProperties[e],d!=null&&b[a]!=null&&(d.removeBinding(b[a]),b[
 destruct:function(){this.__b0TXYK=null}});
 
 
-// qx.ui.window.IWindowManager
-//   - Size: 331 bytes
-//   - Modified: 2010-10-13T22:40:51
-qx.Interface.define("qx.ui.window.IWindowManager",{members:{setDesktop:function(a){this.assertInterface(a,qx.ui.window.IDesktop)},
-changeActiveWindow:function(){},
-updateStack:function(){},
-bringToFront:function(a){this.assertInstance(a,qx.ui.window.Window)},
-sendToBack:function(a){this.assertInstance(a,qx.ui.window.Window)}}});
-
-
-// qx.event.GlobalError
-//   - Size: 454 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Bootstrap.define("qx.event.GlobalError",{statics:{setErrorHandler:function(b,a){this.__yn7yy=b||null;
-this.__uOt7U=a||window},
-__2AKLi:function(c,b,a){if(this.__yn7yy){this.handleError(new qx.core.WindowError(c,b,a));
-return true}},
-observeMethod:function(a){return a},
-handleError:function(a){this.__yn7yy&&this.__yn7yy.call(this.__uOt7U,a)}},
-defer:function(a){qx.core.Setting.define("qx.globalErrorHandling","on");
-a.setErrorHandler(null,null)}});
-
-
-// qx.event.IEventHandler
-//   - Size: 226 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Interface.define("qx.event.IEventHandler",{statics:{TARGET_DOMNODE:1,
-TARGET_WINDOW:2,
-TARGET_OBJECT:4,
-TARGET_DOCUMENT:8},
-members:{canHandleEvent:function(){},
-registerEvent:function(){},
-unregisterEvent:function(){}}});
-
-
 // qx.ui.decoration.IDecorator
-//   - Size: 151 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.15KB (0.11KB zipped => 74.83%)
 qx.Interface.define("qx.ui.decoration.IDecorator",{members:{getMarkup:function(){},
 resize:function(){},
 tint:function(){},
@@ -1298,8 +1279,8 @@ getInsets:function(){}}});
 
 
 // qx.ui.form.IExecutable
-//   - Size: 195 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.19KB (0.14KB zipped => 73.85%)
 qx.Interface.define("qx.ui.form.IExecutable",{events:{execute:"qx.event.type.Data"},
 members:{setCommand:function(){return arguments.length==1},
 getCommand:function(){},
@@ -1307,8 +1288,8 @@ execute:function(){}}});
 
 
 // qx.ui.form.IStringForm
-//   - Size: 198 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.19KB (0.14KB zipped => 72.22%)
 qx.Interface.define("qx.ui.form.IStringForm",{events:{changeValue:"qx.event.type.Data"},
 members:{setValue:function(){return arguments.length==1},
 resetValue:function(){},
@@ -1316,8 +1297,8 @@ getValue:function(){}}});
 
 
 // qx.ui.window.IDesktop
-//   - Size: 305 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.30KB (0.17KB zipped => 55.41%)
 qx.Interface.define("qx.ui.window.IDesktop",{members:{setWindowManager:function(a){this.assertInterface(a,qx.ui.window.IWindowManager)},
 getWindows:function(){},
 supportsMaximize:function(){},
@@ -1327,8 +1308,8 @@ isContentBlocked:function(){}}});
 
 
 // qx.core.ObjectRegistry
-//   - Size: 1438 bytes
 //   - Modified: 2010-05-06T22:42:39
+//   - Size: 1.40KB (0.63KB zipped => 44.78%)
 qx.Class.define("qx.core.ObjectRegistry",{statics:{inShutDown:false,
 __zAUSy:{},
 __y4b2Q:0,
@@ -1369,54 +1350,9 @@ delete this.__zAUSy},
 getRegistry:function(){return this.__zAUSy}}});
 
 
-// qx.lang.Type
-//   - Size: 617 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.lang.Type",{statics:{getClass:qx.Bootstrap.getClass,
-isString:qx.Bootstrap.isString,
-isArray:qx.Bootstrap.isArray,
-isObject:qx.Bootstrap.isObject,
-isFunction:qx.Bootstrap.isFunction,
-isRegExp:function(a){return this.getClass(a)=="RegExp"},
-isNumber:function(a){return a!==null&&(this.getClass(a)=="Number"||a instanceof Number)},
-isBoolean:function(a){return a!==null&&(this.getClass(a)=="Boolean"||a instanceof Boolean)},
-isDate:function(a){return a!==null&&(this.getClass(a)=="Date"||a instanceof Date)},
-isError:function(a){return a!==null&&(this.getClass(a)=="Error"||a instanceof Error)}}});
-
-
-// qx.lang.Date
-//   - Size: 78 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.lang.Date",{statics:{now:function(){return +new Date}}});
-
-
-// qx.xml.Document
-//   - Size: 412 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.xml.Document",{statics:{DOMDOC:null,
-XMLHTTP:null,
-isXmlDocument:function(a){return a.nodeType===9?a.documentElement.nodeName!=="HTML":a.ownerDocument?this.isXmlDocument(a.ownerDocument):false},
-create:function(b,a){return document.implementation.createDocument(b||"",a||"",null)},
-fromString:function(a){var b=new DOMParser();
-return b.parseFromString(a,"text/xml")}},
-defer:function(){}});
-
-
-// qx.bom.client.Locale
-//   - Size: 288 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.bom.client.Locale",{statics:{LOCALE:"",
-VARIANT:"",
-__jA3lT:function(){var a=(navigator.userLanguage||navigator.language).toLowerCase(),c="",b=a.indexOf("-");
-b!=-1&&(c=a.substr(b+1),a=a.substr(0,b));
-this.LOCALE=a;
-this.VARIANT=c}},
-defer:function(a){a.__jA3lT()}});
-
-
 // qx.dom.Node
-//   - Size: 1594 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 1.56KB (0.69KB zipped => 44.35%)
 qx.Class.define("qx.dom.Node",{statics:{ELEMENT:1,
 ATTRIBUTE:2,
 TEXT:3,
@@ -1458,9 +1394,737 @@ a=qx.dom.Node.getName(a);
 return/^(body|form|textarea|fieldset|ul|ol|dl|dt|dd|li|div|hr|p|h[1-6]|quote|pre|table|thead|tbody|tfoot|tr|td|th|iframe|address|blockquote)$/.test(a)}}});
 
 
-// qx.bom.Selector
-//   - Size: 13119 bytes
+// qx.xml.Document
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.40KB (0.25KB zipped => 63.11%)
+qx.Class.define("qx.xml.Document",{statics:{DOMDOC:null,
+XMLHTTP:null,
+isXmlDocument:function(a){return a.nodeType===9?a.documentElement.nodeName!=="HTML":a.ownerDocument?this.isXmlDocument(a.ownerDocument):false},
+create:function(b,a){return document.implementation.createDocument(b||"",a||"",null)},
+fromString:function(a){var b=new DOMParser();
+return b.parseFromString(a,"text/xml")}},
+defer:function(){}});
+
+
+// qx.lang.Date
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.08KB (0.08KB zipped => 107.69%)
+qx.Class.define("qx.lang.Date",{statics:{now:function(){return +new Date}}});
+
+
+// qx.lang.RingBuffer
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.15KB (0.48KB zipped => 41.24%)
+qx.Class.define("qx.lang.RingBuffer",{extend:Object,
+construct:function(a){this.setMaxEntries(a||50)},
+members:{__bHMv5N:0,
+__3Ng1e:0,
+__UksBG:false,
+__cofKxn:0,
+__uPjgP:null,
+__Jk3m7:null,
+setMaxEntries:function(a){this.__Jk3m7=a;
+this.clear()},
+getMaxEntries:function(){return this.__Jk3m7},
+addEntry:function(b){this.__uPjgP[this.__bHMv5N]=b;
+this.__bHMv5N=this.__HDJCN(this.__bHMv5N,1);
+var a=this.getMaxEntries();
+this.__3Ng1e<a&&this.__3Ng1e++;
+this.__UksBG&&this.__cofKxn<a&&this.__cofKxn++},
+mark:function(){this.__UksBG=true;
+this.__cofKxn=0},
+clearMark:function(){this.__UksBG=false},
+getAllEntries:function(){return this.getEntries(this.getMaxEntries(),false)},
+getEntries:function(a,e){a>this.__3Ng1e&&(a=this.__3Ng1e);
+e&&this.__UksBG&&a>this.__cofKxn&&(a=this.__cofKxn);
+if(a>0){var c=this.__HDJCN(this.__bHMv5N,-1),d=this.__HDJCN(c,-a+1),b;
+b=d<=c?this.__uPjgP.slice(d,c+1):this.__uPjgP.slice(d,this.__3Ng1e).concat(this.__uPjgP.slice(0,c+1))}else b=[];
+return b},
+clear:function(){this.__uPjgP=new Array(this.getMaxEntries());
+this.__3Ng1e=0;
+this.__cofKxn=0;
+this.__bHMv5N=0},
+__HDJCN:function(c,d){var b=this.getMaxEntries(),a=(c+d)%b;
+a<0&&(a+=b);
+return a}}});
+
+
+// qx.lang.Type
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.60KB (0.23KB zipped => 38.09%)
+qx.Class.define("qx.lang.Type",{statics:{getClass:qx.Bootstrap.getClass,
+isString:qx.Bootstrap.isString,
+isArray:qx.Bootstrap.isArray,
+isObject:qx.Bootstrap.isObject,
+isFunction:qx.Bootstrap.isFunction,
+isRegExp:function(a){return this.getClass(a)=="RegExp"},
+isNumber:function(a){return a!==null&&(this.getClass(a)=="Number"||a instanceof Number)},
+isBoolean:function(a){return a!==null&&(this.getClass(a)=="Boolean"||a instanceof Boolean)},
+isDate:function(a){return a!==null&&(this.getClass(a)=="Date"||a instanceof Date)},
+isError:function(a){return a!==null&&(this.getClass(a)=="Error"||a instanceof Error)}}});
+
+
+// qx.bom.Viewport
+//   - Modified: 2010-09-18T15:10:19
+//   - Size: 0.68KB (0.29KB zipped => 42.98%)
+qx.Class.define("qx.bom.Viewport",{statics:{getWidth:function(b){var a=(b||window).document;
+return qx.bom.Document.isStandardMode(b)?a.documentElement.clientWidth:a.body.clientWidth},
+getHeight:function(b){var a=(b||window).document;
+return qx.bom.Document.isStandardMode(b)?a.documentElement.clientHeight:a.body.clientHeight},
+getScrollLeft:function(a){return(a||window).pageXOffset},
+getScrollTop:function(a){return(a||window).pageYOffset},
+getOrientation:function(b){var a=(b||window).orientation;
+a==null&&(a=this.getWidth(b)>this.getHeight(b)?90:0);
+return a},
+isLandscape:function(a){return Math.abs(this.getOrientation(a))==90},
+isPortrait:function(a){return this.getOrientation(a)==0}}});
+
+
+// qx.bom.Document
+//   - Modified: 2010-07-17T16:42:24
+//   - Size: 0.53KB (0.24KB zipped => 45.00%)
+qx.Class.define("qx.bom.Document",{statics:{isQuirksMode:function(a){return(a||window).document.compatMode!=="CSS1Compat"},
+isStandardMode:function(a){return!this.isQuirksMode(a)},
+getWidth:function(a){var b=(a||window).document,d=qx.bom.Viewport.getWidth(a),c=this.isStandardMode(a)?b.documentElement.scrollWidth:b.body.scrollWidth;
+return Math.max(c,d)},
+getHeight:function(a){var b=(a||window).document,d=qx.bom.Viewport.getHeight(a),c=this.isStandardMode(a)?b.documentElement.scrollHeight:b.body.scrollHeight;
+return Math.max(c,d)}}});
+
+
+// qx.bom.client.Locale
+//   - Modified: 2010-11-11T16:55:27
+//   - Size: 0.28KB (0.21KB zipped => 76.04%)
+qx.Class.define("qx.bom.client.Locale",{statics:{LOCALE:"",
+VARIANT:"",
+__jA3lT:function(){var a=(navigator.userLanguage||navigator.language).toLowerCase(),c="",b=a.indexOf("-");
+b!=-1&&(c=a.substr(b+1),a=a.substr(0,b));
+this.LOCALE=a;
+this.VARIANT=c}},
+defer:function(a){a.__jA3lT()}});
+
+
+// qx.bom.client.Platform
+//   - Modified: 2010-06-18T23:08:09
+//   - Size: 0.67KB (0.32KB zipped => 47.03%)
+qx.Class.define("qx.bom.client.Platform",{statics:{NAME:"",
+WIN:false,
+MAC:false,
+UNIX:false,
+UNKNOWN_PLATFORM:false,
+__jA3lT:function(){var a=navigator.platform;
+(a==null||a==="")&&(a=navigator.userAgent);
+a.indexOf("Windows")!=-1||a.indexOf("Win32")!=-1||a.indexOf("Win64")!=-1?(this.WIN=true,this.NAME="win"):a.indexOf("Macintosh")!=-1||a.indexOf("MacPPC")!=-1||a.indexOf("MacIntel")!=-1||a.indexOf("iPod")!=-1||a.indexOf("iPhone")!=-1||a.indexOf("iPad")!=-1?(this.MAC=true,this.NAME="mac"):a.indexOf("X11")!=-1||a.indexOf("Linux")!=-1||a.indexOf("BSD")!=-1?(this.UNIX=true,this.NAME="unix"):(this.UNKNOWN_PLATFORM=true,this.WIN=true,this.NAME="win")}},
+defer:function(a){a.__jA3lT()}});
+
+
+// qx.bom.element.Attribute
+//   - Modified: 2010-11-03T14:43:37
+//   - Size: 1.93KB (0.84KB zipped => 43.41%)
+qx.Class.define("qx.bom.element.Attribute",{statics:{__mQlbl:{names:{"class":"className",
+"for":"htmlFor",
+html:"innerHTML",
+text:"textContent",
+colspan:"colSpan",
+rowspan:"rowSpan",
+valign:"vAlign",
+datetime:"dateTime",
+accesskey:"accessKey",
+tabindex:"tabIndex",
+maxlength:"maxLength",
+readonly:"readOnly",
+longdesc:"longDesc",
+cellpadding:"cellPadding",
+cellspacing:"cellSpacing",
+frameborder:"frameBorder",
+usemap:"useMap"},
+runtime:{html:1,
+text:1},
+bools:{compact:1,
+nowrap:1,
+ismap:1,
+declare:1,
+noshade:1,
+checked:1,
+disabled:1,
+readOnly:1,
+multiple:1,
+selected:1,
+noresize:1,
+defer:1,
+allowTransparency:1},
+property:{$$html:1,
+$$widget:1,
+disabled:1,
+checked:1,
+readOnly:1,
+multiple:1,
+selected:1,
+value:1,
+maxLength:1,
+className:1,
+innerHTML:1,
+innerText:1,
+textContent:1,
+htmlFor:1,
+tabIndex:1},
+qxProperties:{$$widget:1,
+$$html:1},
+propertyDefault:{disabled:false,
+checked:false,
+readOnly:false,
+multiple:false,
+selected:false,
+value:"",
+className:"",
+innerHTML:"",
+innerText:"",
+textContent:"",
+htmlFor:"",
+tabIndex:0,
+maxLength:-1},
+removeableProperties:{disabled:1,
+multiple:1,
+maxLength:1},
+original:{href:1,
+src:1,
+type:1}},
+compile:function(c){var b=[],d=this.__mQlbl.runtime,a;
+for(a in c)d[a]||b.push(a,"='",c[a],"'");
+return b.join("")},
+get:function(d,a){var c=this.__mQlbl,b;
+a=c.names[a]||a;
+if(c.property[a]){b=d[a];
+if(typeof c.propertyDefault[a]!=="undefined"&&b==c.propertyDefault[a])return typeof c.bools[a]==="undefined"?null:b}else b=d.getAttribute(a);
+if(c.bools[a])return!!b;
+return b},
+set:function(d,a,b){if(typeof b==="undefined")return;
+var c=this.__mQlbl;
+a=c.names[a]||a;
+c.bools[a]&&(b=!!b);
+if(c.property[a]&&(!(d[a]===undefined)||c.qxProperties[a])){if(b==null){if(c.removeableProperties[a]){d.removeAttribute(a);
+return}typeof c.propertyDefault[a]!=="undefined"&&(b=c.propertyDefault[a])}d[a]=b}else b===true?d.setAttribute(a,a):b===false||b===null?d.removeAttribute(a):d.setAttribute(a,b)},
+reset:function(a,b){this.set(a,b,null)}}});
+
+
+// qx.bom.element.BoxSizing
+//   - Modified: 2010-11-11T16:55:27
+//   - Size: 0.73KB (0.40KB zipped => 55.27%)
+qx.Class.define("qx.bom.element.BoxSizing",{statics:{__bkeUqL:["MozBoxSizing"],
+__3tKx7:["-moz-box-sizing"],
+__bhqzo1:{tags:{button:true,
+select:true},
+types:{search:true,
+button:true,
+submit:true,
+reset:true,
+checkbox:true,
+radio:true}},
+__bRvhj7:function(a){var b=this.__bhqzo1;
+return b.tags[a.tagName.toLowerCase()]||b.types[a.type]},
+compile:function(d){var a=this.__3tKx7,c="",b,e;
+if(a)for(b=0,e=a.length;
+b<e;
+b++)c+=a[b]+":"+d+";";
+return c},
+get:function(d){var b=this.__bkeUqL,a,c,e;
+if(b)for(c=0,e=b.length;
+c<e;
+c++){a=qx.bom.element.Style.get(d,b[c],null,false);
+if(a!=null&&a!=="")return a}return""},
+set:function(c,d){var a=this.__bkeUqL,b,e;
+if(a)for(b=0,e=a.length;
+b<e;
+b++)c.style[a[b]]=d},
+reset:function(a){this.set(a,"")}}});
+
+
+// qx.bom.element.Opacity
+//   - Modified: 2010-10-15T14:16:07
+//   - Size: 0.71KB (0.30KB zipped => 42.74%)
+qx.Class.define("qx.bom.element.Opacity",{statics:{SUPPORT_CSS3_OPACITY:false,
+compile:function(a){a>=1&&(a=.999999);
+return qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?"opacity:"+a+";":"-moz-opacity:"+a+";"},
+set:function(b,a){a>=1&&(a=.999999);
+qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?b.style.opacity=a:b.style.MozOpacity=a},
+reset:function(a){qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?a.style.opacity="":a.style.MozOpacity=""},
+get:function(b,c){var a=qx.bom.element.Style.get(b,qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?"opacity":"MozOpacity",c,false);
+a==.999999&&(a=1);
+if(a!=null)return parseFloat(a);
+return 1}},
+defer:function(a){a.SUPPORT_CSS3_OPACITY=typeof document.documentElement.style.opacity=="string"}});
+
+
+// qx.bom.element.Cursor
+//   - Modified: 2010-10-15T14:15:43
+//   - Size: 0.29KB (0.18KB zipped => 61.64%)
+qx.Class.define("qx.bom.element.Cursor",{statics:{__gMIjx:{},
+compile:function(a){return"cursor:"+(this.__gMIjx[a]||a)+";"},
+get:function(a,b){return qx.bom.element.Style.get(a,"cursor",b,false)},
+set:function(b,a){b.style.cursor=this.__gMIjx[a]||a},
+reset:function(a){a.style.cursor=""}}});
+
+
+// qx.bom.element.Overflow
+//   - Modified: 2010-10-15T14:17:24
+//   - Size: 2.01KB (0.62KB zipped => 30.73%)
+qx.Class.define("qx.bom.element.Overflow",{statics:{__3wL46:null,
+getScrollbarWidth:function(){if(this.__3wL46!==null)return this.__3wL46;
+var b=qx.bom.element.Style,f=function(c,a){return parseInt(b.get(c,a))||0},d=function(a){return b.get(a,"borderRightStyle")=="none"?0:f(a,"borderRightWidth")},i=function(a){return b.get(a,"borderLeftStyle")=="none"?0:f(a,"borderLeftWidth")},g=function(a){if(a.clientWidth==0){var c=b.get(a,"overflow"),e=(c=="scroll"||c=="-moz-scrollbars-vertical"?16:0);
+return Math.max(0,d(a)+e)}return Math.max(0,(a.offsetWidth-a.clientWidth-i(a)))},h=function(a){return g(a)-d(a)},a=document.createElement("div"),c=a.style,e;
+c.height=c.width="100px";
+c.overflow="scroll";
+document.body.appendChild(a);
+e=h(a);
+this.__3wL46=e?e:16;
+document.body.removeChild(a);
+return this.__3wL46},
+_compile:qx.bom.client.Engine.VERSION<1.8?function(b,a){a=="hidden"&&(a="-moz-scrollbars-none");
+return"overflow:"+a+";"}:function(a,b){return a+":"+b+";"},
+compileX:function(a){return this._compile("overflow-x",a)},
+compileY:function(a){return this._compile("overflow-y",a)},
+getX:qx.bom.client.Engine.VERSION<1.8?function(b,c){var a=qx.bom.element.Style.get(b,"overflow",c,false);
+a==="-moz-scrollbars-none"&&(a="hidden");
+return a}:function(a,b){return qx.bom.element.Style.get(a,"overflowX",b,false)},
+setX:qx.bom.client.Engine.VERSION<1.8?function(b,a){a=="hidden"&&(a="-moz-scrollbars-none");
+b.style.overflow=a}:function(a,b){a.style.overflowX=b},
+resetX:qx.bom.client.Engine.VERSION<1.8?function(a){a.style.overflow=""}:function(a){a.style.overflowX=""},
+getY:qx.bom.client.Engine.VERSION<1.8?function(b,c){var a=qx.bom.element.Style.get(b,"overflow",c,false);
+a==="-moz-scrollbars-none"&&(a="hidden");
+return a}:function(a,b){return qx.bom.element.Style.get(a,"overflowY",b,false)},
+setY:qx.bom.client.Engine.VERSION<1.8?function(b,a){a==="hidden"&&(a="-moz-scrollbars-none");
+b.style.overflow=a}:function(a,b){a.style.overflowY=b},
+resetY:qx.bom.client.Engine.VERSION<1.8?function(a){a.style.overflow=""}:function(a){a.style.overflowY=""}}});
+
+
+// qx.core.Assert
+//   - Modified: 2010-11-11T16:55:27
+//   - Size: 6.87KB (2.00KB zipped => 29.07%)
+qx.Class.define("qx.core.Assert",{statics:{__yM80Z:true,
+__jkPsB:function(e){for(var a="",b=1,f=arguments.length,c,d;
+b<f;
+b++)a=a+this.__zpmOH(arguments[b]);
+c="Assertion error! "+e+": "+a;
+this.__yM80Z&&qx.Bootstrap.error(c);
+if(qx.Class.isDefined("qx.core.AssertionError")){d=new qx.core.AssertionError(e,a);
+this.__yM80Z&&qx.Bootstrap.error("Stack trace: \n"+d.getStackTrace());
+throw d}throw new Error(c)},
+__zpmOH:function(a){var b;
+if(a===null)b="null";
+else if(qx.lang.Type.isArray(a)&&a.length>10)b="Array["+a.length+"]";
+else if(a instanceof Object&&a.toString==null)b=qx.lang.Json.stringify(a,null,2);
+else try{b=a.toString()}catch(c){b=""}return b},
+assert:function(a,b){a==true||this.__jkPsB(b||"","Called assert with 'false'")},
+fail:function(a){this.__jkPsB(a||"","Called fail().")},
+assertTrue:function(a,b){a===true||this.__jkPsB(b||"","Called assertTrue with '",a,"'")},
+assertFalse:function(a,b){a===false||this.__jkPsB(b||"","Called assertFalse with '",a,"'")},
+assertEquals:function(b,a,c){b==a||this.__jkPsB(c||"","Expected '",b,"' but found '",a,"'!")},
+assertNotEquals:function(b,a,c){b!=a||this.__jkPsB(c||"","Expected '",b,"' to be not equal with '",a,"'!")},
+assertIdentical:function(b,a,c){b===a||this.__jkPsB(c||"","Expected '",b,"' (identical) but found '",a,"'!")},
+assertNotIdentical:function(b,a,c){b!==a||this.__jkPsB(c||"","Expected '",b,"' to be not identical with '",a,"'!")},
+assertNotUndefined:function(a,b){a!==undefined||this.__jkPsB(b||"","Expected value not to be undefined but found ",a,"!")},
+assertUndefined:function(a,b){a===undefined||this.__jkPsB(b||"","Expected value to be undefined but found ",a,"!")},
+assertNotNull:function(a,b){a!==null||this.__jkPsB(b||"","Expected value not to be null but found ",a,"!")},
+assertNull:function(a,b){a===null||this.__jkPsB(b||"","Expected value to be null but found ",a,"!")},
+assertJsonEquals:function(c,b,a){this.assertEquals(qx.lang.Json.stringify(c),qx.lang.Json.stringify(b),a)},
+assertMatch:function(b,a,c){this.assertString(b);
+this.assert(qx.lang.Type.isRegExp(a)||qx.lang.Type.isString(a),"The parameter 're' must be a string or a regular expression.");
+b.search(a)>=0||this.__jkPsB(c||"","The String '",b,"' does not match the regular expression '",a.toString(),"'!")},
+assertArgumentsCount:function(d,c,a,e){var b=d.length;
+b>=c&&b<=a||this.__jkPsB(e||"","Wrong number of arguments given. Expected '",c,"' to '",a,"' arguments but found '",arguments.length,"' arguments.")},
+assertEventFired:function(a,b,f,c,h){var d=false,i=function(b){c&&c.call(a,b);
+d=true},e;
+try{e=a.addListener(b,i,a);
+f.call()}catch(g){throw g}finally{try{a.removeListenerById(e)}catch(g){}}d===true||this.__jkPsB(h||"","Event (",b,") not fired.")},
+assertEventNotFired:function(a,c,e,f){var b=false,g=function(){b=true},d=a.addListener(c,g,a);
+e.call();
+b===false||this.__jkPsB(f||"","Event (",c,") was fired.");
+a.removeListenerById(d)},
+assertException:function(f,c,d,b){var c=c||Error,a;
+try{this.__yM80Z=false;
+f()}catch(e){a=e}finally{this.__yM80Z=true}a==null&&this.__jkPsB(b||"","The function did not raise an exception!");
+a instanceof c||this.__jkPsB(b||"","The raised exception does not have the expected type! ",c," != ",a);
+d&&this.assertMatch(a.toString(),d,b)},
+assertInArray:function(a,b,c){b.indexOf(a)!==-1||this.__jkPsB(c||"","The value '",a,"' must have any of the values defined in the array '",b,"'")},
+assertArrayEquals:function(c,d,a){this.assertArray(c,a);
+this.assertArray(d,a);
+this.assertEquals(c.length,d.length,a);
+for(var b=0;
+b<c.length;
+b++)this.assertIdentical(c[b],d[b],a)},
+assertKeyInMap:function(a,b,c){b[a]!==undefined||this.__jkPsB(c||"","The value '",a,"' must must be a key of the map '",b,"'")},
+assertFunction:function(a,b){qx.lang.Type.isFunction(a)||this.__jkPsB(b||"","Expected value to be typeof function but found ",a,"!")},
+assertString:function(a,b){qx.lang.Type.isString(a)||this.__jkPsB(b||"","Expected value to be a string but found ",a,"!")},
+assertBoolean:function(a,b){qx.lang.Type.isBoolean(a)||this.__jkPsB(b||"","Expected value to be a boolean but found ",a,"!")},
+assertNumber:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)||this.__jkPsB(b||"","Expected value to be a number but found ",a,"!")},
+assertPositiveNumber:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)&&a>=0||this.__jkPsB(b||"","Expected value to be a number >= 0 but found ",a,"!")},
+assertInteger:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)&&a%1===0||this.__jkPsB(b||"","Expected value to be an integer but found ",a,"!")},
+assertPositiveInteger:function(a,c){var b=(qx.lang.Type.isNumber(a)&&isFinite(a)&&a%1===0&&a>=0);
+b||this.__jkPsB(c||"","Expected value to be an integer >= 0 but found ",a,"!")},
+assertInRange:function(a,b,c,d){a>=b&&a<=c||this.__jkPsB(d||"",qx.lang.String.format("Expected value '%1' to be in the range '%2'..'%3'!",[a,b,c]))},
+assertObject:function(a,c){var b=a!==null&&(qx.lang.Type.isObject(a)||typeof a==="object");
+b||this.__jkPsB(c||"","Expected value to be typeof object but found ",(a),"!")},
+assertArray:function(a,b){qx.lang.Type.isArray(a)||this.__jkPsB(b||"","Expected value to be an array but found ",a,"!")},
+assertMap:function(a,b){qx.lang.Type.isObject(a)||this.__jkPsB(b||"","Expected value to be a map but found ",a,"!")},
+assertRegExp:function(a,b){qx.lang.Type.isRegExp(a)||this.__jkPsB(b||"","Expected value to be a regular expression but found ",a,"!")},
+assertType:function(b,a,c){this.assertString(a,"Invalid argument 'type'");
+typeof b===a||this.__jkPsB(c||"","Expected value to be typeof '",a,"' but found ",b,"!")},
+assertInstance:function(b,a,d){var c=a.classname||a+"";
+b instanceof a||this.__jkPsB(d||"","Expected value to be instanceof '",c,"' but found ",b,"!")},
+assertInterface:function(a,b,c){qx.Class.implementsInterface(a,b)||this.__jkPsB(c||"","Expected object '",a,"' to implement the interface '",b,"'!")},
+assertCssColor:function(e,c,f){var d=qx.Class.getByName("qx.util.ColorUtil"),a,b,g;
+if(!d)throw new Error("qx.util.ColorUtil not available! Your code must have a dependency on 'qx.util.ColorUtil'");
+a=d.stringToRgb(e);
+try{b=d.stringToRgb(c)}catch(h){this.__jkPsB(f||"","Expected value to be the CSS color '",e,"' (rgb(",a.join(","),")), but found value '",c,"', which cannot be converted to a CSS color!")}g=a[0]==b[0]&&a[1]==b[1]&&a[2]==b[2];
+g||this.__jkPsB(f||"","Expected value to be the CSS color '",a,"' (rgb(",a.join(","),")), but found value '",c,"' (rgb(",b.join(","),"))!")},
+assertElement:function(a,b){!!(a&&a.nodeType===1)||this.__jkPsB(b||"","Expected value to be a DOM element but found  '",a,"'!")},
+assertQxObject:function(a,b){this.__VkBFl(a,"qx.core.Object")||this.__jkPsB(b||"","Expected value to be a qooxdoo object but found ",a,"!")},
+assertQxWidget:function(a,b){this.__VkBFl(a,"qx.ui.core.Widget")||this.__jkPsB(b||"","Expected value to be a qooxdoo widget but found ",a,"!")},
+__VkBFl:function(b,c){if(!b)return false;
+var a=b.constructor;
+while(a){if(a.classname===c)return true;
+a=a.superclass}return false}}});
+
+
+// qx.lang.Array
+//   - Modified: 2010-11-03T14:43:37
+//   - Size: 2.54KB (0.92KB zipped => 36.07%)
+qx.Class.define("qx.lang.Array",{statics:{toArray:function(b,a){return this.cast(b,Array,a)},
+cast:function(b,d,c){if(b.constructor===d)return b;
+var a=new d;
+Object.prototype.toString.call(b)==="[object Array]"&&c==null?a.push.apply(a,b):a.push.apply(a,Array.prototype.slice.call(b,c||0));
+return a},
+fromArguments:function(b,a){return Array.prototype.slice.call(b,a||0)},
+fromCollection:function(a){return Array.prototype.slice.call(a,0)},
+clone:function(a){return a.concat()},
+insertAt:function(a,b,c){a.splice(c,0,b);
+return a},
+insertBefore:function(a,b,d){var c=a.indexOf(d);
+c==-1?a.push(b):a.splice(c,0,b);
+return a},
+insertAfter:function(a,c,d){var b=a.indexOf(d);
+b==-1||b==a.length-1?a.push(c):a.splice(b+1,0,c);
+return a},
+removeAt:function(a,b){return a.splice(b,1)[0]},
+removeAll:function(a){a.length=0;
+return this},
+append:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
+Array.prototype.push.apply(a,b);
+return a},
+exclude:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
+for(var d=0,e=b.length,c;
+d<e;
+d++)c=a.indexOf(b[d]),c!=-1&&a.splice(c,1);
+return a},
+remove:function(b,a){var c=b.indexOf(a);
+if(c!=-1){b.splice(c,1);
+return a}},
+contains:function(b,a){return b.indexOf(a)!==-1},
+equals:function(b,c){var d=b.length,a;
+if(d!==c.length)return false;
+for(a=0;
+a<d;
+a++)if(b[a]!==c[a])return false;
+return true},
+sum:function(c){for(var b=0,a=0,d=c.length;
+a<d;
+a++)b+=c[a];
+return b},
+max:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
+var b,d=a.length,c=a[0];
+for(b=1;
+b<d;
+b++)a[b]>c&&(c=a[b]);
+return c===undefined?null:c},
+min:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
+var b,d=a.length,c=a[0];
+for(b=1;
+b<d;
+b++)a[b]<c&&(c=a[b]);
+return c===undefined?null:c},
+unique:function(k){for(var c=[],l={},i={},e={},a,n=0,d="qx"+qx.lang.Date.now(),j=false,h=false,g=false,f=0,m=k.length,b;
+f<m;
+f++)a=k[f],a===null?j||(j=true,c.push(a)):a===undefined||(a===false?h||(h=true,c.push(a)):a===true?g||(g=true,c.push(a)):typeof a==="string"?l[a]||(l[a]=1,c.push(a)):typeof a==="number"?i[a]||(i[a]=1,c.push(a)):(b=a[d],b==null&&(b=a[d]=n++),e[b]||(e[b]=a,c.push(a))));
+for(b in e)try{delete e[b][d]}catch(o){try{e[b][d]=null}catch(o){throw new Error("Cannot clean-up map entry doneObjects["+b+"]["+d+"]")}}return c}}});
+
+
+// qx.lang.Function
+//   - Modified: 2010-11-11T16:55:28
+//   - Size: 2.49KB (0.84KB zipped => 33.78%)
+qx.Class.define("qx.lang.Function",{statics:{getCaller:function(a){return a.caller?a.caller.callee:a.callee.caller},
+getName:function(a){if(a.displayName)return a.displayName;
+if(a.$$original||a.wrapper||a.classname)return a.classname+".constructor()";
+if(a.$$mixin){for(b in a.$$mixin.$$members)if(a.$$mixin.$$members[b]==a)return a.$$mixin.name+".prototype."+b+"()";
+for(b in a.$$mixin)if(a.$$mixin[b]==a)return a.$$mixin.name+"."+b+"()"}if(a.self){var c=a.self.constructor,b,d;
+if(c){for(b in c.prototype)if(c.prototype[b]==a)return c.classname+".prototype."+b+"()";
+for(b in c)if(c[b]==a)return c.classname+"."+b+"()"}}d=a.toString().match(/function\s*(\w*)\s*\(.*/);
+if(d&&d.length>=1&&d[1])return d[1]+"()";
+return"anonymous()"},
+globalEval:function(a){return window.execScript?window.execScript(a):eval.call(window,a)},
+empty:function(){},
+returnTrue:function(){return true},
+returnFalse:function(){return false},
+returnNull:function(){return null},
+returnThis:function(){return this},
+returnZero:function(){return 0},
+create:function(b,a){qx.core.Assert&&qx.core.Assert.assertFunction(b,"Invalid parameter 'func'.");
+if(!a)return b;
+if(!(a.self||a.args||a.delay!=null||a.periodical!=null||a.attempt))return b;
+return function(){var c=qx.lang.Array.fromArguments(arguments),e,d;
+a.args&&(c=a.args.concat(c));
+if(a.delay||a.periodical){e=qx.event.GlobalError.observeMethod(function(){return b.apply(a.self||this,c)});
+if(a.delay)return window.setTimeout(e,a.delay);
+if(a.periodical)return window.setInterval(e,a.periodical)}else{if(a.attempt){d=false;
+try{d=b.apply(a.self||this,c)}catch(f){}return d}return b.apply(a.self||this,c)}}},
+bind:function(a,b){return this.create(a,{self:b,
+args:arguments.length>2?qx.lang.Array.fromArguments(arguments,2):null})},
+curry:function(a){return this.create(a,{args:arguments.length>1?qx.lang.Array.fromArguments(arguments,1):null})},
+listener:function(a,b){if(arguments.length<3)return function(c){return a.call(b||this,c||window.event)};
+var c=qx.lang.Array.fromArguments(arguments,2);
+return function(e){var d=[e||window.event];
+d.push.apply(d,c);
+a.apply(b||this,d)}},
+attempt:function(a,b){return this.create(a,{self:b,
+attempt:true,
+args:arguments.length>2?qx.lang.Array.fromArguments(arguments,2):null})()},
+delay:function(a,c,b){return this.create(a,{delay:c,
+self:b,
+args:arguments.length>3?qx.lang.Array.fromArguments(arguments,3):null})()},
+periodical:function(a,b,c){return this.create(a,{periodical:b,
+self:c,
+args:arguments.length>3?qx.lang.Array.fromArguments(arguments,3):null})()}}});
+
+
+// qx.lang.JsonImpl
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 3.49KB (1.40KB zipped => 40.09%)
+qx.Class.define("qx.lang.JsonImpl",{extend:Object,
+construct:function(){this.stringify=qx.lang.Function.bind(this.stringify,this);
+this.parse=qx.lang.Function.bind(this.parse,this)},
+members:{__gHLqR:null,
+__qmoZp:null,
+__gS2rq:null,
+__mVh3F:null,
+stringify:function(d,b,a){this.__gHLqR="";
+this.__qmoZp="";
+this.__mVh3F=[];
+if(qx.lang.Type.isNumber(a))for(var a=Math.min(10,Math.floor(a)),c=0;
+c<a;
+c+=1)this.__qmoZp+=" ";
+else qx.lang.Type.isString(a)&&(a.length>10&&(a=a.slice(0,10)),this.__qmoZp=a);
+this.__gS2rq=b&&(qx.lang.Type.isFunction(b)||qx.lang.Type.isArray(b))?b:null;
+return this.__g2E9Q("",{"":d})},
+__g2E9Q:function(h,i){var g=this.__gHLqR,b,a=i[h],j,d,e,c,f;
+a&&qx.lang.Type.isFunction(a.toJSON)?a=a.toJSON(h):qx.lang.Type.isDate(a)&&(a=this.dateToJSON(a));
+typeof this.__gS2rq==="function"&&(a=this.__gS2rq.call(i,h,a));
+if(a===null)return"null";
+if(a===undefined)return undefined;
+switch(qx.lang.Type.getClass(a)){case"String":return this.__ncTb7(a);
+case"Number":return isFinite(a)?String(a):"null";
+case"Boolean":return String(a);
+case"Array":this.__gHLqR+=this.__qmoZp;
+b=[];
+if(this.__mVh3F.indexOf(a)!==-1)throw new TypeError("Cannot stringify a recursive object.");
+this.__mVh3F.push(a);
+j=a.length,d=0;
+for(;
+d<j;
+d+=1)b[d]=this.__g2E9Q(d,a)||"null";
+this.__mVh3F.pop();
+e=b.length===0?"[]":this.__gHLqR?"[\n"+this.__gHLqR+b.join(",\n"+this.__gHLqR)+"\n"+g+"]":"["+b.join(",")+"]";
+this.__gHLqR=g;
+return e;
+case"Object":this.__gHLqR+=this.__qmoZp;
+b=[];
+if(this.__mVh3F.indexOf(a)!==-1)throw new TypeError("Cannot stringify a recursive object.");
+this.__mVh3F.push(a);
+if(this.__gS2rq&&typeof this.__gS2rq==="object"){j=this.__gS2rq.length,d=0;
+for(;
+d<j;
+d+=1)c=this.__gS2rq[d],typeof c==="string"&&(f=this.__g2E9Q(c,a),f&&b.push(this.__ncTb7(c)+(this.__gHLqR?": ":":")+f))}else for(c in a)Object.hasOwnProperty.call(a,c)&&(f=this.__g2E9Q(c,a),f&&b.push(this.__ncTb7(c)+(this.__gHLqR?": ":":")+f));
+this.__mVh3F.pop();
+e=b.length===0?"{}":this.__gHLqR?"{\n"+this.__gHLqR+b.join(",\n"+this.__gHLqR)+"\n"+g+"}":"{"+b.join(",")+"}";
+this.__gHLqR=g;
+return e}},
+dateToJSON:function(a){var b=function(a){return a<10?"0"+a:a},c=function(a){var c=b(a);
+return a<100?"0"+c:c};
+return isFinite(a.valueOf())?a.getUTCFullYear()+"-"+b(a.getUTCMonth()+1)+"-"+b(a.getUTCDate())+"T"+b(a.getUTCHours())+":"+b(a.getUTCMinutes())+":"+b(a.getUTCSeconds())+"."+c(a.getUTCMilliseconds())+"Z":null},
+__ncTb7:function(b){var c={"\b":"\\b",
+"\t":"\\t",
+"\n":"\\n",
+"\f":"\\f",
+"\r":"\\r",
+"\"":"\\\"",
+"\\":"\\\\"},a=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+a.lastIndex=0;
+return a.test(b)?"\""+b.replace(a,function(b){var a=c[b];
+return typeof a==="string"?a:"\\u"+("0000"+b.charCodeAt(0).toString(16)).slice(-4)})+"\"":"\""+b+"\""},
+parse:function(a,d){var b=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,c;
+b.lastIndex=0;
+b.test(a)&&(a=a.replace(b,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)}));
+if(/^[\],:{}\s]*$/.test(a.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:\s*\[)+/g,""))){c=eval("("+a+")");
+return typeof d==="function"?this.__jET2g({"":c},"",d):c}throw new SyntaxError("JSON.parse")},
+__jET2g:function(c,e,f){var a=c[e],b,d;
+if(a&&typeof a==="object")for(b in a)Object.hasOwnProperty.call(a,b)&&(d=this.__jET2g(a,b,f),d!==undefined?a[b]=d:delete a[b]);
+return f.call(c,e,a)}}});
+
+
+// qx.lang.Json
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.25KB (0.18KB zipped => 70.16%)
+qx.Class.define("qx.lang.Json",{statics:{JSON:qx.lang.Type.getClass(window.JSON)=="JSON"&&JSON.parse("{\"x\":1}").x===1?window.JSON:new qx.lang.JsonImpl(),
+stringify:null,
+parse:null},
+defer:function(a){a.stringify=a.JSON.stringify;
+a.parse=a.JSON.parse}});
+
+
+// qx.lang.String
+//   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.48KB (0.65KB zipped => 43.52%)
+qx.Class.define("qx.lang.String",{statics:{camelCase:function(a){return a.replace(/\-([a-z])/g,function(b,a){return a.toUpperCase()})},
+hyphenate:function(a){return a.replace(/[A-Z]/g,function(a){return"-"+a.charAt(0).toLowerCase()})},
+capitalize:function(a){return a.replace(/\b[a-z]/g,function(a){return a.toUpperCase()})},
+clean:function(a){return this.trim(a.replace(/\s+/g," "))},
+trimLeft:function(a){return a.trimLeft?a.trimLeft():a.replace(/^\s+/,"")},
+trimRight:function(a){return a.trimRight?a.trimRight():a.replace(/\s+$/,"")},
+trim:function(a){return a.trim?a.trim():a.replace(/^\s+|\s+$/g,"")},
+startsWith:function(a,b){return a.indexOf(b)===0},
+endsWith:function(a,b){return a.substring(a.length-b.length,a.length)===b},
+repeat:function(a,b){return a.length>0?new Array(b+1).join(a):""},
+pad:function(a,d,b){var c=d-a.length;
+if(c>0){typeof b==="undefined"&&(b="0");
+return this.repeat(b,c)+a}return a},
+firstUp:qx.Bootstrap.firstUp,
+firstLow:qx.Bootstrap.firstLow,
+contains:function(a,b){return a.indexOf(b)!=-1},
+format:function(d,c){for(var b=d,a=0;
+a<c.length;
+a++)b=b.replace(new RegExp("%"+(a+1),"g"),c[a]+"");
+return b},
+escapeRegexpChars:function(a){return a.replace(/([.*+?^${}()|[\]\/\\])/g,"\\$1")},
+toArray:function(a){return a.split(/\B|\b/g)},
+stripTags:function(a){return a.replace(/<\/?[^>]+>/gi,"")},
+stripScripts:function(c,b){var a="",d=c.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi,function(){a+=arguments[1]+"\n";
+return""});
+b===true&&qx.lang.Function.globalEval(a);
+return d}}});
+
+
+// qx.dev.StackTrace
+//   - Modified: 2010-11-10T13:22:29
+//   - Size: 1.10KB (0.63KB zipped => 57.62%)
+qx.Class.define("qx.dev.StackTrace",{statics:{getStackTrace:function(){try{throw new Error()}catch(n){var a=this.getStackTraceFromError(n),c,j,b,i,e,l,k,o,f,g,m,h,d;
+qx.lang.Array.removeAt(a,0);
+c=this.getStackTraceFromCaller(arguments),j=c.length>a.length?c:a,b=0;
+for(;
+b<Math.min(c.length,a.length);
+b++){i=c[b];
+if(i.indexOf("anonymous")>=0)continue;
+e=i.split(":");
+if(e.length!=2)continue;
+l=e[0],k=e[1],o=a[b],f=o.split(":"),g=f[0],m=f[1];
+h=qx.Class.getByName(g)?g:l;
+d=h+":";
+k&&(d+=k+":");
+d+=m;
+j[b]=d}return j}},
+getStackTraceFromCaller:function(e){var b=[],a=qx.lang.Function.getCaller(e),d={},f,c;
+while(a){f=qx.lang.Function.getName(a);
+b.push(f);
+try{a=a.caller}catch(g){break}if(!a)break;
+c=qx.core.ObjectRegistry.toHashCode(a);
+if(d[c]){b.push("...");
+break}d[c]=a}return b},
+getStackTraceFromError:function(b){if(!b.stack)return[];
+var f=/@(.+):(\d+)$/gm,a,c=[],e,d,g;
+while((a=f.exec(b.stack))!=null)e=a[1],d=a[2],g=this.__bMVLSw(e),c.push(g+":"+d);
+return c},
+__bMVLSw:function(a){var b="/source/class/",c=a.indexOf(b),d=c==-1?a:a.substring(c+b.length).replace(/\//g,".").replace(/\.js$/,"");
+return d}}});
+
+
+// qx.core.AssertionError
+//   - Modified: 2010-08-30T22:23:15
+//   - Size: 0.24KB (0.17KB zipped => 69.35%)
+qx.Class.define("qx.core.AssertionError",{extend:qx.type.BaseError,
+construct:function(b,a){qx.type.BaseError.call(this,b,a);
+this.__mSOCg=qx.dev.StackTrace.getStackTrace()},
+members:{__mSOCg:null,
+getStackTrace:function(){return this.__mSOCg}}});
+
+
+// qx.bom.element.Style
+//   - Modified: 2010-11-11T16:55:27
+//   - Size: 3.29KB (1.22KB zipped => 36.90%)
+qx.Class.define("qx.bom.element.Style",{statics:{__cnanzb:function(){for(var i=["appearance","userSelect","textOverflow","borderImage","transition","transform"],c={},h=document.documentElement.style,f=["Moz","Webkit","Khtml","O","Ms"],e=0,k=i.length,a,b,d,j,g;
+e<k;
+e++){a=i[e],b=a;
+if(h[a]){c[b]=a;
+continue}a=qx.lang.String.firstUp(a);
+for(d=0,j=f.length;
+d<j;
+d++){g=f[d]+a;
+if(typeof h[g]=="string"){c[b]=g;
+break}}}this.__KhlJ2=c;
+this.__KhlJ2["userModify"]="MozUserModify";
+this.__yFaAO={};
+for(b in c)this.__yFaAO[b]=this.__EHYhZ(c[b]);
+this.__KhlJ2["float"]="cssFloat"},
+__Qi3eI:{width:"pixelWidth",
+height:"pixelHeight",
+left:"pixelLeft",
+right:"pixelRight",
+top:"pixelTop",
+bottom:"pixelBottom"},
+__uEji8:{cursor:qx.bom.element.Cursor,
+opacity:qx.bom.element.Opacity,
+boxSizing:qx.bom.element.BoxSizing,
+overflowX:{set:qx.lang.Function.bind(qx.bom.element.Overflow.setX,qx.bom.element.Overflow),
+get:qx.lang.Function.bind(qx.bom.element.Overflow.getX,qx.bom.element.Overflow),
+reset:qx.lang.Function.bind(qx.bom.element.Overflow.resetX,qx.bom.element.Overflow),
+compile:qx.lang.Function.bind(qx.bom.element.Overflow.compileX,qx.bom.element.Overflow)},
+overflowY:{set:qx.lang.Function.bind(qx.bom.element.Overflow.setY,qx.bom.element.Overflow),
+get:qx.lang.Function.bind(qx.bom.element.Overflow.getY,qx.bom.element.Overflow),
+reset:qx.lang.Function.bind(qx.bom.element.Overflow.resetY,qx.bom.element.Overflow),
+compile:qx.lang.Function.bind(qx.bom.element.Overflow.compileY,qx.bom.element.Overflow)}},
+compile:function(e){var c=[],d=this.__uEji8,f=this.__yFaAO,a,b;
+for(a in e){b=e[a];
+if(b==null)continue;
+a=f[a]||a;
+d[a]?c.push(d[a].compile(b)):c.push(this.__EHYhZ(a),":",b,";")}return c.join("")},
+__uYnSY:{},
+__EHYhZ:function(b){var c=this.__uYnSY,a=c[b];
+a||(a=c[b]=qx.lang.String.hyphenate(b));
+return a},
+setCss:function(a,b){a.setAttribute("style",b)},
+getCss:function(a){return a.getAttribute("style")},
+isPropertySupported:function(a){return this.__uEji8[a]||this.__KhlJ2[a]||a in document.documentElement.style},
+COMPUTED_MODE:1,
+CASCADED_MODE:2,
+LOCAL_MODE:3,
+set:function(b,a,d,c){qx.core.Assert.assertElement(b,"Invalid argument 'element'"),qx.core.Assert.assertString(a,"Invalid argument 'name'"),c!==undefined&&qx.core.Assert.assertBoolean(c,"Invalid argument 'smart'");
+a=this.__KhlJ2[a]||a;
+if(c!==false&&this.__uEji8[a])return this.__uEji8[a].set(b,d);
+b.style[a]=d!==null?d:""},
+setStyles:function(e,g,b){qx.core.Assert.assertElement(e,"Invalid argument 'element'"),qx.core.Assert.assertMap(g,"Invalid argument 'styles'"),b!==undefined&&qx.core.Assert.assertBoolean(b,"Invalid argument 'smart'");
+var i=this.__KhlJ2,d=this.__uEji8,h=e.style,c,f,a;
+for(c in g)f=g[c],a=i[c]||c,f===undefined?b!==false&&d[a]?d[a].reset(e):h[a]="":b!==false&&d[a]?d[a].set(e,f):h[a]=f!==null?f:""},
+reset:function(b,a,c){a=this.__KhlJ2[a]||a;
+if(c!==false&&this.__uEji8[a])return this.__uEji8[a].reset(b);
+b.style[a]=""},
+get:function(b,a,c,e){a=this.__KhlJ2[a]||a;
+if(e!==false&&this.__uEji8[a])return this.__uEji8[a].get(b,c);
+switch(c){case this.LOCAL_MODE:return b.style[a]||"";
+case this.CASCADED_MODE:if(b.currentStyle)return b.currentStyle[a]||"";
+throw new Error("Cascaded styles are not supported in this browser!");
+default:var f=qx.dom.Node.getDocument(b),d=f.defaultView.getComputedStyle(b,null);
+return d?d[a]:""}}},
+defer:function(a){a.__cnanzb()}});
+
+
+// qx.bom.Selector
+//   - Modified: 2010-08-26T21:43:53
+//   - Size: 12.81KB (4.76KB zipped => 37.15%)
 qx.Class.define("qx.bom.Selector",{statics:{query:null,
 matches:null}});
 (function(){var g=/((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^\[\]]*\]|['"][^'"]*['"]|[^\[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g,h=0,j=Object.prototype.toString,c=false,k=true,b,a,o,p,d,f,e,l,n;
@@ -1750,692 +2414,30 @@ n.query=function(a,c){return b(a,c)};
 n.matches=function(a,c){return b(a,null,null,c)}})();
 
 
-// qx.lang.RingBuffer
-//   - Size: 1181 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.lang.RingBuffer",{extend:Object,
-construct:function(a){this.setMaxEntries(a||50)},
-members:{__bHMv5N:0,
-__3Ng1e:0,
-__UksBG:false,
-__cofKxn:0,
-__uPjgP:null,
-__Jk3m7:null,
-setMaxEntries:function(a){this.__Jk3m7=a;
-this.clear()},
-getMaxEntries:function(){return this.__Jk3m7},
-addEntry:function(b){this.__uPjgP[this.__bHMv5N]=b;
-this.__bHMv5N=this.__HDJCN(this.__bHMv5N,1);
-var a=this.getMaxEntries();
-this.__3Ng1e<a&&this.__3Ng1e++;
-this.__UksBG&&this.__cofKxn<a&&this.__cofKxn++},
-mark:function(){this.__UksBG=true;
-this.__cofKxn=0},
-clearMark:function(){this.__UksBG=false},
-getAllEntries:function(){return this.getEntries(this.getMaxEntries(),false)},
-getEntries:function(a,e){a>this.__3Ng1e&&(a=this.__3Ng1e);
-e&&this.__UksBG&&a>this.__cofKxn&&(a=this.__cofKxn);
-if(a>0){var c=this.__HDJCN(this.__bHMv5N,-1),d=this.__HDJCN(c,-a+1),b;
-b=d<=c?this.__uPjgP.slice(d,c+1):this.__uPjgP.slice(d,this.__3Ng1e).concat(this.__uPjgP.slice(0,c+1))}else b=[];
-return b},
-clear:function(){this.__uPjgP=new Array(this.getMaxEntries());
-this.__3Ng1e=0;
-this.__cofKxn=0;
-this.__bHMv5N=0},
-__HDJCN:function(c,d){var b=this.getMaxEntries(),a=(c+d)%b;
-a<0&&(a+=b);
-return a}}});
-
-
-// qx.bom.Viewport
-//   - Size: 698 bytes
-//   - Modified: 2010-09-18T15:10:19
-qx.Class.define("qx.bom.Viewport",{statics:{getWidth:function(b){var a=(b||window).document;
-return qx.bom.Document.isStandardMode(b)?a.documentElement.clientWidth:a.body.clientWidth},
-getHeight:function(b){var a=(b||window).document;
-return qx.bom.Document.isStandardMode(b)?a.documentElement.clientHeight:a.body.clientHeight},
-getScrollLeft:function(a){return(a||window).pageXOffset},
-getScrollTop:function(a){return(a||window).pageYOffset},
-getOrientation:function(b){var a=(b||window).orientation;
-a==null&&(a=this.getWidth(b)>this.getHeight(b)?90:0);
-return a},
-isLandscape:function(a){return Math.abs(this.getOrientation(a))==90},
-isPortrait:function(a){return this.getOrientation(a)==0}}});
-
-
-// qx.bom.Document
-//   - Size: 540 bytes
-//   - Modified: 2010-07-17T16:42:24
-qx.Class.define("qx.bom.Document",{statics:{isQuirksMode:function(a){return(a||window).document.compatMode!=="CSS1Compat"},
-isStandardMode:function(a){return!this.isQuirksMode(a)},
-getWidth:function(a){var b=(a||window).document,d=qx.bom.Viewport.getWidth(a),c=this.isStandardMode(a)?b.documentElement.scrollWidth:b.body.scrollWidth;
-return Math.max(c,d)},
-getHeight:function(a){var b=(a||window).document,d=qx.bom.Viewport.getHeight(a),c=this.isStandardMode(a)?b.documentElement.scrollHeight:b.body.scrollHeight;
-return Math.max(c,d)}}});
-
-
-// qx.bom.client.Platform
-//   - Size: 691 bytes
-//   - Modified: 2010-06-18T23:08:09
-qx.Class.define("qx.bom.client.Platform",{statics:{NAME:"",
-WIN:false,
-MAC:false,
-UNIX:false,
-UNKNOWN_PLATFORM:false,
-__jA3lT:function(){var a=navigator.platform;
-(a==null||a==="")&&(a=navigator.userAgent);
-a.indexOf("Windows")!=-1||a.indexOf("Win32")!=-1||a.indexOf("Win64")!=-1?(this.WIN=true,this.NAME="win"):a.indexOf("Macintosh")!=-1||a.indexOf("MacPPC")!=-1||a.indexOf("MacIntel")!=-1||a.indexOf("iPod")!=-1||a.indexOf("iPhone")!=-1||a.indexOf("iPad")!=-1?(this.MAC=true,this.NAME="mac"):a.indexOf("X11")!=-1||a.indexOf("Linux")!=-1||a.indexOf("BSD")!=-1?(this.UNIX=true,this.NAME="unix"):(this.UNKNOWN_PLATFORM=true,this.WIN=true,this.NAME="win")}},
-defer:function(a){a.__jA3lT()}});
-
-
-// qx.bom.element.Attribute
-//   - Size: 1979 bytes
+// qx.bom.Event
 //   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.bom.element.Attribute",{statics:{__mQlbl:{names:{"class":"className",
-"for":"htmlFor",
-html:"innerHTML",
-text:"textContent",
-colspan:"colSpan",
-rowspan:"rowSpan",
-valign:"vAlign",
-datetime:"dateTime",
-accesskey:"accessKey",
-tabindex:"tabIndex",
-maxlength:"maxLength",
-readonly:"readOnly",
-longdesc:"longDesc",
-cellpadding:"cellPadding",
-cellspacing:"cellSpacing",
-frameborder:"frameBorder",
-usemap:"useMap"},
-runtime:{html:1,
-text:1},
-bools:{compact:1,
-nowrap:1,
-ismap:1,
-declare:1,
-noshade:1,
-checked:1,
-disabled:1,
-readOnly:1,
-multiple:1,
-selected:1,
-noresize:1,
-defer:1,
-allowTransparency:1},
-property:{$$html:1,
-$$widget:1,
-disabled:1,
-checked:1,
-readOnly:1,
-multiple:1,
-selected:1,
-value:1,
-maxLength:1,
-className:1,
-innerHTML:1,
-innerText:1,
-textContent:1,
-htmlFor:1,
-tabIndex:1},
-qxProperties:{$$widget:1,
-$$html:1},
-propertyDefault:{disabled:false,
-checked:false,
-readOnly:false,
-multiple:false,
-selected:false,
-value:"",
-className:"",
-innerHTML:"",
-innerText:"",
-textContent:"",
-htmlFor:"",
-tabIndex:0,
-maxLength:-1},
-removeableProperties:{disabled:1,
-multiple:1,
-maxLength:1},
-original:{href:1,
-src:1,
-type:1}},
-compile:function(c){var b=[],d=this.__mQlbl.runtime,a;
-for(a in c)d[a]||b.push(a,"='",c[a],"'");
-return b.join("")},
-get:function(d,a){var c=this.__mQlbl,b;
-a=c.names[a]||a;
-if(c.property[a]){b=d[a];
-if(typeof c.propertyDefault[a]!=="undefined"&&b==c.propertyDefault[a])return typeof c.bools[a]==="undefined"?null:b}else b=d.getAttribute(a);
-if(c.bools[a])return!!b;
-return b},
-set:function(d,a,b){if(typeof b==="undefined")return;
-var c=this.__mQlbl;
-a=c.names[a]||a;
-c.bools[a]&&(b=!!b);
-if(c.property[a]&&(!(d[a]===undefined)||c.qxProperties[a])){if(b==null){if(c.removeableProperties[a]){d.removeAttribute(a);
-return}typeof c.propertyDefault[a]!=="undefined"&&(b=c.propertyDefault[a])}d[a]=b}else b===true?d.setAttribute(a,a):b===false||b===null?d.removeAttribute(a):d.setAttribute(a,b)},
-reset:function(a,b){this.set(a,b,null)}}});
-
-
-// qx.bom.element.BoxSizing
-//   - Size: 749 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.bom.element.BoxSizing",{statics:{__bkeUqL:["MozBoxSizing"],
-__3tKx7:["-moz-box-sizing"],
-__bhqzo1:{tags:{button:true,
-select:true},
-types:{search:true,
-button:true,
-submit:true,
-reset:true,
-checkbox:true,
-radio:true}},
-__bRvhj7:function(a){var b=this.__bhqzo1;
-return b.tags[a.tagName.toLowerCase()]||b.types[a.type]},
-compile:function(d){var a=this.__3tKx7,c="",b,e;
-if(a)for(b=0,e=a.length;
-b<e;
-b++)c+=a[b]+":"+d+";";
-return c},
-get:function(d){var b=this.__bkeUqL,a,c,e;
-if(b)for(c=0,e=b.length;
-c<e;
-c++){a=qx.bom.element.Style.get(d,b[c],null,false);
-if(a!=null&&a!=="")return a}return""},
-set:function(c,d){var a=this.__bkeUqL,b,e;
-if(a)for(b=0,e=a.length;
-b<e;
-b++)c.style[a[b]]=d},
-reset:function(a){this.set(a,"")}}});
-
-
-// qx.bom.element.Cursor
-//   - Size: 292 bytes
-//   - Modified: 2010-10-15T14:15:43
-qx.Class.define("qx.bom.element.Cursor",{statics:{__gMIjx:{},
-compile:function(a){return"cursor:"+(this.__gMIjx[a]||a)+";"},
-get:function(a,b){return qx.bom.element.Style.get(a,"cursor",b,false)},
-set:function(b,a){b.style.cursor=this.__gMIjx[a]||a},
-reset:function(a){a.style.cursor=""}}});
-
-
-// qx.bom.element.Opacity
-//   - Size: 730 bytes
-//   - Modified: 2010-10-15T14:16:07
-qx.Class.define("qx.bom.element.Opacity",{statics:{SUPPORT_CSS3_OPACITY:false,
-compile:function(a){a>=1&&(a=.999999);
-return qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?"opacity:"+a+";":"-moz-opacity:"+a+";"},
-set:function(b,a){a>=1&&(a=.999999);
-qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?b.style.opacity=a:b.style.MozOpacity=a},
-reset:function(a){qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?a.style.opacity="":a.style.MozOpacity=""},
-get:function(b,c){var a=qx.bom.element.Style.get(b,qx.bom.element.Opacity.SUPPORT_CSS3_OPACITY?"opacity":"MozOpacity",c,false);
-a==.999999&&(a=1);
-if(a!=null)return parseFloat(a);
-return 1}},
-defer:function(a){a.SUPPORT_CSS3_OPACITY=typeof document.documentElement.style.opacity=="string"}});
-
-
-// qx.bom.element.Overflow
-//   - Size: 2063 bytes
-//   - Modified: 2010-10-15T14:17:24
-qx.Class.define("qx.bom.element.Overflow",{statics:{__3wL46:null,
-getScrollbarWidth:function(){if(this.__3wL46!==null)return this.__3wL46;
-var b=qx.bom.element.Style,f=function(c,a){return parseInt(b.get(c,a))||0},d=function(a){return b.get(a,"borderRightStyle")=="none"?0:f(a,"borderRightWidth")},i=function(a){return b.get(a,"borderLeftStyle")=="none"?0:f(a,"borderLeftWidth")},g=function(a){if(a.clientWidth==0){var c=b.get(a,"overflow"),e=(c=="scroll"||c=="-moz-scrollbars-vertical"?16:0);
-return Math.max(0,d(a)+e)}return Math.max(0,(a.offsetWidth-a.clientWidth-i(a)))},h=function(a){return g(a)-d(a)},a=document.createElement("div"),c=a.style,e;
-c.height=c.width="100px";
-c.overflow="scroll";
-document.body.appendChild(a);
-e=h(a);
-this.__3wL46=e?e:16;
-document.body.removeChild(a);
-return this.__3wL46},
-_compile:qx.bom.client.Engine.VERSION<1.8?function(b,a){a=="hidden"&&(a="-moz-scrollbars-none");
-return"overflow:"+a+";"}:function(a,b){return a+":"+b+";"},
-compileX:function(a){return this._compile("overflow-x",a)},
-compileY:function(a){return this._compile("overflow-y",a)},
-getX:qx.bom.client.Engine.VERSION<1.8?function(b,c){var a=qx.bom.element.Style.get(b,"overflow",c,false);
-a==="-moz-scrollbars-none"&&(a="hidden");
-return a}:function(a,b){return qx.bom.element.Style.get(a,"overflowX",b,false)},
-setX:qx.bom.client.Engine.VERSION<1.8?function(b,a){a=="hidden"&&(a="-moz-scrollbars-none");
-b.style.overflow=a}:function(a,b){a.style.overflowX=b},
-resetX:qx.bom.client.Engine.VERSION<1.8?function(a){a.style.overflow=""}:function(a){a.style.overflowX=""},
-getY:qx.bom.client.Engine.VERSION<1.8?function(b,c){var a=qx.bom.element.Style.get(b,"overflow",c,false);
-a==="-moz-scrollbars-none"&&(a="hidden");
-return a}:function(a,b){return qx.bom.element.Style.get(a,"overflowY",b,false)},
-setY:qx.bom.client.Engine.VERSION<1.8?function(b,a){a==="hidden"&&(a="-moz-scrollbars-none");
-b.style.overflow=a}:function(a,b){a.style.overflowY=b},
-resetY:qx.bom.client.Engine.VERSION<1.8?function(a){a.style.overflow=""}:function(a){a.style.overflowY=""}}});
-
-
-// qx.core.Assert
-//   - Size: 7031 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.core.Assert",{statics:{__yM80Z:true,
-__jkPsB:function(e){for(var a="",b=1,f=arguments.length,c,d;
-b<f;
-b++)a=a+this.__zpmOH(arguments[b]);
-c="Assertion error! "+e+": "+a;
-this.__yM80Z&&qx.Bootstrap.error(c);
-if(qx.Class.isDefined("qx.core.AssertionError")){d=new qx.core.AssertionError(e,a);
-this.__yM80Z&&qx.Bootstrap.error("Stack trace: \n"+d.getStackTrace());
-throw d}throw new Error(c)},
-__zpmOH:function(a){var b;
-if(a===null)b="null";
-else if(qx.lang.Type.isArray(a)&&a.length>10)b="Array["+a.length+"]";
-else if(a instanceof Object&&a.toString==null)b=qx.lang.Json.stringify(a,null,2);
-else try{b=a.toString()}catch(c){b=""}return b},
-assert:function(a,b){a==true||this.__jkPsB(b||"","Called assert with 'false'")},
-fail:function(a){this.__jkPsB(a||"","Called fail().")},
-assertTrue:function(a,b){a===true||this.__jkPsB(b||"","Called assertTrue with '",a,"'")},
-assertFalse:function(a,b){a===false||this.__jkPsB(b||"","Called assertFalse with '",a,"'")},
-assertEquals:function(b,a,c){b==a||this.__jkPsB(c||"","Expected '",b,"' but found '",a,"'!")},
-assertNotEquals:function(b,a,c){b!=a||this.__jkPsB(c||"","Expected '",b,"' to be not equal with '",a,"'!")},
-assertIdentical:function(b,a,c){b===a||this.__jkPsB(c||"","Expected '",b,"' (identical) but found '",a,"'!")},
-assertNotIdentical:function(b,a,c){b!==a||this.__jkPsB(c||"","Expected '",b,"' to be not identical with '",a,"'!")},
-assertNotUndefined:function(a,b){a!==undefined||this.__jkPsB(b||"","Expected value not to be undefined but found ",a,"!")},
-assertUndefined:function(a,b){a===undefined||this.__jkPsB(b||"","Expected value to be undefined but found ",a,"!")},
-assertNotNull:function(a,b){a!==null||this.__jkPsB(b||"","Expected value not to be null but found ",a,"!")},
-assertNull:function(a,b){a===null||this.__jkPsB(b||"","Expected value to be null but found ",a,"!")},
-assertJsonEquals:function(c,b,a){this.assertEquals(qx.lang.Json.stringify(c),qx.lang.Json.stringify(b),a)},
-assertMatch:function(b,a,c){this.assertString(b);
-this.assert(qx.lang.Type.isRegExp(a)||qx.lang.Type.isString(a),"The parameter 're' must be a string or a regular expression.");
-b.search(a)>=0||this.__jkPsB(c||"","The String '",b,"' does not match the regular expression '",a.toString(),"'!")},
-assertArgumentsCount:function(d,c,a,e){var b=d.length;
-b>=c&&b<=a||this.__jkPsB(e||"","Wrong number of arguments given. Expected '",c,"' to '",a,"' arguments but found '",arguments.length,"' arguments.")},
-assertEventFired:function(a,b,f,c,h){var d=false,i=function(b){c&&c.call(a,b);
-d=true},e;
-try{e=a.addListener(b,i,a);
-f.call()}catch(g){throw g}finally{try{a.removeListenerById(e)}catch(g){}}d===true||this.__jkPsB(h||"","Event (",b,") not fired.")},
-assertEventNotFired:function(a,c,e,f){var b=false,g=function(){b=true},d=a.addListener(c,g,a);
-e.call();
-b===false||this.__jkPsB(f||"","Event (",c,") was fired.");
-a.removeListenerById(d)},
-assertException:function(f,c,d,b){var c=c||Error,a;
-try{this.__yM80Z=false;
-f()}catch(e){a=e}finally{this.__yM80Z=true}a==null&&this.__jkPsB(b||"","The function did not raise an exception!");
-a instanceof c||this.__jkPsB(b||"","The raised exception does not have the expected type! ",c," != ",a);
-d&&this.assertMatch(a.toString(),d,b)},
-assertInArray:function(a,b,c){b.indexOf(a)!==-1||this.__jkPsB(c||"","The value '",a,"' must have any of the values defined in the array '",b,"'")},
-assertArrayEquals:function(c,d,a){this.assertArray(c,a);
-this.assertArray(d,a);
-this.assertEquals(c.length,d.length,a);
-for(var b=0;
-b<c.length;
-b++)this.assertIdentical(c[b],d[b],a)},
-assertKeyInMap:function(a,b,c){b[a]!==undefined||this.__jkPsB(c||"","The value '",a,"' must must be a key of the map '",b,"'")},
-assertFunction:function(a,b){qx.lang.Type.isFunction(a)||this.__jkPsB(b||"","Expected value to be typeof function but found ",a,"!")},
-assertString:function(a,b){qx.lang.Type.isString(a)||this.__jkPsB(b||"","Expected value to be a string but found ",a,"!")},
-assertBoolean:function(a,b){qx.lang.Type.isBoolean(a)||this.__jkPsB(b||"","Expected value to be a boolean but found ",a,"!")},
-assertNumber:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)||this.__jkPsB(b||"","Expected value to be a number but found ",a,"!")},
-assertPositiveNumber:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)&&a>=0||this.__jkPsB(b||"","Expected value to be a number >= 0 but found ",a,"!")},
-assertInteger:function(a,b){qx.lang.Type.isNumber(a)&&isFinite(a)&&a%1===0||this.__jkPsB(b||"","Expected value to be an integer but found ",a,"!")},
-assertPositiveInteger:function(a,c){var b=(qx.lang.Type.isNumber(a)&&isFinite(a)&&a%1===0&&a>=0);
-b||this.__jkPsB(c||"","Expected value to be an integer >= 0 but found ",a,"!")},
-assertInRange:function(a,b,c,d){a>=b&&a<=c||this.__jkPsB(d||"",qx.lang.String.format("Expected value '%1' to be in the range '%2'..'%3'!",[a,b,c]))},
-assertObject:function(a,c){var b=a!==null&&(qx.lang.Type.isObject(a)||typeof a==="object");
-b||this.__jkPsB(c||"","Expected value to be typeof object but found ",(a),"!")},
-assertArray:function(a,b){qx.lang.Type.isArray(a)||this.__jkPsB(b||"","Expected value to be an array but found ",a,"!")},
-assertMap:function(a,b){qx.lang.Type.isObject(a)||this.__jkPsB(b||"","Expected value to be a map but found ",a,"!")},
-assertRegExp:function(a,b){qx.lang.Type.isRegExp(a)||this.__jkPsB(b||"","Expected value to be a regular expression but found ",a,"!")},
-assertType:function(b,a,c){this.assertString(a,"Invalid argument 'type'");
-typeof b===a||this.__jkPsB(c||"","Expected value to be typeof '",a,"' but found ",b,"!")},
-assertInstance:function(b,a,d){var c=a.classname||a+"";
-b instanceof a||this.__jkPsB(d||"","Expected value to be instanceof '",c,"' but found ",b,"!")},
-assertInterface:function(a,b,c){qx.Class.implementsInterface(a,b)||this.__jkPsB(c||"","Expected object '",a,"' to implement the interface '",b,"'!")},
-assertCssColor:function(e,c,f){var d=qx.Class.getByName("qx.util.ColorUtil"),a,b,g;
-if(!d)throw new Error("qx.util.ColorUtil not available! Your code must have a dependency on 'qx.util.ColorUtil'");
-a=d.stringToRgb(e);
-try{b=d.stringToRgb(c)}catch(h){this.__jkPsB(f||"","Expected value to be the CSS color '",e,"' (rgb(",a.join(","),")), but found value '",c,"', which cannot be converted to a CSS color!")}g=a[0]==b[0]&&a[1]==b[1]&&a[2]==b[2];
-g||this.__jkPsB(f||"","Expected value to be the CSS color '",a,"' (rgb(",a.join(","),")), but found value '",c,"' (rgb(",b.join(","),"))!")},
-assertElement:function(a,b){!!(a&&a.nodeType===1)||this.__jkPsB(b||"","Expected value to be a DOM element but found  '",a,"'!")},
-assertQxObject:function(a,b){this.__VkBFl(a,"qx.core.Object")||this.__jkPsB(b||"","Expected value to be a qooxdoo object but found ",a,"!")},
-assertQxWidget:function(a,b){this.__VkBFl(a,"qx.ui.core.Widget")||this.__jkPsB(b||"","Expected value to be a qooxdoo widget but found ",a,"!")},
-__VkBFl:function(b,c){if(!b)return false;
-var a=b.constructor;
-while(a){if(a.classname===c)return true;
-a=a.superclass}return false}}});
-
-
-// qx.lang.Array
-//   - Size: 2598 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.lang.Array",{statics:{toArray:function(b,a){return this.cast(b,Array,a)},
-cast:function(b,d,c){if(b.constructor===d)return b;
-var a=new d;
-Object.prototype.toString.call(b)==="[object Array]"&&c==null?a.push.apply(a,b):a.push.apply(a,Array.prototype.slice.call(b,c||0));
-return a},
-fromArguments:function(b,a){return Array.prototype.slice.call(b,a||0)},
-fromCollection:function(a){return Array.prototype.slice.call(a,0)},
-clone:function(a){return a.concat()},
-insertAt:function(a,b,c){a.splice(c,0,b);
-return a},
-insertBefore:function(a,b,d){var c=a.indexOf(d);
-c==-1?a.push(b):a.splice(c,0,b);
-return a},
-insertAfter:function(a,c,d){var b=a.indexOf(d);
-b==-1||b==a.length-1?a.push(c):a.splice(b+1,0,c);
-return a},
-removeAt:function(a,b){return a.splice(b,1)[0]},
-removeAll:function(a){a.length=0;
-return this},
-append:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
-Array.prototype.push.apply(a,b);
-return a},
-exclude:function(a,b){qx.core.Assert&&qx.core.Assert.assertArray(a,"The first parameter must be an array."),qx.core.Assert&&qx.core.Assert.assertArray(b,"The second parameter must be an array.");
-for(var d=0,e=b.length,c;
-d<e;
-d++)c=a.indexOf(b[d]),c!=-1&&a.splice(c,1);
-return a},
-remove:function(b,a){var c=b.indexOf(a);
-if(c!=-1){b.splice(c,1);
-return a}},
-contains:function(b,a){return b.indexOf(a)!==-1},
-equals:function(b,c){var d=b.length,a;
-if(d!==c.length)return false;
-for(a=0;
-a<d;
-a++)if(b[a]!==c[a])return false;
-return true},
-sum:function(c){for(var b=0,a=0,d=c.length;
-a<d;
-a++)b+=c[a];
-return b},
-max:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
-var b,d=a.length,c=a[0];
-for(b=1;
-b<d;
-b++)a[b]>c&&(c=a[b]);
-return c===undefined?null:c},
-min:function(a){qx.core.Assert&&qx.core.Assert.assertArray(a,"Parameter must be an array.");
-var b,d=a.length,c=a[0];
-for(b=1;
-b<d;
-b++)a[b]<c&&(c=a[b]);
-return c===undefined?null:c},
-unique:function(k){for(var c=[],l={},i={},e={},a,n=0,d="qx"+qx.lang.Date.now(),j=false,h=false,g=false,f=0,m=k.length,b;
-f<m;
-f++)a=k[f],a===null?j||(j=true,c.push(a)):a===undefined||(a===false?h||(h=true,c.push(a)):a===true?g||(g=true,c.push(a)):typeof a==="string"?l[a]||(l[a]=1,c.push(a)):typeof a==="number"?i[a]||(i[a]=1,c.push(a)):(b=a[d],b==null&&(b=a[d]=n++),e[b]||(e[b]=a,c.push(a))));
-for(b in e)try{delete e[b][d]}catch(o){try{e[b][d]=null}catch(o){throw new Error("Cannot clean-up map entry doneObjects["+b+"]["+d+"]")}}return c}}});
-
-
-// qx.lang.Function
-//   - Size: 2546 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.lang.Function",{statics:{getCaller:function(a){return a.caller?a.caller.callee:a.callee.caller},
-getName:function(a){if(a.displayName)return a.displayName;
-if(a.$$original||a.wrapper||a.classname)return a.classname+".constructor()";
-if(a.$$mixin){for(b in a.$$mixin.$$members)if(a.$$mixin.$$members[b]==a)return a.$$mixin.name+".prototype."+b+"()";
-for(b in a.$$mixin)if(a.$$mixin[b]==a)return a.$$mixin.name+"."+b+"()"}if(a.self){var c=a.self.constructor,b,d;
-if(c){for(b in c.prototype)if(c.prototype[b]==a)return c.classname+".prototype."+b+"()";
-for(b in c)if(c[b]==a)return c.classname+"."+b+"()"}}d=a.toString().match(/function\s*(\w*)\s*\(.*/);
-if(d&&d.length>=1&&d[1])return d[1]+"()";
-return"anonymous()"},
-globalEval:function(a){return window.execScript?window.execScript(a):eval.call(window,a)},
-empty:function(){},
-returnTrue:function(){return true},
-returnFalse:function(){return false},
-returnNull:function(){return null},
-returnThis:function(){return this},
-returnZero:function(){return 0},
-create:function(b,a){qx.core.Assert&&qx.core.Assert.assertFunction(b,"Invalid parameter 'func'.");
-if(!a)return b;
-if(!(a.self||a.args||a.delay!=null||a.periodical!=null||a.attempt))return b;
-return function(){var c=qx.lang.Array.fromArguments(arguments),e,d;
-a.args&&(c=a.args.concat(c));
-if(a.delay||a.periodical){e=qx.event.GlobalError.observeMethod(function(){return b.apply(a.self||this,c)});
-if(a.delay)return window.setTimeout(e,a.delay);
-if(a.periodical)return window.setInterval(e,a.periodical)}else{if(a.attempt){d=false;
-try{d=b.apply(a.self||this,c)}catch(f){}return d}return b.apply(a.self||this,c)}}},
-bind:function(a,b){return this.create(a,{self:b,
-args:arguments.length>2?qx.lang.Array.fromArguments(arguments,2):null})},
-curry:function(a){return this.create(a,{args:arguments.length>1?qx.lang.Array.fromArguments(arguments,1):null})},
-listener:function(a,b){if(arguments.length<3)return function(c){return a.call(b||this,c||window.event)};
-var c=qx.lang.Array.fromArguments(arguments,2);
-return function(e){var d=[e||window.event];
-d.push.apply(d,c);
-a.apply(b||this,d)}},
-attempt:function(a,b){return this.create(a,{self:b,
-attempt:true,
-args:arguments.length>2?qx.lang.Array.fromArguments(arguments,2):null})()},
-delay:function(a,c,b){return this.create(a,{delay:c,
-self:b,
-args:arguments.length>3?qx.lang.Array.fromArguments(arguments,3):null})()},
-periodical:function(a,b,c){return this.create(a,{periodical:b,
-self:c,
-args:arguments.length>3?qx.lang.Array.fromArguments(arguments,3):null})()}}});
-
-
-// qx.lang.String
-//   - Size: 1519 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.lang.String",{statics:{camelCase:function(a){return a.replace(/\-([a-z])/g,function(b,a){return a.toUpperCase()})},
-hyphenate:function(a){return a.replace(/[A-Z]/g,function(a){return"-"+a.charAt(0).toLowerCase()})},
-capitalize:function(a){return a.replace(/\b[a-z]/g,function(a){return a.toUpperCase()})},
-clean:function(a){return this.trim(a.replace(/\s+/g," "))},
-trimLeft:function(a){return a.trimLeft?a.trimLeft():a.replace(/^\s+/,"")},
-trimRight:function(a){return a.trimRight?a.trimRight():a.replace(/\s+$/,"")},
-trim:function(a){return a.trim?a.trim():a.replace(/^\s+|\s+$/g,"")},
-startsWith:function(a,b){return a.indexOf(b)===0},
-endsWith:function(a,b){return a.substring(a.length-b.length,a.length)===b},
-repeat:function(a,b){return a.length>0?new Array(b+1).join(a):""},
-pad:function(a,d,b){var c=d-a.length;
-if(c>0){typeof b==="undefined"&&(b="0");
-return this.repeat(b,c)+a}return a},
-firstUp:qx.Bootstrap.firstUp,
-firstLow:qx.Bootstrap.firstLow,
-contains:function(a,b){return a.indexOf(b)!=-1},
-format:function(d,c){for(var b=d,a=0;
-a<c.length;
-a++)b=b.replace(new RegExp("%"+(a+1),"g"),c[a]+"");
-return b},
-escapeRegexpChars:function(a){return a.replace(/([.*+?^${}()|[\]\/\\])/g,"\\$1")},
-toArray:function(a){return a.split(/\B|\b/g)},
-stripTags:function(a){return a.replace(/<\/?[^>]+>/gi,"")},
-stripScripts:function(c,b){var a="",d=c.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi,function(){a+=arguments[1]+"\n";
-return""});
-b===true&&qx.lang.Function.globalEval(a);
-return d}}});
-
-
-// qx.lang.JsonImpl
-//   - Size: 3577 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.lang.JsonImpl",{extend:Object,
-construct:function(){this.stringify=qx.lang.Function.bind(this.stringify,this);
-this.parse=qx.lang.Function.bind(this.parse,this)},
-members:{__gHLqR:null,
-__qmoZp:null,
-__gS2rq:null,
-__mVh3F:null,
-stringify:function(d,b,a){this.__gHLqR="";
-this.__qmoZp="";
-this.__mVh3F=[];
-if(qx.lang.Type.isNumber(a))for(var a=Math.min(10,Math.floor(a)),c=0;
-c<a;
-c+=1)this.__qmoZp+=" ";
-else qx.lang.Type.isString(a)&&(a.length>10&&(a=a.slice(0,10)),this.__qmoZp=a);
-this.__gS2rq=b&&(qx.lang.Type.isFunction(b)||qx.lang.Type.isArray(b))?b:null;
-return this.__g2E9Q("",{"":d})},
-__g2E9Q:function(h,i){var g=this.__gHLqR,b,a=i[h],j,d,e,c,f;
-a&&qx.lang.Type.isFunction(a.toJSON)?a=a.toJSON(h):qx.lang.Type.isDate(a)&&(a=this.dateToJSON(a));
-typeof this.__gS2rq==="function"&&(a=this.__gS2rq.call(i,h,a));
-if(a===null)return"null";
-if(a===undefined)return undefined;
-switch(qx.lang.Type.getClass(a)){case"String":return this.__ncTb7(a);
-case"Number":return isFinite(a)?String(a):"null";
-case"Boolean":return String(a);
-case"Array":this.__gHLqR+=this.__qmoZp;
-b=[];
-if(this.__mVh3F.indexOf(a)!==-1)throw new TypeError("Cannot stringify a recursive object.");
-this.__mVh3F.push(a);
-j=a.length,d=0;
-for(;
-d<j;
-d+=1)b[d]=this.__g2E9Q(d,a)||"null";
-this.__mVh3F.pop();
-e=b.length===0?"[]":this.__gHLqR?"[\n"+this.__gHLqR+b.join(",\n"+this.__gHLqR)+"\n"+g+"]":"["+b.join(",")+"]";
-this.__gHLqR=g;
-return e;
-case"Object":this.__gHLqR+=this.__qmoZp;
-b=[];
-if(this.__mVh3F.indexOf(a)!==-1)throw new TypeError("Cannot stringify a recursive object.");
-this.__mVh3F.push(a);
-if(this.__gS2rq&&typeof this.__gS2rq==="object"){j=this.__gS2rq.length,d=0;
-for(;
-d<j;
-d+=1)c=this.__gS2rq[d],typeof c==="string"&&(f=this.__g2E9Q(c,a),f&&b.push(this.__ncTb7(c)+(this.__gHLqR?": ":":")+f))}else for(c in a)Object.hasOwnProperty.call(a,c)&&(f=this.__g2E9Q(c,a),f&&b.push(this.__ncTb7(c)+(this.__gHLqR?": ":":")+f));
-this.__mVh3F.pop();
-e=b.length===0?"{}":this.__gHLqR?"{\n"+this.__gHLqR+b.join(",\n"+this.__gHLqR)+"\n"+g+"}":"{"+b.join(",")+"}";
-this.__gHLqR=g;
-return e}},
-dateToJSON:function(a){var b=function(a){return a<10?"0"+a:a},c=function(a){var c=b(a);
-return a<100?"0"+c:c};
-return isFinite(a.valueOf())?a.getUTCFullYear()+"-"+b(a.getUTCMonth()+1)+"-"+b(a.getUTCDate())+"T"+b(a.getUTCHours())+":"+b(a.getUTCMinutes())+":"+b(a.getUTCSeconds())+"."+c(a.getUTCMilliseconds())+"Z":null},
-__ncTb7:function(b){var c={"\b":"\\b",
-"\t":"\\t",
-"\n":"\\n",
-"\f":"\\f",
-"\r":"\\r",
-"\"":"\\\"",
-"\\":"\\\\"},a=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
-a.lastIndex=0;
-return a.test(b)?"\""+b.replace(a,function(b){var a=c[b];
-return typeof a==="string"?a:"\\u"+("0000"+b.charCodeAt(0).toString(16)).slice(-4)})+"\"":"\""+b+"\""},
-parse:function(a,d){var b=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,c;
-b.lastIndex=0;
-b.test(a)&&(a=a.replace(b,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)}));
-if(/^[\],:{}\s]*$/.test(a.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:\s*\[)+/g,""))){c=eval("("+a+")");
-return typeof d==="function"?this.__jET2g({"":c},"",d):c}throw new SyntaxError("JSON.parse")},
-__jET2g:function(c,e,f){var a=c[e],b,d;
-if(a&&typeof a==="object")for(b in a)Object.hasOwnProperty.call(a,b)&&(d=this.__jET2g(a,b,f),d!==undefined?a[b]=d:delete a[b]);
-return f.call(c,e,a)}}});
-
-
-// qx.lang.Json
-//   - Size: 258 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.lang.Json",{statics:{JSON:qx.lang.Type.getClass(window.JSON)=="JSON"&&JSON.parse("{\"x\":1}").x===1?window.JSON:new qx.lang.JsonImpl(),
-stringify:null,
-parse:null},
-defer:function(a){a.stringify=a.JSON.stringify;
-a.parse=a.JSON.parse}});
-
-
-// qx.dev.StackTrace
-//   - Size: 1128 bytes
-//   - Modified: 2010-11-10T13:22:29
-qx.Class.define("qx.dev.StackTrace",{statics:{getStackTrace:function(){try{throw new Error()}catch(n){var a=this.getStackTraceFromError(n),c,j,b,i,e,l,k,o,f,g,m,h,d;
-qx.lang.Array.removeAt(a,0);
-c=this.getStackTraceFromCaller(arguments),j=c.length>a.length?c:a,b=0;
-for(;
-b<Math.min(c.length,a.length);
-b++){i=c[b];
-if(i.indexOf("anonymous")>=0)continue;
-e=i.split(":");
-if(e.length!=2)continue;
-l=e[0],k=e[1],o=a[b],f=o.split(":"),g=f[0],m=f[1];
-h=qx.Class.getByName(g)?g:l;
-d=h+":";
-k&&(d+=k+":");
-d+=m;
-j[b]=d}return j}},
-getStackTraceFromCaller:function(e){var b=[],a=qx.lang.Function.getCaller(e),d={},f,c;
-while(a){f=qx.lang.Function.getName(a);
-b.push(f);
-try{a=a.caller}catch(g){break}if(!a)break;
-c=qx.core.ObjectRegistry.toHashCode(a);
-if(d[c]){b.push("...");
-break}d[c]=a}return b},
-getStackTraceFromError:function(b){if(!b.stack)return[];
-var f=/@(.+):(\d+)$/gm,a,c=[],e,d,g;
-while((a=f.exec(b.stack))!=null)e=a[1],d=a[2],g=this.__bMVLSw(e),c.push(g+":"+d);
-return c},
-__bMVLSw:function(a){var b="/source/class/",c=a.indexOf(b),d=c==-1?a:a.substring(c+b.length).replace(/\//g,".").replace(/\.js$/,"");
-return d}}});
-
-
-// qx.core.AssertionError
-//   - Size: 248 bytes
-//   - Modified: 2010-08-30T22:23:15
-qx.Class.define("qx.core.AssertionError",{extend:qx.type.BaseError,
-construct:function(b,a){qx.type.BaseError.call(this,b,a);
-this.__mSOCg=qx.dev.StackTrace.getStackTrace()},
-members:{__mSOCg:null,
-getStackTrace:function(){return this.__mSOCg}}});
-
-
-// qx.bom.element.Style
-//   - Size: 3374 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.bom.element.Style",{statics:{__cnanzb:function(){for(var i=["appearance","userSelect","textOverflow","borderImage","transition","transform"],c={},h=document.documentElement.style,f=["Moz","Webkit","Khtml","O","Ms"],e=0,k=i.length,a,b,d,j,g;
-e<k;
-e++){a=i[e],b=a;
-if(h[a]){c[b]=a;
-continue}a=qx.lang.String.firstUp(a);
-for(d=0,j=f.length;
-d<j;
-d++){g=f[d]+a;
-if(typeof h[g]=="string"){c[b]=g;
-break}}}this.__KhlJ2=c;
-this.__KhlJ2["userModify"]="MozUserModify";
-this.__yFaAO={};
-for(b in c)this.__yFaAO[b]=this.__EHYhZ(c[b]);
-this.__KhlJ2["float"]="cssFloat"},
-__Qi3eI:{width:"pixelWidth",
-height:"pixelHeight",
-left:"pixelLeft",
-right:"pixelRight",
-top:"pixelTop",
-bottom:"pixelBottom"},
-__uEji8:{cursor:qx.bom.element.Cursor,
-opacity:qx.bom.element.Opacity,
-boxSizing:qx.bom.element.BoxSizing,
-overflowX:{set:qx.lang.Function.bind(qx.bom.element.Overflow.setX,qx.bom.element.Overflow),
-get:qx.lang.Function.bind(qx.bom.element.Overflow.getX,qx.bom.element.Overflow),
-reset:qx.lang.Function.bind(qx.bom.element.Overflow.resetX,qx.bom.element.Overflow),
-compile:qx.lang.Function.bind(qx.bom.element.Overflow.compileX,qx.bom.element.Overflow)},
-overflowY:{set:qx.lang.Function.bind(qx.bom.element.Overflow.setY,qx.bom.element.Overflow),
-get:qx.lang.Function.bind(qx.bom.element.Overflow.getY,qx.bom.element.Overflow),
-reset:qx.lang.Function.bind(qx.bom.element.Overflow.resetY,qx.bom.element.Overflow),
-compile:qx.lang.Function.bind(qx.bom.element.Overflow.compileY,qx.bom.element.Overflow)}},
-compile:function(e){var c=[],d=this.__uEji8,f=this.__yFaAO,a,b;
-for(a in e){b=e[a];
-if(b==null)continue;
-a=f[a]||a;
-d[a]?c.push(d[a].compile(b)):c.push(this.__EHYhZ(a),":",b,";")}return c.join("")},
-__uYnSY:{},
-__EHYhZ:function(b){var c=this.__uYnSY,a=c[b];
-a||(a=c[b]=qx.lang.String.hyphenate(b));
-return a},
-setCss:function(a,b){a.setAttribute("style",b)},
-getCss:function(a){return a.getAttribute("style")},
-isPropertySupported:function(a){return this.__uEji8[a]||this.__KhlJ2[a]||a in document.documentElement.style},
-COMPUTED_MODE:1,
-CASCADED_MODE:2,
-LOCAL_MODE:3,
-set:function(b,a,d,c){qx.core.Assert.assertElement(b,"Invalid argument 'element'"),qx.core.Assert.assertString(a,"Invalid argument 'name'"),c!==undefined&&qx.core.Assert.assertBoolean(c,"Invalid argument 'smart'");
-a=this.__KhlJ2[a]||a;
-if(c!==false&&this.__uEji8[a])return this.__uEji8[a].set(b,d);
-b.style[a]=d!==null?d:""},
-setStyles:function(e,g,b){qx.core.Assert.assertElement(e,"Invalid argument 'element'"),qx.core.Assert.assertMap(g,"Invalid argument 'styles'"),b!==undefined&&qx.core.Assert.assertBoolean(b,"Invalid argument 'smart'");
-var i=this.__KhlJ2,d=this.__uEji8,h=e.style,c,f,a;
-for(c in g)f=g[c],a=i[c]||c,f===undefined?b!==false&&d[a]?d[a].reset(e):h[a]="":b!==false&&d[a]?d[a].set(e,f):h[a]=f!==null?f:""},
-reset:function(b,a,c){a=this.__KhlJ2[a]||a;
-if(c!==false&&this.__uEji8[a])return this.__uEji8[a].reset(b);
-b.style[a]=""},
-get:function(b,a,c,e){a=this.__KhlJ2[a]||a;
-if(e!==false&&this.__uEji8[a])return this.__uEji8[a].get(b,c);
-switch(c){case this.LOCAL_MODE:return b.style[a]||"";
-case this.CASCADED_MODE:if(b.currentStyle)return b.currentStyle[a]||"";
-throw new Error("Cascaded styles are not supported in this browser!");
-default:var f=qx.dom.Node.getDocument(b),d=f.defaultView.getComputedStyle(b,null);
-return d?d[a]:""}}},
-defer:function(a){a.__cnanzb()}});
+//   - Size: 1.40KB (0.62KB zipped => 44.32%)
+qx.Class.define("qx.bom.Event",{statics:{addNativeListener:function(a,b,c,d){a.addEventListener?a.addEventListener(b,c,!!d):a.attachEvent&&a.attachEvent("on"+b,c)},
+removeNativeListener:function(a,b,d,e){if(a.removeEventListener)a.removeEventListener(b,d,!!e);
+else if(a.detachEvent)try{a.detachEvent("on"+b,d)}catch(c){if(c.number!==-2146828218)throw c}},
+getTarget:function(a){return a.target||a.srcElement},
+getRelatedTarget:function(a){if(a.relatedTarget!==undefined){try{a.relatedTarget&&a.relatedTarget.nodeType}catch(a){return null}return a.relatedTarget}return a.fromElement!==undefined&&a.type==="mouseover"?a.fromElement:a.toElement!==undefined?a.toElement:null},
+preventDefault:function(a){if(a.preventDefault){if(true&&qx.bom.client.Engine.VERSION>=1.9&&a.type=="mousedown"&&a.button==2)return;
+a.preventDefault();
+if(true&&qx.bom.client.Engine.VERSION<1.9)try{a.keyCode=0}catch(b){}}else{try{a.keyCode=0}catch(b){}a.returnValue=false}},
+stopPropagation:function(a){a.stopPropagation?a.stopPropagation():a.cancelBubble=true},
+fire:function(b,c){if(document.createEvent){var a=document.createEvent("HTMLEvents");
+a.initEvent(c,true,true);
+return!b.dispatchEvent(a)}a=document.createEventObject();
+return b.fireEvent("on"+c,a)},
+supportsEvent:function(a,d){var c="on"+d,b=(c in a);
+b||(b=typeof a[c]=="function",!b&&a.setAttribute&&(a.setAttribute(c,"return;"),b=typeof a[c]=="function",a.removeAttribute(c)));
+return b}}});
 
 
 // qx.util.DisposeUtil
-//   - Size: 1120 bytes
 //   - Modified: 2010-08-29T12:27:35
+//   - Size: 1.09KB (0.50KB zipped => 46.16%)
 qx.Class.define("qx.util.DisposeUtil",{statics:{disposeObjects:function(b,d,f){for(var a,c=0,e=d.length;
 c<e;
 c++){a=d[c];
@@ -2460,8 +2462,8 @@ c.dispose()}}}});
 
 
 // qx.log.appender.RingBuffer
-//   - Size: 440 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.43KB (0.21KB zipped => 49.55%)
 qx.Class.define("qx.log.appender.RingBuffer",{extend:qx.lang.RingBuffer,
 construct:function(a){this.setMaxMessages(a||50)},
 members:{setMaxMessages:function(a){this.setMaxEntries(a)},
@@ -2472,30 +2474,9 @@ retrieveLogEvents:function(b,a){return this.getEntries(b,a)},
 clearHistory:function(){this.clear()}}});
 
 
-// qx.bom.Event
-//   - Size: 1435 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.bom.Event",{statics:{addNativeListener:function(a,b,c,d){a.addEventListener?a.addEventListener(b,c,!!d):a.attachEvent&&a.attachEvent("on"+b,c)},
-removeNativeListener:function(a,b,d,e){if(a.removeEventListener)a.removeEventListener(b,d,!!e);
-else if(a.detachEvent)try{a.detachEvent("on"+b,d)}catch(c){if(c.number!==-2146828218)throw c}},
-getTarget:function(a){return a.target||a.srcElement},
-getRelatedTarget:function(a){if(a.relatedTarget!==undefined){try{a.relatedTarget&&a.relatedTarget.nodeType}catch(a){return null}return a.relatedTarget}return a.fromElement!==undefined&&a.type==="mouseover"?a.fromElement:a.toElement!==undefined?a.toElement:null},
-preventDefault:function(a){if(a.preventDefault){if(true&&qx.bom.client.Engine.VERSION>=1.9&&a.type=="mousedown"&&a.button==2)return;
-a.preventDefault();
-if(true&&qx.bom.client.Engine.VERSION<1.9)try{a.keyCode=0}catch(b){}}else{try{a.keyCode=0}catch(b){}a.returnValue=false}},
-stopPropagation:function(a){a.stopPropagation?a.stopPropagation():a.cancelBubble=true},
-fire:function(b,c){if(document.createEvent){var a=document.createEvent("HTMLEvents");
-a.initEvent(c,true,true);
-return!b.dispatchEvent(a)}a=document.createEventObject();
-return b.fireEvent("on"+c,a)},
-supportsEvent:function(a,d){var c="on"+d,b=(c in a);
-b||(b=typeof a[c]=="function",!b&&a.setAttribute&&(a.setAttribute(c,"return;"),b=typeof a[c]=="function",a.removeAttribute(c)));
-return b}}});
-
-
 // qx.core.MAssert
-//   - Size: 2747 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 2.68KB (0.51KB zipped => 18.97%)
 qx.Mixin.define("qx.core.MAssert",{members:{assert:function(a,b){qx.core.Assert.assert(a,b)},
 fail:function(a){qx.core.Assert.fail(a)},
 assertTrue:function(a,b){qx.core.Assert.assertTrue(a,b)},
@@ -2539,8 +2520,8 @@ assertQxWidget:function(a,b){qx.core.Assert.assertQxWidget(a,b)}}});
 
 
 // qx.lang.Object
-//   - Size: 2617 bytes
 //   - Modified: 2010-06-18T23:08:09
+//   - Size: 2.56KB (0.78KB zipped => 30.53%)
 qx.Class.define("qx.lang.Object",{statics:{empty:function(a){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
 for(var b in a)a.hasOwnProperty(b)&&delete a[b]},
 isEmpty:qx.bom.client.Feature.ECMA_OBJECT_COUNT?function(a){qx.core.Assert&&qx.core.Assert.assertMap(a,"Invalid argument 'map'");
@@ -2592,8 +2573,8 @@ a++){switch(typeof b[a]){case"object":case"function":case"undefined":throw new E
 
 
 // qx.dom.Hierarchy
-//   - Size: 1862 bytes
 //   - Modified: 2010-11-03T13:23:04
+//   - Size: 1.82KB (0.64KB zipped => 34.96%)
 qx.Class.define("qx.dom.Hierarchy",{statics:{getNodeIndex:function(a){var b=0;
 while(a&&(a=a.previousSibling))b++;
 return b},
@@ -2638,9 +2619,59 @@ return b},
 getSiblings:function(a){return this.getPreviousSiblings(a).reverse().concat(this.getNextSiblings(a))}}});
 
 
+// qx.io.ImageLoader
+//   - Modified: 2010-11-03T14:43:37
+//   - Size: 1.70KB (0.70KB zipped => 41.19%)
+qx.Bootstrap.define("qx.io.ImageLoader",{statics:{__jlEBF:{},
+__O6wYB:{width:null,
+height:null},
+__cbGrT1:/\.(png|gif|jpg|jpeg|bmp)\b/i,
+isLoaded:function(b){var a=this.__jlEBF[b];
+return!!(a&&a.loaded)},
+isFailed:function(b){var a=this.__jlEBF[b];
+return!!(a&&a.failed)},
+isLoading:function(b){var a=this.__jlEBF[b];
+return!!(a&&a.loading)},
+getFormat:function(b){var a=this.__jlEBF[b];
+return a?a.format:null},
+getSize:function(b){var a=this.__jlEBF[b];
+return a?{width:a.width,
+height:a.height}:this.__O6wYB},
+getWidth:function(b){var a=this.__jlEBF[b];
+return a?a.width:null},
+getHeight:function(b){var a=this.__jlEBF[b];
+return a?a.height:null},
+load:function(e,b,d){var a=this.__jlEBF[e],c,f;
+a||(a=this.__jlEBF[e]={});
+b&&!d&&(d=window);
+a.loaded||a.loading||a.failed?b&&(a.loading?a.callbacks.push(b,d):b.call(d,e,a)):(a.loading=true,a.callbacks=[],b&&a.callbacks.push(b,d),c=new Image(),f=qx.lang.Function.listener(this.__qBNI8,this,c,e),c.onload=f,c.onerror=f,c.src=e,a.element=c)},
+abort:function(d){var a=this.__jlEBF[d],c,e,b,f;
+if(a&&!a.loaded){a.aborted=true;
+c=a.callbacks,e=a.element;
+e.onload=e.onerror=null;
+delete a.callbacks;
+delete a.element;
+delete a.loading;
+for(b=0,f=c.length;
+b<f;
+b+=2)c[b].call(c[b+1],d,a)}this.__jlEBF[d]=null},
+__qBNI8:qx.event.GlobalError.observeMethod(function(g,b,d){var a=this.__jlEBF[d],f,e,c,h;
+g.type==="load"?(a.loaded=true,a.width=this.__yHD19(b),a.height=this.__Dbnsa(b),f=this.__cbGrT1.exec(d),f!=null&&(a.format=f[1])):a.failed=true;
+b.onload=b.onerror=null;
+e=a.callbacks;
+delete a.loading;
+delete a.callbacks;
+delete a.element;
+for(c=0,h=e.length;
+c<h;
+c+=2)e[c].call(e[c+1],d,a)}),
+__yHD19:function(a){return a.naturalWidth},
+__Dbnsa:function(a){return a.naturalHeight}}});
+
+
 // qx.core.Object
-//   - Size: 4415 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 4.31KB (1.36KB zipped => 31.44%)
 qx.Class.define("qx.core.Object",{extend:Object,
 construct:function(){qx.core.ObjectRegistry.register(this)},
 statics:{$$type:"Object"},
@@ -2717,8 +2748,8 @@ this.__y6FtY&&(this.__y6FtY=null)}});
 
 
 // qx.util.ObjectPool
-//   - Size: 838 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.82KB (0.46KB zipped => 56.68%)
 qx.Class.define("qx.util.ObjectPool",{extend:qx.core.Object,
 construct:function(a){this.base(arguments);
 this.__jKF37={};
@@ -2747,16 +2778,16 @@ a++)b[a].dispose()}delete this.__jKF37}});
 
 
 // qx.event.Pool
-//   - Size: 127 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.12KB (0.12KB zipped => 96.06%)
 qx.Class.define("qx.event.Pool",{extend:qx.util.ObjectPool,
 type:"singleton",
 construct:function(){this.base(arguments,30)}});
 
 
 // qx.event.type.Event
-//   - Size: 2498 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 2.44KB (0.74KB zipped => 30.22%)
 qx.Class.define("qx.event.type.Event",{extend:qx.core.Object,
 statics:{CAPTURING_PHASE:1,
 AT_TARGET:2,
@@ -2815,8 +2846,8 @@ destruct:function(){this._target=this._currentTarget=this._relatedTarget=this._o
 
 
 // qx.log.Logger
-//   - Size: 4576 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 4.47KB (1.66KB zipped => 37.11%)
 qx.Class.define("qx.log.Logger",{statics:{__mNRJP:"debug",
 setLevel:function(a){this.__mNRJP=a},
 getLevel:function(){return this.__mNRJP},
@@ -2939,8 +2970,8 @@ qx.Bootstrap.trace=a.trace}});
 
 
 // qx.event.IEventDispatcher
-//   - Size: 258 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.25KB (0.13KB zipped => 52.71%)
 qx.Interface.define("qx.event.IEventDispatcher",{members:{canDispatchEvent:function(c,a,b){this.assertInstance(a,qx.event.type.Event);
 this.assertString(b)},
 dispatchEvent:function(c,a,b){this.assertInstance(a,qx.event.type.Event);
@@ -2948,8 +2979,8 @@ this.assertString(b)}}});
 
 
 // qx.event.Manager
-//   - Size: 6920 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 6.76KB (2.37KB zipped => 35.01%)
 qx.Class.define("qx.event.Manager",{extend:Object,
 construct:function(a,b){this.__qOaV1=a;
 this.__zt2DU=qx.core.ObjectRegistry.toHashCode(a);
@@ -3100,8 +3131,8 @@ this.__W9lJC=this.__UDqYD=null}}});
 
 
 // qx.event.Registration
-//   - Size: 2916 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 2.85KB (0.95KB zipped => 33.37%)
 qx.Class.define("qx.event.Registration",{statics:{__yRxNx:{},
 getManager:function(a){a==null?(qx.log.Logger.error("qx.event.Registration.getManager(null) was called!"),qx.log.Logger.trace(this),a=window):a.nodeType?a=qx.dom.Node.getWindow(a):qx.dom.Node.isWindow(a)||(a=window);
 var c=a.$$hash||qx.core.ObjectRegistry.toHashCode(a),b=this.__yRxNx[c];
@@ -3150,8 +3181,8 @@ getDispatchers:function(){return this.__PRhiv}}});
 
 
 // qx.event.handler.Object
-//   - Size: 458 bytes
 //   - Modified: 2010-08-29T12:24:44
+//   - Size: 0.45KB (0.27KB zipped => 60.26%)
 qx.Class.define("qx.event.handler.Object",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 statics:{PRIORITY:qx.event.Registration.PRIORITY_LAST,
@@ -3165,8 +3196,8 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.event.type.Data
-//   - Size: 448 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.44KB (0.23KB zipped => 51.56%)
 qx.Class.define("qx.event.type.Data",{extend:qx.event.type.Event,
 members:{__jlEBF:null,
 __gQ654:null,
@@ -3184,8 +3215,8 @@ destruct:function(){this.__jlEBF=this.__gQ654=null}});
 
 
 // qx.event.dispatch.Direct
-//   - Size: 846 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.83KB (0.47KB zipped => 56.86%)
 qx.Class.define("qx.event.dispatch.Direct",{extend:qx.core.Object,
 implement:qx.event.IEventDispatcher,
 construct:function(a){this._manager=a},
@@ -3200,59 +3231,9 @@ d++)h=c[d].context||a,c[d].handler.call(h,b)}},
 defer:function(a){qx.event.Registration.addDispatcher(a)}});
 
 
-// qx.io.ImageLoader
-//   - Size: 1736 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Bootstrap.define("qx.io.ImageLoader",{statics:{__jlEBF:{},
-__O6wYB:{width:null,
-height:null},
-__cbGrT1:/\.(png|gif|jpg|jpeg|bmp)\b/i,
-isLoaded:function(b){var a=this.__jlEBF[b];
-return!!(a&&a.loaded)},
-isFailed:function(b){var a=this.__jlEBF[b];
-return!!(a&&a.failed)},
-isLoading:function(b){var a=this.__jlEBF[b];
-return!!(a&&a.loading)},
-getFormat:function(b){var a=this.__jlEBF[b];
-return a?a.format:null},
-getSize:function(b){var a=this.__jlEBF[b];
-return a?{width:a.width,
-height:a.height}:this.__O6wYB},
-getWidth:function(b){var a=this.__jlEBF[b];
-return a?a.width:null},
-getHeight:function(b){var a=this.__jlEBF[b];
-return a?a.height:null},
-load:function(e,b,d){var a=this.__jlEBF[e],c,f;
-a||(a=this.__jlEBF[e]={});
-b&&!d&&(d=window);
-a.loaded||a.loading||a.failed?b&&(a.loading?a.callbacks.push(b,d):b.call(d,e,a)):(a.loading=true,a.callbacks=[],b&&a.callbacks.push(b,d),c=new Image(),f=qx.lang.Function.listener(this.__qBNI8,this,c,e),c.onload=f,c.onerror=f,c.src=e,a.element=c)},
-abort:function(d){var a=this.__jlEBF[d],c,e,b,f;
-if(a&&!a.loaded){a.aborted=true;
-c=a.callbacks,e=a.element;
-e.onload=e.onerror=null;
-delete a.callbacks;
-delete a.element;
-delete a.loading;
-for(b=0,f=c.length;
-b<f;
-b+=2)c[b].call(c[b+1],d,a)}this.__jlEBF[d]=null},
-__qBNI8:qx.event.GlobalError.observeMethod(function(g,b,d){var a=this.__jlEBF[d],f,e,c,h;
-g.type==="load"?(a.loaded=true,a.width=this.__yHD19(b),a.height=this.__Dbnsa(b),f=this.__cbGrT1.exec(d),f!=null&&(a.format=f[1])):a.failed=true;
-b.onload=b.onerror=null;
-e=a.callbacks;
-delete a.loading;
-delete a.callbacks;
-delete a.element;
-for(c=0,h=e.length;
-c<h;
-c+=2)e[c].call(e[c+1],d,a)}),
-__yHD19:function(a){return a.naturalWidth},
-__Dbnsa:function(a){return a.naturalHeight}}});
-
-
 // qx.util.ValueManager
-//   - Size: 479 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.47KB (0.22KB zipped => 47.81%)
 qx.Class.define("qx.util.ValueManager",{type:"abstract",
 extend:qx.core.Object,
 construct:function(){this.base(arguments);
@@ -3268,8 +3249,8 @@ destruct:function(){this._dynamic=null}});
 
 
 // qx.theme.manager.Appearance
-//   - Size: 1681 bytes
 //   - Modified: 2010-06-18T23:08:09
+//   - Size: 1.64KB (0.78KB zipped => 47.53%)
 qx.Class.define("qx.theme.manager.Appearance",{type:"singleton",
 extend:qx.core.Object,
 construct:function(){this.base(arguments);
@@ -3322,8 +3303,8 @@ destruct:function(){this.__JRMbw=this.__ynipn=null}});
 
 
 // qx.util.ResourceManager
-//   - Size: 1090 bytes
 //   - Modified: 2010-11-11T16:55:29
+//   - Size: 1.06KB (0.53KB zipped => 49.82%)
 qx.Class.define("qx.util.ResourceManager",{extend:qx.core.Object,
 type:"singleton",
 statics:{__EoIRE:{}},
@@ -3357,8 +3338,8 @@ return d}}});
 
 
 // qx.theme.manager.Color
-//   - Size: 846 bytes
 //   - Modified: 2010-10-26T17:35:52
+//   - Size: 0.83KB (0.43KB zipped => 52.48%)
 qx.Class.define("qx.theme.manager.Color",{type:"singleton",
 extend:qx.util.ValueManager,
 properties:{theme:{check:"Theme",
@@ -3384,8 +3365,8 @@ return true}return false}}});
 
 
 // qx.util.ColorUtil
-//   - Size: 5529 bytes
 //   - Modified: 2010-09-12T00:46:52
+//   - Size: 5.40KB (1.55KB zipped => 28.76%)
 qx.Class.define("qx.util.ColorUtil",{statics:{REGEXP:{hex3:/^#([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
 hex6:/^#([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
 rgb:/^rgb\(\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*\)$/,
@@ -3531,8 +3512,8 @@ defer:function(a){qx.core.Type.add("Color",a.isValidPropertyValue,a)}});
 
 
 // qx.theme.manager.Decoration
-//   - Size: 1131 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 1.10KB (0.53KB zipped => 47.92%)
 qx.Class.define("qx.theme.manager.Decoration",{type:"singleton",
 extend:qx.core.Object,
 construct:function(){this.base(arguments);
@@ -3569,8 +3550,8 @@ destruct:function(){this._disposeMap("__dynamic")}});
 
 
 // qx.ui.layout.Util
-//   - Size: 2618 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 2.56KB (1.01KB zipped => 39.50%)
 qx.Class.define("qx.ui.layout.Util",{statics:{PERCENT_VALUE:/[0-9]+(?:\.[0-9]+)?%/,
 computeFlexOffsets:function(k,j,l){var a,b,f,d,i=j>l,h=Math.abs(j-l),g,c,e={};
 for(b in k)a=k[b],e[b]={potential:i?a.max-a.value:a.value-a.min,
@@ -3644,8 +3625,8 @@ end:a}}}});
 
 
 // qx.event.Timer
-//   - Size: 1321 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.29KB (0.56KB zipped => 43.30%)
 qx.Class.define("qx.event.Timer",{extend:qx.core.Object,
 construct:function(a){this.base(arguments);
 this.setEnabled(false);
@@ -3686,8 +3667,8 @@ this.__bioe1m=this.__KCwvZ=null}});
 
 
 // qx.event.type.Focus
-//   - Size: 183 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.18KB (0.14KB zipped => 79.23%)
 qx.Class.define("qx.event.type.Focus",{extend:qx.event.type.Event,
 members:{init:function(a,c,b){this.base(arguments,b,false);
 this._target=a;
@@ -3696,8 +3677,8 @@ return this}}});
 
 
 // qx.bom.Font
-//   - Size: 1937 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.89KB (0.79KB zipped => 41.61%)
 qx.Class.define("qx.bom.Font",{extend:qx.core.Object,
 construct:function(a,b){this.base(arguments);
 a!==undefined&&this.setSize(a);
@@ -3766,8 +3747,8 @@ lineHeight:this.__IKKUm}}}});
 
 
 // qx.event.dispatch.AbstractBubbling
-//   - Size: 1340 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.31KB (0.57KB zipped => 43.28%)
 qx.Class.define("qx.event.dispatch.AbstractBubbling",{extend:qx.core.Object,
 implement:qx.event.IEventDispatcher,
 type:"abstract",
@@ -3811,8 +3792,8 @@ if(a.getPropagationStopped())return}}}});
 
 
 // qx.bom.element2.Style
-//   - Size: 1159 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 1.13KB (0.60KB zipped => 52.63%)
 qx.Class.define("qx.bom.element2.Style",{statics:{__I7iU2:document.createElement("div"),
 __CRiSe:{},
 __bgSKno:{},
@@ -3841,8 +3822,8 @@ defer:function(a){a.__CRiSe["float"]="cssFloat"}});
 
 
 // qx.util.DeferredCallManager
-//   - Size: 1115 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.09KB (0.48KB zipped => 44.13%)
 qx.Class.define("qx.util.DeferredCallManager",{extend:qx.core.Object,
 type:"singleton",
 construct:function(){this.__muCjq={};
@@ -3872,27 +3853,9 @@ destruct:function(){this.__EEWKl!=null&&window.clearTimeout(this.__EEWKl);
 this.__bbKRP9=this.__muCjq=null}});
 
 
-// qx.util.DeferredCall
-//   - Size: 514 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.util.DeferredCall",{extend:qx.core.Object,
-construct:function(b,a){this.base(arguments);
-this.__yn7yy=b;
-this.__uOt7U=a||null;
-this.__ugn3e=qx.util.DeferredCallManager.getInstance()},
-members:{__yn7yy:null,
-__uOt7U:null,
-__ugn3e:null,
-cancel:function(){this.__ugn3e.cancel(this)},
-schedule:function(){this.__ugn3e.schedule(this)},
-call:function(){this.__uOt7U?this.__yn7yy.apply(this.__uOt7U):this.__yn7yy()}},
-destruct:function(){this.cancel();
-this.__uOt7U=this.__yn7yy=this.__ugn3e=null}});
-
-
 // qx.bom.element.Dimension
-//   - Size: 1440 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 1.41KB (0.54KB zipped => 38.06%)
 qx.Class.define("qx.bom.element.Dimension",{statics:{getWidth:function(a){if(a.getBoundingClientRect){var b=a.getBoundingClientRect();
 return Math.round(b.right)-Math.round(b.left)}return a.offsetWidth},
 getHeight:function(a){if(a.getBoundingClientRect){var b=a.getBoundingClientRect();
@@ -3918,9 +3881,52 @@ getContentSize:function(a){return{width:this.getContentWidth(a),
 height:this.getContentHeight(a)}}}});
 
 
-// qx.bom.element.Location
-//   - Size: 3635 bytes
+// qx.util.DeferredCall
+//   - Modified: 2010-11-11T16:55:28
+//   - Size: 0.50KB (0.25KB zipped => 49.42%)
+qx.Class.define("qx.util.DeferredCall",{extend:qx.core.Object,
+construct:function(b,a){this.base(arguments);
+this.__yn7yy=b;
+this.__uOt7U=a||null;
+this.__ugn3e=qx.util.DeferredCallManager.getInstance()},
+members:{__yn7yy:null,
+__uOt7U:null,
+__ugn3e:null,
+cancel:function(){this.__ugn3e.cancel(this)},
+schedule:function(){this.__ugn3e.schedule(this)},
+call:function(){this.__uOt7U?this.__yn7yy.apply(this.__uOt7U):this.__yn7yy()}},
+destruct:function(){this.cancel();
+this.__uOt7U=this.__yn7yy=this.__ugn3e=null}});
+
+
+// qx.event.type.Native
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.84KB (0.33KB zipped => 39.72%)
+qx.Class.define("qx.event.type.Native",{extend:qx.event.type.Event,
+members:{init:function(a,b,d,c,e){this.base(arguments,c,e);
+this._target=b||qx.bom.Event.getTarget(a);
+this._relatedTarget=d||qx.bom.Event.getRelatedTarget(a);
+a.timeStamp&&(this._timeStamp=a.timeStamp);
+this._native=a;
+this._returnValue=null;
+return this},
+clone:function(c){var a=this.base(arguments,c),b={};
+a._native=this._cloneNativeEvent(this._native,b);
+a._returnValue=this._returnValue;
+return a},
+_cloneNativeEvent:function(b,a){a.preventDefault=qx.lang.Function.empty;
+return a},
+preventDefault:function(){this.base(arguments);
+qx.bom.Event.preventDefault(this._native)},
+getNativeEvent:function(){return this._native},
+setReturnValue:function(a){this._returnValue=a},
+getReturnValue:function(){return this._returnValue}},
+destruct:function(){this._native=this._returnValue=null}});
+
+
+// qx.bom.element.Location
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 3.55KB (1.13KB zipped => 31.83%)
 qx.Class.define("qx.bom.element.Location",{statics:{__nioaO:function(a,b){return qx.bom.element.Style.get(a,b,qx.bom.element.Style.COMPUTED_MODE,false)},
 __gXIg7:function(a,b){return parseInt(qx.bom.element.Style.get(a,b,qx.bom.element.Style.COMPUTED_MODE,false),10)||0},
 __3BZ0V:function(a){var b=0,c=0,d,e;
@@ -3976,150 +3982,9 @@ while(a&&(!/^body|html$/i.test(a.tagName)&&c.get(a,"position")==="static"))a=a.o
 return a}}});
 
 
-// qx.event.type.Native
-//   - Size: 861 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.type.Native",{extend:qx.event.type.Event,
-members:{init:function(a,b,d,c,e){this.base(arguments,c,e);
-this._target=b||qx.bom.Event.getTarget(a);
-this._relatedTarget=d||qx.bom.Event.getRelatedTarget(a);
-a.timeStamp&&(this._timeStamp=a.timeStamp);
-this._native=a;
-this._returnValue=null;
-return this},
-clone:function(c){var a=this.base(arguments,c),b={};
-a._native=this._cloneNativeEvent(this._native,b);
-a._returnValue=this._returnValue;
-return a},
-_cloneNativeEvent:function(b,a){a.preventDefault=qx.lang.Function.empty;
-return a},
-preventDefault:function(){this.base(arguments);
-qx.bom.Event.preventDefault(this._native)},
-getNativeEvent:function(){return this._native},
-setReturnValue:function(a){this._returnValue=a},
-getReturnValue:function(){return this._returnValue}},
-destruct:function(){this._native=this._returnValue=null}});
-
-
-// qx.bom.element.Decoration
-//   - Size: 476 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.bom.element.Decoration",{statics:{getStyles:function(b,e){var d=qx.util.ResourceManager.getInstance(),c=d.getImageSize(b)||qx.io.ImageLoader.getSize(b),a,f;
-if(c==null){qx.log.Logger.warn("Image without dimensions: "+b);
-return{}}e!="repeat"&&(a=d.getImageSprite(b));
-f={width:c.width+"px",
-height:c.height+"px",
-backgroundImage:"url("+(a?a.uri:d.toUri(b))+")",
-backgroundRepeat:e,
-backgroundPosition:a?-a.left+"px "+(-a.top-.01)+"px":null};
-return f}}});
-
-
-// qx.theme.manager.Font
-//   - Size: 1195 bytes
-//   - Modified: 2010-06-18T23:08:09
-qx.Class.define("qx.theme.manager.Font",{type:"singleton",
-extend:qx.util.ValueManager,
-construct:function(){this.base(arguments);
-qx.core.Type.add("Font",this.isDynamic,this)},
-properties:{theme:{check:"Theme",
-nullable:true,
-apply:"_applyTheme",
-event:"changeTheme"}},
-members:{resolveDynamic:function(a){var b=this._dynamic;
-return a instanceof qx.bom.Font?a:b[a]},
-resolve:function(a){var c=this._dynamic,d=c[a],b;
-if(d)return d;
-b=this.getTheme();
-if(b!==null&&b.fonts[a])return c[a]=(new qx.bom.Font).set(b.fonts[a]);
-return a},
-isDynamic:function(a){var c=this._dynamic,b;
-if(a&&(a instanceof qx.bom.Font||c[a]!==undefined))return true;
-b=this.getTheme();
-if(b!==null&&a&&b.fonts[a]){c[a]=(new qx.bom.Font).set(b.fonts[a]);
-return true}return false},
-__ba0WFb:function(a,b){if(a[b].include){var c=a[a[b].include];
-a[b].include=null;
-delete a[b].include;
-a[b]=qx.lang.Object.mergeWith(a[b],c,false);
-this.__ba0WFb(a,b)}},
-_applyTheme:function(d){var b=this._getDynamic(),a,c,e;
-for(a in b)b[a].themed&&(b[a].dispose(),delete b[a]);
-if(d){c=d.fonts,e=qx.bom.Font;
-for(a in c)c[a].include&&c[c[a].include]&&this.__ba0WFb(c,a),b[a]=(new e).set(c[a]),b[a].themed=true}this._setDynamic(b)}}});
-
-
-// qx.locale.Manager
-//   - Size: 2202 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.locale.Manager",{type:"singleton",
-extend:qx.core.Object,
-construct:function(){this.base(arguments);
-this.__XruXR=qx.$$translations||{};
-this.__uqPUA=qx.$$locales||{};
-var b=qx.bom.client.Locale,a=b.LOCALE,c=b.VARIANT;
-c!==""&&(a+="_"+c);
-this.__VgKYI=a;
-this.setLocale(a||this.__1UpdE)},
-statics:{tr:function(b){var a=qx.lang.Array.fromArguments(arguments);
-a.splice(0,1);
-return qx.locale.Manager.getInstance().translate(b,a)},
-trn:function(c,b,d){var a=qx.lang.Array.fromArguments(arguments);
-a.splice(0,3);
-return d!=1?qx.locale.Manager.getInstance().translate(b,a):qx.locale.Manager.getInstance().translate(c,a)},
-trc:function(d,b){var a=qx.lang.Array.fromArguments(arguments);
-a.splice(0,2);
-return qx.locale.Manager.getInstance().translate(b,a)},
-marktr:function(a){return a}},
-properties:{locale:{check:"String",
-nullable:true,
-apply:"_applyLocale",
-event:"changeLocale"}},
-members:{__1UpdE:"C",
-__qi6oJ:null,
-__yZNgl:null,
-__XruXR:null,
-__uqPUA:null,
-__VgKYI:null,
-getLanguage:function(){return this.__yZNgl},
-getTerritory:function(){return this.getLocale().split("_")[1]||""},
-getAvailableLocales:function(){var b=[],a;
-for(a in this.__uqPUA)a!=this.__1UpdE&&b.push(a);
-return b},
-__bitbTS:function(b){var a,c=b.indexOf("_");
-a=c==-1?b:b.substring(0,c);
-return a},
-_applyLocale:function(a){a in this.__uqPUA||a==this.__VgKYI||qx.log.Logger.warn("Locale: "+a+" not available.");
-this.__qi6oJ=a;
-this.__yZNgl=this.__bitbTS(a)},
-addTranslation:function(d,a){var c=this.__XruXR,b;
-if(c[d])for(b in a)c[d][b]=a[b];
-else c[d]=a},
-addLocale:function(a,c){var d=this.__uqPUA,b;
-if(d[a])for(b in c)d[a][b]=c[b];
-else d[a]=c},
-translate:function(a,b,d){var c=this.__XruXR;
-return this.__bhMQmC(c,a,b,d)},
-localize:function(a,b,d){var c=this.__uqPUA;
-return this.__bhMQmC(c,a,b,d)},
-__bhMQmC:function(b,c,g,e){var a,h,i,d,f;
-if(!b)return c;
-e?h=this.__bitbTS(e):(e=this.__qi6oJ,h=this.__yZNgl);
-!a&&b[e]&&(a=b[e][c]);
-!a&&b[h]&&(a=b[h][c]);
-!a&&b[this.__1UpdE]&&(a=b[this.__1UpdE][c]);
-a||(a=c);
-if(g.length>0){i=[],d=0;
-for(;
-d<g.length;
-d++)f=g[d],i[d]=f&&f.translate?f.translate():f;
-a=qx.lang.String.format(a,i)}return a}},
-destruct:function(){this.__XruXR=this.__uqPUA=null}});
-
-
 // qx.data.SingleValueBinding
-//   - Size: 9819 bytes
 //   - Modified: 2010-11-10T13:22:29
+//   - Size: 9.59KB (3.04KB zipped => 31.65%)
 qx.Class.define("qx.data.SingleValueBinding",{statics:{DEBUG_ON:false,
 __yQrBp:{},
 bind:function(j,k,e,f,g){for(var n=this.__bGuuQ2(j,k,e,f,g),c=k.split("."),d=this.__duzi0s(c),l=[],m=[],i=[],h=[],b=j,a=0,r,q,s,p,o;
@@ -4276,26 +4141,125 @@ b<this.__yQrBp[a].length;
 b++)this.showBindingInLog(c,this.__yQrBp[a][b][0])}}});
 
 
-// qx.locale.MTranslation
-//   - Size: 746 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Mixin.define("qx.locale.MTranslation",{members:{tr:function(){var a=qx.locale.Manager;
-if(a)return a.tr.apply(a,arguments);
-throw new Error("To enable localization please include qx.locale.Manager into your build!")},
-trn:function(){var a=qx.locale.Manager;
-if(a)return a.trn.apply(a,arguments);
-throw new Error("To enable localization please include qx.locale.Manager into your build!")},
-trc:function(){var a=qx.locale.Manager;
-if(a)return a.trc.apply(a,arguments);
-throw new Error("To enable localization please include qx.locale.Manager into your build!")},
-marktr:function(){var a=qx.locale.Manager;
-if(a)return a.marktr.apply(a,arguments);
-throw new Error("To enable localization please include qx.locale.Manager into your build!")}}});
+// qx.theme.manager.Font
+//   - Modified: 2010-06-18T23:08:09
+//   - Size: 1.17KB (0.54KB zipped => 46.28%)
+qx.Class.define("qx.theme.manager.Font",{type:"singleton",
+extend:qx.util.ValueManager,
+construct:function(){this.base(arguments);
+qx.core.Type.add("Font",this.isDynamic,this)},
+properties:{theme:{check:"Theme",
+nullable:true,
+apply:"_applyTheme",
+event:"changeTheme"}},
+members:{resolveDynamic:function(a){var b=this._dynamic;
+return a instanceof qx.bom.Font?a:b[a]},
+resolve:function(a){var c=this._dynamic,d=c[a],b;
+if(d)return d;
+b=this.getTheme();
+if(b!==null&&b.fonts[a])return c[a]=(new qx.bom.Font).set(b.fonts[a]);
+return a},
+isDynamic:function(a){var c=this._dynamic,b;
+if(a&&(a instanceof qx.bom.Font||c[a]!==undefined))return true;
+b=this.getTheme();
+if(b!==null&&a&&b.fonts[a]){c[a]=(new qx.bom.Font).set(b.fonts[a]);
+return true}return false},
+__ba0WFb:function(a,b){if(a[b].include){var c=a[a[b].include];
+a[b].include=null;
+delete a[b].include;
+a[b]=qx.lang.Object.mergeWith(a[b],c,false);
+this.__ba0WFb(a,b)}},
+_applyTheme:function(d){var b=this._getDynamic(),a,c,e;
+for(a in b)b[a].themed&&(b[a].dispose(),delete b[a]);
+if(d){c=d.fonts,e=qx.bom.Font;
+for(a in c)c[a].include&&c[c[a].include]&&this.__ba0WFb(c,a),b[a]=(new e).set(c[a]),b[a].themed=true}this._setDynamic(b)}}});
+
+
+// qx.locale.Manager
+//   - Modified: 2010-11-11T16:55:28
+//   - Size: 2.15KB (0.90KB zipped => 41.64%)
+qx.Class.define("qx.locale.Manager",{type:"singleton",
+extend:qx.core.Object,
+construct:function(){this.base(arguments);
+this.__XruXR=qx.$$translations||{};
+this.__uqPUA=qx.$$locales||{};
+var b=qx.bom.client.Locale,a=b.LOCALE,c=b.VARIANT;
+c!==""&&(a+="_"+c);
+this.__VgKYI=a;
+this.setLocale(a||this.__1UpdE)},
+statics:{tr:function(b){var a=qx.lang.Array.fromArguments(arguments);
+a.splice(0,1);
+return qx.locale.Manager.getInstance().translate(b,a)},
+trn:function(c,b,d){var a=qx.lang.Array.fromArguments(arguments);
+a.splice(0,3);
+return d!=1?qx.locale.Manager.getInstance().translate(b,a):qx.locale.Manager.getInstance().translate(c,a)},
+trc:function(d,b){var a=qx.lang.Array.fromArguments(arguments);
+a.splice(0,2);
+return qx.locale.Manager.getInstance().translate(b,a)},
+marktr:function(a){return a}},
+properties:{locale:{check:"String",
+nullable:true,
+apply:"_applyLocale",
+event:"changeLocale"}},
+members:{__1UpdE:"C",
+__qi6oJ:null,
+__yZNgl:null,
+__XruXR:null,
+__uqPUA:null,
+__VgKYI:null,
+getLanguage:function(){return this.__yZNgl},
+getTerritory:function(){return this.getLocale().split("_")[1]||""},
+getAvailableLocales:function(){var b=[],a;
+for(a in this.__uqPUA)a!=this.__1UpdE&&b.push(a);
+return b},
+__bitbTS:function(b){var a,c=b.indexOf("_");
+a=c==-1?b:b.substring(0,c);
+return a},
+_applyLocale:function(a){a in this.__uqPUA||a==this.__VgKYI||qx.log.Logger.warn("Locale: "+a+" not available.");
+this.__qi6oJ=a;
+this.__yZNgl=this.__bitbTS(a)},
+addTranslation:function(d,a){var c=this.__XruXR,b;
+if(c[d])for(b in a)c[d][b]=a[b];
+else c[d]=a},
+addLocale:function(a,c){var d=this.__uqPUA,b;
+if(d[a])for(b in c)d[a][b]=c[b];
+else d[a]=c},
+translate:function(a,b,d){var c=this.__XruXR;
+return this.__bhMQmC(c,a,b,d)},
+localize:function(a,b,d){var c=this.__uqPUA;
+return this.__bhMQmC(c,a,b,d)},
+__bhMQmC:function(b,c,g,e){var a,h,i,d,f;
+if(!b)return c;
+e?h=this.__bitbTS(e):(e=this.__qi6oJ,h=this.__yZNgl);
+!a&&b[e]&&(a=b[e][c]);
+!a&&b[h]&&(a=b[h][c]);
+!a&&b[this.__1UpdE]&&(a=b[this.__1UpdE][c]);
+a||(a=c);
+if(g.length>0){i=[],d=0;
+for(;
+d<g.length;
+d++)f=g[d],i[d]=f&&f.translate?f.translate():f;
+a=qx.lang.String.format(a,i)}return a}},
+destruct:function(){this.__XruXR=this.__uqPUA=null}});
+
+
+// qx.bom.element.Decoration
+//   - Modified: 2010-11-11T16:55:27
+//   - Size: 0.46KB (0.31KB zipped => 67.44%)
+qx.Class.define("qx.bom.element.Decoration",{statics:{getStyles:function(b,e){var d=qx.util.ResourceManager.getInstance(),c=d.getImageSize(b)||qx.io.ImageLoader.getSize(b),a,f;
+if(c==null){qx.log.Logger.warn("Image without dimensions: "+b);
+return{}}e!="repeat"&&(a=d.getImageSprite(b));
+f={width:c.width+"px",
+height:c.height+"px",
+backgroundImage:"url("+(a?a.uri:d.toUri(b))+")",
+backgroundRepeat:e,
+backgroundPosition:a?-a.left+"px "+(-a.top-.01)+"px":null};
+return f}}});
 
 
 // qx.data.MBinding
-//   - Size: 393 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.38KB (0.17KB zipped => 43.26%)
 qx.Mixin.define("qx.data.MBinding",{members:{bind:function(d,a,c,b){return qx.data.SingleValueBinding.bind(this,d,a,c,b)},
 removeBinding:function(a){qx.data.SingleValueBinding.removeBindingFromObject(this,a)},
 removeAllBindings:function(){qx.data.SingleValueBinding.removeAllBindingsForObject(this)},
@@ -4303,8 +4267,8 @@ getBindings:function(){return qx.data.SingleValueBinding.getAllBindingsForObject
 
 
 // qx.event.type.Dom
-//   - Size: 870 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.85KB (0.35KB zipped => 40.80%)
 qx.Class.define("qx.event.type.Dom",{extend:qx.event.type.Native,
 statics:{SHIFT_MASK:1,
 CTRL_MASK:2,
@@ -4329,9 +4293,26 @@ isMetaPressed:function(){return this._native.metaKey},
 isCtrlOrCommandPressed:function(){return qx.bom.client.Platform.MAC?this._native.metaKey:this._native.ctrlKey}}});
 
 
+// qx.locale.MTranslation
+//   - Modified: 2010-11-03T14:43:37
+//   - Size: 0.73KB (0.19KB zipped => 26.68%)
+qx.Mixin.define("qx.locale.MTranslation",{members:{tr:function(){var a=qx.locale.Manager;
+if(a)return a.tr.apply(a,arguments);
+throw new Error("To enable localization please include qx.locale.Manager into your build!")},
+trn:function(){var a=qx.locale.Manager;
+if(a)return a.trn.apply(a,arguments);
+throw new Error("To enable localization please include qx.locale.Manager into your build!")},
+trc:function(){var a=qx.locale.Manager;
+if(a)return a.trc.apply(a,arguments);
+throw new Error("To enable localization please include qx.locale.Manager into your build!")},
+marktr:function(){var a=qx.locale.Manager;
+if(a)return a.marktr.apply(a,arguments);
+throw new Error("To enable localization please include qx.locale.Manager into your build!")}}});
+
+
 // qx.event.type.KeyInput
-//   - Size: 372 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.36KB (0.20KB zipped => 55.11%)
 qx.Class.define("qx.event.type.KeyInput",{extend:qx.event.type.Dom,
 members:{init:function(b,a,c){this.base(arguments,b,a,null,true,true);
 this._charCode=c;
@@ -4344,8 +4325,8 @@ getChar:function(){return String.fromCharCode(this._charCode)}}});
 
 
 // qx.event.type.KeySequence
-//   - Size: 420 bytes
 //   - Modified: 2010-09-07T21:24:54
+//   - Size: 0.41KB (0.21KB zipped => 51.90%)
 qx.Class.define("qx.event.type.KeySequence",{extend:qx.event.type.Dom,
 members:{init:function(a,b,c){this.base(arguments,a,b,null,true,true);
 this._keyCode=a.keyCode;
@@ -4360,8 +4341,8 @@ getKeyCode:function(){return this._keyCode}}});
 
 
 // qx.event.handler.Appear
-//   - Size: 1203 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.17KB (0.56KB zipped => 47.71%)
 qx.Class.define("qx.event.handler.Appear",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -4392,8 +4373,8 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.event.handler.UserAction
-//   - Size: 594 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.58KB (0.32KB zipped => 55.72%)
 qx.Class.define("qx.event.handler.UserAction",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -4412,9 +4393,19 @@ destruct:function(){this.__ugn3e=this.__qOaV1=null},
 defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
+// qx.event.dispatch.DomBubbling
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.34KB (0.21KB zipped => 63.48%)
+qx.Class.define("qx.event.dispatch.DomBubbling",{extend:qx.event.dispatch.AbstractBubbling,
+statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL},
+members:{_getParent:function(a){return a.parentNode},
+canDispatchEvent:function(b,a){return b.nodeType!==undefined&&a.getBubbles()}},
+defer:function(a){qx.event.Registration.addDispatcher(a)}});
+
+
 // qx.event.handler.DragDrop
-//   - Size: 5593 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 5.46KB (1.66KB zipped => 30.47%)
 qx.Class.define("qx.event.handler.DragDrop",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -4517,8 +4508,8 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.event.type.Drag
-//   - Size: 1448 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 1.41KB (0.46KB zipped => 32.46%)
 qx.Class.define("qx.event.type.Drag",{extend:qx.event.type.Event,
 members:{init:function(b,a){this.base(arguments,true,b);
 a?(this._native=a.getNativeEvent()||null,this._originalTarget=a.getTarget()||null):(this._native=null,this._originalTarget=null);
@@ -4545,19 +4536,9 @@ getCurrentType:function(){return this.getManager().getCurrentType()},
 getCurrentAction:function(){return this.getManager().getCurrentAction()}}});
 
 
-// qx.event.dispatch.DomBubbling
-//   - Size: 345 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.event.dispatch.DomBubbling",{extend:qx.event.dispatch.AbstractBubbling,
-statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL},
-members:{_getParent:function(a){return a.parentNode},
-canDispatchEvent:function(b,a){return b.nodeType!==undefined&&a.getBubbles()}},
-defer:function(a){qx.event.Registration.addDispatcher(a)}});
-
-
 // qx.event.handler.Window
-//   - Size: 1494 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 1.46KB (0.64KB zipped => 43.78%)
 qx.Class.define("qx.event.handler.Window",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -4596,8 +4577,8 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.core.Init
-//   - Size: 476 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 0.46KB (0.26KB zipped => 56.93%)
 qx.Class.define("qx.core.Init",{statics:{getApplication:function(){return this.__PJiSt||null},
 boot:function(b){if(this.__PJiSt)return;
 var a=this.__PJiSt=new b;
@@ -4612,8 +4593,8 @@ qx.event.Registration.addListener(window,"beforeunload",a.__mJbUf,a)}});
 
 
 // qx.bom.Element
-//   - Size: 1650 bytes
 //   - Modified: 2010-11-03T13:22:29
+//   - Size: 1.61KB (0.81KB zipped => 50.55%)
 qx.Class.define("qx.bom.Element",{statics:{__PoXf0:{},
 allowCreationWithMarkup:function(b){b||(b=window);
 var a=qx.core.ObjectRegistry.toHashCode(b),c=qx.bom.Element.__PoXf0;
@@ -4657,8 +4638,8 @@ e++)b=c[e],l.addListener(j,b.type,b.handler,b.self,b.capture)}}}return f}}});
 
 
 // qx.event.handler.Focus
-//   - Size: 5075 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 4.96KB (1.50KB zipped => 30.25%)
 qx.Class.define("qx.event.handler.Focus",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -4775,47 +4756,9 @@ var c=b.FOCUSABLE_ELEMENTS,a;
 for(a in c)c[a.toUpperCase()]=1}});
 
 
-// qx.bom.Selection
-//   - Size: 2311 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.bom.Selection",{statics:{getSelectionObject:function(a){return qx.dom.Node.getWindow(a).getSelection()},
-get:function(a){return this.__byrF7m(a)?a.value.substring(a.selectionStart,a.selectionEnd):this.getSelectionObject(qx.dom.Node.getDocument(a)).toString()},
-getLength:function(a){return this.__byrF7m(a)?a.selectionEnd-a.selectionStart:this.get(a).length},
-getStart:function(b){if(this.__byrF7m(b))return b.selectionStart;
-var c=qx.dom.Node.getDocument(b),a=this.getSelectionObject(c);
-return a.anchorOffset<a.focusOffset?a.anchorOffset:a.focusOffset},
-getEnd:function(b){if(this.__byrF7m(b))return b.selectionEnd;
-var c=qx.dom.Node.getDocument(b),a=this.getSelectionObject(c);
-return a.focusOffset>a.anchorOffset?a.focusOffset:a.anchorOffset},
-__byrF7m:function(a){return qx.dom.Node.isElement(a)&&(a.nodeName.toLowerCase()=="input"||a.nodeName.toLowerCase()=="textarea")},
-set:function(a,c,b){var g=a.nodeName.toLowerCase(),f,d,e;
-if(qx.dom.Node.isElement(a)&&(g=="input"||g=="textarea")){b===undefined&&(b=a.value.length);
-if(c>=0&&c<=a.value.length&&b>=0&&b<=a.value.length){a.focus();
-a.select();
-a.setSelectionRange(c,b);
-return true}}else{f=false,d=qx.dom.Node.getWindow(a).getSelection(),e=qx.bom.Range.get(a);
-qx.dom.Node.isText(a)?(b===undefined&&(b=a.length),c>=0&&c<a.length&&b>=0&&b<=a.length&&(f=true)):qx.dom.Node.isElement(a)?(b===undefined&&(b=a.childNodes.length-1),c>=0&&a.childNodes[c]&&b>=0&&a.childNodes[b]&&(f=true)):qx.dom.Node.isDocument(a)&&(a=a.body,b===undefined&&(b=a.childNodes.length-1),c>=0&&a.childNodes[c]&&b>=0&&a.childNodes[b]&&(f=true));
-if(f){d.isCollapsed||d.collapseToStart();
-e.setStart(a,c);
-qx.dom.Node.isText(a)?e.setEnd(a,b):e.setEndAfter(a.childNodes[b]);
-d.rangeCount>0&&d.removeAllRanges();
-d.addRange(e);
-return true}}return false},
-setAll:function(a){return qx.bom.Selection.set(a,0)},
-clear:function(a){var f=qx.bom.Selection.getSelectionObject(qx.dom.Node.getDocument(a)),c=a.nodeName.toLowerCase(),e,b,d;
-qx.dom.Node.isElement(a)&&(c=="input"||c=="textarea")?(a.setSelectionRange(0,0),qx.bom.Element.blur(a)):qx.dom.Node.isDocument(a)||c=="body"?f.collapse(a.body?a.body:a,0):(e=qx.bom.Range.get(a),e.collapsed||(d=e.commonAncestorContainer,b=qx.dom.Node.isElement(a)&&qx.dom.Node.isText(d)?d.parentNode:d,b==a&&f.collapse(a,0)))}}});
-
-
-// qx.bom.Range
-//   - Size: 191 bytes
-//   - Modified: 2010-09-18T15:10:12
-qx.Class.define("qx.bom.Range",{statics:{get:function(c){var b=qx.dom.Node.getDocument(c),a=qx.bom.Selection.getSelectionObject(b);
-return a.rangeCount>0?a.getRangeAt(0):b.createRange()}}});
-
-
 // qx.event.dispatch.MouseCapture
-//   - Size: 1849 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 1.81KB (0.72KB zipped => 39.86%)
 qx.Class.define("qx.event.dispatch.MouseCapture",{extend:qx.event.dispatch.AbstractBubbling,
 construct:function(a,b){this.base(arguments,a);
 this.__qOaV1=a.getWindow();
@@ -4863,9 +4806,47 @@ destruct:function(){this.__90fvJ=this.__qOaV1=this.__W9lJC=null},
 defer:function(a){qx.event.Registration.addDispatcher(a)}});
 
 
+// qx.bom.Selection
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 2.26KB (0.73KB zipped => 32.50%)
+qx.Class.define("qx.bom.Selection",{statics:{getSelectionObject:function(a){return qx.dom.Node.getWindow(a).getSelection()},
+get:function(a){return this.__byrF7m(a)?a.value.substring(a.selectionStart,a.selectionEnd):this.getSelectionObject(qx.dom.Node.getDocument(a)).toString()},
+getLength:function(a){return this.__byrF7m(a)?a.selectionEnd-a.selectionStart:this.get(a).length},
+getStart:function(b){if(this.__byrF7m(b))return b.selectionStart;
+var c=qx.dom.Node.getDocument(b),a=this.getSelectionObject(c);
+return a.anchorOffset<a.focusOffset?a.anchorOffset:a.focusOffset},
+getEnd:function(b){if(this.__byrF7m(b))return b.selectionEnd;
+var c=qx.dom.Node.getDocument(b),a=this.getSelectionObject(c);
+return a.focusOffset>a.anchorOffset?a.focusOffset:a.anchorOffset},
+__byrF7m:function(a){return qx.dom.Node.isElement(a)&&(a.nodeName.toLowerCase()=="input"||a.nodeName.toLowerCase()=="textarea")},
+set:function(a,c,b){var g=a.nodeName.toLowerCase(),f,d,e;
+if(qx.dom.Node.isElement(a)&&(g=="input"||g=="textarea")){b===undefined&&(b=a.value.length);
+if(c>=0&&c<=a.value.length&&b>=0&&b<=a.value.length){a.focus();
+a.select();
+a.setSelectionRange(c,b);
+return true}}else{f=false,d=qx.dom.Node.getWindow(a).getSelection(),e=qx.bom.Range.get(a);
+qx.dom.Node.isText(a)?(b===undefined&&(b=a.length),c>=0&&c<a.length&&b>=0&&b<=a.length&&(f=true)):qx.dom.Node.isElement(a)?(b===undefined&&(b=a.childNodes.length-1),c>=0&&a.childNodes[c]&&b>=0&&a.childNodes[b]&&(f=true)):qx.dom.Node.isDocument(a)&&(a=a.body,b===undefined&&(b=a.childNodes.length-1),c>=0&&a.childNodes[c]&&b>=0&&a.childNodes[b]&&(f=true));
+if(f){d.isCollapsed||d.collapseToStart();
+e.setStart(a,c);
+qx.dom.Node.isText(a)?e.setEnd(a,b):e.setEndAfter(a.childNodes[b]);
+d.rangeCount>0&&d.removeAllRanges();
+d.addRange(e);
+return true}}return false},
+setAll:function(a){return qx.bom.Selection.set(a,0)},
+clear:function(a){var f=qx.bom.Selection.getSelectionObject(qx.dom.Node.getDocument(a)),c=a.nodeName.toLowerCase(),e,b,d;
+qx.dom.Node.isElement(a)&&(c=="input"||c=="textarea")?(a.setSelectionRange(0,0),qx.bom.Element.blur(a)):qx.dom.Node.isDocument(a)||c=="body"?f.collapse(a.body?a.body:a,0):(e=qx.bom.Range.get(a),e.collapsed||(d=e.commonAncestorContainer,b=qx.dom.Node.isElement(a)&&qx.dom.Node.isText(d)?d.parentNode:d,b==a&&f.collapse(a,0)))}}});
+
+
+// qx.bom.Range
+//   - Modified: 2010-09-18T15:10:12
+//   - Size: 0.19KB (0.15KB zipped => 81.15%)
+qx.Class.define("qx.bom.Range",{statics:{get:function(c){var b=qx.dom.Node.getDocument(c),a=qx.bom.Selection.getSelectionObject(b);
+return a.rangeCount>0?a.getRangeAt(0):b.createRange()}}});
+
+
 // qx.bom.element.Scroll
-//   - Size: 1979 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.93KB (0.74KB zipped => 38.20%)
 qx.Class.define("qx.bom.element.Scroll",{statics:{intoViewX:function(d,i,q){var a=d.parentNode,r=qx.dom.Node.getDocument(d),p=r.body,o,g,m,n,c,s,k,f,j,l,u,v,t,h,e,b,x=q==="left",w=q==="right";
 i=i?i.parentNode:r;
 while(a&&a!=i){a.scrollWidth>a.clientWidth&&(a===p||qx.bom.element.Overflow.getY(a)!="visible")&&(a===p?(g=a.scrollLeft,m=g+qx.bom.Viewport.getWidth(),n=qx.bom.Viewport.getWidth(),c=a.clientWidth,s=a.scrollWidth,k=0,f=0,j=0):(o=qx.bom.element.Location.get(a),g=o.left,m=o.right,n=a.offsetWidth,c=a.clientWidth,s=a.scrollWidth,k=parseInt(qx.bom.element.Style.get(a,"borderLeftWidth"),10)||0,f=parseInt(qx.bom.element.Style.get(a,"borderRightWidth"),10)||0,j=n-c-k-f),l=qx.bom.element.Location.get(d),u=l.left,v=l.right,t=d.offsetWidth,h=u-g-k,e=v-m+f,b=0,x?b=h:w?b=e+j:h<0||t>c?b=h:e>0&&(b=e+j),a.scrollLeft+=b,(qx.bom.client.Engine.GECKO||qx.bom.client.Engine.OPERA)&&qx.event.Registration.fireNonBubblingEvent(a,"scroll"));
@@ -4881,8 +4862,8 @@ this.intoViewY(a,b,d)}}});
 
 
 // qx.event.handler.Keyboard
-//   - Size: 6070 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 5.93KB (2.01KB zipped => 33.89%)
 qx.Class.define("qx.event.handler.Keyboard",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -5033,8 +5014,8 @@ for(var b in a._specialCharCodeMap)c._identifierToKeyCodeMap[a._specialCharCodeM
 
 
 // qx.bom.Label
-//   - Size: 2778 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 2.71KB (1.00KB zipped => 36.83%)
 qx.Class.define("qx.bom.Label",{statics:{__q8NBD:{fontFamily:1,
 fontSize:1,
 fontWeight:1,
@@ -5094,8 +5075,8 @@ return b}}});
 
 
 // qx.html.Element
-//   - Size: 17141 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 16.74KB (4.60KB zipped => 27.45%)
 qx.Class.define("qx.html.Element",{extend:qx.core.Object,
 construct:function(a,c,b){this.base(arguments);
 this.__yyimE=a||"div";
@@ -5490,8 +5471,8 @@ this.__WcMi9=this.__QCQLc=this.__PLMjJ=this.__bcpP8a=this.__JDcA3=this.__EN1mA=t
 
 
 // qx.html.Decorator
-//   - Size: 656 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.64KB (0.34KB zipped => 53.81%)
 qx.Class.define("qx.html.Decorator",{extend:qx.html.Element,
 construct:function(a,c){var b={position:"absolute",
 top:0,
@@ -5512,8 +5493,8 @@ destruct:function(){this.__DWFSo=null}});
 
 
 // qx.ui.core.queue.Manager
-//   - Size: 1646 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 1.61KB (0.65KB zipped => 40.70%)
 qx.Class.define("qx.ui.core.queue.Manager",{statics:{__D9j7A:false,
 __jyQXx:{},
 __uZt45:0,
@@ -5548,9 +5529,38 @@ qx.html.Element._scheduleFlush=a.scheduleFlush;
 qx.event.Registration.addListener(window,"useraction",qx.bom.client.Feature.TOUCH?a.__Vdblt:a.flush)}});
 
 
-// qx.ui.core.queue.Visibility
-//   - Size: 774 bytes
+// qx.ui.core.queue.Widget
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.36KB (0.22KB zipped => 60.76%)
+qx.Class.define("qx.ui.core.queue.Widget",{statics:{__m5bO4:{},
+remove:function(a){delete this.__m5bO4[a.$$hash]},
+add:function(a){var b=this.__m5bO4;
+if(b[a.$$hash])return;
+b[a.$$hash]=a;
+qx.ui.core.queue.Manager.scheduleFlush("widget")},
+flush:function(){var b=this.__m5bO4,c,a;
+for(a in b)c=b[a],delete b[a],c.syncWidget();
+for(a in b)return;
+this.__m5bO4={}}}});
+
+
+// qx.ui.core.queue.Dispose
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.31KB (0.20KB zipped => 64.76%)
+qx.Class.define("qx.ui.core.queue.Dispose",{statics:{__m5bO4:{},
+add:function(a){var b=this.__m5bO4;
+if(b[a.$$hash])return;
+b[a.$$hash]=a;
+qx.ui.core.queue.Manager.scheduleFlush("dispose")},
+flush:function(){var b=this.__m5bO4,a,c;
+for(a in b)c=b[a],delete b[a],c.dispose();
+for(a in b)return;
+this.__m5bO4={}}}});
+
+
+// qx.ui.core.queue.Visibility
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.76KB (0.40KB zipped => 53.10%)
 qx.Class.define("qx.ui.core.queue.Visibility",{statics:{__m5bO4:{},
 __jlEBF:{},
 remove:function(b){var a=b.$$hash;
@@ -5572,38 +5582,9 @@ for(a in b)d=b[a],delete b[a],c[a]==null&&this.__ba6aAU(d),c[a]&&c[a]!=e[a]&&d.c
 this.__m5bO4={}}}});
 
 
-// qx.ui.core.queue.Dispose
-//   - Size: 315 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.core.queue.Dispose",{statics:{__m5bO4:{},
-add:function(a){var b=this.__m5bO4;
-if(b[a.$$hash])return;
-b[a.$$hash]=a;
-qx.ui.core.queue.Manager.scheduleFlush("dispose")},
-flush:function(){var b=this.__m5bO4,a,c;
-for(a in b)c=b[a],delete b[a],c.dispose();
-for(a in b)return;
-this.__m5bO4={}}}});
-
-
-// qx.ui.core.queue.Widget
-//   - Size: 367 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.core.queue.Widget",{statics:{__m5bO4:{},
-remove:function(a){delete this.__m5bO4[a.$$hash]},
-add:function(a){var b=this.__m5bO4;
-if(b[a.$$hash])return;
-b[a.$$hash]=a;
-qx.ui.core.queue.Manager.scheduleFlush("widget")},
-flush:function(){var b=this.__m5bO4,c,a;
-for(a in b)c=b[a],delete b[a],c.syncWidget();
-for(a in b)return;
-this.__m5bO4={}}}});
-
-
 // qx.ui.core.queue.Appearance
-//   - Size: 459 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.45KB (0.26KB zipped => 57.52%)
 qx.Class.define("qx.ui.core.queue.Appearance",{statics:{__m5bO4:{},
 remove:function(a){delete this.__m5bO4[a.$$hash]},
 add:function(a){var b=this.__m5bO4;
@@ -5616,8 +5597,8 @@ for(b in c)a=c[b],delete c[b],d.isVisible(a)?a.syncAppearance():a.$$stateChanges
 
 
 // qx.ui.core.queue.Layout
-//   - Size: 1469 bytes
 //   - Modified: 2010-09-23T21:51:03
+//   - Size: 1.43KB (0.71KB zipped => 49.63%)
 qx.Class.define("qx.ui.core.queue.Layout",{statics:{__m5bO4:{},
 remove:function(a){delete this.__m5bO4[a.$$hash]},
 add:function(a){this.__m5bO4[a.$$hash]=a;
@@ -5651,8 +5632,8 @@ g?(h=a.getLayoutParent(),d[b-1]||(d[b-1]={}),d[b-1][h.$$hash]=h):f.push(a)}}retu
 
 
 // qx.ui.core.DecoratorFactory
-//   - Size: 1205 bytes
 //   - Modified: 2010-07-17T16:42:24
+//   - Size: 1.18KB (0.61KB zipped => 51.62%)
 qx.Class.define("qx.ui.core.DecoratorFactory",{extend:qx.core.Object,
 construct:function(){this.base(arguments);
 this.__jKF37={}},
@@ -5682,8 +5663,8 @@ for(a in b)qx.util.DisposeUtil.disposeArray(b,a)}this.__jKF37=null}});
 
 
 // qx.html.Label
-//   - Size: 681 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.67KB (0.34KB zipped => 50.81%)
 qx.Class.define("qx.html.Label",{extend:qx.html.Element,
 members:{__jAecz:null,
 _applyProperty:function(b,a){this.base(arguments,b,a);
@@ -5703,9 +5684,29 @@ return this},
 getValue:function(){return this._getProperty("value")}}});
 
 
+// qx.html.Image
+//   - Modified: 2010-11-11T16:55:28
+//   - Size: 0.85KB (0.36KB zipped => 42.86%)
+qx.Class.define("qx.html.Image",{extend:qx.html.Element,
+members:{_applyProperty:function(c,d){this.base(arguments,c,d);
+if(c==="source"){var a=this._getProperty("source"),b;
+a!=null&&(b=this.getDomElement(),this._getProperty("scale")?b.src=qx.util.ResourceManager.getInstance().toUri(a):qx.bom.element2.Style.set(b,qx.bom.element.Decoration.getStyles(a,"no-repeat")))}},
+_createDomElement:function(){this.setNodeName(this._getProperty("scale")?"img":"div");
+return this.base(arguments)},
+_copyData:function(){return this.base(arguments,true)},
+setSource:function(a){this._setProperty("source",a);
+return this},
+getSource:function(){return this._getProperty("source")},
+resetSource:function(){this._removeProperty("source",true);
+return this},
+setScale:function(a){this._setProperty("scale",a);
+return this},
+getScale:function(){return this._getProperty("scale")}}});
+
+
 // qx.ui.window.Manager
-//   - Size: 1159 bytes
 //   - Modified: 2010-08-26T21:43:54
+//   - Size: 1.13KB (0.55KB zipped => 48.32%)
 qx.Class.define("qx.ui.window.Manager",{extend:qx.core.Object,
 implement:qx.ui.window.IWindowManager,
 members:{__uDc7p:null,
@@ -5731,29 +5732,9 @@ c&&(b.unshift(a),this.updateStack())}},
 destruct:function(){this._disposeObjects("__desktop")}});
 
 
-// qx.html.Image
-//   - Size: 868 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.html.Image",{extend:qx.html.Element,
-members:{_applyProperty:function(c,d){this.base(arguments,c,d);
-if(c==="source"){var a=this._getProperty("source"),b;
-a!=null&&(b=this.getDomElement(),this._getProperty("scale")?b.src=qx.util.ResourceManager.getInstance().toUri(a):qx.bom.element2.Style.set(b,qx.bom.element.Decoration.getStyles(a,"no-repeat")))}},
-_createDomElement:function(){this.setNodeName(this._getProperty("scale")?"img":"div");
-return this.base(arguments)},
-_copyData:function(){return this.base(arguments,true)},
-setSource:function(a){this._setProperty("source",a);
-return this},
-getSource:function(){return this._getProperty("source")},
-resetSource:function(){this._removeProperty("source",true);
-return this},
-setScale:function(a){this._setProperty("scale",a);
-return this},
-getScale:function(){return this._getProperty("scale")}}});
-
-
 // qx.ui.core.LayoutItem
-//   - Size: 5733 bytes
 //   - Modified: 2010-09-30T14:19:27
+//   - Size: 5.60KB (1.54KB zipped => 27.52%)
 qx.Class.define("qx.ui.core.LayoutItem",{type:"abstract",
 extend:qx.core.Object,
 properties:{minWidth:{check:"Integer",
@@ -5934,8 +5915,8 @@ destruct:function(){this.$$parent=this.$$subparent=this.__bsuVwA=this.__baXU8g=t
 
 
 // qx.ui.layout.Abstract
-//   - Size: 1274 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.24KB (0.50KB zipped => 40.58%)
 qx.Class.define("qx.ui.layout.Abstract",{type:"abstract",
 extend:qx.core.Object,
 members:{__zcIy1:null,
@@ -5963,9 +5944,89 @@ _getLayoutChildren:function(){return this.__qzkhX.getLayoutChildren()}},
 destruct:function(){this.__qzkhX=this.__zcIy1=null}});
 
 
-// qx.ui.layout.HBox
-//   - Size: 3489 bytes
+// qx.ui.layout.VBox
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 3.38KB (1.50KB zipped => 44.20%)
+qx.Class.define("qx.ui.layout.VBox",{extend:qx.ui.layout.Abstract,
+construct:function(c,b,a){this.base(arguments);
+c&&this.setSpacing(c);
+b&&this.setAlignY(b);
+a&&this.setSeparator(a)},
+properties:{alignY:{check:["top","middle","bottom"],
+init:"top",
+apply:"_applyLayoutChange"},
+alignX:{check:["left","center","right"],
+init:"left",
+apply:"_applyLayoutChange"},
+spacing:{check:"Integer",
+init:0,
+apply:"_applyLayoutChange"},
+separator:{check:"Decorator",
+nullable:true,
+apply:"_applyLayoutChange"},
+reversed:{check:"Boolean",
+init:false,
+apply:"_applyReversed"}},
+members:{__umq8d:null,
+__mLFlJ:null,
+__ItYVd:null,
+__yONi8:null,
+_applyReversed:function(){this._invalidChildrenCache=true;
+this._applyLayoutChange()},
+__VfnJe:function(){var b=this._getLayoutChildren(),d=b.length,g=false,f=this.__umq8d&&this.__umq8d.length!=d&&this.__mLFlJ&&this.__umq8d,c,h=f?this.__umq8d:new Array(d),e=f?this.__mLFlJ:new Array(d),a;
+this.getReversed()&&(b=b.concat().reverse());
+for(a=0;
+a<d;
+a++)c=b[a].getLayoutProperties(),c.height!=null&&(h[a]=parseFloat(c.height)/100),c.flex!=null?(e[a]=c.flex,g=true):e[a]=0;
+f||(this.__umq8d=h,this.__mLFlJ=e);
+this.__ItYVd=g;
+this.__yONi8=b;
+delete this._invalidChildrenCache},
+verifyLayoutProperty:function(c,a,b){this.assert(a==="flex"||a==="height","The property '"+a+"' is not supported by the VBox layout!");
+a=="height"?this.assertMatch(b,qx.ui.layout.Util.PERCENT_VALUE):(this.assertNumber(b),this.assert(b>=0))},
+renderLayout:function(s,i){this._invalidChildrenCache&&this.__VfnJe();
+var d=this.__yONi8,n=d.length,j=qx.ui.layout.Util,k=this.getSpacing(),f=this.getSeparator(),A,a,c,h,q,l,e,x,u,p,z,b,g,v,o,t,m,r,w,y;
+A=f?j.computeVerticalSeparatorGaps(d,k,f):j.computeVerticalGaps(d,k,true);
+l=[],e=A;
+for(a=0;
+a<n;
+a+=1)q=this.__umq8d[a],h=q!=null?Math.floor((i-A)*q):d[a].getSizeHint().height,l.push(h),e+=h;
+if(this.__ItYVd&&e!=i){x={};
+for(a=0;
+a<n;
+a+=1)u=this.__mLFlJ[a],u>0&&(g=d[a].getSizeHint(),x[a]={min:g.minHeight,
+value:l[a],
+max:g.maxHeight,
+flex:u});
+z=j.computeFlexOffsets(x,i,e);
+for(a in z)p=z[a].offset,l[a]+=p,e+=p}b=d[0].getMarginTop();
+e<i&&this.getAlignY()!="top"&&(b=i-e,this.getAlignY()==="middle"&&(b=Math.round(b/2)));
+this._clearSeparators();
+f&&(w=qx.theme.manager.Decoration.getInstance().resolve(f).getInsets(),y=w.top+w.bottom);
+for(a=0;
+a<n;
+a+=1)c=d[a],h=l[a],g=c.getSizeHint(),m=c.getMarginLeft(),r=c.getMarginRight(),o=Math.max(g.minWidth,Math.min(s-m-r,g.maxWidth)),v=j.computeHorizontalAlignOffset(c.getAlignX()||this.getAlignX(),o,s,m,r),a>0&&(f?(b+=t+k,this._renderSeparator(f,{top:b,
+left:0,
+height:y,
+width:s}),b+=y+k+c.getMarginTop()):b+=j.collapseMargins(k,t,c.getMarginTop())),c.renderLayout(v,b,o,h),b+=h,t=c.getMarginBottom()},
+_computeSizeHint:function(){this._invalidChildrenCache&&this.__VfnJe();
+for(var n=qx.ui.layout.Util,d=this.__yONi8,f=0,o=0,k=0,i=0,h=0,e,a,b,c=0,p=d.length,q,m,l,g,j;
+c<p;
+c+=1)e=d[c],a=e.getSizeHint(),o+=a.height,q=this.__mLFlJ[c],m=this.__umq8d[c],q?f+=a.minHeight:m?k=Math.max(k,Math.round(a.minHeight/m)):f+=a.height,b=e.getMarginLeft()+e.getMarginRight(),a.width+b>h&&(h=a.width+b),a.minWidth+b>i&&(i=a.minWidth+b);
+f+=k;
+l=this.getSpacing(),g=this.getSeparator();
+j=g?n.computeVerticalSeparatorGaps(d,l,g):n.computeVerticalGaps(d,l,true);
+this.assertInteger(j,"Layout utility returned invalid gaps. Used separator: "+g);
+return{minHeight:f+j,
+height:o+j,
+minWidth:i,
+width:h}}},
+destruct:function(){this.__umq8d=this.__mLFlJ=this.__yONi8=null}});
+
+
+// qx.ui.layout.HBox
+//   - Modified: 2010-08-26T21:43:53
+//   - Size: 3.41KB (1.50KB zipped => 44.17%)
 qx.Class.define("qx.ui.layout.HBox",{extend:qx.ui.layout.Abstract,
 construct:function(c,b,a){this.base(arguments);
 c&&this.setSpacing(c);
@@ -6044,89 +6105,9 @@ height:j}}},
 destruct:function(){this.__qLqrC=this.__mLFlJ=this.__yONi8=null}});
 
 
-// qx.ui.layout.VBox
-//   - Size: 3464 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.ui.layout.VBox",{extend:qx.ui.layout.Abstract,
-construct:function(c,b,a){this.base(arguments);
-c&&this.setSpacing(c);
-b&&this.setAlignY(b);
-a&&this.setSeparator(a)},
-properties:{alignY:{check:["top","middle","bottom"],
-init:"top",
-apply:"_applyLayoutChange"},
-alignX:{check:["left","center","right"],
-init:"left",
-apply:"_applyLayoutChange"},
-spacing:{check:"Integer",
-init:0,
-apply:"_applyLayoutChange"},
-separator:{check:"Decorator",
-nullable:true,
-apply:"_applyLayoutChange"},
-reversed:{check:"Boolean",
-init:false,
-apply:"_applyReversed"}},
-members:{__umq8d:null,
-__mLFlJ:null,
-__ItYVd:null,
-__yONi8:null,
-_applyReversed:function(){this._invalidChildrenCache=true;
-this._applyLayoutChange()},
-__VfnJe:function(){var b=this._getLayoutChildren(),d=b.length,g=false,f=this.__umq8d&&this.__umq8d.length!=d&&this.__mLFlJ&&this.__umq8d,c,h=f?this.__umq8d:new Array(d),e=f?this.__mLFlJ:new Array(d),a;
-this.getReversed()&&(b=b.concat().reverse());
-for(a=0;
-a<d;
-a++)c=b[a].getLayoutProperties(),c.height!=null&&(h[a]=parseFloat(c.height)/100),c.flex!=null?(e[a]=c.flex,g=true):e[a]=0;
-f||(this.__umq8d=h,this.__mLFlJ=e);
-this.__ItYVd=g;
-this.__yONi8=b;
-delete this._invalidChildrenCache},
-verifyLayoutProperty:function(c,a,b){this.assert(a==="flex"||a==="height","The property '"+a+"' is not supported by the VBox layout!");
-a=="height"?this.assertMatch(b,qx.ui.layout.Util.PERCENT_VALUE):(this.assertNumber(b),this.assert(b>=0))},
-renderLayout:function(s,i){this._invalidChildrenCache&&this.__VfnJe();
-var d=this.__yONi8,n=d.length,j=qx.ui.layout.Util,k=this.getSpacing(),f=this.getSeparator(),A,a,c,h,q,l,e,x,u,p,z,b,g,v,o,t,m,r,w,y;
-A=f?j.computeVerticalSeparatorGaps(d,k,f):j.computeVerticalGaps(d,k,true);
-l=[],e=A;
-for(a=0;
-a<n;
-a+=1)q=this.__umq8d[a],h=q!=null?Math.floor((i-A)*q):d[a].getSizeHint().height,l.push(h),e+=h;
-if(this.__ItYVd&&e!=i){x={};
-for(a=0;
-a<n;
-a+=1)u=this.__mLFlJ[a],u>0&&(g=d[a].getSizeHint(),x[a]={min:g.minHeight,
-value:l[a],
-max:g.maxHeight,
-flex:u});
-z=j.computeFlexOffsets(x,i,e);
-for(a in z)p=z[a].offset,l[a]+=p,e+=p}b=d[0].getMarginTop();
-e<i&&this.getAlignY()!="top"&&(b=i-e,this.getAlignY()==="middle"&&(b=Math.round(b/2)));
-this._clearSeparators();
-f&&(w=qx.theme.manager.Decoration.getInstance().resolve(f).getInsets(),y=w.top+w.bottom);
-for(a=0;
-a<n;
-a+=1)c=d[a],h=l[a],g=c.getSizeHint(),m=c.getMarginLeft(),r=c.getMarginRight(),o=Math.max(g.minWidth,Math.min(s-m-r,g.maxWidth)),v=j.computeHorizontalAlignOffset(c.getAlignX()||this.getAlignX(),o,s,m,r),a>0&&(f?(b+=t+k,this._renderSeparator(f,{top:b,
-left:0,
-height:y,
-width:s}),b+=y+k+c.getMarginTop()):b+=j.collapseMargins(k,t,c.getMarginTop())),c.renderLayout(v,b,o,h),b+=h,t=c.getMarginBottom()},
-_computeSizeHint:function(){this._invalidChildrenCache&&this.__VfnJe();
-for(var n=qx.ui.layout.Util,d=this.__yONi8,f=0,o=0,k=0,i=0,h=0,e,a,b,c=0,p=d.length,q,m,l,g,j;
-c<p;
-c+=1)e=d[c],a=e.getSizeHint(),o+=a.height,q=this.__mLFlJ[c],m=this.__umq8d[c],q?f+=a.minHeight:m?k=Math.max(k,Math.round(a.minHeight/m)):f+=a.height,b=e.getMarginLeft()+e.getMarginRight(),a.width+b>h&&(h=a.width+b),a.minWidth+b>i&&(i=a.minWidth+b);
-f+=k;
-l=this.getSpacing(),g=this.getSeparator();
-j=g?n.computeVerticalSeparatorGaps(d,l,g):n.computeVerticalGaps(d,l,true);
-this.assertInteger(j,"Layout utility returned invalid gaps. Used separator: "+g);
-return{minHeight:f+j,
-height:o+j,
-minWidth:i,
-width:h}}},
-destruct:function(){this.__umq8d=this.__mLFlJ=this.__yONi8=null}});
-
-
 // qx.ui.layout.Grid
-//   - Size: 10330 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 10.09KB (3.01KB zipped => 29.83%)
 qx.Class.define("qx.ui.layout.Grid",{extend:qx.ui.layout.Abstract,
 construct:function(a,b){this.base(arguments);
 this.__usc9t=[];
@@ -6404,8 +6385,8 @@ destruct:function(){this.__jxKLh=this.__usc9t=this.__tKdjT=this.__yElrO=this.__z
 
 
 // qx.ui.core.Widget
-//   - Size: 29236 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 28.55KB (7.62KB zipped => 26.71%)
 qx.Class.define("qx.ui.core.Widget",{extend:qx.ui.core.LayoutItem,
 include:[qx.locale.MTranslation,qx.data.MBinding],
 construct:function(){this.base(arguments);
@@ -7045,8 +7026,8 @@ this._disposeObjects("__layoutManager","__containerElement","__contentElement","
 
 
 // qx.util.placement.AbstractAxis
-//   - Size: 409 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.40KB (0.25KB zipped => 62.35%)
 qx.Class.define("qx.util.placement.AbstractAxis",{extend:qx.core.Object,
 members:{computeStart:function(){throw new Error("abstract method call!")},
 _moveToEdgeAndAlign:function(c,b,a,d){switch(d){case"edge-start":return b.start-a.end-c;
@@ -7057,8 +7038,8 @@ _isInRange:function(a,b,c){return a>=0&&a+b<=c}}});
 
 
 // qx.util.placement.BestFitAxis
-//   - Size: 275 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.27KB (0.20KB zipped => 74.18%)
 qx.Class.define("qx.util.placement.BestFitAxis",{extend:qx.util.placement.AbstractAxis,
 members:{computeStart:function(b,f,e,c,d){var a=this._moveToEdgeAndAlign(b,f,e,d);
 if(this._isInRange(a,b,c))return a;
@@ -7067,9 +7048,16 @@ a+b>c&&(a=Math.max(0,c-b));
 return a}}});
 
 
-// qx.util.placement.KeepAlignAxis
-//   - Size: 342 bytes
+// qx.util.placement.DirectAxis
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.17KB (0.14KB zipped => 80.57%)
+qx.Class.define("qx.util.placement.DirectAxis",{extend:qx.util.placement.AbstractAxis,
+members:{computeStart:function(c,b,a,e,d){return this._moveToEdgeAndAlign(c,b,a,d)}}});
+
+
+// qx.util.placement.KeepAlignAxis
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.33KB (0.23KB zipped => 69.01%)
 qx.Class.define("qx.util.placement.KeepAlignAxis",{extend:qx.util.placement.AbstractAxis,
 members:{computeStart:function(f,c,b,h,g){var a=this._moveToEdgeAndAlign(f,c,b,g),e,d;
 if(this._isInRange(a,f,h))return a;
@@ -7078,16 +7066,9 @@ a=e>h-d?e-f:d;
 return a}}});
 
 
-// qx.util.placement.DirectAxis
-//   - Size: 175 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.util.placement.DirectAxis",{extend:qx.util.placement.AbstractAxis,
-members:{computeStart:function(c,b,a,e,d){return this._moveToEdgeAndAlign(c,b,a,d)}}});
-
-
 // qx.event.Idle
-//   - Size: 593 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.58KB (0.31KB zipped => 53.63%)
 qx.Class.define("qx.event.Idle",{extend:qx.core.Object,
 type:"singleton",
 construct:function(){this.base(arguments);
@@ -7107,8 +7088,8 @@ this.__mXur6=null}});
 
 
 // qx.util.placement.Placement
-//   - Size: 2509 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 2.45KB (0.85KB zipped => 34.75%)
 qx.Class.define("qx.util.placement.Placement",{extend:qx.core.Object,
 construct:function(){this.base(arguments);
 this.__OTBFZ=new qx.util.placement.DirectAxis()},
@@ -7159,8 +7140,8 @@ destruct:function(){this._disposeObjects("__defaultAxis")}});
 
 
 // qx.ui.core.MPlacement
-//   - Size: 3654 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 3.57KB (1.20KB zipped => 33.74%)
 qx.Mixin.define("qx.ui.core.MPlacement",{statics:{__uWJAv:null,
 setVisibleElement:function(a){this.__uWJAv=a},
 getVisibleElement:function(){return this.__uWJAv}},
@@ -7246,8 +7227,8 @@ destruct:function(){this.__boPNF4()}});
 
 
 // qx.ui.basic.Image
-//   - Size: 3538 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 3.46KB (1.38KB zipped => 40.05%)
 qx.Class.define("qx.ui.basic.Image",{extend:qx.ui.core.Widget,
 construct:function(a){this.__big5KR={};
 this.base(arguments);
@@ -7327,8 +7308,8 @@ destruct:function(){this._disposeMap("__contentElements")}});
 
 
 // qx.ui.core.DragDropCursor
-//   - Size: 503 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.49KB (0.32KB zipped => 66.00%)
 qx.Class.define("qx.ui.core.DragDropCursor",{extend:qx.ui.basic.Image,
 include:qx.ui.core.MPlacement,
 type:"singleton",
@@ -7348,8 +7329,8 @@ a&&this.addState(a)}}});
 
 
 // qx.bom.client.System
-//   - Size: 2069 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 2.02KB (0.83KB zipped => 41.03%)
 qx.Bootstrap.define("qx.bom.client.System",{statics:{NAME:"",
 SP1:false,
 SP2:false,
@@ -7421,8 +7402,8 @@ defer:function(a){a.__jA3lT()}});
 
 
 // qx.event.type.Transition
-//   - Size: 302 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.29KB (0.18KB zipped => 62.58%)
 qx.Class.define("qx.event.type.Transition",{extend:qx.event.type.Dom,
 members:{init:function(b,a,c){this.base(arguments,b,a,null,true,true);
 this.__Xu4AP=c;
@@ -7434,8 +7415,8 @@ getProperty:function(){return this.__Xu4AP}}});
 
 
 // qx.event.type.Mouse
-//   - Size: 1660 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 1.62KB (0.58KB zipped => 36.08%)
 qx.Class.define("qx.event.type.Mouse",{extend:qx.event.type.Dom,
 members:{_cloneNativeEvent:function(b,a){var a=this.base(arguments,b,a);
 a.button=b.button;
@@ -7478,8 +7459,8 @@ getScreenTop:function(){return this._native.screenY}}});
 
 
 // qx.event.type.MouseWheel
-//   - Size: 589 bytes
 //   - Modified: 2010-10-13T17:38:57
+//   - Size: 0.58KB (0.27KB zipped => 47.54%)
 qx.Class.define("qx.event.type.MouseWheel",{extend:qx.event.type.Mouse,
 statics:{MAXSCROLL:1},
 members:{stop:function(){this.stopPropagation();
@@ -7494,8 +7475,8 @@ return this.__EO7y0(-this._native.wheelDelta)}}});
 
 
 // qx.event.handler.Transition
-//   - Size: 1114 bytes
 //   - Modified: 2010-09-07T21:24:54
+//   - Size: 1.09KB (0.56KB zipped => 51.08%)
 qx.Class.define("qx.event.handler.Transition",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -7522,8 +7503,8 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.event.handler.Capture
-//   - Size: 440 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 0.43KB (0.25KB zipped => 58.41%)
 qx.Class.define("qx.event.handler.Capture",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
@@ -7538,8 +7519,8 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.event.handler.Mouse
-//   - Size: 4075 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 3.98KB (1.19KB zipped => 29.89%)
 qx.Class.define("qx.event.handler.Mouse",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -7633,8 +7614,8 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.ui.core.EventHandler
-//   - Size: 2891 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 2.82KB (1.12KB zipped => 39.61%)
 qx.Class.define("qx.ui.core.EventHandler",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(){this.base(arguments);
@@ -7732,8 +7713,8 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.ui.core.MMovable
-//   - Size: 2976 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 2.91KB (1.11KB zipped => 38.10%)
 qx.Mixin.define("qx.ui.core.MMovable",{properties:{movable:{check:"Boolean",
 init:true},
 useMoveFrame:{check:"Boolean",
@@ -7804,8 +7785,8 @@ this.__DdiNa=null}});
 
 
 // qx.ui.core.MResizable
-//   - Size: 4720 bytes
 //   - Modified: 2010-07-17T16:42:24
+//   - Size: 4.61KB (1.60KB zipped => 34.66%)
 qx.Mixin.define("qx.ui.core.MResizable",{construct:function(){this.addListener("mousedown",this.__byyPoh,this,true);
 this.addListener("mouseup",this.__bhKU1E,this);
 this.addListener("mousemove",this.__byFHB4,this);
@@ -7913,8 +7894,8 @@ this.__bfA0ce=null}});
 
 
 // qx.ui.container.Composite
-//   - Size: 605 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.59KB (0.28KB zipped => 46.78%)
 qx.Class.define("qx.ui.container.Composite",{extend:qx.ui.core.Widget,
 include:[qx.ui.core.MChildrenHandling,qx.ui.core.MLayoutHandling],
 construct:function(a){this.base(arguments);
@@ -7928,8 +7909,8 @@ qx.ui.core.MLayoutHandling.remap(a)}});
 
 
 // qx.ui.core.FocusHandler
-//   - Size: 3797 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 3.71KB (1.21KB zipped => 32.66%)
 qx.Class.define("qx.ui.core.FocusHandler",{extend:qx.core.Object,
 type:"singleton",
 construct:function(){this.base(arguments);
@@ -8024,8 +8005,8 @@ this.__VvSFs=this.__OIkFf=this.__Qq1EU=null}});
 
 
 // qx.ui.basic.Label
-//   - Size: 3203 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 3.13KB (1.17KB zipped => 37.31%)
 qx.Class.define("qx.ui.basic.Label",{extend:qx.ui.core.Widget,
 implement:[qx.ui.form.IStringForm],
 construct:function(a){this.base(arguments);
@@ -8102,8 +8083,8 @@ a!=null&&!a.isDisposed()&&a.removeBinding(this.__bODULx)}this.__jBkoY=this.__bOD
 
 
 // qx.ui.layout.Atom
-//   - Size: 2231 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 2.18KB (0.98KB zipped => 45.09%)
 qx.Class.define("qx.ui.layout.Atom",{extend:qx.ui.layout.Abstract,
 properties:{gap:{check:"Integer",
 init:4,
@@ -8155,8 +8136,8 @@ height:f}}return j}}});
 
 
 // qx.ui.basic.Atom
-//   - Size: 2274 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 2.22KB (0.76KB zipped => 34.39%)
 qx.Class.define("qx.ui.basic.Atom",{extend:qx.ui.core.Widget,
 construct:function(b,a){this.assertArgumentsCount(arguments,0,2);
 this.base(arguments);
@@ -8229,8 +8210,8 @@ _applyCenter:function(a){this._getLayout().setCenter(a)}}});
 
 
 // qx.ui.form.Button
-//   - Size: 2100 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 2.05KB (0.64KB zipped => 31.05%)
 qx.Class.define("qx.ui.form.Button",{extend:qx.ui.basic.Atom,
 include:[qx.ui.core.MExecutable],
 implement:[qx.ui.form.IExecutable],
@@ -8278,8 +8259,8 @@ _onKeyUp:function(a){switch(a.getKeyIdentifier()){case"Enter":case"Space":this.h
 
 
 // qx.ui.window.Window
-//   - Size: 8520 bytes
 //   - Modified: 2010-09-07T21:24:54
+//   - Size: 8.32KB (2.19KB zipped => 26.28%)
 qx.Class.define("qx.ui.window.Window",{extend:qx.ui.core.Widget,
 include:[qx.ui.core.MRemoteChildrenHandling,qx.ui.core.MRemoteLayoutHandling,qx.ui.core.MResizable,qx.ui.core.MMovable,qx.ui.core.MContentPadding],
 construct:function(b,a){this.base(arguments);
@@ -8483,8 +8464,8 @@ this.getChildControl("close-button").reset()}}});
 
 
 // qx.bom.Stylesheet
-//   - Size: 1069 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 1.04KB (0.48KB zipped => 46.12%)
 qx.Class.define("qx.bom.Stylesheet",{statics:{includeFile:function(c,b){b||(b=document);
 var a=b.createElement("link"),d;
 a.type="text/css";
@@ -8514,8 +8495,8 @@ a--)b[a].type==b[a].IMPORT_RULE&&c.deleteRule(a)}}});
 
 
 // qx.html.Root
-//   - Size: 255 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.25KB (0.16KB zipped => 65.49%)
 qx.Class.define("qx.html.Root",{extend:qx.html.Element,
 construct:function(a){this.base(arguments);
 a!=null&&this.useElement(a)},
@@ -8525,8 +8506,8 @@ qx.html.Element._modified[this.$$hash]=this}}});
 
 
 // qx.html.Blocker
-//   - Size: 1055 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.03KB (0.36KB zipped => 34.88%)
 qx.Class.define("qx.html.Blocker",{extend:qx.html.Element,
 construct:function(a,c){var a=a?qx.theme.manager.Color.getInstance().resolve(a):null,b={position:"absolute",
 width:"100%",
@@ -8552,8 +8533,8 @@ this.setStyle("cursor",a,true)}}});
 
 
 // qx.ui.layout.Basic
-//   - Size: 810 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.79KB (0.41KB zipped => 52.10%)
 qx.Class.define("qx.ui.layout.Basic",{extend:qx.ui.layout.Abstract,
 members:{verifyLayoutProperty:function(c,a,b){this.assert(a=="left"||a=="top","The property '"+a+"' is not supported by the Basic layout!");
 this.assertInteger(b)},
@@ -8568,8 +8549,8 @@ height:d}}}});
 
 
 // qx.ui.layout.Canvas
-//   - Size: 2432 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 2.38KB (1.01KB zipped => 42.39%)
 qx.Class.define("qx.ui.layout.Canvas",{extend:qx.ui.layout.Abstract,
 members:{verifyLayoutProperty:function(d,b,a){var c={top:1,
 left:1,
@@ -8593,8 +8574,8 @@ minHeight:l}}}});
 
 
 // qx.ui.window.MDesktop
-//   - Size: 1952 bytes
 //   - Modified: 2010-08-26T21:43:54
+//   - Size: 1.91KB (0.60KB zipped => 31.30%)
 qx.Mixin.define("qx.ui.window.MDesktop",{properties:{activeWindow:{check:"qx.ui.window.Window",
 apply:"_applyActiveWindow",
 init:null,
@@ -8629,8 +8610,8 @@ this._disposeObjects("__manager")}});
 
 
 // qx.ui.root.Abstract
-//   - Size: 1409 bytes
 //   - Modified: 2010-06-18T23:08:09
+//   - Size: 1.38KB (0.64KB zipped => 46.27%)
 qx.Class.define("qx.ui.root.Abstract",{type:"abstract",
 extend:qx.ui.core.Widget,
 include:[qx.ui.core.MChildrenHandling,qx.ui.core.MBlocker,qx.ui.window.MDesktop],
@@ -8669,8 +8650,8 @@ defer:function(b,a){qx.ui.core.MChildrenHandling.remap(a)}});
 
 
 // qx.ui.root.Application
-//   - Size: 1563 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 1.53KB (0.73KB zipped => 47.92%)
 qx.Class.define("qx.ui.root.Application",{extend:qx.ui.root.Abstract,
 construct:function(a){this.__qOaV1=qx.dom.Node.getWindow(a);
 this.__gJpI1=a;
@@ -8710,8 +8691,8 @@ destruct:function(){this.__qOaV1=this.__gJpI1=null}});
 
 
 // qx.ui.root.Page
-//   - Size: 1537 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.50KB (0.70KB zipped => 46.32%)
 qx.Class.define("qx.ui.root.Page",{extend:qx.ui.root.Abstract,
 construct:function(a){this.__gJpI1=a;
 this.base(arguments);
@@ -8753,8 +8734,8 @@ destruct:function(){this.__gJpI1=null}});
 
 
 // qx.ui.core.Blocker
-//   - Size: 4692 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 4.58KB (1.43KB zipped => 31.16%)
 qx.Class.define("qx.ui.core.Blocker",{extend:qx.core.Object,
 construct:function(a){this.base(arguments);
 this._widget=a;
@@ -8862,9 +8843,28 @@ this._disposeObjects("__contentBlocker","__blocker","__timer");
 this.__VI41X=this.__9hYDs=this.__2x0gW=this._widget=this.__bRCHEn=null}});
 
 
-// qx.ui.core.MNativeOverflow
-//   - Size: 465 bytes
+// apiviewer.MWidgetRegistry
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.65KB (0.32KB zipped => 48.94%)
+qx.Mixin.define("apiviewer.MWidgetRegistry",{properties:{id:{check:"String",
+apply:"_applyId",
+nullable:true,
+init:null}},
+members:{_applyId:function(b,a){var c=apiviewer.MWidgetRegistry;
+a&&c.unregister(this,a);
+b&&c.register(this,b)},
+getWidgetById:function(a){return apiviewer.MWidgetRegistry.getWidgetById(a)}},
+statics:{__yALNM:{},
+getWidgetById:function(a){return this.__yALNM[a]},
+register:function(b,a){if(this.__yALNM[a])throw new Error("An object with the id '"+a+"' already exists.");
+this.__yALNM[a]=b},
+unregister:function(b,a){if(this.__yALNM[a]!==b)throw new Error("The object is not registered with the id '"+a+"'.");
+delete this.__yALNM[a]}}});
+
+
+// qx.ui.core.MNativeOverflow
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.45KB (0.22KB zipped => 48.39%)
 qx.Mixin.define("qx.ui.core.MNativeOverflow",{properties:{overflowX:{check:["hidden","visible","scroll","auto"],
 nullable:true,
 apply:"_applyOverflowX"},
@@ -8876,73 +8876,55 @@ members:{_applyOverflowX:function(a){this.getContentElement().setStyle("overflow
 _applyOverflowY:function(a){this.getContentElement().setStyle("overflowY",a)}}});
 
 
-// qx.ui.table.IColumnMenuItem
-//   - Size: 123 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.table.IColumnMenuItem",{properties:{visible:{}},
-events:{changeVisible:"qx.event.type.Data"}});
-
-
-// qx.util.format.IFormat
-//   - Size: 99 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.util.format.IFormat",{members:{format:function(){},
-parse:function(){}}});
-
-
-// qx.ui.core.scroll.IScrollBar
-//   - Size: 308 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.core.scroll.IScrollBar",{events:{scroll:"qx.event.type.Data"},
-properties:{orientation:{},
-maximum:{},
-position:{},
-knobFactor:{}},
-members:{scrollTo:function(a){this.assertNumber(a)},
-scrollBy:function(a){this.assertNumber(a)},
-scrollBySteps:function(a){this.assertNumber(a)}}});
-
-
-// qx.ui.table.ICellEditorFactory
-//   - Size: 152 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.table.ICellEditorFactory",{members:{createCellEditor:function(){return true},
-getCellEditorValue:function(){return true}}});
-
-
 // qx.ui.table.IColumnMenuButton
-//   - Size: 151 bytes
 //   - Modified: 2010-10-13T17:38:57
+//   - Size: 0.15KB (0.12KB zipped => 80.13%)
 qx.Interface.define("qx.ui.table.IColumnMenuButton",{properties:{menu:{}},
 members:{factory:function(){return true},
 empty:function(){return true}}});
 
 
 // qx.ui.table.ICellRenderer
-//   - Size: 105 bytes
 //   - Modified: 2010-07-17T16:42:24
+//   - Size: 0.10KB (0.10KB zipped => 100.00%)
 qx.Interface.define("qx.ui.table.ICellRenderer",{members:{createDataCellHtml:function(){return true}}});
 
 
 // qx.ui.table.IHeaderRenderer
-//   - Size: 147 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.14KB (0.11KB zipped => 76.19%)
 qx.Interface.define("qx.ui.table.IHeaderRenderer",{members:{createHeaderCell:function(){return true},
 updateHeaderCell:function(){return true}}});
 
 
-// qx.ui.table.IRowRenderer
-//   - Size: 182 bytes
+// qx.ui.table.IColumnMenuItem
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.12KB (0.11KB zipped => 93.50%)
+qx.Interface.define("qx.ui.table.IColumnMenuItem",{properties:{visible:{}},
+events:{changeVisible:"qx.event.type.Data"}});
+
+
+// qx.ui.table.IRowRenderer
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.18KB (0.13KB zipped => 72.53%)
 qx.Interface.define("qx.ui.table.IRowRenderer",{members:{updateDataRowElement:function(){},
 getRowHeightStyle:function(){},
 createRowStyle:function(){},
 getRowClass:function(){}}});
 
 
+// qx.application.IApplication
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.15KB (0.10KB zipped => 69.80%)
+qx.Interface.define("qx.application.IApplication",{members:{main:function(){},
+finalize:function(){},
+close:function(){},
+terminate:function(){}}});
+
+
 // qx.ui.table.ITableModel
-//   - Size: 616 bytes
 //   - Modified: 2010-08-26T21:43:54
+//   - Size: 0.60KB (0.23KB zipped => 37.99%)
 qx.Interface.define("qx.ui.table.ITableModel",{events:{dataChanged:"qx.event.type.Data",
 metaDataChanged:"qx.event.type.Event",
 sorted:"qx.event.type.Data"},
@@ -8964,9 +8946,22 @@ setValue:function(){},
 setValueById:function(){}}});
 
 
+// qx.ui.core.scroll.IScrollBar
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.30KB (0.17KB zipped => 57.14%)
+qx.Interface.define("qx.ui.core.scroll.IScrollBar",{events:{scroll:"qx.event.type.Data"},
+properties:{orientation:{},
+maximum:{},
+position:{},
+knobFactor:{}},
+members:{scrollTo:function(a){this.assertNumber(a)},
+scrollBy:function(a){this.assertNumber(a)},
+scrollBySteps:function(a){this.assertNumber(a)}}});
+
+
 // qx.ui.core.ISingleSelection
-//   - Size: 389 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.38KB (0.17KB zipped => 44.73%)
 qx.Interface.define("qx.ui.core.ISingleSelection",{events:{changeSelection:"qx.event.type.Data"},
 members:{getSelection:function(){return true},
 setSelection:function(){return arguments.length==1},
@@ -8976,38 +8971,39 @@ isSelectionEmpty:function(){return true},
 getSelectables:function(){return arguments.length==1}}});
 
 
-// qx.ui.core.ISingleSelectionProvider
-//   - Size: 125 bytes
+// qx.util.format.IFormat
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.10KB (0.09KB zipped => 88.89%)
+qx.Interface.define("qx.util.format.IFormat",{members:{format:function(){},
+parse:function(){}}});
+
+
+// qx.ui.table.ICellEditorFactory
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.15KB (0.11KB zipped => 76.32%)
+qx.Interface.define("qx.ui.table.ICellEditorFactory",{members:{createCellEditor:function(){return true},
+getCellEditorValue:function(){return true}}});
+
+
+// qx.ui.core.ISingleSelectionProvider
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.12KB (0.11KB zipped => 87.20%)
 qx.Interface.define("qx.ui.core.ISingleSelectionProvider",{members:{getItems:function(){},
 isItemSelectable:function(){}}});
 
 
 // qx.ui.form.IBooleanForm
-//   - Size: 199 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.19KB (0.14KB zipped => 72.86%)
 qx.Interface.define("qx.ui.form.IBooleanForm",{events:{changeValue:"qx.event.type.Data"},
 members:{setValue:function(){return arguments.length==1},
 resetValue:function(){},
 getValue:function(){}}});
 
 
-// qx.ui.form.IRange
-//   - Size: 365 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.ui.form.IRange",{members:{setMinimum:function(){return arguments.length==1},
-getMinimum:function(){},
-setMaximum:function(){return arguments.length==1},
-getMaximum:function(){},
-setSingleStep:function(){return arguments.length==1},
-getSingleStep:function(){},
-setPageStep:function(){return arguments.length==1},
-getPageStep:function(){}}});
-
-
 // qx.ui.form.IForm
-//   - Size: 633 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.62KB (0.20KB zipped => 32.23%)
 qx.Interface.define("qx.ui.form.IForm",{events:{changeEnabled:"qx.event.type.Data",
 changeValid:"qx.event.type.Data",
 changeInvalidMessage:"qx.event.type.Data",
@@ -9025,26 +9021,17 @@ getRequiredInvalidMessage:function(){}}});
 
 
 // qx.ui.form.IModel
-//   - Size: 167 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.16KB (0.11KB zipped => 70.06%)
 qx.Interface.define("qx.ui.form.IModel",{events:{changeModel:"qx.event.type.Data"},
 members:{setModel:function(){},
 getModel:function(){},
 resetModel:function(){}}});
 
 
-// qx.application.IApplication
-//   - Size: 149 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Interface.define("qx.application.IApplication",{members:{main:function(){},
-finalize:function(){},
-close:function(){},
-terminate:function(){}}});
-
-
 // qx.ui.form.INumberForm
-//   - Size: 198 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.19KB (0.14KB zipped => 72.22%)
 qx.Interface.define("qx.ui.form.INumberForm",{events:{changeValue:"qx.event.type.Data"},
 members:{setValue:function(){return arguments.length==1},
 resetValue:function(){},
@@ -9052,24 +9039,45 @@ getValue:function(){}}});
 
 
 // qx.ui.form.IModelSelection
-//   - Size: 126 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.12KB (0.09KB zipped => 73.02%)
 qx.Interface.define("qx.ui.form.IModelSelection",{members:{setModelSelection:function(){},
 getModelSelection:function(){}}});
 
 
-// qx.ui.core.IMultiSelection
-//   - Size: 248 bytes
+// qx.ui.form.IRange
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.36KB (0.14KB zipped => 40.00%)
+qx.Interface.define("qx.ui.form.IRange",{members:{setMinimum:function(){return arguments.length==1},
+getMinimum:function(){},
+setMaximum:function(){return arguments.length==1},
+getMaximum:function(){},
+setSingleStep:function(){return arguments.length==1},
+getSingleStep:function(){},
+setPageStep:function(){return arguments.length==1},
+getPageStep:function(){}}});
+
+
+// qx.ui.core.IMultiSelection
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.24KB (0.15KB zipped => 60.89%)
 qx.Interface.define("qx.ui.core.IMultiSelection",{extend:qx.ui.core.ISingleSelection,
 members:{selectAll:function(){return true},
 addToSelection:function(){return arguments.length==1},
 removeFromSelection:function(){return arguments.length==1}}});
 
 
-// qx.util.StringEscape
-//   - Size: 574 bytes
+// qx.lang.Number
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.20KB (0.14KB zipped => 72.06%)
+qx.Class.define("qx.lang.Number",{statics:{isInRange:function(a,b,c){return a>=b&&a<=c},
+isBetweenRange:function(a,b,c){return a>b&&a<c},
+limit:function(b,a,c){return c!=null&&b>c?c:a!=null&&b<a?a:b}}});
+
+
+// qx.util.StringEscape
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.56KB (0.34KB zipped => 60.98%)
 qx.Class.define("qx.util.StringEscape",{statics:{escape:function(d,g){for(var b,e="",c=0,h=d.length,f,a;
 c<h;
 c++)f=d.charAt(c),a=f.charCodeAt(0),b=g[a]?"&"+g[a]+";":a>0x7F?"&#"+a+";":f,e+=b;
@@ -9079,17 +9087,9 @@ c?d=String.fromCharCode(c):b.charAt(0)=="#"&&(b.charAt(1).toUpperCase()=="X"?(c=
 return d})}}});
 
 
-// qx.lang.Number
-//   - Size: 204 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.lang.Number",{statics:{isInRange:function(a,b,c){return a>=b&&a<=c},
-isBetweenRange:function(a,b,c){return a>b&&a<c},
-limit:function(b,a,c){return c!=null&&b>c?c:a!=null&&b<a?a:b}}});
-
-
 // qx.log.appender.Util
-//   - Size: 2100 bytes
 //   - Modified: 2010-09-13T20:08:24
+//   - Size: 2.05KB (0.93KB zipped => 45.14%)
 qx.Class.define("qx.log.appender.Util",{statics:{toHtml:function(c){var a=[],e,d,b,f,g,k,j,l,i,m,h;
 a.push("<span class='offset'>",this.formatOffset(c.offset,6),"</span> ");
 c.object?(g=c.win.qx.core.ObjectRegistry.fromHashCode(c.object),g&&a.push("<span class='object' title='Object instance with hash code: "+g.$$hash+"'>",g.classname,"[",g.$$hash,"]</span>: ")):c.clazz&&a.push("<span class='object'>"+c.clazz.classname,"</span>: ");
@@ -9138,8 +9138,8 @@ d.type==="map"?c.push("{",e.join(", "),"}"):c.push("[",e.join(", "),"]")}else c.
 
 
 // qx.type.BaseArray
-//   - Size: 1948 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 1.90KB (0.60KB zipped => 31.52%)
 qx.Class.define("qx.type.BaseArray",{extend:Array,
 construct:function(){},
 members:{toArray:null,
@@ -9196,9 +9196,18 @@ a.prototype.length=0;
 qx.type.BaseArray=c(a)})();
 
 
-// qx.bom.client.Transport
-//   - Size: 357 bytes
+// apiviewer.ObjectRegistry
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.21KB (0.16KB zipped => 75.00%)
+qx.Class.define("apiviewer.ObjectRegistry",{statics:{__yALNM:{},
+register:function(a){var b=qx.core.ObjectRegistry.toHashCode(a);
+this.__yALNM[b]=a},
+getObjectFromHashCode:function(a){return this.__yALNM[a]}}});
+
+
+// qx.bom.client.Transport
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.35KB (0.26KB zipped => 73.95%)
 qx.Class.define("qx.bom.client.Transport",{statics:{getMaxConcurrentRequestCount:function(){var b,d=qx.bom.client.Engine,a=d.FULLVERSION.split("."),c=0,e=0,f=0;
 a[0]&&(c=a[0]);
 a[1]&&(e=a[1]);
@@ -9207,18 +9216,9 @@ b=window.maxConnectionsPerServer?window.maxConnectionsPerServer:d.OPERA?8:d.WEBK
 return b}}});
 
 
-// apiviewer.ObjectRegistry
-//   - Size: 212 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ObjectRegistry",{statics:{__yALNM:{},
-register:function(a){var b=qx.core.ObjectRegistry.toHashCode(a);
-this.__yALNM[b]=a},
-getObjectFromHashCode:function(a){return this.__yALNM[a]}}});
-
-
 // qx.util.StringBuilder
-//   - Size: 320 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.31KB (0.20KB zipped => 62.81%)
 qx.Class.define("qx.util.StringBuilder",{extend:qx.type.BaseArray,
 members:{clear:function(){this.length=0},
 get:function(){return this.join("")},
@@ -9231,8 +9231,8 @@ a.valueOf=a.get}});
 
 
 // qx.bom.String
-//   - Size: 3392 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 3.31KB (1.61KB zipped => 48.64%)
 qx.Class.define("qx.bom.String",{statics:{TO_CHARCODE:{quot:34,
 amp:38,
 lt:60,
@@ -9493,91 +9493,70 @@ toText:function(a){return qx.bom.String.unescape(a.replace(/\s+|<([^>])+>/gi,fun
 defer:function(a){a.FROM_CHARCODE=qx.lang.Object.invert(a.TO_CHARCODE)}});
 
 
-// apiviewer.TreeUtil
-//   - Size: 5289 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("apiviewer.TreeUtil",{extend:qx.core.Object,
-construct:function(){this.base(arguments)},
-statics:{getChild:function(a,c){if(a!=null&&a.children!=null)for(var b=0;
-b<a.children.length;
-b++)if(a.children[b].type==c)return a.children[b];
-return null},
-getChildByAttribute:function(b,e,d){if(b.children!=null)for(var c=0,a;
-c<b.children.length;
-c++){a=b.children[c];
-if(a.attributes&&a.attributes[e]==d)return a}return null},
-getIconUrl:function(a,d){var b,c=apiviewer.dao;
-if(a instanceof c.Package)b="ICON_PACKAGE";
-else if(a instanceof c.Class)switch(a.getType()){case"mixin":b="ICON_MIXIN";
-break;
-case"interface":b="ICON_INTERFACE";
-break;
-default:b="ICON_CLASS",a.isStatic()?b+="_STATIC":a.isAbstract()?b+="_ABSTRACT":a.isSingleton()&&(b+="_SINGLETON")}else if(a instanceof c.Property)b="ICON_PROPERTY",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV"),a.isThemeable()&&(b+="_THEMEABLE");
-else if(a instanceof c.Event)b="ICON_EVENT";
-else if(a instanceof c.Method)a.isConstructor()?b="ICON_CTOR":(b="ICON_METHOD",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV")),a.isStatic()?b+="_STATIC":a.isAbstract()&&(b+="_ABSTRACT"),a.getClass().getType()=="mixin"&&(b+="_MIXIN");
-else if(a instanceof c.Constant)b="ICON_CONSTANT";
-else if(a instanceof c.Appearance)b="ICON_APPEARANCE";
-else if(a instanceof c.ChildControl)b="ICON_CHILDCONTROL";
-else throw new Error("Unknown node type: "+a.type);
-a instanceof c.ClassItem&&(d?b+="_INHERITED":a.getOverriddenFrom&&a.getOverriddenFrom()&&(b+="_OVERRIDDEN"),a.getErrors().length>0&&(b+="_ERROR"));
-a.hasWarning()&&(b+="_WARN");
-return apiviewer.TreeUtil.iconNameToIconPath(b)},
-iconNameToIconPath:function(f){var b=apiviewer.TreeUtil[f],a,d,e,c,g;
-if(!b){a=f.split("_"),d=a[0]+"_"+a[1];
-a[2]=="PUB"||a[2]=="PROT"||a[2]=="PRIV"?(d+="_"+a[2],e=3):e=2;
-b=[apiviewer.TreeUtil[d]];
-if(b[0]==null)throw new Error("Unknown img constant: "+d);
-for(c=e;
-c<a.length;
-c++){g=apiviewer.TreeUtil["OVERLAY_"+a[c]];
-if(g==null)throw new Error("Unknown img constant: OVERLAY_"+a[c]);
-b.push(g)}}return b},
-ICON_BLANK:"apiviewer/image/blank.gif",
-OVERLAY_ABSTRACT:"apiviewer/image/overlay_abstract18.gif",
-OVERLAY_ERROR:"apiviewer/image/overlay_error18.gif",
-OVERLAY_INHERITED:"apiviewer/image/overlay_inherited18.gif",
-OVERLAY_OVERRIDDEN:"apiviewer/image/overlay_overridden18.gif",
-OVERLAY_THEMEABLE:"apiviewer/image/overlay_themeable18.gif",
-OVERLAY_STATIC:"apiviewer/image/overlay_static18.gif",
-OVERLAY_WARN:"apiviewer/image/overlay_warning18.gif",
-OVERLAY_MIXIN:"apiviewer/image/overlay_mixin18.gif",
-ICON_PACKAGE:"apiviewer/image/package18.gif",
-ICON_PACKAGE_WARN:"apiviewer/image/package_warning18.gif",
-ICON_CLASS:"apiviewer/image/class18.gif",
-ICON_CLASS_WARN:"apiviewer/image/class_warning18.gif",
-ICON_CLASS_ERROR:"apiviewer/image/class_warning18.gif",
-ICON_CLASS_STATIC:"apiviewer/image/class_static18.gif",
-ICON_CLASS_STATIC_WARN:"apiviewer/image/class_static_warning18.gif",
-ICON_CLASS_STATIC_ERROR:"apiviewer/image/class_static_warning18.gif",
-ICON_CLASS_ABSTRACT:"apiviewer/image/class_abstract18.gif",
-ICON_CLASS_ABSTRACT_WARN:"apiviewer/image/class_abstract_warning18.gif",
-ICON_CLASS_ABSTRACT_ERROR:"apiviewer/image/class_abstract_warning18.gif",
-ICON_CLASS_SINGLETON:"apiviewer/image/class_singleton18.gif",
-ICON_CLASS_SINGLETON_WARN:"apiviewer/image/class_singleton_warning18.gif",
-ICON_CLASS_SINGLETON_ERROR:"apiviewer/image/class_singleton_warning18.gif",
-ICON_PROPERTY_PUB:"apiviewer/image/property18.gif",
-ICON_PROPERTY_PROT:"apiviewer/image/property_protected18.gif",
-ICON_PROPERTY_PRIV:"apiviewer/image/property_private18.gif",
-ICON_PROPERTY_PUB_THEMEABLE:"apiviewer/image/property_themeable18.gif",
-ICON_EVENT:"apiviewer/image/event18.gif",
-ICON_INTERFACE:"apiviewer/image/interface18.gif",
-ICON_INTERFACE_WARN:"apiviewer/image/interface_warning18.gif",
-ICON_MIXIN:"apiviewer/image/mixin18.gif",
-ICON_MIXIN_WARN:"apiviewer/image/mixin_warning18.gif",
-ICON_METHOD_PUB:"apiviewer/image/method_public18.gif",
-ICON_METHOD_PUB_INHERITED:"apiviewer/image/method_public_inherited18.gif",
-ICON_CTOR:"apiviewer/image/constructor18.gif",
-ICON_METHOD_PROT:"apiviewer/image/method_protected18.gif",
-ICON_METHOD_PRIV:"apiviewer/image/method_private18.gif",
-ICON_CONSTANT:"apiviewer/image/constant18.gif",
-ICON_APPEARANCE:"apiviewer/image/constant18.gif",
-ICON_CHILDCONTROL:"apiviewer/image/childcontrol18.gif"},
-defer:function(a){a.PRELOAD_IMAGES=[a.ICON_INFO,a.ICON_SEARCH,a.OVERLAY_ABSTRACT,a.OVERLAY_ERROR,a.OVERLAY_INHERITED,a.OVERLAY_OVERRIDDEN,a.OVERLAY_STATIC,a.OVERLAY_WARN,a.OVERLAY_MIXIN,a.OVERLAY_THEMEABLE,a.ICON_PACKAGE,a.ICON_PACKAGE_WARN,a.ICON_CLASS,a.ICON_CLASS_WARN,a.ICON_CLASS_ERROR,a.ICON_CLASS_STATIC,a.ICON_CLASS_STATIC_WARN,a.ICON_CLASS_STATIC_ERROR,a.ICON_CLASS_ABSTRACT,a.ICON_CLASS_ABSTRACT_WARN,a.ICON_CLASS_ABSTRACT_ERROR,a.ICON_CLASS_SINGLETON,a.ICON_CLASS_SINGLETON_WARN,a.ICON_CLASS_SINGLETON_ERROR,a.ICON_PROPERTY_PUB,a.ICON_PROPERTY_PROT,a.ICON_PROPERTY_PRIV,a.ICON_PROPERTY_PUB_THEMEABLE,a.ICON_EVENT,a.ICON_INTERFACE,a.ICON_INTERFACE_WARN,a.ICON_MIXIN,a.ICON_MIXIN_WARN,a.ICON_METHOD_PUB,a.ICON_METHOD_PUB_INHERITED,a.ICON_CTOR,a.ICON_METHOD_PROT,a.ICON_METHOD_PRIV,a.ICON_CONSTANT,a.ICON_CHILDCONTROL]}});
+// qx.ui.table.columnmodel.resizebehavior.Abstract
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.85KB (0.36KB zipped => 42.43%)
+qx.Class.define("qx.ui.table.columnmodel.resizebehavior.Abstract",{type:"abstract",
+extend:qx.core.Object,
+members:{_setNumColumns:function(){throw new Error("_setNumColumns is abstract")},
+onAppear:function(){throw new Error("onAppear is abstract")},
+onTableWidthChanged:function(){throw new Error("onTableWidthChanged is abstract")},
+onVerticalScrollBarChanged:function(){throw new Error("onVerticalScrollBarChanged is abstract")},
+onColumnWidthChanged:function(){throw new Error("onColumnWidthChanged is abstract")},
+onVisibilityChanged:function(){throw new Error("onVisibilityChanged is abstract")},
+_getAvailableWidth:function(){var e=this.getTableColumnModel(),c=e.getTable(),a=c._getPaneScrollerArr(),b,d;
+if(!a[0]||!a[0].getLayoutParent().getBounds())return null;
+b=a[0].getLayoutParent().getBounds().width,d=a[a.length-1];
+b-=d.getPaneInsetRight();
+return b}}});
+
+
+// qx.ui.table.pane.Model
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.67KB (0.61KB zipped => 36.45%)
+qx.Class.define("qx.ui.table.pane.Model",{extend:qx.core.Object,
+construct:function(a){this.base(arguments);
+a.addListener("visibilityChangedPre",this._onColVisibilityChanged,this);
+this.__boH5Jq=a},
+events:{modelChanged:"qx.event.type.Event"},
+statics:{EVENT_TYPE_MODEL_CHANGED:"modelChanged"},
+properties:{firstColumnX:{check:"Integer",
+init:0,
+apply:"_applyFirstColumnX"},
+maxColumnCount:{check:"Number",
+init:-1,
+apply:"_applyMaxColumnCount"}},
+members:{__PMBsU:null,
+__boH5Jq:null,
+_applyFirstColumnX:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+_applyMaxColumnCount:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+setTableColumnModel:function(a){this.__boH5Jq=a;
+this.__PMBsU=null},
+_onColVisibilityChanged:function(){this.__PMBsU=null;
+this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
+getColumnCount:function(){if(this.__PMBsU==null){var c=this.getFirstColumnX(),a=this.getMaxColumnCount(),b=this.__boH5Jq.getVisibleColumnCount();
+this.__PMBsU=a==-1||c+a>b?b-c:a}return this.__PMBsU},
+getColumnAtX:function(a){var b=this.getFirstColumnX();
+return this.__boH5Jq.getVisibleColumnAtX(b+a)},
+getX:function(c){var d=this.getFirstColumnX(),b=this.getMaxColumnCount(),a=this.__boH5Jq.getVisibleX(c)-d;
+return a>=0&&(b==-1||a<b)?a:-1},
+getColumnLeft:function(d){for(var c=0,e=this.getColumnCount(),a=0,b;
+a<e;
+a++){b=this.getColumnAtX(a);
+if(b==d)return c;
+c+=this.__boH5Jq.getColumnWidth(b)}return-1},
+getTotalWidth:function(){for(var b=0,d=this.getColumnCount(),a=0,c;
+a<d;
+a++)c=this.getColumnAtX(a),b+=this.__boH5Jq.getColumnWidth(c);
+return b}},
+destruct:function(){this.__boH5Jq=null}});
 
 
 // qx.ui.table.selection.Model
-//   - Size: 4221 bytes
 //   - Modified: 2010-09-30T14:20:20
+//   - Size: 4.12KB (1.29KB zipped => 31.30%)
 qx.Class.define("qx.ui.table.selection.Model",{extend:qx.core.Object,
 construct:function(){this.base(arguments);
 this.__bo6y46=[];
@@ -9686,133 +9665,91 @@ _fireChangeSelection:function(){this.hasBatchMode()?this.__cNnwDS=true:this.fire
 destruct:function(){this.__bo6y46=null}});
 
 
-// qx.ui.table.pane.Model
-//   - Size: 1709 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.pane.Model",{extend:qx.core.Object,
-construct:function(a){this.base(arguments);
-a.addListener("visibilityChangedPre",this._onColVisibilityChanged,this);
-this.__boH5Jq=a},
-events:{modelChanged:"qx.event.type.Event"},
-statics:{EVENT_TYPE_MODEL_CHANGED:"modelChanged"},
-properties:{firstColumnX:{check:"Integer",
-init:0,
-apply:"_applyFirstColumnX"},
-maxColumnCount:{check:"Number",
-init:-1,
-apply:"_applyMaxColumnCount"}},
-members:{__PMBsU:null,
-__boH5Jq:null,
-_applyFirstColumnX:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-_applyMaxColumnCount:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-setTableColumnModel:function(a){this.__boH5Jq=a;
-this.__PMBsU=null},
-_onColVisibilityChanged:function(){this.__PMBsU=null;
-this.fireEvent(qx.ui.table.pane.Model.EVENT_TYPE_MODEL_CHANGED)},
-getColumnCount:function(){if(this.__PMBsU==null){var c=this.getFirstColumnX(),a=this.getMaxColumnCount(),b=this.__boH5Jq.getVisibleColumnCount();
-this.__PMBsU=a==-1||c+a>b?b-c:a}return this.__PMBsU},
-getColumnAtX:function(a){var b=this.getFirstColumnX();
-return this.__boH5Jq.getVisibleColumnAtX(b+a)},
-getX:function(c){var d=this.getFirstColumnX(),b=this.getMaxColumnCount(),a=this.__boH5Jq.getVisibleX(c)-d;
-return a>=0&&(b==-1||a<b)?a:-1},
-getColumnLeft:function(d){for(var c=0,e=this.getColumnCount(),a=0,b;
-a<e;
-a++){b=this.getColumnAtX(a);
-if(b==d)return c;
-c+=this.__boH5Jq.getColumnWidth(b)}return-1},
-getTotalWidth:function(){for(var b=0,d=this.getColumnCount(),a=0,c;
-a<d;
-a++)c=this.getColumnAtX(a),b+=this.__boH5Jq.getColumnWidth(c);
-return b}},
-destruct:function(){this.__boH5Jq=null}});
-
-
-// qx.ui.table.columnmodel.resizebehavior.Abstract
-//   - Size: 872 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.columnmodel.resizebehavior.Abstract",{type:"abstract",
-extend:qx.core.Object,
-members:{_setNumColumns:function(){throw new Error("_setNumColumns is abstract")},
-onAppear:function(){throw new Error("onAppear is abstract")},
-onTableWidthChanged:function(){throw new Error("onTableWidthChanged is abstract")},
-onVerticalScrollBarChanged:function(){throw new Error("onVerticalScrollBarChanged is abstract")},
-onColumnWidthChanged:function(){throw new Error("onColumnWidthChanged is abstract")},
-onVisibilityChanged:function(){throw new Error("onVisibilityChanged is abstract")},
-_getAvailableWidth:function(){var e=this.getTableColumnModel(),c=e.getTable(),a=c._getPaneScrollerArr(),b,d;
-if(!a[0]||!a[0].getLayoutParent().getBounds())return null;
-b=a[0].getLayoutParent().getBounds().width,d=a[a.length-1];
-b-=d.getPaneInsetRight();
-return b}}});
-
-
-// qx.ui.table.celleditor.AbstractField
-//   - Size: 696 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.celleditor.AbstractField",{extend:qx.core.Object,
-implement:qx.ui.table.ICellEditorFactory,
-type:"abstract",
-properties:{validationFunction:{check:"Function",
-nullable:true,
-init:null}},
-members:{_createEditor:function(){throw new Error("Abstract method call!")},
-createCellEditor:function(b){var a=this._createEditor();
-a.originalValue=b.value;
-(b.value===null||b.value===undefined)&&(b.value="");
-a.setValue(""+b.value);
-a.addListener("appear",function(){a.selectAllText()});
-return a},
-getCellEditorValue:function(b){var a=b.getValue(),c=this.getValidationFunction();
-c&&(a=c(a,b.originalValue));
-typeof b.originalValue=="number"&&(a=parseFloat(a));
-return a}}});
-
-
-// qx.ui.core.SingleSelectionManager
-//   - Size: 1641 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.ui.core.SingleSelectionManager",{extend:qx.core.Object,
-construct:function(a){this.base(arguments);
-qx.core.Assert.assertInterface(a,qx.ui.core.ISingleSelectionProvider,"Invalid selectionProvider!");
-this.__bzZEce=a},
-events:{changeSelected:"qx.event.type.Data"},
-properties:{allowEmptySelection:{check:"Boolean",
-init:true,
-apply:"_applyAllowEmptySelection"}},
-members:{__zbljM:null,
-__bzZEce:null,
-getSelected:function(){return this.__zbljM},
-setSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not select "+a+", because it is not a child element!");
-this.__PjbdU(a)},
-resetSelected:function(){this.__PjbdU(null)},
-isSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not check if "+a+" is selected,"+" because it is not a child element!");
-return this.__zbljM===a},
-isSelectionEmpty:function(){return this.__zbljM==null},
-getSelectables:function(d){for(var c=this.__bzZEce.getItems(),b=[],a=0;
-a<c.length;
-a++)this.__bzZEce.isItemSelectable(c[a])&&b.push(c[a]);
-if(!d)for(a=b.length-1;
-a>=0;
-a--)b[a].getEnabled()||b.splice(a,1);
-return b},
-_applyAllowEmptySelection:function(a){a||this.__PjbdU(this.__zbljM)},
-__PjbdU:function(d){var b=this.__zbljM,a=d,c;
-if(a!=null&&b===a)return;
-!this.isAllowEmptySelection()&&a==null&&(c=this.getSelectables(true)[0],c&&(a=c));
-this.__zbljM=a;
-this.fireDataEvent("changeSelected",a,b)},
-__7CRhB:function(c){for(var b=this.__bzZEce.getItems(),a=0;
-a<b.length;
-a++)if(b[a]===c)return true;
-return false}},
-destruct:function(){this.__bzZEce.toHashCode?this._disposeObjects("__selectionProvider"):this.__bzZEce=null;
-this._disposeObjects("__selected")}});
+// apiviewer.TreeUtil
+//   - Modified: 2010-08-26T21:43:53
+//   - Size: 5.17KB (1.46KB zipped => 28.23%)
+qx.Class.define("apiviewer.TreeUtil",{extend:qx.core.Object,
+construct:function(){this.base(arguments)},
+statics:{getChild:function(a,c){if(a!=null&&a.children!=null)for(var b=0;
+b<a.children.length;
+b++)if(a.children[b].type==c)return a.children[b];
+return null},
+getChildByAttribute:function(b,e,d){if(b.children!=null)for(var c=0,a;
+c<b.children.length;
+c++){a=b.children[c];
+if(a.attributes&&a.attributes[e]==d)return a}return null},
+getIconUrl:function(a,d){var b,c=apiviewer.dao;
+if(a instanceof c.Package)b="ICON_PACKAGE";
+else if(a instanceof c.Class)switch(a.getType()){case"mixin":b="ICON_MIXIN";
+break;
+case"interface":b="ICON_INTERFACE";
+break;
+default:b="ICON_CLASS",a.isStatic()?b+="_STATIC":a.isAbstract()?b+="_ABSTRACT":a.isSingleton()&&(b+="_SINGLETON")}else if(a instanceof c.Property)b="ICON_PROPERTY",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV"),a.isThemeable()&&(b+="_THEMEABLE");
+else if(a instanceof c.Event)b="ICON_EVENT";
+else if(a instanceof c.Method)a.isConstructor()?b="ICON_CTOR":(b="ICON_METHOD",a.isPublic()?b+="_PUB":a.isProtected()?b+="_PROT":(a.isPrivate()||a.isInternal())&&(b+="_PRIV")),a.isStatic()?b+="_STATIC":a.isAbstract()&&(b+="_ABSTRACT"),a.getClass().getType()=="mixin"&&(b+="_MIXIN");
+else if(a instanceof c.Constant)b="ICON_CONSTANT";
+else if(a instanceof c.Appearance)b="ICON_APPEARANCE";
+else if(a instanceof c.ChildControl)b="ICON_CHILDCONTROL";
+else throw new Error("Unknown node type: "+a.type);
+a instanceof c.ClassItem&&(d?b+="_INHERITED":a.getOverriddenFrom&&a.getOverriddenFrom()&&(b+="_OVERRIDDEN"),a.getErrors().length>0&&(b+="_ERROR"));
+a.hasWarning()&&(b+="_WARN");
+return apiviewer.TreeUtil.iconNameToIconPath(b)},
+iconNameToIconPath:function(f){var b=apiviewer.TreeUtil[f],a,d,e,c,g;
+if(!b){a=f.split("_"),d=a[0]+"_"+a[1];
+a[2]=="PUB"||a[2]=="PROT"||a[2]=="PRIV"?(d+="_"+a[2],e=3):e=2;
+b=[apiviewer.TreeUtil[d]];
+if(b[0]==null)throw new Error("Unknown img constant: "+d);
+for(c=e;
+c<a.length;
+c++){g=apiviewer.TreeUtil["OVERLAY_"+a[c]];
+if(g==null)throw new Error("Unknown img constant: OVERLAY_"+a[c]);
+b.push(g)}}return b},
+ICON_BLANK:"apiviewer/image/blank.gif",
+OVERLAY_ABSTRACT:"apiviewer/image/overlay_abstract18.gif",
+OVERLAY_ERROR:"apiviewer/image/overlay_error18.gif",
+OVERLAY_INHERITED:"apiviewer/image/overlay_inherited18.gif",
+OVERLAY_OVERRIDDEN:"apiviewer/image/overlay_overridden18.gif",
+OVERLAY_THEMEABLE:"apiviewer/image/overlay_themeable18.gif",
+OVERLAY_STATIC:"apiviewer/image/overlay_static18.gif",
+OVERLAY_WARN:"apiviewer/image/overlay_warning18.gif",
+OVERLAY_MIXIN:"apiviewer/image/overlay_mixin18.gif",
+ICON_PACKAGE:"apiviewer/image/package18.gif",
+ICON_PACKAGE_WARN:"apiviewer/image/package_warning18.gif",
+ICON_CLASS:"apiviewer/image/class18.gif",
+ICON_CLASS_WARN:"apiviewer/image/class_warning18.gif",
+ICON_CLASS_ERROR:"apiviewer/image/class_warning18.gif",
+ICON_CLASS_STATIC:"apiviewer/image/class_static18.gif",
+ICON_CLASS_STATIC_WARN:"apiviewer/image/class_static_warning18.gif",
+ICON_CLASS_STATIC_ERROR:"apiviewer/image/class_static_warning18.gif",
+ICON_CLASS_ABSTRACT:"apiviewer/image/class_abstract18.gif",
+ICON_CLASS_ABSTRACT_WARN:"apiviewer/image/class_abstract_warning18.gif",
+ICON_CLASS_ABSTRACT_ERROR:"apiviewer/image/class_abstract_warning18.gif",
+ICON_CLASS_SINGLETON:"apiviewer/image/class_singleton18.gif",
+ICON_CLASS_SINGLETON_WARN:"apiviewer/image/class_singleton_warning18.gif",
+ICON_CLASS_SINGLETON_ERROR:"apiviewer/image/class_singleton_warning18.gif",
+ICON_PROPERTY_PUB:"apiviewer/image/property18.gif",
+ICON_PROPERTY_PROT:"apiviewer/image/property_protected18.gif",
+ICON_PROPERTY_PRIV:"apiviewer/image/property_private18.gif",
+ICON_PROPERTY_PUB_THEMEABLE:"apiviewer/image/property_themeable18.gif",
+ICON_EVENT:"apiviewer/image/event18.gif",
+ICON_INTERFACE:"apiviewer/image/interface18.gif",
+ICON_INTERFACE_WARN:"apiviewer/image/interface_warning18.gif",
+ICON_MIXIN:"apiviewer/image/mixin18.gif",
+ICON_MIXIN_WARN:"apiviewer/image/mixin_warning18.gif",
+ICON_METHOD_PUB:"apiviewer/image/method_public18.gif",
+ICON_METHOD_PUB_INHERITED:"apiviewer/image/method_public_inherited18.gif",
+ICON_CTOR:"apiviewer/image/constructor18.gif",
+ICON_METHOD_PROT:"apiviewer/image/method_protected18.gif",
+ICON_METHOD_PRIV:"apiviewer/image/method_private18.gif",
+ICON_CONSTANT:"apiviewer/image/constant18.gif",
+ICON_APPEARANCE:"apiviewer/image/constant18.gif",
+ICON_CHILDCONTROL:"apiviewer/image/childcontrol18.gif"},
+defer:function(a){a.PRELOAD_IMAGES=[a.ICON_INFO,a.ICON_SEARCH,a.OVERLAY_ABSTRACT,a.OVERLAY_ERROR,a.OVERLAY_INHERITED,a.OVERLAY_OVERRIDDEN,a.OVERLAY_STATIC,a.OVERLAY_WARN,a.OVERLAY_MIXIN,a.OVERLAY_THEMEABLE,a.ICON_PACKAGE,a.ICON_PACKAGE_WARN,a.ICON_CLASS,a.ICON_CLASS_WARN,a.ICON_CLASS_ERROR,a.ICON_CLASS_STATIC,a.ICON_CLASS_STATIC_WARN,a.ICON_CLASS_STATIC_ERROR,a.ICON_CLASS_ABSTRACT,a.ICON_CLASS_ABSTRACT_WARN,a.ICON_CLASS_ABSTRACT_ERROR,a.ICON_CLASS_SINGLETON,a.ICON_CLASS_SINGLETON_WARN,a.ICON_CLASS_SINGLETON_ERROR,a.ICON_PROPERTY_PUB,a.ICON_PROPERTY_PROT,a.ICON_PROPERTY_PRIV,a.ICON_PROPERTY_PUB_THEMEABLE,a.ICON_EVENT,a.ICON_INTERFACE,a.ICON_INTERFACE_WARN,a.ICON_MIXIN,a.ICON_MIXIN_WARN,a.ICON_METHOD_PUB,a.ICON_METHOD_PUB_INHERITED,a.ICON_CTOR,a.ICON_METHOD_PROT,a.ICON_METHOD_PRIV,a.ICON_CONSTANT,a.ICON_CHILDCONTROL]}});
 
 
 // qx.ui.table.model.Abstract
-//   - Size: 2207 bytes
 //   - Modified: 2010-07-17T16:42:24
+//   - Size: 2.16KB (0.72KB zipped => 33.26%)
 qx.Class.define("qx.ui.table.model.Abstract",{type:"abstract",
 extend:qx.core.Object,
 implement:qx.ui.table.ITableModel,
@@ -9866,9 +9803,72 @@ this.setColumnNamesByIndex(b)}},
 destruct:function(){this.__O3vqJ=this.__2m0iZ=this.__9WoOR=null}});
 
 
+// qx.ui.table.celleditor.AbstractField
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.68KB (0.38KB zipped => 55.89%)
+qx.Class.define("qx.ui.table.celleditor.AbstractField",{extend:qx.core.Object,
+implement:qx.ui.table.ICellEditorFactory,
+type:"abstract",
+properties:{validationFunction:{check:"Function",
+nullable:true,
+init:null}},
+members:{_createEditor:function(){throw new Error("Abstract method call!")},
+createCellEditor:function(b){var a=this._createEditor();
+a.originalValue=b.value;
+(b.value===null||b.value===undefined)&&(b.value="");
+a.setValue(""+b.value);
+a.addListener("appear",function(){a.selectAllText()});
+return a},
+getCellEditorValue:function(b){var a=b.getValue(),c=this.getValidationFunction();
+c&&(a=c(a,b.originalValue));
+typeof b.originalValue=="number"&&(a=parseFloat(a));
+return a}}});
+
+
+// qx.ui.core.SingleSelectionManager
+//   - Modified: 2010-11-11T16:55:28
+//   - Size: 1.60KB (0.70KB zipped => 43.63%)
+qx.Class.define("qx.ui.core.SingleSelectionManager",{extend:qx.core.Object,
+construct:function(a){this.base(arguments);
+qx.core.Assert.assertInterface(a,qx.ui.core.ISingleSelectionProvider,"Invalid selectionProvider!");
+this.__bzZEce=a},
+events:{changeSelected:"qx.event.type.Data"},
+properties:{allowEmptySelection:{check:"Boolean",
+init:true,
+apply:"_applyAllowEmptySelection"}},
+members:{__zbljM:null,
+__bzZEce:null,
+getSelected:function(){return this.__zbljM},
+setSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not select "+a+", because it is not a child element!");
+this.__PjbdU(a)},
+resetSelected:function(){this.__PjbdU(null)},
+isSelected:function(a){if(!this.__7CRhB(a))throw new Error("Could not check if "+a+" is selected,"+" because it is not a child element!");
+return this.__zbljM===a},
+isSelectionEmpty:function(){return this.__zbljM==null},
+getSelectables:function(d){for(var c=this.__bzZEce.getItems(),b=[],a=0;
+a<c.length;
+a++)this.__bzZEce.isItemSelectable(c[a])&&b.push(c[a]);
+if(!d)for(a=b.length-1;
+a>=0;
+a--)b[a].getEnabled()||b.splice(a,1);
+return b},
+_applyAllowEmptySelection:function(a){a||this.__PjbdU(this.__zbljM)},
+__PjbdU:function(d){var b=this.__zbljM,a=d,c;
+if(a!=null&&b===a)return;
+!this.isAllowEmptySelection()&&a==null&&(c=this.getSelectables(true)[0],c&&(a=c));
+this.__zbljM=a;
+this.fireDataEvent("changeSelected",a,b)},
+__7CRhB:function(c){for(var b=this.__bzZEce.getItems(),a=0;
+a<b.length;
+a++)if(b[a]===c)return true;
+return false}},
+destruct:function(){this.__bzZEce.toHashCode?this._disposeObjects("__selectionProvider"):this.__bzZEce=null;
+this._disposeObjects("__selected")}});
+
+
 // qx.ui.table.model.Simple
-//   - Size: 6096 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 5.95KB (1.52KB zipped => 25.59%)
 qx.Class.define("qx.ui.table.model.Simple",{extend:qx.ui.table.model.Abstract,
 construct:function(){this.base(arguments);
 this.__qvtBo=[];
@@ -9995,8 +9995,8 @@ destruct:function(){this.__qvtBo=this.__8iVLk=this.__Qj9qV=this.__bahQDi=null}})
 
 
 // qx.ui.core.MSingleSelectionHandling
-//   - Size: 1318 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.29KB (0.54KB zipped => 42.19%)
 qx.Mixin.define("qx.ui.core.MSingleSelectionHandling",{events:{changeSelection:"qx.event.type.Data"},
 members:{__ugn3e:null,
 getSelection:function(){var a=this.__IwJpC().getSelected();
@@ -10023,8 +10023,8 @@ destruct:function(){this._disposeObjects("__manager")}});
 
 
 // qx.event.AcceleratingTimer
-//   - Size: 946 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.92KB (0.38KB zipped => 41.33%)
 qx.Class.define("qx.event.AcceleratingTimer",{extend:qx.core.Object,
 construct:function(){this.base(arguments);
 this.__mXur6=new qx.event.Timer(this.getInterval());
@@ -10054,8 +10054,8 @@ destruct:function(){this._disposeObjects("__timer")}});
 
 
 // qx.io.remote.Response
-//   - Size: 590 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.58KB (0.27KB zipped => 46.61%)
 qx.Class.define("qx.io.remote.Response",{extend:qx.event.type.Event,
 properties:{state:{check:"Integer",
 nullable:true},
@@ -10076,9 +10076,26 @@ if(a)return a[b]||null;
 return null}}});
 
 
+// qx.data.marshal.MEventBubbling
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.15KB (0.52KB zipped => 44.96%)
+qx.Mixin.define("qx.data.marshal.MEventBubbling",{events:{changeBubble:"qx.event.type.Data"},
+members:{_applyEventPropagation:function(a,c,b){this.fireDataEvent("changeBubble",{value:a,
+name:b,
+old:c});
+this._registerEventChaining(a,c,b)},
+_registerEventChaining:function(b,a,d){if(b instanceof qx.core.Object&&qx.Class.hasMixin(b.constructor,qx.data.marshal.MEventBubbling)){var e=qx.lang.Function.bind(this.__cmTSDc,this,d),c=b.addListener("changeBubble",e,this);
+b.setUserData("idBubble",c)}a!=null&&a.getUserData&&a.getUserData("idBubble")!=null&&a.removeListenerById(a.getUserData("idBubble"))},
+__cmTSDc:function(c,f){var a=f.getData(),i=a.value,h=a.old,d,e,g,b,j;
+qx.Class.hasInterface(f.getTarget().constructor,qx.data.IListData)?a.name.indexOf?(d=a.name.indexOf(".")!=-1?a.name.indexOf("."):a.name.length,e=a.name.indexOf("[")!=-1?a.name.indexOf("["):a.name.length,d<e?(g=a.name.substring(0,d),b=a.name.substring(d+1,a.name.length),b[0]!="["&&(b="."+b),j=c+"["+g+"]"+b):e<d?(g=a.name.substring(0,e),b=a.name.substring(e,a.name.length),j=c+"["+g+"]"+b):j=c+"["+a.name+"]"):j=c+"["+a.name+"]":j=c+"."+a.name;
+this.fireDataEvent("changeBubble",{value:i,
+name:j,
+old:h})}}});
+
+
 // qx.bom.History
-//   - Size: 1950 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 1.90KB (0.78KB zipped => 40.77%)
 qx.Class.define("qx.bom.History",{extend:qx.core.Object,
 type:"abstract",
 construct:function(){this.base(arguments);
@@ -10123,8 +10140,8 @@ destruct:function(){this.__qPPea=null}});
 
 
 // qx.bom.NativeHistory
-//   - Size: 885 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.86KB (0.40KB zipped => 45.76%)
 qx.Class.define("qx.bom.NativeHistory",{extend:qx.bom.History,
 construct:function(){this.base(arguments);
 this.__bhy5Vx()},
@@ -10138,26 +10155,9 @@ _writeState:function(a){this._setHash(this._encode(a))}},
 destruct:function(){this.__bpGRyj()}});
 
 
-// qx.data.marshal.MEventBubbling
-//   - Size: 1181 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Mixin.define("qx.data.marshal.MEventBubbling",{events:{changeBubble:"qx.event.type.Data"},
-members:{_applyEventPropagation:function(a,c,b){this.fireDataEvent("changeBubble",{value:a,
-name:b,
-old:c});
-this._registerEventChaining(a,c,b)},
-_registerEventChaining:function(b,a,d){if(b instanceof qx.core.Object&&qx.Class.hasMixin(b.constructor,qx.data.marshal.MEventBubbling)){var e=qx.lang.Function.bind(this.__cmTSDc,this,d),c=b.addListener("changeBubble",e,this);
-b.setUserData("idBubble",c)}a!=null&&a.getUserData&&a.getUserData("idBubble")!=null&&a.removeListenerById(a.getUserData("idBubble"))},
-__cmTSDc:function(c,f){var a=f.getData(),i=a.value,h=a.old,d,e,g,b,j;
-qx.Class.hasInterface(f.getTarget().constructor,qx.data.IListData)?a.name.indexOf?(d=a.name.indexOf(".")!=-1?a.name.indexOf("."):a.name.length,e=a.name.indexOf("[")!=-1?a.name.indexOf("["):a.name.length,d<e?(g=a.name.substring(0,d),b=a.name.substring(d+1,a.name.length),b[0]!="["&&(b="."+b),j=c+"["+g+"]"+b):e<d?(g=a.name.substring(0,e),b=a.name.substring(e,a.name.length),j=c+"["+g+"]"+b):j=c+"["+a.name+"]"):j=c+"["+a.name+"]":j=c+"."+a.name;
-this.fireDataEvent("changeBubble",{value:i,
-name:j,
-old:h})}}});
-
-
 // qx.data.Array
-//   - Size: 5351 bytes
 //   - Modified: 2010-09-30T14:20:20
+//   - Size: 5.23KB (1.40KB zipped => 26.80%)
 qx.Class.define("qx.data.Array",{extend:qx.core.Object,
 include:qx.data.marshal.MEventBubbling,
 implement:[qx.data.IListData],
@@ -10316,16 +10316,16 @@ this.__mK7fC=null}});
 
 
 // qx.log.appender.Native
-//   - Size: 275 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 0.27KB (0.20KB zipped => 73.09%)
 qx.Class.define("qx.log.appender.Native",{statics:{process:function(c){var b=window.debug||window.console||window.air&&window.air.Introspector.Console,a;
 b&&(a=c.level,a in b||(a="log"),b[a](qx.log.appender.Util.toText(c)))}},
 defer:function(a){qx.log.Logger.register(a)}});
 
 
 // qx.ui.form.MModelSelection
-//   - Size: 1227 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.20KB (0.57KB zipped => 47.51%)
 qx.Mixin.define("qx.ui.form.MModelSelection",{construct:function(){this.__9y1Fq=new qx.data.Array();
 this.__9y1Fq.addListener("change",this.__diZBky,this);
 this.addListener("changeSelection",this.__cj87eL,this)},
@@ -10360,8 +10360,8 @@ destruct:function(){this._disposeObjects("__modelSelection")}});
 
 
 // qx.ui.core.selection.Abstract
-//   - Size: 14065 bytes
 //   - Modified: 2010-09-13T20:08:24
+//   - Size: 13.74KB (3.44KB zipped => 25.05%)
 qx.Class.define("qx.ui.core.selection.Abstract",{type:"abstract",
 extend:qx.core.Object,
 construct:function(){this.base(arguments);
@@ -10652,8 +10652,8 @@ this.__ycir2=null}});
 
 
 // qx.dev.Tokenizer
-//   - Size: 2775 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 2.71KB (1.10KB zipped => 40.43%)
 qx.Class.define("qx.dev.Tokenizer",{extend:qx.core.Object,
 statics:{tokenizeJavaScript:function(D){for(var r={"break":1,
 "case":1,
@@ -10734,17 +10734,9 @@ break;
 default:a.add(b)}}return a.get()}}});
 
 
-// qx.locale.Number
-//   - Size: 398 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.locale.Number",{statics:{getDecimalSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_decimal_separator",[],a)},
-getGroupSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_group_separator",[],a)},
-getPercentFormat:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_percent_format",[],a)}}});
-
-
 // qx.locale.Date
-//   - Size: 3410 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 3.33KB (1.13KB zipped => 33.81%)
 qx.Class.define("qx.locale.Date",{statics:{__gQyZ7:qx.locale.Manager.getInstance(),
 getAmMarker:function(a){return this.__gQyZ7.localize("cldr_am",[],a)},
 getPmMarker:function(a){return this.__gQyZ7.localize("cldr_pm",[],a)},
@@ -10896,9 +10888,17 @@ else b=this.__gQyZ7.getTerritory()||this.__gQyZ7.getLanguage();
 return b.toUpperCase()}}});
 
 
+// qx.locale.Number
+//   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.39KB (0.17KB zipped => 44.22%)
+qx.Class.define("qx.locale.Number",{statics:{getDecimalSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_decimal_separator",[],a)},
+getGroupSeparator:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_group_separator",[],a)},
+getPercentFormat:function(a){return qx.locale.Manager.getInstance().localize("cldr_number_percent_format",[],a)}}});
+
+
 // qx.ui.table.selection.Manager
-//   - Size: 1375 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.34KB (0.53KB zipped => 39.13%)
 qx.Class.define("qx.ui.table.selection.Manager",{extend:qx.core.Object,
 construct:function(){this.base(arguments)},
 properties:{selectionModel:{check:"qx.ui.table.selection.Model"}},
@@ -10919,8 +10919,8 @@ d.isShiftPressed()?(a!=e||b.isSelectionEmpty())&&(c==-1&&(c=a),d.isCtrlOrCommand
 
 
 // qx.util.format.DateFormat
-//   - Size: 9560 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 9.34KB (2.73KB zipped => 29.27%)
 qx.Class.define("qx.util.format.DateFormat",{extend:qx.core.Object,
 implement:qx.util.format.IFormat,
 construct:function(a,b){this.base(arguments);
@@ -11202,8 +11202,8 @@ destruct:function(){this.__JNnpk=this.__DJKy2=this.__JMPjt=null}});
 
 
 // qx.util.format.NumberFormat
-//   - Size: 2620 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 2.56KB (0.98KB zipped => 38.21%)
 qx.Class.define("qx.util.format.NumberFormat",{extend:qx.core.Object,
 implement:qx.util.format.IFormat,
 construct:function(a){this.base(arguments);
@@ -11260,8 +11260,8 @@ return parseFloat(g)}}});
 
 
 // qx.ui.form.RadioGroup
-//   - Size: 2989 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 2.92KB (0.99KB zipped => 33.96%)
 qx.Class.define("qx.ui.form.RadioGroup",{extend:qx.core.Object,
 implement:[qx.ui.core.ISingleSelection,qx.ui.form.IForm,qx.ui.form.IModelSelection],
 include:[qx.ui.core.MSingleSelectionHandling,qx.ui.form.MModelSelection],
@@ -11341,9 +11341,27 @@ a&&a.setValue(true)}},
 destruct:function(){this._disposeArray("__items")}});
 
 
+// qx.ui.table.pane.CellEvent
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.53KB (0.30KB zipped => 56.25%)
+qx.Class.define("qx.ui.table.pane.CellEvent",{extend:qx.event.type.Mouse,
+properties:{row:{check:"Integer",
+nullable:true},
+column:{check:"Integer",
+nullable:true}},
+members:{init:function(b,d,a,c){d.clone(this);
+this.setBubbles(false);
+a!=null?this.setRow(a):this.setRow(b._getRowForPagePos(this.getDocumentLeft(),this.getDocumentTop()));
+c!=null?this.setColumn(c):this.setColumn(b._getColumnForPageX(this.getDocumentLeft()))},
+clone:function(b){var a=this.base(arguments,b);
+a.set({row:this.getRow(),
+column:this.getColumn()});
+return a}}});
+
+
 // apiviewer.UiModel
-//   - Size: 419 bytes
 //   - Modified: 2010-05-05T20:54:13
+//   - Size: 0.41KB (0.20KB zipped => 48.93%)
 qx.Class.define("apiviewer.UiModel",{extend:qx.core.Object,
 type:"singleton",
 include:[qx.data.MBinding],
@@ -11362,8 +11380,8 @@ event:"changeShowPrivate"}}});
 
 
 // qx.util.Json
-//   - Size: 3785 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 3.70KB (1.35KB zipped => 36.62%)
 qx.Class.define("qx.util.Json",{statics:{__bn0U1J:null,
 BEAUTIFYING_INDENT:"  ",
 BEAUTIFYING_LINE_END:"\n",
@@ -11437,27 +11455,9 @@ qx.core.Setting.define("qx.jsonDebugging",false);
 a.__bn0U1J=Date.prototype.toJSON}});
 
 
-// qx.ui.table.pane.CellEvent
-//   - Size: 544 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.pane.CellEvent",{extend:qx.event.type.Mouse,
-properties:{row:{check:"Integer",
-nullable:true},
-column:{check:"Integer",
-nullable:true}},
-members:{init:function(b,d,a,c){d.clone(this);
-this.setBubbles(false);
-a!=null?this.setRow(a):this.setRow(b._getRowForPagePos(this.getDocumentLeft(),this.getDocumentTop()));
-c!=null?this.setColumn(c):this.setColumn(b._getColumnForPageX(this.getDocumentLeft()))},
-clone:function(b){var a=this.base(arguments,b);
-a.set({row:this.getRow(),
-column:this.getColumn()});
-return a}}});
-
-
 // qx.ui.form.IRadioItem
-//   - Size: 237 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.23KB (0.15KB zipped => 66.24%)
 qx.Interface.define("qx.ui.form.IRadioItem",{events:{changeValue:"qx.event.type.Data"},
 members:{setValue:function(){},
 getValue:function(){},
@@ -11465,32 +11465,9 @@ setGroup:function(a){this.assertInstance(a,qx.ui.form.RadioGroup)},
 getGroup:function(){}}});
 
 
-// qx.theme.manager.Meta
-//   - Size: 796 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.theme.manager.Meta",{type:"singleton",
-extend:qx.core.Object,
-properties:{theme:{check:"Theme",
-nullable:true,
-apply:"_applyTheme"}},
-members:{_applyTheme:function(a){var d=null,e=null,b=null,c=null,i,f,h,g;
-a&&(d=a.meta.color||null,e=a.meta.decoration||null,b=a.meta.font||null,c=a.meta.appearance||null);
-i=qx.theme.manager.Color.getInstance(),f=qx.theme.manager.Decoration.getInstance(),h=qx.theme.manager.Font.getInstance(),g=qx.theme.manager.Appearance.getInstance();
-i.setTheme(d);
-f.setTheme(e);
-h.setTheme(b);
-g.setTheme(c)},
-initialize:function(){var a,b;
-a="apiviewer.Theme";
-if(a){b=qx.Theme.getByName(a);
-if(!b)throw new Error("The theme to use is not available: "+a);
-this.setTheme(b)}}},
-defer:function(){qx.core.Setting.define("qx.theme","qx.theme.Modern")}});
-
-
 // apiviewer.dao.Node
-//   - Size: 1615 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.58KB (0.64KB zipped => 40.31%)
 qx.Class.define("apiviewer.dao.Node",{extend:qx.core.Object,
 construct:function(a){this.base(arguments);
 this._docNode=a;
@@ -11526,9 +11503,66 @@ default:return false}return true}},
 destruct:function(){this._docNode=this._errors=null}});
 
 
+// qx.theme.manager.Meta
+//   - Modified: 2010-11-11T16:55:28
+//   - Size: 0.78KB (0.40KB zipped => 51.13%)
+qx.Class.define("qx.theme.manager.Meta",{type:"singleton",
+extend:qx.core.Object,
+properties:{theme:{check:"Theme",
+nullable:true,
+apply:"_applyTheme"}},
+members:{_applyTheme:function(a){var d=null,e=null,b=null,c=null,i,f,h,g;
+a&&(d=a.meta.color||null,e=a.meta.decoration||null,b=a.meta.font||null,c=a.meta.appearance||null);
+i=qx.theme.manager.Color.getInstance(),f=qx.theme.manager.Decoration.getInstance(),h=qx.theme.manager.Font.getInstance(),g=qx.theme.manager.Appearance.getInstance();
+i.setTheme(d);
+f.setTheme(e);
+h.setTheme(b);
+g.setTheme(c)},
+initialize:function(){var a,b;
+a="apiviewer.Theme";
+if(a){b=qx.Theme.getByName(a);
+if(!b)throw new Error("The theme to use is not available: "+a);
+this.setTheme(b)}}},
+defer:function(){qx.core.Setting.define("qx.theme","qx.theme.Modern")}});
+
+
+// qx.ui.table.cellrenderer.Abstract
+//   - Modified: 2010-11-11T16:55:28
+//   - Size: 1.58KB (0.77KB zipped => 48.80%)
+qx.Class.define("qx.ui.table.cellrenderer.Abstract",{type:"abstract",
+implement:qx.ui.table.ICellRenderer,
+extend:qx.core.Object,
+construct:function(){this.base(arguments);
+var a=qx.ui.table.cellrenderer.Abstract,c,b;
+a.__mHgzf||(c=qx.theme.manager.Color.getInstance(),a.__mHgzf=this.self(arguments),b=".qooxdoo-table-cell {"+qx.bom.element.Style.compile({position:"absolute",
+top:"0px",
+overflow:"hidden",
+whiteSpace:"nowrap",
+borderRight:"1px solid "+c.resolve("table-row-line"),
+padding:"0px 6px",
+cursor:"default",
+textOverflow:"ellipsis",
+userSelect:"none"})+"} "+".qooxdoo-table-cell-right { text-align:right } "+".qooxdoo-table-cell-italic { font-style:italic} "+".qooxdoo-table-cell-bold { font-weight:bold } ",b+=".qooxdoo-table-cell {"+qx.bom.element.BoxSizing.compile("content-box")+"}",a.__mHgzf.stylesheet=qx.bom.Stylesheet.createElement(b))},
+properties:{defaultCellStyle:{init:null,
+check:"String",
+nullable:true}},
+members:{_insetX:13,
+_insetY:0,
+_getCellClass:function(){return"qooxdoo-table-cell"},
+_getCellStyle:function(a){return a.style||""},
+_getCellAttributes:function(){return""},
+_getContentHtml:function(a){return a.value||""},
+_getCellSizeStyle:function(c,b,d,e){var a="";
+qx.bom.client.Feature.CONTENT_BOX&&(c-=d,b-=e);
+a+="width:"+Math.max(c,0)+"px;";
+a+="height:"+Math.max(b,0)+"px;";
+return a},
+createDataCellHtml:function(a,b){b.push("<div class=\"",this._getCellClass(a),"\" style=\"","left:",a.styleLeft,"px;",this._getCellSizeStyle(a.styleWidth,a.styleHeight,this._insetX,this._insetY),this._getCellStyle(a),"\" ",this._getCellAttributes(a),">"+this._getContentHtml(a),"</div>")}}});
+
+
 // apiviewer.dao.ClassItem
-//   - Size: 1940 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 1.89KB (0.70KB zipped => 36.75%)
 qx.Class.define("apiviewer.dao.ClassItem",{extend:apiviewer.dao.Node,
 construct:function(b,a,c){this._class=a;
 this._listName=c;
@@ -11574,8 +11608,8 @@ destruct:function(){this._class=this._itemDocNode=this._requiredBy=this._see=thi
 
 
 // apiviewer.dao.Param
-//   - Size: 782 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.76KB (0.36KB zipped => 46.55%)
 qx.Class.define("apiviewer.dao.Param",{extend:apiviewer.dao.ClassItem,
 construct:function(c,b,a){this.base(arguments,c,b);
 this._method=a},
@@ -11593,26 +11627,16 @@ destruct:function(){this._method=null}});
 
 
 // apiviewer.dao.Constant
-//   - Size: 201 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.20KB (0.15KB zipped => 76.62%)
 qx.Class.define("apiviewer.dao.Constant",{extend:apiviewer.dao.ClassItem,
 construct:function(b,a,c){this.base(arguments,b,a,c)},
 members:{getValue:function(){return this._docNode.attributes.value}}});
 
 
-// apiviewer.dao.ThrowsEntry
-//   - Size: 311 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.dao.ThrowsEntry",{extend:apiviewer.dao.ClassItem,
-construct:function(b,a){this.base(arguments,b,a)},
-members:{getType:function(){return this._docNode.attributes.type||null},
-getDefaultType:function(){return"Error"},
-getDescription:function(){return this._docNode.attributes.text}}});
-
-
 // apiviewer.dao.ChildControl
-//   - Size: 410 bytes
 //   - Modified: 2010-05-05T19:22:41
+//   - Size: 0.40KB (0.22KB zipped => 55.85%)
 qx.Class.define("apiviewer.dao.ChildControl",{extend:apiviewer.dao.ClassItem,
 construct:function(b,a,c){this.base(arguments,b,a);
 this._listName=c},
@@ -11623,9 +11647,19 @@ getType:function(){return this._docNode.attributes.type},
 getDefaultValue:function(){return this._docNode.attributes.defaultValue}}});
 
 
-// apiviewer.dao.Method
-//   - Size: 1649 bytes
+// apiviewer.dao.ThrowsEntry
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.30KB (0.19KB zipped => 62.06%)
+qx.Class.define("apiviewer.dao.ThrowsEntry",{extend:apiviewer.dao.ClassItem,
+construct:function(b,a){this.base(arguments,b,a)},
+members:{getType:function(){return this._docNode.attributes.type||null},
+getDefaultType:function(){return"Error"},
+getDescription:function(){return this._docNode.attributes.text}}});
+
+
+// apiviewer.dao.Method
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.61KB (0.53KB zipped => 33.05%)
 qx.Class.define("apiviewer.dao.Method",{extend:apiviewer.dao.ClassItem,
 construct:function(b,a,c){this.base(arguments,b,a,c)},
 members:{getName:function(){return this.isConstructor()?"construct":this._docNode.attributes.name},
@@ -11654,8 +11688,8 @@ this._disposeObjects("_return")}});
 
 
 // apiviewer.dao.Class
-//   - Size: 7792 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 7.61KB (1.86KB zipped => 24.50%)
 qx.Class.define("apiviewer.dao.Class",{extend:apiviewer.dao.Node,
 construct:function(b,a){this.base(arguments,b);
 this.self(arguments).registerClass(this);
@@ -11821,32 +11855,9 @@ destruct:function(){this._see=this._superInterfaces=this._superMixins=this._even
 this._disposeObjects("_constructor")}});
 
 
-// apiviewer.dao.State
-//   - Size: 232 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.dao.State",{extend:apiviewer.dao.ClassItem,
-construct:function(b,a){this.base(arguments,b,a)},
-members:{getClass:function(){return this._class.getClass()},
-getAppearance:function(){return this._class}}});
-
-
-// apiviewer.dao.Appearance
-//   - Size: 577 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.dao.Appearance",{extend:apiviewer.dao.ClassItem,
-construct:function(b,a,c){this.base(arguments,b,a,c)},
-members:{getType:function(){return apiviewer.dao.Class.getClassByName(this._docNode.attributes.type)},
-getTypes:function(){return[{type:this._docNode.attributes.type}]},
-getAppearance:function(){return this.getClass()},
-getStates:function(){return this._states||[]},
-_addChildNode:function(a){switch(a.type){case"states":this._states=this._createNodeList(a,apiviewer.dao.State,this);
-break;
-default:return this.base(arguments,a)}return true}}});
-
-
 // qx.ui.embed.Html
-//   - Size: 1062 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.04KB (0.46KB zipped => 44.54%)
 qx.Class.define("qx.ui.embed.Html",{extend:qx.ui.core.Widget,
 include:[qx.ui.core.MNativeOverflow],
 construct:function(a){this.base(arguments);
@@ -11875,8 +11886,8 @@ _applyTextColor:function(a){a?this.getContentElement().setStyle("color",qx.theme
 
 
 // apiviewer.ui.AbstractViewer
-//   - Size: 3104 bytes
 //   - Modified: 2010-07-17T16:42:24
+//   - Size: 3.03KB (1.20KB zipped => 39.59%)
 qx.Class.define("apiviewer.ui.AbstractViewer",{type:"abstract",
 extend:qx.ui.embed.Html,
 construct:function(){this.base(arguments);
@@ -11961,8 +11972,8 @@ this._disposeArray("_infoPanels",1)}});
 
 
 // apiviewer.ui.ClassViewer
-//   - Size: 7090 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 6.92KB (2.42KB zipped => 34.94%)
 qx.Class.define("apiviewer.ui.ClassViewer",{extend:apiviewer.ui.AbstractViewer,
 construct:function(){this.base(arguments);
 this.addInfoPanel(new apiviewer.ui.panels.MethodPanel("constructor","constructor"));
@@ -12107,8 +12118,8 @@ destruct:function(){this._titleElem=this._classDescElem=this._markedElement=null
 
 
 // apiviewer.dao.Package
-//   - Size: 1706 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.67KB (0.60KB zipped => 36.23%)
 qx.Class.define("apiviewer.dao.Package",{extend:apiviewer.dao.Node,
 construct:function(b,a){this.base(arguments,b);
 this._package=a;
@@ -12154,8 +12165,8 @@ destruct:function(){this._package=this._classes=this._functions=this._packages=n
 
 
 // apiviewer.ui.panels.InfoPanel
-//   - Size: 11766 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 11.49KB (3.81KB zipped => 33.18%)
 qx.Class.define("apiviewer.ui.panels.InfoPanel",{type:"abstract",
 extend:qx.core.Object,
 construct:function(b,a){this.base(arguments);
@@ -12359,8 +12370,8 @@ destruct:function(){this._titleElement=this._bodyElement=null}});
 
 
 // apiviewer.ui.panels.MethodPanel
-//   - Size: 3538 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 3.46KB (1.04KB zipped => 30.10%)
 qx.Class.define("apiviewer.ui.panels.MethodPanel",{extend:apiviewer.ui.panels.InfoPanel,
 members:{getItemTitleHtml:function(b){if(b.isConstructor())var e=b.getClass().getName(),a,f,c,d;
 else e=b.getName();
@@ -12413,8 +12424,8 @@ return a.getClass()!=d||a.getOverriddenFrom()!=null||a.getRequiredBy().length>0|
 
 
 // apiviewer.ui.panels.ConstantPanel
-//   - Size: 1085 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.06KB (0.44KB zipped => 41.38%)
 qx.Class.define("apiviewer.ui.panels.ConstantPanel",{extend:apiviewer.ui.panels.InfoPanel,
 members:{itemHasDetails:function(a){return a.getSee().length>0||a.getErrors().length>0||apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)||this.__b0ywaF(a)},
 getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createTypeHtml(a,"var")},
@@ -12427,9 +12438,45 @@ __cxAAvX:function(a){if(this.__b0ywaF(a)){var b=new qx.util.StringBuilder("<div 
 return b.get()}return""}}});
 
 
-// apiviewer.ui.panels.EventPanel
-//   - Size: 854 bytes
+// apiviewer.ui.panels.AppearancePanel
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.62KB (0.73KB zipped => 44.90%)
+qx.Class.define("apiviewer.ui.panels.AppearancePanel",{extend:apiviewer.ui.panels.InfoPanel,
+members:{__cip9dg:function(b){var f=b.getStates(),c,h,a,e,g,d,j,i;
+c=f.length>0?qx.lang.Array.clone(f):[];
+h=b.getType(),a=b.getClass(),e=1;
+h!=a&&(a=h,e=0);
+g=a.getClassHierarchy(),d=e;
+for(;
+d<g.length;
+d++)a=g[d],j=a.getClassAppearance(),j&&(i=j.getStates(),i&&qx.lang.Array.append(c,i));
+return c},
+_getPanelItems:function(f,a){var d=this.base(arguments,f,a),e,b,g,c;
+if(!f)return d;
+e=a.getClassHierarchy(),b=0;
+for(;
+b<e.length;
+b++){g=e[b],c=g.getClassAppearance();
+if(c){c.getType()!=a&&d.push(c);
+return d}}},
+getItemTypeHtml:function(a){var b=a.getName(),c;
+c=a.getType()==a.getClass()?b+" (default appearance of the class)":b;
+return c},
+getItemTitleHtml:function(a){return apiviewer.ui.panels.InfoPanel.setTitleClass(a,a.getName())},
+getItemTextHtml:function(c,i,h){var a=new qx.util.StringBuilder(),d,e,b,g,f;
+a.add("<div class=\"item-desc\">",apiviewer.ui.panels.InfoPanel.createDescriptionHtml(c,c.getClass(),true),"</div>");
+if(h){d=this.__cip9dg(c);
+if(d.length>0){a.add("<div class=\"item-detail-headline\">","States:","</div>");
+for(e=0;
+e<d.length;
+e++)b=d[e],a.add("<div class='item-detail-text'><code>",b.getName(),"</code><p>"),g=b.getAppearance(),g.getType()!=c.getClass()&&a.add(" <span class='item-detail-define'>defined by ",apiviewer.ui.panels.InfoPanel.createItemLinkHtml(g.getType().getFullName()),"</span>: "),f=b.getDescription(),f&&a.add(" ",apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(f,b.getClass())),a.add("</p></div>");
+a.add("</div>")}}return a.get()},
+itemHasDetails:function(a){return this.__cip9dg(a).length>0}}});
+
+
+// apiviewer.ui.panels.EventPanel
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.83KB (0.32KB zipped => 38.76%)
 qx.Class.define("apiviewer.ui.panels.EventPanel",{extend:apiviewer.ui.panels.InfoPanel,
 members:{itemHasDetails:function(a,b){return a.getClass()!=b||a.getSee().length>0||a.getErrors().length>0||apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)},
 getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createTypeHtml(a,"var")},
@@ -12440,8 +12487,8 @@ return b.get()}}});
 
 
 // apiviewer.ui.panels.PropertyPanel
-//   - Size: 4354 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 4.25KB (1.29KB zipped => 30.32%)
 qx.Class.define("apiviewer.ui.panels.PropertyPanel",{extend:apiviewer.ui.panels.InfoPanel,
 members:{__c6s3cd:function(c,f){if(c.isRefined())return"";
 if(c.isPrivate())var b="__",a=c.getName().substring(2),d,e;
@@ -12479,8 +12526,8 @@ return b.get()}}});
 
 
 // apiviewer.ui.panels.ChildControlsPanel
-//   - Size: 591 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.58KB (0.30KB zipped => 52.79%)
 qx.Class.define("apiviewer.ui.panels.ChildControlsPanel",{extend:apiviewer.ui.panels.InfoPanel,
 members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createTypeHtml(a,"var",true)},
 getItemTitleHtml:function(a){return apiviewer.ui.panels.InfoPanel.setTitleClass(a,a.getName())},
@@ -12489,45 +12536,9 @@ c&&b.add("<div class=\"item-detail-headline\">","Default value:","</div>","<div 
 return b.get()}}});
 
 
-// apiviewer.ui.panels.AppearancePanel
-//   - Size: 1657 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ui.panels.AppearancePanel",{extend:apiviewer.ui.panels.InfoPanel,
-members:{__cip9dg:function(b){var f=b.getStates(),c,h,a,e,g,d,j,i;
-c=f.length>0?qx.lang.Array.clone(f):[];
-h=b.getType(),a=b.getClass(),e=1;
-h!=a&&(a=h,e=0);
-g=a.getClassHierarchy(),d=e;
-for(;
-d<g.length;
-d++)a=g[d],j=a.getClassAppearance(),j&&(i=j.getStates(),i&&qx.lang.Array.append(c,i));
-return c},
-_getPanelItems:function(f,a){var d=this.base(arguments,f,a),e,b,g,c;
-if(!f)return d;
-e=a.getClassHierarchy(),b=0;
-for(;
-b<e.length;
-b++){g=e[b],c=g.getClassAppearance();
-if(c){c.getType()!=a&&d.push(c);
-return d}}},
-getItemTypeHtml:function(a){var b=a.getName(),c;
-c=a.getType()==a.getClass()?b+" (default appearance of the class)":b;
-return c},
-getItemTitleHtml:function(a){return apiviewer.ui.panels.InfoPanel.setTitleClass(a,a.getName())},
-getItemTextHtml:function(c,i,h){var a=new qx.util.StringBuilder(),d,e,b,g,f;
-a.add("<div class=\"item-desc\">",apiviewer.ui.panels.InfoPanel.createDescriptionHtml(c,c.getClass(),true),"</div>");
-if(h){d=this.__cip9dg(c);
-if(d.length>0){a.add("<div class=\"item-detail-headline\">","States:","</div>");
-for(e=0;
-e<d.length;
-e++)b=d[e],a.add("<div class='item-detail-text'><code>",b.getName(),"</code><p>"),g=b.getAppearance(),g.getType()!=c.getClass()&&a.add(" <span class='item-detail-define'>defined by ",apiviewer.ui.panels.InfoPanel.createItemLinkHtml(g.getType().getFullName()),"</span>: "),f=b.getDescription(),f&&a.add(" ",apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(f,b.getClass())),a.add("</p></div>");
-a.add("</div>")}}return a.get()},
-itemHasDetails:function(a){return this.__cip9dg(a).length>0}}});
-
-
 // apiviewer.dao.Property
-//   - Size: 1751 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.71KB (0.50KB zipped => 29.13%)
 qx.Class.define("apiviewer.dao.Property",{extend:apiviewer.dao.ClassItem,
 members:{getTypes:function(){var a=this.base(arguments),c=this.getDocNode(),b=c.getType();
 b&&a.push({type:b,
@@ -12560,8 +12571,8 @@ isRefined:function(){return this._docNode.attributes.refine||false}}});
 
 
 // apiviewer.dao.Event
-//   - Size: 432 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.42KB (0.25KB zipped => 58.80%)
 qx.Class.define("apiviewer.dao.Event",{extend:apiviewer.dao.ClassItem,
 construct:function(b,a,c){this.base(arguments,b,a,c)},
 members:{getType:function(){return apiviewer.dao.Class.getClassByName(this._type)},
@@ -12571,43 +12582,32 @@ break;
 default:return this.base(arguments,a)}return true}}});
 
 
-// qx.ui.table.cellrenderer.Abstract
-//   - Size: 1619 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.ui.table.cellrenderer.Abstract",{type:"abstract",
-implement:qx.ui.table.ICellRenderer,
-extend:qx.core.Object,
-construct:function(){this.base(arguments);
-var a=qx.ui.table.cellrenderer.Abstract,c,b;
-a.__mHgzf||(c=qx.theme.manager.Color.getInstance(),a.__mHgzf=this.self(arguments),b=".qooxdoo-table-cell {"+qx.bom.element.Style.compile({position:"absolute",
-top:"0px",
-overflow:"hidden",
-whiteSpace:"nowrap",
-borderRight:"1px solid "+c.resolve("table-row-line"),
-padding:"0px 6px",
-cursor:"default",
-textOverflow:"ellipsis",
-userSelect:"none"})+"} "+".qooxdoo-table-cell-right { text-align:right } "+".qooxdoo-table-cell-italic { font-style:italic} "+".qooxdoo-table-cell-bold { font-weight:bold } ",b+=".qooxdoo-table-cell {"+qx.bom.element.BoxSizing.compile("content-box")+"}",a.__mHgzf.stylesheet=qx.bom.Stylesheet.createElement(b))},
-properties:{defaultCellStyle:{init:null,
-check:"String",
-nullable:true}},
-members:{_insetX:13,
-_insetY:0,
-_getCellClass:function(){return"qooxdoo-table-cell"},
-_getCellStyle:function(a){return a.style||""},
-_getCellAttributes:function(){return""},
-_getContentHtml:function(a){return a.value||""},
-_getCellSizeStyle:function(c,b,d,e){var a="";
-qx.bom.client.Feature.CONTENT_BOX&&(c-=d,b-=e);
-a+="width:"+Math.max(c,0)+"px;";
-a+="height:"+Math.max(b,0)+"px;";
-return a},
-createDataCellHtml:function(a,b){b.push("<div class=\"",this._getCellClass(a),"\" style=\"","left:",a.styleLeft,"px;",this._getCellSizeStyle(a.styleWidth,a.styleHeight,this._insetX,this._insetY),this._getCellStyle(a),"\" ",this._getCellAttributes(a),">"+this._getContentHtml(a),"</div>")}}});
+// apiviewer.dao.State
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.23KB (0.15KB zipped => 66.81%)
+qx.Class.define("apiviewer.dao.State",{extend:apiviewer.dao.ClassItem,
+construct:function(b,a){this.base(arguments,b,a)},
+members:{getClass:function(){return this._class.getClass()},
+getAppearance:function(){return this._class}}});
+
+
+// apiviewer.dao.Appearance
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.56KB (0.28KB zipped => 50.43%)
+qx.Class.define("apiviewer.dao.Appearance",{extend:apiviewer.dao.ClassItem,
+construct:function(b,a,c){this.base(arguments,b,a,c)},
+members:{getType:function(){return apiviewer.dao.Class.getClassByName(this._docNode.attributes.type)},
+getTypes:function(){return[{type:this._docNode.attributes.type}]},
+getAppearance:function(){return this.getClass()},
+getStates:function(){return this._states||[]},
+_addChildNode:function(a){switch(a.type){case"states":this._states=this._createNodeList(a,apiviewer.dao.State,this);
+break;
+default:return this.base(arguments,a)}return true}}});
 
 
 // qx.event.handler.Element
-//   - Size: 1363 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.33KB (0.59KB zipped => 44.68%)
 qx.Class.define("qx.event.handler.Element",{extend:qx.core.Object,
 implement:qx.event.IEventHandler,
 construct:function(a){this.base(arguments);
@@ -12643,8 +12643,8 @@ defer:function(a){qx.event.Registration.addHandler(a)}});
 
 
 // qx.ui.core.selection.Widget
-//   - Size: 2469 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 2.41KB (0.89KB zipped => 36.82%)
 qx.Class.define("qx.ui.core.selection.Widget",{extend:qx.ui.core.selection.Abstract,
 construct:function(a){this.base(arguments);
 this.__qzkhX=a},
@@ -12703,52 +12703,9 @@ _getPage:function(b,a){return a?this._getFirstSelectable():this._getLastSelectab
 destruct:function(){this.__qzkhX=null}});
 
 
-// qx.event.handler.Input
-//   - Size: 2472 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.event.handler.Input",{extend:qx.core.Object,
-implement:qx.event.IEventHandler,
-construct:function(){this.base(arguments);
-this._onChangeCheckedWrapper=qx.lang.Function.listener(this._onChangeChecked,this);
-this._onChangeValueWrapper=qx.lang.Function.listener(this._onChangeValue,this);
-this._onInputWrapper=qx.lang.Function.listener(this._onInput,this);
-this._onPropertyWrapper=qx.lang.Function.listener(this._onProperty,this)},
-statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
-SUPPORTED_TYPES:{input:1,
-change:1},
-TARGET_CHECK:qx.event.IEventHandler.TARGET_DOMNODE,
-IGNORE_CAN_HANDLE:false},
-members:{__mN8MX:false,
-__bqcc7E:null,
-__yItbb:null,
-canHandleEvent:function(c,b){var a=c.tagName.toLowerCase();
-if(b==="input"&&(a==="input"||a==="textarea"))return true;
-if(b==="change"&&(a==="input"||a==="textarea"||a==="select"))return true;
-return false},
-registerEvent:function(a,b){b==="input"?this.__cd9Tde(a):b==="change"&&(a.type==="radio"||a.type==="checkbox"?qx.bom.Event.addNativeListener(a,"change",this._onChangeCheckedWrapper):qx.bom.Event.addNativeListener(a,"change",this._onChangeValueWrapper))},
-__cd9Tde:function(a){qx.bom.Event.addNativeListener(a,"input",this._onInputWrapper)},
-unregisterEvent:function(a,b){b==="input"?this.__cd9Tde(a):b==="change"&&(a.type==="radio"||a.type==="checkbox"?qx.bom.Event.removeNativeListener(a,"change",this._onChangeCheckedWrapper):qx.bom.Event.removeNativeListener(a,"change",this._onChangeValueWrapper))},
-__cCwmU5:function(a){qx.bom.Event.removeNativeListener(a,"input",this._onInputWrapper)},
-_onKeyPress:null,
-_onKeyDown:null,
-_onKeyUp:null,
-_onBlur:null,
-_onInput:qx.event.GlobalError.observeMethod(function(b){var a=qx.bom.Event.getTarget(b);
-this.__mN8MX||qx.event.Registration.fireEvent(a,"input",qx.event.type.Data,[a.value])}),
-_onChangeValue:qx.event.GlobalError.observeMethod(function(f){var b=qx.bom.Event.getTarget(f),d=b.value,a,c,e;
-if(b.type==="select-multiple"){d=[],a=0,c=b.options,e=c.length;
-for(;
-a<e;
-a++)c[a].selected&&d.push(c[a].value)}qx.event.Registration.fireEvent(b,"change",qx.event.type.Data,[d])}),
-_onChangeChecked:qx.event.GlobalError.observeMethod(function(b){var a=qx.bom.Event.getTarget(b);
-a.type==="radio"?a.checked&&qx.event.Registration.fireEvent(a,"change",qx.event.type.Data,[a.value]):qx.event.Registration.fireEvent(a,"change",qx.event.type.Data,[a.checked])}),
-_onProperty:function(){}},
-defer:function(a){qx.event.Registration.addHandler(a)}});
-
-
 // qx.ui.table.rowrenderer.Default
-//   - Size: 2377 bytes
 //   - Modified: 2010-07-17T16:42:24
+//   - Size: 2.32KB (0.79KB zipped => 33.99%)
 qx.Class.define("qx.ui.table.rowrenderer.Default",{extend:qx.core.Object,
 implement:qx.ui.table.IRowRenderer,
 construct:function(){this.base(arguments);
@@ -12793,9 +12750,86 @@ getRowAttributes:function(){return""}},
 destruct:function(){this.__qwQQT=this.__EudQp=this.__biXIkY=null}});
 
 
+// qx.event.handler.Input
+//   - Modified: 2010-11-03T14:43:37
+//   - Size: 2.41KB (0.80KB zipped => 33.17%)
+qx.Class.define("qx.event.handler.Input",{extend:qx.core.Object,
+implement:qx.event.IEventHandler,
+construct:function(){this.base(arguments);
+this._onChangeCheckedWrapper=qx.lang.Function.listener(this._onChangeChecked,this);
+this._onChangeValueWrapper=qx.lang.Function.listener(this._onChangeValue,this);
+this._onInputWrapper=qx.lang.Function.listener(this._onInput,this);
+this._onPropertyWrapper=qx.lang.Function.listener(this._onProperty,this)},
+statics:{PRIORITY:qx.event.Registration.PRIORITY_NORMAL,
+SUPPORTED_TYPES:{input:1,
+change:1},
+TARGET_CHECK:qx.event.IEventHandler.TARGET_DOMNODE,
+IGNORE_CAN_HANDLE:false},
+members:{__mN8MX:false,
+__bqcc7E:null,
+__yItbb:null,
+canHandleEvent:function(c,b){var a=c.tagName.toLowerCase();
+if(b==="input"&&(a==="input"||a==="textarea"))return true;
+if(b==="change"&&(a==="input"||a==="textarea"||a==="select"))return true;
+return false},
+registerEvent:function(a,b){b==="input"?this.__cd9Tde(a):b==="change"&&(a.type==="radio"||a.type==="checkbox"?qx.bom.Event.addNativeListener(a,"change",this._onChangeCheckedWrapper):qx.bom.Event.addNativeListener(a,"change",this._onChangeValueWrapper))},
+__cd9Tde:function(a){qx.bom.Event.addNativeListener(a,"input",this._onInputWrapper)},
+unregisterEvent:function(a,b){b==="input"?this.__cd9Tde(a):b==="change"&&(a.type==="radio"||a.type==="checkbox"?qx.bom.Event.removeNativeListener(a,"change",this._onChangeCheckedWrapper):qx.bom.Event.removeNativeListener(a,"change",this._onChangeValueWrapper))},
+__cCwmU5:function(a){qx.bom.Event.removeNativeListener(a,"input",this._onInputWrapper)},
+_onKeyPress:null,
+_onKeyDown:null,
+_onKeyUp:null,
+_onBlur:null,
+_onInput:qx.event.GlobalError.observeMethod(function(b){var a=qx.bom.Event.getTarget(b);
+this.__mN8MX||qx.event.Registration.fireEvent(a,"input",qx.event.type.Data,[a.value])}),
+_onChangeValue:qx.event.GlobalError.observeMethod(function(f){var b=qx.bom.Event.getTarget(f),d=b.value,a,c,e;
+if(b.type==="select-multiple"){d=[],a=0,c=b.options,e=c.length;
+for(;
+a<e;
+a++)c[a].selected&&d.push(c[a].value)}qx.event.Registration.fireEvent(b,"change",qx.event.type.Data,[d])}),
+_onChangeChecked:qx.event.GlobalError.observeMethod(function(b){var a=qx.bom.Event.getTarget(b);
+a.type==="radio"?a.checked&&qx.event.Registration.fireEvent(a,"change",qx.event.type.Data,[a.value]):qx.event.Registration.fireEvent(a,"change",qx.event.type.Data,[a.checked])}),
+_onProperty:function(){}},
+defer:function(a){qx.event.Registration.addHandler(a)}});
+
+
+// qx.ui.core.selection.ScrollArea
+//   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.08KB (0.53KB zipped => 48.51%)
+qx.Class.define("qx.ui.core.selection.ScrollArea",{extend:qx.ui.core.selection.Widget,
+members:{_isSelectable:function(a){return this._isItemSelectable(a)&&a.getLayoutParent()===this._getWidget().getChildrenContainer()},
+_getDimension:function(){return this._getWidget().getPaneSize()},
+_getScroll:function(){var a=this._getWidget();
+return{left:a.getScrollX(),
+top:a.getScrollY()}},
+_scrollBy:function(c,b){var a=this._getWidget();
+a.scrollByX(c);
+a.scrollByY(b)},
+_getPage:function(c,p){var d=this.getSelectables(),o=d.length,f=d.indexOf(c),e,g,i,k,l,a,j,b,h,n,m;
+if(f===-1)throw new Error("Invalid lead item: "+c);
+e=this._getWidget(),g=e.getScrollY(),i=e.getInnerSize().height;
+if(p){j=g,b=f;
+while(1){for(;
+b>=0;
+b--){k=e.getItemTop(d[b]);
+if(k<j){a=b+1;
+break}}if(a==null){h=this._getFirstSelectable();
+return h==c?null:h}if(a>=f){j-=i+g-e.getItemBottom(c);
+a=null;
+continue}return d[a]}}else{n=i+g,b=f;
+while(1){for(;
+b<o;
+b++){l=e.getItemBottom(d[b]);
+if(l>n){a=b-1;
+break}}if(a==null){m=this._getLastSelectable();
+return m==c?null:m}if(a<=f){n+=e.getItemTop(c)-g;
+a=null;
+continue}return d[a]}}}}});
+
+
 // qx.ui.table.cellrenderer.AbstractImage
-//   - Size: 1648 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 1.61KB (0.79KB zipped => 48.91%)
 qx.Class.define("qx.ui.table.cellrenderer.AbstractImage",{extend:qx.ui.table.cellrenderer.Abstract,
 type:"abstract",
 construct:function(){this.base(arguments);
@@ -12828,43 +12862,9 @@ return a?"title='"+a+"'":""}},
 destruct:function(){this.__C4eaS=null}});
 
 
-// qx.ui.core.selection.ScrollArea
-//   - Size: 1109 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.ui.core.selection.ScrollArea",{extend:qx.ui.core.selection.Widget,
-members:{_isSelectable:function(a){return this._isItemSelectable(a)&&a.getLayoutParent()===this._getWidget().getChildrenContainer()},
-_getDimension:function(){return this._getWidget().getPaneSize()},
-_getScroll:function(){var a=this._getWidget();
-return{left:a.getScrollX(),
-top:a.getScrollY()}},
-_scrollBy:function(c,b){var a=this._getWidget();
-a.scrollByX(c);
-a.scrollByY(b)},
-_getPage:function(c,p){var d=this.getSelectables(),o=d.length,f=d.indexOf(c),e,g,i,k,l,a,j,b,h,n,m;
-if(f===-1)throw new Error("Invalid lead item: "+c);
-e=this._getWidget(),g=e.getScrollY(),i=e.getInnerSize().height;
-if(p){j=g,b=f;
-while(1){for(;
-b>=0;
-b--){k=e.getItemTop(d[b]);
-if(k<j){a=b+1;
-break}}if(a==null){h=this._getFirstSelectable();
-return h==c?null:h}if(a>=f){j-=i+g-e.getItemBottom(c);
-a=null;
-continue}return d[a]}}else{n=i+g,b=f;
-while(1){for(;
-b<o;
-b++){l=e.getItemBottom(d[b]);
-if(l>n){a=b-1;
-break}}if(a==null){m=this._getLastSelectable();
-return m==c?null:m}if(a<=f){n+=e.getItemTop(c)-g;
-a=null;
-continue}return d[a]}}}}});
-
-
 // qx.ui.table.cellrenderer.Image
-//   - Size: 417 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 0.41KB (0.27KB zipped => 65.47%)
 qx.Class.define("qx.ui.table.cellrenderer.Image",{extend:qx.ui.table.cellrenderer.AbstractImage,
 construct:function(b,a){this.base(arguments);
 b&&(this.__IQ418=b);
@@ -12879,8 +12879,8 @@ return a}}});
 
 
 // qx.io.remote.Exchange
-//   - Size: 8758 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 8.55KB (2.80KB zipped => 32.76%)
 qx.Class.define("qx.io.remote.Exchange",{extend:qx.core.Object,
 construct:function(a){this.base(arguments);
 this.setRequest(a);
@@ -13056,8 +13056,8 @@ this.setRequest(null)}});
 
 
 // qx.io.remote.transport.Abstract
-//   - Size: 2772 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 2.71KB (0.74KB zipped => 27.31%)
 qx.Class.define("qx.io.remote.transport.Abstract",{type:"abstract",
 extend:qx.core.Object,
 construct:function(){this.base(arguments);
@@ -13138,8 +13138,8 @@ this.setFormFields(null)}});
 
 
 // qx.io.remote.transport.XmlHttp
-//   - Size: 7044 bytes
 //   - Modified: 2010-10-25T16:53:25
+//   - Size: 6.88KB (2.36KB zipped => 34.34%)
 qx.Class.define("qx.io.remote.transport.XmlHttp",{extend:qx.io.remote.transport.Abstract,
 statics:{handles:{synchronous:true,
 asynchronous:true,
@@ -13263,53 +13263,9 @@ if(a){a.onreadystatechange=qx.lang.Function.empty;
 switch(a.readyState){case 1:case 2:case 3:a.abort()}}this.__u3kLI=null}});
 
 
-// qx.bom.Input
-//   - Size: 1444 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.bom.Input",{statics:{__nhP4O:{text:1,
-textarea:1,
-select:1,
-checkbox:1,
-radio:1,
-password:1,
-hidden:1,
-submit:1,
-image:1,
-file:1,
-search:1,
-reset:1,
-button:1},
-create:function(a,b,d){qx.core.Assert.assertKeyInMap(a,this.__nhP4O,"Unsupported input type.");
-var b=b?qx.lang.Object.clone(b):{},c;
-a==="textarea"||a==="select"?c=a:(c="input",b.type=a);
-return qx.bom.Element.create(c,b,d)},
-setValue:function(a,b){var l=a.nodeName.toLowerCase(),e=a.type,h=qx.lang.Array,i=qx.lang.Type,j,g,d,c,f,k;
-typeof b==="number"&&(b+="");
-if(e==="checkbox"||e==="radio")a.checked=i.isArray(b)?h.contains(b,a.value):a.value==b;
-else if(l==="select"){j=i.isArray(b),g=a.options,f=0,k=g.length;
-for(;
-f<k;
-f++)d=g[f],c=d.getAttribute("value"),c==null&&(c=d.text),d.selected=j?h.contains(b,c):b==c;
-j&&b.length==0&&(a.selectedIndex=-1)}else e==="text"&&false?(a.$$inValueSet=true,a.value=b,a.$$inValueSet=null):a.value=b},
-getValue:function(a){var h=a.nodeName.toLowerCase(),d,g,f,e,j,b,c,k,i;
-if(h==="option")return(a.attributes.value||{}).specified?a.value:a.text;
-if(h==="select"){d=a.selectedIndex;
-if(d<0)return null;
-g=[],f=a.options,e=a.type=="select-one",j=qx.bom.Input,c=e?d:0,k=e?d+1:f.length;
-for(;
-c<k;
-c++){i=f[c];
-if(i.selected){b=j.getValue(i);
-if(e)return b;
-g.push(b)}}return g}return(a.value||"").replace(/\r/g,"")},
-setWrap:function(a,b){var c=b?"soft":"off",d=b?"":"auto";
-a.setAttribute("wrap",c);
-a.style.overflow=d}}});
-
-
 // qx.io.remote.RequestQueue
-//   - Size: 3433 bytes
 //   - Modified: 2010-10-13T17:38:57
+//   - Size: 3.35KB (1.24KB zipped => 37.05%)
 qx.Class.define("qx.io.remote.RequestQueue",{type:"singleton",
 extend:qx.core.Object,
 construct:function(){this.base(arguments);
@@ -13390,9 +13346,53 @@ this._disposeObjects("__timer");
 this.__m5bO4=null}});
 
 
+// qx.bom.Input
+//   - Modified: 2010-11-11T16:55:27
+//   - Size: 1.41KB (0.77KB zipped => 54.29%)
+qx.Class.define("qx.bom.Input",{statics:{__nhP4O:{text:1,
+textarea:1,
+select:1,
+checkbox:1,
+radio:1,
+password:1,
+hidden:1,
+submit:1,
+image:1,
+file:1,
+search:1,
+reset:1,
+button:1},
+create:function(a,b,d){qx.core.Assert.assertKeyInMap(a,this.__nhP4O,"Unsupported input type.");
+var b=b?qx.lang.Object.clone(b):{},c;
+a==="textarea"||a==="select"?c=a:(c="input",b.type=a);
+return qx.bom.Element.create(c,b,d)},
+setValue:function(a,b){var l=a.nodeName.toLowerCase(),e=a.type,h=qx.lang.Array,i=qx.lang.Type,j,g,d,c,f,k;
+typeof b==="number"&&(b+="");
+if(e==="checkbox"||e==="radio")a.checked=i.isArray(b)?h.contains(b,a.value):a.value==b;
+else if(l==="select"){j=i.isArray(b),g=a.options,f=0,k=g.length;
+for(;
+f<k;
+f++)d=g[f],c=d.getAttribute("value"),c==null&&(c=d.text),d.selected=j?h.contains(b,c):b==c;
+j&&b.length==0&&(a.selectedIndex=-1)}else e==="text"&&false?(a.$$inValueSet=true,a.value=b,a.$$inValueSet=null):a.value=b},
+getValue:function(a){var h=a.nodeName.toLowerCase(),d,g,f,e,j,b,c,k,i;
+if(h==="option")return(a.attributes.value||{}).specified?a.value:a.text;
+if(h==="select"){d=a.selectedIndex;
+if(d<0)return null;
+g=[],f=a.options,e=a.type=="select-one",j=qx.bom.Input,c=e?d:0,k=e?d+1:f.length;
+for(;
+c<k;
+c++){i=f[c];
+if(i.selected){b=j.getValue(i);
+if(e)return b;
+g.push(b)}}return g}return(a.value||"").replace(/\r/g,"")},
+setWrap:function(a,b){var c=b?"soft":"off",d=b?"":"auto";
+a.setAttribute("wrap",c);
+a.style.overflow=d}}});
+
+
 // qx.io.remote.Request
-//   - Size: 4902 bytes
 //   - Modified: 2010-10-25T16:21:13
+//   - Size: 4.79KB (1.46KB zipped => 30.60%)
 qx.Class.define("qx.io.remote.Request",{extend:qx.core.Object,
 construct:function(b,c,a){this.base(arguments);
 this.__baOQvM={};
@@ -13517,8 +13517,8 @@ this.__baOQvM=this.__24r2U=this.__8xMpR=this.__I6KO6=null}});
 
 
 // qx.ui.table.cellrenderer.Default
-//   - Size: 1334 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.30KB (0.53KB zipped => 40.40%)
 qx.Class.define("qx.ui.table.cellrenderer.Default",{extend:qx.ui.table.cellrenderer.Abstract,
 statics:{STYLEFLAG_ALIGN_RIGHT:1,
 STYLEFLAG_BOLD:2,
@@ -13544,8 +13544,8 @@ return b}}});
 
 
 // qx.log.appender.Console
-//   - Size: 4332 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 4.23KB (1.48KB zipped => 35.04%)
 qx.Class.define("qx.log.appender.Console",{statics:{init:function(){var d=[".qxconsole{z-index:10000;width:600px;height:300px;top:0px;right:0px;position:absolute;border-left:1px solid black;color:black;border-bottom:1px solid black;color:black;font-family:Consolas,Monaco,monospace;font-size:11px;line-height:1.2;}",".qxconsole .control{background:#cdcdcd;border-bottom:1px solid black;padding:4px 8px;}",".qxconsole .control a{text-decoration:none;color:black;}",".qxconsole .messages{background:white;height:100%;width:100%;overflow:auto;}",".qxconsole .messages div{padding:0px 4px;}",".qxconsole .messages .user-command{color:blue}",".qxconsole .messages .user-result{background:white}",".qxconsole .messages .user-error{background:#FFE2D5}",".qxconsole .messages .level-debug{background:white}",".qxconsole .messages .level-info{background:#DEEDFA}",".qxconsole .messages .level-warn{background:#FFF7D5}",".qxconsole .messages .level-error{background:#FFE2D5}",".qxconsole .messages .level-user{background:#E3EFE9}",".qxconsole .messages .type-string{color:black;font-weight:normal;}",".qxconsole .messages .type-number{color:#155791;font-weight:normal;}",".qxconsole .messages .type-boolean{color:#15BC91;font-weight:normal;}",".qxconsole .messages .type-array{color:#CC3E8A;font-weight:bold;}",".qxconsole .messages .type-map{color:#CC3E8A;font-weight:bold;}",".qxconsole .messages .type-key{color:#565656;font-style:italic}",".qxconsole .messages .type-class{color:#5F3E8A;font-weight:bold}",".qxconsole .messages .type-instance{color:#565656;font-weight:bold}",".qxconsole .messages .type-stringify{color:#565656;font-weight:bold}",".qxconsole .command{background:white;padding:2px 4px;border-top:1px solid black;}",".qxconsole .command input{width:100%;border:0 none;font-family:Consolas,Monaco,monospace;font-size:11px;line-height:1.2;}",".qxconsole .command input:focus{outline:none;}"],c,a,b;
 qx.bom.Stylesheet.createElement(d.join(""));
 c=["<div class=\"qxconsole\">","<div class=\"control\"><a href=\"javascript:qx.log.appender.Console.clear()\">Clear</a> | <a href=\"javascript:qx.log.appender.Console.toggle()\">Hide</a></div>","<div class=\"messages\">","</div>","<div class=\"command\">","<input type=\"text\"/>","</div>","</div>"],a=document.createElement("DIV");
@@ -13590,8 +13590,8 @@ defer:function(a){qx.event.Registration.addListener(document.documentElement,"ke
 
 
 // apiviewer.ClassLoader
-//   - Size: 1165 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.14KB (0.57KB zipped => 50.30%)
 qx.Class.define("apiviewer.ClassLoader",{extend:qx.core.Object,
 construct:function(a){this.base(arguments);
 this._baseUri=a},
@@ -13623,8 +13623,8 @@ this.__09VW9(b,d,c)}}});
 
 
 // qx.ui.splitpane.Blocker
-//   - Size: 831 bytes
 //   - Modified: 2010-10-13T17:38:57
+//   - Size: 0.81KB (0.37KB zipped => 45.61%)
 qx.Class.define("qx.ui.splitpane.Blocker",{extend:qx.html.Element,
 construct:function(a){var b={position:"absolute",
 zIndex:11};
@@ -13645,8 +13645,8 @@ this.setStyle("top",c+"px")}}});
 
 
 // qx.html.Input
-//   - Size: 1157 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 1.13KB (0.47KB zipped => 41.83%)
 qx.Class.define("qx.html.Input",{extend:qx.html.Element,
 construct:function(a,d,c){if(a==="select"||a==="textarea")var b=a;
 else b="input";
@@ -13675,8 +13675,8 @@ throw new Error("Text wrapping is only support by textareas!")}}});
 
 
 // qx.ui.core.ColumnData
-//   - Size: 648 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 0.63KB (0.38KB zipped => 59.72%)
 qx.Class.define("qx.ui.core.ColumnData",{extend:qx.ui.core.LayoutItem,
 construct:function(){this.base(arguments);
 this.setColumnWidth("auto")},
@@ -13692,8 +13692,8 @@ defer:function(){qx.core.Setting.define("qx.tableResizeDebug",false)}});
 
 
 // qx.ui.layout.Grow
-//   - Size: 846 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.83KB (0.44KB zipped => 53.78%)
 qx.Class.define("qx.ui.layout.Grow",{extend:qx.ui.layout.Abstract,
 members:{verifyLayoutProperty:function(c,a){this.assert(false,"The property '"+a+"' is not supported by the Grow layout!")},
 renderLayout:function(g,i){for(var f=this._getLayoutChildren(),d,a,c,b,e=0,h=f.length;
@@ -13711,8 +13711,8 @@ maxHeight:e}}}});
 
 
 // qx.ui.core.Spacer
-//   - Size: 375 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.37KB (0.25KB zipped => 66.93%)
 qx.Class.define("qx.ui.core.Spacer",{extend:qx.ui.core.LayoutItem,
 construct:function(b,a){this.base(arguments);
 this.setWidth(b!=null?b:0);
@@ -13725,39 +13725,9 @@ a&&a._remove(this);
 qx.ui.core.queue.Dispose.add(this)}}});
 
 
-// qx.ui.splitpane.VLayout
-//   - Size: 1555 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.splitpane.VLayout",{extend:qx.ui.layout.Abstract,
-members:{verifyLayoutProperty:function(c,a,b){this.assert(a==="type"||a==="flex","The property '"+a+"' is not supported by the split layout!");
-a=="flex"&&this.assertNumber(b);
-a=="type"&&this.assertString(b)},
-renderLayout:function(l,i){for(var p=this._getLayoutChildren(),s=p.length,h,n,c,m,u,e,o=0,g,j,f,t,d,a,k,b,v,r,q;
-o<s;
-o++)h=p[o],n=h.getLayoutProperties().type,n==="splitter"?m=h:n==="slider"?u=h:c?e=h:c=h;
-c&&e?(g=c.getLayoutProperties().flex,j=e.getLayoutProperties().flex,g==null&&(g=1),j==null&&(j=1),f=c.getSizeHint(),t=m.getSizeHint(),d=e.getSizeHint(),a=f.height,k=t.height,b=d.height,g>0&&j>0?(v=g+j,r=i-k,a=Math.round((r/v)*g),b=r-a,q=qx.ui.layout.Util.arrangeIdeals(f.minHeight,a,f.maxHeight,d.minHeight,b,d.maxHeight),a=q.begin,b=q.end):g>0?(a=i-k-b,a<f.minHeight&&(a=f.minHeight),a>f.maxHeight&&(a=f.maxHeight)):j>0&&(b=i-a-k,b<d.minHeight&&(b=d.minHeight),b>d.maxHeight&&(b=d.maxHeight)),c.renderLayout(0,0,l,a),m.renderLayout(0,a,l,k),e.renderLayout(0,a+k,l,b)):(m.renderLayout(0,0,0,0),c?c.renderLayout(0,0,l,i):e&&e.renderLayout(0,0,l,i))},
-_computeSizeHint:function(){for(var g=this._getLayoutChildren(),l=g.length,b,a,k,j=0,h=0,i=0,d=0,c=0,f=0,e=0;
-e<l;
-e++){b=g[e];
-k=b.getLayoutProperties();
-if(k.type==="slider")continue;
-a=b.getSizeHint();
-j+=a.minHeight;
-h+=a.height;
-i+=a.maxHeight;
-a.minWidth>d&&(d=a.minWidth);
-a.width>c&&(c=a.width);
-a.maxWidth>f&&(f=a.maxWidth)}return{minHeight:j,
-height:h,
-maxHeight:i,
-minWidth:d,
-width:c,
-maxWidth:f}}}});
-
-
 // qx.ui.splitpane.HLayout
-//   - Size: 1543 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.51KB (0.74KB zipped => 49.25%)
 qx.Class.define("qx.ui.splitpane.HLayout",{extend:qx.ui.layout.Abstract,
 members:{verifyLayoutProperty:function(c,a,b){this.assert(a==="type"||a==="flex","The property '"+a+"' is not supported by the split layout!");
 a=="flex"&&this.assertNumber(b);
@@ -13785,9 +13755,39 @@ height:c,
 maxHeight:d}}}});
 
 
-// qx.ui.menu.Layout
-//   - Size: 1153 bytes
+// qx.ui.splitpane.VLayout
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.52KB (0.74KB zipped => 48.75%)
+qx.Class.define("qx.ui.splitpane.VLayout",{extend:qx.ui.layout.Abstract,
+members:{verifyLayoutProperty:function(c,a,b){this.assert(a==="type"||a==="flex","The property '"+a+"' is not supported by the split layout!");
+a=="flex"&&this.assertNumber(b);
+a=="type"&&this.assertString(b)},
+renderLayout:function(l,i){for(var p=this._getLayoutChildren(),s=p.length,h,n,c,m,u,e,o=0,g,j,f,t,d,a,k,b,v,r,q;
+o<s;
+o++)h=p[o],n=h.getLayoutProperties().type,n==="splitter"?m=h:n==="slider"?u=h:c?e=h:c=h;
+c&&e?(g=c.getLayoutProperties().flex,j=e.getLayoutProperties().flex,g==null&&(g=1),j==null&&(j=1),f=c.getSizeHint(),t=m.getSizeHint(),d=e.getSizeHint(),a=f.height,k=t.height,b=d.height,g>0&&j>0?(v=g+j,r=i-k,a=Math.round((r/v)*g),b=r-a,q=qx.ui.layout.Util.arrangeIdeals(f.minHeight,a,f.maxHeight,d.minHeight,b,d.maxHeight),a=q.begin,b=q.end):g>0?(a=i-k-b,a<f.minHeight&&(a=f.minHeight),a>f.maxHeight&&(a=f.maxHeight)):j>0&&(b=i-a-k,b<d.minHeight&&(b=d.minHeight),b>d.maxHeight&&(b=d.maxHeight)),c.renderLayout(0,0,l,a),m.renderLayout(0,a,l,k),e.renderLayout(0,a+k,l,b)):(m.renderLayout(0,0,0,0),c?c.renderLayout(0,0,l,i):e&&e.renderLayout(0,0,l,i))},
+_computeSizeHint:function(){for(var g=this._getLayoutChildren(),l=g.length,b,a,k,j=0,h=0,i=0,d=0,c=0,f=0,e=0;
+e<l;
+e++){b=g[e];
+k=b.getLayoutProperties();
+if(k.type==="slider")continue;
+a=b.getSizeHint();
+j+=a.minHeight;
+h+=a.height;
+i+=a.maxHeight;
+a.minWidth>d&&(d=a.minWidth);
+a.width>c&&(c=a.width);
+a.maxWidth>f&&(f=a.maxWidth)}return{minHeight:j,
+height:h,
+maxHeight:i,
+minWidth:d,
+width:c,
+maxWidth:f}}}});
+
+
+// qx.ui.menu.Layout
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.13KB (0.57KB zipped => 50.22%)
 qx.Class.define("qx.ui.menu.Layout",{extend:qx.ui.layout.VBox,
 properties:{columnSpacing:{check:"Integer",
 init:0,
@@ -13827,8 +13827,8 @@ destruct:function(){this.__P0T0F=null}});
 
 
 // qx.ui.table.columnmodel.resizebehavior.Default
-//   - Size: 3507 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 3.42KB (1.24KB zipped => 36.16%)
 qx.Class.define("qx.ui.table.columnmodel.resizebehavior.Default",{extend:qx.ui.table.columnmodel.resizebehavior.Abstract,
 construct:function(){this.base(arguments);
 this.__bqzRkj=[];
@@ -13917,19 +13917,33 @@ destruct:function(){this.__bqzRkj=this.__baJTDe=null;
 this._disposeObjects("__layout","__deferredComputeColumnsFlexWidth")}});
 
 
-// qx.ui.splitpane.Slider
-//   - Size: 163 bytes
+// qx.ui.menu.Separator
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.splitpane.Slider",{extend:qx.ui.core.Widget,
-properties:{allowShrinkX:{refine:true,
-init:false},
-allowShrinkY:{refine:true,
-init:false}}});
+//   - Size: 0.16KB (0.13KB zipped => 77.71%)
+qx.Class.define("qx.ui.menu.Separator",{extend:qx.ui.core.Widget,
+properties:{appearance:{refine:true,
+init:"menu-separator"},
+anonymous:{refine:true,
+init:true}}});
+
+
+// qx.ui.toolbar.Separator
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.23KB (0.14KB zipped => 63.20%)
+qx.Class.define("qx.ui.toolbar.Separator",{extend:qx.ui.core.Widget,
+properties:{appearance:{refine:true,
+init:"toolbar-separator"},
+anonymous:{refine:true,
+init:true},
+width:{refine:true,
+init:0},
+height:{refine:true,
+init:0}}});
 
 
 // qx.ui.table.pane.Pane
-//   - Size: 5790 bytes
 //   - Modified: 2010-09-13T20:08:24
+//   - Size: 5.65KB (2.17KB zipped => 38.45%)
 qx.Class.define("qx.ui.table.pane.Pane",{extend:qx.ui.core.Widget,
 construct:function(a){this.base(arguments);
 this.__VtpeD=a;
@@ -14077,8 +14091,8 @@ destruct:function(){this.__827Zu=this.__VtpeD=this.__yLuIh=null}});
 
 
 // qx.ui.core.MMultiSelectionHandling
-//   - Size: 2889 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 2.82KB (0.89KB zipped => 31.39%)
 qx.Mixin.define("qx.ui.core.MMultiSelectionHandling",{construct:function(){var b=this.SELECTION_MANAGER,a=this.__ugn3e=new b(this);
 this.addListener("mousedown",a.handleMouseDown,a);
 this.addListener("mouseup",a.handleMouseUp,a);
@@ -14129,33 +14143,19 @@ _onSelectionChange:function(a){this.fireDataEvent("changeSelection",a.getData())
 destruct:function(){this._disposeObjects("__manager")}});
 
 
-// qx.ui.menu.Separator
-//   - Size: 166 bytes
+// qx.ui.splitpane.Slider
 //   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.menu.Separator",{extend:qx.ui.core.Widget,
-properties:{appearance:{refine:true,
-init:"menu-separator"},
-anonymous:{refine:true,
-init:true}}});
-
-
-// qx.ui.toolbar.Separator
-//   - Size: 231 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.toolbar.Separator",{extend:qx.ui.core.Widget,
-properties:{appearance:{refine:true,
-init:"toolbar-separator"},
-anonymous:{refine:true,
-init:true},
-width:{refine:true,
-init:0},
-height:{refine:true,
-init:0}}});
+//   - Size: 0.16KB (0.12KB zipped => 76.07%)
+qx.Class.define("qx.ui.splitpane.Slider",{extend:qx.ui.core.Widget,
+properties:{allowShrinkX:{refine:true,
+init:false},
+allowShrinkY:{refine:true,
+init:false}}});
 
 
 // qx.ui.menu.Manager
-//   - Size: 5826 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 5.69KB (1.80KB zipped => 31.70%)
 qx.Class.define("qx.ui.menu.Manager",{type:"singleton",
 extend:qx.core.Object,
 construct:function(){this.base(arguments);
@@ -14299,276 +14299,9 @@ this._disposeObjects("__openTimer","__closeTimer");
 this._disposeArray("__objects")}});
 
 
-// qx.ui.toolbar.ToolBar
-//   - Size: 3799 bytes
-//   - Modified: 2010-11-11T16:55:28
-qx.Class.define("qx.ui.toolbar.ToolBar",{extend:qx.ui.core.Widget,
-include:qx.ui.core.MChildrenHandling,
-construct:function(){this.base(arguments);
-this._setLayout(new qx.ui.layout.HBox());
-this.__WliO7=[];
-this.__bbixNX=[]},
-properties:{appearance:{refine:true,
-init:"toolbar"},
-openMenu:{check:"qx.ui.menu.Menu",
-event:"changeOpenMenu",
-nullable:true},
-show:{init:"both",
-check:["both","label","icon"],
-inheritable:true,
-event:"changeShow"},
-spacing:{nullable:true,
-check:"Integer",
-themeable:true,
-apply:"_applySpacing"},
-overflowIndicator:{check:"qx.ui.core.Widget",
-nullable:true,
-apply:"_applyOverflowIndicator"},
-overflowHandling:{init:false,
-check:"Boolean",
-apply:"_applyOverflowHandling"}},
-events:{hideItem:"qx.event.type.Data",
-showItem:"qx.event.type.Data"},
-members:{__WliO7:null,
-__bbixNX:null,
-_computeSizeHint:function(){var a=this.base(arguments),c,b;
-true&&this.getOverflowHandling()&&(c=0,b=this.getOverflowIndicator(),b&&(c=b.getSizeHint().width+this.getSpacing()),a.minWidth=c);
-return a},
-_onResize:function(a){this._recalculateOverflow(a.getData().width)},
-_recalculateOverflow:function(c){if(!this.getOverflowHandling())return;
-var a=this.getSizeHint().width,b=this.getOverflowIndicator(),g=0,e,h,i,d,f;
-b&&(g=b.getSizeHint().width);
-if(c<a)do{e=this._getNextToHide();
-if(!e)return;
-h=e.getMarginLeft()+e.getMarginRight(),i=e.getSizeHint().width+h;
-this.__CRiSn(e);
-a-=i;
-b&&b.getVisibility()!="visible"&&(b.setVisibility("visible"),a+=g)}while(a>c);
-else do{d=this.__WliO7[0];
-if(d){h=d.getMarginLeft()+d.getMarginRight(),f=d.getSizeHint().width+h;
-if(c>a+f+this.getSpacing()||this.__WliO7.length==1&&c>a+f-g+this.getSpacing())this.__D5cnU(d),c+=f,b&&this.__WliO7.length==0&&b.setVisibility("excluded");
-else return}}while(c>=a&&this.__WliO7.length>0)},
-__D5cnU:function(a){a.setVisibility("visible");
-this.__WliO7.shift();
-this.fireDataEvent("showItem",a)},
-__CRiSn:function(a){if(!a)return;
-this.__WliO7.unshift(a);
-a.setVisibility("excluded");
-this.fireDataEvent("hideItem",a)},
-_getNextToHide:function(){for(var a=this.__bbixNX.length-1,c,d,b;
-a>=0;
-a--){c=this.__bbixNX[a];
-if(c&&c.getVisibility&&c.getVisibility()=="visible")return c}d=this._getChildren(),a=d.length-1;
-for(;
-a>=0;
-a--){b=d[a];
-if(b==this.getOverflowIndicator())continue;
-if(b.getVisibility&&b.getVisibility()=="visible")return b}},
-setRemovePriority:function(c,a,b){if(!b&&this.__bbixNX[a]!=undefined)throw new Error("Priority already in use!");
-this.__bbixNX[a]=c},
-_applyOverflowHandling:function(e){this.invalidateLayoutCache();
-var c=this.getLayoutParent(),a,d,b;
-c&&c.invalidateLayoutCache();
-a=this.getBounds();
-a&&a.width&&this._recalculateOverflow(a.width);
-if(e)this.addListener("resize",this._onResize,this);
-else{this.removeListener("resize",this._onResize,this);
-d=this.getOverflowIndicator();
-d&&d.setVisibility("excluded");
-for(b=0;
-b<this.__WliO7.length;
-b++)this.__WliO7[b].setVisibility("visible");
-this.__WliO7=[]}},
-_applyOverflowIndicator:function(a,b){b&&this._remove(b);
-if(a){if(this._indexOf(a)==-1)throw new Error("Widget must be child of the toolbar.");
-a.setVisibility("excluded")}},
-__bG6IET:false,
-_setAllowMenuOpenHover:function(a){this.__bG6IET=a},
-_isAllowMenuOpenHover:function(){return this.__bG6IET},
-_applySpacing:function(a){var b=this._getLayout();
-a==null?b.resetSpacing():b.setSpacing(a)},
-addSpacer:function(){var a=new qx.ui.core.Spacer;
-this._add(a,{flex:1});
-return a},
-addSeparator:function(){this.add(new qx.ui.toolbar.Separator)},
-getMenuButtons:function(){for(var d=this.getChildren(),b=[],a,c=0,e=d.length;
-c<e;
-c++)a=d[c],a instanceof qx.ui.menubar.Button?b.push(a):a instanceof qx.ui.toolbar.Part&&b.push.apply(b,a.getMenuButtons());
-return b}},
-destruct:function(){this.hasListener("resize")&&this.removeListener("resize",this._onResize,this)}});
-
-
-// qx.ui.form.MenuButton
-//   - Size: 1410 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.form.MenuButton",{extend:qx.ui.form.Button,
-construct:function(c,b,a){this.base(arguments,c,b);
-a!=null&&this.setMenu(a)},
-properties:{menu:{check:"qx.ui.menu.Menu",
-nullable:true,
-apply:"_applyMenu",
-event:"changeMenu"}},
-members:{_applyMenu:function(a,b){b&&(b.removeListener("changeVisibility",this._onMenuChange,this),b.resetOpener());
-a&&(a.addListener("changeVisibility",this._onMenuChange,this),a.setOpener(this),a.removeState("submenu"),a.removeState("contextmenu"))},
-open:function(c){var a=this.getMenu(),b;
-a&&(qx.ui.menu.Manager.getInstance().hideAll(),a.setOpener(this),a.open(),c&&(b=a.getSelectables()[0],b&&a.setSelectedButton(b)))},
-_onMenuChange:function(){var a=this.getMenu();
-a.isVisible()?this.addState("pressed"):this.removeState("pressed")},
-_onMouseDown:function(b){var a=this.getMenu();
-a&&(a.isVisible()?a.exclude():this.open(),b.stopPropagation())},
-_onMouseUp:function(a){this.base(arguments,a);
-a.stopPropagation()},
-_onMouseOver:function(){this.addState("hovered")},
-_onMouseOut:function(){this.removeState("hovered")},
-_onKeyDown:function(b){switch(b.getKeyIdentifier()){case"Enter":this.removeState("abandoned");
-this.addState("pressed");
-var a=this.getMenu();
-a&&(a.isVisible()?a.exclude():this.open());
-b.stopPropagation()}},
-_onKeyUp:function(){}},
-destruct:function(){this.getMenu()&&(qx.core.ObjectRegistry.inShutDown||this.getMenu().destroy())}});
-
-
-// qx.ui.menubar.Button
-//   - Size: 1160 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.ui.menubar.Button",{extend:qx.ui.form.MenuButton,
-construct:function(b,a,c){this.base(arguments,b,a,c);
-this.removeListener("keydown",this._onKeyDown);
-this.removeListener("keyup",this._onKeyUp)},
-properties:{appearance:{refine:true,
-init:"menubar-button"},
-focusable:{refine:true,
-init:false}},
-members:{getMenuBar:function(){var a=this;
-while(a){if(a instanceof qx.ui.toolbar.ToolBar)return a;
-a=a.getLayoutParent()}return null},
-open:function(b){this.base(arguments,b);
-var a=this.getMenuBar();
-a._setAllowMenuOpenHover(true)},
-_onMenuChange:function(){var b=this.getMenu(),a=this.getMenuBar();
-b.isVisible()?(this.addState("pressed"),a&&a.setOpenMenu(b)):(this.removeState("pressed"),a&&a.getOpenMenu()==b&&(a.resetOpenMenu(),a._setAllowMenuOpenHover(false)))},
-_onMouseUp:function(b){this.base(arguments,b);
-var a=this.getMenu();
-a&&a.isVisible()&&!this.hasState("pressed")&&this.addState("pressed")},
-_onMouseOver:function(){this.addState("hovered");
-if(this.getMenu()){var a=this.getMenuBar();
-a._isAllowMenuOpenHover()&&(qx.ui.menu.Manager.getInstance().hideAll(),a._setAllowMenuOpenHover(true),this.isEnabled()&&this.open())}}}});
-
-
-// qx.ui.toolbar.PartContainer
-//   - Size: 326 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.toolbar.PartContainer",{extend:qx.ui.container.Composite,
-construct:function(){this.base(arguments);
-this._setLayout(new qx.ui.layout.HBox)},
-properties:{appearance:{refine:true,
-init:"toolbar/part/container"},
-show:{init:"both",
-check:["both","label","icon"],
-inheritable:true,
-event:"changeShow"}}});
-
-
-// qx.ui.toolbar.Part
-//   - Size: 1127 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.toolbar.Part",{extend:qx.ui.core.Widget,
-include:[qx.ui.core.MRemoteChildrenHandling],
-construct:function(){this.base(arguments);
-this._setLayout(new qx.ui.layout.HBox);
-this._createChildControl("handle")},
-properties:{appearance:{refine:true,
-init:"toolbar/part"},
-show:{init:"both",
-check:["both","label","icon"],
-inheritable:true,
-event:"changeShow"},
-spacing:{nullable:true,
-check:"Integer",
-themeable:true,
-apply:"_applySpacing"}},
-members:{_createChildControlImpl:function(b){var a;
-switch(b){case"handle":a=new qx.ui.basic.Image();
-a.setAlignY("middle");
-this._add(a);
-break;
-case"container":a=new qx.ui.toolbar.PartContainer;
-this._add(a);
-break}return a||this.base(arguments,b)},
-getChildrenContainer:function(){return this.getChildControl("container")},
-_applySpacing:function(a){var b=this.getChildControl("container").getLayout();
-a==null?b.resetSpacing():b.setSpacing(a)},
-addSeparator:function(){this.add(new qx.ui.toolbar.Separator)},
-getMenuButtons:function(){for(var c=this.getChildren(),d=[],a,b=0,e=c.length;
-b<e;
-b++)a=c[b],a instanceof qx.ui.menubar.Button&&d.push(a);
-return d}}});
-
-
-// qx.ui.menu.AbstractButton
-//   - Size: 2455 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.menu.AbstractButton",{extend:qx.ui.core.Widget,
-include:[qx.ui.core.MExecutable],
-implement:[qx.ui.form.IExecutable],
-type:"abstract",
-construct:function(){this.base(arguments);
-this._setLayout(new qx.ui.menu.ButtonLayout);
-this.addListener("mouseup",this._onMouseUp);
-this.addListener("keypress",this._onKeyPress);
-this.addListener("changeCommand",this._onChangeCommand,this)},
-properties:{blockToolTip:{refine:true,
-init:true},
-label:{check:"String",
-apply:"_applyLabel",
-nullable:true},
-menu:{check:"qx.ui.menu.Menu",
-apply:"_applyMenu",
-nullable:true},
-icon:{check:"String",
-apply:"_applyIcon",
-themeable:true,
-nullable:true}},
-members:{_createChildControlImpl:function(b){var a;
-switch(b){case"icon":a=new qx.ui.basic.Image;
-a.setAnonymous(true);
-this._add(a,{column:0});
-break;
-case"label":a=new qx.ui.basic.Label;
-a.setAnonymous(true);
-this._add(a,{column:1});
-break;
-case"shortcut":a=new qx.ui.basic.Label;
-a.setAnonymous(true);
-this._add(a,{column:2});
-break;
-case"arrow":a=new qx.ui.basic.Image;
-a.setAnonymous(true);
-this._add(a,{column:3});
-break}return a||this.base(arguments,b)},
-_forwardStates:{selected:1},
-getChildrenSizes:function(){var h=0,g=0,f=0,e=0,a,c,d,b;
-this._isChildControlVisible("icon")&&(a=this.getChildControl("icon"),h=a.getMarginLeft()+a.getSizeHint().width+a.getMarginRight());
-this._isChildControlVisible("label")&&(c=this.getChildControl("label"),g=c.getMarginLeft()+c.getSizeHint().width+c.getMarginRight());
-this._isChildControlVisible("shortcut")&&(d=this.getChildControl("shortcut"),f=d.getMarginLeft()+d.getSizeHint().width+d.getMarginRight());
-this._isChildControlVisible("arrow")&&(b=this.getChildControl("arrow"),e=b.getMarginLeft()+b.getSizeHint().width+b.getMarginRight());
-return[h,g,f,e]},
-_onMouseUp:function(){},
-_onKeyPress:function(){},
-_onChangeCommand:function(b){var a=b.getData(),c=a!=null?a.toString():"";
-this.getChildControl("shortcut").setValue(c)},
-_onChangeLocale:null,
-_applyIcon:function(a){a?this._showChildControl("icon").setSource(a):this._excludeChildControl("icon")},
-_applyLabel:function(a){a?this._showChildControl("label").setValue(a):this._excludeChildControl("label")},
-_applyMenu:function(a,b){b&&(b.resetOpener(),b.removeState("submenu"));
-a?(this._showChildControl("arrow"),a.setOpener(this),a.addState("submenu")):this._excludeChildControl("arrow")}},
-destruct:function(){this.getMenu()&&(qx.core.ObjectRegistry.inShutDown||this.getMenu().destroy())}});
-
-
 // qx.ui.core.scroll.ScrollPane
-//   - Size: 2545 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 2.49KB (0.79KB zipped => 31.94%)
 qx.Class.define("qx.ui.core.scroll.ScrollPane",{extend:qx.ui.core.Widget,
 construct:function(){this.base(arguments);
 this.set({minWidth:0,
@@ -14631,9 +14364,69 @@ _applyScrollX:function(a){this.getContentElement().scrollToX(a)},
 _applyScrollY:function(a){this.getContentElement().scrollToY(a)}}});
 
 
+// qx.ui.menu.AbstractButton
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 2.40KB (0.88KB zipped => 36.50%)
+qx.Class.define("qx.ui.menu.AbstractButton",{extend:qx.ui.core.Widget,
+include:[qx.ui.core.MExecutable],
+implement:[qx.ui.form.IExecutable],
+type:"abstract",
+construct:function(){this.base(arguments);
+this._setLayout(new qx.ui.menu.ButtonLayout);
+this.addListener("mouseup",this._onMouseUp);
+this.addListener("keypress",this._onKeyPress);
+this.addListener("changeCommand",this._onChangeCommand,this)},
+properties:{blockToolTip:{refine:true,
+init:true},
+label:{check:"String",
+apply:"_applyLabel",
+nullable:true},
+menu:{check:"qx.ui.menu.Menu",
+apply:"_applyMenu",
+nullable:true},
+icon:{check:"String",
+apply:"_applyIcon",
+themeable:true,
+nullable:true}},
+members:{_createChildControlImpl:function(b){var a;
+switch(b){case"icon":a=new qx.ui.basic.Image;
+a.setAnonymous(true);
+this._add(a,{column:0});
+break;
+case"label":a=new qx.ui.basic.Label;
+a.setAnonymous(true);
+this._add(a,{column:1});
+break;
+case"shortcut":a=new qx.ui.basic.Label;
+a.setAnonymous(true);
+this._add(a,{column:2});
+break;
+case"arrow":a=new qx.ui.basic.Image;
+a.setAnonymous(true);
+this._add(a,{column:3});
+break}return a||this.base(arguments,b)},
+_forwardStates:{selected:1},
+getChildrenSizes:function(){var h=0,g=0,f=0,e=0,a,c,d,b;
+this._isChildControlVisible("icon")&&(a=this.getChildControl("icon"),h=a.getMarginLeft()+a.getSizeHint().width+a.getMarginRight());
+this._isChildControlVisible("label")&&(c=this.getChildControl("label"),g=c.getMarginLeft()+c.getSizeHint().width+c.getMarginRight());
+this._isChildControlVisible("shortcut")&&(d=this.getChildControl("shortcut"),f=d.getMarginLeft()+d.getSizeHint().width+d.getMarginRight());
+this._isChildControlVisible("arrow")&&(b=this.getChildControl("arrow"),e=b.getMarginLeft()+b.getSizeHint().width+b.getMarginRight());
+return[h,g,f,e]},
+_onMouseUp:function(){},
+_onKeyPress:function(){},
+_onChangeCommand:function(b){var a=b.getData(),c=a!=null?a.toString():"";
+this.getChildControl("shortcut").setValue(c)},
+_onChangeLocale:null,
+_applyIcon:function(a){a?this._showChildControl("icon").setSource(a):this._excludeChildControl("icon")},
+_applyLabel:function(a){a?this._showChildControl("label").setValue(a):this._excludeChildControl("label")},
+_applyMenu:function(a,b){b&&(b.resetOpener(),b.removeState("submenu"));
+a?(this._showChildControl("arrow"),a.setOpener(this),a.addState("submenu")):this._excludeChildControl("arrow")}},
+destruct:function(){this.getMenu()&&(qx.core.ObjectRegistry.inShutDown||this.getMenu().destroy())}});
+
+
 // qx.ui.form.HoverButton
-//   - Size: 1163 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.14KB (0.50KB zipped => 43.77%)
 qx.Class.define("qx.ui.form.HoverButton",{extend:qx.ui.basic.Atom,
 include:[qx.ui.core.MExecutable],
 implement:[qx.ui.form.IExecutable],
@@ -14667,8 +14460,8 @@ destruct:function(){this._disposeObjects("__timer")}});
 
 
 // qx.ui.form.RepeatButton
-//   - Size: 2652 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 2.59KB (0.78KB zipped => 30.24%)
 qx.Class.define("qx.ui.form.RepeatButton",{extend:qx.ui.form.Button,
 construct:function(b,a){this.base(arguments,b,a);
 this.__mXur6=new qx.event.AcceleratingTimer();
@@ -14728,8 +14521,8 @@ destruct:function(){this._disposeObjects("__timer")}});
 
 
 // qx.ui.container.SlideBar
-//   - Size: 3654 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 3.57KB (1.14KB zipped => 31.86%)
 qx.Class.define("qx.ui.container.SlideBar",{extend:qx.ui.core.Widget,
 include:[qx.ui.core.MRemoteChildrenHandling,qx.ui.core.MRemoteLayoutHandling],
 construct:function(a){this.base(arguments);
@@ -14801,8 +14594,8 @@ this.scrollTo(0)}}});
 
 
 // qx.ui.menu.MenuSlideBar
-//   - Size: 557 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.54KB (0.30KB zipped => 55.48%)
 qx.Class.define("qx.ui.menu.MenuSlideBar",{extend:qx.ui.container.SlideBar,
 construct:function(){this.base(arguments,"vertical")},
 properties:{appearance:{refine:true,
@@ -14819,8 +14612,8 @@ break}return a||this.base(arguments,b)}}});
 
 
 // qx.ui.menu.Menu
-//   - Size: 6721 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 6.56KB (1.96KB zipped => 29.94%)
 qx.Class.define("qx.ui.menu.Menu",{extend:qx.ui.core.Widget,
 include:[qx.ui.core.MPlacement,qx.ui.core.MRemoteChildrenHandling],
 construct:function(){this.base(arguments);
@@ -14977,8 +14770,8 @@ this._disposeObjects("_blocker")}});
 
 
 // qx.ui.menu.ButtonLayout
-//   - Size: 1085 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.06KB (0.59KB zipped => 56.04%)
 qx.Class.define("qx.ui.menu.ButtonLayout",{extend:qx.ui.layout.Abstract,
 members:{verifyLayoutProperty:function(c,a){this.assert(a=="column","The property '"+a+"' is not supported by the MenuButton layout!")},
 renderLayout:function(l,p){for(var e=this._getLayoutChildren(),a,j,n=[],b=0,h=e.length,i,c,m,k,f,q,g,d,o;
@@ -15000,8 +14793,8 @@ height:a}}}});
 
 
 // qx.ui.menu.Button
-//   - Size: 472 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.46KB (0.28KB zipped => 59.96%)
 qx.Class.define("qx.ui.menu.Button",{extend:qx.ui.menu.AbstractButton,
 construct:function(c,a,b,d){this.base(arguments);
 c!=null&&this.setLabel(c);
@@ -15015,9 +14808,216 @@ if(this.getMenu())return}qx.ui.menu.Manager.getInstance().hideAll()},
 _onKeyPress:function(){this.execute()}}});
 
 
-// qx.ui.core.scroll.NativeScrollBar
-//   - Size: 2842 bytes
+// qx.ui.toolbar.ToolBar
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 3.71KB (1.40KB zipped => 37.64%)
+qx.Class.define("qx.ui.toolbar.ToolBar",{extend:qx.ui.core.Widget,
+include:qx.ui.core.MChildrenHandling,
+construct:function(){this.base(arguments);
+this._setLayout(new qx.ui.layout.HBox());
+this.__WliO7=[];
+this.__bbixNX=[]},
+properties:{appearance:{refine:true,
+init:"toolbar"},
+openMenu:{check:"qx.ui.menu.Menu",
+event:"changeOpenMenu",
+nullable:true},
+show:{init:"both",
+check:["both","label","icon"],
+inheritable:true,
+event:"changeShow"},
+spacing:{nullable:true,
+check:"Integer",
+themeable:true,
+apply:"_applySpacing"},
+overflowIndicator:{check:"qx.ui.core.Widget",
+nullable:true,
+apply:"_applyOverflowIndicator"},
+overflowHandling:{init:false,
+check:"Boolean",
+apply:"_applyOverflowHandling"}},
+events:{hideItem:"qx.event.type.Data",
+showItem:"qx.event.type.Data"},
+members:{__WliO7:null,
+__bbixNX:null,
+_computeSizeHint:function(){var a=this.base(arguments),c,b;
+true&&this.getOverflowHandling()&&(c=0,b=this.getOverflowIndicator(),b&&(c=b.getSizeHint().width+this.getSpacing()),a.minWidth=c);
+return a},
+_onResize:function(a){this._recalculateOverflow(a.getData().width)},
+_recalculateOverflow:function(c){if(!this.getOverflowHandling())return;
+var a=this.getSizeHint().width,b=this.getOverflowIndicator(),g=0,e,h,i,d,f;
+b&&(g=b.getSizeHint().width);
+if(c<a)do{e=this._getNextToHide();
+if(!e)return;
+h=e.getMarginLeft()+e.getMarginRight(),i=e.getSizeHint().width+h;
+this.__CRiSn(e);
+a-=i;
+b&&b.getVisibility()!="visible"&&(b.setVisibility("visible"),a+=g)}while(a>c);
+else do{d=this.__WliO7[0];
+if(d){h=d.getMarginLeft()+d.getMarginRight(),f=d.getSizeHint().width+h;
+if(c>a+f+this.getSpacing()||this.__WliO7.length==1&&c>a+f-g+this.getSpacing())this.__D5cnU(d),c+=f,b&&this.__WliO7.length==0&&b.setVisibility("excluded");
+else return}}while(c>=a&&this.__WliO7.length>0)},
+__D5cnU:function(a){a.setVisibility("visible");
+this.__WliO7.shift();
+this.fireDataEvent("showItem",a)},
+__CRiSn:function(a){if(!a)return;
+this.__WliO7.unshift(a);
+a.setVisibility("excluded");
+this.fireDataEvent("hideItem",a)},
+_getNextToHide:function(){for(var a=this.__bbixNX.length-1,c,d,b;
+a>=0;
+a--){c=this.__bbixNX[a];
+if(c&&c.getVisibility&&c.getVisibility()=="visible")return c}d=this._getChildren(),a=d.length-1;
+for(;
+a>=0;
+a--){b=d[a];
+if(b==this.getOverflowIndicator())continue;
+if(b.getVisibility&&b.getVisibility()=="visible")return b}},
+setRemovePriority:function(c,a,b){if(!b&&this.__bbixNX[a]!=undefined)throw new Error("Priority already in use!");
+this.__bbixNX[a]=c},
+_applyOverflowHandling:function(e){this.invalidateLayoutCache();
+var c=this.getLayoutParent(),a,d,b;
+c&&c.invalidateLayoutCache();
+a=this.getBounds();
+a&&a.width&&this._recalculateOverflow(a.width);
+if(e)this.addListener("resize",this._onResize,this);
+else{this.removeListener("resize",this._onResize,this);
+d=this.getOverflowIndicator();
+d&&d.setVisibility("excluded");
+for(b=0;
+b<this.__WliO7.length;
+b++)this.__WliO7[b].setVisibility("visible");
+this.__WliO7=[]}},
+_applyOverflowIndicator:function(a,b){b&&this._remove(b);
+if(a){if(this._indexOf(a)==-1)throw new Error("Widget must be child of the toolbar.");
+a.setVisibility("excluded")}},
+__bG6IET:false,
+_setAllowMenuOpenHover:function(a){this.__bG6IET=a},
+_isAllowMenuOpenHover:function(){return this.__bG6IET},
+_applySpacing:function(a){var b=this._getLayout();
+a==null?b.resetSpacing():b.setSpacing(a)},
+addSpacer:function(){var a=new qx.ui.core.Spacer;
+this._add(a,{flex:1});
+return a},
+addSeparator:function(){this.add(new qx.ui.toolbar.Separator)},
+getMenuButtons:function(){for(var d=this.getChildren(),b=[],a,c=0,e=d.length;
+c<e;
+c++)a=d[c],a instanceof qx.ui.menubar.Button?b.push(a):a instanceof qx.ui.toolbar.Part&&b.push.apply(b,a.getMenuButtons());
+return b}},
+destruct:function(){this.hasListener("resize")&&this.removeListener("resize",this._onResize,this)}});
+
+
+// qx.ui.form.MenuButton
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.38KB (0.57KB zipped => 41.21%)
+qx.Class.define("qx.ui.form.MenuButton",{extend:qx.ui.form.Button,
+construct:function(c,b,a){this.base(arguments,c,b);
+a!=null&&this.setMenu(a)},
+properties:{menu:{check:"qx.ui.menu.Menu",
+nullable:true,
+apply:"_applyMenu",
+event:"changeMenu"}},
+members:{_applyMenu:function(a,b){b&&(b.removeListener("changeVisibility",this._onMenuChange,this),b.resetOpener());
+a&&(a.addListener("changeVisibility",this._onMenuChange,this),a.setOpener(this),a.removeState("submenu"),a.removeState("contextmenu"))},
+open:function(c){var a=this.getMenu(),b;
+a&&(qx.ui.menu.Manager.getInstance().hideAll(),a.setOpener(this),a.open(),c&&(b=a.getSelectables()[0],b&&a.setSelectedButton(b)))},
+_onMenuChange:function(){var a=this.getMenu();
+a.isVisible()?this.addState("pressed"):this.removeState("pressed")},
+_onMouseDown:function(b){var a=this.getMenu();
+a&&(a.isVisible()?a.exclude():this.open(),b.stopPropagation())},
+_onMouseUp:function(a){this.base(arguments,a);
+a.stopPropagation()},
+_onMouseOver:function(){this.addState("hovered")},
+_onMouseOut:function(){this.removeState("hovered")},
+_onKeyDown:function(b){switch(b.getKeyIdentifier()){case"Enter":this.removeState("abandoned");
+this.addState("pressed");
+var a=this.getMenu();
+a&&(a.isVisible()?a.exclude():this.open());
+b.stopPropagation()}},
+_onKeyUp:function(){}},
+destruct:function(){this.getMenu()&&(qx.core.ObjectRegistry.inShutDown||this.getMenu().destroy())}});
+
+
+// qx.ui.menubar.Button
+//   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.13KB (0.50KB zipped => 43.97%)
+qx.Class.define("qx.ui.menubar.Button",{extend:qx.ui.form.MenuButton,
+construct:function(b,a,c){this.base(arguments,b,a,c);
+this.removeListener("keydown",this._onKeyDown);
+this.removeListener("keyup",this._onKeyUp)},
+properties:{appearance:{refine:true,
+init:"menubar-button"},
+focusable:{refine:true,
+init:false}},
+members:{getMenuBar:function(){var a=this;
+while(a){if(a instanceof qx.ui.toolbar.ToolBar)return a;
+a=a.getLayoutParent()}return null},
+open:function(b){this.base(arguments,b);
+var a=this.getMenuBar();
+a._setAllowMenuOpenHover(true)},
+_onMenuChange:function(){var b=this.getMenu(),a=this.getMenuBar();
+b.isVisible()?(this.addState("pressed"),a&&a.setOpenMenu(b)):(this.removeState("pressed"),a&&a.getOpenMenu()==b&&(a.resetOpenMenu(),a._setAllowMenuOpenHover(false)))},
+_onMouseUp:function(b){this.base(arguments,b);
+var a=this.getMenu();
+a&&a.isVisible()&&!this.hasState("pressed")&&this.addState("pressed")},
+_onMouseOver:function(){this.addState("hovered");
+if(this.getMenu()){var a=this.getMenuBar();
+a._isAllowMenuOpenHover()&&(qx.ui.menu.Manager.getInstance().hideAll(),a._setAllowMenuOpenHover(true),this.isEnabled()&&this.open())}}}});
+
+
+// qx.ui.toolbar.PartContainer
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.32KB (0.23KB zipped => 71.17%)
+qx.Class.define("qx.ui.toolbar.PartContainer",{extend:qx.ui.container.Composite,
+construct:function(){this.base(arguments);
+this._setLayout(new qx.ui.layout.HBox)},
+properties:{appearance:{refine:true,
+init:"toolbar/part/container"},
+show:{init:"both",
+check:["both","label","icon"],
+inheritable:true,
+event:"changeShow"}}});
+
+
+// qx.ui.toolbar.Part
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.10KB (0.55KB zipped => 50.40%)
+qx.Class.define("qx.ui.toolbar.Part",{extend:qx.ui.core.Widget,
+include:[qx.ui.core.MRemoteChildrenHandling],
+construct:function(){this.base(arguments);
+this._setLayout(new qx.ui.layout.HBox);
+this._createChildControl("handle")},
+properties:{appearance:{refine:true,
+init:"toolbar/part"},
+show:{init:"both",
+check:["both","label","icon"],
+inheritable:true,
+event:"changeShow"},
+spacing:{nullable:true,
+check:"Integer",
+themeable:true,
+apply:"_applySpacing"}},
+members:{_createChildControlImpl:function(b){var a;
+switch(b){case"handle":a=new qx.ui.basic.Image();
+a.setAlignY("middle");
+this._add(a);
+break;
+case"container":a=new qx.ui.toolbar.PartContainer;
+this._add(a);
+break}return a||this.base(arguments,b)},
+getChildrenContainer:function(){return this.getChildControl("container")},
+_applySpacing:function(a){var b=this.getChildControl("container").getLayout();
+a==null?b.resetSpacing():b.setSpacing(a)},
+addSeparator:function(){this.add(new qx.ui.toolbar.Separator)},
+getMenuButtons:function(){for(var c=this.getChildren(),d=[],a,b=0,e=c.length;
+b<e;
+b++)a=c[b],a instanceof qx.ui.menubar.Button&&d.push(a);
+return d}}});
+
+
+// qx.ui.core.scroll.NativeScrollBar
+//   - Modified: 2010-11-11T16:55:28
+//   - Size: 2.78KB (1.00KB zipped => 36.00%)
 qx.Class.define("qx.ui.core.scroll.NativeScrollBar",{extend:qx.ui.core.Widget,
 implement:qx.ui.core.scroll.IScrollBar,
 construct:function(a){this.base(arguments);
@@ -15092,8 +15092,8 @@ destruct:function(){this._disposeObjects("__scrollPaneElement")}});
 
 
 // qx.ui.table.pane.FocusIndicator
-//   - Size: 1164 bytes
 //   - Modified: 2010-11-10T13:22:29
+//   - Size: 1.14KB (0.56KB zipped => 48.88%)
 qx.Class.define("qx.ui.table.pane.FocusIndicator",{extend:qx.ui.container.Composite,
 construct:function(a){this.base(arguments);
 this.__zCh7p=a;
@@ -15117,8 +15117,8 @@ destruct:function(){this.__zCh7p=null}});
 
 
 // qx.ui.container.Stack
-//   - Size: 1448 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.41KB (0.60KB zipped => 42.47%)
 qx.Class.define("qx.ui.container.Stack",{extend:qx.ui.core.Widget,
 implement:qx.ui.core.ISingleSelection,
 include:qx.ui.core.MSingleSelectionHandling,
@@ -15154,8 +15154,8 @@ this.setSelection([b])}}});
 
 
 // qx.ui.table.pane.Clipper
-//   - Size: 314 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.31KB (0.20KB zipped => 64.65%)
 qx.Class.define("qx.ui.table.pane.Clipper",{extend:qx.ui.container.Composite,
 construct:function(){this.base(arguments,new qx.ui.layout.Grow());
 this.setMinWidth(0)},
@@ -15164,8 +15164,8 @@ scrollToY:function(a){this.getContentElement().scrollToY(a,true)}}});
 
 
 // qx.ui.tree.FolderOpenButton
-//   - Size: 629 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.61KB (0.31KB zipped => 50.40%)
 qx.Class.define("qx.ui.tree.FolderOpenButton",{extend:qx.ui.basic.Image,
 include:qx.ui.core.MExecutable,
 construct:function(){this.base(arguments);
@@ -15185,8 +15185,8 @@ a.stopPropagation()}}});
 
 
 // qx.ui.form.Slider
-//   - Size: 8227 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 8.03KB (2.34KB zipped => 29.09%)
 qx.Class.define("qx.ui.form.Slider",{extend:qx.ui.core.Widget,
 implement:[qx.ui.form.IForm,qx.ui.form.INumberForm,qx.ui.form.IRange],
 include:[qx.ui.form.MForm],
@@ -15356,9 +15356,21 @@ _applyMaximum:function(a){this.getValue()>a&&this.setValue(a);
 this._updateKnobPosition()}}});
 
 
+// qx.ui.core.scroll.ScrollSlider
+//   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.35KB (0.23KB zipped => 66.39%)
+qx.Class.define("qx.ui.core.scroll.ScrollSlider",{extend:qx.ui.form.Slider,
+construct:function(a){this.base(arguments,a);
+this.removeListener("keypress",this._onKeyPress);
+this.removeListener("mousewheel",this._onMouseWheel)},
+members:{getSizeHint:function(){var a=this.base(arguments);
+this.getOrientation()==="horizontal"?a.width=0:a.height=0;
+return a}}});
+
+
 // qx.ui.splitpane.Splitter
-//   - Size: 612 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.60KB (0.33KB zipped => 55.39%)
 qx.Class.define("qx.ui.splitpane.Splitter",{extend:qx.ui.core.Widget,
 construct:function(a){this.base(arguments);
 a.getOrientation()=="vertical"?(this._setLayout(new qx.ui.layout.HBox(0,"center")),this._getLayout().setAlignY("middle")):(this._setLayout(new qx.ui.layout.VBox(0,"middle")),this._getLayout().setAlignX("center"));
@@ -15373,21 +15385,9 @@ this._add(a);
 break}return a||this.base(arguments,b)}}});
 
 
-// qx.ui.core.scroll.ScrollSlider
-//   - Size: 360 bytes
-//   - Modified: 2010-08-26T21:43:53
-qx.Class.define("qx.ui.core.scroll.ScrollSlider",{extend:qx.ui.form.Slider,
-construct:function(a){this.base(arguments,a);
-this.removeListener("keypress",this._onKeyPress);
-this.removeListener("mousewheel",this._onMouseWheel)},
-members:{getSizeHint:function(){var a=this.base(arguments);
-this.getOrientation()==="horizontal"?a.width=0:a.height=0;
-return a}}});
-
-
 // qx.ui.popup.Popup
-//   - Size: 580 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.57KB (0.31KB zipped => 55.00%)
 qx.Class.define("qx.ui.popup.Popup",{extend:qx.ui.container.Composite,
 include:qx.ui.core.MPlacement,
 construct:function(a){this.base(arguments,a);
@@ -15406,8 +15406,8 @@ destruct:function(){qx.ui.popup.Manager.getInstance().remove(this)}});
 
 
 // qx.ui.popup.Manager
-//   - Size: 1197 bytes
 //   - Modified: 2010-05-06T22:42:38
+//   - Size: 1.17KB (0.52KB zipped => 44.44%)
 qx.Class.define("qx.ui.popup.Manager",{type:"singleton",
 extend:qx.core.Object,
 construct:function(){this.base(arguments);
@@ -15436,8 +15436,8 @@ this._disposeMap("__objects")}});
 
 
 // qx.ui.form.AbstractField
-//   - Size: 6496 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 6.34KB (2.07KB zipped => 32.56%)
 qx.Class.define("qx.ui.form.AbstractField",{extend:qx.ui.core.Widget,
 implement:[qx.ui.form.IStringForm,qx.ui.form.IForm],
 include:[qx.ui.form.MForm],
@@ -15568,8 +15568,8 @@ destruct:function(){this.__PpeiQ=null}});
 
 
 // qx.ui.splitpane.Pane
-//   - Size: 4856 bytes
 //   - Modified: 2010-11-10T13:22:29
+//   - Size: 4.74KB (1.69KB zipped => 35.67%)
 qx.Class.define("qx.ui.splitpane.Pane",{extend:qx.ui.core.Widget,
 construct:function(a){this.base(arguments);
 this.__yONi8=[];
@@ -15679,8 +15679,8 @@ destruct:function(){this.__yONi8=null}});
 
 
 // qx.ui.form.TextField
-//   - Size: 256 bytes
 //   - Modified: 2010-09-30T14:20:20
+//   - Size: 0.25KB (0.17KB zipped => 67.19%)
 qx.Class.define("qx.ui.form.TextField",{extend:qx.ui.form.AbstractField,
 properties:{appearance:{refine:true,
 init:"textfield"},
@@ -15692,8 +15692,8 @@ members:{_renderContentElement:function(){}}});
 
 
 // qx.ui.table.celleditor.TextField
-//   - Size: 406 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.40KB (0.25KB zipped => 62.07%)
 qx.Class.define("qx.ui.table.celleditor.TextField",{extend:qx.ui.table.celleditor.AbstractField,
 members:{getCellEditorValue:function(b){var a=b.getValue(),c=this.getValidationFunction();
 c&&(a=c(a,b.originalValue));
@@ -15705,8 +15705,8 @@ return a}}});
 
 
 // qx.ui.menu.CheckBox
-//   - Size: 737 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.72KB (0.40KB zipped => 55.50%)
 qx.Class.define("qx.ui.menu.CheckBox",{extend:qx.ui.menu.AbstractButton,
 implement:[qx.ui.form.IBooleanForm],
 construct:function(a,b){this.base(arguments);
@@ -15728,8 +15728,8 @@ _onKeyPress:function(){this.execute()}}});
 
 
 // qx.ui.table.headerrenderer.HeaderCell
-//   - Size: 1364 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.33KB (0.51KB zipped => 38.27%)
 qx.Class.define("qx.ui.table.headerrenderer.HeaderCell",{extend:qx.ui.container.Composite,
 construct:function(){this.base(arguments);
 var a=new qx.ui.layout.Grid();
@@ -15774,8 +15774,8 @@ break}return a||this.base(arguments,b)}}});
 
 
 // qx.ui.table.columnmenu.MenuItem
-//   - Size: 474 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.46KB (0.27KB zipped => 58.44%)
 qx.Class.define("qx.ui.table.columnmenu.MenuItem",{extend:qx.ui.menu.CheckBox,
 implement:qx.ui.table.IColumnMenuItem,
 properties:{visible:{check:"Boolean",
@@ -15791,8 +15791,8 @@ _applyVisible:function(a){this.bInListener||this.setValue(a)}}});
 
 
 // qx.ui.tree.AbstractTreeItem
-//   - Size: 6942 bytes
 //   - Modified: 2010-08-26T21:43:54
+//   - Size: 6.78KB (2.17KB zipped => 31.95%)
 qx.Class.define("qx.ui.tree.AbstractTreeItem",{extend:qx.ui.core.Widget,
 type:"abstract",
 include:[qx.ui.form.MModelProperty],
@@ -15961,8 +15961,8 @@ this._disposeObjects("__spacer","__childrenContainer")}});
 
 
 // qx.ui.toolbar.MenuButton
-//   - Size: 506 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.49KB (0.31KB zipped => 62.45%)
 qx.Class.define("qx.ui.toolbar.MenuButton",{extend:qx.ui.menubar.Button,
 properties:{appearance:{refine:true,
 init:"toolbar-menubutton"},
@@ -15979,8 +15979,8 @@ _applyShowArrow:function(a){a?this._showChildControl("arrow"):this._excludeChild
 
 
 // qx.ui.tree.TreeFolder
-//   - Size: 311 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.30KB (0.21KB zipped => 68.49%)
 qx.Class.define("qx.ui.tree.TreeFolder",{extend:qx.ui.tree.AbstractTreeItem,
 construct:function(a){this.base(arguments);
 a&&this.setLabel(a)},
@@ -15993,8 +15993,8 @@ this.addLabel()}}});
 
 
 // qx.ui.tooltip.ToolTip
-//   - Size: 1167 bytes
 //   - Modified: 2010-05-21T19:22:00
+//   - Size: 1.14KB (0.49KB zipped => 43.27%)
 qx.Class.define("qx.ui.tooltip.ToolTip",{extend:qx.ui.popup.Popup,
 construct:function(b,a){this.base(arguments);
 this.setLayout(new qx.ui.layout.Grow);
@@ -16035,25 +16035,9 @@ _applyRich:function(b){var a=this.getChildControl("atom");
 a.setRich(b)}}});
 
 
-// apiviewer.ui.panels.PackagePanel
-//   - Size: 754 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("apiviewer.ui.panels.PackagePanel",{extend:apiviewer.ui.panels.InfoPanel,
-members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getFullName(),null,false,true)},
-getItemTitleHtml:function(a){return a.getFullName()},
-getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getPackage(),b)},
-getItemTooltip:function(){return"Package"},
-itemHasDetails:function(a){return apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)},
-update:function(c,b){if(!this.getElement())return;
-this.setDocNode(b);
-var a=b.getPackages();
-a&&a.length>0&&this._sortItems(a);
-this._displayNodes(a,b)}}});
-
-
 // qx.ui.form.ToggleButton
-//   - Size: 2082 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 2.03KB (0.67KB zipped => 33.05%)
 qx.Class.define("qx.ui.form.ToggleButton",{extend:qx.ui.basic.Atom,
 include:[qx.ui.core.MExecutable],
 implement:[qx.ui.form.IBooleanForm,qx.ui.form.IExecutable,qx.ui.form.IRadioItem],
@@ -16101,9 +16085,25 @@ _onKeyUp:function(a){if(!this.hasState("pressed"))return;
 switch(a.getKeyIdentifier()){case"Enter":case"Space":this.removeState("abandoned"),this.execute(),this.removeState("pressed"),a.stopPropagation()}}}});
 
 
-// apiviewer.ui.panels.ClassPanel
-//   - Size: 1204 bytes
+// apiviewer.ui.panels.PackagePanel
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.74KB (0.34KB zipped => 46.02%)
+qx.Class.define("apiviewer.ui.panels.PackagePanel",{extend:apiviewer.ui.panels.InfoPanel,
+members:{getItemTypeHtml:function(a){return apiviewer.ui.panels.InfoPanel.createItemLinkHtml(a.getFullName(),null,false,true)},
+getItemTitleHtml:function(a){return a.getFullName()},
+getItemTextHtml:function(a,c,b){return b?apiviewer.ui.panels.InfoPanel.resolveLinkAttributes(a.getDescription(),a):apiviewer.ui.panels.InfoPanel.createDescriptionHtml(a,a.getPackage(),b)},
+getItemTooltip:function(){return"Package"},
+itemHasDetails:function(a){return apiviewer.ui.panels.InfoPanel.descriptionHasDetails(a)},
+update:function(c,b){if(!this.getElement())return;
+this.setDocNode(b);
+var a=b.getPackages();
+a&&a.length>0&&this._sortItems(a);
+this._displayNodes(a,b)}}});
+
+
+// apiviewer.ui.panels.ClassPanel
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.18KB (0.57KB zipped => 48.75%)
 qx.Class.define("apiviewer.ui.panels.ClassPanel",{extend:apiviewer.ui.panels.InfoPanel,
 construct:function(c,a,b){this.base(arguments,c,a);
 this.setType(b)},
@@ -16130,8 +16130,8 @@ this._displayNodes(b,d)}}});
 
 
 // qx.ui.toolbar.CheckBox
-//   - Size: 318 bytes
 //   - Modified: 2010-08-26T21:43:54
+//   - Size: 0.31KB (0.21KB zipped => 66.04%)
 qx.Class.define("qx.ui.toolbar.CheckBox",{extend:qx.ui.form.ToggleButton,
 construct:function(b,a){this.base(arguments,b,a);
 this.removeListener("keydown",this._onKeyDown);
@@ -16142,9 +16142,72 @@ focusable:{refine:true,
 init:false}}});
 
 
-// qx.ui.tooltip.Manager
-//   - Size: 3261 bytes
+// qx.ui.tree.SelectionManager
 //   - Modified: 2010-08-26T21:43:54
+//   - Size: 1.34KB (0.62KB zipped => 46.10%)
+qx.Class.define("qx.ui.tree.SelectionManager",{extend:qx.ui.core.selection.ScrollArea,
+members:{_getSelectableLocationY:function(c){var a=c.getBounds(),b;
+if(a){b=this._getWidget().getItemTop(c);
+return{top:b,
+bottom:b+a.height}}},
+_isSelectable:function(a){return this._isItemSelectable(a)&&a instanceof qx.ui.tree.AbstractTreeItem},
+_getSelectableFromMouseEvent:function(a){return this._getWidget().getTreeItem(a.getTarget())},
+getSelectables:function(f){var e=false,b,d,c,a;
+f||(e=this._userInteraction,this._userInteraction=true);
+b=this._getWidget(),d=[];
+if(b.getRoot()!=null){c=b.getRoot().getItems(true,!!f,b.getHideRoot()),a=0;
+for(;
+a<c.length;
+a++)this._isSelectable(c[a])&&d.push(c[a])}this._userInteraction=e;
+return d},
+_getSelectableRange:function(d,e){if(d===e)return[d];
+var c=this.getSelectables(),a=c.indexOf(d),b=c.indexOf(e);
+if(a<0||b<0)return[];
+return a<b?c.slice(a,b+1):c.slice(b,a+1)},
+_getFirstSelectable:function(){return this.getSelectables()[0]||null},
+_getLastSelectable:function(){var a=this.getSelectables();
+return a.length>0?a[a.length-1]:null},
+_getRelatedSelectable:function(d,b){var c=this._getWidget(),a=null;
+switch(b){case"above":a=c.getPreviousNodeOf(d,false);
+break;
+case"under":a=c.getNextNodeOf(d,false);
+break;
+case"left":case"right":break}if(!a)return null;
+return this._isSelectable(a)?a:this._getRelatedSelectable(a,b)}}});
+
+
+// qx.ui.menu.RadioButton
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.89KB (0.45KB zipped => 50.82%)
+qx.Class.define("qx.ui.menu.RadioButton",{extend:qx.ui.menu.AbstractButton,
+include:[qx.ui.form.MModelProperty],
+implement:[qx.ui.form.IRadioItem,qx.ui.form.IBooleanForm,qx.ui.form.IModel],
+construct:function(a,b){this.base(arguments);
+a!=null&&this.setLabel(a);
+b!=null&&this.setMenu(b);
+this.addListener("execute",this._onExecute,this)},
+properties:{appearance:{refine:true,
+init:"menu-radiobutton"},
+value:{check:"Boolean",
+nullable:true,
+event:"changeValue",
+apply:"_applyValue",
+init:false},
+group:{check:"qx.ui.form.RadioGroup",
+nullable:true,
+apply:"_applyGroup"}},
+members:{_applyValue:function(a){a?this.addState("checked"):this.removeState("checked")},
+_applyGroup:function(a,b){b&&b.remove(this);
+a&&a.add(this)},
+_onExecute:function(){this.setValue(true)},
+_onMouseUp:function(a){a.isLeftPressed()&&this.execute();
+qx.ui.menu.Manager.getInstance().hideAll()},
+_onKeyPress:function(){this.execute()}}});
+
+
+// qx.ui.tooltip.Manager
+//   - Modified: 2010-08-26T21:43:54
+//   - Size: 3.18KB (1.14KB zipped => 35.88%)
 qx.Class.define("qx.ui.tooltip.Manager",{type:"singleton",
 extend:qx.core.Object,
 construct:function(){this.base(arguments);
@@ -16215,72 +16278,9 @@ this._disposeObjects("__showTimer","__hideTimer","__sharedToolTip");
 this.__349cD=null}});
 
 
-// qx.ui.menu.RadioButton
-//   - Size: 915 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.menu.RadioButton",{extend:qx.ui.menu.AbstractButton,
-include:[qx.ui.form.MModelProperty],
-implement:[qx.ui.form.IRadioItem,qx.ui.form.IBooleanForm,qx.ui.form.IModel],
-construct:function(a,b){this.base(arguments);
-a!=null&&this.setLabel(a);
-b!=null&&this.setMenu(b);
-this.addListener("execute",this._onExecute,this)},
-properties:{appearance:{refine:true,
-init:"menu-radiobutton"},
-value:{check:"Boolean",
-nullable:true,
-event:"changeValue",
-apply:"_applyValue",
-init:false},
-group:{check:"qx.ui.form.RadioGroup",
-nullable:true,
-apply:"_applyGroup"}},
-members:{_applyValue:function(a){a?this.addState("checked"):this.removeState("checked")},
-_applyGroup:function(a,b){b&&b.remove(this);
-a&&a.add(this)},
-_onExecute:function(){this.setValue(true)},
-_onMouseUp:function(a){a.isLeftPressed()&&this.execute();
-qx.ui.menu.Manager.getInstance().hideAll()},
-_onKeyPress:function(){this.execute()}}});
-
-
-// qx.ui.tree.SelectionManager
-//   - Size: 1373 bytes
-//   - Modified: 2010-08-26T21:43:54
-qx.Class.define("qx.ui.tree.SelectionManager",{extend:qx.ui.core.selection.ScrollArea,
-members:{_getSelectableLocationY:function(c){var a=c.getBounds(),b;
-if(a){b=this._getWidget().getItemTop(c);
-return{top:b,
-bottom:b+a.height}}},
-_isSelectable:function(a){return this._isItemSelectable(a)&&a instanceof qx.ui.tree.AbstractTreeItem},
-_getSelectableFromMouseEvent:function(a){return this._getWidget().getTreeItem(a.getTarget())},
-getSelectables:function(f){var e=false,b,d,c,a;
-f||(e=this._userInteraction,this._userInteraction=true);
-b=this._getWidget(),d=[];
-if(b.getRoot()!=null){c=b.getRoot().getItems(true,!!f,b.getHideRoot()),a=0;
-for(;
-a<c.length;
-a++)this._isSelectable(c[a])&&d.push(c[a])}this._userInteraction=e;
-return d},
-_getSelectableRange:function(d,e){if(d===e)return[d];
-var c=this.getSelectables(),a=c.indexOf(d),b=c.indexOf(e);
-if(a<0||b<0)return[];
-return a<b?c.slice(a,b+1):c.slice(b,a+1)},
-_getFirstSelectable:function(){return this.getSelectables()[0]||null},
-_getLastSelectable:function(){var a=this.getSelectables();
-return a.length>0?a[a.length-1]:null},
-_getRelatedSelectable:function(d,b){var c=this._getWidget(),a=null;
-switch(b){case"above":a=c.getPreviousNodeOf(d,false);
-break;
-case"under":a=c.getNextNodeOf(d,false);
-break;
-case"left":case"right":break}if(!a)return null;
-return this._isSelectable(a)?a:this._getRelatedSelectable(a,b)}}});
-
-
 // qx.ui.core.scroll.ScrollBar
-//   - Size: 3224 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 3.15KB (0.99KB zipped => 31.58%)
 qx.Class.define("qx.ui.core.scroll.ScrollBar",{extend:qx.ui.core.Widget,
 implement:qx.ui.core.scroll.IScrollBar,
 construct:function(a){this.base(arguments);
@@ -16348,8 +16348,8 @@ a?b.exclude():b.show()}}});
 
 
 // apiviewer.ui.PackageViewer
-//   - Size: 980 bytes
 //   - Modified: 2010-07-17T16:42:24
+//   - Size: 0.96KB (0.40KB zipped => 42.14%)
 qx.Class.define("apiviewer.ui.PackageViewer",{extend:apiviewer.ui.AbstractViewer,
 construct:function(){this.base(arguments);
 this.addInfoPanel(new apiviewer.ui.panels.MethodPanel("functions","functions"));
@@ -16368,30 +16368,20 @@ a!=""&&c.add("<div class=\"class-description\">",apiviewer.ui.panels.InfoPanel.r
 return c.get()}}});
 
 
-// qx.ui.table.headerrenderer.Default
-//   - Size: 895 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.headerrenderer.Default",{extend:qx.core.Object,
-implement:qx.ui.table.IHeaderRenderer,
-statics:{STATE_SORTED:"sorted",
-STATE_SORTED_ASCENDING:"sortedAscending"},
-properties:{toolTip:{check:"String",
-init:null,
-nullable:true}},
-members:{createHeaderCell:function(b){var a=new qx.ui.table.headerrenderer.HeaderCell();
-this.updateHeaderCell(b,a);
-return a},
-updateHeaderCell:function(b,a){var d=qx.ui.table.headerrenderer.Default,c;
-b.name&&b.name.translate?a.setLabel(b.name.translate()):a.setLabel(b.name);
-c=a.getToolTip();
-this.getToolTip()!=null&&(c==null?(c=new qx.ui.tooltip.ToolTip(this.getToolTip()),a.setToolTip(c),qx.util.DisposeUtil.disposeTriggeredBy(c,a)):c.setLabel(this.getToolTip()));
-b.sorted?a.addState(d.STATE_SORTED):a.removeState(d.STATE_SORTED);
-b.sortedAscending?a.addState(d.STATE_SORTED_ASCENDING):a.removeState(d.STATE_SORTED_ASCENDING)}}});
+// qx.ui.toolbar.RadioButton
+//   - Modified: 2010-11-03T14:43:37
+//   - Size: 0.28KB (0.21KB zipped => 72.92%)
+qx.Class.define("qx.ui.toolbar.RadioButton",{extend:qx.ui.toolbar.CheckBox,
+include:[qx.ui.form.MModelProperty],
+implement:[qx.ui.form.IModel,qx.ui.form.IRadioItem],
+members:{_applyValue:function(a,c){this.base(arguments,a,c);
+if(a){var b=this.getGroup();
+b&&b.setSelection([this])}}}});
 
 
 // qx.ui.form.RadioButton
-//   - Size: 1085 bytes
 //   - Modified: 2010-11-03T14:43:37
+//   - Size: 1.06KB (0.52KB zipped => 48.66%)
 qx.Class.define("qx.ui.form.RadioButton",{extend:qx.ui.form.Button,
 include:[qx.ui.form.MForm,qx.ui.form.MModelProperty],
 implement:[qx.ui.form.IRadioItem,qx.ui.form.IForm,qx.ui.form.IBooleanForm,qx.ui.form.IModel],
@@ -16424,20 +16414,50 @@ case"Right":case"Down":a.selectNext();
 break}}}});
 
 
-// qx.ui.toolbar.RadioButton
-//   - Size: 288 bytes
-//   - Modified: 2010-11-03T14:43:37
-qx.Class.define("qx.ui.toolbar.RadioButton",{extend:qx.ui.toolbar.CheckBox,
-include:[qx.ui.form.MModelProperty],
-implement:[qx.ui.form.IModel,qx.ui.form.IRadioItem],
-members:{_applyValue:function(a,c){this.base(arguments,a,c);
-if(a){var b=this.getGroup();
-b&&b.setSelection([this])}}}});
+// qx.ui.table.headerrenderer.Default
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.87KB (0.41KB zipped => 47.26%)
+qx.Class.define("qx.ui.table.headerrenderer.Default",{extend:qx.core.Object,
+implement:qx.ui.table.IHeaderRenderer,
+statics:{STATE_SORTED:"sorted",
+STATE_SORTED_ASCENDING:"sortedAscending"},
+properties:{toolTip:{check:"String",
+init:null,
+nullable:true}},
+members:{createHeaderCell:function(b){var a=new qx.ui.table.headerrenderer.HeaderCell();
+this.updateHeaderCell(b,a);
+return a},
+updateHeaderCell:function(b,a){var d=qx.ui.table.headerrenderer.Default,c;
+b.name&&b.name.translate?a.setLabel(b.name.translate()):a.setLabel(b.name);
+c=a.getToolTip();
+this.getToolTip()!=null&&(c==null?(c=new qx.ui.tooltip.ToolTip(this.getToolTip()),a.setToolTip(c),qx.util.DisposeUtil.disposeTriggeredBy(c,a)):c.setLabel(this.getToolTip()));
+b.sorted?a.addState(d.STATE_SORTED):a.removeState(d.STATE_SORTED);
+b.sortedAscending?a.addState(d.STATE_SORTED_ASCENDING):a.removeState(d.STATE_SORTED_ASCENDING)}}});
+
+
+// qx.application.AbstractGui
+//   - Modified: 2010-11-11T16:55:27
+//   - Size: 0.60KB (0.33KB zipped => 54.98%)
+qx.Class.define("qx.application.AbstractGui",{type:"abstract",
+extend:qx.core.Object,
+implement:[qx.application.IApplication],
+include:qx.locale.MTranslation,
+members:{__jO4QN:null,
+_createRootWidget:function(){throw new Error("Abstract method call")},
+getRoot:function(){return this.__jO4QN},
+main:function(){qx.theme.manager.Meta.getInstance().initialize();
+qx.ui.tooltip.Manager.getInstance();
+this.__jO4QN=this._createRootWidget()},
+finalize:function(){this.render()},
+render:function(){qx.ui.core.queue.Manager.flush()},
+close:function(){},
+terminate:function(){}},
+destruct:function(){this.__jO4QN=null}});
 
 
 // qx.ui.tabview.TabButton
-//   - Size: 2241 bytes
 //   - Modified: 2010-09-17T21:15:51
+//   - Size: 2.19KB (0.76KB zipped => 34.58%)
 qx.Class.define("qx.ui.tabview.TabButton",{extend:qx.ui.form.RadioButton,
 implement:qx.ui.form.IRadioItem,
 construct:function(){this.base(arguments);
@@ -16511,35 +16531,15 @@ b?a.setColumnAlign(2,"center","middle"):a.setColumnAlign(2,"left","middle")}}});
 
 
 // qx.ui.core.scroll.MScrollBarFactory
-//   - Size: 277 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.27KB (0.15KB zipped => 55.96%)
 qx.core.Setting.define("qx.nativeScrollBars",false);
 qx.Mixin.define("qx.ui.core.scroll.MScrollBarFactory",{members:{_createScrollBar:function(a){return qx.core.Setting.get("qx.nativeScrollBars")?new qx.ui.core.scroll.NativeScrollBar(a):new qx.ui.core.scroll.ScrollBar(a)}}});
 
 
-// qx.application.AbstractGui
-//   - Size: 613 bytes
-//   - Modified: 2010-11-11T16:55:27
-qx.Class.define("qx.application.AbstractGui",{type:"abstract",
-extend:qx.core.Object,
-implement:[qx.application.IApplication],
-include:qx.locale.MTranslation,
-members:{__jO4QN:null,
-_createRootWidget:function(){throw new Error("Abstract method call")},
-getRoot:function(){return this.__jO4QN},
-main:function(){qx.theme.manager.Meta.getInstance().initialize();
-qx.ui.tooltip.Manager.getInstance();
-this.__jO4QN=this._createRootWidget()},
-finalize:function(){this.render()},
-render:function(){qx.ui.core.queue.Manager.flush()},
-close:function(){},
-terminate:function(){}},
-destruct:function(){this.__jO4QN=null}});
-
-
 // qx.ui.core.scroll.AbstractScrollArea
-//   - Size: 5888 bytes
 //   - Modified: 2010-10-13T17:38:57
+//   - Size: 5.75KB (1.63KB zipped => 28.31%)
 qx.Class.define("qx.ui.core.scroll.AbstractScrollArea",{extend:qx.ui.core.Widget,
 include:qx.ui.core.scroll.MScrollBarFactory,
 type:"abstract",
@@ -16658,8 +16658,8 @@ d?(j=this.getChildControl("scrollbar-y"),j.show(),j.setMaximum(Math.max(0,a.heig
 
 
 // qx.ui.tabview.Page
-//   - Size: 1322 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.29KB (0.55KB zipped => 42.51%)
 qx.Class.define("qx.ui.tabview.Page",{extend:qx.ui.container.Composite,
 construct:function(b,a){this.base(arguments);
 this._createChildControl("button");
@@ -16701,8 +16701,8 @@ getButton:function(){return this.getChildControl("button")}}});
 
 
 // qx.ui.container.Scroll
-//   - Size: 461 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 0.45KB (0.22KB zipped => 49.24%)
 qx.Class.define("qx.ui.container.Scroll",{extend:qx.ui.core.scroll.AbstractScrollArea,
 include:[qx.ui.core.MContentPadding],
 construct:function(a){this.base(arguments);
@@ -16714,8 +16714,8 @@ _getContentPaddingTarget:function(){return this.getChildControl("pane")}}});
 
 
 // apiviewer.ui.tabview.AbstractPage
-//   - Size: 1271 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.24KB (0.57KB zipped => 45.55%)
 qx.Class.define("apiviewer.ui.tabview.AbstractPage",{extend:qx.ui.tabview.Page,
 type:"abstract",
 construct:function(a){this.base(arguments);
@@ -16748,8 +16748,8 @@ this._viewer=null}});
 
 
 // apiviewer.ui.LegendView
-//   - Size: 2085 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 2.04KB (0.90KB zipped => 44.22%)
 qx.Class.define("apiviewer.ui.LegendView",{extend:qx.ui.container.Scroll,
 construct:function(){this.base(arguments);
 this.setAppearance("legend");
@@ -16794,9 +16794,67 @@ members:{__qdSs6:null},
 destruct:function(){this._disposeMap("__legend")}});
 
 
-// qx.ui.tabview.TabView
-//   - Size: 4183 bytes
+// qx.ui.table.pane.Header
 //   - Modified: 2010-08-26T21:43:54
+//   - Size: 2.59KB (1.04KB zipped => 40.20%)
+qx.Class.define("qx.ui.table.pane.Header",{extend:qx.ui.core.Widget,
+construct:function(a){this.base(arguments);
+this._setLayout(new qx.ui.layout.HBox());
+this.__ukeJN=new qx.ui.core.Blocker(this);
+this.__VtpeD=a},
+members:{__VtpeD:null,
+__UZqTn:null,
+__bRA3mc:null,
+__ukeJN:null,
+getPaneScroller:function(){return this.__VtpeD},
+getTable:function(){return this.__VtpeD.getTable()},
+getBlocker:function(){return this.__ukeJN},
+onColOrderChanged:function(){this._updateContent(true)},
+onPaneModelChanged:function(){this._updateContent(true)},
+onTableModelMetaDataChanged:function(){this._updateContent()},
+setColumnWidth:function(b,c){var a=this.getHeaderWidgetAtColumn(b);
+a!=null&&a.setWidth(c)},
+setMouseOverColumn:function(a){if(a!=this.__bRA3mc){if(this.__bRA3mc!=null){var b=this.getHeaderWidgetAtColumn(this.__bRA3mc);
+b!=null&&b.removeState("hovered")}a!=null&&this.getHeaderWidgetAtColumn(a).addState("hovered");
+this.__bRA3mc=a}},
+getHeaderWidgetAtColumn:function(a){var b=this.getPaneScroller().getTablePaneModel().getX(a);
+return this._getChildren()[b]},
+showColumnMoveFeedback:function(b,g){var e=this.getContainerLocation(),c,f,l,k,i,h,j,a,d;
+this.__UZqTn==null&&(c=this.getTable(),f=this.getPaneScroller().getTablePaneModel().getX(b),l=this._getChildren()[f],k=c.getTableModel(),i=c.getTableColumnModel(),h={xPos:f,
+col:b,
+name:k.getColumnName(b),
+table:c},j=i.getHeaderCellRenderer(b),a=j.createHeaderCell(h),d=l.getBounds(),a.setWidth(d.width),a.setHeight(d.height),a.setZIndex(1000000),a.setOpacity(.8),a.setLayoutProperties({top:e.top}),this.getApplicationRoot().add(a),this.__UZqTn=a);
+this.__UZqTn.setLayoutProperties({left:e.left+g});
+this.__UZqTn.show()},
+hideColumnMoveFeedback:function(){this.__UZqTn!=null&&(this.__UZqTn.destroy(),this.__UZqTn=null)},
+isShowingColumnMoveFeedback:function(){return this.__UZqTn!=null},
+_updateContent:function(j){var f=this.getTable(),e=f.getTableModel(),g=f.getTableColumnModel(),i=this.getPaneScroller().getTablePaneModel(),n=this._getChildren(),m=i.getColumnCount(),l=e.getSortColumnIndex(),a,c,b,k,h,d;
+j&&this._cleanUpCells();
+a={};
+a.sortedAscending=e.isSortAscending();
+for(c=0;
+c<m;
+c++){b=i.getColumnAtX(c);
+if(b===undefined)continue;
+k=g.getColumnWidth(b),h=g.getHeaderCellRenderer(b);
+a.xPos=c;
+a.col=b;
+a.name=e.getColumnName(b);
+a.editable=e.isColumnEditable(b);
+a.sorted=b==l;
+a.table=f;
+d=n[c];
+d==null?(d=h.createHeaderCell(a),d.set({width:k}),this._add(d)):h.updateHeaderCell(a,d)}},
+_cleanUpCells:function(){for(var b=this._getChildren(),a=b.length-1,c;
+a>=0;
+a--)c=b[a],c.destroy()}},
+destruct:function(){this.__ukeJN.dispose();
+this._disposeObjects("__paneScroller")}});
+
+
+// qx.ui.tabview.TabView
+//   - Modified: 2010-08-26T21:43:54
+//   - Size: 4.08KB (1.46KB zipped => 35.64%)
 qx.Class.define("qx.ui.tabview.TabView",{extend:qx.ui.core.Widget,
 implement:qx.ui.core.ISingleSelection,
 include:[qx.ui.core.MContentPadding],
@@ -16895,67 +16953,9 @@ destruct:function(){this._disposeObjects("__radioGroup");
 this.__bHdRVN=null}});
 
 
-// qx.ui.table.pane.Header
-//   - Size: 2649 bytes
-//   - Modified: 2010-08-26T21:43:54
-qx.Class.define("qx.ui.table.pane.Header",{extend:qx.ui.core.Widget,
-construct:function(a){this.base(arguments);
-this._setLayout(new qx.ui.layout.HBox());
-this.__ukeJN=new qx.ui.core.Blocker(this);
-this.__VtpeD=a},
-members:{__VtpeD:null,
-__UZqTn:null,
-__bRA3mc:null,
-__ukeJN:null,
-getPaneScroller:function(){return this.__VtpeD},
-getTable:function(){return this.__VtpeD.getTable()},
-getBlocker:function(){return this.__ukeJN},
-onColOrderChanged:function(){this._updateContent(true)},
-onPaneModelChanged:function(){this._updateContent(true)},
-onTableModelMetaDataChanged:function(){this._updateContent()},
-setColumnWidth:function(b,c){var a=this.getHeaderWidgetAtColumn(b);
-a!=null&&a.setWidth(c)},
-setMouseOverColumn:function(a){if(a!=this.__bRA3mc){if(this.__bRA3mc!=null){var b=this.getHeaderWidgetAtColumn(this.__bRA3mc);
-b!=null&&b.removeState("hovered")}a!=null&&this.getHeaderWidgetAtColumn(a).addState("hovered");
-this.__bRA3mc=a}},
-getHeaderWidgetAtColumn:function(a){var b=this.getPaneScroller().getTablePaneModel().getX(a);
-return this._getChildren()[b]},
-showColumnMoveFeedback:function(b,g){var e=this.getContainerLocation(),c,f,l,k,i,h,j,a,d;
-this.__UZqTn==null&&(c=this.getTable(),f=this.getPaneScroller().getTablePaneModel().getX(b),l=this._getChildren()[f],k=c.getTableModel(),i=c.getTableColumnModel(),h={xPos:f,
-col:b,
-name:k.getColumnName(b),
-table:c},j=i.getHeaderCellRenderer(b),a=j.createHeaderCell(h),d=l.getBounds(),a.setWidth(d.width),a.setHeight(d.height),a.setZIndex(1000000),a.setOpacity(.8),a.setLayoutProperties({top:e.top}),this.getApplicationRoot().add(a),this.__UZqTn=a);
-this.__UZqTn.setLayoutProperties({left:e.left+g});
-this.__UZqTn.show()},
-hideColumnMoveFeedback:function(){this.__UZqTn!=null&&(this.__UZqTn.destroy(),this.__UZqTn=null)},
-isShowingColumnMoveFeedback:function(){return this.__UZqTn!=null},
-_updateContent:function(j){var f=this.getTable(),e=f.getTableModel(),g=f.getTableColumnModel(),i=this.getPaneScroller().getTablePaneModel(),n=this._getChildren(),m=i.getColumnCount(),l=e.getSortColumnIndex(),a,c,b,k,h,d;
-j&&this._cleanUpCells();
-a={};
-a.sortedAscending=e.isSortAscending();
-for(c=0;
-c<m;
-c++){b=i.getColumnAtX(c);
-if(b===undefined)continue;
-k=g.getColumnWidth(b),h=g.getHeaderCellRenderer(b);
-a.xPos=c;
-a.col=b;
-a.name=e.getColumnName(b);
-a.editable=e.isColumnEditable(b);
-a.sorted=b==l;
-a.table=f;
-d=n[c];
-d==null?(d=h.createHeaderCell(a),d.set({width:k}),this._add(d)):h.updateHeaderCell(a,d)}},
-_cleanUpCells:function(){for(var b=this._getChildren(),a=b.length-1,c;
-a>=0;
-a--)c=b[a],c.destroy()}},
-destruct:function(){this.__ukeJN.dispose();
-this._disposeObjects("__paneScroller")}});
-
-
 // qx.ui.table.columnmodel.Basic
-//   - Size: 6843 bytes
 //   - Modified: 2010-11-10T13:22:29
+//   - Size: 6.68KB (1.65KB zipped => 24.62%)
 qx.Class.define("qx.ui.table.columnmodel.Basic",{extend:qx.core.Object,
 construct:function(){this.base(arguments);
 this.__bqB3IN=[];
@@ -17091,9 +17091,71 @@ this.__bqB3IN=this.__bqk0GG=this.__18YOe=this.__T6ZcG=null;
 this._disposeObjects("__headerRenderer","__dataRenderer","__editorFactory")}});
 
 
-// qx.ui.tree.Tree
-//   - Size: 4021 bytes
+// qx.ui.table.columnmodel.Resize
 //   - Modified: 2010-08-26T21:43:54
+//   - Size: 2.87KB (0.84KB zipped => 29.30%)
+qx.Class.define("qx.ui.table.columnmodel.Resize",{extend:qx.ui.table.columnmodel.Basic,
+include:qx.locale.MTranslation,
+construct:function(){this.base(arguments);
+this.__NFZdV=false;
+this.__Cykvf=false},
+properties:{behavior:{check:"qx.ui.table.columnmodel.resizebehavior.Abstract",
+init:null,
+nullable:true,
+apply:"_applyBehavior",
+event:"changeBehavior"}},
+members:{__Cykvf:null,
+__NFZdV:null,
+__mFTjD:null,
+_applyBehavior:function(b,a){a!=null&&(a.dispose(),a=null);
+b._setNumColumns(this.getOverallColumnCount());
+b.setTableColumnModel(this)},
+init:function(b,a){this.base(arguments,b,a);
+this.__mFTjD==null&&(this.__mFTjD=a,a.addListener("appear",this._onappear,this),a.addListener("tableWidthChanged",this._onTableWidthChanged,this),a.addListener("verticalScrollBarChanged",this._onverticalscrollbarchanged,this),a.addListener("columnVisibilityMenuCreateEnd",this._addResetColumnWidthButton,this),this.addListener("widthChanged",this._oncolumnwidthchanged,this),this.addListener("visibilityChanged",this._onvisibilitychanged,this));
+this.getBehavior()==null&&this.setBehavior(new qx.ui.table.columnmodel.resizebehavior.Default());
+this.getBehavior()._setNumColumns(b)},
+getTable:function(){return this.__mFTjD},
+_addResetColumnWidthButton:function(e){var b=e.getData(),c=b.columnButton,d=b.menu,a;
+a=c.factory("separator");
+d.add(a);
+a=c.factory("user-button",{text:this.tr("Reset column widths")});
+d.add(a);
+a.addListener("execute",this._onappear,this)},
+_onappear:function(a){if(this.__NFZdV)return;
+this.__NFZdV=true;
+qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onappear");
+this.getBehavior().onAppear(a,a.getType()!=="appear");
+this.__mFTjD._updateScrollerWidths();
+this.__mFTjD._updateScrollBarVisibility();
+this.__NFZdV=false;
+this.__Cykvf=true},
+_onTableWidthChanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
+this.__NFZdV=true;
+qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("ontablewidthchanged");
+this.getBehavior().onTableWidthChanged(a);
+this.__NFZdV=false},
+_onverticalscrollbarchanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
+this.__NFZdV=true;
+qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onverticalscrollbarchanged");
+this.getBehavior().onVerticalScrollBarChanged(a);
+qx.event.Timer.once(function(){this.__mFTjD&&!this.__mFTjD.isDisposed()&&(this.__mFTjD._updateScrollerWidths(),this.__mFTjD._updateScrollBarVisibility())},this,0);
+this.__NFZdV=false},
+_oncolumnwidthchanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
+this.__NFZdV=true;
+qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("oncolumnwidthchanged");
+this.getBehavior().onColumnWidthChanged(a);
+this.__NFZdV=false},
+_onvisibilitychanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
+this.__NFZdV=true;
+qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onvisibilitychanged");
+this.getBehavior().onVisibilityChanged(a);
+this.__NFZdV=false}},
+destruct:function(){this.__mFTjD=null}});
+
+
+// qx.ui.tree.Tree
+//   - Modified: 2010-08-26T21:43:54
+//   - Size: 3.93KB (1.38KB zipped => 35.26%)
 qx.Class.define("qx.ui.tree.Tree",{extend:qx.ui.core.scroll.AbstractScrollArea,
 implement:[qx.ui.core.IMultiSelection,qx.ui.form.IModelSelection,qx.ui.form.IForm],
 include:[qx.ui.core.MMultiSelectionHandling,qx.ui.core.MContentPadding,qx.ui.form.MModelSelection,qx.ui.form.MForm],
@@ -17187,71 +17249,9 @@ break}}},
 destruct:function(){this._disposeObjects("__content")}});
 
 
-// qx.ui.table.columnmodel.Resize
-//   - Size: 2939 bytes
-//   - Modified: 2010-08-26T21:43:54
-qx.Class.define("qx.ui.table.columnmodel.Resize",{extend:qx.ui.table.columnmodel.Basic,
-include:qx.locale.MTranslation,
-construct:function(){this.base(arguments);
-this.__NFZdV=false;
-this.__Cykvf=false},
-properties:{behavior:{check:"qx.ui.table.columnmodel.resizebehavior.Abstract",
-init:null,
-nullable:true,
-apply:"_applyBehavior",
-event:"changeBehavior"}},
-members:{__Cykvf:null,
-__NFZdV:null,
-__mFTjD:null,
-_applyBehavior:function(b,a){a!=null&&(a.dispose(),a=null);
-b._setNumColumns(this.getOverallColumnCount());
-b.setTableColumnModel(this)},
-init:function(b,a){this.base(arguments,b,a);
-this.__mFTjD==null&&(this.__mFTjD=a,a.addListener("appear",this._onappear,this),a.addListener("tableWidthChanged",this._onTableWidthChanged,this),a.addListener("verticalScrollBarChanged",this._onverticalscrollbarchanged,this),a.addListener("columnVisibilityMenuCreateEnd",this._addResetColumnWidthButton,this),this.addListener("widthChanged",this._oncolumnwidthchanged,this),this.addListener("visibilityChanged",this._onvisibilitychanged,this));
-this.getBehavior()==null&&this.setBehavior(new qx.ui.table.columnmodel.resizebehavior.Default());
-this.getBehavior()._setNumColumns(b)},
-getTable:function(){return this.__mFTjD},
-_addResetColumnWidthButton:function(e){var b=e.getData(),c=b.columnButton,d=b.menu,a;
-a=c.factory("separator");
-d.add(a);
-a=c.factory("user-button",{text:this.tr("Reset column widths")});
-d.add(a);
-a.addListener("execute",this._onappear,this)},
-_onappear:function(a){if(this.__NFZdV)return;
-this.__NFZdV=true;
-qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onappear");
-this.getBehavior().onAppear(a,a.getType()!=="appear");
-this.__mFTjD._updateScrollerWidths();
-this.__mFTjD._updateScrollBarVisibility();
-this.__NFZdV=false;
-this.__Cykvf=true},
-_onTableWidthChanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
-this.__NFZdV=true;
-qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("ontablewidthchanged");
-this.getBehavior().onTableWidthChanged(a);
-this.__NFZdV=false},
-_onverticalscrollbarchanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
-this.__NFZdV=true;
-qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onverticalscrollbarchanged");
-this.getBehavior().onVerticalScrollBarChanged(a);
-qx.event.Timer.once(function(){this.__mFTjD&&!this.__mFTjD.isDisposed()&&(this.__mFTjD._updateScrollerWidths(),this.__mFTjD._updateScrollBarVisibility())},this,0);
-this.__NFZdV=false},
-_oncolumnwidthchanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
-this.__NFZdV=true;
-qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("oncolumnwidthchanged");
-this.getBehavior().onColumnWidthChanged(a);
-this.__NFZdV=false},
-_onvisibilitychanged:function(a){if(this.__NFZdV||!this.__Cykvf)return;
-this.__NFZdV=true;
-qx.core.Setting.get("qx.tableResizeDebug")&&this.debug("onvisibilitychanged");
-this.getBehavior().onVisibilityChanged(a);
-this.__NFZdV=false}},
-destruct:function(){this.__mFTjD=null}});
-
-
 // qx.ui.table.pane.Scroller
-//   - Size: 22534 bytes
 //   - Modified: 2010-09-30T14:20:20
+//   - Size: 22.01KB (5.89KB zipped => 26.77%)
 qx.Class.define("qx.ui.table.pane.Scroller",{extend:qx.ui.core.Widget,
 include:qx.ui.core.scroll.MScrollBarFactory,
 construct:function(b){this.base(arguments);
@@ -17668,8 +17668,8 @@ this._disposeObjects("__horScrollBar","__verScrollBar","__headerClipper","__pane
 
 
 // apiviewer.ui.PackageTree
-//   - Size: 1824 bytes
 //   - Modified: 2010-04-29T21:34:05
+//   - Size: 1.78KB (0.76KB zipped => 42.76%)
 qx.Class.define("apiviewer.ui.PackageTree",{extend:qx.ui.tree.Tree,
 construct:function(){this.base(arguments,"Documentation");
 this.setDecorator(null);
@@ -17707,29 +17707,57 @@ this._disposeObjects("__root")}});
 
 
 // qx.application.Standalone
-//   - Size: 167 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 0.16KB (0.14KB zipped => 83.23%)
 qx.Class.define("qx.application.Standalone",{extend:qx.application.AbstractGui,
 members:{_createRootWidget:function(){return new qx.ui.root.Application(document)}}});
 
 
 // apiviewer.ui.tabview.ClassPage
-//   - Size: 169 bytes
 //   - Modified: 2010-07-17T16:42:24
+//   - Size: 0.17KB (0.12KB zipped => 75.15%)
 qx.Class.define("apiviewer.ui.tabview.ClassPage",{extend:apiviewer.ui.tabview.AbstractPage,
 members:{_createViewer:function(){return new apiviewer.ui.ClassViewer()}}});
 
 
 // apiviewer.ui.tabview.PackagePage
-//   - Size: 173 bytes
 //   - Modified: 2010-07-17T16:42:24
+//   - Size: 0.17KB (0.13KB zipped => 76.88%)
 qx.Class.define("apiviewer.ui.tabview.PackagePage",{extend:apiviewer.ui.tabview.AbstractPage,
 members:{_createViewer:function(){return new apiviewer.ui.PackageViewer()}}});
 
 
+// qx.ui.table.columnmenu.Button
+//   - Modified: 2010-04-29T21:34:05
+//   - Size: 0.87KB (0.45KB zipped => 52.25%)
+qx.Class.define("qx.ui.table.columnmenu.Button",{extend:qx.ui.form.MenuButton,
+implement:qx.ui.table.IColumnMenuButton,
+construct:function(){this.base(arguments);
+this.__ukeJN=new qx.ui.core.Blocker(this)},
+members:{__bziKzd:null,
+__ukeJN:null,
+factory:function(e,a){switch(e){case"menu":var c=new qx.ui.menu.Menu(),b,d;
+this.setMenu(c);
+return c;
+case"menu-button":b=new qx.ui.table.columnmenu.MenuItem(a.text);
+b.setVisible(a.bVisible);
+this.getMenu().add(b);
+return b;
+case"user-button":d=new qx.ui.menu.Button(a.text);
+d.set({appearance:"table-column-reset-button"});
+return d;
+case"separator":return new qx.ui.menu.Separator();
+default:throw new Error("Unrecognized factory request: "+e)}},
+getBlocker:function(){return this.__ukeJN},
+empty:function(){for(var d=this.getMenu(),a=d.getChildren(),b=0,c=a.length;
+b<c;
+b++)a[0].destroy()}},
+destruct:function(){this.__ukeJN.dispose()}});
+
+
 // apiviewer.TabViewController
-//   - Size: 1390 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 1.36KB (0.59KB zipped => 43.67%)
 qx.Class.define("apiviewer.TabViewController",{extend:qx.core.Object,
 construct:function(a){this.base(arguments);
 apiviewer.TabViewController.instance=this;
@@ -17762,37 +17790,9 @@ destruct:function(){this._tabView.destroy();
 this._tabView=null}});
 
 
-// qx.ui.table.columnmenu.Button
-//   - Size: 890 bytes
-//   - Modified: 2010-04-29T21:34:05
-qx.Class.define("qx.ui.table.columnmenu.Button",{extend:qx.ui.form.MenuButton,
-implement:qx.ui.table.IColumnMenuButton,
-construct:function(){this.base(arguments);
-this.__ukeJN=new qx.ui.core.Blocker(this)},
-members:{__bziKzd:null,
-__ukeJN:null,
-factory:function(e,a){switch(e){case"menu":var c=new qx.ui.menu.Menu(),b,d;
-this.setMenu(c);
-return c;
-case"menu-button":b=new qx.ui.table.columnmenu.MenuItem(a.text);
-b.setVisible(a.bVisible);
-this.getMenu().add(b);
-return b;
-case"user-button":d=new qx.ui.menu.Button(a.text);
-d.set({appearance:"table-column-reset-button"});
-return d;
-case"separator":return new qx.ui.menu.Separator();
-default:throw new Error("Unrecognized factory request: "+e)}},
-getBlocker:function(){return this.__ukeJN},
-empty:function(){for(var d=this.getMenu(),a=d.getChildren(),b=0,c=a.length;
-b<c;
-b++)a[0].destroy()}},
-destruct:function(){this.__ukeJN.dispose()}});
-
-
 // apiviewer.Controller
-//   - Size: 5002 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 4.88KB (1.69KB zipped => 34.61%)
 qx.Class.define("apiviewer.Controller",{extend:qx.core.Object,
 construct:function(){this.base(arguments);
 this._widgetRegistry=apiviewer.MWidgetRegistry;
@@ -17886,8 +17886,8 @@ this._disposeObjects("_detailLoader","_classLoader","_tree","_history","_tabView
 
 
 // qx.ui.table.Table
-//   - Size: 19278 bytes
 //   - Modified: 2010-09-30T14:20:21
+//   - Size: 18.83KB (4.72KB zipped => 25.07%)
 qx.Class.define("qx.ui.table.Table",{extend:qx.ui.core.Widget,
 construct:function(b,a){this.base(arguments);
 a||(a={});
@@ -18319,8 +18319,8 @@ this._disposeMap("__columnMenuButtons")}});
 
 
 // apiviewer.ui.SearchView
-//   - Size: 5385 bytes
 //   - Modified: 2010-08-26T21:43:53
+//   - Size: 5.26KB (2.25KB zipped => 42.71%)
 qx.Class.define("apiviewer.ui.SearchView",{extend:qx.ui.container.Composite,
 construct:function(){this.base(arguments);
 var a=new qx.ui.layout.VBox();
@@ -18448,8 +18448,8 @@ this._disposeArray("listdata")}});
 
 
 // apiviewer.Viewer
-//   - Size: 5314 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 5.19KB (1.82KB zipped => 35.13%)
 qx.Class.define("apiviewer.Viewer",{extend:qx.ui.container.Composite,
 construct:function(){this.base(arguments);
 this.__2y6sS={};
@@ -18579,8 +18579,8 @@ this._disposeObjects("_tree","_detailLoader","_classViewer","_packageViewer","_s
 
 
 // apiviewer.Application
-//   - Size: 619 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 0.60KB (0.31KB zipped => 50.89%)
 qx.Class.define("apiviewer.Application",{extend:qx.application.Standalone,
 construct:function(){this.base(arguments);
 qx.bom.Stylesheet.includeFile("apiviewer/css/apiviewer.css")},
@@ -18596,8 +18596,8 @@ destruct:function(){this._disposeObjects("viewer","controller")}});
 
 
 // qx.theme.Appearance
-//   - Size: 27270 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 26.63KB (5.00KB zipped => 18.78%)
 qx.Theme.define("qx.theme.Appearance",{appearances:{widget:{},
 root:{style:function(){return{backgroundColor:"background-application",
 textColor:"text-label",
@@ -19207,8 +19207,8 @@ style:function(){return{backgroundColor:"white"}}}}});
 
 
 // qx.theme.Color
-//   - Size: 1623 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 1.58KB (0.52KB zipped => 32.78%)
 qx.Theme.define("qx.theme.Color",{colors:{"background-application":"#DFDFDF",
 "background-pane":"#F3F3F3",
 "background-light":"#FCFCFC",
@@ -19260,8 +19260,8 @@ invalid:"#990000",
 
 
 // apiviewer.Appearance
-//   - Size: 757 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 0.74KB (0.34KB zipped => 46.63%)
 qx.Theme.define("apiviewer.Appearance",{title:"Theme for API Viewer",
 extend:qx.theme.Appearance,
 appearances:{toggleview:{style:function(){return{width:240,
@@ -19283,8 +19283,8 @@ marginRight:a.barRight?-1:0}}}}});
 
 
 // qx.bom.element2.Clip
-//   - Size: 367 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 0.36KB (0.21KB zipped => 58.86%)
 qx.Class.define("qx.bom.element2.Clip",{statics:{compileValue:function(c){if(!c)return"rect(auto,auto,auto,auto)";
 var a=c.left,b=c.top,e=c.width,d=c.height,g,f;
 a==null?(g=e==null?"auto":e+"px",a="auto"):(g=e==null?"auto":a+e+"px",a=a+"px");
@@ -19293,8 +19293,8 @@ return"rect("+b+","+g+","+f+","+a+")"}}});
 
 
 // qx.theme.Font
-//   - Size: 1113 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 1.09KB (0.30KB zipped => 27.31%)
 qx.Theme.define("qx.theme.Font",{fonts:{"default":{size:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?12:11,
 lineHeight:1.4,
 family:qx.bom.client.Platform.MAC?["Lucida Grande"]:qx.bom.client.System.WINVISTA||qx.bom.client.System.WIN7?["Segoe UI","Candara"]:["Tahoma","Liberation Sans","Arial","sans-serif"]},
@@ -19311,8 +19311,8 @@ family:qx.bom.client.Platform.MAC?["Lucida Console","Monaco"]:qx.bom.client.Syst
 
 
 // qx.ui.decoration.Abstract
-//   - Size: 1258 bytes
 //   - Modified: 2010-06-18T23:08:09
+//   - Size: 1.23KB (0.47KB zipped => 37.92%)
 qx.Class.define("qx.ui.decoration.Abstract",{extend:qx.core.Object,
 implement:[qx.ui.decoration.IDecorator],
 type:"abstract",
@@ -19346,8 +19346,8 @@ destruct:function(){this.__qFVs1=null}});
 
 
 // qx.ui.decoration.MBackgroundImage
-//   - Size: 1276 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 1.25KB (0.55KB zipped => 44.04%)
 qx.Mixin.define("qx.ui.decoration.MBackgroundImage",{properties:{backgroundImage:{check:"String",
 nullable:true,
 apply:"_applyBackground"},
@@ -19369,8 +19369,8 @@ _applyBackground:function(){if(this._isInitialized())throw new Error("This decor
 
 
 // qx.ui.decoration.Grid
-//   - Size: 3516 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 3.43KB (1.18KB zipped => 34.50%)
 qx.Class.define("qx.ui.decoration.Grid",{extend:qx.ui.decoration.Abstract,
 construct:function(a,b){this.base(arguments);
 a!=null&&this.setBaseImage(a);
@@ -19441,9 +19441,42 @@ right:a.getImageWidth(b.r)}}},
 destruct:function(){this.__qyd51=this.__qd9wf=this.__msGX5=null}});
 
 
+// qx.ui.decoration.Background
+//   - Modified: 2010-09-30T14:20:20
+//   - Size: 1.08KB (0.54KB zipped => 50.50%)
+qx.Class.define("qx.ui.decoration.Background",{extend:qx.ui.decoration.Abstract,
+include:[qx.ui.decoration.MBackgroundImage],
+construct:function(a){this.base(arguments);
+a!=null&&this.setBackgroundColor(a)},
+properties:{backgroundColor:{check:"Color",
+nullable:true,
+apply:"_applyStyle"}},
+members:{__qyd51:null,
+_getDefaultInsets:function(){return{top:0,
+right:0,
+bottom:0,
+left:0}},
+_isInitialized:function(){return!!this.__qyd51},
+getMarkup:function(){if(this.__qyd51)return this.__qyd51;
+var b={position:"absolute",
+top:0,
+left:0},a=this._generateBackgroundMarkup(b);
+return this.__qyd51=a},
+resize:function(b,d,c){var a=this.getInsets();
+b.style.width=(d-a.left-a.right)+"px";
+b.style.height=(c-a.top-a.bottom)+"px";
+b.style.left=-a.left+"px";
+b.style.top=-a.top+"px"},
+tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
+a==null&&(a=this.getBackgroundColor());
+b.style.backgroundColor=c.resolve(a)||""},
+_applyStyle:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
+destruct:function(){this.__qyd51=null}});
+
+
 // qx.ui.decoration.Single
-//   - Size: 3487 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 3.41KB (1.04KB zipped => 30.40%)
 qx.Class.define("qx.ui.decoration.Single",{extend:qx.ui.decoration.Abstract,
 include:[qx.ui.decoration.MBackgroundImage],
 construct:function(b,a,c){this.base(arguments);
@@ -19542,42 +19575,9 @@ _applyStyle:function(){if(this.__qyd51)throw new Error("This decorator is alread
 destruct:function(){this.__qyd51=null}});
 
 
-// qx.ui.decoration.Background
-//   - Size: 1105 bytes
-//   - Modified: 2010-09-30T14:20:20
-qx.Class.define("qx.ui.decoration.Background",{extend:qx.ui.decoration.Abstract,
-include:[qx.ui.decoration.MBackgroundImage],
-construct:function(a){this.base(arguments);
-a!=null&&this.setBackgroundColor(a)},
-properties:{backgroundColor:{check:"Color",
-nullable:true,
-apply:"_applyStyle"}},
-members:{__qyd51:null,
-_getDefaultInsets:function(){return{top:0,
-right:0,
-bottom:0,
-left:0}},
-_isInitialized:function(){return!!this.__qyd51},
-getMarkup:function(){if(this.__qyd51)return this.__qyd51;
-var b={position:"absolute",
-top:0,
-left:0},a=this._generateBackgroundMarkup(b);
-return this.__qyd51=a},
-resize:function(b,d,c){var a=this.getInsets();
-b.style.width=(d-a.left-a.right)+"px";
-b.style.height=(c-a.top-a.bottom)+"px";
-b.style.left=-a.left+"px";
-b.style.top=-a.top+"px"},
-tint:function(b,a){var c=qx.theme.manager.Color.getInstance();
-a==null&&(a=this.getBackgroundColor());
-b.style.backgroundColor=c.resolve(a)||""},
-_applyStyle:function(){if(this._isInitialized())throw new Error("This decorator is already in-use. Modification is not possible anymore!")}},
-destruct:function(){this.__qyd51=null}});
-
-
 // qx.ui.decoration.Uniform
-//   - Size: 1847 bytes
 //   - Modified: 2010-11-10T00:54:42
+//   - Size: 1.80KB (0.80KB zipped => 44.45%)
 qx.Class.define("qx.ui.decoration.Uniform",{extend:qx.ui.decoration.Abstract,
 include:[qx.ui.decoration.MBackgroundImage],
 construct:function(b,a,c){this.base(arguments);
@@ -19627,8 +19627,8 @@ destruct:function(){this.__qyd51=null}});
 
 
 // qx.ui.decoration.Beveled
-//   - Size: 2532 bytes
 //   - Modified: 2010-09-17T21:15:51
+//   - Size: 2.47KB (0.95KB zipped => 38.43%)
 qx.Class.define("qx.ui.decoration.Beveled",{extend:qx.ui.decoration.Abstract,
 include:[qx.ui.decoration.MBackgroundImage],
 construct:function(b,a,c){this.base(arguments);
@@ -19709,8 +19709,8 @@ destruct:function(){this.__qyd51=null}});
 
 
 // qx.theme.Decoration
-//   - Size: 10101 bytes
 //   - Modified: 2010-11-11T16:55:28
+//   - Size: 9.86KB (1.29KB zipped => 13.08%)
 qx.Theme.define("qx.theme.Decoration",{decorations:{main:{decorator:qx.ui.decoration.Uniform,
 style:{width:1,
 color:"border-main"}},
@@ -19971,8 +19971,8 @@ backgroundRepeat:"scale"}}}});
 
 
 // apiviewer.Theme
-//   - Size: 176 bytes
 //   - Modified: 2010-11-11T16:55:27
+//   - Size: 0.17KB (0.12KB zipped => 72.16%)
 qx.Theme.define("apiviewer.Theme",{title:"APIViewer theme",
 meta:{color:qx.theme.Color,
 decoration:qx.theme.Decoration,
