@@ -37,10 +37,10 @@ class Compressor():
             if addHeaders:
                 result.append("")
                 result.append("// %s" % classObj.getName())
-                result.append("//   - Modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
+                result.append("// - Modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
 
                 if computeSize:
-                    result.append("//   - %s" % size(compressed))
+                    result.append("// - %s" % size(compressed))
             
             result.append(compressed)
             
