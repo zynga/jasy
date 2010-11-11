@@ -234,6 +234,7 @@ class Resources:
         files = {}
         sprites = {}
         logging.info("Detecting image sizes...")
+        pstart()
         for resource in filtered:
             projectId = filtered[resource]
             project = projects[projectId]
@@ -263,10 +264,13 @@ class Resources:
                 
                 else:
                     files[dirname][basename] = projectId
-                    
+        
+        pstop()
                     
         # Merge in sprite data and create additional data for sprites
         spritesResult = {}
+        logging.info("Collecting sprite data...")
+        pstart()
         
         for spriteDir in sprites:
             spriteFiles = sprites[spriteDir]
@@ -312,6 +316,8 @@ class Resources:
                         spriteInfo += (spriteOffset[1],)
 
                     files[spriteDir][spriteItem] += spriteInfo
+
+        pstop()
 
         return {
             "roots" : roots,
