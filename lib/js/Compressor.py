@@ -10,6 +10,8 @@ import logging, zlib
 __all__ = ["Compressor","size"]
 
 def size(content, encoding="utf-8"):
+    """ Returns a user friendly formatted string about the size of the given content. """
+    
     normalSize = len(content)
     zippedSize = len(zlib.compress(content.encode(encoding)))
     
@@ -17,6 +19,8 @@ def size(content, encoding="utf-8"):
     
 
 class Compressor():
+    """ Compresses and combines a list of class objects. """
+    
     def __init__(self, classList, permutation, optimization):
         self.__classList = classList
         self.__permutation = permutation
