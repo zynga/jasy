@@ -24,6 +24,36 @@ session.addProject(Project("../../unify/framework"))
 #
 
 @task
+def clear():
+    logging.info("Clearing cache...")
+    session.clearCache()
+
+
+@task
+def source():
+    # Locales
+    session.addLocale("en_US")
+
+    # Resolve Classes
+    resolver = Resolver(session)
+    resolver.addClassName("apiviewer.Application")
+    resolver.addClassName("apiviewer.Theme")
+
+    # Collect Resources
+    resources = Resources(session, resolver.getIncludedClasses())
+    resourceCode = resources.export()
+
+    # Generate Loader
+    loader = Loader(Sorter(resolver).getSortedClasses())
+    loaderCode = loader.generate("qx.core.Init.boot(apiviewer.Application)")
+
+    # Write file
+    outfile = open("source.js", mode="w", encoding="utf-8")
+    outfile.write(resourceCode + loaderCode)
+    outfile.close()
+
+
+@task
 def build():
     # Locales
     session.addLocale("en_US")
