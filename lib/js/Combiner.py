@@ -26,7 +26,7 @@ class Combiner():
         self.__optimization = optimization
         
         
-    def compress(self, classList, addHeaders=True, format=True, computeSize=True):
+    def compress(self, classList, format=None, addHeaders=True, computeSize=True):
         result = []
         permutation = self.__permutation
         optimization = self.__optimization

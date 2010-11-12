@@ -54,7 +54,7 @@ class Compressor:
                 result = self.__prefixes[node.type] + self.compress(node[0])
             
         elif type in self.__dividers:
-            result = self.__dividers[node.type].join(map(compress, node))
+            result = self.__dividers[node.type].join(map(self.compress, node))
 
         else:
             try:
@@ -171,7 +171,7 @@ class Compressor:
     #
 
     def type_object_init(self, node):
-        return "{%s}" % self.__commaSymbol.join(map(compress, node))
+        return "{%s}" % self.__commaSymbol.join(map(self.compress, node))
 
     def type_property_init(self, node):
         key = self.compress(node[0])
@@ -220,7 +220,7 @@ class Compressor:
         return node.value
 
     def type_list(self, node):
-        return ",".join(map(compress, node))
+        return ",".join(map(self.compress, node))
 
     def type_index(self, node):
         return "%s[%s]" % (self.compress(node[0]), self.compress(node[1]))
@@ -298,7 +298,7 @@ class Compressor:
         return "{%s}" % self.__removeSemicolon(self.__statements(node))
     
     def type_let_block(self, node):
-        begin = "let(%s)" % ",".join(map(compress, node.variables))
+        begin = "let(%s)" % ",".join(map(self.compress, node.variables))
         if hasattr(node, "block"):
             end = self.compress(node.block)
         elif hasattr(node, "expression"):
