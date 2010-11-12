@@ -6,27 +6,17 @@
 import logging
 import itertools
 import time
+import atexit
 from js.core.Permutation import Permutation
 
 class Session():
     def __init__(self):
+        atexit.register(self.close)
+        
         self.projects = []
         self.variants = {}
         self.variants["locale"] = set()
         self.timestamp = time.time()
-        
-        logging.basicConfig(filename="log.txt", level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
-        
-        # define a Handler which writes INFO messages or higher to the sys.stderr
-        console = logging.StreamHandler()
-        console.setLevel(logging.INFO)
-        # set a format which is simpler for console use
-        formatter = logging.Formatter('>>> %(asctime)s %(message)s', '%H:%M:%S')
-        
-        # tell the handler to use this format
-        console.setFormatter(formatter)
-        # add the handler to the root logger
-        logging.getLogger('').addHandler(console)        
         
     def addProject(self, project):
         self.projects.append(project)
@@ -40,9 +30,16 @@ class Session():
             project.clearCache()
 
     def close(self):
+        logging.info("Closing session...")
         for project in self.projects:
             project.close()
 
+
+
+    def run(self):
+        print("Running...")
+        build()
+        pass
 
 
 

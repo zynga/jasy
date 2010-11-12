@@ -1,26 +1,34 @@
 #!/usr/bin/env python3
 
 # Extend PYTHONPATH with 'lib'
-import sys, os, traceback
+import sys, os
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
 # Import JavaScript tooling
 from js import *
 
-# Open Session
+#
+# Config
+#
+
 session = Session()
 
-# Protect session
-try:
-    # Application specific code
-    session.addProject(Project("../../qooxdoo/qooxdoo/framework"))
-    session.addProject(Project("../../qooxdoo/qooxdoo/component/apiviewer"))
-    session.addProject(Project("../../unify/framework"))
+session.addProject(Project("../../qooxdoo/qooxdoo/framework"))
+session.addProject(Project("../../qooxdoo/qooxdoo/component/apiviewer"))
+session.addProject(Project("../../unify/framework"))
 
-    # Locale data
+
+
+#
+# Tasks
+#
+
+@task
+def build():
+    # Locales
     session.addLocale("en_US")
 
-    # Variant data
+    # Values
     session.addVariant("qx.debug", [ '"on"' ])
     session.addVariant("qx.client", [ '"gecko"' ])
     session.addVariant("qx.dynlocale", [ '"off"' ])
@@ -36,13 +44,16 @@ try:
         logging.info("PERMUTATION: %s" % permutation)
         
         # Build file header
-        header = ""
-        header += "/*\n"
-        header += " * Copyright 2010\n"
-        header += " *\n"
-        header += " * Permutation: %s\n" % permutation
-        header += " * Optimizations: %s\n" % optimization
-        header += " */\n\n"
+        headerCode = ""
+        headerCode += "/*\n"
+        headerCode += " * Copyright 2010\n"
+        headerCode += " *\n"
+        headerCode += " * Permutation: %s\n" % permutation
+        headerCode += " * Optimizations: %s\n" % optimization
+        headerCode += " */\n\n"
+        
+        # Boot
+        bootCode = "qx.core.Init.boot(apiviewer.Application);"
     
         # Resolving dependencies
         resolver = Resolver(session, permutation)
@@ -51,27 +62,33 @@ try:
         classes = resolver.getIncludedClasses()
 
         # Collecting Resources
-        resources = Resources(session, classes, permutation)
+        resourceCode = Resources(session, classes, permutation).export()
 
         # Compiling classes
         sorter = Sorter(resolver, permutation)
-        compressed = Combiner(permutation, optimization).compress(sorter.getSortedClasses())
+        compressedCode = Combiner(permutation, optimization).compress(sorter.getSortedClasses(), format=False)
+        combinedCode = Combiner().combine(sorter.getSortedClasses())
 
-        # Combining result
-        buildCode = header + resources.export() + compressed + "qx.core.Init.boot(apiviewer.Application);"
-
-        # Create filename
+        # TODO
+        # Create filenames
         # Based on permutation.getKey(), optimization, modification date, etc.
-        outfileName = "build.js"
 
-        # Write file
-        outfile = open(outfileName, mode="w", encoding="utf-8")
-        outfile.write(buildCode)
-        outfile.close()
+        # Write files
+        compressedName = "build.js"
+        compressedFile = open(compressedName, mode="w", encoding="utf-8")
+        compressedFile.write(headerCode + resourceCode + compressedCode + bootCode)
+        compressedFile.close()
 
-except BaseException as ex:
-    logging.error(ex)
-    traceback.print_exc()
+        combinedName = "build-combined.js"
+        combinedFile = open(combinedName, mode="w", encoding="utf-8")
+        combinedFile.write(headerCode + resourceCode + combinedCode + bootCode)
+        combinedFile.close()
 
-# Close session
-session.close()
+
+
+#
+# Main
+#
+
+if __name__ == "__main__":
+    main()
