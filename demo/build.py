@@ -55,10 +55,10 @@ try:
 
         # Compiling classes
         sorter = Sorter(resolver, permutation)
-        compressor = Compressor(sorter.getSortedClasses(), permutation, optimization)
+        compressed = Combiner(permutation, optimization).compress(sorter.getSortedClasses())
 
         # Combining result
-        buildCode = header + resources.export() + compressor.compress() + "qx.core.Init.boot(apiviewer.Application);"
+        buildCode = header + resources.export() + compressed + "qx.core.Init.boot(apiviewer.Application);"
 
         # Create filename
         # Based on permutation.getKey(), optimization, modification date, etc.

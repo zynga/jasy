@@ -7,7 +7,7 @@ from datetime import datetime
 from js.core.Profiler import *
 import logging, zlib
 
-__all__ = ["Compressor","size"]
+__all__ = ["Combiner","size"]
 
 def size(content, encoding="utf-8"):
     """ Returns a user friendly formatted string about the size of the given content. """
@@ -18,16 +18,15 @@ def size(content, encoding="utf-8"):
     return "Size: {:.2f}KB ({:.2f}KB zipped => {:.2%})".format(normalSize/1024, zippedSize/1024, zippedSize/normalSize)
     
 
-class Compressor():
-    """ Compresses and combines a list of class objects. """
+class Combiner():
+    """ Combines the code of a list of classes into one string """
     
-    def __init__(self, classList, permutation, optimization):
-        self.__classList = classList
+    def __init__(self, permutation, optimization):
         self.__permutation = permutation
         self.__optimization = optimization
         
         
-    def compress(self, addHeaders=True, format=True, computeSize=True):
+    def compress(self, classList, addHeaders=True, format=True, computeSize=True):
         result = []
         permutation = self.__permutation
         optimization = self.__optimization
@@ -35,7 +34,7 @@ class Compressor():
         pstart()
         logging.info("Compressing classes...")
         
-        for classObj in self.__classList:
+        for classObj in classList:
             compressed = classObj.getCompressed(permutation, optimization, format=format)
             
             if addHeaders:
