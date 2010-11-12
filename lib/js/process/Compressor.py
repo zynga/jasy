@@ -59,7 +59,6 @@ class Compressor:
         else:
             try:
                 result = getattr(self, "type_%s" % type)(node)
-                #result = globals()["" + type](node)
             except KeyError:
                 print("Compressor does not support type '%s' from line %s in file %s" % (type, node.line, node.getFileName()))
                 print(node.toJson())
@@ -117,42 +116,42 @@ class Compressor:
     __simple = ["true", "false", "null", "this", "debugger"]
 
     __dividers = {
-        "plus"          : '+',    
-        "minus"         : '-',    
-        "mul"           : '*',    
-        "div"           : '/',    
-        "mod"           : '%',
-        "dot"           : '.',    
-        "or"            : "||",
-        "and"           : "&&",
-        "strict_eq"     : '===',  
-        "eq"            : '==',   
-        "strict_ne"     : '!==',  
-        "ne"            : '!=',   
-        "lsh"           : '<<',   
-        "le"            : '<=',   
-        "lt"            : '<',    
-        "ursh"          : '>>>',  
-        "rsh"           : '>>',   
-        "ge"            : '>=',   
-        "gt"            : '>',    
-        "bitwise_or"    : '|',    
-        "bitwise_xor"   : '^',    
-        "bitwise_and"   : '&',    
-        "comma"         : ','
+        "plus"        : '+',
+        "minus"       : '-',
+        "mul"         : '*',
+        "div"         : '/',
+        "mod"         : '%',
+        "dot"         : '.',
+        "or"          : "||",
+        "and"         : "&&",
+        "strict_eq"   : '===',
+        "eq"          : '==',
+        "strict_ne"   : '!==',
+        "ne"          : '!=',
+        "lsh"         : '<<',
+        "le"          : '<=',
+        "lt"          : '<',
+        "ursh"        : '>>>',
+        "rsh"         : '>>',
+        "ge"          : '>=',
+        "gt"          : '>',
+        "bitwise_or"  : '|',
+        "bitwise_xor" : '^',
+        "bitwise_and" : '&',
+        "comma"       : ','
     }
 
-    __prefixes = {
-        "increment"     : "++",
-        "decrement"     : "--",
-        "bitwise_not"   : '~',
-        "not"           : "!",
-        "unary_plus"    : "+",
-        "unary_minus"   : "-",
-        "delete"        : "delete ",
-        "new"           : "new ",
-        "typeof"        : "typeof ",
-        "void"          : "void "
+    __prefixes = {    
+        "increment"   : "++",
+        "decrement"   : "--",
+        "bitwise_not" : '~',
+        "not"         : "!",
+        "unary_plus"  : "+",
+        "unary_minus" : "-",
+        "delete"      : "delete ",
+        "new"         : "new ",
+        "typeof"      : "typeof ",
+        "void"        : "void "
     }
 
 
