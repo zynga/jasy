@@ -31,7 +31,7 @@ class Compressor:
             self.__commaSymbol = ",\n"
         else:
             self.__semicolonSymbol = ";"
-            self.__commaSymbol = ";"
+            self.__commaSymbol = ","
             
         self.__forcedSemicolon = False
 
