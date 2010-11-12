@@ -5,7 +5,7 @@
 
 import logging, re, json, os, struct
 from js.core.Profiler import *
-from js.Compressor import size
+from js.Combiner import size
 
 __all__ = ["Resources"]
 
