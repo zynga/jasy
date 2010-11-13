@@ -198,27 +198,31 @@ class Resources:
         pstart()
         logging.info("Publishing resources to %s..." % root)
         
-        
+        logging.info("Copying files...")
         for dirname in files:
-            logging.info("Copying files from %s..." % dirname)
             for filename in files[dirname]:
                 origin = files[dirname][filename]
+                
+                # Differ between images (tuple) and non images (int)
                 if type(origin) == tuple:
                     origin = origin[0]
 
-                source_root = roots[origin]
+                source = os.path.join(roots[origin], dirname, filename)
+                dist = os.path.join(root, dirname, filename)
                 
-                source = "%s/%s/%s" % (source_root, dirname, filename)
-                dist = "%s/%s/%s" % (root, dirname, filename)
-                
-                print("Copying %s => %s" % (source, dist))
-                copyfile(source, dist)
+                updatefile(source, dist)
         
-        
-        
+
         logging.info("Copying sprites...")
-        
-        
+        for dirname in sprites:
+            for entry in sprites[dirname]:
+                filename = entry[0]
+                origin = entry[1]
+                
+                source = os.path.join(roots[origin], dirname, filename)
+                dist = os.path.join(root, dirname, filename)
+                
+                updatefile(source, dist)
         
         pstop()
         
