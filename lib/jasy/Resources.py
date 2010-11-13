@@ -103,7 +103,7 @@ class Resources:
 
         # Processing resources...
         files = {}
-        sprites = {}
+        sprites_data = {}
         logging.info("Detecting image sizes...")
         pstart()
         for resource in filtered:
@@ -117,7 +117,7 @@ class Resources:
             extension = os.path.splitext(basename)[1]
             
             if basename == "sprites.json":
-                sprites[dirname] = json.load(open(fullPath))
+                sprites_data[dirname] = fullPath
                 pass
                 
             elif extension == ".meta":
@@ -139,12 +139,13 @@ class Resources:
         pstop()
                     
         # Merge in sprite data and create additional data for sprites
-        spritesResult = {}
+        sprites = {}
         logging.info("Collecting sprite data...")
         pstart()
         
-        for spriteDir in sprites:
-            spriteFiles = sprites[spriteDir]
+        for spriteDir in sprites_data:
+            # Reading from file
+            spriteFiles = json.load(open(sprites_data[spriteDir]))
             for spriteFile in spriteFiles:
                 # Ignore if sprite file is not included
                 if not spriteFile in files[spriteDir]:
@@ -169,14 +170,14 @@ class Resources:
                 # Format: fileName(str), projectId(int), width(int), height(int), hasOffsetX(int), hasOffsetY(int)
                 spriteEntry = (spriteFile,) + spriteData + (hasXOffsets, hasYOffsets)
 
-                if spriteDir in spritesResult:
-                    spritesResult[spriteDir].append(spriteEntry)
+                if spriteDir in sprites:
+                    sprites[spriteDir].append(spriteEntry)
                 else:
-                    spritesResult[spriteDir] = [spriteEntry]
+                    sprites[spriteDir] = [spriteEntry]
                     
                 # Add sprite data to single image data
                 # Format: projectId(int), width(int), height(int), spriteIndex(int), offsetX(int)|offsetY(int), offsetY(int)?
-                spriteIndex = len(spritesResult[spriteDir]) - 1
+                spriteIndex = len(sprites[spriteDir]) - 1
                 for spriteItem in spriteItems:
                     spriteOffset = spriteItems[spriteItem]
                     
@@ -193,7 +194,7 @@ class Resources:
         return {
             "roots" : roots,
             "files" : files,
-            "sprites" : spritesResult
+            "sprites" : sprites
         }
         
         
