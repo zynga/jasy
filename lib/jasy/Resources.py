@@ -178,10 +178,8 @@ class Resources:
     def exportInfo(self, root=None, to="$$resources"):
         info = self.getInfo()
         
-        if root != None:
-            for entry in info.roots:
-                print("Modify root: " + entry)
-        
+        if root:
+            info["roots"] = [root for entry in info["roots"]]
         
         code = json.dumps(info, separators=(',',':'))
         logging.info(size(code))
