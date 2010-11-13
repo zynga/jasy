@@ -14,6 +14,8 @@ def scan(node):
     
     
 class Stats:
+    __slots__ = ["params", "declared", "accessed", "modified", "shared", "unused", "packages"]
+    
     def __init__(self):
         self.params = set()
         self.declared = set()
