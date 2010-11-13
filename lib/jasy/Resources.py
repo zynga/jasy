@@ -232,7 +232,7 @@ class Resources:
         pstart()
         logging.info("Publishing resources to %s..." % root)
         
-        logging.info("Copying files...")
+        # Files
         for dirname in files:
             for filename in files[dirname]:
                 origin = files[dirname][filename]
@@ -247,7 +247,7 @@ class Resources:
                 updatefile(source, dist)
         
 
-        logging.info("Copying sprites...")
+        # Sprites
         for dirname in sprites:
             for entry in sprites[dirname]:
                 filename = entry[0]
