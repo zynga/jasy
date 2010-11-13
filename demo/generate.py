@@ -48,7 +48,7 @@ def source():
     loaderCode = loader.generate("qx.core.Init.boot(apiviewer.Application)")
 
     # Write file
-    outfile = open("source.js", mode="w", encoding="utf-8")
+    outfile = open("source/script/apiviewer.js", mode="w", encoding="utf-8")
     outfile.write(resourceCode + loaderCode)
     outfile.close()
 
@@ -106,7 +106,7 @@ def build():
         # Based on permutation.getKey(), optimization, modification date, etc.
 
         # Write files
-        compressedName = "build/script/app.js"
+        compressedName = "build/script/apiviewer.js"
         compressedFile = open(compressedName, mode="w", encoding="utf-8")
         compressedFile.write(headerCode + resourceCode + compressedCode + bootCode)
         compressedFile.close()
