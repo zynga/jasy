@@ -7,18 +7,18 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 # Extend PYTHONPATH with 'lib'
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
-from js.parser.Parser import parse
+from jasy.parser.Parser import parse
 
-from js.optimizer import CombineDeclarations
-from js.optimizer import LocalVariables
-from js.optimizer import ValuePatch
-from js.optimizer import DeadCode
-from js.optimizer import CryptPrivates
-from js.optimizer import BlockReducer
-from js.optimizer import UnusedCleaner
+from jasy.optimizer import CombineDeclarations
+from jasy.optimizer import LocalVariables
+from jasy.optimizer import ValuePatch
+from jasy.optimizer import DeadCode
+from jasy.optimizer import CryptPrivates
+from jasy.optimizer import BlockReducer
+from jasy.optimizer import UnusedCleaner
 
-from js.process.Variables import scan
-from js.process.Compressor import compress
+from jasy.process.Variables import scan
+from jasy.process.Compressor import compress
 
 
 def jsoptimize(source, filename=None):

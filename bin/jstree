@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
 # Extend PYTHONPATH with 'lib'
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
-from js.parser.Parser import parse
+from jasy.parser.Parser import parse
 
 
 def jstree(source, filename=None):
