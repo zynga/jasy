@@ -3,9 +3,10 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging, re, json, os
+import logging, re, json, os, fnmatch
 from jasy.core.Profiler import *
 from jasy.core.ImageInfo import ImgInfo
+from jasy.core.File import *
 from jasy.Combiner import size
 
 __all__ = ["Resources"]
@@ -55,7 +56,7 @@ class Resources:
                 assets.update(classObj.getMeta(self.__permutation).assets)
                 
             # Compile regular expressions which is used to filter resource later on
-            expr = re.compile("^%s$" % "|".join(["(%s)" % asset.replace("*", ".*") for asset in assets]))
+            expr = re.compile("^%s$" % "|".join(["(%s)" % fnmatch.translate(asset) for asset in assets]))
             
             # Filter assets by regular expression
             result = {}
@@ -170,8 +171,8 @@ class Resources:
 
         return {
             "roots" : roots,
-            "sprites" : spritesResult,
-            "files" : files
+            "files" : files,
+            "sprites" : spritesResult
         }
         
         
@@ -190,8 +191,36 @@ class Resources:
         
     def publishFiles(self, root):
         info = self.getInfo()
+        roots = info["roots"]
+        files = info["files"]
+        sprites = info["sprites"]
         
-        logging.info("Publishing files to %s..." % root)
+        pstart()
+        logging.info("Publishing resources to %s..." % root)
+        
+        
+        for dirname in files:
+            logging.info("Copying files from %s..." % dirname)
+            for filename in files[dirname]:
+                origin = files[dirname][filename]
+                if type(origin) == tuple:
+                    origin = origin[0]
+
+                source_root = roots[origin]
+                
+                source = "%s/%s/%s" % (source_root, dirname, filename)
+                dist = "%s/%s/%s" % (root, dirname, filename)
+                
+                print("Copying %s => %s" % (source, dist))
+                copyfile(source, dist)
+        
+        
+        
+        logging.info("Copying sprites...")
+        
+        
+        
+        pstop()
         
         
         
