@@ -9,7 +9,7 @@ Authors:
 Example:
 
 from path import path
-d = path('/home/guido/bin')
+d = Path('/home/guido/bin')
 for f in d.files('*.py'):
     f.chmod(0755)
 
@@ -54,7 +54,7 @@ if hasattr(file, 'newlines'):
 class TreeWalkWarning(Warning):
     pass
 
-class path(_base):
+class Path(_base):
     """ Represents a filesystem path.
 
     For documentation on individual methods, consult their
@@ -64,7 +64,7 @@ class path(_base):
     # --- Special Python methods.
 
     def __repr__(self):
-        return 'path(%s)' % _base.__repr__(self)
+        return 'Path(%s)' % _base.__repr__(self)
 
     # Adding a path and a string yields a path.
     def __add__(self, more):
@@ -137,22 +137,22 @@ class path(_base):
         dirname, None, None,
         """ This path's parent directory, as a new path object.
 
-        For example, path('/usr/local/lib/libpython.so').parent == path('/usr/local/lib')
+        For example, Path('/usr/local/lib/libpython.so').parent == Path('/usr/local/lib')
         """)
 
     name = property(
         basename, None, None,
         """ The name of this file or directory without the full path.
 
-        For example, path('/usr/local/lib/libpython.so').name == 'libpython.so'
+        For example, Path('/usr/local/lib/libpython.so').name == 'libpython.so'
         """)
 
     namebase = property(
         _get_namebase, None, None,
         """ The same as path.name, but with one file extension stripped off.
 
-        For example, path('/home/guido/python.tar.gz').name     == 'python.tar.gz',
-        but          path('/home/guido/python.tar.gz').namebase == 'python.tar'
+        For example, Path('/home/guido/python.tar.gz').name     == 'python.tar.gz',
+        but          Path('/home/guido/python.tar.gz').namebase == 'python.tar'
         """)
 
     ext = property(
@@ -175,7 +175,7 @@ class path(_base):
 
         Split the drive specifier from this path.  If there is
         no drive specifier, p.drive is empty, so the return value
-        is simply (path(''), p).  This is always the case on Unix.
+        is simply (Path(''), p).  This is always the case on Unix.
         """
         drive, rel = os.path.splitdrive(self)
         return self.__class__(drive), rel
@@ -196,8 +196,8 @@ class path(_base):
     def stripext(self):
         """ p.stripext() -> Remove one file extension from the path.
 
-        For example, path('/home/guido/python.tar.gz').stripext()
-        returns path('/home/guido/python.tar').
+        For example, Path('/home/guido/python.tar.gz').stripext()
+        returns Path('/home/guido/python.tar').
         """
         return self.splitext()[0]
 
@@ -483,7 +483,7 @@ class path(_base):
 
         pattern - a path relative to this directory, with wildcards.
 
-        For example, path('/users').glob('*/bin/*') returns a list
+        For example, Path('/users').glob('*/bin/*') returns a list
         of all the files users have in their bin directories.
         """
         cls = self.__class__
