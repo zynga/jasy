@@ -41,7 +41,7 @@ def source():
 
     # Collect Resources
     resources = Resources(session, resolver.getIncludedClasses())
-    resourceCode = resources.export()
+    resourceCode = resources.exportInfo()
 
     # Generate Loader
     loader = Loader(Sorter(resolver).getSortedClasses())
@@ -92,33 +92,34 @@ def build():
         classes = resolver.getIncludedClasses()
 
         # Collecting Resources
-        resourceCode = Resources(session, classes, permutation).export()
+        resources = Resources(session, classes, permutation)
+        resources.publishFiles("build/resource")
+        resourceCode = resources.exportInfo(root="resource")
 
         # Compiling classes
         sorter = Sorter(resolver, permutation)
         compressedCode = Combiner(permutation, optimization).compress(sorter.getSortedClasses(), format=False)
-        combinedCode = Combiner().combine(sorter.getSortedClasses())
+        # combinedCode = Combiner().combine(sorter.getSortedClasses())
 
         # TODO
         # Create filenames
         # Based on permutation.getKey(), optimization, modification date, etc.
 
         # Write files
-        compressedName = "build.js"
+        compressedName = "build/script/app.js"
         compressedFile = open(compressedName, mode="w", encoding="utf-8")
         compressedFile.write(headerCode + resourceCode + compressedCode + bootCode)
         compressedFile.close()
 
-        combinedName = "build-combined.js"
-        combinedFile = open(combinedName, mode="w", encoding="utf-8")
-        combinedFile.write(headerCode + resourceCode + combinedCode + bootCode)
-        combinedFile.close()
+        # combinedName = "build/script/app-combined.js"
+        # combinedFile = open(combinedName, mode="w", encoding="utf-8")
+        # combinedFile.write(headerCode + resourceCode + combinedCode + bootCode)
+        # combinedFile.close()
 
 
 
 #
-# Main
+# Execute Jasy
 #
 
-if __name__ == "__main__":
-    main()
+run()

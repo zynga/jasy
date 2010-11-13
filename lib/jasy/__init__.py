@@ -97,8 +97,9 @@ def task(func):
     
     
     
-def main():
-    """ Main routine called automatically on startup """
+def run():
+    """ Main routine which should be called on startup """
+    
     parser = OptionParser()
     parser.add_option("-q", "--quiet", action="store_false", dest="verbose", help="don't print status messages to stdout")
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="print more detailed status messages to stdout")
