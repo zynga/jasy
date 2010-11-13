@@ -100,7 +100,6 @@ def build():
         # Compiling classes
         sorter = Sorter(resolver, permutation)
         compressedCode = Combiner(permutation, optimization).compress(sorter.getSortedClasses(), format=False)
-        # combinedCode = Combiner().combine(sorter.getSortedClasses())
 
         # TODO
         # Create filenames
@@ -111,12 +110,6 @@ def build():
         compressedFile = open(compressedName, mode="w", encoding="utf-8")
         compressedFile.write(headerCode + resourceCode + compressedCode + bootCode)
         compressedFile.close()
-
-        # combinedName = "build/script/app-combined.js"
-        # combinedFile = open(combinedName, mode="w", encoding="utf-8")
-        # combinedFile.write(headerCode + resourceCode + combinedCode + bootCode)
-        # combinedFile.close()
-
 
 
 #
