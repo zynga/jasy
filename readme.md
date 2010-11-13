@@ -1,12 +1,11 @@
-JSTools - Tools for JavaScript
-===============================
+Jasy - JavaScript Tooling Refined
+=================================
 
-JSTools are tools for dealing with JavaScript source codes and projects containing JavaScript source code. It is based on Python and
-relies on a stable parser engine based on Narcissus/Spidermonkey by Mozilla. It supports all kind of fancy new stuff supported
-up to JavaScript 1.8.
+Jasy is a collection of tools for dealing JavaScript source code. It is based on Python and relies on a stable parser engine based 
+on Narcissus/Spidermonkey by Mozilla.
 
-JSTools is meant as a replacement for qooxdoo's toolchain. There should be standalone tools for dealing with JavaScript files to apply typical
-things to them like parsing, compressing, optimizing, etc. JSTools should also offer a API which could be used by Python developers to write
+Jasy is meant as a replacement for qooxdoo's toolchain. There should be standalone tools for dealing with JavaScript files to apply typical
+things to them like parsing, compressing, optimizing, etc. Jasy should also offer a API which could be used by Python developers to write
 their custom scripts based on the available modules. This is meant to be used like SCons, Waf, etc.
 
 License
@@ -17,15 +16,17 @@ Licensed under a dual license MIT + Apache V2. See separate license files for de
 Parser
 ------
 
-- Full JavaScript 1.8 parser based on Narcissus (based on Spidermonkey)
+- Full JavaScript 1.8 parser based on Narcissus (which itself is based on Spidermonkey)
 - Reworked parser for better child handling (easier to traverse tree compared to original)
-- Support for JavaScript 1.8 (Generators, Block Scope, Function Expressions, Array Comprehensions, ...)
+- Full support for JavaScript 1.8 (Generators, Block Scope, Function Expressions, Array Comprehensions, ...)
 - Comment processing (Comments are attached to nodes and are part of the AST)
 
 Project Handling
 ----------------
 
 - Project Support (Bundling multiple projects)
+- Build scripts are plain Python and can do everything you want to do. No limitations.
+- Import Jasy and define your own tasks (using Python decorator "task")
 
 Dependency Analysis
 -------------------
@@ -40,7 +41,6 @@ Dead Code Removal
 
 - Resolves conditions and removes blocks which could not be reached
 - Function part of the permutation support
-- Supports qx.core.Variant.isSet (from qooxdoo)
 - Supports switch statements
 - Supppors conditional statements (?:)
 - Resolves boolean, number and string compares
@@ -51,8 +51,11 @@ Permutation Features
 
 - Permutation Support (building different results from one code base)
 - Might be used to remove debug blocks or alternative code
-- At the moment is supports statics, qooxdoo variants, hasjs statements
-- Creates permutation hashes with timestamp support (for permanent caching of files)
+- At the moment is supports:
+  - hasJS (has("string-trim"))
+  - qooxdoo variants (qx.core.Variant.select("qx.client"), qx.core.Variant.isSet("qx.debug", "on"))
+  - qooxdoo settings (qx.core.Setting.get("qx.version"))
+  - constant lookups (my.app.Application.VERSION)
 
 Compression Features
 --------------------
@@ -75,7 +78,11 @@ Optimizer Features
 - Removes needless parens based on priority analysis on the AST
 
 
+Developer Support
+-----------------
 
+- Generates a so-named "source" version which loads the original class files which is useful during the development phase of an application.
+- This feature is based on LabJS for best loading performance.
 
 
 
@@ -85,7 +92,6 @@ Optimizer Features
 Todo
 ----
 
-- Support for LabJS Loading
 - Auto Closure Wrapping for string optimizations, keyword optimization, etc.
 - String optimizations
 - API data
