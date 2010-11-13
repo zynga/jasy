@@ -11,6 +11,8 @@ class MetaData:
     systems for optiomal cachability using Pickle
     """
     
+    __slots__ = ["provides", "requires", "optionals", "breaks", "assets"]
+    
     def __init__(self, tree):
         self.provides = set()
         self.requires = set()
