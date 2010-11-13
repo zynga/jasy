@@ -94,6 +94,7 @@ def build():
         # Collecting Resources
         resources = Resources(session, classes, permutation)
         resources.publishFiles("build/resource")
+        resources.publishManifest("build/manifest", "resource")
         resourceCode = resources.exportInfo(root="resource")
 
         # Compiling classes

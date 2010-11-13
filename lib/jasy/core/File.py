@@ -53,7 +53,6 @@ def updatefile(src, dst):
 
 
 def writefile(filename, content):
-    pass
-
-
-
+    handle = open(filename, mode="w", encoding="utf-8")
+    handle.write(content)
+    handle.close()
