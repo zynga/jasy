@@ -15,4 +15,5 @@ def jstree(source, filename=None):
     return root.toXml()
 
 if __name__ == "__main__":
-    print(jstree(open(sys.argv[1], encoding="utf-8").read(), sys.argv[1]))
+    for fname in sys.argv[1:]:
+        print(jstree(open(fname, encoding="utf-8").read(), fname))

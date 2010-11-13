@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 
-import sys, os, logging
-
-logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+import sys, os
 
 # Extend PYTHONPATH with 'lib'
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
 from jasy.parser.Parser import parse
 
+from jasy.core import Permutation
+from jasy.core import DeadCode
+
 from jasy.optimizer import CombineDeclarations
 from jasy.optimizer import LocalVariables
-from jasy.optimizer import ValuePatch
-from jasy.optimizer import DeadCode
 from jasy.optimizer import CryptPrivates
 from jasy.optimizer import BlockReducer
 from jasy.optimizer import UnusedCleaner
@@ -43,8 +42,8 @@ def jsoptimize(source, filename=None):
     
     tree = parse(source, filename)
     
-    ValuePatch.patch(tree, values)
-    DeadCode.optimize(tree)
+    Permutation.Permutation(values).patch(tree)
+    DeadCode.cleanup(tree)
     
     scan(tree)
     
@@ -60,4 +59,5 @@ def jsoptimize(source, filename=None):
 
 
 if __name__ == "__main__":
-    print(jsoptimize(open(sys.argv[1], encoding="utf-8").read(), sys.argv[1]))
+    for fname in sys.argv[1:]:
+        print(jsoptimize(open(fname, encoding="utf-8").read(), fname))

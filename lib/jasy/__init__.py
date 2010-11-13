@@ -40,7 +40,6 @@ class Environment:
     verbose = None
     
     def __init__(self):
-        logging.info("Environment Setup")
         pass
 
     def addTask(self, task):

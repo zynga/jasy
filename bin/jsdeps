@@ -31,4 +31,5 @@ def jsdeps(source, filename=None):
 
 
 if __name__ == "__main__":
-    jsdeps(open(sys.argv[1], encoding="utf-8").read(), sys.argv[1])
+    for fname in sys.argv[1:]:
+        jsdeps(open(fname, encoding="utf-8").read(), fname)

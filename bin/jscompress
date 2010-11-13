@@ -16,4 +16,5 @@ def jscompress(source, filename=None):
 
 
 if __name__ == "__main__":
-    print(jscompress(open(sys.argv[1], encoding="utf-8").read(), sys.argv[1]))
+    for fname in sys.argv[1:]:
+        print(jscompress(open(fname, encoding="utf-8").read(), fname))
