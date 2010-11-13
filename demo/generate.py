@@ -44,7 +44,7 @@ def source():
     resourceCode = resources.exportInfo()
 
     # Generate Loader
-    loader = Loader(Sorter(resolver).getSortedClasses())
+    loader = Loader(Sorter(resolver).getSortedClasses(), "../")
     loaderCode = loader.generate("qx.core.Init.boot(apiviewer.Application)")
 
     # Write file
