@@ -93,109 +93,115 @@ class Resources:
         build like [filename, origin, width, height, hasPosX, hasPosY]
         """
         
-        filtered = self.getFiltered()
-        projects = self.__session.getProjects()
+        try:
+            return self.__info
         
-        # Collecting roots
-        roots = []
-        for projectId, project in enumerate(projects):
-            roots.append(project.resourcePath)
+        except AttributeError:
+            filtered = self.getFiltered()
+            projects = self.__session.getProjects()
+        
+            # Collecting roots
+            roots = []
+            for projectId, project in enumerate(projects):
+                roots.append(project.resourcePath)
 
-        # Processing resources...
-        files = {}
-        sprites_data = {}
-        logging.info("Detecting image sizes...")
-        pstart()
-        for resource in filtered:
-            projectId = filtered[resource]
-            project = projects[projectId]
+            # Processing resources...
+            files = {}
+            sprites_data = {}
+            logging.info("Detecting image sizes...")
+            pstart()
+            for resource in filtered:
+                projectId = filtered[resource]
+                project = projects[projectId]
             
-            fullPath = "%s/%s" % (project.resourcePath, resource)
+                fullPath = "%s/%s" % (project.resourcePath, resource)
             
-            basename = os.path.basename(resource)
-            dirname = os.path.dirname(resource)
-            extension = os.path.splitext(basename)[1]
+                basename = os.path.basename(resource)
+                dirname = os.path.dirname(resource)
+                extension = os.path.splitext(basename)[1]
             
-            if basename == "sprites.json":
-                sprites_data[dirname] = fullPath
-                pass
+                if basename == "sprites.json":
+                    sprites_data[dirname] = fullPath
+                    pass
                 
-            elif extension == ".meta":
-                # qooxdoo style sprite meta info
-                continue
-                
-            else:
-                if not dirname in files:
-                    files[dirname] = {}
-
-                img = ImgInfo(fullPath)
-                imgInfo = img.getInfo()
-                if imgInfo != None:
-                    files[dirname][basename] = (projectId,) + imgInfo
-                
-                else:
-                    files[dirname][basename] = projectId
-        
-        pstop()
-                    
-        # Merge in sprite data and create additional data for sprites
-        sprites = {}
-        logging.info("Collecting sprite data...")
-        pstart()
-        
-        for spriteDir in sprites_data:
-            # Reading from file
-            spriteFiles = json.load(open(sprites_data[spriteDir]))
-            for spriteFile in spriteFiles:
-                # Ignore if sprite file is not included
-                if not spriteFile in files[spriteDir]:
+                elif extension == ".meta":
+                    # qooxdoo style sprite meta info
                     continue
                 
-                # Read and delete sprite data
-                spriteData = files[spriteDir][spriteFile]
-                del files[spriteDir][spriteFile]
-                
-                # Pre-check for offsets (e.g. just using x or y is more efficient to store)
-                hasXOffsets = 0
-                hasYOffsets = 0
-                spriteItems = spriteFiles[spriteFile]
-                for spriteItem in spriteItems:
-                    spriteOffset = spriteItems[spriteItem]
-                    if spriteOffset[0] > 0:
-                        hasXOffsets = 1
-                    if spriteOffset[1] > 0:
-                        hasYOffsets = 1
-
-                # Mark file as sprite file
-                # Format: fileName(str), projectId(int), width(int), height(int), hasOffsetX(int), hasOffsetY(int)
-                spriteEntry = (spriteFile,) + spriteData + (hasXOffsets, hasYOffsets)
-
-                if spriteDir in sprites:
-                    sprites[spriteDir].append(spriteEntry)
                 else:
-                    sprites[spriteDir] = [spriteEntry]
+                    if not dirname in files:
+                        files[dirname] = {}
+
+                    img = ImgInfo(fullPath)
+                    imgInfo = img.getInfo()
+                    if imgInfo != None:
+                        files[dirname][basename] = (projectId,) + imgInfo
+                
+                    else:
+                        files[dirname][basename] = projectId
+        
+            pstop()
                     
-                # Add sprite data to single image data
-                # Format: projectId(int), width(int), height(int), spriteIndex(int), offsetX(int)|offsetY(int), offsetY(int)?
-                spriteIndex = len(sprites[spriteDir]) - 1
-                for spriteItem in spriteItems:
-                    spriteOffset = spriteItems[spriteItem]
+            # Merge in sprite data and create additional data for sprites
+            sprites = {}
+            logging.info("Collecting sprite data...")
+            pstart()
+        
+            for spriteDir in sprites_data:
+                # Reading from file
+                spriteFiles = json.load(open(sprites_data[spriteDir]))
+                for spriteFile in spriteFiles:
+                    # Ignore if sprite file is not included
+                    if not spriteFile in files[spriteDir]:
+                        continue
+                
+                    # Read and delete sprite data
+                    spriteData = files[spriteDir][spriteFile]
+                    del files[spriteDir][spriteFile]
+                
+                    # Pre-check for offsets (e.g. just using x or y is more efficient to store)
+                    hasXOffsets = 0
+                    hasYOffsets = 0
+                    spriteItems = spriteFiles[spriteFile]
+                    for spriteItem in spriteItems:
+                        spriteOffset = spriteItems[spriteItem]
+                        if spriteOffset[0] > 0:
+                            hasXOffsets = 1
+                        if spriteOffset[1] > 0:
+                            hasYOffsets = 1
+
+                    # Mark file as sprite file
+                    # Format: fileName(str), projectId(int), width(int), height(int), hasOffsetX(int), hasOffsetY(int)
+                    spriteEntry = (spriteFile,) + spriteData + (hasXOffsets, hasYOffsets)
+
+                    if spriteDir in sprites:
+                        sprites[spriteDir].append(spriteEntry)
+                    else:
+                        sprites[spriteDir] = [spriteEntry]
                     
-                    spriteInfo = (spriteIndex,)
-                    if hasXOffsets:
-                        spriteInfo += (spriteOffset[0],)
-                    if hasYOffsets:
-                        spriteInfo += (spriteOffset[1],)
+                    # Add sprite data to single image data
+                    # Format: projectId(int), width(int), height(int), spriteIndex(int), offsetX(int)|offsetY(int), offsetY(int)?
+                    spriteIndex = len(sprites[spriteDir]) - 1
+                    for spriteItem in spriteItems:
+                        spriteOffset = spriteItems[spriteItem]
+                    
+                        spriteInfo = (spriteIndex,)
+                        if hasXOffsets:
+                            spriteInfo += (spriteOffset[0],)
+                        if hasYOffsets:
+                            spriteInfo += (spriteOffset[1],)
 
-                    files[spriteDir][spriteItem] += spriteInfo
+                        files[spriteDir][spriteItem] += spriteInfo
 
-        pstop()
+            pstop()
 
-        return {
-            "roots" : roots,
-            "files" : files,
-            "sprites" : sprites
-        }
+            self.__info = {
+                "roots" : roots,
+                "files" : files,
+                "sprites" : sprites
+            }
+            
+            return self.__info
         
         
     def exportInfo(self, root=None, to="$$resources"):
