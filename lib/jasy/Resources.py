@@ -72,7 +72,7 @@ class Resources:
             return result
             
             
-    def getInfo(self):
+    def getInfo(self, relPath=None):
         """
         Returns a dictionary with the keys roots, files and sprites
         containing information about the resources which are relevant
@@ -103,7 +103,12 @@ class Resources:
             # Collecting roots
             roots = []
             for projectId, project in enumerate(projects):
-                roots.append(project.resourcePath)
+                print("REL-PATH: %s" % relPath)
+                if relPath != None:
+                    print("JOIN: %s + %s => %s" % (relPath, project.resourcePath, os.path.join(relPath, project.resourcePath)))
+                    roots.append(os.path.join(relPath, project.resourcePath))
+                else:
+                    roots.append(project.resourcePath)
 
             # Processing resources...
             files = {}
@@ -204,13 +209,13 @@ class Resources:
             return self.__info
         
         
-    def exportInfo(self, root=None, to="$$resources"):
+    def exportInfo(self, root=None, relPath=None, to="$$resources"):
         """ 
         Exports the info from getInfo() into a JavaScript function
         call. This creates a global variable with the default name
         $$resources which contains all resource information.
         """
-        info = self.getInfo()
+        info = self.getInfo(relPath)
         
         if root:
             info["roots"] = [root for entry in info["roots"]]

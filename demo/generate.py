@@ -41,7 +41,7 @@ def source():
 
     # Collect Resources
     resources = Resources(session, resolver.getIncludedClasses())
-    resourceCode = resources.exportInfo()
+    resourceCode = resources.exportInfo(relPath="../")
 
     # Generate Loader
     loader = Loader(Sorter(resolver).getSortedClasses(), "../")
