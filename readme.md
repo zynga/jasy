@@ -13,6 +13,8 @@ License
 
 Licensed under a dual license MIT + Apache V2. See separate license files for details.
 
+The parser implementation is under a triple open source license MPL 1.1/GPL 2.0/LGPL 2.1 as these are from the original Spidermonkey code.
+
 Parser
 ------
 
@@ -26,7 +28,7 @@ Project Handling
 
 - Project Support (Bundling multiple projects)
 - Build scripts are plain Python and can do everything you want to do. No limitations.
-- Import Jasy and define your own tasks (using Python decorator "task")
+- Import Jasy and define your own tasks (using Python decorator "task") (See demo/generate.py as an example)
 
 Dependency Analysis
 -------------------
