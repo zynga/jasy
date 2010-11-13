@@ -44,6 +44,7 @@ class Resources:
         Returns a list of resources which is used by the classes
         given at creation time.
         """
+        
         try:
             return self.__filtered
         
@@ -72,6 +73,26 @@ class Resources:
             
             
     def getInfo(self, enableSprites=True, enableInlining=True):
+        """
+        Returns a dictionary with the keys roots, files and sprites
+        containing information about the resources which are relevant
+        for the class set defined at creation of this class.
+        
+        "roots" is an array with the projects in the same order they 
+        where added to the session
+        
+        "files" contains all non-sprite files which are defined using
+        the @asset compiler hints. The format differs between images and
+        other files. Images stores a tuple 
+        (origin, widht, height, sprite, pos1, pos2). The last three values
+        are only used when the image is part off an image sprite. For
+        non-image files there is no tuple but just an integer refering to
+        the origin (project index).
+        
+        "sprites" contains the data about image sprites. Each entry is
+        build like [filename, origin, width, height, hasPosX, hasPosY]
+        """
+        
         filtered = self.getFiltered()
         projects = self.__session.getProjects()
         
@@ -177,6 +198,11 @@ class Resources:
         
         
     def exportInfo(self, root=None, to="$$resources"):
+        """ 
+        Exports the info from getInfo() into a JavaScript function
+        call. This creates a global variable with the default name
+        $$resources which contains all resource information.
+        """
         info = self.getInfo()
         
         if root:
@@ -190,7 +216,14 @@ class Resources:
         
         
     def publishFiles(self, root):
+        """
+        This method publishes the selected files to the given root
+        directory. This merges files from different projects into one
+        folder. Ideal for preparing a deployment.
+        """
+        
         info = self.getInfo()
+        
         roots = info["roots"]
         files = info["files"]
         sprites = info["sprites"]
