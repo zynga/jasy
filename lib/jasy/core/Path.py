@@ -3,6 +3,7 @@
 Authors:
  Jason Orendorff <jason.orendorff\x40gmail\x2ecom>
  Mikhail Gusarov <dottedmag@dottedmag.net>
+ Sebastian Werner <info@sebastian-werner.net>
  Others - unfortunately attribution is lost
 
 Example:
@@ -12,7 +13,7 @@ d = path('/home/guido/bin')
 for f in d.files('*.py'):
     f.chmod(0755)
 
-This module requires Python 2.2 or later.
+This module requires Python 3.1 or later.
 """
 
 
@@ -26,8 +27,6 @@ This module requires Python 2.2 or later.
 #   - Add methods for regex find and replace.
 #   - guess_content_type() method?
 #   - Perhaps support arguments to touch().
-
-
 
 import sys, warnings, os, fnmatch, glob, shutil, codecs, hashlib, errno
 
@@ -45,28 +44,6 @@ else:
         import pwd
     except ImportError:
         pwd = None
-
-# Pre-2.3 support.  Are unicode filenames supported?
-_base = str
-_getcwd = os.getcwd
-try:
-    if os.path.supports_unicode_filenames:
-        _base = str
-        _getcwd = os.getcwd
-except AttributeError:
-    pass
-
-# Pre-2.3 workaround for booleans
-try:
-    True, False
-except NameError:
-    True, False = 1, 0
-
-# Pre-2.3 workaround for basestring.
-try:
-    str
-except NameError:
-    str = (str, str)
 
 # Universal newline support
 _textmode = 'r'
@@ -644,28 +621,19 @@ class path(_base):
         conversion.
 
         """
-        if isinstance(text, str):
-            if linesep is not None:
-                # Convert all standard end-of-line sequences to
-                # ordinary newline characters.
-                text = (text.replace('\r\n', '\n')
-                            .replace('\r\x85', '\n')
-                            .replace('\r', '\n')
-                            .replace('\x85', '\n')
-                            .replace('\u2028', '\n'))
-                text = text.replace('\n', linesep)
-            if encoding is None:
-                encoding = sys.getdefaultencoding()
-            bytes = text.encode(encoding, errors)
-        else:
-            # It is an error to specify an encoding if 'text' is
-            # an 8-bit string.
-            assert encoding is None
-
-            if linesep is not None:
-                text = (text.replace('\r\n', '\n')
-                            .replace('\r', '\n'))
-                bytes = text.replace('\n', linesep)
+        
+        if linesep is not None:
+            # Convert all standard end-of-line sequences to
+            # ordinary newline characters.
+            text = (text.replace('\r\n', '\n')
+                        .replace('\r\x85', '\n')
+                        .replace('\r', '\n')
+                        .replace('\x85', '\n')
+                        .replace('\u2028', '\n'))
+            text = text.replace('\n', linesep)
+        if encoding is None:
+            encoding = sys.getdefaultencoding()
+        bytes = text.encode(encoding, errors)
 
         self.write_bytes(bytes, append)
 
