@@ -71,26 +71,6 @@ class Resources:
             
             
     def getInfo(self):
-        """
-        Returns a dictionary with the keys roots, files and sprites
-        containing information about the resources which are relevant
-        for the class set defined at creation of this class.
-        
-        "roots" is an array with the projects in the same order they 
-        where added to the session
-        
-        "files" contains all non-sprite files which are defined using
-        the @asset compiler hints. The format differs between images and
-        other files. Images stores a tuple 
-        (origin, widht, height, sprite, pos1, pos2). The last three values
-        are only used when the image is part off an image sprite. For
-        non-image files there is no tuple but just an integer refering to
-        the origin (project index).
-        
-        "sprites" contains the data about image sprites. Each entry is
-        build like [filename, origin, width, height, hasPosX, hasPosY]
-        """
-        
         try:
             return self.__info
         
@@ -104,7 +84,10 @@ class Resources:
             roots = self.__collectRoots()
             files = self.__collectFiles()
             images = self.__collectImages()
-            sprites = self.__collectSprites()
+            sprites = self.__collectSprites(images)
+            
+            if sprites:
+                __patchImages(images, sprites)
 
             self.__info = {
                 "roots" : roots,
@@ -160,69 +143,88 @@ class Resources:
                 images[resdir] = {}
 
             project = filtered[resource]
-            info = ImgInfo(os.path.join(project.resourcePath, resource)).getInfo()
+            path = os.path.join(project.resourcePath, resource)
+            info = ImgInfo(path).getInfo()
             if info is None:
                 raise Exception("Invalid image: %s" % resource)
                 
-            images[resdir][basename(resource)] = (project,) + info
+            images[resdir][basename(resource)] = [project, info[0], info[1]]
 
         return images
 
 
-    def __collectSprites(self):
+    def __collectSprites(self, images):
+        """
+        Returns { dirName : [[ resourceName, projectObj, imageWidth, imageHeight, hasOffsetX, hasOffsetY ], [...]]}
+        Deletes sprites from images
+        Modifies images to contain sprite data:
+        [projectObj, imageWidth, imageHeight] => [projectObj, imageWidth, imageHeight, spriteIndex, offsetA, offsetB]
+        Whether an image is part of a sprite can easily checked via the fourth item in the array (spriteIndex)
+        """
+        
         sprites = {}
-        logging.info("Collecting sprite data...")
-        pstart()
-    
-        for spriteDir in sprites_data:
-            # Reading from file
-            spriteFiles = json.load(open(sprites_data[spriteDir]))
-            for spriteFile in spriteFiles:
-                # Ignore if sprite file is not included
-                if not spriteFile in files[spriteDir]:
+        filtered = self.getFiltered()
+        for resource in filtered:
+            # white list matching
+            if basename(resource) != "sprites.json":
+                continue
+                
+            # Load sprite data from JSON file
+            project = filtered[resource]
+            path = os.path.join(project.resourcePath, resource)
+            data = json.load(open(path))
+
+            resdir = dirname(resource)
+            pos = 0
+            for combined in data:
+                # Ignore if combined files which are not included
+                if not combined in images[resdir]:
                     continue
             
-                # Read and delete sprite data
-                spriteData = files[spriteDir][spriteFile]
-                del files[spriteDir][spriteFile]
-            
-                # Pre-check for offsets (e.g. just using x or y is more efficient to store)
-                hasXOffsets = 0
-                hasYOffsets = 0
-                spriteItems = spriteFiles[spriteFile]
-                for spriteItem in spriteItems:
-                    spriteOffset = spriteItems[spriteItem]
-                    if spriteOffset[0] > 0:
-                        hasXOffsets = 1
-                    if spriteOffset[1] > 0:
-                        hasYOffsets = 1
+                # Prepare data structure
+                if not resdir in sprites:
+                    sprites[resdir] = []
 
-                # Mark file as sprite file
-                # Format: fileName(str), projectId(int), width(int), height(int), hasOffsetX(int), hasOffsetY(int)
-                spriteEntry = (spriteFile,) + spriteData + (hasXOffsets, hasYOffsets)
-
-                if spriteDir in sprites:
-                    sprites[spriteDir].append(spriteEntry)
-                else:
-                    sprites[spriteDir] = [spriteEntry]
+                # Store data
+                hasOffsets = self.__detectOffsets(data[combined])
+                entry = [combined] + images[resdir][combined] + list(hasOffsets)
+                sprites[resdir].append(entry)
                 
-                # Add sprite data to single image data
-                # Format: projectId(int), width(int), height(int), spriteIndex(int), offsetX(int)|offsetY(int), offsetY(int)?
-                spriteIndex = len(sprites[spriteDir]) - 1
-                for spriteItem in spriteItems:
-                    spriteOffset = spriteItems[spriteItem]
+                # Delete sprite from images
+                del images[resdir][combined]
                 
-                    spriteInfo = (spriteIndex,)
-                    if hasXOffsets:
-                        spriteInfo += (spriteOffset[0],)
-                    if hasYOffsets:
-                        spriteInfo += (spriteOffset[1],)
+                # Add sprite data to images
+                self.__updateImages(data[combined], images[resdir], pos, hasOffsets)
+                
+                # Increment directory-local sprite identifier
+                pos += 1
+                
+                    
+    def __detectOffsets(self, data):
+        hasXOffsets = 0
+        hasYOffsets = 0
 
-                    files[spriteDir][spriteItem] += spriteInfo
-
-        pstop()        
+        for spriteItem in data:
+            spriteOffset = data[spriteItem]
+            if spriteOffset[0] > 0:
+                hasXOffsets = 1
+            if spriteOffset[1] > 0:
+                hasYOffsets = 1
+                
+        return hasXOffsets, hasYOffsets
         
         
+    def __updateImages(self, singles, localimages, pos, hasOffsets):
+        for filename in singles:
+            # The is the image which is part of the sprite
+            entry = localimages[filename]
+
+            # Append new data
+            entry.append(pos)
+            if hasOffsets[0]:
+                entry.append(singles[filename][0])
+            if hasOffsets[1]:
+                entry.append(singles[filename][1])
         
         
     def exportInfo(self, root=None, relPath=None, to="$$resources"):
