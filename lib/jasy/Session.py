@@ -25,6 +25,9 @@ class Session():
     def getProjects(self):
         return self.projects
         
+    def getProjectId(self, project):
+        return self.projects.index(project)
+        
     def clearCache(self):
         for project in self.projects:
             project.clearCache()
