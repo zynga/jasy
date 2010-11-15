@@ -63,7 +63,7 @@ def build():
     session.addVariant("qx.dynlocale", [ '"off"' ])
     session.addVariant("qx.globalErrorHandling", [ '"off"' ])
     session.addVariant("qx.version", ["1.0"])
-    session.addVariant("qx.theme", ['"feedreader.Theme"'])
+    session.addVariant("qx.theme", ['"qx.theme.Modern"'])
 
     # Create optimizer for improved speed/compression
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
@@ -87,7 +87,7 @@ def build():
         # Resolving dependencies
         resolver = Resolver(session, permutation)
         resolver.addClassName("feedreader.Application")
-        resolver.addClassName("feedreader.Theme")
+        resolver.addClassName("qx.theme.Modern")
         classes = resolver.getIncludedClasses()
 
         # Collecting Resources
