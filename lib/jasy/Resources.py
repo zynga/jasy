@@ -8,9 +8,11 @@ from os.path import basename, dirname
 from jasy.core.Profiler import *
 from jasy.core.ImageInfo import ImgInfo
 from jasy.core.File import *
+from jasy.Project import Project
 from jasy.Combiner import size
 
 __all__ = ["Resources"]
+
 
 class Resources:
     def __init__(self, session, classes, permutation=None):
@@ -237,8 +239,19 @@ class Resources:
         info = self.getCategorized()
         if root:
             info["roots"] = [root for entry in info["roots"]]
+            
+        session = self.__session
         
-        code = json.dumps(info, separators=(',',':'))
+        class ProjectEncoder(json.JSONEncoder):
+            projectIds = { project: pos for pos, project in enumerate(session.getProjects()) }
+
+            def default(self, obj):
+                if isinstance(obj, Project):
+                    return self.projectIds[obj]
+                    
+                return json.JSONEncoder.default(self, obj)
+        
+        code = json.dumps(info, separators=(',',':'), cls=ProjectEncoder)
         logging.info(size(code))
         
         return "(function(){this.%s=%s})();\n" % (to, code)
