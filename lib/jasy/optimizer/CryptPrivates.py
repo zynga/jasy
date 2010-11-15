@@ -38,7 +38,9 @@ def __recurser(node, modified=False):
             node.value = repl
         
     for child in node:
-        __recurser(child)
+        # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
+        if child != None:
+            __recurser(child)
     
     
     

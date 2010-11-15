@@ -48,8 +48,10 @@ def __clean(node, unused):
     # Process children
     if node.type != "function":
         for child in node:
-            if __clean(child, unused):
-                retval = True
+            # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
+            if child != None:
+                if __clean(child, unused):
+                    retval = True
                     
 
     if node.type == "script" and hasattr(node, "parent"):

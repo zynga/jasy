@@ -21,9 +21,11 @@ def size(content, encoding="utf-8"):
 class Combiner():
     """ Combines the code of a list of classes into one string """
     
-    def __init__(self, permutation=None, optimization=None):
+    def __init__(self, permutation=None, optimization=None, translation=None, localization=None):
         self.__permutation = permutation
         self.__optimization = optimization
+        self.__translation = translation
+        self.__localization = localization
     
     
     def combine(self, classList, addHeaders=True, computeSize=True):
@@ -56,14 +58,17 @@ class Combiner():
     
     def compress(self, classList, format=None, addHeaders=True, computeSize=True):
         result = []
+
         permutation = self.__permutation
         optimization = self.__optimization
+        translation = self.__translation
+        localization = self.__localization
         
         pstart()
         logging.info("Compressing classes...")
         
         for classObj in classList:
-            compressed = classObj.getCompressed(permutation, optimization, format=format)
+            compressed = classObj.getCompressed(permutation, optimization, translation, localization, format=format)
             
             if addHeaders:
                 result.append("")

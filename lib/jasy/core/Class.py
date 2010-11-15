@@ -121,8 +121,8 @@ class Class():
         return meta
         
         
-    def getCompressed(self, permutation=None, optimization=None, format=None):
-        field = "compressed[%s]-%s-%s-%s" % (self.rel, permutation, optimization, format)
+    def getCompressed(self, permutation=None, optimization=None, translation=None, localization=None, format=None):
+        field = "compressed[%s]-%s-%s-%s-%s-%s" % (self.rel, permutation, optimization, translation, localization, format)
         field = hashlib.md5(field.encode("utf-8")).hexdigest()
         
         compressed = self.__cache.read(field, self.__mtime)
@@ -132,6 +132,12 @@ class Class():
             if optimization:
                 tree = copy.deepcopy(tree)
                 optimization.apply(tree)
+                
+            if translation:
+                translation.patch(tree)
+                
+            if localization:
+                localization.patch(tree)
                 
             compressed = compress(tree, format)
             self.__cache.store(field, compressed, self.__mtime)

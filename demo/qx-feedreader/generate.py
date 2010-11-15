@@ -66,6 +66,9 @@ def build():
     # Create optimizer for improved speed/compression
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
     
+    translation = Translation("de_DE")
+    localization = Localization("de_DE")
+    
     # Process every possible permutation
     for permutation in session.getPermutations():
         logging.info("PERMUTATION: %s" % permutation)
@@ -96,7 +99,7 @@ def build():
 
         # Compiling classes
         sorter = Sorter(resolver, permutation)
-        compressedCode = Combiner(permutation, optimization).compress(sorter.getSortedClasses(), format=False)
+        compressedCode = Combiner(permutation, optimization, translation, localization).compress(sorter.getSortedClasses(), format=False)
 
         # TODO
         # Create filenames
