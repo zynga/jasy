@@ -254,7 +254,7 @@ class Resources:
         code = json.dumps(info, separators=(',',':'), cls=ProjectEncoder)
         logging.info(size(code))
         
-        return "(function(){this.%s=%s})();\n" % (to, code)
+        return "this.%s=%s;\n" % (to, code)
         
         
         
