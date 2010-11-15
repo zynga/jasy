@@ -2,7 +2,7 @@
 
 # Extend PYTHONPATH with 'lib'
 import sys, os
-sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
+sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, os.pardir, "lib")))
 
 # Import JavaScript tooling
 from jasy import *
@@ -13,8 +13,8 @@ from jasy import *
 
 session = Session()
 
-session.addProject(Project("../../qooxdoo/qooxdoo/framework"))
-session.addProject(Project("../../qooxdoo/qooxdoo/application/feedreader"))
+session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
+session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
 
 
 
