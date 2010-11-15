@@ -28,6 +28,10 @@ class Project():
         self.resourcePath = os.path.join(self.path, "source", "resource")
         self.translationPath = os.path.join(self.path, "source", "translation")
         
+
+    def __str__(self):
+        return self.path
+
         
     def clearCache(self):
         self.cache.clear()
