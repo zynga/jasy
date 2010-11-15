@@ -88,9 +88,6 @@ class Resources:
             images = self.__collectImages()
             sprites = self.__collectSprites(images)
             
-            if sprites:
-                __patchImages(images, sprites)
-
             self.__info = {
                 "roots" : roots,
                 "files" : files,
@@ -201,6 +198,8 @@ class Resources:
                 
                 # Increment directory-local sprite identifier
                 pos += 1
+                
+        return sprites
 
 
     def __detectOffsets(self, data):
