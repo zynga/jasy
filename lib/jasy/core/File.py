@@ -52,7 +52,11 @@ def updatefile(src, dst):
     return copyfile(src, dst)
 
 
-def writefile(filename, content):
-    handle = open(filename, mode="w", encoding="utf-8")
+def writefile(dst, content):
+    # First test for existance of destination directory
+    makedir(os.path.dirname(dst))
+    
+    # Open file handle and write
+    handle = open(dst, mode="w", encoding="utf-8")
     handle.write(content)
     handle.close()

@@ -47,9 +47,7 @@ def source():
     loaderCode = loader.generate("qx.core.Init.boot(feedreader.Application)")
 
     # Write file
-    outfile = open("source/script/feedreader.js", mode="w", encoding="utf-8")
-    outfile.write(resourceCode + loaderCode)
-    outfile.close()
+    writefile("source/script/feedreader.js", resourceCode + loaderCode)
 
 
 @task
@@ -104,11 +102,8 @@ def build():
         # Create filenames
         # Based on permutation.getKey(), optimization, modification date, etc.
 
-        # Write files
-        compressedName = "build/script/feedreader.js"
-        compressedFile = open(compressedName, mode="w", encoding="utf-8")
-        compressedFile.write(headerCode + resourceCode + compressedCode + bootCode)
-        compressedFile.close()
+        # Write file
+        writefile("build/script/feedreader.js", headerCode + resourceCode + compressedCode + bootCode)
 
 
 
