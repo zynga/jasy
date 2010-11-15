@@ -10,6 +10,9 @@ from jasy.core.Cache import Cache
         
 class Project():
     def __init__(self, path):
+        if not os.path.isdir(path):
+            raise Exception("Invalid project path: %s (Absolute: %s)" % (path, os.path.abspath(path)))
+        
         self.path = path
         self.dirFilter = [".svn",".git",".hg"]
         self.cache = Cache(self.path)
