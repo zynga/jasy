@@ -41,7 +41,7 @@ def source():
 
     # Collect Resources
     resources = Resources(session, resolver.getIncludedClasses())
-    resourceCode = resources.exportInfo(relPath="../")
+    resourceCode = resources.exportInfo(prefixRoots="../")
 
     # Generate Loader
     loader = Loader(Sorter(resolver).getSortedClasses(), "../")
@@ -95,7 +95,7 @@ def build():
         resources = Resources(session, classes, permutation)
         resources.publishFiles("build/resource")
         resources.publishManifest("build/manifest", "resource")
-        resourceCode = resources.exportInfo(root="resource")
+        resourceCode = resources.exportInfo(replaceRoots="resource")
 
         # Compiling classes
         sorter = Sorter(resolver, permutation)

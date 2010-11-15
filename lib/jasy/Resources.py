@@ -229,15 +229,18 @@ class Resources:
                 entry.append(singles[filename][1])
 
 
-    def exportInfo(self, root=None, relPath=None, to="$$resources"):
+    def exportInfo(self, replaceRoots=None, prefixRoots=None, to="$$resources"):
         """ 
         Exports the info from getCategorized() into a JavaScript function
         call. This creates a global variable with the default name
         $$resources which contains all resource information.
         """
+
         info = self.getCategorized()
-        if root:
-            info["roots"] = [root for entry in info["roots"]]
+        if replaceRoots:
+            info["roots"] = [replaceRoots for entry in info["roots"]]
+        elif prefixRoots:
+            info["roots"] = [prefixRoots + entry for entry in info["roots"]]
             
         session = self.__session
         
