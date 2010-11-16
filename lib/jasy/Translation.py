@@ -149,11 +149,11 @@ class Translation:
                     
                     
                     # Replace the whole call with: int < 2 ? singularMessage : pluralMessage
-                    hook = Node(node.tokenizer, "hook")
+                    hook = Node(None, "hook")
                     hook.parenthesized = True
-                    condition = Node(node.tokenizer, "le")
+                    condition = Node(None, "le")
                     condition.append(params[2])
-                    number = Node(node.tokenizer, "number")
+                    number = Node(None, "number")
                     number.value = 1
                     condition.append(number)
                     
@@ -162,22 +162,11 @@ class Translation:
                     hook.append(params[0], "thenPart")
                     
                     node.parent.replace(node, hook)
-                    
 
 
 
-
-
-                    
-                    
-    
-    
+        # Process children
         for child in node:
             if child != None:
                 self.__recurser(child)
                 
-                
-                
-
-        
-       
