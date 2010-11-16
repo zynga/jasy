@@ -13,29 +13,33 @@ class Translation:
     def __init__(self, table=None):
         self.__table = table
         
+        
+        
+    #
+    # Public API
+    #
 
     def patch(self, node):
         self.__recurser(node)
+        
+    def load(self, pofile):
+        # TODO
     
-    
-    
+
+
+    #
+    # Implementation
+    #
+
     __methods = ("tr", "trc", "trn")
-    __params = {
-      "tr" : ["text"],
-      "trn" : ["textSingular", "textPlural"],
-      "trc" : ["textHint", "text"]
-    }
-    
-    
-    replacer = re.compile("({[a-zA-Z0-9_\.]+})")
-    number = re.compile("[0-9]+")
+    __replacer = re.compile("({[a-zA-Z0-9_\.]+})")
     
 
     def __rebuildAsSplitted(self, value, mapper):
         """ The real splitter engine. Creates plus Node instances and cascade them automatically """
         
         result = []
-        splits = self.replacer.split(value)
+        splits = self.__replacer.split(value)
         if len(splits) == 1:
             return None
         
@@ -50,7 +54,7 @@ class Translation:
                 newPair.append(pair)
                 pair = newPair
 
-            if self.replacer.match(entry):
+            if self.__replacer.match(entry):
                 pos = int(entry[1:-1])
                 
                 # Items might be added multiple times. Copy to protect original.
