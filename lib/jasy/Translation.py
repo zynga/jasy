@@ -30,12 +30,15 @@ class Translation:
     replacer = re.compile("({[a-zA-Z0-9_\.]+})")
     number = re.compile("[0-9]+")
     
-    pluralNumber = 1
-    
 
-    def __rebuild(self, value, mapper):
+    def __rebuildAsSplitted(self, value, mapper):
+        """ The real splitter engine. Creates plus Node instances and cascade them automatically """
+        
         result = []
         splits = self.replacer.split(value)
+        if len(splits) == 1:
+            return None
+        
         pair = Node(None, "plus")
 
         for entry in splits:
@@ -56,7 +59,9 @@ class Translation:
                 except KeyError:
                     raise TranslationError("Invalid positional value: %s in %s" % (entry, value))
                 
-                pair.append(copy.deepcopy(mapper[pos]))
+                copied = copy.deepcopy(mapper[pos])
+                copied.parenthesized = True
+                pair.append(copied)
                 
             else:
                 child = Node(None, "string")
@@ -67,14 +72,17 @@ class Translation:
 
     
     def __splitTemplate(self, replaceNode, patchParam, valueParams):
-        """ Split string into plus-expression """
+        """ Split string into plus-expression(s) """
         
         mapper = { pos: value for pos, value in enumerate(valueParams) }
+        
         try:
-            pair = self.__rebuild(patchParam.value, mapper)
+            pair = self.__rebuildAsSplitted(patchParam.value, mapper)
         except TranslationError as ex:
             raise TranslationError("Invalid translation usage in line %s. %s" % (replaceNode.line, ex))
-        replaceNode.parent.replace(replaceNode, pair)
+            
+        if pair:
+            replaceNode.parent.replace(replaceNode, pair)
     
     
     def __recurser(self, node):
@@ -122,9 +130,7 @@ class Translation:
                         self.__splitTemplate(node, params[1], params[2:])
                         
                         
-                        
-                        
-                # Signature trn(msg, msg2, int, arg1, arg2, ...)
+                # Signature trn(msg, msg2, [...], int, arg1, arg2, ...)
                 elif funcName == "trn":
                     keySingular = params[0].value
                     if keySingular in table:
@@ -133,8 +139,18 @@ class Translation:
                     keyPlural = params[1].value
                     if keyPlural in table:
                         params[1].value = table[keyPlural]
-
+                        
                     # TODO: Multi plural support
+
+                        
+                    if len(params) >= 3:
+                        # Patch strings
+                        
+                        self.__splitTemplate(params[0], params[0], params[3:])
+                        self.__splitTemplate(params[1], params[1], params[3:])
+                        
+                        
+
                     
                     
 

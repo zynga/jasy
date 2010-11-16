@@ -13,6 +13,6 @@ function wrapper()
   alert(trc("Chat (noum) {0}", "Chat {0}", this.getChatStatus()));
 
   alert(trn("You have got a new mail", "You have got new mails", newMails));
-  alert(trn("You have got a new mail", "You have got {0} new mails", newMails, newMails));
+  alert(trn("You have got a new mail", "You have got {0} new mails", newMails, newMails+1));
 }
 
