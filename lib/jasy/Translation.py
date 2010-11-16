@@ -66,6 +66,17 @@ class Translation:
         return pair
 
     
+    def __splitTemplate(self, replaceNode, patchParam, valueParams):
+        """ Split string into plus-expression """
+        
+        mapper = { pos: value for pos, value in enumerate(valueParams) }
+        try:
+            pair = self.__rebuild(patchParam.value, mapper)
+        except TranslationError as ex:
+            raise TranslationError("Invalid translation usage in line %s. %s" % (replaceNode.line, ex))
+        replaceNode.parent.replace(replaceNode, pair)
+    
+    
     def __recurser(self, node):
         if node.type == "call":
             funcName = None
@@ -94,17 +105,9 @@ class Translation:
                         params[0].value = table[key]
                         
                     if len(params) == 1:
-                        # Replace the whole call with the string
                         node.parent.replace(node, params[0])
-                        
                     else:
-                        # Split string into plus-expression
-                        mapper = { pos: value for pos, value in enumerate(params[1:]) }
-                        try:
-                            pair = self.__rebuild(params[0].value, mapper)
-                        except TranslationError as ex:
-                            raise TranslationError("Invalid translation usage in line %s. %s" % (node.line, ex))
-                        node.parent.replace(node, pair)
+                        self.__splitTemplate(node, params[0], params[1:])
                         
                         
                 # Signature trc(hint, msg, arg1, arg2, ...)
@@ -114,17 +117,11 @@ class Translation:
                         params[1].value = table[key]
 
                     if len(params) == 2:
-                        # Replace the whole call with the string
                         node.parent.replace(node, params[1])
-
                     else:
-                        # Split string into plus-expression
-                        mapper = { pos: value for pos, value in enumerate(params[2:]) }
-                        try:
-                            pair = self.__rebuild(params[1].value, mapper)
-                        except TranslationError as ex:
-                            raise TranslationError("Invalid translation usage in line %s. %s" % (node.line, ex))
-                        node.parent.replace(node, pair)                        
+                        self.__splitTemplate(node, params[1], params[2:])
+                        
+                        
                         
                         
                 # Signature trn(msg, msg2, int, arg1, arg2, ...)
