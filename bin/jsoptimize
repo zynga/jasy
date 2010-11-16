@@ -43,8 +43,7 @@ def jsoptimize(source, filename=None, format=True):
         "function-bind" : "true"
     }
     
-    translation = Translation("de_DE", 
-    {
+    translation = Translation({
         "Good {0}" : "Guten {0}",
         "Hello World" : "Hallo Welt",
         "Short" : "Kurz",

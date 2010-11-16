@@ -10,8 +10,7 @@ class TranslationError(Exception):
     pass
 
 class Translation:
-    def __init__(self, locale, table):
-        self.__locale = locale
+    def __init__(self, table=None):
         self.__table = table
         
 
