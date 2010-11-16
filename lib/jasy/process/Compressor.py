@@ -195,7 +195,7 @@ class Compressor:
         return "[%s %s]" % (self.compress(node.expression), self.compress(node.tail))    
 
     def type_string(self, node):
-        return json.JSONEncoder().encode(node.value)
+        return json.JSONEncoder(ensure_ascii=False).encode(node.value)
 
     def type_number(self, node):
         value = node.value
