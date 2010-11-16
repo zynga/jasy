@@ -49,6 +49,7 @@ def jsoptimize(source, filename=None, format=True):
         "Short" : "Kurz",
         "Thank you for the flowers" : "Danke für die Blumen",
         "You have got a new mail" : "Sie haben eine neue Mail",
+        "You have got new mails" : "Sie haben neue Mails",
         "You have got {0} new mails" : "Sie haben {0} neue Mails",
         "Chat (noum)" : "Unterhaltung",
         "Chat (noum) {0}" : "Unterhaltung {0}"

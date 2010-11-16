@@ -85,8 +85,7 @@ class Translation:
                     
                 if (funcName == "trn" or funcName == "trc") and params[1].type != "string":
                     logging.warn("Expecting translation string to be type string: %s at line %s" % (params[1].type, params[1].line))
-                    
-                
+
 
                 # Signature tr(msg, arg1, arg2, ...)
                 if funcName == "tr":
@@ -108,7 +107,6 @@ class Translation:
                         node.parent.replace(node, pair)
                         
                         
-
                 # Signature trc(hint, msg, arg1, arg2, ...)
                 elif funcName == "trc":
                     key = params[0].value
