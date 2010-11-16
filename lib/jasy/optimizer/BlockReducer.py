@@ -263,6 +263,10 @@ def cleanParens(node):
         # Returns never need parens around the expression
         node.parenthesized = False
         
+    elif node.type in expressions and parent.type == "list" and parent.parent.type == "call":
+        # Parameters don't need to be wrapped in parans
+        node.parenthesized = False
+        
     elif node.type == "new" and parent.type == "dot":
         # Constructs like (new foo.bar.Object).doSomething()
         # "new" is defined with higher priority than "dot" but in
