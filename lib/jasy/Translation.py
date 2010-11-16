@@ -30,6 +30,8 @@ class Translation:
     replacer = re.compile("({[a-zA-Z0-9_\.]+})")
     number = re.compile("[0-9]+")
     
+    pluralNumber = 1
+    
 
     def __rebuild(self, value, mapper):
         result = []
@@ -129,27 +131,35 @@ class Translation:
                         
                 # Signature trn(msg, msg2, int, arg1, arg2, ...)
                 elif funcName == "trn":
-                    key = params[0].value
-                    if key in table:
-                        params[0].value = table[key]
+                    keySingular = params[0].value
+                    if keySingular in table:
+                        params[0].value = table[keySingular]
 
-                    if len(params) == 3:
-                        # Replace the whole call with: int < 2 ? singularMessage : pluralMessage
-                        
-                        hook = Node(node.tokenizer, "hook")
-                        hook.parenthesized = True
-                        condition = Node(node.tokenizer, "le")
-                        condition.append(params[2])
-                        number = Node(node.tokenizer, "number")
-                        number.value = 1
-                        condition.append(number)
-                        
-                        hook.append(condition, "condition")
-                        hook.append(params[1], "elsePart")
-                        hook.append(params[0], "thenPart")
-                        
-                        node.parent.replace(node, hook)
-                        
+                    keyPlural = params[1].value
+                    if keyPlural in table:
+                        params[1].value = table[keyPlural]
+
+                    # TODO: Multi plural support
+                    
+                    
+
+
+                    #    # Replace the whole call with: int < 2 ? singularMessage : pluralMessage
+                    #    
+                    #    hook = Node(node.tokenizer, "hook")
+                    #    hook.parenthesized = True
+                    #    condition = Node(node.tokenizer, "le")
+                    #    condition.append(params[2])
+                    #    number = Node(node.tokenizer, "number")
+                    #    number.value = 1
+                    #    condition.append(number)
+                    #    
+                    #    hook.append(condition, "condition")
+                    #    hook.append(params[1], "elsePart")
+                    #    hook.append(params[0], "thenPart")
+                    #    
+                    #    node.parent.replace(node, hook)
+                    #    
 
 
 
