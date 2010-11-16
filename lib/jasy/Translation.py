@@ -23,6 +23,7 @@ class Translation:
         self.__recurser(node)
         
     def load(self, pofile):
+        pass
         # TODO
     
 
