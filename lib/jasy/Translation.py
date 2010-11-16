@@ -89,8 +89,6 @@ class Translation:
 
                 # Signature tr(msg, arg1, arg2, ...)
                 if funcName == "tr":
-                    
-                    
                     key = params[0].value
                     if key in table:
                         params[0].value = table[key]
@@ -107,6 +105,27 @@ class Translation:
                         except TranslationError as ex:
                             raise TranslationError("Invalid translation usage in line %s. %s" % (node.line, ex))
                         node.parent.replace(node, pair)
+                        
+                        
+
+                # Signature trc(hint, msg, arg1, arg2, ...)
+                elif funcName == "trc":
+                    key = params[0].value
+                    if key in table:
+                        params[1].value = table[key]
+
+                    if len(params) == 2:
+                        # Replace the whole call with the string
+                        node.parent.replace(node, params[1])
+
+                    else:
+                        # Split string into plus-expression
+                        mapper = { pos: value for pos, value in enumerate(params[2:]) }
+                        try:
+                            pair = self.__rebuild(params[1].value, mapper)
+                        except TranslationError as ex:
+                            raise TranslationError("Invalid translation usage in line %s. %s" % (node.line, ex))
+                        node.parent.replace(node, pair)                        
                         
                         
                 # Signature trn(msg, msg2, int, arg1, arg2, ...)
@@ -134,9 +153,7 @@ class Translation:
                         
 
 
-                # Signature trc(hint, msg, arg1, arg2, ...)
-                elif funcName == "trc":
-                    pass
+
 
 
                     

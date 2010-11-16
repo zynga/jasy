@@ -51,7 +51,8 @@ def jsoptimize(source, filename=None, format=True):
         "Thank you for the flowers" : "Danke für die Blumen",
         "You have got a new mail" : "Sie haben eine neue Mail",
         "You have got {0} new mails" : "Sie haben {0} neue Mails",
-        "Chat (noum)" : "Chats"
+        "Chat (noum)" : "Unterhaltung",
+        "Chat (noum) {0}" : "Unterhaltung {0}"
     })
     
     localization = Localization("de_DE")
