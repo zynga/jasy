@@ -44,6 +44,7 @@ def jsoptimize(source, filename=None, format=True):
     }
     
     translation = Translation("de_DE", {
+        "Good %1" : "Guten %s",
         "Hello World" : "Hallo Welt",
         "Short" : "Kurz",
         "Thank you for the flowers" : "Danke für die Blumen",

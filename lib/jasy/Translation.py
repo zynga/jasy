@@ -4,6 +4,7 @@
 #
 
 import logging
+from jasy.parser.Node import Node
 
 class Translation:
     def __init__(self, locale, table):
@@ -35,21 +36,63 @@ class Translation:
             
             if funcName in self.__methods:
                 params = node[1]
-                
-                if funcName == "tr":
-                    self.__translate(params[0])
+                table = self.__table
+
+                # Verify param types
+                if params[0].type != "string":
+                    logging.warn("Expecting translation string to be type string: %s at line %s" % (params[0].type, params[0].line))
                     
+                if (funcName == "trn" or funcName == "trc") and params[1].type != "string":
+                    logging.warn("Expecting translation string to be type string: %s at line %s" % (params[1].type, params[1].line))
+                    
+                
+                # Transform content
+                
+                # Signature tr(msg, arg1, arg2, ...)
+                if funcName == "tr":
+                    key = params[0].value
+                    if key in table:
+                        params[0].value = table[key]
+                        
+                    if len(params) == 1:
+                        # Replace the whole call with the string
+                        node.parent.replace(node, params[0])
+                        
+                    else:
+                        # TODO: Optimize template
+                        pass
+                        
+                        
+                # Signature trn(msg, msg2, int, arg1, arg2, ...)
                 elif funcName == "trn":
-                    self.__translate(params[0])
-                    self.__translate(params[1])
+                    key = params[0].value
+                    if key in table:
+                        params[0].value = table[key]
 
+                    if len(params) == 3:
+                        # Replace the whole call with: int < 2 ? singularMessage : pluralMessage
+                        
+                        hook = Node(node.tokenizer, "hook")
+                        hook.parenthesized = True
+                        condition = Node(node.tokenizer, "lt")
+                        condition.append(params[2])
+                        number = Node(node.tokenizer, "number")
+                        number.value = 2
+                        condition.append(number)
+                        
+                        hook.append(condition, "condition")
+                        hook.append(params[1], "elsePart")
+                        hook.append(params[0], "thenPart")
+                        
+                        node.parent.replace(node, hook)
+                        
+
+
+                # Signature trc(hint, msg, arg1, arg2, ...)
                 elif funcName == "trc":
-                    self.__translate(params[1])
+                    pass
 
 
-                # TODO
-                if len(params) > len(self.__params[funcName]):
-                    print("Dynamic params!!")
                     
                     
     
@@ -57,14 +100,9 @@ class Translation:
         for child in node:
             if child != None:
                 self.__recurser(child)
+                
+                
+                
+
         
-        
-        
-        
-        
-        
-    def __translate(self, param):
-        if param.type != "string":
-            logging.warn("Expecting translation string to be type string: %s at line %s" % (param.type, param.line))
-        elif param.value in self.__table:
-            param.value = self.__table[param.value]        
+       
