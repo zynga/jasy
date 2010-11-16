@@ -23,7 +23,7 @@ from jasy.process.Variables import scan
 from jasy.process.Compressor import compress
 
 
-def jsoptimize(source, filename=None):
+def jsoptimize(source, filename=None, format=True):
     values = {
         "js.Variant.VERSION" : "0.3",
         "js.Variant.DEBUG" : "true",
@@ -46,7 +46,10 @@ def jsoptimize(source, filename=None):
     translation = Translation("de_DE", {
         "Hello World" : "Hallo Welt",
         "Short" : "Kurz",
-        "Thank you for the flowers" : "Danke für die Blumen"
+        "Thank you for the flowers" : "Danke für die Blumen",
+        "You have got a new mail" : "Sie haben eine neue Mail",
+        "You have got %1 new mails" : "Sie haben %1 neue Mails",
+        "Chat (noum)" : "Chats"
     })
     
     localization = Localization("de_DE")
@@ -55,9 +58,12 @@ def jsoptimize(source, filename=None):
     
     Permutation.Permutation(values).patch(tree)
     DeadCode.cleanup(tree)
+
+    translation.patch(tree)
+    localization.patch(tree)
     
     scan(tree)
-    
+
     UnusedCleaner.optimize(tree)
     BlockReducer.optimize(tree)
     
@@ -66,10 +72,7 @@ def jsoptimize(source, filename=None):
 
     CryptPrivates.optimize(tree)
     
-    translation.patch(tree)
-    localization.patch(tree)
-    
-    return compress(tree)
+    return compress(tree, format=format)
 
 
 if __name__ == "__main__":
