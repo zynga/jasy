@@ -3,8 +3,11 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging
+import logging, re, copy
 from jasy.parser.Node import Node
+
+class TranslationError(Exception):
+    pass
 
 class Translation:
     def __init__(self, locale, table):
@@ -24,6 +27,43 @@ class Translation:
       "trc" : ["textHint", "text"]
     }
     
+    
+    replacer = re.compile("({[a-zA-Z0-9_\.]+})")
+    number = re.compile("[0-9]+")
+    
+
+    def __rebuild(self, value, mapper):
+        result = []
+        splits = self.replacer.split(value)
+        pair = Node(None, "plus")
+
+        for entry in splits:
+            if entry == "":
+                continue
+                
+            if len(pair) == 2:
+                newPair = Node(None, "plus")
+                newPair.append(pair)
+                pair = newPair
+
+            if self.replacer.match(entry):
+                pos = int(entry[1:-1])
+                
+                # Items might be added multiple times. Copy to protect original.
+                try:
+                    repl = mapper[pos]
+                except KeyError:
+                    raise TranslationError("Invalid positional value: %s in %s" % (entry, value))
+                
+                pair.append(copy.deepcopy(mapper[pos]))
+                
+            else:
+                child = Node(None, "string")
+                child.value = entry
+                pair.append(child)
+                
+        return pair
+
     
     def __recurser(self, node):
         if node.type == "call":
@@ -46,10 +86,11 @@ class Translation:
                     logging.warn("Expecting translation string to be type string: %s at line %s" % (params[1].type, params[1].line))
                     
                 
-                # Transform content
-                
+
                 # Signature tr(msg, arg1, arg2, ...)
                 if funcName == "tr":
+                    
+                    
                     key = params[0].value
                     if key in table:
                         params[0].value = table[key]
@@ -59,8 +100,13 @@ class Translation:
                         node.parent.replace(node, params[0])
                         
                     else:
-                        # TODO: Optimize template
-                        pass
+                        # Split string into plus-expression
+                        mapper = { pos: value for pos, value in enumerate(params[1:]) }
+                        try:
+                            pair = self.__rebuild(params[0].value, mapper)
+                        except TranslationError as ex:
+                            raise TranslationError("Invalid translation usage in line %s. %s" % (node.line, ex))
+                        node.parent.replace(node, pair)
                         
                         
                 # Signature trn(msg, msg2, int, arg1, arg2, ...)
@@ -74,10 +120,10 @@ class Translation:
                         
                         hook = Node(node.tokenizer, "hook")
                         hook.parenthesized = True
-                        condition = Node(node.tokenizer, "lt")
+                        condition = Node(node.tokenizer, "le")
                         condition.append(params[2])
                         number = Node(node.tokenizer, "number")
-                        number.value = 2
+                        number.value = 1
                         condition.append(number)
                         
                         hook.append(condition, "condition")

@@ -43,13 +43,14 @@ def jsoptimize(source, filename=None, format=True):
         "function-bind" : "true"
     }
     
-    translation = Translation("de_DE", {
-        "Good %1" : "Guten %s",
+    translation = Translation("de_DE", 
+    {
+        "Good {0}" : "Guten {0}",
         "Hello World" : "Hallo Welt",
         "Short" : "Kurz",
         "Thank you for the flowers" : "Danke für die Blumen",
         "You have got a new mail" : "Sie haben eine neue Mail",
-        "You have got %1 new mails" : "Sie haben %1 neue Mails",
+        "You have got {0} new mails" : "Sie haben {0} neue Mails",
         "Chat (noum)" : "Chats"
     })
     
