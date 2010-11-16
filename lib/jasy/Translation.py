@@ -141,36 +141,28 @@ class Translation:
                         params[1].value = table[keyPlural]
                         
                     # TODO: Multi plural support
-
-                        
+                    
+                    # Patch strings with dynamic values
                     if len(params) >= 3:
-                        # Patch strings
-                        
                         self.__splitTemplate(params[0], params[0], params[3:])
                         self.__splitTemplate(params[1], params[1], params[3:])
-                        
-                        
-
                     
                     
-
-
-                    #    # Replace the whole call with: int < 2 ? singularMessage : pluralMessage
-                    #    
-                    #    hook = Node(node.tokenizer, "hook")
-                    #    hook.parenthesized = True
-                    #    condition = Node(node.tokenizer, "le")
-                    #    condition.append(params[2])
-                    #    number = Node(node.tokenizer, "number")
-                    #    number.value = 1
-                    #    condition.append(number)
-                    #    
-                    #    hook.append(condition, "condition")
-                    #    hook.append(params[1], "elsePart")
-                    #    hook.append(params[0], "thenPart")
-                    #    
-                    #    node.parent.replace(node, hook)
-                    #    
+                    # Replace the whole call with: int < 2 ? singularMessage : pluralMessage
+                    hook = Node(node.tokenizer, "hook")
+                    hook.parenthesized = True
+                    condition = Node(node.tokenizer, "le")
+                    condition.append(params[2])
+                    number = Node(node.tokenizer, "number")
+                    number.value = 1
+                    condition.append(number)
+                    
+                    hook.append(condition, "condition")
+                    hook.append(params[1], "elsePart")
+                    hook.append(params[0], "thenPart")
+                    
+                    node.parent.replace(node, hook)
+                    
 
 
 
