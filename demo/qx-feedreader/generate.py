@@ -66,7 +66,11 @@ def build():
     # Create optimizer for improved speed/compression
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
     
-    translation = Translation("de_DE")
+    translation = Translation({
+        "Static Feeds" : "Statische Quellen",
+        "User Feeds" : "Eigene Quellen",
+        "Add feed" : "Quelle hinzufügen"
+    })
     localization = Localization("de_DE")
     
     # Process every possible permutation
