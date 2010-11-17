@@ -1,0 +1,2 @@
+X&&!this.isRich();
+
