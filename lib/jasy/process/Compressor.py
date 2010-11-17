@@ -356,10 +356,10 @@ class Compressor:
         return result
 
     def type_getter(self, node):
-        return function(node)
+        return self.type_function(node)
     
     def type_setter(self, node):
-        return function(node)
+        return self.type_function(node)
     
     def type_return(self, node):
         result = "return"
