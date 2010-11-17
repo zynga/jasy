@@ -1,6 +1,6 @@
 function wrapper(){alert("Hallo Welt");
 alert("Kurz");
-alert("Danke f\u00fcr die Blumen");
+alert("Danke für die Blumen");
 alert("Guten Morgen");
 alert("Guten Morgen! Morgen!");
 alert("Guten "+this.computeGreeting()+"! "+this.computeGreeting()+"!");

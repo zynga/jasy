@@ -1,0 +1,2 @@
+alert("Debugs local storage");
+

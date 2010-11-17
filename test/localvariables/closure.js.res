@@ -1,0 +1,2 @@
+(function(){var a})(this);
+
