@@ -124,8 +124,9 @@ class Permutation:
 
         # Process children
         for child in reversed(node):
-            if self.patch(child):
-                modified = True
+            if child != None:
+                if self.patch(child):
+                    modified = True
 
         return modified
 

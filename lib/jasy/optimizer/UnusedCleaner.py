@@ -26,8 +26,9 @@ def __optimize(node):
     optimized = False
     
     for child in list(node):
-        if __optimize(child):
-            optimized = True
+        if child != None:
+            if __optimize(child):
+                optimized = True
 
     if node.type == "script" and node.stats.unused:
         if __clean(node, node.stats.unused):
@@ -82,7 +83,7 @@ def __clean(node, unused):
     
     elif node.type == "var":
         for decl in reversed(node):
-            if decl.name in unused:
+            if getattr(decl, "name", None) in unused:
                 if hasattr(decl, "initializer"):
                     init = decl.initializer
                     if init.type in ("null", "this", "true", "false", "identifier", "number", "string", "regexp", "function"):
