@@ -95,10 +95,7 @@ class Session():
         logging.info("Supported locales: %s", supported)
             
             
-        #
         # Find locales which can actually be used
-        #
-        
         if selected:
             logging.info("Selected locales: %s", selected)
             
@@ -121,10 +118,7 @@ class Session():
         logging.info("Use locales: %s", use)
 
 
-        #
-        # Find translations
-        #
-        
+        # Map translation files
         files = {}
         for locale in use:
             files[locale] = []
@@ -149,6 +143,5 @@ class Session():
                 if self.defaultLocale in translations:
                     files[locale].append(translations[self.defaultLocale])
             
-
         return files
     
