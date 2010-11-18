@@ -3,10 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging
-import itertools
-import time
-import atexit
+import logging, itertools, time, atexit
 from jasy.core.Permutation import Permutation
 
 class Session():
@@ -134,14 +131,12 @@ class Session():
             
             for project in reversed(self.projects):
                 translations = project.getTranslations()
-                
                 if locale in translations:
                     files[locale].append(translations[locale])
 
         for locale in use:
             if "_" in locale:
                 lang = locale[:locale.index("_")]
-                
                 for project in reversed(self.projects):
                     translations = project.getTranslations()
 
