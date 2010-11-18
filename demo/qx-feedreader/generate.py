@@ -66,6 +66,13 @@ def build():
     # Create optimizer for improved speed/compression
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
     
+    
+    translations = session.getTranslations(set(["de_DE", "en_US"]))
+    
+    
+    return
+
+
     translation = Translation({
         "Static Feeds" : "Statische Quellen",
         "User Feeds" : "Eigene Quellen",

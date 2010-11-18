@@ -77,5 +77,83 @@ class Session():
         for key in self.variants.keys():
             if key != "locale":
                 del self.variants[key]
+                
+                
+                
+                
+    defaultLocale = "C"
+                
+    def getTranslations(self, selected=None):
+        # Priority: PROJECT1-FULL => PROJECT2-FULL => PROJECT1-LANG => PROJECT2-LANG => PROJECT1-DEFAULT => PROJECT2-DEFAULT => IMPLEMENTATION-FALLBACK
+        # Example: PROJECT1-DE_DE => PROJECT2-DE_DE => PROJECT1-DE => PROJECT2-DE => PROJECT1-C => PROJECT2-C => CODE
         
+        #
+        # Detect supported locales
+        #
+        
+        supported = set()
+        for project in self.projects:
+            supported.update(project.getTranslations().keys())
+            
+        logging.info("Supported locales: %s", supported)
+            
+            
+        #
+        # Find locales which can actually be used
+        #
+        
+        if selected:
+            logging.info("Selected locales: %s", selected)
+            
+            use = set()
+            for locale in selected:
+                if locale == self.defaultLocale:
+                    use.add(self.defaultLocale)
+                elif locale in supported:
+                    use.add(locale)
+                elif "_" in locale:
+                    lang = locale[:locale.index("_")]
+                    if lang in supported:
+                        use.add(locale)
+                    else:
+                        logging.error("Unsupported locale: %s", locale)
+
+        else:
+            use = supported
+            
+        logging.info("Use locales: %s", use)
+
+
+        #
+        # Find translations
+        #
+        
+        files = {}
+        for locale in use:
+            files[locale] = []
+            
+            for project in reversed(self.projects):
+                translations = project.getTranslations()
+                
+                if locale in translations:
+                    files[locale].append(translations[locale])
+
+        for locale in use:
+            if "_" in locale:
+                lang = locale[:locale.index("_")]
+                
+                for project in reversed(self.projects):
+                    translations = project.getTranslations()
+
+                    if lang in translations:
+                        files[locale].append(translations[lang])
+
+        for locale in use:
+            for project in reversed(self.projects):
+                translations = project.getTranslations()
+                if self.defaultLocale in translations:
+                    files[locale].append(translations[self.defaultLocale])
+            
+
+        return files
     

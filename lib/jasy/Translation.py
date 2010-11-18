@@ -6,8 +6,12 @@
 import logging, re, copy
 from jasy.parser.Node import Node
 
+__all__ = ["TranslationError", "Translation"]
+
+
 class TranslationError(Exception):
     pass
+
 
 class Translation:
     def __init__(self, table=None):
