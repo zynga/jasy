@@ -52,9 +52,6 @@ def source():
 
 @task
 def build():
-    # Locales
-    session.addLocale("en_US")
-
     # Values
     session.addVariant("qx.debug", [ '"on"' ])
     session.addVariant("qx.client", [ '"gecko"' ])
@@ -63,61 +60,56 @@ def build():
     session.addVariant("qx.version", ["1.0"])
     session.addVariant("qx.theme", ['"qx.theme.Modern"'])
 
+    # Locales
+    session.addLocale("de_DE")
+    session.addLocale("en_US")
+
     # Create optimizer for improved speed/compression
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
-    
-    
-    translations = session.getTranslations(set(["de_DE", "en_US"]))
-    
-    
-    return
 
-
-    translation = Translation({
-        "Static Feeds" : "Statische Quellen",
-        "User Feeds" : "Eigene Quellen",
-        "Add feed" : "Quelle hinzufügen"
-    })
-    localization = Localization("de_DE")
+    # Initialize iterator objects
+    permutations = session.getPermutations()
+    locales = session.getLocales()
     
     # Process every possible permutation
-    for permutation in session.getPermutations():
-        logging.info("PERMUTATION: %s" % permutation)
+    for permutation in permutations:
+        for locale in locales:
+            print("------------------------------------------------------------------------------")
+
+            # Build file header
+            headerCode = ""
+            headerCode += "/*\n"
+            headerCode += " * Copyright 2010\n"
+            headerCode += " *\n"
+            headerCode += " * Permutation: %s\n" % permutation
+            headerCode += " * Locale: %s\n" % locale
+            headerCode += " * Optimizations: %s\n" % optimization
+            headerCode += " */\n\n"
         
-        # Build file header
-        headerCode = ""
-        headerCode += "/*\n"
-        headerCode += " * Copyright 2010\n"
-        headerCode += " *\n"
-        headerCode += " * Permutation: %s\n" % permutation
-        headerCode += " * Optimizations: %s\n" % optimization
-        headerCode += " */\n\n"
-        
-        # Boot
-        bootCode = "qx.core.Init.boot(feedreader.Application);"
+            # Boot
+            bootCode = "qx.core.Init.boot(feedreader.Application);"
     
-        # Resolving dependencies
-        resolver = Resolver(session, permutation)
-        resolver.addClassName("feedreader.Application")
-        resolver.addClassName("qx.theme.Modern")
-        classes = resolver.getIncludedClasses()
+            # Resolving dependencies
+            resolver = Resolver(session, permutation)
+            resolver.addClassName("feedreader.Application")
+            resolver.addClassName("qx.theme.Modern")
+            classes = resolver.getIncludedClasses()
 
-        # Collecting Resources
-        resources = Resources(session, classes, permutation)
-        resources.publishFiles("build/resource")
-        resources.publishManifest("build/manifest", "resource")
-        resourceCode = resources.exportInfo(replaceRoots="resource")
+            # Collecting Resources
+            resources = Resources(session, classes, permutation)
+            resources.publishFiles("build/resource")
+            resources.publishManifest("build/manifest", "resource")
+            resourceCode = resources.exportInfo(replaceRoots="resource")
 
-        # Compiling classes
-        sorter = Sorter(resolver, permutation)
-        compressedCode = Combiner(permutation, optimization, translation, localization).compress(sorter.getSortedClasses(), format=False)
+            # Compiling classes
+            sorter = Sorter(resolver, permutation)
+            compressedCode = Combiner(permutation, optimization, ).compress(sorter.getSortedClasses(), format=False)
 
-        # TODO
-        # Create filenames
-        # Based on permutation.getKey(), optimization, modification date, etc.
+            # TODO: Create filenames
+            # Based on permutation.getKey(), optimization, locale, modification date, etc.
 
-        # Write file
-        writefile("build/script/feedreader.js", headerCode + resourceCode + compressedCode + bootCode)
+            # Write file
+            writefile("build/script/feedreader-%s.js" % translation, headerCode + resourceCode + compressedCode + bootCode)
 
 
 

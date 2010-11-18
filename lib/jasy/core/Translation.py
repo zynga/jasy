@@ -14,8 +14,15 @@ class TranslationError(Exception):
 
 
 class Translation:
-    def __init__(self, table=None):
+    def __init__(self, locale, files=None, table=None):
+        self.__locale = locale
+        self.__files = files
         self.__table = table
+        
+        logging.info("Initialize translation: %s" % locale)
+        
+        if files:
+            logging.info("Load %s translation files..." % len(files))
         
         
         
@@ -29,6 +36,10 @@ class Translation:
     def load(self, pofile):
         pass
         # TODO
+        
+        
+    def __str__(self):
+        return self.__locale
     
 
 

@@ -5,6 +5,8 @@
 
 import logging, itertools, time, atexit
 from jasy.core.Permutation import Permutation
+from jasy.core.Translation import Translation
+
 
 class Session():
     def __init__(self):
@@ -58,8 +60,14 @@ class Session():
 
 
 
-    def addLocale(self, id):
-        self.variants["locale"].add(id)
+    def addLocale(self, locale):
+        self.locales.add(locale)
+
+    def clearLocales(self):
+        self.locales = set()
+
+
+
             
     def addVariant(self, name, values):
         if type(values) != list:
@@ -67,35 +75,38 @@ class Session():
             
         self.variants[name] = set(values)
         
-    def clearLocales(self):
-        self.variants["locale"] = set()
-        
     def clearVariants(self):
-        for key in self.variants.keys():
-            if key != "locale":
-                del self.variants[key]
+        self.variants = dict()
                 
                 
+                
+                
+    def getLocalization(self, translation):
+        return None
                 
                 
     defaultLocale = "C"
+    
+    
+    
+    def getAvailableTranslations(self):
+        supported = set()
+        for project in self.projects:
+            supported.update(project.getTranslations().keys())
+            
+        return supported
+    
+    
                 
     def getTranslations(self, selected=None):
         # Priority: PROJECT1-FULL => PROJECT2-FULL => PROJECT1-LANG => PROJECT2-LANG => PROJECT1-DEFAULT => PROJECT2-DEFAULT => IMPLEMENTATION-FALLBACK
         # Example: PROJECT1-DE_DE => PROJECT2-DE_DE => PROJECT1-DE => PROJECT2-DE => PROJECT1-C => PROJECT2-C => CODE
         
-        #
-        # Detect supported locales
-        #
-        
-        supported = set()
-        for project in self.projects:
-            supported.update(project.getTranslations().keys())
-            
-        logging.info("Supported locales: %s", supported)
-            
-            
         # Find locales which can actually be used
+        supported = self.getSupportedTranslations()
+        logging.info("Available translations: %s", supported)
+            
+            
         if selected:
             logging.info("Selected locales: %s", selected)
             
@@ -142,6 +153,7 @@ class Session():
                 translations = project.getTranslations()
                 if self.defaultLocale in translations:
                     files[locale].append(translations[self.defaultLocale])
-            
-        return files
-    
+                    
+
+        return [ Translation(locale, files=files[locale]) for locale in files ]
+
