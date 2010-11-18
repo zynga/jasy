@@ -11,7 +11,6 @@ from jasy.Combiner import *
 from jasy.Loader import *
 from jasy.Resources import * 
 from jasy.Optimization import *
-from jasy.Localization import *
 
 from jasy.core.File import *
 

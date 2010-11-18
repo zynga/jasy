@@ -5,6 +5,7 @@
 
 import logging, re, copy
 from jasy.parser.Node import Node
+from jasy.ext import polib
 
 __all__ = ["TranslationError", "Translation"]
 
@@ -16,13 +17,22 @@ class TranslationError(Exception):
 class Translation:
     def __init__(self, locale, files=None, table=None):
         self.__locale = locale
-        self.__files = files
-        self.__table = table
-        
+
         logging.info("Initialize translation: %s" % locale)
+        self.__table = {}
+
+        if table:
+            self.__table.update(table)
         
         if files:
             logging.info("Load %s translation files..." % len(files))
+            for path in files:
+                pofile = polib.pofile(path)
+                for entry in pofile:
+                    if entry.msgstr != "" and not entry.msgid in self.__table:
+                        self.__table[entry.msgid] = entry.msgstr
+                        
+        logging.info("Translation of %s entries ready" % len(self.__table))
         
         
         
@@ -39,13 +49,14 @@ class Translation:
         
         
     def __str__(self):
-        return self.__locale
+        return "Translation(%s)" % self.__locale
     
 
 
     #
     # Implementation
     #
+    
 
     __methods = ("tr", "trc", "trn")
     __replacer = re.compile("({[a-zA-Z0-9_\.]+})")

@@ -6,6 +6,7 @@
 import logging, itertools, time, atexit
 from jasy.core.Permutation import Permutation
 from jasy.core.Translation import Translation
+from jasy.core.Localization import Localization
 
 
 class Session():
@@ -14,7 +15,7 @@ class Session():
         
         self.projects = []
         self.variants = {}
-        self.variants["locale"] = set()
+        self.locales = set()
         self.timestamp = time.time()
         
     def addProject(self, project):
@@ -34,11 +35,6 @@ class Session():
             project.close()
 
 
-
-    def run(self):
-        print("Running...")
-        build()
-        pass
 
 
 
@@ -65,6 +61,9 @@ class Session():
 
     def clearLocales(self):
         self.locales = set()
+        
+    def getLocales(self):
+        return self.locales
 
 
 
@@ -76,7 +75,7 @@ class Session():
         self.variants[name] = set(values)
         
     def clearVariants(self):
-        self.variants = dict()
+        self.variants = {}
                 
                 
                 
@@ -97,63 +96,22 @@ class Session():
         return supported
     
     
-                
-    def getTranslations(self, selected=None):
-        # Priority: PROJECT1-FULL => PROJECT2-FULL => PROJECT1-LANG => PROJECT2-LANG => PROJECT1-DEFAULT => PROJECT2-DEFAULT => IMPLEMENTATION-FALLBACK
-        # Example: PROJECT1-DE_DE => PROJECT2-DE_DE => PROJECT1-DE => PROJECT2-DE => PROJECT1-C => PROJECT2-C => CODE
+    def getTranslation(self, locale):
+        # Prio: de_DE => de => C => Code
+        check = [locale]
+        if "_" in locale:
+            check.append(locale[:locale.index("_")])
+        check.append(self.defaultLocale)
         
-        # Find locales which can actually be used
-        supported = self.getSupportedTranslations()
-        logging.info("Available translations: %s", supported)
-            
-            
-        if selected:
-            logging.info("Selected locales: %s", selected)
-            
-            use = set()
-            for locale in selected:
-                if locale == self.defaultLocale:
-                    use.add(self.defaultLocale)
-                elif locale in supported:
-                    use.add(locale)
-                elif "_" in locale:
-                    lang = locale[:locale.index("_")]
-                    if lang in supported:
-                        use.add(locale)
-                    else:
-                        logging.error("Unsupported locale: %s", locale)
-
-        else:
-            use = supported
-            
-        logging.info("Use locales: %s", use)
-
-
-        # Map translation files
-        files = {}
-        for locale in use:
-            files[locale] = []
-            
-            for project in reversed(self.projects):
+        files = []
+        for entry in check:
+            for project in self.projects:
                 translations = project.getTranslations()
-                if locale in translations:
-                    files[locale].append(translations[locale])
-
-        for locale in use:
-            if "_" in locale:
-                lang = locale[:locale.index("_")]
-                for project in reversed(self.projects):
-                    translations = project.getTranslations()
-
-                    if lang in translations:
-                        files[locale].append(translations[lang])
-
-        for locale in use:
-            for project in reversed(self.projects):
-                translations = project.getTranslations()
-                if self.defaultLocale in translations:
-                    files[locale].append(translations[self.defaultLocale])
-                    
-
-        return [ Translation(locale, files=files[locale]) for locale in files ]
-
+                if entry in translations:
+                    files.append(translations[entry])
+        
+        return Translation(locale, files)
+        
+        
+    def getLocalization(self, locale):
+        return Localization(locale)

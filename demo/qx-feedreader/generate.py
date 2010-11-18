@@ -101,15 +101,19 @@ def build():
             resources.publishManifest("build/manifest", "resource")
             resourceCode = resources.exportInfo(replaceRoots="resource")
 
+            # Prepare localization support
+            translation = session.getTranslation(locale)
+            localization = session.getLocalization(locale)
+            
             # Compiling classes
             sorter = Sorter(resolver, permutation)
-            compressedCode = Combiner(permutation, optimization, ).compress(sorter.getSortedClasses(), format=False)
+            compressedCode = Combiner(permutation, optimization, translation, localization).compress(sorter.getSortedClasses(), format=False)
 
             # TODO: Create filenames
             # Based on permutation.getKey(), optimization, locale, modification date, etc.
 
             # Write file
-            writefile("build/script/feedreader-%s.js" % translation, headerCode + resourceCode + compressedCode + bootCode)
+            writefile("build/script/feedreader-%s.js" % locale, headerCode + resourceCode + compressedCode + bootCode)
 
 
 

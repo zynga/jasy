@@ -7,6 +7,10 @@ class Localization:
     def __init__(self, locale):
         self.__locale = locale
         
+        
+    def __str__(self):
+        return "Localization(%s)" % self.__locale
+        
 
     def patch(self, node):
         self.__recurser(node)
