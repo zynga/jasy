@@ -24,6 +24,15 @@ session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
 #
 
 @task
+def locales():
+    print("Pre-processing locales")
+    
+    import jasy.core.LocaleData as loc
+    
+    loc.getMain("de_DE")
+
+
+@task
 def clear():
     logging.info("Clearing cache...")
     session.clearCache()

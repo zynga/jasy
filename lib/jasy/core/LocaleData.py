@@ -40,6 +40,8 @@ class MainParser():
         print(self.__data["codePatterns"])
         print(self.__data["delimiters"])
         print(self.__data["calendars"])
+        
+        # print(self.__data["calendars"]["gregorian"]["months"]["wide"]["11"])
 
 
 
@@ -98,20 +100,52 @@ class MainParser():
 
 
     def __addCalendar(self, store, element):
-        
-        print("ADD Calendar %s" % element.get("type"))
-        
         calendar = self.__getStore(store, element.get("type"))
 
         # Date Formats
-        dateFormats = self.__getStore(calendar, "dateFormats")
+        dateFormats = self.__getStore(calendar, "formats")
         for child in element.findall("dateFormats/dateFormatLength"):
             if not child.get("draft"):
                 format = child.get("type")
                 text = child.find("dateFormat/pattern").text
-                dateFormats[format] = text
+                if not format in dateFormats:
+                    dateFormats[format] = text
+
+
+        # Months Widths
+        monthsWidths = self.__getStore(calendar, "months")
+        for child in element.findall("months/monthContext/monthWidth"):
+            if not child.get("draft"):
+                format = child.get("type")
+                if not format in monthsWidths:
+                    monthsWidths[format] = {}
                 
-        
-        
-        
-        
+                for month in child.findall("month"):
+                    if not month.get("draft"):
+                        monthsWidths[format][month.get("type")] = month.text
+
+
+        # Day Widths
+        dayWidths = self.__getStore(calendar, "days")
+        for child in element.findall("days/dayContext/dayWidth"):
+            if not child.get("draft"):
+                format = child.get("type")
+                if not format in dayWidths:
+                    dayWidths[format] = {}
+
+                for day in child.findall("day"):
+                    if not day.get("draft"):
+                        dayWidths[format][day.get("type")] = day.text
+
+
+        # Quarter Widths
+        quarterWidths = self.__getStore(calendar, "quarters")
+        for child in element.findall("quarters/quarterContext/quarterWidth"):
+            if not child.get("draft"):
+                format = child.get("type")
+                if not format in quarterWidths:
+                    quarterWidths[format] = {}
+
+                for quarter in child.findall("quarter"):
+                    if not quarter.get("draft"):
+                        quarterWidths[format][quarter.get("type")] = quarter.text
