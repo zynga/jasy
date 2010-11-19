@@ -67,6 +67,7 @@ class Session():
         These define all possible combinations of the configured settings
         """
 
+        pstart()
         logging.info("Computing permutations...")
 
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
