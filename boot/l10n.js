@@ -1,9 +1,17 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010 Sebastian Werner
+==================================================================================================
+*/
+
 (function()
 {
   var global = this;
-  var defaultLocale = jasy.DEFAULT_LOCALE;
+  var defaultLocale = jasy.LOCALE;
   var all = global.$$locales;
   
+  // Export object
   global.l10n = 
   {
     /**
