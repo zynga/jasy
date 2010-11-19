@@ -98,8 +98,12 @@ def __checkCondition(node):
     elif node.type == "and":
         first = __checkCondition(node[0])
         second = __checkCondition(node[1])
-        if first != None and second != None:
-            return first and second
+        if first != None:
+            if not first:
+                return False
+            elif second != None:
+                return second != False
+        
 
     elif node.type == "or":
         first = __checkCondition(node[0])
