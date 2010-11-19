@@ -8,19 +8,12 @@
 (function()
 {
   var global = this;
-  var defaultLocale = jasy.LOCALE;
   var all = global.$$locales;
   var NULL = null;
 
   var lookup = function(msg, fallback)
   {
-    if (!locale) {
-      locale = defaultLocale;
-    } else if (jasy.DEBUG && !all[locale]) {
-      throw new Error("Invalid locale: " + locale);
-    }
-    
-    var replacement = all[locale][id];
+    var replacement = all[id];
     return replacement == NULL ? fallback : replacement;
   };
   
