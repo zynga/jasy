@@ -67,7 +67,6 @@ class Session():
         These define all possible combinations of the configured settings
         """
 
-        pstart()
         logging.info("Computing permutations...")
 
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
@@ -76,8 +75,6 @@ class Session():
         names = sorted(variants)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(variants[name] for name in names))]
         permutations = [Permutation(combi) for combi in combinations]
-
-        pstop()
 
         return permutations
 
