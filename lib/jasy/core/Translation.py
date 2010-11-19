@@ -91,7 +91,8 @@ class Translation:
                     raise TranslationError("Invalid positional value: %s in %s" % (entry, value))
                 
                 copied = copy.deepcopy(mapper[pos])
-                copied.parenthesized = True
+                if copied.type not in ("identifier", "call"):
+                    copied.parenthesized = True
                 pair.append(copied)
                 
             else:
