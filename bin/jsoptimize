@@ -32,6 +32,10 @@ def jsoptimize(source, filename=None, format=True):
         "js.Variant.THEME" : '"blueish"',
         "js.Variant.LOCALE" : '"de_DE"',
         
+        # jasy specific
+        "jasy.DEFAULT_LOCALE" : '"de_DE"',
+        "jasy.DEBUG" : "false",
+        
         # qooxdoo specific
         "qx.debug" : '"off"',
         "qx.dynlocale" : '"off"',
