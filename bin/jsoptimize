@@ -16,8 +16,8 @@ from jasy.optimizer import CryptPrivates
 from jasy.optimizer import BlockReducer
 from jasy.optimizer import UnusedCleaner
 
-from jasy.Translation import Translation
-from jasy.Localization import Localization
+from jasy.core.Translation import Translation
+from jasy.core.Localization import Localization
 
 from jasy.process.Variables import scan
 from jasy.process.Compressor import compress
@@ -43,7 +43,7 @@ def jsoptimize(source, filename=None, format=True):
         "function-bind" : "true"
     }
     
-    translation = Translation({
+    translation = Translation("de_DE", table={
         "Good {0}" : "Guten {0}",
         "Hello World" : "Hallo Welt",
         "Short" : "Kurz",

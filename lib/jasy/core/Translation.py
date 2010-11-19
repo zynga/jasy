@@ -18,21 +18,21 @@ class Translation:
     def __init__(self, locale, files=None, table=None):
         self.__locale = locale
 
-        logging.info("Initialize translation: %s" % locale)
+        logging.debug("Initialize translation: %s" % locale)
         self.__table = {}
 
         if table:
             self.__table.update(table)
         
         if files:
-            logging.info("Load %s translation files..." % len(files))
+            logging.debug("Load %s translation files..." % len(files))
             for path in files:
                 pofile = polib.pofile(path)
                 for entry in pofile:
                     if entry.msgstr != "" and not entry.msgid in self.__table:
                         self.__table[entry.msgid] = entry.msgstr
                         
-        logging.info("Translation of %s entries ready" % len(self.__table))
+        logging.debug("Translation of %s entries ready" % len(self.__table))
         
         
         
@@ -59,7 +59,7 @@ class Translation:
     
 
     __methods = ("tr", "trc", "trn")
-    __replacer = re.compile("({[a-zA-Z0-9_\.]+})")
+    __replacer = re.compile("(%[0-9])|({[a-zA-Z0-9_\.]+})")
     
 
     def __rebuildAsSplitted(self, value, mapper):
@@ -73,7 +73,7 @@ class Translation:
         pair = Node(None, "plus")
 
         for entry in splits:
-            if entry == "":
+            if entry is None or entry == "":
                 continue
                 
             if len(pair) == 2:
@@ -82,7 +82,9 @@ class Translation:
                 pair = newPair
 
             if self.__replacer.match(entry):
-                pos = int(entry[1:-1])
+                # support both formats: {pos} or %pos
+                cleaned = entry[1] if entry.startswith("%") else entry[1:-1]
+                pos = int(cleaned) - 1
                 
                 # Items might be added multiple times. Copy to protect original.
                 try:
