@@ -31,12 +31,13 @@ def clear():
 @task
 def source():
     # Locales
+    session.addLocale("de_DE")
     session.addLocale("en_US")
 
     # Resolve Classes
     resolver = Resolver(session)
     resolver.addClassName("feedreader.Application")
-    resolver.addClassName("feedreader.Theme")
+    resolver.addClassName("qx.theme.Modern")
 
     # Collect Resources
     resources = Resources(session, resolver.getIncludedClasses())
@@ -47,7 +48,10 @@ def source():
     loaderCode = loader.generate("qx.core.Init.boot(feedreader.Application)")
 
     # Write file
-    writefile("source/script/feedreader.js", resourceCode + loaderCode)
+    for locale in session.getLocales():
+        # TODO
+        localeCode = ""
+        writefile("source/script/feedreader-%s.js" % locale, localeCode + resourceCode + loaderCode)
 
 
 @task
@@ -67,13 +71,9 @@ def build():
     # Create optimizer for improved speed/compression
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
 
-    # Initialize iterator objects
-    permutations = session.getPermutations()
-    locales = session.getLocales()
-    
-    # Process every possible permutation
-    for permutation in permutations:
-        for locale in locales:
+    # Process every possible permutation/locale
+    for permutation in session.getPermutations():
+        for locale in session.getLocales():
             print("------------------------------------------------------------------------------")
 
             # Build file header
