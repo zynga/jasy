@@ -44,15 +44,15 @@ def jsoptimize(source, filename=None, format=True):
     }
     
     translation = Translation("de_DE", table={
-        "Good {0}" : "Guten {0}",
+        "Good %1" : "Guten %1",
         "Hello World" : "Hallo Welt",
         "Short" : "Kurz",
         "Thank you for the flowers" : "Danke für die Blumen",
         "You have got a new mail" : "Sie haben eine neue Mail",
         "You have got new mails" : "Sie haben neue Mails",
-        "You have got {0} new mails" : "Sie haben {0} neue Mails",
+        "You have got %1 new mails" : "Sie haben %1 neue Mails",
         "Chat (noum)" : "Unterhaltung",
-        "Chat (noum) {0}" : "Unterhaltung {0}"
+        "Chat (noum) %1" : "Unterhaltung %1"
     })
     
     localization = Localization("de_DE")

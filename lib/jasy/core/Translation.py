@@ -59,7 +59,7 @@ class Translation:
     
 
     __methods = ("tr", "trc", "trn")
-    __replacer = re.compile("(%[0-9])|({[a-zA-Z0-9_\.]+})")
+    __replacer = re.compile("(%[0-9])")
     
 
     def __rebuildAsSplitted(self, value, mapper):
@@ -73,7 +73,7 @@ class Translation:
         pair = Node(None, "plus")
 
         for entry in splits:
-            if entry is None or entry == "":
+            if entry == "":
                 continue
                 
             if len(pair) == 2:
@@ -82,9 +82,7 @@ class Translation:
                 pair = newPair
 
             if self.__replacer.match(entry):
-                # support both formats: {pos} or %pos
-                cleaned = entry[1] if entry.startswith("%") else entry[1:-1]
-                pos = int(cleaned) - 1
+                pos = int(entry[1]) - 1
                 
                 # Items might be added multiple times. Copy to protect original.
                 try:
