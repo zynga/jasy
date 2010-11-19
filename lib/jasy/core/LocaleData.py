@@ -9,8 +9,10 @@ import jasy.core.Info
 
 
 def getMain(locale):
-    
-    return MainParser(locale)
+    print("-- EN")
+    MainParser("en_US")
+    print("-- DE")
+    MainParser("de_DE")
     
     
     
@@ -37,11 +39,8 @@ class MainParser():
                 break
                 
                 
-        print(self.__data["codePatterns"])
         print(self.__data["delimiters"])
-        print(self.__data["calendars"])
-        
-        # print(self.__data["calendars"]["gregorian"]["months"]["wide"]["11"])
+        print(self.__data["calendars"]["gregorian"])
 
 
 
@@ -54,7 +53,6 @@ class MainParser():
         self.__addDisplayNames(tree, "territories")
         self.__addDisplayNames(tree, "variants")
         self.__addDisplayNames(tree, "measurementSystemNames")
-        self.__addDisplayNames(tree, "codePatterns")
 
         self.__addDelimiters(tree)
         
@@ -102,16 +100,6 @@ class MainParser():
     def __addCalendar(self, store, element):
         calendar = self.__getStore(store, element.get("type"))
 
-        # Date Formats
-        dateFormats = self.__getStore(calendar, "formats")
-        for child in element.findall("dateFormats/dateFormatLength"):
-            if not child.get("draft"):
-                format = child.get("type")
-                text = child.find("dateFormat/pattern").text
-                if not format in dateFormats:
-                    dateFormats[format] = text
-
-
         # Months Widths
         monthsWidths = self.__getStore(calendar, "months")
         for child in element.findall("months/monthContext/monthWidth"):
@@ -122,7 +110,9 @@ class MainParser():
                 
                 for month in child.findall("month"):
                     if not month.get("draft"):
-                        monthsWidths[format][month.get("type")] = month.text
+                        name = month.get("type")
+                        if not name in monthsWidths[format]:
+                            monthsWidths[format][name] = month.text
 
 
         # Day Widths
@@ -135,7 +125,9 @@ class MainParser():
 
                 for day in child.findall("day"):
                     if not day.get("draft"):
-                        dayWidths[format][day.get("type")] = day.text
+                        name = day.get("type")
+                        if not name in dayWidths[format]:
+                            dayWidths[format][name] = day.text
 
 
         # Quarter Widths
@@ -148,4 +140,57 @@ class MainParser():
 
                 for quarter in child.findall("quarter"):
                     if not quarter.get("draft"):
-                        quarterWidths[format][quarter.get("type")] = quarter.text
+                        name = quarter.get("type")
+                        if not name in quarterWidths[format]:
+                            quarterWidths[format][name] = quarter.text
+                        
+                        
+        # Date Formats
+        dateFormats = self.__getStore(calendar, "dateFormats")
+        for child in element.findall("dateFormats/dateFormatLength"):
+            if not child.get("draft"):
+                format = child.get("type")
+                text = child.find("dateFormat/pattern").text
+                if not format in dateFormats:
+                    dateFormats[format] = text
+
+
+        # Time Formats
+        timeFormats = self.__getStore(calendar, "timeFormats")
+        for child in element.findall("timeFormats/timeFormatLength"):
+            if not child.get("draft"):
+                format = child.get("type")
+                text = child.find("timeFormat/pattern").text
+                if not format in timeFormats:
+                    timeFormats[format] = text
+        
+        
+        # Fields
+        fields = self.__getStore(calendar, "fields")
+        for child in element.findall("fields/field"):
+            if not child.get("draft"):
+                format = child.get("type")
+                for nameChild in child.findall("displayName"):
+                    if not nameChild.get("draft"):
+                        text = nameChild.text
+                        if not format in fields:
+                            fields[format] = text
+                        break
+                        
+                        
+        # Relative
+        relative = self.__getStore(calendar, "relative")
+        for child in element.findall("fields/field"):
+            if not child.get("draft"):
+                format = child.get("type")
+                relativeField = self.__getStore(relative, format)
+                for relChild in child.findall("relative"):
+                    if not relChild.get("draft"):
+                        pos = relChild.get("type")
+                        text = relChild.text
+                        if not pos in relativeField:
+                            relativeField[pos] = text
+                        
+                        
+                        
+        
