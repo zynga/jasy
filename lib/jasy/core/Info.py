@@ -11,5 +11,10 @@ def root():
     return os.path.normpath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir))
     
     
-def cldr():
-    return os.path.join(root(), "data", "cldr")
+def cldrData(what):
+    return os.path.join(root(), "data", "cldr", what)
+    
+def cldrProjects(locale):
+    return os.path.join(root(), "js", "cldr", locale)
+    
+    
