@@ -4,6 +4,7 @@
 #
 
 import logging, os, json, xml.etree.ElementTree
+import jasy.core.File
 import jasy.core.Info
 
 

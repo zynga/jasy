@@ -13,7 +13,7 @@ from jasy import *
 
 session = Session()
 
-session.addProject(Project("../../boot"))
+session.addProject(Project("../../js/boot"))
 session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
 session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
 
