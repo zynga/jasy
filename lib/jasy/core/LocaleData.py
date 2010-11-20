@@ -197,15 +197,33 @@ class MainParser():
                         
     def __addNumbers(self, tree):
         store = self.__getStore(self.__data, "numbers")
-        self.__addNumberSymbols(store, tree, "numbers/symbols/*")
-        
                         
-                        
-    def __addNumberSymbols(self, store, tree, path):
+        # Symbols
         symbols = self.__getStore(store, "symbols")
-        for element in tree.findall(path):
+        for element in tree.findall("numbers/symbols/*"):
             if not element.get("draft"):
                 field = element.tag
                 if not field in store:
                     symbols[field] = element.text
-        
+
+        # Formats
+        if not "format" in store:
+            store["format"] = {}
+                    
+        for format in ["decimal", "scientific", "percent", "currency"]:
+            if not format in store["format"]:
+                for element in tree.findall("numbers//%sFormat/pattern" % format):
+                    store["format"][format] = element.text
+            
+        # Currencies
+        currencies = self.__getStore(store, "currencies")
+        for child in tree.findall("numbers/currencies/currency"):
+            if not child.get("draft"):
+                short = child.get("type")
+                for nameChild in child.findall("displayName"):
+                    if not nameChild.get("draft"):
+                        text = nameChild.text
+                        if not format in currencies:
+                            currencies[short] = text
+                        break
+                
