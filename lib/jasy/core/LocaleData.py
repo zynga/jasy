@@ -39,9 +39,7 @@ class MainParser():
                 break
                 
                 
-        print(self.__data["delimiters"])
-        print(self.__data["calendars"]["gregorian"])
-        print(self.__data["numbers"])
+        print(json.dumps(self.__data))
 
 
 
