@@ -5,6 +5,7 @@
 
 import logging, os, json, xml.etree.ElementTree
 from jasy.core.File import *
+from jasy.core.Profiler import *
 import jasy.core.Info
 
 
@@ -16,6 +17,9 @@ def store(locale):
     
 class Parser():
     def __init__(self, locale):
+        pstart()
+        logging.info("Preparing locale %s" % locale)
+        
         main = jasy.core.Info.cldrData("main")
         supplemental = jasy.core.Info.cldrData("supplemental")
         
@@ -26,7 +30,6 @@ class Parser():
         while True:
             path = "%s.xml" % os.path.join(main, locale)
 
-            logging.info("Reading %s" % path)
             tree = xml.etree.ElementTree.parse(path)
 
             self.__addDisplayNames(tree)
@@ -38,14 +41,18 @@ class Parser():
                 locale = locale[:locale.rindex("_")]
             else:
                 break
+                
+        pstop()
 
 
     def export(self):
         project = jasy.core.Info.cldrProjects(self.__locale)
-        logging.info("Creating %s" % project)
+        logging.info("Writing result...")
+        pstart()
+        
         writefile(os.path.join(project, "manifest.cfg"), "[main]\nname = cldr\nkind = basic\n")
-
         self.__exportRecurser(self.__data, "cldr", project)
+        pstop()
 
 
     def __exportRecurser(self, data, prefix, project):
