@@ -47,7 +47,7 @@ class MainParser():
                 break
                 
                 
-        print(json.dumps(self.__data["calendars"], sort_keys=True, indent=2))
+        print(json.dumps(self.__data, sort_keys=True, indent=2))
 
 
     def __getStore(self, parent, name):
@@ -67,7 +67,7 @@ class MainParser():
         
         display = self.__getStore(self.__data, "display")
         
-        for key in ["languages", "scripts", "territories", "variants", "measurementSystemNames"]:
+        for key in ["languages", "scripts", "territories", "variants", "keys", "types", "measurementSystemNames", "codePatterns"]:
             # make it a little bit shorter, there is not really any conflict potential
             if key == "measurementSystemNames":
                 store = self.__getStore(display, "measurement")
