@@ -59,13 +59,6 @@ class Project():
         self.cache.close()
         
         
-    def setSession(self, session):
-        self.session = session
-        
-    def getSession(self):
-        return self.session
-
-
     def getClassByName(self, className):
         try:
             return self.getClasses()[className]

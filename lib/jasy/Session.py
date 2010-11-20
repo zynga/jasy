@@ -14,7 +14,7 @@ class Session():
     def __init__(self):
         atexit.register(self.close)
         
-        self.projects = []
+        self.__projects = []
         self.variants = {}
         self.locales = set()
         self.timestamp = time.time()
@@ -25,11 +25,13 @@ class Session():
     #
         
     def addProject(self, project):
-        self.projects.append(project)
-        project.setSession(self)
+        self.__projects.append(project)
+        
+    def removeProject(self, project):
+        self.__projects.remove(project)
         
     def getProjects(self):
-        return self.projects
+        return self.__projects
         
         
     #
@@ -37,12 +39,12 @@ class Session():
     #
         
     def clearCache(self):
-        for project in self.projects:
+        for project in self.__projects:
             project.clearCache()
 
     def close(self):
         logging.info("Closing session...")
-        for project in self.projects:
+        for project in self.__projects:
             project.close()
 
 
@@ -110,7 +112,7 @@ class Session():
         """
         
         supported = set()
-        for project in self.projects:
+        for project in self.__projects:
             supported.update(project.getTranslations().keys())
             
         return supported
@@ -130,7 +132,7 @@ class Session():
         
         files = []
         for entry in check:
-            for project in self.projects:
+            for project in self.__projects:
                 translations = project.getTranslations()
                 if entry in translations:
                     files.append(translations[entry])

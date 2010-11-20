@@ -9,24 +9,16 @@ import jasy.core.Info
 
 
 
-def getMain(locale):
-    print("-- EN")
-    MainParser("en_US").export()
-    print("-- DE")
-    MainParser("de_DE").export()
+def store(locale):
+    Parser(locale).export()
     
     
     
-def getSupplemental(locale):
-    pass
-    
-    
-    
-    
-class MainParser():
+class Parser():
     def __init__(self, locale):
         cldr = jasy.core.Info.cldr()
         main = os.path.join(cldr, "main")
+        supplemental = os.path.join(cldr, "supplemental")
         
         self.__data = {}
 
@@ -46,12 +38,7 @@ class MainParser():
                 locale = locale[:locale.rindex("_")]
             else:
                 break
-                
-                
-        
-                
-                
-        #print(json.dumps(self.__data, sort_keys=True, indent=2))
+
 
     def export(self):
         self.__exportRecurser(self.__data, "cldr")

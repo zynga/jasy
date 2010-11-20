@@ -23,13 +23,16 @@ session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
 # Tasks
 #
 
+locales = ["de_DE", "en_US", "fr_FR"]
+
 @task
-def locales():
-    print("Pre-processing locales")
+def cldr():
+    logging.info("Generating locale projects")
     
-    import jasy.core.LocaleData as loc
+    import jasy.core.LocaleData as LocaleData
     
-    loc.getMain("de_DE")
+    for locale in locales:
+        LocaleData.store(locale)
     
 
 
