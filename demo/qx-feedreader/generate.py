@@ -30,6 +30,7 @@ def locales():
     import jasy.core.LocaleData as loc
     
     loc.getMain("de_DE")
+    
 
 
 @task
