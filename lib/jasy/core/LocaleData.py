@@ -47,12 +47,7 @@ class MainParser():
         logging.info("Reading %s" % path)
         tree = xml.etree.ElementTree.parse(path)
         
-        self.__addDisplayNames(tree, "languages")
-        self.__addDisplayNames(tree, "scripts")
-        self.__addDisplayNames(tree, "territories")
-        self.__addDisplayNames(tree, "variants")
-        self.__addDisplayNames(tree, "measurementSystemNames")
-
+        self.__addDisplayNames(tree)
         self.__addDelimiters(tree)
         self.__addCalendars(tree)
         self.__addNumbers(tree)
@@ -70,13 +65,21 @@ class MainParser():
         
         
         
-    def __addDisplayNames(self, tree, key):
-        store = self.__getStore(self.__data, key)
-        for element in tree.findall("/localeDisplayNames/%s/*" % key):
-            if not element.get("draft"):
-                field = element.get("type")
-                if not field in store:
-                    store[field] = element.text
+    def __addDisplayNames(self, tree):
+        store = self.__getStore(self.__data, "display")
+        
+        for key in ["languages", "scripts", "territories", "variants", "measurementSystemNames"]:
+            # make it a little bit shorter, there is not really any conflict potential
+            if key == "measurementSystemNames":
+                childStore = self.__getStore(store, "measurement")
+            else:
+                childStore = self.__getStore(store, key)
+                
+            for element in tree.findall("/localeDisplayNames/%s/*" % key):
+                if not element.get("draft"):
+                    field = element.get("type")
+                    if not field in childStore:
+                        childStore[field] = element.text
                     
                     
     def __addDelimiters(self, tree, key="delimiters"):
