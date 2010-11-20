@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging, os, xml.etree.ElementTree
+import logging, os, json, xml.etree.ElementTree
 import jasy.core.Info
 
 
@@ -39,7 +39,7 @@ class MainParser():
                 break
                 
                 
-        print(json.dumps(self.__data))
+        print(json.dumps(self.__data, sort_keys=True, indent=2))
 
 
 
@@ -54,9 +54,7 @@ class MainParser():
         self.__addDisplayNames(tree, "measurementSystemNames")
 
         self.__addDelimiters(tree)
-        
         self.__addCalendars(tree)
-        
         self.__addNumbers(tree)
         
 
