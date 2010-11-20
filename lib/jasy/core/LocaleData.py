@@ -31,7 +31,15 @@ class MainParser():
 
         # Fallback chain
         while True:
-            self.__add(os.path.join(main, "%s.xml" % locale))
+            path = "%s.xml" % os.path.join(main, locale)
+
+            logging.info("Reading %s" % path)
+            tree = xml.etree.ElementTree.parse(path)
+
+            self.__addDisplayNames(tree)
+            self.__addDelimiters(tree)
+            self.__addCalendars(tree)
+            self.__addNumbers(tree)            
             
             if "_" in locale:
                 locale = locale[:locale.rindex("_")]
@@ -42,19 +50,9 @@ class MainParser():
         print(json.dumps(self.__data, sort_keys=True, indent=2))
 
 
-
-    def __add(self, path):
-        logging.info("Reading %s" % path)
-        tree = xml.etree.ElementTree.parse(path)
-        
-        self.__addDisplayNames(tree)
-        self.__addDelimiters(tree)
-        self.__addCalendars(tree)
-        self.__addNumbers(tree)
-        
-
-
     def __getStore(self, parent, name):
+        """ Manages data fields """
+        
         if not name in parent:
             store = {}
             parent[name] = store
@@ -64,34 +62,40 @@ class MainParser():
         return store
         
         
-        
     def __addDisplayNames(self, tree):
-        store = self.__getStore(self.__data, "display")
+        """ Adds CLDR display names section """
+        
+        display = self.__getStore(self.__data, "display")
         
         for key in ["languages", "scripts", "territories", "variants", "measurementSystemNames"]:
             # make it a little bit shorter, there is not really any conflict potential
             if key == "measurementSystemNames":
-                childStore = self.__getStore(store, "measurement")
+                store = self.__getStore(display, "measurement")
             else:
-                childStore = self.__getStore(store, key)
+                store = self.__getStore(display, key)
                 
             for element in tree.findall("/localeDisplayNames/%s/*" % key):
                 if not element.get("draft"):
                     field = element.get("type")
-                    if not field in childStore:
-                        childStore[field] = element.text
+                    if not field in store:
+                        store[field] = element.text
                     
                     
-    def __addDelimiters(self, tree, key="delimiters"):
-        store = self.__getStore(self.__data, key)
-        for element in tree.findall("/%s/*" % key):
+    def __addDelimiters(self, tree):
+        """ Adds CLDR delimiters """
+        
+        delimiters = self.__getStore(self.__data, "delimiters")
+        
+        for element in tree.findall("/delimiters/*"):
             if not element.get("draft"):
                 field = element.tag
-                if not field in store:
-                    store[field] = element.text
+                if not field in delimiters:
+                    delimiters[field] = element.text
         
         
     def __addCalendars(self, tree, key="dates/calendars"):
+        """ Loops through all CLDR calendars and adds them """
+        
         calendars = self.__getStore(self.__data, "calendars")
             
         for element in tree.findall("/%s/*" % key):
