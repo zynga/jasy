@@ -41,6 +41,7 @@ class MainParser():
                 
         print(self.__data["delimiters"])
         print(self.__data["calendars"]["gregorian"])
+        print(self.__data["numbers"])
 
 
 
@@ -57,6 +58,8 @@ class MainParser():
         self.__addDelimiters(tree)
         
         self.__addCalendars(tree)
+        
+        self.__addNumbers(tree)
         
 
 
@@ -192,5 +195,17 @@ class MainParser():
                             relativeField[pos] = text
                         
                         
+    def __addNumbers(self, tree):
+        store = self.__getStore(self.__data, "numbers")
+        self.__addNumberSymbols(store, tree, "numbers/symbols/*")
+        
                         
+                        
+    def __addNumberSymbols(self, store, tree, path):
+        symbols = self.__getStore(store, "symbols")
+        for element in tree.findall(path):
+            if not element.get("draft"):
+                field = element.tag
+                if not field in store:
+                    symbols[field] = element.text
         
