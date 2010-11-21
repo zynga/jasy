@@ -7,7 +7,7 @@
       <key type="Space">Leer</key>
       <key type="Enter">Enter</key>
       <key type="Shift">Umschalt</key>
-      <key type="Ctrl">Strg</key>
+      <key type="Control">Strg</key>
       <key type="Alt">Alt</key>
       <key type="CapsLock">Feststell</key>
       <key type="Meta">Meta</key>
@@ -35,7 +35,7 @@
       <key type="Space">Leertaste</key>
       <key type="Enter">Enter</key>
       <key type="Shift">Umschalttaste</key>
-      <key type="Ctrl">Steuerung</key>
+      <key type="Control">Steuerung</key>
       <key type="Alt">Alt</key>
       <key type="CapsLock">Feststelltaste</key>
       <key type="Meta">Meta</key>

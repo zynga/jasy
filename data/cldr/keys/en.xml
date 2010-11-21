@@ -7,7 +7,7 @@
       <key type="Space">Space</key>
       <key type="Enter">Enter</key>
       <key type="Shift">Shift</key>
-      <key type="Ctrl">Ctrl</key>
+      <key type="Control">Ctrl</key>
       <key type="Alt">Alt</key>
       <key type="CapsLock">Caps</key>
       <key type="Meta">Meta</key>
@@ -35,7 +35,7 @@
       <key type="Space">Space</key>
       <key type="Enter">Enter</key>
       <key type="Shift">Shift</key>
-      <key type="Ctrl">Control</key>
+      <key type="Control">Control</key>
       <key type="Alt">Alt</key>
       <key type="CapsLock">CapsLock</key>
       <key type="Meta">Meta</key>

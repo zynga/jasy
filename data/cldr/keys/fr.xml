@@ -7,7 +7,7 @@
       <key type="Space">Espace</key>
       <key type="Enter">Entrée</key>
       <key type="Shift">Maj</key>
-      <key type="Ctrl">Ctrl</key>
+      <key type="Control">Ctrl</key>
       <key type="Alt">Alt</key>
       <key type="CapsLock">Verr. Maj.</key>
       <key type="Meta">Meta</key>
@@ -35,7 +35,7 @@
       <key type="Space">Espace</key>
       <key type="Enter">Entrée</key>
       <key type="Shift">Majuscules</key>
-      <key type="Ctrl">Contrôle</key>
+      <key type="Control">Contrôle</key>
       <key type="Alt">Alternative</key>
       <key type="CapsLock">Verrouillage des Majuscule</key>
       <key type="Meta">Meta</key>
