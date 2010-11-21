@@ -1,3 +1,10 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010 Sebastian Werner
+==================================================================================================
+*/
+
 function declare(namespace, object)
 {
   var splits = namespace.split(".");

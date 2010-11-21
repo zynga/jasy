@@ -14,6 +14,8 @@ from jasy import *
 session = Session()
 
 session.addProject(Project("../../js/boot"))
+session.addProject(Project("../../js/cldr/de_DE"))
+
 session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
 session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
 
