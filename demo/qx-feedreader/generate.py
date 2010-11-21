@@ -11,13 +11,15 @@ from jasy import *
 # Config
 #
 
-session = Session()
-
-session.addProject(Project("../../js/boot"))
-session.addProject(Project("../../js/cldr/de_DE"))
-
-session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
-session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
+@task
+def setup():
+    global session
+    
+    session = Session()
+    session.addProject(Project("../../js/core"))
+    session.addProject(Project("../../js/locale/de_DE"))
+    session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
+    session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
 
 
 
@@ -25,27 +27,29 @@ session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
 # Tasks
 #
 
-locales = ["de_DE", "en_US", "fr_FR"]
-
 @task
-def cldr():
+def locales():
     logging.info("Generating locale projects")
     
     import jasy.core.LocaleData as LocaleData
     
-    for locale in locales:
+    for locale in ["de_DE","en_US","fr_FR","es_ES"]:
         LocaleData.store(locale)
     
 
 
 @task
 def clear():
+    setup()
+    
     logging.info("Clearing cache...")
     session.clearCache()
 
 
 @task
 def source():
+    setup()
+    
     # Locales
     session.addLocale("de_DE")
     session.addLocale("en_US")
@@ -72,6 +76,8 @@ def source():
 
 @task
 def build():
+    setup()
+    
     # Values
     session.addVariant("qx.debug", [ '"on"' ])
     session.addVariant("qx.client", [ '"gecko"' ])
