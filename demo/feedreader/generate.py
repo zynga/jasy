@@ -16,8 +16,8 @@ def setup():
     global session
     
     session = Session()
-    session.addProject(Project("../../js/core"))
-    session.addProject(Project("../../js/locale/de_DE"))
+    session.addProject(Project("../../data/jscore"))
+    session.addProject(Project("../../data/jslocale/de_DE"))
     session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
 

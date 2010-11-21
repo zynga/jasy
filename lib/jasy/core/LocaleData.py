@@ -46,7 +46,7 @@ class Parser():
 
 
     def export(self):
-        project = jasy.core.Info.cldrProjects(self.__locale)
+        project = jasy.core.Info.localeProject(self.__locale)
         logging.info("Writing result...")
         pstart()
         
