@@ -87,7 +87,20 @@ Developer Support
 - This feature is based on LabJS for best loading performance.
 
 
+Localization Features
+---------------------
 
+- Unicode CLDR Data Transformation
+  - Rebuilds XML files to nicely useable ultra-modular JSON data classes
+  - Integrates with dependency system
+  - Fast access to data without additional API possible
+  - Supports project fallback chain
+- PO-File translations
+  - Loads translations from PO-files
+  - Create language specific variants
+  - Replaces string instances directly inside the original file
+  - Removes overhead through translation as no function call is needed anymore
+  - Optimizes template replacement e.g. via %1 into a string "plus" operation
 
 
 
@@ -97,8 +110,6 @@ Todo
 - Auto Closure Wrapping for string optimizations, keyword optimization, etc.
 - String optimizations
 - API data
-- Unicode Data Merge (CLDR)
-- PO-File Translations
 - Code Quality Checks (Lint)
 - Pretty Printer
 - ...
