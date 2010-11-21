@@ -37,7 +37,7 @@ class Parser():
         # Add keys
         path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), language)
         tree = xml.etree.ElementTree.parse(path)
-        self.__data["keys"] = {
+        self.__data["key"] = {
             "short" : { key.get("type"): key.text for key in tree.findall("/keys/short/key") },
             "full" : { key.get("type"): key.text for key in tree.findall("/keys/full/key") }
         }
@@ -117,6 +117,8 @@ class Parser():
             # make it a little bit shorter, there is not really any conflict potential
             if key == "measurementSystemNames":
                 store = self.__getStore(display, "measurement")
+            elif key == "territories":
+                store = self.__getStore(display, "territory")
             else:
                 # remove last character "s" to force singular
                 store = self.__getStore(display, key[:-1])
