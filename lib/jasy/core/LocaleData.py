@@ -26,6 +26,14 @@ class Parser():
         self.__data = {}
         self.__locale = locale
 
+        # Add info section
+        splits = locale.split("_")
+        self.__data["info"] = {
+            "name" : locale,
+            "language" : splits[0],
+            "territory" : splits[1] if len(splits) > 1 else None
+        }
+        
         # Fallback chain
         while True:
             path = "%s.xml" % os.path.join(main, locale)
@@ -41,7 +49,7 @@ class Parser():
                 locale = locale[:locale.rindex("_")]
             else:
                 break
-                
+
         pstop()
 
 
