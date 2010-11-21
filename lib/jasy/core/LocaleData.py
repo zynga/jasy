@@ -51,7 +51,7 @@ class Parser():
         pstart()
         
         writefile(os.path.join(project, "manifest.cfg"), "[main]\nname = cldr\nkind = basic\n")
-        self.__exportRecurser(self.__data, "cldr", project)
+        self.__exportRecurser(self.__data, "locale", project)
         pstop()
 
 
