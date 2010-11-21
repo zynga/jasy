@@ -113,12 +113,13 @@ class Parser():
         
         display = self.__getStore(self.__data, "display")
         
-        for key in ["languages", "scripts", "territories", "variants", "keys", "types", "measurementSystemNames", "codePatterns"]:
+        for key in ["languages", "scripts", "territories", "variants", "keys", "types", "measurementSystemNames"]:
             # make it a little bit shorter, there is not really any conflict potential
             if key == "measurementSystemNames":
                 store = self.__getStore(display, "measurement")
             else:
-                store = self.__getStore(display, key)
+                # remove last character "s" to force singular
+                store = self.__getStore(display, key[:-1])
                 
             for element in tree.findall("/localeDisplayNames/%s/*" % key):
                 if not element.get("draft"):
@@ -130,7 +131,7 @@ class Parser():
     def __addDelimiters(self, tree):
         """ Adds CLDR delimiters """
         
-        delimiters = self.__getStore(self.__data, "delimiters")
+        delimiters = self.__getStore(self.__data, "delimiter")
         
         for element in tree.findall("/delimiters/*"):
             if not element.get("draft"):
@@ -142,7 +143,7 @@ class Parser():
     def __addCalendars(self, tree, key="dates/calendars"):
         """ Loops through all CLDR calendars and adds them """
         
-        calendars = self.__getStore(self.__data, "calendars")
+        calendars = self.__getStore(self.__data, "calendar")
             
         for element in tree.findall("/%s/*" % key):
             if not element.get("draft"):
@@ -156,7 +157,7 @@ class Parser():
 
         # Months Widths
         if element.find("months/monthContext/monthWidth"):
-            months = self.__getStore(calendar, "months")
+            months = self.__getStore(calendar, "month")
             for child in element.findall("months/monthContext/monthWidth"):
                 if not child.get("draft"):
                     format = child.get("type")
@@ -172,7 +173,7 @@ class Parser():
 
         # Day Widths
         if element.find("days/dayContext/dayWidth"):
-            days = self.__getStore(calendar, "days")
+            days = self.__getStore(calendar, "day")
             for child in element.findall("days/dayContext/dayWidth"):
                 if not child.get("draft"):
                     format = child.get("type")
@@ -188,7 +189,7 @@ class Parser():
 
         # Quarter Widths
         if element.find("quarters/quarterContext/quarterWidth"):
-            quarters = self.__getStore(calendar, "quarters")
+            quarters = self.__getStore(calendar, "quarter")
             for child in element.findall("quarters/quarterContext/quarterWidth"):
                 if not child.get("draft"):
                     format = child.get("type")
@@ -204,7 +205,7 @@ class Parser():
         
         # Date Formats
         if element.find("dateFormats/dateFormatLength"):
-            dateFormats = self.__getStore(calendar, "dates")
+            dateFormats = self.__getStore(calendar, "date")
             for child in element.findall("dateFormats/dateFormatLength"):
                 if not child.get("draft"):
                     format = child.get("type")
@@ -215,18 +216,29 @@ class Parser():
 
         # Time Formats
         if element.find("timeFormats/timeFormatLength"):
-            timeFormats = self.__getStore(calendar, "times")
+            timeFormats = self.__getStore(calendar, "time")
             for child in element.findall("timeFormats/timeFormatLength"):
                 if not child.get("draft"):
                     format = child.get("type")
                     text = child.find("timeFormat/pattern").text
                     if not format in timeFormats:
                         timeFormats[format] = text
+                        
+                        
+        # DateTime Formats
+        if element.find("dateTimeFormats/availableFormats"):
+            datetime = self.__getStore(calendar, "datetime")
+            for child in element.findall("dateTimeFormats/availableFormats/dateFormatItem"):
+                if not child.get("draft"):
+                    format = child.get("id")
+                    text = child.text
+                    if not format in datetime:
+                        datetime[format] = text
         
         
         # Fields
         if element.find("fields/field"):
-            fields = self.__getStore(calendar, "fields")
+            fields = self.__getStore(calendar, "field")
             for child in element.findall("fields/field"):
                 if not child.get("draft"):
                     format = child.get("type")
@@ -240,7 +252,7 @@ class Parser():
                         
         # Relative
         if element.find("fields/field"):
-            relatives = self.__getStore(calendar, "relatives")
+            relatives = self.__getStore(calendar, "relative")
             for child in element.findall("fields/field"):
                 if not child.get("draft"):
                     format = child.get("type")
@@ -258,8 +270,8 @@ class Parser():
         store = self.__getStore(self.__data, "numbers")
                         
         # Symbols
-        symbols = self.__getStore(store, "symbols")
-        for element in tree.findall("numbers/symbols/*"):
+        symbols = self.__getStore(store, "symbol")
+        for element in tree.findall("numbers/symbol/*"):
             if not element.get("draft"):
                 field = element.tag
                 if not field in store:
@@ -275,7 +287,7 @@ class Parser():
                     store["format"][format] = element.text
             
         # Currencies
-        currencies = self.__getStore(store, "currencies")
+        currencies = self.__getStore(store, "currency")
         for child in tree.findall("numbers/currencies/currency"):
             if not child.get("draft"):
                 short = child.get("type")
