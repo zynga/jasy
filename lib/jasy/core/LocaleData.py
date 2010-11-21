@@ -19,25 +19,34 @@ class Parser():
     def __init__(self, locale):
         pstart()
         logging.info("Preparing locale %s" % locale)
+        splits = locale.split("_")
+        language = splits[0]
+        territory = splits[1] if len(splits) > 1 else None
         
-        main = jasy.core.Info.cldrData("main")
-        supplemental = jasy.core.Info.cldrData("supplemental")
-        
-        self.__data = {}
         self.__locale = locale
+        self.__data = {}
 
         # Add info section
-        splits = locale.split("_")
+        
         self.__data["info"] = {
             "name" : locale,
-            "language" : splits[0],
-            "territory" : splits[1] if len(splits) > 1 else None
+            "language" : language,
+            "territory" : territory
         }
         
-        # Fallback chain
+        # Add keys
+        path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), language)
+        tree = xml.etree.ElementTree.parse(path)
+        self.__data["keys"] = {
+            "short" : { key.get("type"): key.text for key in tree.findall("/keys/short/key") },
+            "full" : { key.get("type"): key.text for key in tree.findall("/keys/full/key") }
+        }
+        
+        
+        # Add main CLDR data: Fallback chain for locales
+        main = jasy.core.Info.cldrData("main")
         while True:
             path = "%s.xml" % os.path.join(main, locale)
-
             tree = xml.etree.ElementTree.parse(path)
 
             self.__addDisplayNames(tree)
@@ -49,6 +58,10 @@ class Parser():
                 locale = locale[:locale.rindex("_")]
             else:
                 break
+                
+        # Add supplemental CLDR data
+        supplemental = jasy.core.Info.cldrData("supplemental")
+
 
         pstop()
 
