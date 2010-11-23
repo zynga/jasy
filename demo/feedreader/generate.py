@@ -138,7 +138,7 @@ def build():
             writefile("build/script/feedreader-%s.js" % locale, headerCode + resourceCode + compressedCode + bootCode)
 
 
-    updatefile("source/build.html", "build/build.html")
+    updatefile("source/build.html", "build/index.html")
 
 
 
