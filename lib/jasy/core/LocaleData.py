@@ -111,9 +111,9 @@ class Parser():
         
         
     def __addSupplementals(self):
-        supplemental = jasy.core.Info.cldrData("supplemental")
+        """ Converts data from supplemental folder """
         
-        logging.info("Reading supplementals...")
+        supplemental = jasy.core.Info.cldrData("supplemental")
 
         # Plurals
         path = os.path.join(supplemental, "plurals.xml")
@@ -126,7 +126,6 @@ class Parser():
                     for rule in item.findall("pluralRule"):
                         self.__data["plural"][rule.get("count")] = rule.text
         
-        
         # Telephone Codes
         path = os.path.join(supplemental, "telephoneCodeData.xml")
         tree = xml.etree.ElementTree.parse(path)
@@ -137,7 +136,6 @@ class Parser():
                 self.__data["phonecode"][territory] = int(rule.get("code"))
                 # Respect first only
                 break
-        
         
         # Postal Codes
         path = os.path.join(supplemental, "postalCodeData.xml")
@@ -152,7 +150,6 @@ class Parser():
         path = os.path.join(supplemental, "supplementalData.xml")
         tree = xml.etree.ElementTree.parse(path)
         
-        
         # :: Calendar Preference
         ordering = None
         for item in tree.findall("calendarPreferenceData/calendarPreference"):
@@ -163,7 +160,6 @@ class Parser():
                 break
         
         self.__data["calendarpref"] = { "ordering" : ordering.split(" ") }
-                    
         
         # :: Week Data
         self.__data["weekdata"] = {}
@@ -179,7 +175,6 @@ class Parser():
             
             self.__data["weekdata"][key] = day
 
-
         # :: Measurement System
         self.__data["measurement"] = {}
         measurementData = tree.find("measurementData")
@@ -194,9 +189,6 @@ class Parser():
 
             self.__data["measurement"][key] = mtype
 
-        
-        
-        
         
         
     def __addDisplayNames(self, tree):
