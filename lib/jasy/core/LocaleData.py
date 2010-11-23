@@ -118,25 +118,37 @@ class Parser():
         # Plurals
         path = os.path.join(supplemental, "plurals.xml")
         tree = xml.etree.ElementTree.parse(path)
-        self.__data["plurals"] = {}
+        self.__data["plural"] = {}
         for item in tree.findall("plurals/pluralRules"):
             attr = item.get("locales")
             if attr != None:
                 if self.__language in attr.split(" "):
                     for rule in item.findall("pluralRule"):
-                        self.__data["plurals"][rule.get("count")] = rule.text
+                        self.__data["plural"][rule.get("count")] = rule.text
         
         
         # Telephone Codes
         path = os.path.join(supplemental, "telephoneCodeData.xml")
         tree = xml.etree.ElementTree.parse(path)
-        self.__data["phonecodes"] = {}
+        self.__data["phonecode"] = {}
         for item in tree.findall("telephoneCodeData/codesByTerritory"):
             territory = item.get("territory")
             for rule in item.findall("telephoneCountryCode"):
-                self.__data["phonecodes"][territory] = int(rule.get("code"))
+                self.__data["phonecode"][territory] = int(rule.get("code"))
                 # Respect first only
                 break
+        
+        
+        # Postal Codes
+        path = os.path.join(supplemental, "postalCodeData.xml")
+        tree = xml.etree.ElementTree.parse(path)
+        self.__data["postalcode"] = {}
+        for item in tree.findall("postalCodeData/postCodeRegex"):
+            print(item)
+            territoryId = item.get("territoryId")
+            self.__data["postalcode"][territoryId] = item.text
+        
+        
         
         
         
@@ -303,7 +315,7 @@ class Parser():
                         
                         
     def __addNumbers(self, tree):
-        store = self.__getStore(self.__data, "numbers")
+        store = self.__getStore(self.__data, "number")
                         
         # Symbols
         symbols = self.__getStore(store, "symbol")
