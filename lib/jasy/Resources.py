@@ -101,7 +101,7 @@ class Resources:
             
             
     def __collectRoots(self):
-        return [project.resourcePath for project in self.__session.getProjects()]
+        return [project.resourcePath for project in self.__session.getProjects() if project.resourcePath != None]
             
             
     def __collectFiles(self):
@@ -241,11 +241,10 @@ class Resources:
             info["roots"] = [replaceRoots for entry in info["roots"]]
         elif prefixRoots:
             info["roots"] = [prefixRoots + entry for entry in info["roots"]]
-            
+
         session = self.__session
-        
         class ProjectEncoder(json.JSONEncoder):
-            projectIds = { project: pos for pos, project in enumerate(session.getProjects()) }
+            projectIds = { project: pos for pos, project in enumerate(filter(lambda project: project.resourcePath != None, session.getProjects())) }
 
             def default(self, obj):
                 if isinstance(obj, Project):
