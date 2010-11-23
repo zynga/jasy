@@ -20,22 +20,24 @@ class Parser():
         pstart()
         logging.info("Preparing locale %s" % locale)
         splits = locale.split("_")
-        language = splits[0]
-        territory = splits[1] if len(splits) > 1 else None
         
+        # Store for internal usage
         self.__locale = locale
+        self.__language = splits[0]
+        self.__territory = splits[1] if len(splits) > 1 else None
+
+        # This will hold all data extracted data
         self.__data = {}
 
         # Add info section
-        
         self.__data["info"] = {
-            "name" : locale,
-            "language" : language,
-            "territory" : territory
+            "locale" : self.__locale,
+            "language" : self.__language,
+            "territory" : self.__territory
         }
         
         # Add keys
-        path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), language)
+        path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), self.__language)
         tree = xml.etree.ElementTree.parse(path)
         self.__data["key"] = {
             "short" : { key.get("type"): key.text for key in tree.findall("/keys/short/key") },
@@ -60,8 +62,7 @@ class Parser():
                 break
                 
         # Add supplemental CLDR data
-        supplemental = jasy.core.Info.cldrData("supplemental")
-
+        self.__addSupplementals()
 
         pstop()
 
@@ -106,6 +107,39 @@ class Parser():
             store = parent[name]
 
         return store
+        
+        
+        
+    def __addSupplementals(self):
+        supplemental = jasy.core.Info.cldrData("supplemental")
+        
+        logging.info("Reading supplementals...")
+
+        # Plurals
+        path = os.path.join(supplemental, "plurals.xml")
+        tree = xml.etree.ElementTree.parse(path)
+        self.__data["plurals"] = {}
+        for item in tree.findall("plurals/pluralRules"):
+            attr = item.get("locales")
+            if attr != None:
+                if self.__language in attr.split(" "):
+                    for rule in item.findall("pluralRule"):
+                        self.__data["plurals"][rule.get("count")] = rule.text
+        
+        
+        # Telephone Codes
+        path = os.path.join(supplemental, "telephoneCodeData.xml")
+        tree = xml.etree.ElementTree.parse(path)
+        self.__data["phonecodes"] = {}
+        for item in tree.findall("telephoneCodeData/codesByTerritory"):
+            territory = item.get("territory")
+            for rule in item.findall("telephoneCountryCode"):
+                self.__data["phonecodes"][territory] = rule.get("code")
+                # Respect first only
+                break
+        
+        
+        
         
         
     def __addDisplayNames(self, tree):
