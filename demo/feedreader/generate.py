@@ -131,13 +131,13 @@ def build():
             sorter = Sorter(resolver, permutation)
             compressedCode = Combiner(permutation, optimization, translation, localization).compress(sorter.getSortedClasses(), format=False)
 
+            # Write file
             # TODO: Create filenames
             # Based on permutation.getKey(), optimization, locale, modification date, etc.
-
-            # Write file
             writefile("build/script/feedreader-%s.js" % locale, headerCode + resourceCode + compressedCode + bootCode)
 
 
+    # Copy HTML file from source
     updatefile("source/build.html", "build/index.html")
 
 
