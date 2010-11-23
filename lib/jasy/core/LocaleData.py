@@ -153,6 +153,18 @@ class Parser():
         tree = xml.etree.ElementTree.parse(path)
         
         
+        # :: Calendar Preference
+        ordering = None
+        for item in tree.findall("calendarPreferenceData/calendarPreference"):
+            if item.get("territories") == "001" and ordering == None:
+                ordering = item.get("ordering")
+            elif self.__territory in item.get("territories").split(" "):
+                ordering = item.get("ordering")
+                break
+        
+        self.__data["calendarpref"] = { "ordering" : ordering.split(" ") }
+                    
+        
         # :: Week Data
         self.__data["weekdata"] = {}
         weekData = tree.find("weekData")
