@@ -144,11 +144,44 @@ class Parser():
         tree = xml.etree.ElementTree.parse(path)
         self.__data["postalcode"] = {}
         for item in tree.findall("postalCodeData/postCodeRegex"):
-            print(item)
             territoryId = item.get("territoryId")
             self.__data["postalcode"][territoryId] = item.text
         
         
+        # Supplemental Data
+        path = os.path.join(supplemental, "supplementalData.xml")
+        tree = xml.etree.ElementTree.parse(path)
+        
+        
+        # :: Week Data
+        self.__data["weekdata"] = {}
+        weekData = tree.find("weekData")
+        for key in ["firstDay", "weekendStart", "weekendEnd"]:
+            day = None
+            for item in weekData.findall(key):
+                if item.get("territories") == "001" and day == None:
+                    day = item.get("day")
+                elif self.__territory in item.get("territories").split(" "):
+                    day = item.get("day")
+                    break
+            
+            self.__data["weekdata"][key] = day
+
+
+        # :: Measurement System
+        self.__data["measurement"] = {}
+        measurementData = tree.find("measurementData")
+        for key in ["measurementSystem", "paperSize"]:
+            mtype = None
+            for item in measurementData.findall(key):
+                if item.get("territories") == "001" and mtype == None:
+                    mtype = item.get("type")
+                elif self.__territory in item.get("territories").split(" "):
+                    mtype = item.get("type")
+                    break
+
+            self.__data["measurement"][key] = mtype
+
         
         
         
