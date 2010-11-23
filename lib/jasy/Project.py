@@ -3,8 +3,8 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import os, logging
-from configparser import SafeConfigParser
+import os, logging, configparser
+
 from jasy.core.Class import Class
 from jasy.core.Cache import Cache
         
@@ -24,7 +24,7 @@ class Project():
         if not os.path.exists(manifestPath):
             raise ProjectException("Missing manifest.cfg at: %s" % manifestPath)
         
-        parser = SafeConfigParser()
+        parser = configparser.SafeConfigParser()
         parser.read(manifestPath)
 
         try:
