@@ -134,7 +134,7 @@ class Parser():
         for item in tree.findall("telephoneCodeData/codesByTerritory"):
             territory = item.get("territory")
             for rule in item.findall("telephoneCountryCode"):
-                self.__data["phonecodes"][territory] = rule.get("code")
+                self.__data["phonecodes"][territory] = int(rule.get("code"))
                 # Respect first only
                 break
         
