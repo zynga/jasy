@@ -79,12 +79,12 @@ def build():
     setup()
     
     # Values
-    session.addVariant("qx.debug", [ '"on"' ])
-    session.addVariant("qx.client", [ '"gecko"' ])
-    session.addVariant("qx.dynlocale", [ '"off"' ])
-    session.addVariant("qx.globalErrorHandling", [ '"off"' ])
-    session.addVariant("qx.version", ["1.0"])
-    session.addVariant("qx.theme", ['"qx.theme.Modern"'])
+    session.addValue("qx.debug", [ '"on"' ])
+    session.addValue("qx.client", [ '"gecko"' ])
+    session.addValue("qx.dynlocale", [ '"off"' ])
+    session.addValue("qx.globalErrorHandling", [ '"off"' ])
+    session.addValue("qx.version", ["1.0"])
+    session.addValue("qx.theme", ['"qx.theme.Modern"'])
 
     # Locales
     session.addLocale("de_DE")
@@ -95,46 +95,44 @@ def build():
 
     # Process every possible permutation/locale
     for permutation in session.getPermutations():
-        for locale in session.getLocales():
-            print("------------------------------------------------------------------------------")
+        print("------------------------------------------------------------------------------")
 
-            # Build file header
-            headerCode = ""
-            headerCode += "/*\n"
-            headerCode += " * Copyright 2010\n"
-            headerCode += " *\n"
-            headerCode += " * Permutation: %s\n" % permutation
-            headerCode += " * Locale: %s\n" % locale
-            headerCode += " * Optimizations: %s\n" % optimization
-            headerCode += " */\n\n"
-        
-            # Boot
-            bootCode = "qx.core.Init.boot(feedreader.Application);"
+        # Build file header
+        headerCode = ""
+        headerCode += "/*\n"
+        headerCode += " * Copyright 2010\n"
+        headerCode += " *\n"
+        headerCode += " * Permutation: %s\n" % permutation
+        headerCode += " * Optimizations: %s\n" % optimization
+        headerCode += " */\n\n"
     
-            # Resolving dependencies
-            resolver = Resolver(session, permutation)
-            resolver.addClassName("feedreader.Application")
-            resolver.addClassName("qx.theme.Modern")
-            classes = resolver.getIncludedClasses()
+        # Boot
+        bootCode = "qx.core.Init.boot(feedreader.Application);"
 
-            # Collecting Resources
-            resources = Resources(session, classes, permutation)
-            resources.publishFiles("build/resource")
-            resources.publishManifest("build/manifest", "resource")
-            resourceCode = resources.exportInfo(replaceRoots="resource")
+        # Resolving dependencies
+        resolver = Resolver(session, permutation)
+        resolver.addClassName("feedreader.Application")
+        resolver.addClassName("qx.theme.Modern")
+        classes = resolver.getIncludedClasses()
 
-            # Prepare localization support
-            translation = session.getTranslation(locale)
-            localization = session.getLocalization(locale)
-            
-            # Compiling classes
-            sorter = Sorter(resolver, permutation)
-            compressedCode = Combiner(permutation, optimization, translation, localization).compress(sorter.getSortedClasses(), format=False)
+        # Collecting Resources
+        resources = Resources(session, classes, permutation)
+        resources.publishFiles("build/resource")
+        resources.publishManifest("build/manifest", "resource")
+        resourceCode = resources.exportInfo(replaceRoots="resource")
 
-            # Write file
-            # TODO: Create filenames
-            # Based on permutation.getKey(), optimization, locale, modification date, etc.
-            writefile("build/script/feedreader-%s.js" % locale, headerCode + resourceCode + compressedCode + bootCode)
+        # Prepare localization support
+        translation = session.getTranslation(locale)
+        localization = session.getLocalization(locale)
+        
+        # Compiling classes
+        sorter = Sorter(resolver, permutation)
+        compressedCode = Combiner(permutation, optimization, translation, localization).compress(sorter.getSortedClasses(), format=False)
+
+        # Write file
+        # TODO: Create filenames
+        # Based on permutation.getKey(), optimization, locale, modification date, etc.
+        writefile("build/script/feedreader-%s.js" % locale, headerCode + resourceCode + compressedCode + bootCode)
 
 
     # Copy HTML file from source

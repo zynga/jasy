@@ -15,11 +15,11 @@ class Session():
         atexit.register(self.close)
         
         self.__projects = []
-        self.variants = {}
-        self.locales = set()
-        self.timestamp = time.time()
-        
-        
+        self.__variants = {}
+        self.__locales = set()
+        self.__timestamp = time.time()
+    
+    
     #
     # Project Managment
     #
@@ -32,8 +32,8 @@ class Session():
         
     def getProjects(self):
         return self.__projects
-        
-        
+    
+    
     #
     # Core
     #
@@ -46,21 +46,20 @@ class Session():
         logging.info("Closing session...")
         for project in self.__projects:
             project.close()
-
-
-
+    
+    
     #
     # Permutation Support
     #
     
-    def addVariant(self, name, values):
+    def addValue(self, name, values):
         if type(values) != list:
             values = [values]
             
-        self.variants[name] = set(values)
+        self.__variants[name] = set(values)
         
-    def clearVariants(self):
-        self.variants = {}
+    def clearValues(self):
+        self.__variants = {}
     
     
     def getPermutations(self):
@@ -70,10 +69,12 @@ class Session():
         """
 
         logging.info("Computing permutations...")
+        variants = self.__variants
+        
+        # Patch in locales
+        variants["locale"] = self.__locales
 
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
-        variants = self.variants
-
         names = sorted(variants)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(variants[name] for name in names))]
         permutations = [Permutation(combi) for combi in combinations]
@@ -85,23 +86,23 @@ class Session():
     #
     # Locale Configuration
     #
-    
-    defaultLocale = "C"
             
     def addLocale(self, locale):
-        self.locales.add(locale)
+        self.__locales.add(locale)
 
     def clearLocales(self):
-        self.locales = set()
+        self.__locales = set()
 
     def getLocales(self):
-        return self.locales
+        return self.__locales
     
     
     
     #
     # Translation Support
     #
+    
+    defaultLocale = "C"
     
     def getAvailableTranslations(self):
         """ 
