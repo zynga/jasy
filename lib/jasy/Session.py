@@ -6,7 +6,6 @@
 import logging, itertools, time, atexit
 from jasy.core.Permutation import Permutation
 from jasy.core.Translation import Translation
-from jasy.core.Localization import Localization
 from jasy.core.Profiler import *
 
 
@@ -139,17 +138,4 @@ class Session():
                     files.append(translations[entry])
         
         return Translation(locale, files)
-    
-    
-    
-    #
-    # Localization Support
-    #
-    
-    def getLocalization(self, locale):
-        """ 
-        Returns a localization object for the given locale containing 
-        all locale specific CLDR strings (fallbacks resolved).
-        """
-                
-        return Localization(locale)
+

@@ -9,7 +9,6 @@ from jasy.core.Profiler import *
 from jasy.core.ImageInfo import ImgInfo
 from jasy.core.File import *
 from jasy.Project import Project
-from jasy.Combiner import size
 
 __all__ = ["Resources"]
 
@@ -253,7 +252,6 @@ class Resources:
                 return json.JSONEncoder.default(self, obj)
         
         code = json.dumps(info, separators=(',',':'), cls=ProjectEncoder)
-        logging.info(size(code))
         
         return "this.%s=%s;\n" % (to, code)
         

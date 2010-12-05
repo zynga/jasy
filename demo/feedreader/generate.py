@@ -90,10 +90,11 @@ def build():
     session.addLocale("de_DE")
     session.addLocale("en_US")
 
-    # Create optimizer for improved speed/compression
+    # Permutation independend config
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
+    formatting = Format()
 
-    # Process every possible permutation/locale
+    # Process every possible permutation
     for permutation in session.getPermutations():
         print("------------------------------------------------------------------------------")
 
@@ -121,18 +122,18 @@ def build():
         resources.publishManifest("build/manifest", "resource")
         resourceCode = resources.exportInfo(replaceRoots="resource")
 
-        # Prepare localization support
-        translation = session.getTranslation(locale)
-        localization = session.getLocalization(locale)
-        
-        # Compiling classes
+        # Preparation
+        translation = session.getTranslation(permutation.get("locale"))
+        combiner = Combiner(permutation, translation, optimization, formatting)
         sorter = Sorter(resolver, permutation)
-        compressedCode = Combiner(permutation, optimization, translation, localization).compress(sorter.getSortedClasses(), format=False)
+        
+        # Compressing classes
+        compressedCode = combiner.compress(sorter.getSortedClasses())
 
         # Write file
         # TODO: Create filenames
-        # Based on permutation.getKey(), optimization, locale, modification date, etc.
-        writefile("build/script/feedreader-%s.js" % locale, headerCode + resourceCode + compressedCode + bootCode)
+        # Based on permutation.getKey(), optimization, modification date, etc.
+        writefile("build/script/feedreader-%s.js" % permutation.get("locale"), headerCode + resourceCode + compressedCode + bootCode)
 
 
     # Copy HTML file from source

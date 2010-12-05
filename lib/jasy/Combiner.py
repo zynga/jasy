@@ -3,88 +3,42 @@
 # Copyright 2010 Sebastian Werner
 #
 
-from datetime import datetime
 from jasy.core.Profiler import *
-import logging, zlib
+import logging
 
-__all__ = ["Combiner","size"]
+__all__ = ["Combiner"]
 
-def size(content, encoding="utf-8"):
-    """ Returns a user friendly formatted string about the size of the given content. """
-    
-    normalSize = len(content)
-    zippedSize = len(zlib.compress(content.encode(encoding)))
-    
-    return "Size: {:.2f}KB ({:.2f}KB zipped => {:.2%})".format(normalSize/1024, zippedSize/1024, zippedSize/normalSize)
-    
 
 class Combiner():
     """ Combines the code of a list of classes into one string """
     
-    def __init__(self, permutation=None, optimization=None, translation=None, localization=None):
+    def __init__(self, permutation=None, translation=None, optimization=None, formatting=None):
         self.__permutation = permutation
-        self.__optimization = optimization
         self.__translation = translation
-        self.__localization = localization
+        self.__optimization = optimization
+        self.__formatting = formatting
     
     
-    def combine(self, classList, addHeaders=True, computeSize=True):
-        result = []
-        
-        pstart()
+    def combine(self, classList):
+        """ Combines the unmodified content of the given class list """
+
         logging.info("Combining classes...")
-        
-        for classObj in classList:
-            content = classObj.getText()
-            
-            if addHeaders:
-                result.append("")
-                result.append("// %s" % classObj.getName())
-                result.append("// - Modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
 
-                if computeSize:
-                    result.append("// - %s" % size(content))
-            
-            result.append(content)
-            
-        result = "\n".join(result)
-
-        if computeSize:
-            logging.info(size(result))
-        
+        pstart()
+        result = "".join([classObj.getText() for classObj in classList])
         pstop()
+
         return result
     
     
-    def compress(self, classList, format=None, addHeaders=True, computeSize=True):
-        result = []
-
-        permutation = self.__permutation
-        optimization = self.__optimization
-        translation = self.__translation
-        localization = self.__localization
+    def compress(self, classList):
+        """ Combines the compressed result of the given class list """
         
-        pstart()
         logging.info("Compressing classes...")
-        
-        for classObj in classList:
-            compressed = classObj.getCompressed(permutation, optimization, translation, localization, format=format)
-            
-            if addHeaders:
-                result.append("")
-                result.append("// %s" % classObj.getName())
-                result.append("// - Modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
 
-                if computeSize:
-                    result.append("// - %s" % size(compressed))
-            
-            result.append(compressed)
-            
-        result = "\n".join(result)
-
-        if computeSize:
-            logging.info(size(result))
-        
+        pstart()
+        result = "".join([classObj.getCompressed(self.__permutation, self.__translation, self.__optimization, self.__formatting) for classObj in classList])
         pstop()
+
         return result
 
