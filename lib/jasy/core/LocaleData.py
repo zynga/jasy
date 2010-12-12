@@ -62,7 +62,7 @@ class Parser():
                 break
                 
         # Add supplemental CLDR data
-        self.__addSupplementals()
+        self.__addSupplementals(self.__territory)
 
         pstop()
 
@@ -111,7 +111,7 @@ class Parser():
         
         
         
-    def __addSupplementals(self):
+    def __addSupplementals(self, territory):
         """ Converts data from supplemental folder """
         
         supplemental = jasy.core.Info.cldrData("supplemental")
@@ -119,33 +119,33 @@ class Parser():
         # Plurals
         path = os.path.join(supplemental, "plurals.xml")
         tree = xml.etree.ElementTree.parse(path)
-        self.__data["plural"] = {}
+        self.__data["Plural"] = {}
         for item in tree.findall("plurals/pluralRules"):
             attr = item.get("locales")
             if attr != None:
                 if self.__language in attr.split(" "):
                     for rule in item.findall("pluralRule"):
-                        self.__data["plural"][rule.get("count")] = rule.text
+                        self.__data["Plural"][rule.get("count").upper()] = rule.text
         
         # Telephone Codes
         path = os.path.join(supplemental, "telephoneCodeData.xml")
         tree = xml.etree.ElementTree.parse(path)
-        self.__data["phonecode"] = {}
         for item in tree.findall("telephoneCodeData/codesByTerritory"):
-            territory = item.get("territory")
-            for rule in item.findall("telephoneCountryCode"):
-                self.__data["phonecode"][territory] = int(rule.get("code"))
-                # Respect first only
-                break
+            territoryId = item.get("territory")
+            if territoryId == territory:
+                for rule in item.findall("telephoneCountryCode"):
+                    self.__data["PhoneCode"] = {"CODE":int(rule.get("code"))}
+                    # Respect first only
+                    break
         
         # Postal Codes
         path = os.path.join(supplemental, "postalCodeData.xml")
         tree = xml.etree.ElementTree.parse(path)
-        self.__data["postalcode"] = {}
         for item in tree.findall("postalCodeData/postCodeRegex"):
             territoryId = item.get("territoryId")
-            self.__data["postalcode"][territoryId] = item.text
-        
+            if territory == territoryId:
+                self.__data["PostalCode"] = {"CODE":item.text}
+                break
         
         # Supplemental Data
         path = os.path.join(supplemental, "supplementalData.xml")
@@ -156,39 +156,39 @@ class Parser():
         for item in tree.findall("calendarPreferenceData/calendarPreference"):
             if item.get("territories") == "001" and ordering == None:
                 ordering = item.get("ordering")
-            elif self.__territory in item.get("territories").split(" "):
+            elif territory in item.get("territories").split(" "):
                 ordering = item.get("ordering")
                 break
         
-        self.__data["calendarpref"] = { "ordering" : ordering.split(" ") }
+        self.__data["CalendarPref"] = { "ordering" : ordering.split(" ") }
         
         # :: Week Data
-        self.__data["weekdata"] = {}
+        self.__data["Week"] = {}
         weekData = tree.find("weekData")
         for key in ["firstDay", "weekendStart", "weekendEnd"]:
             day = None
             for item in weekData.findall(key):
                 if item.get("territories") == "001" and day == None:
                     day = item.get("day")
-                elif self.__territory in item.get("territories").split(" "):
+                elif territory in item.get("territories").split(" "):
                     day = item.get("day")
                     break
             
-            self.__data["weekdata"][key] = day
+            self.__data["Week"][key] = day
 
         # :: Measurement System
-        self.__data["measurement"] = {}
+        self.__data["Measurement"] = {}
         measurementData = tree.find("measurementData")
         for key in ["measurementSystem", "paperSize"]:
             mtype = None
             for item in measurementData.findall(key):
                 if item.get("territories") == "001" and mtype == None:
                     mtype = item.get("type")
-                elif self.__territory in item.get("territories").split(" "):
+                elif territory in item.get("territories").split(" "):
                     mtype = item.get("type")
                     break
 
-            self.__data["measurement"][key] = mtype
+            self.__data["Measurement"][key] = mtype
 
         
         
@@ -200,9 +200,9 @@ class Parser():
         for key in ["languages", "scripts", "territories", "variants", "keys", "types", "measurementSystemNames"]:
             # make it a little bit shorter, there is not really any conflict potential
             if key == "measurementSystemNames":
-                store = self.__getStore(display, "measurement")
+                store = self.__getStore(display, "Measure")
             elif key == "territories":
-                store = self.__getStore(display, "territory")
+                store = self.__getStore(display, "Territory")
             else:
                 # remove last character "s" to force singular
                 store = self.__getStore(display, key[:-1])
@@ -211,7 +211,7 @@ class Parser():
                 if not element.get("draft"):
                     field = element.get("type")
                     if not field in store:
-                        store[field] = element.text
+                        store[field.upper()] = element.text
                     
                     
     def __addDelimiters(self, tree):
