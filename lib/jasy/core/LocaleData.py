@@ -14,6 +14,20 @@ def store(locale):
     Parser(locale).export()
     
     
+def camelCaseToUpper(input):
+    if input.upper() == input:
+        return input
+    
+    result = []
+    for char in input:
+        conv = char.upper()
+        if char == conv and len(result) > 0:
+            result.append("_")
+            
+        result.append(conv)
+        
+    return "".join(result)
+        
     
 class Parser():
     def __init__(self, locale):
@@ -31,17 +45,17 @@ class Parser():
 
         # Add info section
         self.__data["info"] = {
-            "locale" : self.__locale,
-            "language" : self.__language,
-            "territory" : self.__territory
+            "LOCALE" : self.__locale,
+            "LANGUAGE" : self.__language,
+            "TERRITORY" : self.__territory
         }
         
         # Add keys
         path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), self.__language)
         tree = xml.etree.ElementTree.parse(path)
         self.__data["key"] = {
-            "short" : { key.get("type"): key.text for key in tree.findall("/keys/short/key") },
-            "full" : { key.get("type"): key.text for key in tree.findall("/keys/full/key") }
+            "Short" : { key.get("type"): key.text for key in tree.findall("/keys/short/key") },
+            "Full" : { key.get("type"): key.text for key in tree.findall("/keys/full/key") }
         }
         
         
@@ -125,7 +139,7 @@ class Parser():
             if attr != None:
                 if self.__language in attr.split(" "):
                     for rule in item.findall("pluralRule"):
-                        self.__data["Plural"][rule.get("count").upper()] = rule.text
+                        self.__data["Plural"][camelCaseToUpper(rule.get("count"))] = rule.text
         
         # Telephone Codes
         path = os.path.join(supplemental, "telephoneCodeData.xml")
@@ -160,7 +174,7 @@ class Parser():
                 ordering = item.get("ordering")
                 break
         
-        self.__data["CalendarPref"] = { "ordering" : ordering.split(" ") }
+        self.__data["CalendarPref"] = { "ORDERING" : ordering.split(" ") }
         
         # :: Week Data
         self.__data["Week"] = {}
@@ -174,7 +188,7 @@ class Parser():
                     day = item.get("day")
                     break
             
-            self.__data["Week"][key] = day
+            self.__data["Week"][camelCaseToUpper(key)] = day
 
         # :: Measurement System
         self.__data["Measurement"] = {}
@@ -188,7 +202,7 @@ class Parser():
                     mtype = item.get("type")
                     break
 
-            self.__data["Measurement"][key] = mtype
+            self.__data["Measurement"][camelCaseToUpper(key)] = mtype
 
         
         
@@ -211,7 +225,7 @@ class Parser():
                 if not element.get("draft"):
                     field = element.get("type")
                     if not field in store:
-                        store[field.upper()] = element.text
+                        store[camelCaseToUpper(field)] = element.text
                     
                     
     def __addDelimiters(self, tree):
@@ -223,7 +237,7 @@ class Parser():
             if not element.get("draft"):
                 field = element.tag
                 if not field in delimiters:
-                    delimiters[field] = element.text
+                    delimiters[camelCaseToUpper(field)] = element.text
         
         
     def __addCalendars(self, tree, key="dates/calendars"):
@@ -252,7 +266,7 @@ class Parser():
                 
                     for month in child.findall("month"):
                         if not month.get("draft"):
-                            name = month.get("type")
+                            name = month.get("type").upper()
                             if not name in months[format]:
                                 months[format][name] = month.text
 
@@ -268,7 +282,7 @@ class Parser():
 
                     for day in child.findall("day"):
                         if not day.get("draft"):
-                            name = day.get("type")
+                            name = day.get("type").upper()
                             if not name in days[format]:
                                 days[format][name] = day.text
 
@@ -284,7 +298,7 @@ class Parser():
 
                     for quarter in child.findall("quarter"):
                         if not quarter.get("draft"):
-                            name = quarter.get("type")
+                            name = quarter.get("type").upper()
                             if not name in quarters[format]:
                                 quarters[format][name] = quarter.text
         
@@ -294,7 +308,7 @@ class Parser():
             dateFormats = self.__getStore(calendar, "date")
             for child in element.findall("dateFormats/dateFormatLength"):
                 if not child.get("draft"):
-                    format = child.get("type")
+                    format = child.get("type").upper()
                     text = child.find("dateFormat/pattern").text
                     if not format in dateFormats:
                         dateFormats[format] = text
@@ -305,7 +319,7 @@ class Parser():
             timeFormats = self.__getStore(calendar, "time")
             for child in element.findall("timeFormats/timeFormatLength"):
                 if not child.get("draft"):
-                    format = child.get("type")
+                    format = child.get("type").upper()
                     text = child.find("timeFormat/pattern").text
                     if not format in timeFormats:
                         timeFormats[format] = text
@@ -316,6 +330,7 @@ class Parser():
             datetime = self.__getStore(calendar, "datetime")
             for child in element.findall("dateTimeFormats/availableFormats/dateFormatItem"):
                 if not child.get("draft"):
+                    # no uppercase here, because of intentianal camelcase
                     format = child.get("id")
                     text = child.text
                     if not format in datetime:
@@ -327,7 +342,7 @@ class Parser():
             fields = self.__getStore(calendar, "field")
             for child in element.findall("fields/field"):
                 if not child.get("draft"):
-                    format = child.get("type")
+                    format = child.get("type").upper()
                     for nameChild in child.findall("displayName"):
                         if not nameChild.get("draft"):
                             text = nameChild.text
@@ -342,7 +357,7 @@ class Parser():
             for child in element.findall("fields/field"):
                 if not child.get("draft"):
                     format = child.get("type")
-                    if child.find("relative"):
+                    if child.findall("relative"):
                         relativeField = self.__getStore(relatives, format)
                         for relChild in child.findall("relative"):
                             if not relChild.get("draft"):
@@ -357,9 +372,9 @@ class Parser():
                         
         # Symbols
         symbols = self.__getStore(store, "symbol")
-        for element in tree.findall("numbers/symbol/*"):
+        for element in tree.findall("numbers/symbols/*"):
             if not element.get("draft"):
-                field = element.tag
+                field = camelCaseToUpper(element.tag)
                 if not field in store:
                     symbols[field] = element.text
 
@@ -370,7 +385,7 @@ class Parser():
         for format in ["decimal", "scientific", "percent", "currency"]:
             if not format in store["format"]:
                 for element in tree.findall("numbers//%sFormat/pattern" % format):
-                    store["format"][format] = element.text
+                    store["format"][camelCaseToUpper(format)] = element.text
             
         # Currencies
         currencies = self.__getStore(store, "currency")
