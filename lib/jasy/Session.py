@@ -6,6 +6,8 @@
 import logging, itertools, time, atexit
 from jasy.core.Permutation import Permutation
 from jasy.core.Translation import Translation
+from jasy.Project import Project
+from jasy.core.Info import *
 from jasy.core.Profiler import *
 
 
@@ -15,7 +17,7 @@ class Session():
         
         self.__projects = []
         self.__variants = {}
-        self.__locales = set()
+        self.__locales = {}
         self.__timestamp = time.time()
     
     
@@ -29,8 +31,15 @@ class Session():
     def removeProject(self, project):
         self.__projects.remove(project)
         
-    def getProjects(self):
-        return self.__projects
+    def getProjects(self, permutation=None):
+        # Dynamically add the locale matching CLDR project to the list
+        dynadd = []
+        if permutation:
+            locale = permutation.get("locale")
+            if locale in self.__locales:
+                dynadd.append(self.__locales[locale])
+        
+        return self.__projects + dynadd
     
     
     #
@@ -87,10 +96,10 @@ class Session():
     #
             
     def addLocale(self, locale):
-        self.__locales.add(locale)
+        self.__locales[locale] = Project(localeProject(locale))
 
     def clearLocales(self):
-        self.__locales = set()
+        self.__locales = {}
 
     def getLocales(self):
         return self.__locales

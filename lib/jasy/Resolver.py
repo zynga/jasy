@@ -9,9 +9,8 @@ from jasy.core.Profiler import *
 __all__ = ["Resolver"]
 
 class Resolver():
-    def __init__(self, session, permutation=None):
+    def __init__(self, projects, permutation=None):
         # Keep session/permutation reference
-        self.__session = session
         self.__permutation = permutation
 
         # Required classes by the user
@@ -22,24 +21,18 @@ class Resolver():
 
         # Collecting all available classes
         self.__classes = {}
-        for project in session.getProjects():
+        for project in projects:
             self.__classes.update(project.getClasses())
         
         
     def addClassName(self, className):
         """ Adds a class to the initial dependencies """
         
-        projects = self.__session.getProjects()
-        for project in projects:
-            classObj = project.getClassByName(className)
-            if classObj:
-                break
-
-        if not classObj:
+        if not className in self.__classes:
             raise Exception("Unknown Class: %s" % className)
             
         logging.info("Adding class: %s" % className)
-        self.__required.append(classObj)
+        self.__required.append(self.__classes[className])
         
         del self.__included[:]
             

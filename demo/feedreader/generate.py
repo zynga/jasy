@@ -17,7 +17,6 @@ def setup():
     
     session = Session()
     session.addProject(Project("../../data/jscore"))
-    session.addProject(Project("../../data/jslocale/de_DE"))
     session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
 
@@ -81,7 +80,6 @@ def build():
     # Values
     session.addValue("qx.debug", [ '"on"' ])
     session.addValue("qx.client", [ '"gecko"' ])
-    session.addValue("qx.dynlocale", [ '"off"' ])
     session.addValue("qx.globalErrorHandling", [ '"off"' ])
     session.addValue("qx.version", ["1.0"])
     session.addValue("qx.theme", ['"qx.theme.Modern"'])
@@ -109,9 +107,12 @@ def build():
     
         # Boot
         bootCode = "qx.core.Init.boot(feedreader.Application);"
+        
+        # Get projects
+        projects = session.getProjects(permutation)
 
         # Resolving dependencies
-        resolver = Resolver(session, permutation)
+        resolver = Resolver(projects, permutation)
         resolver.addClassName("feedreader.Application")
         resolver.addClassName("qx.theme.Modern")
         classes = resolver.getIncludedClasses()
