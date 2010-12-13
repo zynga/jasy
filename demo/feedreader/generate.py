@@ -11,7 +11,6 @@ from jasy import *
 # Config
 #
 
-@task
 def setup():
     global session
     
@@ -25,17 +24,6 @@ def setup():
 #
 # Tasks
 #
-
-@task
-def locales():
-    logging.info("Generating locale projects")
-    
-    import jasy.core.LocaleData as LocaleData
-    
-    for locale in ["de_DE","en_US","fr_FR","es_ES"]:
-        LocaleData.store(locale)
-    
-
 
 @task
 def clear():

@@ -13,6 +13,9 @@ class Format:
         return
 
 
+    def __str__(self):
+        return "none"
+
 
     def old(self):
         result.append("")

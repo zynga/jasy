@@ -8,9 +8,10 @@ from jasy.core.File import *
 from jasy.core.Profiler import *
 import jasy.core.Info
 
+__all__ = ["storeLocale"]
 
 
-def store(locale):
+def storeLocale(locale):
     Parser(locale).export()
     
     

@@ -9,6 +9,7 @@ from jasy.core.Translation import Translation
 from jasy.Project import Project
 from jasy.core.Info import *
 from jasy.core.Profiler import *
+from jasy.core.LocaleData import storeLocale
 
 
 class Session():
@@ -96,6 +97,7 @@ class Session():
     #
             
     def addLocale(self, locale):
+        storeLocale(locale)
         self.__locales[locale] = Project(localeProject(locale))
 
     def clearLocales(self):
