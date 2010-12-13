@@ -5,9 +5,8 @@
 ==================================================================================================
 */
 
-(function()
+(function(global)
 {
-  var global = this;
   var all = global.$$locales;
   var NULL = null;
 
@@ -75,4 +74,4 @@
       return varargs == NULL ? replacement : patch(replacement, arguments, 3);
     }
   }
-})();
+})(this);
