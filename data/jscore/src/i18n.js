@@ -39,7 +39,7 @@
     tr : function(msg, varargs)
     {
       var replacement = lookup(msg, msg);
-      return varargs == NULL ? replacement : patch(replacement, arguments, 1);
+      return arguments.length <= 1 ? replacement : patch(replacement, arguments, 1);
     },
     
 
@@ -55,7 +55,7 @@
     trc : function(hint, msg, varargs)
     {
       var replacement = lookup(hint, msg)
-      return varargs == NULL ? replacement : patch(replacement, arguments, 2);
+      return arguments.length <= 2 ? replacement : patch(replacement, arguments, 2);
     },
     
 
@@ -72,7 +72,7 @@
     {
       var msg = number == 1 ? msgSingular : msgPlural;
       var replacement = lookup(msg);
-      return varargs == NULL ? replacement : patch(replacement, arguments, 3);
+      return arguments.length <= 3 ? replacement : patch(replacement, arguments, 3);
     }
   }
 })(this);
