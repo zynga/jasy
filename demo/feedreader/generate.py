@@ -7,18 +7,6 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 # Import JavaScript tooling
 from jasy import *
 
-#
-# Config
-#
-
-def setup():
-    global session
-    
-    session = Session()
-    session.addProject(Project("../../data/jscore"))
-    session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
-    session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
-
 
 
 #
@@ -27,43 +15,61 @@ def setup():
 
 @task
 def clear():
-    setup()
-    
+    # Setup session
+    session = Session()
+    session.addProject(Project("../../data/jscore"))
+    session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
+    session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
+
+    # Clearing cache
     logging.info("Clearing cache...")
     session.clearCache()
 
 
 @task
 def source():
-    setup()
+    # Setup session
+    session = Session()
+    session.addProject(Project("../../data/jscore"))
+    session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
+    session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
-    # Locales
+    # Setup locales
     session.addLocale("de_DE")
     session.addLocale("en_US")
 
-    # Resolve Classes
-    resolver = Resolver(session)
-    resolver.addClassName("feedreader.Application")
-    resolver.addClassName("qx.theme.Modern")
+    # Process every possible permutation
+    for permutation in session.getPermutations():
+        # Get projects
+        projects = session.getProjects(permutation)
 
-    # Collect Resources
-    resources = Resources(session, resolver.getIncludedClasses())
-    resourceCode = resources.exportInfo(prefixRoots="../")
+        # Resolve Classes
+        resolver = Resolver(projects)
+        resolver.addClassName("feedreader.Application")
+        resolver.addClassName("qx.theme.Modern")
 
-    # Generate Loader
-    loader = Loader(Sorter(resolver).getSortedClasses(), "../")
-    loaderCode = loader.generate("qx.core.Init.boot(feedreader.Application)")
+        # Collect Resources
+        resources = Resources(session, resolver.getIncludedClasses())
+        resourceCode = resources.exportInfo(prefixRoots="../")
 
-    # Write file
-    for locale in session.getLocales():
-        # TODO
-        localeCode = ""
-        writefile("source/script/feedreader-%s.js" % locale, localeCode + resourceCode + loaderCode)
+        # Generate Loader
+        loader = Loader(Sorter(resolver).getSortedClasses(), "../")
+        loaderCode = loader.generate("qx.core.Init.boot(feedreader.Application)")
+
+        # Write file
+        for locale in session.getLocales():
+            # TODO
+            localeCode = ""
+            writefile("source/script/feedreader-%s.js" % locale, localeCode + resourceCode + loaderCode)
 
 
 @task
 def build():
-    setup()
+    # Setup session
+    session = Session()
+    session.addProject(Project("../../data/jscore"))
+    session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
+    session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
     # Values
     session.addValue("qx.debug", [ '"on"' ])
@@ -72,7 +78,7 @@ def build():
     session.addValue("qx.version", ["1.0"])
     session.addValue("qx.theme", ['"qx.theme.Modern"'])
 
-    # Locales
+    # Setup locales
     session.addLocale("de_DE")
     session.addLocale("en_US")
 
