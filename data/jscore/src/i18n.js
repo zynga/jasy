@@ -7,7 +7,8 @@
 
 (function(global)
 {
-  var all = global.$$locales;
+  var all = global.$$translation;
+  var Plural = locale.Plural;
   var NULL = null;
 
   var lookup = function(msg, fallback)

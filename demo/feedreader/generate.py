@@ -44,7 +44,7 @@ def source():
         
         # Get projects
         projects = session.getProjects(permutation)
-
+        
         # Resolve Classes
         resolver = Resolver(projects)
         resolver.addClassName("feedreader.Application")
@@ -57,10 +57,13 @@ def source():
         # Generate Loader
         loader = Loader(Sorter(resolver).getSortedClasses(), "../")
         loaderCode = loader.generate("qx.core.Init.boot(feedreader.Application)")
+        
+        # Prepare translation
+        translation = session.getTranslation(permutation.get("locale"))
+        translationCode = translation.generate()
 
-        # TODO
-        localeCode = ""
-        writefile("source/script/feedreader-%s.js" % permutation.get("locale"), localeCode + resourceCode + loaderCode)
+        # Finally write file
+        writefile("source/script/feedreader-%s.js" % permutation.get("locale"), translationCode + resourceCode + loaderCode)
 
 
 @task

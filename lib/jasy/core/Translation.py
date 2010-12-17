@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging, re, copy
+import logging, re, copy, json
 from jasy.parser.Node import Node
 from jasy.ext import polib
 
@@ -40,6 +40,9 @@ class Translation:
     # Public API
     #
 
+    def generate(self):
+        return "this.$$translation=%s;" % json.dumps(self.__generate({}), separators=(',',':'))
+
     def patch(self, node):
         self.__recurser(node)
         
@@ -54,7 +57,19 @@ class Translation:
 
 
     #
-    # Implementation
+    # Generate :: Implementation
+    #
+    
+    def __generate(self, data):
+        for msgid in self.__table:
+            data[msgid] = self.__table[msgid]
+            
+        return data
+
+
+
+    #
+    # Patch :: Implementation
     #
     
 
