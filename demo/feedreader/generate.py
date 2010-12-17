@@ -40,6 +40,8 @@ def source():
 
     # Process every possible permutation
     for permutation in session.getPermutations():
+        print("------------------------------------------------------------------------------")
+        
         # Get projects
         projects = session.getProjects(permutation)
 
@@ -56,11 +58,9 @@ def source():
         loader = Loader(Sorter(resolver).getSortedClasses(), "../")
         loaderCode = loader.generate("qx.core.Init.boot(feedreader.Application)")
 
-        # Write file
-        for locale in session.getLocales():
-            # TODO
-            localeCode = ""
-            writefile("source/script/feedreader-%s.js" % locale, localeCode + resourceCode + loaderCode)
+        # TODO
+        localeCode = ""
+        writefile("source/script/feedreader-%s.js" % permutation.get("locale"), localeCode + resourceCode + loaderCode)
 
 
 @task
