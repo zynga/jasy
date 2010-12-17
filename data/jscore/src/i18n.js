@@ -12,7 +12,7 @@
 
   var lookup = function(msg, fallback)
   {
-    var replacement = all[id];
+    var replacement = all[msg];
     return replacement == NULL ? fallback : replacement;
   };
   
