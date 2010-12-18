@@ -51,18 +51,17 @@ class Parser():
             "TERRITORY" : self.__territory
         }
         
-        # Add keys
+        # Add keys (fallback to C-default locale)
         path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), self.__language)
         try:
             tree = xml.etree.ElementTree.parse(path)
-            self.__data["key"] = {
-                "Short" : { key.get("type"): key.text for key in tree.findall("/keys/short/key") },
-                "Full" : { key.get("type"): key.text for key in tree.findall("/keys/full/key") }
-            }
         except IOError:
-            logging.warn("No key names available for: %s", self.__language)
-            pass
-        
+            tree = path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), "C")
+            
+        self.__data["key"] = {
+            "Short" : { key.get("type"): key.text for key in tree.findall("/keys/short/key") },
+            "Full" : { key.get("type"): key.text for key in tree.findall("/keys/full/key") }
+        }
         
         # Add main CLDR data: Fallback chain for locales
         main = jasy.core.Info.cldrData("main")
