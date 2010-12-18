@@ -7,20 +7,13 @@
 
 (function(global)
 {
-  var all = global.$$translation;
+  var translations = global.$$translation;
   var Plural = locale.Plural;
-  var NULL = null;
-
-  var lookup = function(msg, fallback)
-  {
-    var replacement = all[msg];
-    return replacement == NULL ? fallback : replacement;
-  };
   
   var patch = function(msg, data, start)
   {
     // %1 = first, %2 = second, ...
-    start = start == NULL ? -1 : start - 1;
+    start = start == null ? -1 : start - 1;
     return msg.replace(/%([0-9])/g, function(match, pos) {
       return data[start+parseInt(pos)];
     });
@@ -38,7 +31,7 @@
      */
     tr : function(msg, varargs)
     {
-      var replacement = lookup(msg, msg);
+      var replacement = translations[msg] || msg;
       return arguments.length <= 1 ? replacement : patch(replacement, arguments, 1);
     },
     
@@ -47,14 +40,14 @@
      * Translates the given message (with a hint for the translator) and 
      * replaces placeholders in the result string.
      *
-     * @param hint {String} Lookup name in translation table (including a hint for the translator)
-     * @param msg {String} Fallback message if no translation is available
+     * @param hint {String} Hint for the translator of the message
+     * @param msg {String} Message to translate (used as a fallback when no translation is available)
      * @param varargs {...} Placeholder values
      * @return {String} Translated string
      */
     trc : function(hint, msg, varargs)
     {
-      var replacement = lookup(hint, msg)
+      var replacement = translations[msg] || msg;
       return arguments.length <= 2 ? replacement : patch(replacement, arguments, 2);
     },
     
@@ -64,14 +57,27 @@
      *
      * @param msgSingular {String} Fallback message for singular case
      * @param msgPlural {String} Fallback message for plural case
-     * @param number {Integer} Number of items (chooses between singular and plural wording)
+     * @param number {Integer} Number of items (chooses between the exact translation which is being used)
      * @param varargs {...} Placeholder values
      * @return {String} Translated string
      */
     trn : function(msgSingular, msgPlural, number, varargs)
     {
-      var msg = number == 1 ? msgSingular : msgPlural;
-      var replacement = lookup(msg);
+      var replacement = translations[msgSingular];
+      if (typeof replacement == "object")
+      {
+        var pos = number == 1 ? 0 : 1; // Make multi plural ready!
+        
+        // Try to find text at desired language specific plural position, but
+        // fallback to first, singular case if it was not found.
+        replacement = replacement[pos] || replacement[0];
+      }
+      else
+      {
+        // Fallback to programmatically defined messages
+        replacement = number == 1 ? msgSingular : msgPlural;
+      }
+
       return arguments.length <= 3 ? replacement : patch(replacement, arguments, 3);
     }
   }
