@@ -28,8 +28,9 @@ class Translation:
             logging.debug("Load %s translation files..." % len(files))
             for path in files:
                 pofile = polib.pofile(path)
+                print("Process: %s" % path)
                 for entry in pofile:
-                    if entry.msgstr != "" and not entry.msgid in self.__table:
+                    if (entry.msgstr != "" or entry.msgstr_plural) and not entry.msgid in self.__table:
                         self.__table[entry.msgid] = entry.msgstr
                         
         logging.debug("Translation of %s entries ready" % len(self.__table))
