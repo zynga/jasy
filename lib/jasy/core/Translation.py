@@ -30,8 +30,11 @@ class Translation:
                 pofile = polib.pofile(path)
                 print("Process: %s" % path)
                 for entry in pofile:
-                    if (entry.msgstr != "" or entry.msgstr_plural) and not entry.msgid in self.__table:
-                        self.__table[entry.msgid] = entry.msgstr
+                    if not entry.msgid in self.__table:
+                        if entry.msgstr != "":
+                            self.__table[entry.msgid] = entry.msgstr
+                        elif entry.msgstr_plural:
+                            self.__table[entry.msgid] = entry.msgstr_plural
                         
         logging.debug("Translation of %s entries ready" % len(self.__table))
         
