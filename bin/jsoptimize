@@ -16,9 +16,6 @@ from jasy.optimizer import CryptPrivates
 from jasy.optimizer import BlockReducer
 from jasy.optimizer import UnusedCleaner
 
-from jasy.core.Translation import Translation
-from jasy.core.Localization import Localization
-
 from jasy.process.Variables import scan
 from jasy.process.Compressor import compress
 
@@ -47,28 +44,11 @@ def jsoptimize(source, filename=None, format=True):
         "function-bind" : "true"
     }
     
-    translation = Translation("de_DE", table={
-        "Good %1" : "Guten %1",
-        "Hello World" : "Hallo Welt",
-        "Short" : "Kurz",
-        "Thank you for the flowers" : "Danke für die Blumen",
-        "You have got a new mail" : "Sie haben eine neue Mail",
-        "You have got new mails" : "Sie haben neue Mails",
-        "You have got %1 new mails" : "Sie haben %1 neue Mails",
-        "Chat (noum)" : "Unterhaltung",
-        "Chat (noum) %1" : "Unterhaltung %1"
-    })
-    
-    localization = Localization("de_DE")
-    
     tree = parse(source, filename)
     
     Permutation.Permutation(values).patch(tree)
     DeadCode.cleanup(tree)
 
-    translation.patch(tree)
-    localization.patch(tree)
-    
     scan(tree)
 
     UnusedCleaner.optimize(tree)
@@ -76,7 +56,6 @@ def jsoptimize(source, filename=None, format=True):
     
     CombineDeclarations.optimize(tree)
     LocalVariables.optimize(tree)
-
     CryptPrivates.optimize(tree)
     
     return compress(tree, format=format)
