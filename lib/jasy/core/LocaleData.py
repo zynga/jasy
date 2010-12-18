@@ -53,11 +53,15 @@ class Parser():
         
         # Add keys
         path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), self.__language)
-        tree = xml.etree.ElementTree.parse(path)
-        self.__data["key"] = {
-            "Short" : { key.get("type"): key.text for key in tree.findall("/keys/short/key") },
-            "Full" : { key.get("type"): key.text for key in tree.findall("/keys/full/key") }
-        }
+        try:
+            tree = xml.etree.ElementTree.parse(path)
+            self.__data["key"] = {
+                "Short" : { key.get("type"): key.text for key in tree.findall("/keys/short/key") },
+                "Full" : { key.get("type"): key.text for key in tree.findall("/keys/full/key") }
+            }
+        except IOError:
+            logging.warn("No key names available for: %s", self.__language)
+            pass
         
         
         # Add main CLDR data: Fallback chain for locales
