@@ -56,7 +56,8 @@ class Parser():
         try:
             tree = xml.etree.ElementTree.parse(path)
         except IOError:
-            tree = path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), "C")
+            path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), "C")
+            tree = xml.etree.ElementTree.parse(path)
             
         self.__data["key"] = {
             "Short" : { key.get("type"): key.text for key in tree.findall("/keys/short/key") },
