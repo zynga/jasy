@@ -45,7 +45,7 @@ class Translation:
     #
 
     def generate(self):
-        return "this.$$translation=%s;" % json.dumps(self.__generate({}), separators=(',',':'))
+        return "this.$$translation=%s;" % json.dumps(self.__generate({}), separators=(',',':'), ensure_ascii=False)
 
     def patch(self, node):
         self.__recurser(node)

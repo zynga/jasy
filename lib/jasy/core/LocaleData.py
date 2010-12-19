@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging, os, json, xml.etree.ElementTree
+import logging, os, json, re, xml.etree.ElementTree
 from jasy.core.File import *
 from jasy.core.Profiler import *
 import jasy.core.Info
@@ -28,7 +28,65 @@ def camelCaseToUpper(input):
         result.append(conv)
         
     return "".join(result)
-        
+    
+    
+
+REGEXP_REL = re.compile(r"(\band\b|\bor\b)")
+REGEXP_IS = re.compile(r"^(.*?) is (not )?([0-9]+)")
+REGEXP_IN = re.compile(r"^(.*?) (not )?(within|in) ([0-9]+)\.\.([0-9]+)")
+    
+def pluralToJavaScript(expr):
+    """
+    Translates the CLDR plural rules from 
+    http://cldr.unicode.org/index/cldr-spec/plural-rules
+    into JavaScript expressions
+    """
+    
+    res = ""
+    for relation in REGEXP_REL.split(expr.lower()):
+        if relation == "and":
+            res += "&&"
+        elif relation == "or":
+            res += "||"
+        else:
+            match = REGEXP_IS.match(relation)
+            if match:
+                expr = match.group(1).strip()
+                if " " in expr:
+                    expr = "(%s)" % re.compile(r"\s+mod\s+").sub("%", expr)
+
+                res += expr
+                
+                if match.group(2) != None:
+                    res += "!="
+                else:
+                    res += "=="
+                    
+                res += match.group(3)
+                continue
+
+            match = REGEXP_IN.match(relation)
+            if match:
+                expr = match.group(1).strip()
+                if " " in expr:
+                    expr = "(%s)" % re.compile(r"\s+mod\s+").sub("%", expr)
+                
+                if match.group(2) != None:
+                    res += "!"
+                
+                res += "("
+                if match.group(3) == "in":
+                    res += "parseInt(" + expr + ")==" + expr + "&&"
+                
+                res += expr + ">=" + match.group(4) + "&&" + expr + "<=" + match.group(5) 
+                res += ")"
+                continue
+                
+            raise Exception("Unsupported relation: %s" % relation)
+
+    return res
+    
+    
     
 class Parser():
     def __init__(self, locale):
@@ -144,7 +202,8 @@ class Parser():
             if attr != None:
                 if self.__language in attr.split(" "):
                     for rule in item.findall("pluralRule"):
-                        self.__data["Plural"][camelCaseToUpper(rule.get("count"))] = rule.text
+                        jsPlural = pluralToJavaScript(rule.text)
+                        self.__data["Plural"][rule.get("count").upper()] = jsPlural
         
         # Telephone Codes
         path = os.path.join(supplemental, "telephoneCodeData.xml")
