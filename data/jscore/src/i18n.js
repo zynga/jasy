@@ -25,7 +25,7 @@
     /**
      * Applies the plural rule of the current locale and returns the matching 
      * translation tag. This is the new style CLDR data with tags instead of
-     * abstract indexes.
+     * abstract indexes. See also: http://cldr.unicode.org/index/cldr-spec/plural-rules
      *
      * @param nr {Number} Number to test
      * @return {String} One of "ZERO", "ONE", "TWO", "FEW", "MANY" or "OTHER"
@@ -55,7 +55,8 @@
     /**
      * Applies the plural rule of the current locale and returns the 
      * field index on the translation data. This is the data used 
-     * by the classical GNU gettext tools.
+     * by the classical GNU gettext tools. See also:
+     * http://www.gnu.org/software/hello/manual/gettext/Plural-forms.html
      *
      * @param nr {Number} Number to test
      * @return {String} One of 0, 1, 2, 3, 4, 5 or 6
