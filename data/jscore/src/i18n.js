@@ -8,7 +8,7 @@
 (function(global)
 {
   var translations = global.$$translation;
-  var Plural = locale.Plural;
+  
   
   var patch = function(msg, data, start)
   {
@@ -23,6 +23,68 @@
   global.i18n = 
   {
     /**
+     * Applies the plural rule of the current locale and returns the matching 
+     * translation tag. This is the new style CLDR data with tags instead of
+     * abstract indexes.
+     *
+     * @param nr {Number} Number to test
+     * @return {String} One of "ZERO", "ONE", "TWO", "FEW", "MANY" or "OTHER"
+     */
+    pluralTag : (function(nr)
+    {
+      var Plural = locale.Plural;
+      var fields = ["zero", "one", "two", "few", "many"];
+
+      var code = "";
+      for (var i=0, l=fields.length; i<l; i++) 
+      {
+        var field = fields[i];
+        var fieldConst = field.toUpperCase();
+        
+        if (fieldConst in Plural) {
+          code += "if(" + Plural[fieldConst] + ")return '" + field + "';";
+        }
+      }
+      
+      code += "return 'other';"
+      
+      return new Function("n", code);
+    })(),
+    
+    
+    /**
+     * Applies the plural rule of the current locale and returns the 
+     * field index on the translation data. This is the data used 
+     * by the classical GNU gettext tools.
+     *
+     * @param nr {Number} Number to test
+     * @return {String} One of 0, 1, 2, 3, 4, 5 or 6
+     */    
+    pluralIndex : (function(nr)
+    {
+      var Plural = locale.Plural;
+      var fields = ["zero", "one", "two", "few", "many"];
+
+      var code = "";
+      var pos = 0;
+      for (var i=0, l=fields.length; i<l; i++) 
+      {
+        var field = fields[i];
+        var fieldConst = field.toUpperCase();
+        
+        if (fieldConst in Plural) {
+          code += "if(" + Plural[fieldConst] + ")return " + pos + ";";
+          pos++;
+        }
+      }
+      
+      code += "return " + pos + ";"
+      
+      return new Function("n", code);
+    })(),    
+    
+    
+    /**
      * Translates the given message and replaces placeholders in the result string.
      *
      * @param msg {String} Message to translate (used as a fallback when no translation is available)
@@ -35,7 +97,7 @@
       return arguments.length <= 1 ? replacement : patch(replacement, arguments, 1);
     },
     
-
+    
     /**
      * Translates the given message (with a hint for the translator) and 
      * replaces placeholders in the result string.
@@ -51,7 +113,7 @@
       return arguments.length <= 2 ? replacement : patch(replacement, arguments, 2);
     },
     
-
+    
     /**
      * Translates the given message and replaces placeholders in the result string.
      *
@@ -66,18 +128,16 @@
       var replacement = translations[msgSingular];
       if (typeof replacement == "object")
       {
-        var pos = number == 1 ? 0 : 1; // Make multi plural ready!
+        var plural = i18n.pluralIndex(number);
         
-        // Try to find text at desired language specific plural position, but
-        // fallback to first, singular case if it was not found.
-        replacement = replacement[pos] || replacement[0];
+        replacement = replacement[plural];
       }
       else
       {
         // Fallback to programmatically defined messages
         replacement = number == 1 ? msgSingular : msgPlural;
       }
-
+      
       return arguments.length <= 3 ? replacement : patch(replacement, arguments, 3);
     }
   }

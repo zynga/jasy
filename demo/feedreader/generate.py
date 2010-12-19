@@ -37,6 +37,13 @@ def source():
     # Setup locales
     session.addLocale("de_DE")
     session.addLocale("en_US")
+    session.addLocale("ro_RO")
+    session.addLocale("ar_QA")
+    session.addLocale("be_BY")
+    session.addLocale("bs_BA")
+    session.addLocale("hr_HR")
+    session.addLocale("pl_PL")
+    session.addLocale("fr_FR")
 
     # Process every possible permutation
     for permutation in session.getPermutations():
