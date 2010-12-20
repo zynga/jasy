@@ -76,6 +76,7 @@ def pluralToJavaScript(expr):
                 
                 res += "("
                 if match.group(3) == "in":
+                    # Fast integer check via: http://jsperf.com/simple-integer-check
                     res += "~~" + expr + "==" + expr + "&&"
                 
                 res += expr + ">=" + match.group(4) + "&&" + expr + "<=" + match.group(5) 
