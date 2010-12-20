@@ -9,19 +9,29 @@
 {
   var translations = global.$$translation;
   
-  
-  var patch = function(msg, data, start)
-  {
-    // %1 = first, %2 = second, ...
-    start = start == null ? -1 : start - 1;
-    return msg.replace(/%([0-9])/g, function(match, pos) {
-      return data[start+parseInt(pos)];
-    });
-  };
-  
   // Export object
   global.i18n = 
   {
+    /**
+     * Quick and easy string templating using %1, %2, etc. as placeholders 
+     * and an array for the data.
+     *
+     * @param msg {String} Input string with placeholders
+     * @param data {Array} List of values
+     * @param start {Integer?-1} Where to start in the array. Defaults to -1 which is 
+     *   useful when the template string should map %1 = data[0]
+     * @return {String} Result string
+     */
+    template : function(msg, data, start)
+    {
+      // %1 = first, %2 = second, ...
+      start = start == null ? -1 : start - 1;
+      return msg.replace(/%([0-9])/g, function(match, pos) {
+        return data[start+parseInt(pos)];
+      });
+    },
+    
+    
     /**
      * Applies the plural rule of the current locale and returns the 
      * field index on the translation data. This is the data used 
@@ -39,7 +49,7 @@
       for (var i=0; i<5; i++) 
       {
         field = fields[i];
-        if (expr = Plural[fieldConst]) {
+        if (expr = Plural[field]) {
           code += "if(" + expr + ")return " + (pos++) + ";";
         }
       }
@@ -60,7 +70,7 @@
     tr : function(msg, varargs)
     {
       var replacement = translations[msg] || msg;
-      return arguments.length <= 1 ? replacement : patch(replacement, arguments, 1);
+      return arguments.length <= 1 ? replacement : i18n.template(replacement, arguments, 1);
     },
     
     
@@ -76,7 +86,7 @@
     trc : function(hint, msg, varargs)
     {
       var replacement = translations[msg] || msg;
-      return arguments.length <= 2 ? replacement : patch(replacement, arguments, 2);
+      return arguments.length <= 2 ? replacement : i18n.template(replacement, arguments, 2);
     },
     
     
@@ -104,7 +114,7 @@
         result = number == 1 ? msgSingular : msgPlural;
       }
       
-      return arguments.length <= 3 ? result : patch(result, arguments, 3);
+      return arguments.length <= 3 ? result : i18n.template(result, arguments, 3);
     }
   }
 })(this);
