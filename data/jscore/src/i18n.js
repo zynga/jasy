@@ -23,36 +23,6 @@
   global.i18n = 
   {
     /**
-     * Applies the plural rule of the current locale and returns the matching 
-     * translation tag. This is the new style CLDR data with tags instead of
-     * abstract indexes. See also: http://cldr.unicode.org/index/cldr-spec/plural-rules
-     *
-     * @param nr {Number} Number to test
-     * @return {String} One of "ZERO", "ONE", "TWO", "FEW", "MANY" or "OTHER"
-     */
-    pluralTag : (function(nr)
-    {
-      var Plural = locale.Plural;
-      var fields = ["zero", "one", "two", "few", "many"];
-
-      var code = "";
-      for (var i=0, l=fields.length; i<l; i++) 
-      {
-        var field = fields[i];
-        var fieldConst = field.toUpperCase();
-        
-        if (fieldConst in Plural) {
-          code += "if(" + Plural[fieldConst] + ")return '" + field + "';";
-        }
-      }
-      
-      code += "return 'other';"
-      
-      return new Function("n", code);
-    })(),
-    
-    
-    /**
      * Applies the plural rule of the current locale and returns the 
      * field index on the translation data. This is the data used 
      * by the classical GNU gettext tools. See also:
@@ -61,28 +31,23 @@
      * @param nr {Number} Number to test
      * @return {String} One of 0, 1, 2, 3, 4, 5 or 6
      */    
-    pluralIndex : (function(nr)
+    plural : (function(fields, Plural)
     {
-      var Plural = locale.Plural;
-      var fields = ["zero", "one", "two", "few", "many"];
+      var code="", pos=0;
+      var field, expr;
 
-      var code = "";
-      var pos = 0;
-      for (var i=0, l=fields.length; i<l; i++) 
+      for (var i=0; i<5; i++) 
       {
-        var field = fields[i];
-        var fieldConst = field.toUpperCase();
-        
-        if (fieldConst in Plural) {
-          code += "if(" + Plural[fieldConst] + ")return " + pos + ";";
-          pos++;
+        field = fields[i];
+        if (expr = Plural[fieldConst]) {
+          code += "if(" + expr + ")return " + (pos++) + ";";
         }
       }
       
       code += "return " + pos + ";"
       
       return new Function("n", code);
-    })(),    
+    })(["ZERO", "ONE", "TWO", "FEW", "MANY"], locale.Plural),
     
     
     /**
@@ -126,20 +91,20 @@
      */
     trn : function(msgSingular, msgPlural, number, varargs)
     {
+      // Matching is based on singular "msgid"
       var replacement = translations[msgSingular];
-      if (typeof replacement == "object")
-      {
-        var plural = i18n.pluralIndex(number);
-        
-        replacement = replacement[plural];
-      }
-      else
-      {
-        // Fallback to programmatically defined messages
-        replacement = number == 1 ? msgSingular : msgPlural;
+      
+      // Do numeric lookup
+      if (typeof replacement == "object") {
+        var result = replacement[i18n.plural(number)];
       }
       
-      return arguments.length <= 3 ? replacement : patch(replacement, arguments, 3);
+      // Fallback to programmatically defined messages
+      if (!result) {
+        result = number == 1 ? msgSingular : msgPlural;
+      }
+      
+      return arguments.length <= 3 ? result : patch(result, arguments, 3);
     }
   }
 })(this);
