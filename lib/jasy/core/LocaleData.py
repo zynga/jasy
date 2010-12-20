@@ -76,7 +76,7 @@ def pluralToJavaScript(expr):
                 
                 res += "("
                 if match.group(3) == "in":
-                    res += "parseInt(" + expr + ")==" + expr + "&&"
+                    res += "~~" + expr + "==" + expr + "&&"
                 
                 res += expr + ">=" + match.group(4) + "&&" + expr + "<=" + match.group(5) 
                 res += ")"
