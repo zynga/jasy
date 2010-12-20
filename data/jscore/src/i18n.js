@@ -38,7 +38,7 @@
      * by the classical GNU gettext tools. See also:
      * http://www.gnu.org/software/hello/manual/gettext/Plural-forms.html
      *
-     * @param nr {Number} Number to test
+     * @param n {Number} Number to test
      * @return {String} One of 0, 1, 2, 3, 4, 5 or 6
      */    
     plural : (function(fields, Plural)
