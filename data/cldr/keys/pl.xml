@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jasy>
+  <keys>
+    <short>
+      <key type="Backspace">Backspace</key>
+      <key type="Tab">Tab</key>
+      <key type="Space">Spacja</key>
+      <key type="Enter">Enter</key>
+      <key type="Shift">Shift</key>
+      <key type="Control">Ctrl</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">Caps</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Esc</key>
+      <key type="Left">Lewo</key>
+      <key type="Up">Góra</key>
+      <key type="Right">Prawo</key>
+      <key type="Down">Dół</key>
+      <key type="PageUp">PgUp</key>
+      <key type="PageDown">PgDn</key>
+      <key type="End">End</key>
+      <key type="Home">Home</key>
+      <key type="Insert">Ins</key>
+      <key type="Delete">Del</key>
+      <key type="NumLock">Num</key>
+      <key type="PrintScreen">Print</key>
+      <key type="Scroll">Scroll</key>
+      <key type="Pause">Pause</key>
+      <key type="Win">Win</key>
+      <key type="Apps">Apps</key>
+    </short>
+    <full>
+      <key type="Backspace">Backspace</key>
+      <key type="Tab">Tabulator</key>
+      <key type="Space">Spacja</key>
+      <key type="Enter">Enter</key>
+      <key type="Shift">Shift</key>
+      <key type="Control">Control</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">CapsLock</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Escape</key>
+      <key type="Left">Strzałka w lewo</key>
+      <key type="Up">Strzałka w góre</key>
+      <key type="Right">Strzałka w prawo</key>
+      <key type="Down">Strzałka w dół</key>
+      <key type="PageUp">PageUp</key>
+      <key type="PageDown">PageDown</key>
+      <key type="End">End</key>
+      <key type="Home">Home</key>
+      <key type="Insert">Insert</key>
+      <key type="Delete">Delete</key>
+      <key type="NumLock">NumLock</key>
+      <key type="PrintScreen">PrintScreen</key>
+      <key type="Scroll">Scroll</key>
+      <key type="Pause">Pause</key>
+      <key type="Win">Win</key>
+      <key type="Apps">Apps</key>
+    </full>
+  </keys>
+</jasy>
+
