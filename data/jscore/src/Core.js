@@ -97,5 +97,5 @@
      * @param uri {String} URI of script source to load
      */
     loadScript : LAB.script
-  }  
+  });
 })(this);
