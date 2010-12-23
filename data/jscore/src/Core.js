@@ -52,8 +52,7 @@ this.Core =
    *
    * @param uri {String} URI of script source to load
    */
-  loadScript : function(uri)
-  {
-    // TODO
-  }
+  loadScript : LAB.script
+  
+  
 }
