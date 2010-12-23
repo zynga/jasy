@@ -34,7 +34,7 @@
   {
     var isIndirectEvalGlobal = (function() 
     {
-      eval("var Object=123");
+      eval("var Object=1");
 
       try 
       {
