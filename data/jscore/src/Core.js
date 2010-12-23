@@ -45,7 +45,9 @@
       catch(err) 
       {
         // if indirect eval errors out (as allowed per ES3), then just bail out with `false`
-        return false;
+
+        // wpbasti: not needed as it is just check for being falsy and so "undefined" is OK
+        // return false;
       }
     })();
 
@@ -67,7 +69,11 @@
     // otherwise, globalEval is `undefined` since nothing is returned
   })();
   
+
+  // ========================================================================================
   // Finally create namespace
+  // ========================================================================================
+
   declare("Core",
   {
     /**
