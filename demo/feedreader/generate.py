@@ -38,6 +38,16 @@ def source():
     session.addLocale("de_DE")
     session.addLocale("en_US")
     session.addLocale("ro_RO")
+    
+    
+    # Build core loader
+    logging.info("Building core loader...")
+    resolver = Resolver(session.getProjects())
+    resolver.addClassName("Core")
+    coreCode = Combiner().compress(Sorter(resolver).getSortedClasses())
+    logging.info("Core size: %s bytes" % len(coreCode))
+    writefile("source/script/loader.js", coreCode)
+    
 
     # Process every possible permutation
     for permutation in session.getPermutations():
