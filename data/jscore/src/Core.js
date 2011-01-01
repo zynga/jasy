@@ -237,6 +237,7 @@
       var loader = function(uris, callback, context, preload)
       {
         var onLoad = getOnLoad(callback, context, uris);
+        var done = true;
 
         for (var i=0, l=uris.length; i<l; i++)
         {
@@ -244,9 +245,15 @@
 
           if (!(currentUri in loaded)) 
           {
+            done = false;
             loaded[currentUri] = false;
             createScriptTag(currentUri, onLoad);
           }
+        }
+        
+        // If all scripts are loaded already
+        if (done) {
+          callback.call(context||global);
         }
       };
     }
@@ -254,6 +261,8 @@
     {
       var loader = function(uris, callback, context, preload)
       {
+        // TODO: Implement support for check if all files are loaded already
+        
         var executeOneByOne = function()
         {
           var currentUri = uris.shift();
