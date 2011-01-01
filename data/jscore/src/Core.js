@@ -153,15 +153,8 @@
     // RE: http://wiki.whatwg.org/wiki/Dynamic_Script_Execution_Order
     var supportsScriptAsync = doc.createElement("script").async === true;
     
-    // FF(prior to FF4) & Opera preserve execution order with script tags automatically,
-    // so just add all scripts as fast as possible. FF4 has async=false to do the same
-    var executesOrdered = ENGINE == "gecko" || ENGINE == "opera" || supportsScriptAsync;
-    
     var preloadMimeType = "script/cache";
-    
-    
 
-    
 
     /**
      * Creates and appends script tag for given URI
@@ -196,9 +189,6 @@
       
       head.insertBefore(elem, head.firstChild);
     };
-    
-    
-    var callbacks = [];
     
     
     /**
@@ -270,6 +260,13 @@
     };
 
 
+    /** {Array} List of function, context where each entry consumes two array fields */
+    var cachedCallbacks = [];
+
+    /**
+     * Flushes the cached callbacks as soon as no more active scripts are detected.
+     * This methods is called by the different complete scenarios from the loader functions.
+     */
     var flushCallbacks = function()
     {
       // Check whether all known scripts are loaded
@@ -278,20 +275,26 @@
       }
       
       // Then execute all callbacks (copy to protect loop from follow-up changes)
-      var todo = callbacks.concat();
-      callbacks.length = 0;
+      var todo = cachedCallbacks.concat();
+      cachedCallbacks.length = 0;
       for (var i=0, l=todo.length; i<l; i+=2) {
         todo[i].call(todo[i+1]);
       }
     };
 
     
-    if (executesOrdered)
+    // Firefox(prior to Firefox 4) & Opera preserve execution order with script tags automatically,
+    // so just add all scripts as fast as possible. Firefox 4 has async=false to do the same.
+    if (supportsScriptAsync || ENGINE == "gecko" || ENGINE == "opera")
     {
       var loader = function(uris, callback, context, preload)
       {
         var onLoad;
         var executeDirectly = !!callback;
+        
+        if (callback && !context) {
+          context = global;
+        }
 
         for (var i=0, l=uris.length; i<l; i++)
         {
@@ -303,7 +306,7 @@
             if (executeDirectly)
             {
               executeDirectly = false;
-              callbacks.push(callback, context||global);
+              cachedCallbacks.push(callback, context);
             }
 
             // When script is not being loaded already, then start with it here
@@ -324,7 +327,7 @@
         
         // If all scripts are loaded already, just execute the callback
         if (executeDirectly) {
-          callback.call(context||global);
+          callback.call(context);
         }
       };
     }
@@ -335,6 +338,10 @@
         var executeDirectly = !!callback;
         var queuedUris = [];
         
+        if (callback && !context) {
+          context = global;
+        }
+        
         for (var i=0, l=uris.length; i<l; i++)
         {
           var currentUri = uris[i];
@@ -344,7 +351,7 @@
             if (executeDirectly)
             {
               executeDirectly = false;
-              callbacks.push(callback, context||global);
+              cachedCallbacks.push(callback, context);
             }
             
             // When script is not being loaded already, then start with it here
@@ -360,7 +367,7 @@
         // If all scripts are loaded already, just execute the callback
         if (executeDirectly) 
         {
-          callback.call(context||global);
+          callback.call(context);
         }
         else if (queuedUris.length > 0)
         {
