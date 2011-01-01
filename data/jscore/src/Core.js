@@ -140,7 +140,16 @@
 
     var loaded = {};
 
-    var createScriptTag = function(uri, type, charset, onload)
+
+    /**
+     * Creates and appends script tag for given URI
+     *
+     * @param uri {String} URI to load
+     * @param onload {Function} Callback function to execute when script was loaded
+     * @param type {String?null} Script type to request
+     * @param charset {String?null} Specify the charset of the script
+     */
+    var createScriptTag = function(uri, onload, type, charset)
     {
       var elem = doc.createElement("script");
       
@@ -153,16 +162,11 @@
       }
 
       // load script via 'src' attribute, set onload/onreadystatechange listeners
-      if (onload) 
-      {
-        elem.onload = elem.onreadystatechange = function() {
-          onload(uri, elem);
-        };
-      }
+      elem.onload = elem.onreadystatechange = function() {
+        onload(uri, elem);
+      };
       
-      if (uri) {
-        elem.src = uri;
-      }
+      elem.src = uri;
       
       if (supportsScriptAsync) {
         elem.async = false;
@@ -239,7 +243,7 @@
           if (!(currentUri in loaded)) 
           {
             loaded[currentUri] = false;
-            createScriptTag(currentUri, null, null, onLoad);
+            createScriptTag(currentUri, onLoad);
           }
         }
       };
@@ -253,7 +257,7 @@
           var currentUri = uris.shift();
           if (currentUri) 
           {
-            createScriptTag(currentUri, null, null, getOnLoad(executeOneByOne));
+            createScriptTag(currentUri, getOnLoad(executeOneByOne));
           }
           else if (callback) 
           {
@@ -272,7 +276,7 @@
             if (!(currentUri in loaded)) 
             {
               loaded[currentUri] = false;
-              createScriptTag(currentUri, "script/cache", null, onPreload);
+              createScriptTag(currentUri, onPreload, "script/cache");
             }
           }
         }
