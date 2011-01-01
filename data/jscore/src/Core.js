@@ -139,9 +139,8 @@
     var easy = ENGINE == "gecko" || ENGINE == "opera" || supportsScriptAsync;
 
     var loaded = {};
-    
 
-    var createScriptTag = function(uri, type, charset, text, onload)
+    var createScriptTag = function(uri, type, charset, onload)
     {
       var elem = doc.createElement("script");
       
@@ -167,10 +166,6 @@
       
       if (supportsScriptAsync) {
         elem.async = false;
-      }
-      
-      if (text) {
-        elem.text = text;
       }
       
       head.insertBefore(elem, head.firstChild);
@@ -244,7 +239,7 @@
           if (!(currentUri in loaded)) 
           {
             loaded[currentUri] = false;
-            createScriptTag(currentUri, null, null, null, onLoad);
+            createScriptTag(currentUri, null, null, onLoad);
           }
         }
       };
@@ -253,31 +248,37 @@
     {
       var loader = function(uris, callback, context, preload)
       {
-        var executeAll = function()
+        var executeOneByOne = function()
         {
           var currentUri = uris.shift();
-          if (!currentUri) 
+          if (currentUri) 
           {
-            if (callback) {
-              callback.call(context||global);
-            }
-            return;
+            createScriptTag(currentUri, null, null, getOnLoad(executeOneByOne));
           }
-          
-          createScriptTag(currentUri, null, null, null, getOnLoad(executeAll));
+          else if (callback) 
+          {
+            callback.call(context||global);
+          }
         };
-        
-        var onPreload = getOnLoad(executeAll, null, uris);
 
-        for (var i=0, l=uris.length; i<l; i++)
+        if (preload)
         {
-          var currentUri = uris[i];
+          var onPreload = getOnLoad(executeOneByOne, null, uris);
 
-          if (!(currentUri in loaded)) 
+          for (var i=0, l=uris.length; i<l; i++)
           {
-            loaded[currentUri] = false;
-            createScriptTag(currentUri, "script/cache", null, null, onPreload);
+            var currentUri = uris[i];
+
+            if (!(currentUri in loaded)) 
+            {
+              loaded[currentUri] = false;
+              createScriptTag(currentUri, "script/cache", null, onPreload);
+            }
           }
+        }
+        else
+        {
+          executeOneByOne();
         }
       };
     }
@@ -328,9 +329,16 @@
     /**
      * Loads the scripts at the given URIs.
      *
+     * Automatically using preloading of scripts in modern browsers and falls back to sequential loading/executing on others.
+     * For better performance one can enable preloading on legacy browsers as well, but this requires correctly configured servers
+     * to not download identical files two times.
+     *
      * @param uris {String[]} URIs of script sources to load
      * @param callback {Function} Function to execute when scripts are loaded
      * @param context {Object} Context in which the callback should be executed
+     * @param preload {Boolean?false} Activates preloading on legacy browsers. As files are
+     *    requested two times it's important that the server send correct modification headers.
+     *    Therefore this works safely on CDNs etc. but might be problematic on local servers.
      */
     load : load
   });
