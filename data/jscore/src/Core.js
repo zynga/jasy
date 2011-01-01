@@ -314,7 +314,7 @@
 
               // Prepare load listener which flushes callbacks
               if (!onLoad) {
-                onLoad = getOnLoad(flushCallbacks, null, uris);
+                onLoad = getOnLoad(flushCallbacks, global, uris);
               }
 
               createScriptTag(currentUri, onLoad);
@@ -332,37 +332,66 @@
     {
       var loader = function(uris, callback, context, preload)
       {
-        var executeOneByOne = function()
+        var executeDirectly = !!callback;
+        var queuedUris = [];
+        
+        for (var i=0, l=uris.length; i<l; i++)
         {
-          var currentUri = uris.shift();
-          if (currentUri) 
+          var currentUri = uris[i];
+          if (!loadedScripts[currentUri])
           {
-            createScriptTag(currentUri, getOnLoad(executeOneByOne));
-          }
-          else if (callback) 
-          {
-            callback.call(context||global);
-          }
-        };
-
-        if (preload)
-        {
-          var onPreload = getOnLoad(executeOneByOne, null, uris);
-
-          for (var i=0, l=uris.length; i<l; i++)
-          {
-            var currentUri = uris[i];
-
-            if (!(currentUri in loadedScripts)) 
+            // When a callback needs to be moved to the queue instead of being executed directly
+            if (executeDirectly)
             {
-              loadedScripts[currentUri] = false;
-              createScriptTag(currentUri, onPreload, preloadMimeType);
+              executeDirectly = false;
+              callbacks.push(callback, context||global);
+            }
+            
+            // When script is not being loaded already, then start with it here
+            // (Otherwise we just added the callback to the queue and wait for it to be executed)
+            if (!activeScripts[currentUri])
+            {
+              activeScripts[currentUri] = true;
+              queuedUris.push(currentUri);
             }
           }
         }
-        else
+        
+        // If all scripts are loaded already, just execute the callback
+        if (executeDirectly) 
         {
-          executeOneByOne();
+          callback.call(context||global);
+        }
+        else if (queuedUris.length > 0)
+        {
+          var executeOneByOne = function()
+          {
+            var currentUri = queuedUris.shift();
+            if (currentUri) 
+            {
+              createScriptTag(currentUri, getOnLoad(executeOneByOne));
+            }
+            else
+            {
+              flushCallbacks();
+            }
+          };
+
+          if (preload)
+          {
+            // 1. Load all via script/cache first
+            // 2. Wait for all being loaded
+            // 3. Insert first script and wait for load (from cache) then continue with next one
+            var onPreload = getOnLoad(executeOneByOne, global, queuedUris);
+            for (var i=0, l=queuedUris.length; i<l; i++) {
+              createScriptTag(queuedUris[i], onPreload, preloadMimeType);
+            }
+          }
+          else
+          {
+            // Load and execute first script, then continue with next until last one
+            executeOneByOne();
+          }
         }
       };
     }
