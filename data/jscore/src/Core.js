@@ -130,6 +130,8 @@
   
   // All loaded scripts
   var loadedScripts = {};
+  var activeScripts = {};
+  
 
 
   var areScriptsLoaded = function(uris) 
@@ -153,9 +155,13 @@
     
     // FF(prior to FF4) & Opera preserve execution order with script tags automatically,
     // so just add all scripts as fast as possible. FF4 has async=false to do the same
-    var easy = ENGINE == "gecko" || ENGINE == "opera" || supportsScriptAsync;
+    var executesOrdered = ENGINE == "gecko" || ENGINE == "opera" || supportsScriptAsync;
     
     var preloadMimeType = "script/cache";
+    
+    
+
+    
 
     /**
      * Creates and appends script tag for given URI
@@ -178,8 +184,8 @@
       }
 
       // load script via 'src' attribute, set onload/onreadystatechange listeners
-      elem.onload = elem.onreadystatechange = function() {
-        onload(uri, elem);
+      elem.onload = elem.onerror = elem.onreadystatechange = function(e) {
+        onload(e.type, uri, elem);
       };
       
       elem.src = uri;
@@ -191,7 +197,10 @@
       head.insertBefore(elem, head.firstChild);
     };
     
-
+    
+    var callbacks = [];
+    
+    
     /**
      * Returns a custom onload routine for script elements. 
      *
@@ -204,73 +213,117 @@
      */
     var getOnLoad = function(callback, context, uris)
     {
-      var waiting = {};
+      // Load listener local registry of uris we wait for until we execute the callback
+      var waitingScripts = {};
       if (uris)
       {
         for (var i=0, l=uris.length; i<l; i++) 
         {
           var currentUri = uris[i];
-          if (!(currentUri in loadedScripts)) {
-            waiting[currentUri] = true;
+          if (!loadedScripts[currentUri]) {
+            waitingScripts[currentUri] = true;
           }
         }
       }
       
-      return function(uri, elem)
+      return function(type, uri, elem)
       {
-        var readyState = elem.readyState;
-        if (readyState && readyState !== "complete" && readyState !== "loaded") {
-          return;
+        var isErrornous = type == "error";
+        if (isErrornous) 
+        {
+          console.error("Could not load script: " + uri);
         }
-        
-        // Clear entry from waiting list
-        delete waiting[uri];
-        
-        // Register as being loaded (keep at false during pre-caching)
-        if (elem.type != preloadMimeType) {
-          loadedScripts[uri] = true;
+        else
+        {
+          var readyState = elem.readyState;
+          if (readyState && readyState !== "complete" && readyState !== "loaded") {
+            return;
+          }
         }
         
         // Prevent memory leaks
-        elem.onload = elem.onreadystatechange = null;
+        elem.onload = elem.onerror = elem.onreadystatechange = null;
+        
+        // Clear entry from local waiting registry
+        delete waitingScripts[uri];
+        
+        // Register as being loaded (keep at false during pre-caching)
+        if (elem.type != preloadMimeType) 
+        {
+          // Delete from shared activity registry
+          delete activeScripts[uri];
+          
+          // Add to shared loaded registry
+          loadedScripts[uri] = true;
+        }
         
         if (callback) 
         {
-          // Check whether there are more scripts we need to wait for
-          for (var uri in waiting) {
+          // Check whether there are more local scripts we need to wait for
+          for (var uri in waitingScripts) {
             return;
           }
 
           callback.call(context||global);
         }
       };
-    }
+    };
+
+
+    var flushCallbacks = function()
+    {
+      // Check whether all known scripts are loaded
+      for (var uri in activeScripts) {
+        return;
+      }
+      
+      // Then execute all callbacks (copy to protect loop from follow-up changes)
+      var todo = callbacks.concat();
+      callbacks.length = 0;
+      for (var i=0, l=todo.length; i<l; i+=2) {
+        todo[i].call(todo[i+1]);
+      }
+    };
+
     
-    if (easy)
+    if (executesOrdered)
     {
       var loader = function(uris, callback, context, preload)
       {
-        var onLoad = getOnLoad(callback, context, uris);
-        var done = true;
+        var onLoad;
+        var executeDirectly = !!callback;
 
         for (var i=0, l=uris.length; i<l; i++)
         {
           var currentUri = uris[i];
           
-          // Script not marked as loaded, so we can't directly execute the callback
-          if (done && !loadedScripts[currentUri]) {
-            done = false;
-          }
-
-          if (!(currentUri in loadedScripts)) 
+          if (!loadedScripts[currentUri])
           {
-            loadedScripts[currentUri] = false;
-            createScriptTag(currentUri, onLoad);
+            // When a callback needs to be moved to the queue instead of being executed directly
+            if (executeDirectly)
+            {
+              executeDirectly = false;
+              callbacks.push(callback, context||global);
+            }
+
+            // When script is not being loaded already, then start with it here
+            // (Otherwise we just added the callback to the queue and wait for it to be executed)
+            if (!activeScripts[currentUri])
+            {
+              activeScripts[currentUri] = true;
+
+              // Prepare load listener which flushes callbacks
+              if (!onLoad) {
+                onLoad = getOnLoad(flushCallbacks, null, uris);
+              }
+
+              createScriptTag(currentUri, onLoad);
+            }
           }
         }
         
-        // If all scripts are loaded already
-        if (done) {
+        // If all scripts are loaded already, just execute the callback
+        if (executeDirectly) {
           callback.call(context||global);
         }
       };
@@ -279,8 +332,6 @@
     {
       var loader = function(uris, callback, context, preload)
       {
-        // TODO: Implement support for check if all files are loaded already
-        
         var executeOneByOne = function()
         {
           var currentUri = uris.shift();
