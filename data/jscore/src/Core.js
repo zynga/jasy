@@ -44,7 +44,7 @@
     var engine;
     var docStyle = doc.documentElement.style;
     
-    if (window.opera && toString.call(opera) == "[object Opera]") {
+    if (global.opera && toString.call(opera) == "[object Opera]") {
       engine = "presto";
     } else if ("MozAppearance" in docStyle) {
       engine = "gecko";
@@ -128,6 +128,23 @@
   })();
   
   
+  // All loaded scripts
+  var loadedScripts = {};
+
+
+  var areScriptsLoaded = function(uris) 
+  {
+    for (var i=0, l=uris.length; i<l; i++) 
+    {
+      if (!loadedScripts[uris[i]]) {
+        return false;
+      }
+    }
+    
+    return true;
+  };
+  
+
   var loadScripts = (function()
   {
     // the following is a feature sniff for the ability to set async=false on dynamically created script elements, as proposed to the W3C
@@ -139,9 +156,6 @@
     var easy = ENGINE == "gecko" || ENGINE == "opera" || supportsScriptAsync;
     
     var preloadMimeType = "script/cache";
-
-    // All loaded scripts
-    var loaded = {};
 
     /**
      * Creates and appends script tag for given URI
@@ -196,7 +210,7 @@
         for (var i=0, l=uris.length; i<l; i++) 
         {
           var currentUri = uris[i];
-          if (!(currentUri in loaded)) {
+          if (!(currentUri in loadedScripts)) {
             waiting[currentUri] = true;
           }
         }
@@ -214,7 +228,7 @@
         
         // Register as being loaded (keep at false during pre-caching)
         if (elem.type != preloadMimeType) {
-          loaded[uri] = true;
+          loadedScripts[uri] = true;
         }
         
         // Prevent memory leaks
@@ -242,11 +256,15 @@
         for (var i=0, l=uris.length; i<l; i++)
         {
           var currentUri = uris[i];
-
-          if (!(currentUri in loaded)) 
-          {
+          
+          // Script not marked as loaded, so we can't directly execute the callback
+          if (done && !loadedScripts[currentUri]) {
             done = false;
-            loaded[currentUri] = false;
+          }
+
+          if (!(currentUri in loadedScripts)) 
+          {
+            loadedScripts[currentUri] = false;
             createScriptTag(currentUri, onLoad);
           }
         }
@@ -284,9 +302,9 @@
           {
             var currentUri = uris[i];
 
-            if (!(currentUri in loaded)) 
+            if (!(currentUri in loadedScripts)) 
             {
-              loaded[currentUri] = false;
+              loadedScripts[currentUri] = false;
               createScriptTag(currentUri, onPreload, preloadMimeType);
             }
           }
@@ -339,6 +357,15 @@
      * @return {var} Return value of executed code
      */
     globalEval : globalEval,
+
+
+    /**
+     * Checks wether the given scripts are loaded
+     *
+     * @param uris {String[]} URIs of script sources to load
+     * @return {Boolean} Whether all given script are loaded or not.
+     */
+    areScriptsLoaded : areScriptsLoaded,
 
 
     /**
