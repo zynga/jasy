@@ -171,15 +171,14 @@
     };
     
 
-
     
-    
-    
-    var loader = function(uris, callback, context)
+    var getOnLoad = function(callback, context, waiting)
     {
-      var waiting = {};
-
-      var onload = function(uri, elem)
+      if (!context) {
+        context = global;
+      }
+      
+      return function(uri, elem)
       {
         if (elem.readyState && elem.readyState !== "complete" && elem.readyState !== "loaded") {
           return;
@@ -197,15 +196,21 @@
         if (callback) 
         {
           // Check whether there are more scripts we need to wait for
-          for (var currentUri in waiting) {
+          for (var uri in waiting) {
             return;
           }
 
-          console.debug("Executing callback for " + uris.length + " scripts...");
-          callback.call(context||global);
+          callback.call(context);
         }
-      };
-      
+      };      
+    }
+    
+    
+    
+    var loader = function(uris, callback, context)
+    {
+      var waiting = {};
+      var onload = getOnLoad(callback, context, waiting);
       
       for (var i=0, l=uris.length; i<l; i++)
       {
