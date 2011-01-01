@@ -188,6 +188,9 @@
         // Clear entry from waiting list
         delete waiting[uri];
         
+        // Register as being loaded
+        loaded[uri] = true;
+        
         // Prevent memory leaks
         elem.onload = elem.onreadystatechange = null;
         
@@ -207,9 +210,12 @@
       for (var i=0, l=uris.length; i<l; i++)
       {
         var currentUri = uris[i];
-        waiting[currentUri] = true;
-        
-        createScriptTag(currentUri, null, null, null, onload);
+
+        if (!(waiting[currentUri] || loaded[currentUri])) 
+        {
+          waiting[currentUri] = true;
+          createScriptTag(currentUri, null, null, null, onload);
+        }
       }
     };
 
