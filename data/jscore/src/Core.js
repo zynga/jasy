@@ -171,11 +171,28 @@
     };
     
 
-    
-    var getOnLoad = function(callback, context, waiting)
+    /**
+     * Returns a custom onload routine for script elements. 
+     *
+     * * Supports wait list of numerous scripts which needs to be loaded
+     * * Executes the given callback method (when single script or all scripts have been loaded)
+     *
+     * @param callback {Function?} Callback function to execute
+     * @param context {Object?} Context in which the callback function should be executed
+     * @param uris {Array} List of sources which should be waited for
+     */
+    var getOnLoad = function(callback, context, uris)
     {
-      if (!context) {
-        context = global;
+      var waiting = {};
+      if (uris)
+      {
+        for (var i=0, l=uris.length; i<l; i++) 
+        {
+          var currentUri = uris[i];
+          if (!(currentUri in loaded)) {
+            waiting[currentUri] = true;
+          }
+        }
       }
       
       return function(uri, elem)
@@ -187,8 +204,10 @@
         // Clear entry from waiting list
         delete waiting[uri];
         
-        // Register as being loaded
-        loaded[uri] = true;
+        // Register as being loaded (keep at false during pre-caching)
+        if (elem.type != "script/cache") {
+          loaded[uri] = true;
+        }
         
         // Prevent memory leaks
         elem.onload = elem.onreadystatechange = null;
@@ -200,29 +219,64 @@
             return;
           }
 
-          callback.call(context);
+          callback.call(context||global);
         }
       };      
     }
     
     
     
-    var loader = function(uris, callback, context)
+    if (easy)
     {
-      var waiting = {};
-      var onload = getOnLoad(callback, context, waiting);
-      
-      for (var i=0, l=uris.length; i<l; i++)
+      var loader = function(uris, callback, context)
       {
-        var currentUri = uris[i];
+        var onLoad = getOnLoad(callback, context, uris);
 
-        if (!(waiting[currentUri] || loaded[currentUri])) 
+        for (var i=0, l=uris.length; i<l; i++)
         {
-          waiting[currentUri] = true;
-          createScriptTag(currentUri, null, null, null, onload);
+          var currentUri = uris[i];
+
+          if (!(currentUri in loaded)) 
+          {
+            loaded[currentUri] = false;
+            createScriptTag(currentUri, null, null, null, onLoad);
+          }
         }
-      }
-    };
+      };
+    }
+    else
+    {
+      var loader = function(uris, callback, context)
+      {
+        var executeAll = function()
+        {
+          var currentUri = uris.shift();
+          if (!currentUri) 
+          {
+            if (callback) {
+              callback.call(context||global);
+            }
+            return;
+          }
+          
+          createScriptTag(currentUri, null, null, null, getOnLoad(executeAll));
+        };
+        
+        var onPreload = getOnLoad(executeAll, null, uris);
+
+        for (var i=0, l=uris.length; i<l; i++)
+        {
+          var currentUri = uris[i];
+
+          if (!(currentUri in loaded)) 
+          {
+            loaded[currentUri] = false;
+            createScriptTag(currentUri, "script/cache", null, null, onPreload);
+          }
+        }
+      };
+    }
+
 
     
     return loader;
