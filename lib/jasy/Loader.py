@@ -22,7 +22,7 @@ class Loader():
         else:
             boot = "null"
 
-        result = 'Core.load([%s], %s)' % (",".join(['"%s"' % os.path.join(relPath, classObj.path) for classObj in self.__classList]), boot)
+        result = 'Core.loadScripts([%s], %s)' % (",".join(['"%s"' % os.path.join(relPath, classObj.path) for classObj in self.__classList]), boot)
         
         return result
 

@@ -128,7 +128,7 @@
   })();
   
   
-  var load = (function()
+  var loadScripts = (function()
   {
     // the following is a feature sniff for the ability to set async=false on dynamically created script elements, as proposed to the W3C
     // RE: http://wiki.whatwg.org/wiki/Dynamic_Script_Execution_Order
@@ -137,9 +137,11 @@
     // FF(prior to FF4) & Opera preserve execution order with script tags automatically,
     // so just add all scripts as fast as possible. FF4 has async=false to do the same
     var easy = ENGINE == "gecko" || ENGINE == "opera" || supportsScriptAsync;
+    
+    var preloadMimeType = "script/cache";
 
+    // All loaded scripts
     var loaded = {};
-
 
     /**
      * Creates and appends script tag for given URI
@@ -211,7 +213,7 @@
         delete waiting[uri];
         
         // Register as being loaded (keep at false during pre-caching)
-        if (elem.type != "script/cache") {
+        if (elem.type != preloadMimeType) {
           loaded[uri] = true;
         }
         
@@ -276,7 +278,7 @@
             if (!(currentUri in loaded)) 
             {
               loaded[currentUri] = false;
-              createScriptTag(currentUri, onPreload, "script/cache");
+              createScriptTag(currentUri, onPreload, preloadMimeType);
             }
           }
         }
@@ -344,6 +346,6 @@
      *    requested two times it's important that the server send correct modification headers.
      *    Therefore this works safely on CDNs etc. but might be problematic on local servers.
      */
-    load : load
+    loadScripts : loadScripts
   });
 })(this);
