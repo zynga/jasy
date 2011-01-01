@@ -129,9 +129,7 @@
     // FF(prior to FF4) & Opera preserve execution order with script tags automatically,
     // so just add all scripts as fast as possible. FF4 has async=false to do the same
     var easy = ENGINE == "gecko" || ENGINE == "opera" || supportsScriptAsync;
-    
-    var emptyFunction = function(){};
-    
+
     var loaded = {};
     
 
@@ -197,7 +195,8 @@
       
       return function(uri, elem)
       {
-        if (elem.readyState && elem.readyState !== "complete" && elem.readyState !== "loaded") {
+        var readyState = elem.readyState;
+        if (readyState && readyState !== "complete" && readyState !== "loaded") {
           return;
         }
         
@@ -276,8 +275,6 @@
         }
       };
     }
-
-
     
     return loader;
   })();
