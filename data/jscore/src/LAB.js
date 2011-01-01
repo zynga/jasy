@@ -25,36 +25,6 @@
   var append_to = {};
   var all_scripts = {};
   
-
-
-  var global_defs = 
-  {
-    // browsers like IE/Safari/Chrome can use the "cache" trick to preload
-    cache : !(isGecko||isOpera),
-
-    // FF(prior to FF4) & Opera preserve execution order with script tags automatically,
-    // so just add all scripts as fast as possible. FF4 has async=false to do the same
-    order : isGecko || isOpera || supportsScriptAsync,
-                          
-    // use XHR trick to preload local scripts
-    xhr : true, 
-    
-    // allow duplicate scripts? defaults to true now 'cause is slightly more performant that way (less checks)
-    dupe : true, 
-    
-    // base path to prepend to all non-absolute-path scripts
-    base : "", 
-    
-    // which DOM object ("head" or "body") to append scripts to
-    which : "head",
-    
-    // force preserve execution order of all loaded scripts (regardless of preloading)
-    preserve : false,
-    
-    // use various tricks for "preloading" scripts
-    preload : true
-  };
-    
   append_to["head"] = document.head || document.getElementsByTagName("head");
   append_to["body"] = document.getElementsByTagName("body");
   
@@ -68,12 +38,11 @@
   // optional third / in the protocol portion of this regex so that LABjs doesn't blow up when used in file:/// usage
   var DOCROOT = /^\w+\:\/\/\/?[^\/]+/.exec(PAGEROOT)[0];  
   
-  function canonicalScriptURI(src,base_path) 
+  function canonicalScriptURI(src) 
   {
     var regex = /^\w+\:\/\//, ret; 
     if (typeof src != "string") src = "";
-    if (typeof base_path != "string") base_path = "";
-    ret = (regex.test(src) ? "" : base_path) + src;
+    ret = (regex.test(src) ? "" : "") + src;
     return ((regex.test(ret) ? "" : (ret.charAt(0) === "/" ? DOCROOT : PAGEROOT)) + ret);
   }
   
@@ -94,28 +63,35 @@
     return false;
   }
   
-  function engine(queueExec,opts) 
+  function engine() 
   {
-    queueExec = !(!queueExec);
-    if (opts == null) {
-      opts = global_defs;
-    }
+    var opts = 
+    {
+      // browsers like IE/Safari/Chrome can use the "cache" trick to preload
+      cache : !(isGecko||isOpera),
+
+      // FF(prior to FF4) & Opera preserve execution order with script tags automatically,
+      // so just add all scripts as fast as possible. FF4 has async=false to do the same
+      order : isGecko || isOpera || supportsScriptAsync,
+
+      // which DOM object ("head" or "body") to append scripts to
+      which : "head",
+
+      // use various tricks for "preloading" scripts
+      preload : true
+    };
     
     var ready = false;
-    var _use_preload = queueExec && opts["preload"];
-    var _use_cache_preload = _use_preload && opts.cache;
-    var _use_script_order = _use_preload && opts.order;
-    var _use_xhr_preload = _use_preload && opts.xhr;
+    var _use_cache_preload = opts.cache;
+    var _use_script_order = opts.order;
     var _which = opts.which;
-    var _base_path = opts.base;
+
     var waitFunc = emptyFunction;
     var scripts_loading = false;
     var first_pass = true;
     var scripts = {};
     var exec = [];
     var end_of_chain_check_interval = null;
-    
-    _use_preload = _use_cache_preload || _use_xhr_preload || _use_script_order; // if all flags are turned off, preload is moot so disable it
     
     function isScriptLoaded(elem, scriptentry) 
     {
@@ -253,16 +229,13 @@
     
     function loadScript(o) 
     {
-      if (o.allowDup == null) o.allowDup = opts.dupe;
-      var src = o.src, type = o.type, charset = o.charset, allowDup = o.allowDup, 
-        src_uri = canonicalScriptURI(src,_base_path), scriptentry, same_domain = sameDomain(src_uri);
+
+      var src = o.src, type = o.type, charset = o.charset, 
+        src_uri = canonicalScriptURI(src), scriptentry, same_domain = sameDomain(src_uri);
       if (typeof charset != "string") charset = null;
-      allowDup = !(!allowDup);
-      if (!allowDup && 
-        (
-          (all_scripts[src_uri] != null) || (first_pass && scripts[src_uri]) || scriptTagExists(src_uri)
-        )
-      ) {
+
+      if ((all_scripts[src_uri] != null) || (first_pass && scripts[src_uri]) || scriptTagExists(src_uri)) 
+      {
         if (scripts[src_uri] != null && scripts[src_uri]["preloaddone"] && !scripts[src_uri]["done"] && same_domain) {
           // this script was preloaded via XHR, but is a duplicate, and dupes are not allowed
           handleScriptLoad(null,scripts[src_uri],true); // mark the entry as done and check if chain group is done
@@ -276,7 +249,7 @@
       scriptentry["srcuri"] = src_uri;
       scripts_loading = true;
       
-      if (!_use_script_order && _use_xhr_preload && same_domain) loadScriptXHR(scriptentry,src_uri,type,charset);
+      if (!_use_script_order && same_domain) loadScriptXHR(scriptentry,src_uri,type,charset);
       else if (!_use_script_order && _use_cache_preload) loadScriptCache(scriptentry,src_uri,type,charset);
       else loadScriptElem(scriptentry,src_uri,type,charset);
     }
@@ -289,7 +262,7 @@
     function queueAndExecute(execBody) 
     { 
       if (queueExec && !_use_script_order) onlyQueue(execBody);
-      if (!queueExec || _use_preload) execBody(); // if engine is either not queueing, or is queuing in preload mode, go ahead and execute
+      execBody();
     }
     
     function serializeArgs(args) 
@@ -334,7 +307,7 @@
 
         // On this current chain's waitFunc function, tack on call to trigger the queue for the *next* engine 
         // in the chain, which will be executed when the current chain finishes loading
-        var e = engine(true,opts),  // 'true' tells the engine to be in queueing mode
+        var e = engine(true),  // 'true' tells the engine to be in queueing mode
           triggerNextChain = e.trigger, // store ref to e's trigger function for use by 'wfunc'
           wfunc = function(){ try { func(); } catch(err) {} triggerNextChain(); };
         delete e.trigger; // remove the 'trigger' property from e's public API, since only used internally
@@ -363,11 +336,16 @@
     return publicAPI;
   }
 
-  global.LAB = {
-    script:function(){ // will load one or more scripts
+  // Export public methods
+  global.LAB = 
+  {
+    // will load one or more scripts
+    script:function() {
       return engine().script.apply(null,arguments);
     },
-    wait:function(){ // will ensure that the chain's previous scripts are executed before execution of scripts in subsequent chain links
+    
+    // will ensure that the chain's previous scripts are executed before execution of scripts in subsequent chain links
+    wait:function() {
       return engine().wait.apply(null,arguments);
     }
   };
