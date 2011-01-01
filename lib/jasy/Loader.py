@@ -17,11 +17,12 @@ class Loader():
         
         relPath = self.__relPath
         
-        result = "$LAB.setGlobalDefaults({AlwaysPreserveOrder:true});"
-        result += '$LAB.script([%s])' % ",".join(['"%s"' % os.path.join(relPath, classObj.path) for classObj in self.__classList])
-                
         if bootCode:
-            result += ".wait(function(){%s})" % bootCode
+            boot = "function(){%s}" % bootCode
+        else:
+            boot = "null"
+
+        result = 'Core.load([%s], %s)' % (",".join(['"%s"' % os.path.join(relPath, classObj.path) for classObj in self.__classList]), boot)
         
         return result
 

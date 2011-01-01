@@ -35,16 +35,17 @@ def source():
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
     # Setup locales
-    session.addLocale("de_DE")
-    session.addLocale("en_US")
-    session.addLocale("ro_RO")
+    session.addLocale("de")
+    session.addLocale("en")
+    session.addLocale("ro")
     
     
     # Build core loader
     logging.info("Building core loader...")
     resolver = Resolver(session.getProjects())
     resolver.addClassName("Core")
-    coreCode = Combiner().compress(Sorter(resolver).getSortedClasses())
+    optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
+    coreCode = Combiner(None, None, optimization).compress(Sorter(resolver).getSortedClasses())
     logging.info("Core size: %s bytes" % len(coreCode))
     writefile("source/script/loader.js", coreCode)
     

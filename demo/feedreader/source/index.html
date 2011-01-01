@@ -5,15 +5,18 @@
     <title>Feed Reader</title>
   </head>
   <body>
+    <script src="script/loader.js"></script>
     <script>
-    window.qxsettings = {
-      "qx.theme" : "qx.theme.Modern",
-      "qx.version" : 1.0
-    };
+      window.qxsettings = {
+        "qx.theme" : "qx.theme.Modern",
+        "qx.version" : 1.0
+      };
+      Core.load(["script/feedreader-" + Core.LANGUAGE + ".js"]);
     </script>
-    
-    <!-- TODO : USE loader.js -->
+
+    <!--
     <script src="script/LAB.js"></script>
     <script src="script/feedreader-ro_RO.js"></script>
+    -->
   </body>
 </html>
