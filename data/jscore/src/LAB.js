@@ -82,8 +82,6 @@
     };
     
     var ready = false;
-    var _use_cache_preload = opts.cache;
-    var _use_script_order = opts.order;
     var _which = opts.which;
 
     var waitFunc = emptyFunction;
@@ -249,8 +247,8 @@
       scriptentry["srcuri"] = src_uri;
       scripts_loading = true;
       
-      if (!_use_script_order && same_domain) loadScriptXHR(scriptentry,src_uri,type,charset);
-      else if (!_use_script_order && _use_cache_preload) loadScriptCache(scriptentry,src_uri,type,charset);
+      if (!opts.order && same_domain) loadScriptXHR(scriptentry,src_uri,type,charset);
+      else if (!opts.order && opts.cache) loadScriptCache(scriptentry,src_uri,type,charset);
       else loadScriptElem(scriptentry,src_uri,type,charset);
     }
     
@@ -261,7 +259,7 @@
     // helper for publicAPI functions below
     function queueAndExecute(execBody) 
     { 
-      if (queueExec && !_use_script_order) onlyQueue(execBody);
+      if (queueExec && !opts.order) onlyQueue(execBody);
       execBody();
     }
     
