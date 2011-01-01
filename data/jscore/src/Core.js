@@ -13,6 +13,57 @@
   }
   
   
+  
+  // ==================================================================
+  //   ALIASES
+  // ==================================================================
+  
+  var toString = Object.prototype.toString;
+  var doc = global.document;
+  var head = doc.head || doc.getElementsByTagName("head")[0];
+  
+  
+  
+  
+  // ==================================================================
+  //   CONSTANTS
+  // ==================================================================
+  
+  var LANGUAGE = (function()
+  {
+    var nav = navigator;
+    var input = (nav.userLanguage || nav.language).toLowerCase();
+    var split = input.indexOf("-");
+    
+    return split > 0 ? input.substring(0, split) : input;
+  })();
+  
+  
+  var ENGINE = (function() 
+  {
+    var engine;
+    var docStyle = doc.documentElement.style;
+    
+    if (window.opera && toString.call(opera) == "[object Opera]") {
+      engine = "presto";
+    } else if ("MozAppearance" in docStyle) {
+      engine = "gecko";
+    } else if ("WebkitAppearance" in docStyle) {
+      engine = "webkit";
+    } else if (typeof navigator.cpuClass === "string") {
+      engine = "trident";
+    }
+    
+    return engine;
+  })();
+  
+  
+  
+  
+  // ==================================================================
+  //   METHODS
+  // ==================================================================
+  
   var declare = function(namespace, object)
   {
     var splits = namespace.split(".");
@@ -75,49 +126,6 @@
 
     // otherwise, globalEval is `undefined` since nothing is returned
   })();
-  
-  
-  // ALIASES
-
-  var toString = Object.prototype.toString;
-  var doc = global.document;
-  var head = doc.head || doc.getElementsByTagName("head")[0];
-
-
-  
-  
-  // CONSTANTS
-  
-  var LANGUAGE = (function()
-  {
-    var nav = navigator;
-    var input = (nav.userLanguage || nav.language).toLowerCase();
-    var split = input.indexOf("-");
-
-    return split > 0 ? input.substring(0, split) : input;
-  })();
-  
-  
-  var ENGINE = (function() 
-  {
-    var engine;
-    var docStyle = doc.documentElement.style;
-    
-    if (window.opera && toString.call(opera) == "[object Opera]") {
-      engine = "presto";
-    } else if ("MozAppearance" in docStyle) {
-      engine = "gecko";
-    } else if ("WebkitAppearance" in docStyle) {
-      engine = "webkit";
-    } else if (typeof navigator.cpuClass === "string") {
-      engine = "trident";
-    }
-    
-    return engine;
-  })();
-  
-  
-
   
   
   var load = (function()
@@ -220,14 +228,12 @@
 
           callback.call(context||global);
         }
-      };      
+      };
     }
-    
-    
     
     if (easy)
     {
-      var loader = function(uris, callback, context)
+      var loader = function(uris, callback, context, preload)
       {
         var onLoad = getOnLoad(callback, context, uris);
 
@@ -245,7 +251,7 @@
     }
     else
     {
-      var loader = function(uris, callback, context)
+      var loader = function(uris, callback, context, preload)
       {
         var executeAll = function()
         {
