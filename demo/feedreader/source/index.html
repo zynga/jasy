@@ -10,12 +10,12 @@
         "qx.version" : 1.0
       };
       
-      var permutation = Core.computeChecksum({
+      var checksum = Core.computeChecksum({
         locale : Core.LANGUAGE
       });
       
-      console.debug("Loading file: feedreader-" + permutation + ".js");
-      Core.loadScripts(["script/feedreader-" + permutation + ".js"]);
+      console.debug("Loading file: feedreader-" + checksum + ".js");
+      Core.loadScripts(["script/feedreader-" + checksum + ".js"]);
     </script>
   </head>
   <body>
