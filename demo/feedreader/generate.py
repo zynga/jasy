@@ -75,7 +75,7 @@ def source():
         translationCode = translation.generate()
 
         # Finally write file
-        writefile("source/script/feedreader-%s.js" % permutation.get("locale"), translationCode + resourceCode + loaderCode)
+        writefile("source/script/feedreader-%s.js" % permutation.getChecksum(), translationCode + resourceCode + loaderCode)
 
 
 @task

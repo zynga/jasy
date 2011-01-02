@@ -3,9 +3,12 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import json, logging
+import json, logging, binascii
 from jasy.tokenizer.Tokenizer import Tokenizer
 from jasy.parser.Parser import parseExpression
+
+
+    
 
 class Permutation:
     def __init__(self, combination):
@@ -30,6 +33,11 @@ class Permutation:
         
     def getKey(self):
         return self.__key
+        
+        
+    def getChecksum(self):
+        return binascii.crc32(self.__key.encode("ascii"))
+        
         
     # Map Python built-ins
     __repr__ = getKey
