@@ -156,6 +156,32 @@
   })();
   
   
+  
+  
+  // ==================================================================
+  //   METHODS :: COMPUTE CHECKSUM
+  // ==================================================================
+    
+  var computeChecksum = function(dict)
+  {
+    var keys = [];
+    for (var key in dict) {
+      keys.push(key);
+    }
+    keys.sort();
+    
+    var result = []
+    for (var i=0, l=keys.length; i<l; i++) 
+    {
+      var key = keys[i];
+      result.push(key + ":" + dict[key]);
+    }
+    
+    return crc32(result.join("; "));
+  };
+  
+  
+  
   // ==================================================================
   //   METHODS :: LOAD SCRIPTS
   // ==================================================================
@@ -486,6 +512,15 @@
      * @return {Integer} Checksum
      */
     crc32 : crc32,
+    
+    
+    /**
+     * Computes a CRC32 checksum from a dictonary with short to medium length string values
+     *
+     * @param dict {Map} Flat dictonary with short to medium sized primitive values only
+     * @return {Integer} CRC32 checksum
+     */
+    computeChecksum : computeChecksum,
 
 
     /**
