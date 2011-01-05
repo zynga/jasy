@@ -40,13 +40,14 @@ def source():
     session.addValue("qx.theme", "qx.theme.Modern")
     session.addValue("qx.version", "1.0")
     
-    
-    
     # Build core loader
     logging.info("Building core loader...")
     resolver = Resolver(session.getProjects())
     resolver.addClassName("Core")
     resolver.addClassName("Permutation")
+    resolver.addClassName("detect.Engine")
+    resolver.addClassName("detect.Locale")
+    resolver.addClassName("detect.Param")
     
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
     combinedCode = Combiner(None, None, optimization).compress(Sorter(resolver).getSortedClasses())
