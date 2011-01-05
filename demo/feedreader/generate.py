@@ -34,11 +34,10 @@ def source():
     session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
-    # Setup locales
-    session.addLocale("de")
-    session.addLocale("en")
-    session.addLocale("ro")
-    
+    # Setup values
+    session.addValue("locale", ["de","en","ro"])
+    session.addValue("qx.theme", "qx.theme.Modern")
+    session.addValue("qx.version", "1.0")
     
     # Build core loader
     logging.info("Building core loader...")
@@ -87,12 +86,12 @@ def build():
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
     # Values
-    session.addValue("qx.debug", [ '"on"' ])
-    session.addValue("qx.client", [ '"gecko"' ])
-    session.addValue("qx.globalErrorHandling", [ '"off"' ])
-    session.addValue("qx.version", ["1.0"])
-    session.addValue("qx.theme", ['"qx.theme.Modern"'])
     session.addValue("locale", ["de_DE", "en_US"])
+    session.addValue("qx.debug", [ "on" ])
+    session.addValue("qx.client", [ "gecko" ])
+    session.addValue("qx.globalErrorHandling", [ "off" ])
+    session.addValue("qx.version", ["1.0"])
+    session.addValue("qx.theme", ["qx.theme.Modern"])
 
     # Permutation independend config
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
