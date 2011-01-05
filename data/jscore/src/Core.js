@@ -88,6 +88,23 @@
   };
   
   
+  getByName = function(name)
+  {
+    var splitted = name.split(".");
+    var current = global;
+    
+    for (var i=0, l=splitted.length; i<l; i++) 
+    {
+      current = current[splitted[i]];
+      if (!current) {
+        throw new Error("Unknown name: " + name);
+      }
+    }
+    
+    return current;
+  };
+  
+  
   
   // ==================================================================
   //   METHODS :: GLOBAL EVAL
@@ -480,6 +497,55 @@
     
     /** {String} Client engine. One of <code>presto</code> (Opera), <code>gecko</code> (Firefox), <code>trident</code> (IE) or <code>webkit</code> (Safari). */
     ENGINE : ENGINE,
+    
+    
+    getByName : getByName,
+    
+    
+    select : function()
+    {
+      var map = {};
+      var names = [];
+      var permutations = global.$$permutations;
+      for (var name in permutations)
+      {
+        names.push(name);
+        var entry = permutations[name];
+        
+        if (entry[1]) 
+        {
+          var cls = getByName(entry[1]);
+          var value = cls.get ? cls.get(name) : cls.VALUE;
+          
+          if (entry[0].indexOf(value) == -1) {
+            throw new Error("Invalid value from test for " + name + ": " + value);
+          }
+        }
+        else
+        {
+          var value = entry[0];
+          if (value instanceof Array) {
+            value = value[0];
+          }
+        }
+        
+        map[name] = value;
+      }
+      
+      names.sort();
+      
+      var key = [];
+      for (var i=0, l=names.length; i<l; i++) 
+      {
+        var name = names[i];
+        key.push(name + ":" + map[name]);
+      }
+      
+      key = key.join(";");
+      alert(key);
+      
+    },
+    
     
     
     /**

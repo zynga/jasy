@@ -97,15 +97,25 @@ class Session():
         return permutations
     
     
-    def exportPermutations(self):
+    def getPermutationSelector(self):
         """
         Exports the current permutations to a JSON string
         """
         
-        result = [permutation.export() for permutation in self.getPermutations()]
-        return "this.$$permutations=%s;" % json.dumps(result, separators=(',',':'), ensure_ascii=False)
+        values = self.__values
+        tests = self.__valueTests
         
         
+        export = {}
+        
+        for name in values:
+            export[name] = {}
+            export[name]["values"] = list(values[name])
+            
+            if name in tests:
+                export[name]["test"] = tests[name]
+
+        return "Core.select([%s]);" % json.dumps(export, separators=(',',':'), ensure_ascii=False)
     
     
     #
