@@ -11,7 +11,13 @@ class Permutation:
     def __init__(self, combination):
         self.__combination = combination
         self.__key = self.__buildKey(combination)
-        self.__checksum = binascii.crc32(self.__key.encode("ascii"))
+        
+        # Convert to same value as in JavaScript
+        # Python 3 returns the unsigned value for better compliance with the standard.
+        # http://bugs.python.org/issue1202
+        checksum = binascii.crc32(self.__key.encode("ascii"))
+        checksum = checksum - ((checksum & 0x80000000) <<1)
+        self.__checksum = checksum
         
     def __buildKey(self, combination):
         result = []
@@ -42,21 +48,11 @@ class Permutation:
     __str__ = getKey
     
     
-    #
-    # Export relevant data
-    #
-    
-    def export(self):
-        return {
-            "combination" : self.__combination,
-            "checksum" : self.__checksum
-        }
-    
     
     #
     # Patch API
     #
-
+    
     def patch(self, node):
         """ Replaces all occourences with incoming values """
         modified = False

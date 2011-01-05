@@ -1,4 +1,4 @@
-Core.declare("feature.Param",
+Core.declare("detect.Param",
 {
   /**
    * Returns the value of the given parameter

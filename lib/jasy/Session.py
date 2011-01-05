@@ -97,7 +97,7 @@ class Session():
         return permutations
     
     
-    def getPermutationSelector(self):
+    def getPermutationCode(self):
         """
         Exports the current permutations to a JSON string
         """
@@ -109,13 +109,14 @@ class Session():
         export = {}
         
         for name in values:
-            export[name] = {}
-            export[name]["values"] = list(values[name])
+            export[name] = []
+            export[name].append(list(values[name]))
             
             if name in tests:
-                export[name]["test"] = tests[name]
-
-        return "Core.select([%s]);" % json.dumps(export, separators=(',',':'), ensure_ascii=False)
+                export[name].append(tests[name])
+    
+        return "(function(global){global.$$permutations=%s})(this);" % json.dumps(export, separators=(',',':'), ensure_ascii=False)
+    
     
     
     #

@@ -1,4 +1,4 @@
-Core.declare("feature.Locale", 
+Core.declare("detect.Locale", 
 {
   VALUE : (function()
   {
