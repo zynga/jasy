@@ -37,8 +37,10 @@ class Session():
         dynadd = []
         if permutation:
             locale = permutation.get("locale")
-            if locale in self.__locales:
-                dynadd.append(self.__locales[locale])
+            if not locale in self.__locales:
+                self.__locales[locale] = Project(localeProject(locale))
+            
+            dynadd.append(self.__locales[locale])
         
         return self.__projects + dynadd
     
@@ -80,32 +82,12 @@ class Session():
         logging.info("Computing permutations...")
         variants = self.__variants
         
-        # Patch in locales
-        variants["locale"] = self.__locales
-
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         names = sorted(variants)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(variants[name] for name in names))]
         permutations = [Permutation(combi) for combi in combinations]
 
         return permutations
-
-
-
-    #
-    # Locale Configuration
-    #
-            
-    def addLocale(self, locale):
-        storeLocale(locale)
-        self.__locales[locale] = Project(localeProject(locale))
-
-    def clearLocales(self):
-        self.__locales = {}
-
-    def getLocales(self):
-        return self.__locales
-    
     
     
     #

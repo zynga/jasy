@@ -92,10 +92,7 @@ def build():
     session.addValue("qx.globalErrorHandling", [ '"off"' ])
     session.addValue("qx.version", ["1.0"])
     session.addValue("qx.theme", ['"qx.theme.Modern"'])
-
-    # Setup locales
-    session.addLocale("de_DE")
-    session.addLocale("en_US")
+    session.addValue("locale", ["de_DE", "en_US"])
 
     # Permutation independend config
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
