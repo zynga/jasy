@@ -115,7 +115,11 @@ class Session():
                 export[name].append(tests[name])
     
         return "(function(global){global.$$permutations=%s})(this);" % json.dumps(export, separators=(',',':'), ensure_ascii=False)
-    
+        
+        
+    def getPermutationDependencies(self):
+        return set(self.__valueTests.values())
+
     
     
     #
