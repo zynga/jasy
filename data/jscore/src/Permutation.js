@@ -1,6 +1,6 @@
 Core.declare("Permutation",
 {
-  CHECKSUM : (function()
+  CHECKSUM : (function(global)
   {
     var map = {};
     var names = [];
@@ -13,7 +13,7 @@ Core.declare("Permutation",
       
       if (entry[1]) 
       {
-        var cls = getByName(entry[1]);
+        var cls = Core.getByName(entry[1]);
         var value = cls.get ? cls.get(name) : cls.VALUE;
         
         if (entry[0].indexOf(value) == -1) {
@@ -39,5 +39,5 @@ Core.declare("Permutation",
     }
     
     return crc32(key.join(";"))
-  })()
+  })(this)
 });
