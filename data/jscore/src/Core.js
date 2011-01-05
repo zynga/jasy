@@ -88,7 +88,7 @@
   };
   
   
-  getByName = function(name)
+  var getByName = function(name)
   {
     var splitted = name.split(".");
     var current = global;
@@ -172,72 +172,6 @@
     };
   })();
   
-  
-  
-  
-  // ==================================================================
-  //   METHODS :: COMPUTE CHECKSUM
-  // ==================================================================
-    
-  var computeChecksum = function(dict)
-  {
-    var keys = [];
-    for (var key in dict) {
-      keys.push(key);
-    }
-    keys.sort();
-    
-    var result = []
-    for (var i=0, l=keys.length; i<l; i++) 
-    {
-      var key = keys[i];
-      result.push(key + ":" + dict[key]);
-    }
-    
-    return crc32(result.join("; "));
-  };
-  
-  
-  var PERMUTATION = (function()
-  {
-    var map = {};
-    var names = [];
-    var permutations = global.$$permutations;
-    
-    for (var name in permutations)
-    {
-      names.push(name);
-      var entry = permutations[name];
-      
-      if (entry[1]) 
-      {
-        var cls = getByName(entry[1]);
-        var value = cls.get ? cls.get(name) : cls.VALUE;
-        
-        if (entry[0].indexOf(value) == -1) {
-          throw new Error("Invalid value from test for " + name + ": " + value);
-        }
-      }
-      else
-      {
-        // Auto-select first entry (default)
-        var value = entry[0][0];
-      }
-      
-      map[name] = value;
-    }
-    
-    names.sort();
-    
-    var key = [];
-    for (var i=0, l=names.length; i<l; i++) 
-    {
-      var name = names[i];
-      key.push(name + ":" + map[name]);
-    }
-    
-    return crc32(key.join(";"))
-  })();
   
   
   
@@ -546,8 +480,6 @@
     getByName : getByName,
     
     
-    getPermutationChecksum : getPermutationChecksum,
-    
     
     /**
      * Declares the given namespace and stores the given object onto it.
@@ -579,15 +511,6 @@
      * @return {Integer} Checksum
      */
     crc32 : crc32,
-    
-    
-    /**
-     * Computes a CRC32 checksum from a dictonary with short to medium length string values
-     *
-     * @param dict {Map} Flat dictonary with short to medium sized primitive values only
-     * @return {Integer} CRC32 checksum
-     */
-    computeChecksum : computeChecksum,
 
 
     /**

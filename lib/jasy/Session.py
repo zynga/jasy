@@ -105,7 +105,6 @@ class Session():
         values = self.__values
         tests = self.__valueTests
         
-        
         export = {}
         
         for name in values:
