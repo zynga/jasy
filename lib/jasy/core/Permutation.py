@@ -20,7 +20,7 @@ class Permutation:
         for key in sorted(combination):
             result.append("%s:%s" % (key, combination[key]))
 
-        return "; ".join(result)
+        return ";".join(result)
             
     def has(self, variant):
         return variant in self.__combination
