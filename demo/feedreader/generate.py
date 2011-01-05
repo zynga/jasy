@@ -35,7 +35,8 @@ def source():
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
     # Setup values
-    session.addValue("locale", ["de","en","ro"])
+    session.addValue("locale", ["de","en","ro"], "feature.Locale")
+    session.addValue("qx.debug", ["on","off"], "feature.Param")
     session.addValue("qx.theme", "qx.theme.Modern")
     session.addValue("qx.version", "1.0")
     
@@ -43,10 +44,19 @@ def source():
     logging.info("Building core loader...")
     resolver = Resolver(session.getProjects())
     resolver.addClassName("Core")
+    resolver.addClassName("feature.Locale")
+    resolver.addClassName("feature.Param")
+    
+    permutationCode = session.exportPermutations()
+    
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
-    coreCode = Combiner(None, None, optimization).compress(Sorter(resolver).getSortedClasses())
+    combinedCode = Combiner(None, None, optimization).compress(Sorter(resolver).getSortedClasses())
+    
+    coreCode = permutationCode + combinedCode
     logging.info("Core size: %s bytes" % len(coreCode))
     writefile("source/script/loader.js", coreCode)
+    
+    return
     
 
     # Process every possible permutation

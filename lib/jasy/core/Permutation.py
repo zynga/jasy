@@ -7,13 +7,11 @@ import json, logging, binascii
 from jasy.tokenizer.Tokenizer import Tokenizer
 from jasy.parser.Parser import parseExpression
 
-
-    
-
 class Permutation:
     def __init__(self, combination):
         self.__combination = combination
         self.__key = self.__buildKey(combination)
+        self.__checksum = binascii.crc32(self.__key.encode("ascii"))
         
     def __buildKey(self, combination):
         result = []
@@ -36,12 +34,23 @@ class Permutation:
         
         
     def getChecksum(self):
-        return binascii.crc32(self.__key.encode("ascii"))
+        return self.__checksum
         
         
     # Map Python built-ins
     __repr__ = getKey
     __str__ = getKey
+    
+    
+    #
+    # Export relevant data
+    #
+    
+    def export(self):
+        return {
+            "combination" : self.__combination,
+            "checksum" : self.__checksum
+        }
     
     
     #

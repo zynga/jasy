@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging, itertools, time, atexit
+import logging, itertools, time, atexit, json
 from jasy.core.Permutation import Permutation
 from jasy.core.Translation import Translation
 from jasy.Project import Project
@@ -15,11 +15,14 @@ from jasy.core.LocaleData import storeLocale
 class Session():
     def __init__(self):
         atexit.register(self.close)
-        
-        self.__projects = []
-        self.__variants = {}
-        self.__locales = {}
+
         self.__timestamp = time.time()
+        self.__projects = []
+
+        self.__values = {}
+        self.__valueTests = {}
+
+        self.__localeProjects = {}
     
     
     #
@@ -37,10 +40,10 @@ class Session():
         dynadd = []
         if permutation:
             locale = permutation.get("locale")
-            if not locale in self.__locales:
-                self.__locales[locale] = Project(localeProject(locale))
+            if not locale in self.__localeProjects:
+                self.__localeProjects[locale] = Project(localeProject(locale))
             
-            dynadd.append(self.__locales[locale])
+            dynadd.append(self.__localeProjects[locale])
         
         return self.__projects + dynadd
     
@@ -63,38 +66,51 @@ class Session():
     # Permutation Support
     #
     
-    def addValue(self, name, values):
+    def addValue(self, name, values, test=None):
         if type(values) != list:
             values = [values]
             
-        self.__variants[name] = set(values)
+        self.__values[name] = set(values)
+
+        if test:
+            self.__valueTests[name] = test
+            
         
     def clearValues(self):
-        self.__variants = {}
+        self.__values = {}
+        self.__valueTests = {}
     
     
     def getPermutations(self):
         """
-        Combines all variants and locales to a set of permutations.
+        Combines all values to a set of permutations.
         These define all possible combinations of the configured settings
         """
 
-        logging.info("Computing permutations...")
-        variants = self.__variants
+        values = self.__values
         
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
-        names = sorted(variants)
-        combinations = [dict(zip(names, prod)) for prod in itertools.product(*(variants[name] for name in names))]
+        names = sorted(values)
+        combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
         permutations = [Permutation(combi) for combi in combinations]
 
         return permutations
     
     
+    def exportPermutations(self):
+        """
+        Exports the current permutations to a JSON string
+        """
+        
+        result = [permutation.export() for permutation in self.getPermutations()]
+        return "this.$$permutations=%s;" % json.dumps(result, separators=(',',':'), ensure_ascii=False)
+        
+        
+    
+    
     #
     # Translation Support
     #
-    
-    defaultLocale = "C"
     
     def getAvailableTranslations(self):
         """ 
@@ -117,11 +133,11 @@ class Session():
         all relevant translation files for the current project set. 
         """
         
-        # Prio: de_DE => de => C => Code
+        # Prio: de_DE => de => C (default locale) => Code
         check = [locale]
         if "_" in locale:
             check.append(locale[:locale.index("_")])
-        check.append(self.defaultLocale)
+        check.append("C")
         
         files = []
         for entry in check:
