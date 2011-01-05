@@ -18,45 +18,8 @@
   //   ALIASES
   // ==================================================================
   
-  var toString = Object.prototype.toString;
   var doc = global.document;
   var head = doc.head || doc.getElementsByTagName("head")[0];
-  
-  
-  
-  
-  // ==================================================================
-  //   CONSTANTS
-  // ==================================================================
-  
-  var LANGUAGE = (function()
-  {
-    var nav = navigator;
-    var input = (nav.userLanguage || nav.language).toLowerCase();
-    var split = input.indexOf("-");
-    
-    return split > 0 ? input.substring(0, split) : input;
-  })();
-  
-  
-  var ENGINE = (function() 
-  {
-    var engine;
-    var docStyle = doc.documentElement.style;
-    
-    if (global.opera && toString.call(opera) == "[object Opera]") {
-      engine = "presto";
-    } else if ("MozAppearance" in docStyle) {
-      engine = "gecko";
-    } else if ("WebkitAppearance" in docStyle) {
-      engine = "webkit";
-    } else if (typeof navigator.cpuClass === "string") {
-      engine = "trident";
-    }
-    
-    return engine;
-  })();
-  
   
   
   
@@ -468,19 +431,6 @@
 
   declare("Core",
   {
-    /** {String} Detected language of the browser */
-    LANGUAGE : LANGUAGE,
-    
-    /** {String} Client engine. One of <code>presto</code> (Opera), <code>gecko</code> (Firefox), <code>trident</code> (IE) or <code>webkit</code> (Safari). */
-    ENGINE : ENGINE,
-    
-    PERMUTATION : PERMUTATION,
-    
-    
-    getByName : getByName,
-    
-    
-    
     /**
      * Declares the given namespace and stores the given object onto it.
      *
@@ -488,6 +438,8 @@
      * @param object {Object} Any object
      */
     declare : declare,
+
+    getByName : getByName,
 
 
     /**
