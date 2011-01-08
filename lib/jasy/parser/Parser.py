@@ -1453,64 +1453,60 @@ def PrimaryExpression(tokenizer, staticContext):
     elif tokenType == "left_curly":
         node = builder.OBJECTINIT_build(tokenizer)
 
-        # Simulate a label-goto from "js" via a closure
-        def object_init():
-            if not tokenizer.match("right_curly"):
-                while True:
-                    tokenType = tokenizer.get()
-                    tokenValue = getattr(tokenizer.token, "value", None)
-                    comments = tokenizer.getComments()
-                    
-                    if tokenValue in ("get", "set") and tokenizer.peek() == "identifier":
-                        if staticContext.ecma3OnlyMode:
-                            raise SyntaxError("Illegal property accessor", tokenizer)
-                            
-                        fd = FunctionDefinition(tokenizer, staticContext, True, "expressed_form")
-                        builder.OBJECTINIT_addProperty(node, fd)
+        if not tokenizer.match("right_curly"):
+            while True:
+                tokenType = tokenizer.get()
+                tokenValue = getattr(tokenizer.token, "value", None)
+                comments = tokenizer.getComments()
+                
+                if tokenValue in ("get", "set") and tokenizer.peek() == "identifier":
+                    if staticContext.ecma3OnlyMode:
+                        raise SyntaxError("Illegal property accessor", tokenizer)
                         
+                    fd = FunctionDefinition(tokenizer, staticContext, True, "expressed_form")
+                    builder.OBJECTINIT_addProperty(node, fd)
+                    
+                else:
+                    if tokenType == "identifier" or tokenType == "number" or tokenType == "string":
+                        id = builder.PRIMARY_build(tokenizer, "identifier")
+                        builder.PRIMARY_finish(id)
+                        
+                    elif tokenType == "right_curly":
+                        if staticContext.ecma3OnlyMode:
+                            raise SyntaxError("Illegal trailing ,", tokenizer)
+                            
+                        tokenizer.unget()
+                        break
+                            
                     else:
-                        if tokenType == "identifier" or tokenType == "number" or tokenType == "string":
+                        if tokenValue in keywords:
                             id = builder.PRIMARY_build(tokenizer, "identifier")
                             builder.PRIMARY_finish(id)
-                            
-                        elif tokenType == "right_curly":
-                            if staticContext.ecma3OnlyMode:
-                                raise SyntaxError("Illegal trailing ,", tokenizer)
-                            
-                            # re-call self
-                            object_init()
-                            
                         else:
-                            if tokenValue in keywords:
-                                id = builder.PRIMARY_build(tokenizer, "identifier")
-                                builder.PRIMARY_finish(id)
-                            else:
-                                raise SyntaxError("Invalid property name", tokenizer)
+                            print("Value is '%s'" % tokenValue)
+                            raise SyntaxError("Invalid property name", tokenizer)
+                    
+                    if tokenizer.match("colon"):
+                        childNode = builder.PROPERTYINIT_build(tokenizer)
+                        builder.COMMENTS_add(childNode, node, comments)
+                        builder.PROPERTYINIT_addOperand(childNode, id)
+                        builder.PROPERTYINIT_addOperand(childNode, AssignExpression(tokenizer, staticContext))
+                        builder.PROPERTYINIT_finish(childNode)
+                        builder.OBJECTINIT_addProperty(node, childNode)
                         
-                        if tokenizer.match("colon"):
-                            childNode = builder.PROPERTYINIT_build(tokenizer)
-                            builder.COMMENTS_add(childNode, node, comments)
-                            builder.PROPERTYINIT_addOperand(childNode, id)
-                            builder.PROPERTYINIT_addOperand(childNode, AssignExpression(tokenizer, staticContext))
-                            builder.PROPERTYINIT_finish(childNode)
-                            builder.OBJECTINIT_addProperty(node, childNode)
-                            
-                        else:
-                            # Support, e.g., |var {staticContext, y} = o| as destructuring shorthand
-                            # for |var {staticContext: staticContext, y: y} = o|, per proposed JS2/ES4 for JS1.8.
-                            if tokenizer.peek() != "comma" and tokenizer.peek() != "right_curly":
-                                raise SyntaxError("Missing : after property", tokenizer)
-                            builder.OBJECTINIT_addProperty(node, id)
-                        
-                    if not tokenizer.match("comma"):
-                        break
+                    else:
+                        # Support, e.g., |var {staticContext, y} = o| as destructuring shorthand
+                        # for |var {staticContext: staticContext, y: y} = o|, per proposed JS2/ES4 for JS1.8.
+                        if tokenizer.peek() != "comma" and tokenizer.peek() != "right_curly":
+                            raise SyntaxError("Missing : after property", tokenizer)
+                        builder.OBJECTINIT_addProperty(node, id)
+                    
+                if not tokenizer.match("comma"):
+                    break
 
-                tokenizer.mustMatch("right_curly")
+            tokenizer.mustMatch("right_curly")
 
-            builder.OBJECTINIT_finish(node)
-        
-        # Initial call
-        object_init()        
+        builder.OBJECTINIT_finish(node)
 
     elif tokenType == "left_paren":
         # ParenExpression does its own matching on parentheses, so we need to unget.
