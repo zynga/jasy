@@ -102,6 +102,10 @@ class Session():
     
     
     def getLoadPermutation(self):
+        """
+        Exports the permutation data into a new permutation which can be used for loading files based on this data.
+        """
+        
         tests = "[%s]" % ",".join([ "{'%s':%s}" % (key, self.__valueTests[key]) for key in sorted(self.__valueTests) ])
         defaults = "[%s]" % ",".join([ "{'%s':%s}" % (key, toJSON(self.__values[key])) for key in sorted(self.__values) ])
         

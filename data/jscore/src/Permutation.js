@@ -11,43 +11,20 @@ Core.declare("Permutation",
       return;
     }
     
-    
-    defaults + tests;
-    
-    return;
-    
-    var map = {};
-    var names = [];
-    for (var name in permutations)
-    {
-      names.push(name);
-      var entry = permutations[name];
-      
-      if (entry[1]) 
-      {
-        var cls = Core.getByName(entry[1]);
-        var value = cls.get ? cls.get(name) : cls.VALUE;
-        
-        if (entry[0].indexOf(value) == -1) {
-          throw new Error("Invalid value from test for " + name + ": " + value);
-        }
-      }
-      else
-      {
-        // Auto-select first entry (default)
-        var value = entry[0][0];
-      }
-      
-      map[name] = value;
-    }
-    
-    names.sort();
-    
     var key = [];
-    for (var i=0, l=names.length; i<l; i++) 
+    for (var name in defaults) 
     {
       var name = names[i];
-      key.push(name + ":" + map[name]);
+      var test = tests[name];
+
+      var value;
+      if (test) {
+        value = "VALUE" in test ? test.VALUE : test.get(name);
+      } else {
+        value = map[name];
+      }
+      
+      key.push(name + ":" + value);
     }
     
     return Core.crc32(key.join(";"))
