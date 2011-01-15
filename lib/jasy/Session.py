@@ -8,8 +8,13 @@ from jasy.core.Permutation import Permutation
 from jasy.core.Translation import Translation
 from jasy.Project import Project
 from jasy.core.Info import *
+from jasy.core.File import *
 from jasy.core.Profiler import *
 from jasy.core.LocaleData import storeLocale
+from jasy.Resolver import Resolver
+from jasy.Optimization import Optimization
+from jasy.Combiner import Combiner
+from jasy.Sorter import Sorter
 
 
 def toJSON(obj):
@@ -113,6 +118,17 @@ class Session():
           "Permutation.values" : values, 
           "Permutation.tests" : tests
         })
+    
+    
+    def writeLoader(self, fileName):
+        loaderPermutation = self.getLoadPermutation()
+        resolver = Resolver(self.getProjects(), loaderPermutation)
+        resolver.addClassName("Permutation")
+
+        optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
+        combinedCode = Combiner(loaderPermutation, None, optimization).compress(Sorter(resolver, loaderPermutation).getSortedClasses())
+        writefile("source/script/loader.js", combinedCode)
+        
     
     
     

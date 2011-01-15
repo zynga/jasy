@@ -40,21 +40,10 @@ def source():
     session.addValue("qx.theme", "qx.theme.Modern")
     session.addValue("qx.version", "1.0")
     
-    # Build core loader
-    logging.info("Building core loader...")
-    loaderPermutation = session.getLoadPermutation()
-    resolver = Resolver(session.getProjects(), loaderPermutation)
-    resolver.addClassName("Permutation")
+    # Store loader script
+    print("------------------------------------------------------------------------------")
+    session.writeLoader("source/script/loader.js")
     
-    optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
-    combinedCode = Combiner(loaderPermutation, None, optimization).compress(Sorter(resolver, loaderPermutation).getSortedClasses())
-
-    logging.info("Core size: %s bytes" % len(combinedCode))
-    writefile("source/script/loader.js", combinedCode)
-    
-    return
-    
-
     # Process every possible permutation
     for permutation in session.getPermutations():
         print("------------------------------------------------------------------------------")
@@ -66,11 +55,11 @@ def source():
         resolver = Resolver(projects)
         resolver.addClassName("feedreader.Application")
         resolver.addClassName("qx.theme.Modern")
-
+        
         # Collect Resources
         resources = Resources(session, resolver.getIncludedClasses())
         resourceCode = resources.exportInfo(prefixRoots="../")
-
+        
         # Generate Loader
         loader = Loader(Sorter(resolver).getSortedClasses(), "../")
         loaderCode = loader.generate("qx.core.Init.boot(feedreader.Application)")
@@ -78,7 +67,7 @@ def source():
         # Prepare translation
         translation = session.getTranslation(permutation.get("locale"))
         translationCode = translation.generate()
-
+        
         # Finally write file
         writefile("source/script/feedreader-%s.js" % permutation.getChecksum(), translationCode + resourceCode + loaderCode)
 
