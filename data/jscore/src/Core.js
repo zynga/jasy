@@ -18,8 +18,6 @@
   //   ALIASES
   // ==================================================================
   
-  var doc = global.document;
-  var head = doc.head || doc.getElementsByTagName("head")[0];
   
   
   

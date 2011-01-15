@@ -1,4 +1,4 @@
-Core.declare("detect.Param",
+Core.declare("jasy.detect.Param",
 {
   /**
    * Returns the value of the given parameter

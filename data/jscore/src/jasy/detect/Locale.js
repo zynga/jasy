@@ -1,4 +1,4 @@
-Core.declare("detect.Locale", 
+Core.declare("jasy.detect.Locale", 
 {
   VALUE : (function()
   {

@@ -1,8 +1,11 @@
-(function()
+(function(global)
 {
   // All loaded scripts
   var loadedScripts = {};
   var activeScripts = {};
+
+  var doc = global.document;
+  var head = doc.head || doc.getElementsByTagName("head")[0];
 
 
   var areScriptsLoaded = function(uris) 
@@ -156,7 +159,7 @@
     
     // Firefox(prior to Firefox 4) & Opera preserve execution order with script tags automatically,
     // so just add all scripts as fast as possible. Firefox 4 has async=false to do the same.
-    var engine = detect.ENGINE.VALUE;
+    var engine = jasy.detect.Engine.VALUE;
     if (supportsScriptAsync || engine == "gecko" || engine == "opera")
     {
       var loader = function(uris, callback, context, preload)
@@ -278,7 +281,7 @@
     return loader;
   })();
   
-  Core.declare("Loader",
+  Core.declare("jasy.Loader",
   {
     /**
      * Checks wether the given scripts are loaded
@@ -305,5 +308,5 @@
      */
     loadScripts : loadScripts
   });
-});
+})(this);
 

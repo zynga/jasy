@@ -115,15 +115,15 @@ class Session():
         tests = "{%s}" % ",".join([ "'%s':%s" % (key, self.__valueTests[key]) for key in sorted(self.__valueTests) ])
         
         return Permutation({
-          "Permutation.values" : values, 
-          "Permutation.tests" : tests
+          "jasy.Permutation.values" : values, 
+          "jasy.Permutation.tests" : tests
         })
     
     
     def writeLoader(self, fileName):
         loaderPermutation = self.getLoadPermutation()
         resolver = Resolver(self.getProjects(), loaderPermutation)
-        resolver.addClassName("Permutation")
+        resolver.addClassName("jasy.Permutation")
 
         optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
         combinedCode = Combiner(loaderPermutation, None, optimization).compress(Sorter(resolver, loaderPermutation).getSortedClasses())

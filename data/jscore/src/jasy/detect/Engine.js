@@ -1,8 +1,9 @@
-Core.declare("detect.Engine", 
+Core.declare("jasy.detect.Engine", 
 {
-  VALUE : (function() 
+  VALUE : (function(global) 
   {
     var engine;
+    var doc = global.document;
     var docStyle = doc.documentElement.style;
 
     if (global.opera && Object.prototype.toString.call(opera) == "[object Opera]") {
@@ -16,5 +17,5 @@ Core.declare("detect.Engine",
     }
 
     return engine;
-  })()
+  })(this)
 });
