@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import json, logging, binascii
+import logging, binascii
 from jasy.tokenizer.Tokenizer import Tokenizer
 from jasy.parser.Parser import parseExpression
 

@@ -40,22 +40,17 @@ def source():
     session.addValue("qx.theme", "qx.theme.Modern")
     session.addValue("qx.version", "1.0")
     
-    print("DEPS", session.getPermutationDependencies())
-    
     # Build core loader
     logging.info("Building core loader...")
-    resolver = Resolver(session.getProjects())
-    resolver.addClassName("Core")
+    loaderPermutation = session.getLoadPermutation()
+    resolver = Resolver(session.getProjects(), loaderPermutation)
     resolver.addClassName("Permutation")
     
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
-    combinedCode = Combiner(None, None, optimization).compress(Sorter(resolver).getSortedClasses())
+    combinedCode = Combiner(loaderPermutation, None, optimization).compress(Sorter(resolver, loaderPermutation).getSortedClasses())
 
-    permutationCode = session.getPermutationCode()
-    
-    coreCode = permutationCode + combinedCode
-    logging.info("Core size: %s bytes" % len(coreCode))
-    writefile("source/script/loader.js", coreCode)
+    logging.info("Core size: %s bytes" % len(combinedCode))
+    writefile("source/script/loader.js", combinedCode)
     
     return
     

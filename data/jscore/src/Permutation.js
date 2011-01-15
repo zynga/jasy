@@ -1,11 +1,23 @@
 Core.declare("Permutation",
 {
+  tests : null,
+  defaults : null,
+  
   CHECKSUM : (function(global)
   {
+    var defaults = Permutation.defaults;
+    var tests = Permutation.tests;
+    if (!defaults) {
+      return;
+    }
+    
+    
+    defaults + tests;
+    
+    return;
+    
     var map = {};
     var names = [];
-    var permutations = global.$$permutations;
-    
     for (var name in permutations)
     {
       names.push(name);
@@ -38,6 +50,6 @@ Core.declare("Permutation",
       key.push(name + ":" + map[name]);
     }
     
-    return crc32(key.join(";"))
+    return Core.crc32(key.join(";"))
   })(this)
 });

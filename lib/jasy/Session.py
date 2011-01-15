@@ -12,6 +12,10 @@ from jasy.core.Profiler import *
 from jasy.core.LocaleData import storeLocale
 
 
+def toJSON(obj):
+    return json.dumps(obj, separators=(',',':'), ensure_ascii=False)
+    
+
 class Session():
     def __init__(self):
         atexit.register(self.close)
@@ -70,7 +74,7 @@ class Session():
         if type(values) != list:
             values = [values]
             
-        self.__values[name] = set(values)
+        self.__values[name] = values
 
         if test:
             self.__valueTests[name] = test
@@ -79,8 +83,8 @@ class Session():
     def clearValues(self):
         self.__values = {}
         self.__valueTests = {}
-    
-    
+        
+        
     def getPermutations(self):
         """
         Combines all values to a set of permutations.
@@ -97,28 +101,11 @@ class Session():
         return permutations
     
     
-    def getPermutationCode(self):
-        """
-        Exports the current permutations to a JSON string
-        """
+    def getLoadPermutation(self):
+        tests = "[%s]" % ",".join([ "{'%s':%s}" % (key, self.__valueTests[key]) for key in sorted(self.__valueTests) ])
+        defaults = "[%s]" % ",".join([ "{'%s':%s}" % (key, toJSON(self.__values[key])) for key in sorted(self.__values) ])
         
-        values = self.__values
-        tests = self.__valueTests
-        
-        export = {}
-        
-        for name in values:
-            export[name] = []
-            export[name].append(list(values[name]))
-            
-            if name in tests:
-                export[name].append(tests[name])
-    
-        return "(function(global){global.$$permutations=%s})(this);" % json.dumps(export, separators=(',',':'), ensure_ascii=False)
-        
-        
-    def getPermutationDependencies(self):
-        return set(self.__valueTests.values())
+        return Permutation({"Permutation.defaults" : defaults, "Permutation.tests" : tests})
 
     
     
