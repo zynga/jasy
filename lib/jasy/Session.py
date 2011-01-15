@@ -107,13 +107,13 @@ class Session():
         """
         
         values = toJSON({ name : self.__values[name] for name in sorted(self.__values) })
-        tests = "[%s]" % ",".join([ "{'%s':%s}" % (key, self.__valueTests[key]) for key in sorted(self.__valueTests) ])
+        tests = "{%s}" % ",".join([ "'%s':%s" % (key, self.__valueTests[key]) for key in sorted(self.__valueTests) ])
         
         return Permutation({
           "Permutation.values" : values, 
           "Permutation.tests" : tests
         })
-
+    
     
     
     #
