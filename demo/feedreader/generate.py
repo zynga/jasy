@@ -42,7 +42,7 @@ def source():
     
     # Store loader script
     print("------------------------------------------------------------------------------")
-    session.writeLoader("source/script/loader.js")
+    session.writeLoader("source/script/feedreader.js")
     
     # Process every possible permutation
     for permutation in session.getPermutations():
