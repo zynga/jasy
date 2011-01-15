@@ -1,29 +1,38 @@
 Core.declare("Permutation",
 {
+  values : null,
   tests : null,
-  defaults : null,
   
   CHECKSUM : (function(global)
   {
-    var defaults = Permutation.defaults;
-    var tests = Permutation.tests;
-    if (!defaults) {
+    var values = Permutation.values;
+    if (!values) {
       return;
     }
     
     var key = [];
-    for (var name in defaults) 
+    var tests = Permutation.tests;
+    var value;
+    
+    for (var name in values) 
     {
-      var name = names[i];
       var test = tests[name];
 
-      var value;
-      if (test) {
+      if (test) 
+      {
+        alert(name)
         value = "VALUE" in test ? test.VALUE : test.get(name);
-      } else {
-        value = map[name];
+        
+        // Fallback to first value if test results in unsupported value
+        if (values[name].indexOf(value) == -1) {
+          value = values[name][0];
+        }
       }
-      
+      else
+      {
+        value = values[name][0];
+      }
+
       key.push(name + ":" + value);
     }
     

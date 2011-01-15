@@ -106,10 +106,13 @@ class Session():
         Exports the permutation data into a new permutation which can be used for loading files based on this data.
         """
         
+        values = toJSON({ name : self.__values[name] for name in sorted(self.__values) })
         tests = "[%s]" % ",".join([ "{'%s':%s}" % (key, self.__valueTests[key]) for key in sorted(self.__valueTests) ])
-        defaults = "[%s]" % ",".join([ "{'%s':%s}" % (key, toJSON(self.__values[key])) for key in sorted(self.__values) ])
         
-        return Permutation({"Permutation.defaults" : defaults, "Permutation.tests" : tests})
+        return Permutation({
+          "Permutation.values" : values, 
+          "Permutation.tests" : tests
+        })
 
     
     
