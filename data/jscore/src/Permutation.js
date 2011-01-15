@@ -41,7 +41,19 @@ Core.declare("Permutation",
       key.push(name + ":" + value);
     }
     
-    console.debug("Permutation:\n" + key.join(";\n"))
-    return Core.crc32(key.join(";"))
-  })(this)
+    var adler32 = util.Adler32.compute(key.join(";"));
+    var prefix = adler32 < 0 ? "a" : "b";
+    var checksum = prefix + (adler32 < 0 ? -adler32 : adler32).toString(16);
+    
+    console.debug("Checksum: " + checksum);
+    return checksum;
+  })(this),
+  
+  
+  loadScripts : function(fileName) 
+  {
+    console.debug("Loading: " + fileName, Permutation.CHECKSUM);
+
+
+  }
 });

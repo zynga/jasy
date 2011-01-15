@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging, binascii
+import logging, binascii, zlib
 from jasy.tokenizer.Tokenizer import Tokenizer
 from jasy.parser.Parser import parseExpression
 
@@ -15,8 +15,15 @@ class Permutation:
         # Convert to same value as in JavaScript
         # Python 3 returns the unsigned value for better compliance with the standard.
         # http://bugs.python.org/issue1202
-        checksum = binascii.crc32(self.__key.encode("ascii"))
+        # checksum = binascii.crc32(self.__key.encode("ascii"))
+        checksum = zlib.adler32(self.__key.encode("ascii"))
         checksum = checksum - ((checksum & 0x80000000) <<1)
+        
+        if checksum < 0:
+            checksum = "a%s" % hex(abs(checksum))[2:]
+        else:
+            checksum = "b%s" % hex(checksum)[2:]
+        
         self.__checksum = checksum
         
     def __buildKey(self, combination):
