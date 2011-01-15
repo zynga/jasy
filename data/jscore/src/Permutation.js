@@ -11,11 +11,11 @@ Core.declare("Permutation",
   tests : null,
   
   /** {Number} Holds the checksum for the current permutation which is autodetected by features or by compiled-in data */
-  CHECKSUM : (function(global)
+  CHECKSUM : (function()
   {
     var values = Permutation.values;
     if (!values) {
-      return;
+      return "";
     }
     
     var key = [];
@@ -43,17 +43,33 @@ Core.declare("Permutation",
     
     var adler32 = util.Adler32.compute(key.join(";"));
     var prefix = adler32 < 0 ? "a" : "b";
-    var checksum = prefix + (adler32 < 0 ? -adler32 : adler32).toString(16);
-    
-    console.debug("Checksum: " + checksum);
-    return checksum;
-  })(this),
+
+    return prefix + (adler32 < 0 ? -adler32 : adler32).toString(16);
+  })(),
   
-  
-  loadScripts : function(fileName) 
+  loadScripts : function(uris)
   {
-    console.debug("Loading: " + fileName, Permutation.CHECKSUM);
-
-
+    var patched = [];
+    for (var i=0, l=uris.length; i<l; i++) {
+      patched[i] = this.patchFilename(uris[i]);
+    }
+    
+    return Loader.loadScripts(patched);
+  },
+  
+  patchFilename : function(fileName) 
+  {
+    var pos = fileName.lastIndexOf(".");
+    var checksum = "-" + Permutation.CHECKSUM;
+    
+    if (pos == -1)
+    {
+      return fileName + checksum;
+    }
+    else
+    {
+      var fileExt = fileName.substring(pos+1);
+      return fileName.substring(0, pos) + checksum + "." + fileExt;
+    }
   }
 });
