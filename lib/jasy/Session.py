@@ -127,7 +127,7 @@ class Session():
 
         optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
         combinedCode = Combiner(loaderPermutation, None, optimization).compress(Sorter(resolver, loaderPermutation).getSortedClasses())
-        writefile("source/script/loader.js", combinedCode)
+        writefile(fileName, combinedCode)
         
     
     
