@@ -25,6 +25,9 @@ class Project():
             raise ProjectException("Missing manifest.cfg at: %s" % manifestPath)
         
         parser = configparser.SafeConfigParser()
+        
+        # prevent from lower-casing option names
+        parser.optionxform = str
         parser.read(manifestPath)
 
         try:
@@ -46,21 +49,17 @@ class Project():
         else:
             raise ProjectException("Unsupported kind of project: %s" % self.kind)
         
-        
+        # Read default values (for settings, variants, permutations, etc.)
         try:
-            values = dict(parser.items("values"))
+            self.values = dict(parser.items("values"))
         except configparser.NoSectionError:
-            values = {}
-            
-        print("VALUES")
-        print(values)
-        
-        
-
+            self.values = {}
+    
+    
     def __str__(self):
         return self.path
-
-        
+    
+    
     def clearCache(self):
         self.cache.clear()
         
