@@ -38,10 +38,6 @@ def source():
     #session.addValue("locale", ["en","de","ro"], "jasy.detect.Locale")
     session.addValue("locale", ["de"], "jasy.detect.Locale")
     session.addValue("qx.debug", ["on","off"], "jasy.detect.Param")
-    session.addValue("qx.theme", "qx.theme.Modern")
-    session.addValue("qx.version", "1.0")
-    session.addValue("qx.globalErrorHandling", "off")
-    session.addValue("qx.disposerDebugging", "off")
     
     # Store loader script
     print("------------------------------------------------------------------------------")
