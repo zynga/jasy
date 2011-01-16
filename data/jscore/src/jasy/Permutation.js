@@ -34,10 +34,15 @@
       key.push(name + ":" + value);
     }
     
-    var adler32 = jasy.Adler32.compute(key.join(";"));
+    key = key.join(";");
+    console.debug("Permutation Key: " + key);
+    
+    var adler32 = jasy.Adler32.compute(key);
     var prefix = adler32 < 0 ? "a" : "b";
-
-    return prefix + (adler32 < 0 ? -adler32 : adler32).toString(16);
+    var checksum = prefix + (adler32 < 0 ? -adler32 : adler32).toString(16);
+    
+    console.debug("Permutation Checksum: " + checksum)
+    return checksum;
   })() : "";
   
   Core.declare("jasy.Permutation",

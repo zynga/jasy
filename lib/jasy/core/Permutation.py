@@ -18,6 +18,8 @@ class Permutation:
         # checksum = binascii.crc32(self.__key.encode("ascii"))
         checksum = zlib.adler32(self.__key.encode("ascii"))
         checksum = checksum - ((checksum & 0x80000000) <<1)
+        print("Key: %s" % self.__key)
+        print("Checksum: %s" % checksum)
         
         if checksum < 0:
             checksum = "a%s" % hex(abs(checksum))[2:]

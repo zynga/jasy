@@ -17,8 +17,8 @@ from jasy.Combiner import Combiner
 from jasy.Sorter import Sorter
 
 
-def toJSON(obj):
-    return json.dumps(obj, separators=(',',':'), ensure_ascii=False)
+def toJSON(obj, sort_keys=False):
+    return json.dumps(obj, separators=(',',':'), ensure_ascii=False, sort_keys=sort_keys)
     
 
 class Session():
@@ -111,8 +111,8 @@ class Session():
         Exports the permutation data into a new permutation which can be used for loading files based on this data.
         """
         
-        values = toJSON({ name : self.__values[name] for name in sorted(self.__values) })
-        tests = "{%s}" % ",".join([ "'%s':%s" % (key, self.__valueTests[key]) for key in sorted(self.__valueTests) ])
+        values = toJSON({ name : self.__values[name] for name in self.__values }, True)
+        tests = "{%s}" % ",".join([ "'%s':%s" % (key, self.__valueTests[key]) for key in self.__valueTests ])
         
         return Permutation({
           "jasy.Permutation.values" : values, 
