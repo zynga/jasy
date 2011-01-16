@@ -50,7 +50,11 @@ class Session():
         if permutation:
             locale = permutation.get("locale")
             if not locale in self.__localeProjects:
-                self.__localeProjects[locale] = Project(localeProject(locale))
+                localePath = localeProject(locale)
+                if not os.path.exists(localePath):
+                    storeLocale(locale)
+                
+                self.__localeProjects[locale] = Project(localePath)
             
             dynadd.append(self.__localeProjects[locale])
         

@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import os, logging, configparser
+import os, logging, json
 
 from jasy.core.Class import Class
 from jasy.core.Cache import Cache
@@ -20,25 +20,22 @@ class Project():
         self.__dirFilter = [".svn",".git",".hg",".bzr"]
         self.__cache = Cache(self.__path)
         
-        manifestPath = os.path.join(path, "manifest.cfg")
+        manifestPath = os.path.join(path, "manifest.json")
         if not os.path.exists(manifestPath):
-            raise ProjectException("Missing manifest.cfg at: %s" % manifestPath)
+            raise ProjectException("Missing manifest.json at: %s" % manifestPath)
         
-        parser = configparser.SafeConfigParser()
-        # prevent from lower-casing option names
-        parser.optionxform = str
-        parser.read(manifestPath)
-
         try:
-            self.__name = parser.get("main", "name")
-            self.__kind = parser.get("main", "kind")
-        except configparser.NoOptionError:
-            raise ProjectException()
+            manifestData = json.load(open(manifestPath))
+        except ValueError as err:
+            raise ProjectException("Could not parse manifest.json at %s: %s" % (manifestPath, err))
+        
+        self.__name = manifestData["name"]
+        self.__kind = manifestData["kind"]
         
         # Read default values (for settings, variants, permutations, etc.)
-        try:
-            self.__values = dict(parser.items("values"))
-        except configparser.NoSectionError:
+        if "values" in manifestData:
+            self.__values = manifestData["values"]
+        else:
             self.__values = {}
 
         logging.info("Initialized project %s (%s)" % (self.__name, self.__kind))

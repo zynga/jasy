@@ -150,7 +150,7 @@ class Parser():
         logging.info("Writing result...")
         pstart()
         
-        writefile(os.path.join(project, "manifest.cfg"), "[main]\nname = cldr\nkind = basic\n")
+        writefile(os.path.join(project, "manifest.json"), '{"name":"cldr","kind":"basic"}')
         self.__exportRecurser(self.__data, "locale", project)
         pstop()
 
