@@ -18,7 +18,7 @@ __all__ = ["Class"]
 class Class():
     def __init__(self, path, rel, project):
         self.__project = project
-        self.__cache = project.cache
+        self.__cache = project.getCache()
         self.__mtime = os.stat(path).st_mtime
 
         self.path = path

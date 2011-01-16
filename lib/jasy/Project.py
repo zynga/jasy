@@ -16,56 +16,64 @@ class Project():
         if not os.path.isdir(path):
             raise ProjectException("Invalid project path: %s (Absolute: %s)" % (path, os.path.abspath(path)))
         
-        self.path = path
-        self.dirFilter = [".svn",".git",".hg",".bzr"]
-        self.cache = Cache(self.path)
+        self.__path = path
+        self.__dirFilter = [".svn",".git",".hg",".bzr"]
+        self.__cache = Cache(self.__path)
         
         manifestPath = os.path.join(path, "manifest.cfg")
         if not os.path.exists(manifestPath):
             raise ProjectException("Missing manifest.cfg at: %s" % manifestPath)
         
         parser = configparser.SafeConfigParser()
-        
         # prevent from lower-casing option names
         parser.optionxform = str
         parser.read(manifestPath)
 
         try:
-            self.name = parser.get("main", "name")
-            self.kind = parser.get("main", "kind")
+            self.__name = parser.get("main", "name")
+            self.__kind = parser.get("main", "kind")
         except configparser.NoOptionError:
             raise ProjectException()
         
-        logging.info("Initialized project %s (%s)" % (self.name, self.kind))
+        # Read default values (for settings, variants, permutations, etc.)
+        try:
+            self.__values = dict(parser.items("values"))
+        except configparser.NoSectionError:
+            self.__values = {}
 
-        if self.kind == "qooxdoo":
-            self.classPath = os.path.join(self.path, "source", "class")
-            self.resourcePath = os.path.join(self.path, "source", "resource")
-            self.translationPath = os.path.join(self.path, "source", "translation")
-        elif self.kind == "basic":
-            self.classPath = os.path.join(self.path, "src")
+        logging.info("Initialized project %s (%s)" % (self.__name, self.__kind))
+
+        # Do kind specific intialization
+        if self.__kind == "qooxdoo":
+            self.classPath = os.path.join(self.__path, "source", "class")
+            self.resourcePath = os.path.join(self.__path, "source", "resource")
+            self.translationPath = os.path.join(self.__path, "source", "translation")
+        elif self.__kind == "basic":
+            self.classPath = os.path.join(self.__path, "src")
             self.resourcePath = None
             self.translationPath = None
         else:
-            raise ProjectException("Unsupported kind of project: %s" % self.kind)
-        
-        # Read default values (for settings, variants, permutations, etc.)
-        try:
-            self.values = dict(parser.items("values"))
-        except configparser.NoSectionError:
-            self.values = {}
+            raise ProjectException("Unsupported kind of project: %s" % self.__kind)
     
     
     def __str__(self):
-        return self.path
+        return self.__path
+        
+        
+    def getCache(self):
+        return self.__cache
     
     
     def clearCache(self):
-        self.cache.clear()
+        self.__cache.clear()
         
         
     def close(self):
-        self.cache.close()
+        self.__cache.close()
+        
+        
+    def getValues(self):
+        return self.__values
         
         
     def getClassByName(self, className):
@@ -87,7 +95,7 @@ class Project():
                 classPathLen = len(classPath) + 1
                 for dirPath, dirNames, fileNames in os.walk(classPath):
                     for dirName in dirNames:
-                        if dirName in self.dirFilter:
+                        if dirName in self.__dirFilter:
                             dirNames.remove(dirName)
 
                     for fileName in fileNames:
@@ -102,7 +110,7 @@ class Project():
 
                         classes[className] = classObj
                 
-            logging.info("Project %s contains %s classes", self.name, len(classes))
+            logging.info("Project %s contains %s classes", self.__name, len(classes))
             self.classes = classes
             return classes
 
@@ -119,7 +127,7 @@ class Project():
                 resourcePathLen = len(resourcePath) + 1
                 for dirPath, dirNames, fileNames in os.walk(resourcePath):
                     for dirName in dirNames:
-                        if dirName in self.dirFilter:
+                        if dirName in self.__dirFilter:
                             dirNames.remove(dirName)
 
                     for fileName in fileNames:    
@@ -131,7 +139,7 @@ class Project():
 
                         resources[relPath] = filePath
                     
-            logging.info("Project %s contains %s resources", self.name, len(resources))
+            logging.info("Project %s contains %s resources", self.__name, len(resources))
             self.resources = resources
             return resources
 
@@ -147,7 +155,7 @@ class Project():
             if translationPath and os.path.exists(translationPath):
                 for dirPath, dirNames, fileNames in os.walk(translationPath):
                     for dirName in dirNames:
-                        if dirName in self.dirFilter:
+                        if dirName in self.__dirFilter:
                             dirNames.remove(dirName)
 
                     for fileName in fileNames:    
@@ -156,7 +164,7 @@ class Project():
 
                         translations[os.path.splitext(fileName)[0]] = os.path.join(dirPath, fileName)
             
-            logging.info("Project %s contains %s translations", self.name, len(translations))
+            logging.info("Project %s contains %s translations", self.__name, len(translations))
             self.translations = translations
             return translations
         
