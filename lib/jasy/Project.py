@@ -46,6 +46,16 @@ class Project():
         else:
             raise ProjectException("Unsupported kind of project: %s" % self.kind)
         
+        
+        try:
+            values = dict(parser.items("values"))
+        except configparser.NoSectionError:
+            values = {}
+            
+        print("VALUES")
+        print(values)
+        
+        
 
     def __str__(self):
         return self.path
