@@ -115,14 +115,23 @@ class Session():
         Exports the permutation data into a new permutation which can be used for loading files based on this data.
         """
 
+        # Collecting values from all projects
         values = {}
         for project in self.__projects:
             values.update(project.getValues())
         
+        # Getting defaults and replace them with given values when available
+        defaults = { key : [values[key]["default"]] for key in values }
+        defaults.update(self.__values)
         
+        
+        # TODO
+        # This is still not nice.
+        # Need to rethink about this a bit to find a good way to merge defaults, checks, tests, ... in maybe one data structure
+        # Defaults are not allowed to influence the key/checksum
 
         
-        values = toJSON(self.__values, True)
+        values = toJSON(defaults, True)
         tests = "{%s}" % ",".join([ "'%s':%s" % (key, self.__valueTests[key]) for key in self.__valueTests ])
         
         return Permutation({
