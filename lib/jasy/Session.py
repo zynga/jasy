@@ -110,8 +110,15 @@ class Session():
         """
         Exports the permutation data into a new permutation which can be used for loading files based on this data.
         """
+
+        values = {}
+        for project in self.__projects:
+            values.update(project.getValues())
         
-        values = toJSON({ name : self.__values[name] for name in self.__values }, True)
+        
+
+        
+        values = toJSON(self.__values, True)
         tests = "{%s}" % ",".join([ "'%s':%s" % (key, self.__valueTests[key]) for key in self.__valueTests ])
         
         return Permutation({
