@@ -8,6 +8,7 @@
   // replacing these constants via the loader permutation
   var values = jasy.Permutation.values;
   var tests = jasy.Permutation.tests;
+  var selected = {};
   
   var checksum = values ? (function()
   {
@@ -29,6 +30,7 @@
         value = values[name][0];
       }
 
+      selected[name] = value;
       key.push(name + ":" + value);
     }
     
@@ -40,11 +42,8 @@
   
   Core.declare("jasy.Permutation",
   {
-    /** {Map} All supported keys in the permutations including all supported values */
-    values : null,
-
-    /** {Map} Maps keys with tests to the classes which implements the test */
-    tests : null,
+    /** {Map} Currently selected values from Permutation data */
+    selected : selected,
 
     /** {Number} Holds the checksum for the current permutation which is auto detected by features or by compiled-in data */
     CHECKSUM : checksum,
