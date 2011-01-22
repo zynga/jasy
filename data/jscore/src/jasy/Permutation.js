@@ -15,7 +15,7 @@
     var key = [];
     for (var i=0, l=values.length; i<l; i++) 
     {
-      var entry = values[name];
+      var entry = values[i];
       var name = entry[0];
       var allowed = entry[1];
 
@@ -31,21 +31,18 @@
       }
       else
       {
-        value = allowed[0];
+        // In cases with no test, we don't have an array of values but just a value
+        value = allowed;
       }
 
       selected[name] = value;
       key.push(name + ":" + value);
     }
     
-    key = key.join(";");
-    console.debug("Permutation Key: " + key);
-    
-    var adler32 = jasy.Adler32.compute(key);
+    var adler32 = jasy.Adler32.compute(key.join(";"));
     var prefix = adler32 < 0 ? "a" : "b";
     var checksum = prefix + (adler32 < 0 ? -adler32 : adler32).toString(16);
     
-    console.debug("Permutation Checksum: " + checksum)
     return checksum;
   })() : "";
   
