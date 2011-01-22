@@ -35,7 +35,7 @@ def source():
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
     # Setup values
-    session.addValue("locale", ["en","de","ro"])
+    session.addValue("locale", ["en","de","ro"], "jasy.detect.Param")
     session.addValue("qx.debug", ["on","off"])
     session.addValue("qx.client", ["gecko","webkit"])
     
