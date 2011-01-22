@@ -14,19 +14,22 @@
     var key = [];
     for (var name in values) 
     {
-      if (name in tests) 
+      var entry = values[name];
+      var test = entry.test;
+      var allowed = entry.values;
+      
+      if (test)
       {
-        var test = tests[name];
         var value = "VALUE" in test ? test.VALUE : test.get(name);
         
         // Fallback to first value if test results in unsupported value
-        if (values[name].indexOf(value) == -1) {
-          value = values[name][0];
+        if (allowed.indexOf(value) == -1) {
+          value = allowed[0];
         }
       }
       else
       {
-        value = values[name][0];
+        value = allowed[0];
       }
 
       selected[name] = value;
