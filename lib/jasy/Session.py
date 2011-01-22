@@ -140,16 +140,28 @@ class Session():
             content = []
             
             if "values" in source:
-                content.append("values:[%s]" % toJSON(source["values"]))
-                
-                if "default" in source and source["default"] in source["values"]:
-                    content.append("'default':%s" % toJSON(source["default"]))
+                if len(source["values"]) > 1:
+                    
+                    # Place default value in front of other allowed values
+                    if "default" in source and source["default"] in source["values"]:
+                        valuesTemp = [source["default"]]
+                        for value in source["values"]:
+                            if value != source["default"]:
+                                valuesTemp.append(value)
+                        
+                        content.append("values:%s" % toJSON(valuesTemp))
+                        
+                    else:
+                        content.append("values:%s" % toJSON(source["values"]))
+                    
+                    if "test" in source:
+                        content.append("test:%s" % source["test"])
+                        
+                else:
+                    content.append("values:%s" % toJSON(source["values"]))
             
             elif "default" in source:
                 content.append("values:[%s]" % toJSON(source["default"]))
-                
-            if "test" in source:
-                content.append("test:%s" % source["test"])
             
             export.append("'%s':{%s}" % (key, ",".join(content)))
             
