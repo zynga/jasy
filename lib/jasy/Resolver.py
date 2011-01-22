@@ -53,8 +53,8 @@ class Resolver():
         return False
 
 
-    def excludeClassNames(self, classNames):
-        self.__excluded.extend(classNames)
+    def excludeClasses(self, classObjects):
+        self.__excluded.extend(classObjects)
         
 
     def getRequiredClasses(self):

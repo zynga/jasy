@@ -53,7 +53,7 @@ def source():
         resolver = Resolver(projects)
         resolver.addClassName("feedreader.Application")
         resolver.addClassName("qx.theme.Modern")
-        resolver.excludeClassNames(loaderIncluded)
+        resolver.excludeClasses(loaderIncluded)
         
         # Collect Resources
         resources = Resources(session, resolver.getIncludedClasses())
@@ -89,6 +89,10 @@ def build():
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
     formatting = Format()
 
+    # Store loader script
+    print("------------------------------------------------------------------------------")
+    loaderIncluded = session.writeLoader("build/script/feedreader.js")
+
     # Process every possible permutation
     for permutation in session.getPermutations():
         print("------------------------------------------------------------------------------")
@@ -112,6 +116,7 @@ def build():
         resolver = Resolver(projects, permutation)
         resolver.addClassName("feedreader.Application")
         resolver.addClassName("qx.theme.Modern")
+        resolver.excludeClasses(loaderIncluded)
         classes = resolver.getIncludedClasses()
 
         # Collecting Resources
@@ -129,13 +134,11 @@ def build():
         compressedCode = combiner.compress(sorter.getSortedClasses())
 
         # Write file
-        # TODO: Create filenames
-        # Based on permutation.getKey(), optimization, modification date, etc.
-        writefile("build/script/feedreader-%s.js" % permutation.get("locale"), headerCode + resourceCode + compressedCode + bootCode)
+        writefile("build/script/feedreader-%s.js" % permutation.getChecksum(), headerCode + resourceCode + compressedCode + bootCode)
 
 
     # Copy HTML file from source
-    updatefile("source/build.html", "build/index.html")
+    updatefile("source/index.html", "build/index.html")
 
 
 
