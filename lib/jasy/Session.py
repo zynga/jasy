@@ -29,6 +29,9 @@ class Session():
         self.__projects = []
         self.__localeProjects = {}
         self.__values = {}
+        
+        
+        self.__coreProject = Project("../../data/jscore")
     
     
     #
@@ -36,14 +39,15 @@ class Session():
     #
         
     def addProject(self, project):
+        """ Adds the given project to the list of known projects """
+        
         self.__projects.append(project)
         self.__values.update(project.getValues())
         
         
-    def removeProject(self, project):
-        self.__projects.remove(project)
-        
     def getProjects(self, permutation=None):
+        """ Returns all currently known projects """
+        
         # Dynamically add the locale matching CLDR project to the list
         dynadd = []
         if permutation:
@@ -66,10 +70,14 @@ class Session():
     #
         
     def clearCache(self):
+        """ Clears all caches of known projects """
+        
         for project in self.__projects:
             project.clearCache()
 
     def close(self):
+        """ Closes the session and stores cache to the harddrive. """
+        
         logging.info("Closing session...")
         for project in self.__projects:
             project.close()
@@ -80,6 +88,13 @@ class Session():
     #
     
     def addValue(self, name, values, test=None):
+        """
+        Adds the given key/value pair to the session. It supports
+        an optional tests. A test is required as soon as their is
+        more than one value available. The test is typically already
+        defined by the project declaring the key/value pair.
+        """
+        
         if type(values) != list:
             values = [values]
             
@@ -130,7 +145,12 @@ class Session():
         return permutations
 
 
-    def __permutationsToExpr(self):
+    def __valuesToExpr(self):
+        """
+        Converts data from values to a compact data structure for being used to 
+        compute a checksum in JavaScript.
+        """
+        
         #
         # Export structure:
         # [ [ name, [value1, ...], test? ], ...]
@@ -163,8 +183,15 @@ class Session():
     
     
     def writeLoader(self, fileName):
+        """
+        Writes a so-called loader script to the given location. This script contains
+        data about possible permutations based on current session values. It returns
+        the classes which are included by the script so you can exclude it from the 
+        real build files.
+        """
+        
         permutation = Permutation({
-          "jasy.values" : self.__permutationsToExpr()
+          "jasy.values" : self.__valuesToExpr()
         })
         
         resolver = Resolver(self.getProjects(), permutation)
