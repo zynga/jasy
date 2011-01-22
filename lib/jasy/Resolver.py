@@ -15,6 +15,9 @@ class Resolver():
 
         # Required classes by the user
         self.__required = []
+
+        # Hard excluded classes (used for filtering previously included classes etc.)
+        self.__excluded = []
         
         # Included classes after dependency calculation
         self.__included = []
@@ -50,6 +53,10 @@ class Resolver():
         return False
 
 
+    def excludeClassNames(self, classNames):
+        self.__excluded.extend(classNames)
+        
+
     def getRequiredClasses(self):
         return self.__required
 
@@ -66,6 +73,11 @@ class Resolver():
         collection = set()
         for classObj in self.__required:
             self.__resolveDependencies(classObj, collection)
+            
+        # Filter excluded classes
+        for classObj in self.__excluded:
+            if classObj in collection:
+                collection.remove(classObj)
         
         self.__included = collection
         logging.info(" - %s classes" % len(collection))

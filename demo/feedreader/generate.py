@@ -41,7 +41,7 @@ def source():
     
     # Store loader script
     print("------------------------------------------------------------------------------")
-    session.writeLoader("source/script/feedreader.js")
+    loaderIncluded = session.writeLoader("source/script/feedreader.js")
     
     # Process every possible permutation
     for permutation in session.getPermutations():
@@ -54,6 +54,7 @@ def source():
         resolver = Resolver(projects)
         resolver.addClassName("feedreader.Application")
         resolver.addClassName("qx.theme.Modern")
+        resolver.excludeClassNames(loaderIncluded)
         
         # Collect Resources
         resources = Resources(session, resolver.getIncludedClasses())

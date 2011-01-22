@@ -174,6 +174,9 @@ class Session():
         combinedCode = Combiner(loaderPermutation, None, optimization).compress(Sorter(resolver, loaderPermutation).getSortedClasses())
         writefile(fileName, combinedCode)
         
+        return resolver.getIncludedClasses()
+        
+        
     
     
     
