@@ -35,9 +35,9 @@ def source():
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
     # Setup values
-    #session.addValue("locale", ["en","de","ro"], "jasy.detect.Locale")
-    session.addValue("locale", ["de"], "jasy.detect.Locale")
-    session.addValue("qx.debug", ["on","off"], "jasy.detect.Param")
+    session.addValue("locale", ["en","de","ro"])
+    session.addValue("qx.debug", ["on","off"])
+    session.addValue("qx.client", ["gecko","webkit"])
     
     # Store loader script
     print("------------------------------------------------------------------------------")
