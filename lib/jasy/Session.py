@@ -163,15 +163,15 @@ class Session():
     
     
     def writeLoader(self, fileName):
-        loaderPermutation = Permutation({
+        permutation = Permutation({
           "jasy.values" : self.__permutationsToExpr()
         })
         
-        resolver = Resolver(self.getProjects(), loaderPermutation)
+        resolver = Resolver(self.getProjects(), permutation)
         resolver.addClassName("jasy.Permutation")
 
         optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
-        combinedCode = Combiner(loaderPermutation, None, optimization).compress(Sorter(resolver, loaderPermutation).getSortedClasses())
+        combinedCode = Combiner(permutation, None, optimization).compress(Sorter(resolver, permutation).getSortedClasses())
         writefile(fileName, combinedCode)
         
         return resolver.getIncludedClasses()
