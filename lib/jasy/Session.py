@@ -104,10 +104,6 @@ class Session():
 
         if test:
             entry["test"] = test
-            
-        
-    def clearValues(self):
-        self.__values = {}
         
         
     def getPermutations(self):
@@ -170,7 +166,7 @@ class Session():
     
     def writeLoader(self, fileName):
         loaderPermutation = Permutation({
-          "jasy.Permutation.values" : self.__permutationsToExpr()
+          "jasy.values" : self.__permutationsToExpr()
         })
         
         resolver = Resolver(self.getProjects(), loaderPermutation)

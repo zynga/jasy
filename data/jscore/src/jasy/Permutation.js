@@ -6,8 +6,7 @@
 {
   // This is quite magic and only works because of the build system
   // replacing these constants via the loader permutation
-  var values = jasy.Permutation.values;
-  // var tests = jasy.Permutation.tests;
+  var values = jasy.values;
   var selected = {};
   
   var checksum = values ? (function()
