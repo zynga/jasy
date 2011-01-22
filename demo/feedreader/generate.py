@@ -80,11 +80,9 @@ def build():
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
     # Values
-    session.addValue("locale", ["de_DE", "en_US"])
-    session.addValue("qx.debug", [ "on" ])
-    session.addValue("qx.client", [ "gecko" ])
-    session.addValue("qx.globalErrorHandling", [ "off" ])
-    session.addValue("qx.version", ["1.0"])
+    session.addValue("jasy.locale", ["de", "en"])
+    session.addValue("qx.debug", ["on"])
+    session.addValue("qx.client", ["gecko"])
     session.addValue("qx.theme", ["qx.theme.Modern"])
 
     # Permutation independend config
