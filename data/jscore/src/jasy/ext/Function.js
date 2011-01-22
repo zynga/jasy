@@ -1,9 +1,5 @@
 if (Function.prototype.bind == null) 
 {
-  /**
-   *
-   *
-   */
   Function.prototype.bind = (function (slice)
   {
     // (C) WebReflection - Mit Style License
