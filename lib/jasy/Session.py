@@ -137,13 +137,13 @@ class Session():
         #
         
         export = []
-        for key in self.__values:
+        for key in sorted(self.__values):
             source = self.__values[key]
             
             content = []
             content.append("'%s'" % key)
             
-            if "values" in sorted(source):
+            if "values" in source:
                 if len(source["values"]) > 1:
                     
                     # Place default value in front of other allowed values
