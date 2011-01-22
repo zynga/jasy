@@ -95,6 +95,8 @@ class Session():
                     pass
                 elif check == "String" and type(value) == str:
                     pass
+                elif check == "Number" and type(value) in (int, float):
+                    pass
                 elif type(check) == list and value in check:
                     pass
                 else:
@@ -129,11 +131,17 @@ class Session():
 
 
     def __permutationsToExpr(self):
+        #
+        # Export structure:
+        # [ [ name, [value1, value2], test ], ...]
+        #
+        
         export = []
         for key in self.__values:
             source = self.__values[key]
             
             content = []
+            content.append("'%s'" % key)
             
             if "values" in source:
                 if len(source["values"]) > 1:
@@ -145,23 +153,23 @@ class Session():
                             if value != source["default"]:
                                 valuesTemp.append(value)
                         
-                        content.append("values:%s" % toJSON(valuesTemp))
+                        content.append(toJSON(valuesTemp))
                         
                     else:
-                        content.append("values:%s" % toJSON(source["values"]))
+                        content.append(toJSON(source["values"]))
                     
                     if "test" in source:
-                        content.append("test:%s" % source["test"])
+                        content.append(source["test"])
                         
                 else:
-                    content.append("values:%s" % toJSON(source["values"]))
+                    content.append(toJSON(source["values"]))
             
             elif "default" in source:
-                content.append("values:[%s]" % toJSON(source["default"]))
+                content.append("[%s]" % toJSON(source["default"]))
             
-            export.append("'%s':{%s}" % (key, ",".join(content)))
+            export.append("[%s]" % ",".join(content))
             
-        return "{%s}" % ",".join(export)
+        return "[%s]" % ",".join(export)
     
     
     def writeLoader(self, fileName):
