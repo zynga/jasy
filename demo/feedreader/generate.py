@@ -85,6 +85,9 @@ def build():
     print("------------------------------------------------------------------------------")
     loaderIncluded = session.writeLoader("build/script/feedreader.js")
 
+    # Copy HTML file from source
+    updatefile("source/index.html", "build/index.html")
+
     # Permutation independend config
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
     formatting = Format()
@@ -131,10 +134,6 @@ def build():
 
         # Write file
         writefile("build/script/feedreader-%s.js" % permutation.getChecksum(), headerCode + resourceCode + compressedCode + bootCode)
-
-
-    # Copy HTML file from source
-    updatefile("source/index.html", "build/index.html")
 
 
 
