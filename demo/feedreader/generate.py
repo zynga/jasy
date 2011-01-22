@@ -35,7 +35,7 @@ def source():
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
     # Setup values
-    session.addValue("locale", ["en","de","ro"], "jasy.detect.Param")
+    session.addValue("jasy.locale", ["en","de","ro"], "jasy.detect.Param")
     session.addValue("qx.debug", ["on","off"])
     session.addValue("qx.client", ["gecko","webkit"])
     
@@ -65,7 +65,7 @@ def source():
         loaderCode = loader.generate("qx.core.Init.boot(feedreader.Application)")
         
         # Prepare translation
-        translation = session.getTranslation(permutation.get("locale"))
+        translation = session.getTranslation(permutation.get("jasy.locale"))
         translationCode = translation.generate()
         
         # Finally write file
@@ -124,7 +124,7 @@ def build():
         resourceCode = resources.exportInfo(replaceRoots="resource")
 
         # Preparation
-        translation = session.getTranslation(permutation.get("locale"))
+        translation = session.getTranslation(permutation.get("jasy.locale"))
         combiner = Combiner(permutation, translation, optimization, formatting)
         sorter = Sorter(resolver, permutation)
         

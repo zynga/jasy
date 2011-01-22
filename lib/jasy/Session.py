@@ -47,7 +47,7 @@ class Session():
         # Dynamically add the locale matching CLDR project to the list
         dynadd = []
         if permutation:
-            locale = permutation.get("locale")
+            locale = permutation.get("jasy.locale")
             if locale != "default":
                 if not locale in self.__localeProjects:
                     localePath = localeProject(locale)

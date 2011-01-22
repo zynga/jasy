@@ -4,7 +4,7 @@
 
   "values" :
   {
-    "locale" : 
+    "jasy.locale" : 
     {
       "check" : "String",
       "default" : "en",
