@@ -23,13 +23,24 @@ class Permutation:
             checksum = "a%s" % hex(abs(checksum))[2:]
         else:
             checksum = "b%s" % hex(checksum)[2:]
-        
+            
         self.__checksum = checksum
         
     def __buildKey(self, combination):
         result = []
         for key in sorted(combination):
-            result.append("%s:%s" % (key, combination[key]))
+            value = combination[key]
+            
+            # Basic translation like in JavaScript frontend
+            # We don't have a special threadment for strings, numbers, etc.
+            if value == True:
+                value = "true"
+            elif value == False:
+                value = "false"
+            elif value == None:
+                value = "null"
+            
+            result.append("%s:%s" % (key, value))
 
         return ";".join(result)
             
