@@ -11,13 +11,15 @@
   
   var checksum = values ? (function()
   {
+    // Process entries
     var key = [];
-    for (var name in values) 
+    for (var i=0, l=values.length; i<l; i++) 
     {
       var entry = values[name];
-      var test = entry.test;
-      var allowed = entry.values;
-      
+      var name = entry[0];
+      var allowed = entry[1];
+
+      var test = entry[2];
       if (test)
       {
         var value = "VALUE" in test ? test.VALUE : test.get(name);
@@ -54,6 +56,11 @@
 
     /** {Number} Holds the checksum for the current permutation which is auto detected by features or by compiled-in data */
     CHECKSUM : checksum,
+    
+    
+    getValue : function(name) {
+      return selected[name];
+    },
 
     loadScripts : function(uris)
     {
