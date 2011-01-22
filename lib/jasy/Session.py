@@ -185,7 +185,7 @@ class Session():
         return "[%s]" % ",".join(export)
     
     
-    def writeLoader(self, fileName):
+    def writeLoader(self, fileName, optimization=None, formatting=None):
         """
         Writes a so-called loader script to the given location. This script contains
         data about possible permutations based on current session values. It returns
@@ -199,14 +199,12 @@ class Session():
         
         resolver = Resolver(self.getProjects(), permutation)
         resolver.addClassName("jasy.Permutation")
-
-        optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
-        combinedCode = Combiner(permutation, None, optimization).compress(Sorter(resolver, permutation).getSortedClasses())
+        classes = Sorter(resolver, permutation).getSortedClasses()
+        combinedCode = Combiner(permutation, None, optimization, formatting).compress(classes)
         writefile(fileName, combinedCode)
         
         return resolver.getIncludedClasses()
-        
-        
+    
     
     
     

@@ -37,7 +37,6 @@ def source():
     session.addValue("qx.client", ["gecko","webkit"])
     
     # Store loader script
-    print("------------------------------------------------------------------------------")
     loaderIncluded = session.writeLoader("source/script/feedreader.js")
     
     # Process every possible permutation
@@ -79,9 +78,12 @@ def build():
     session.addValue("qx.debug", ["on"])
     session.addValue("qx.client", ["gecko","webkit"])
 
+    # Permutation independend config
+    optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
+    formatting = Format()
+
     # Store loader script
-    print("------------------------------------------------------------------------------")
-    loaderIncluded = session.writeLoader("build/script/feedreader.js")
+    loaderIncluded = session.writeLoader("build/script/feedreader.js", optimization, formatting)
 
     # Copy HTML file from source
     updatefile("source/index.html", "build/index.html")
@@ -94,10 +96,6 @@ def build():
     resources.publishFiles("build/resource")
     resources.publishManifest("build/manifest", "resource")
     resourceCode = resources.exportInfo(replaceRoots="resource")
-
-    # Permutation independend config
-    optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
-    formatting = Format()
 
     # Process every possible permutation
     for permutation in session.getPermutations():
