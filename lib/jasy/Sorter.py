@@ -155,7 +155,7 @@ class Sorter:
                     current = self.__getLoadDepsRecurser(depObj, stack[:])
                 except CircularDependencyBreaker as circularError:
                     if circularError.breakAt == classObj:
-                        logging.info("Auto Break: %s |> %s" % (classObj, depObj))
+                        logging.debug("Auto Break: %s |> %s" % (classObj, depObj))
                         circular.add(depObj)
                         continue  
                     else:
