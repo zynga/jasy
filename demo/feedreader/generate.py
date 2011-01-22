@@ -77,18 +77,17 @@ def build():
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
     # Values
-    session.addValue("jasy.locale", ["de", "en"])
+    session.addValue("jasy.locale", ["de","en","ro"], "jasy.detect.Param")
     session.addValue("qx.debug", ["on"])
-    session.addValue("qx.client", ["gecko"])
-    session.addValue("qx.theme", ["qx.theme.Modern"])
-
-    # Permutation independend config
-    optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
-    formatting = Format()
+    session.addValue("qx.client", ["gecko","webkit"])
 
     # Store loader script
     print("------------------------------------------------------------------------------")
     loaderIncluded = session.writeLoader("build/script/feedreader.js")
+
+    # Permutation independend config
+    optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
+    formatting = Format()
 
     # Process every possible permutation
     for permutation in session.getPermutations():

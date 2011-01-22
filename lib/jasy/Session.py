@@ -30,7 +30,7 @@ class Session():
         self.__localeProjects = {}
         self.__values = {}
         
-        self.__coreProject = Project(coreProject())
+        self.addProject(Project(coreProject()))
     
     
     #
@@ -47,12 +47,11 @@ class Session():
     def getProjects(self, permutation=None):
         """ 
         Returns all currently known projects.
-        Automatically adds the Jasy core project and the currently configured locale project.
+        Automatically adds the currently configured locale project.
         """
         
         # Dynamically add the locale matching CLDR project to the list
-        projects = []
-        projects.append(self.__coreProject)
+        dyn = []
         
         if permutation:
             locale = permutation.get("jasy.locale")
@@ -64,9 +63,9 @@ class Session():
                 
                     self.__localeProjects[locale] = Project(localePath)
             
-                projects.append(self.__localeProjects[locale])
+                dyn.append(self.__localeProjects[locale])
         
-        return projects + self.__projects
+        return dyn + self.__projects
     
     
     #
