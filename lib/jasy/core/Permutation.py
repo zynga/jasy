@@ -44,14 +44,34 @@ class Permutation:
 
         return ";".join(result)
             
-    def has(self, variant):
-        return variant in self.__combination
+    def has(self, key):
+        return key in self.__combination
         
-    def get(self, variant):
-        if variant in self.__combination:
-            return self.__combination[variant]
+    def get(self, key):
+        if key in self.__combination:
+            return self.__combination[key]
             
         return None
+        
+        
+    def getCode(self, key):
+        code = self.get(key)
+        if code == None:
+            return code
+        
+        if code is True:
+            code = "true"
+        elif code is False:
+            code = "false"
+        elif code.startswith("{") and code.endswith("}"):
+            pass
+        elif code.startswith("[") and code.endswith("]"):
+            pass
+        else:
+            code = "\"%s\"" % code
+            
+        return code
+        
         
     def getKey(self):
         return self.__key
@@ -79,7 +99,7 @@ class Permutation:
         if node.type == "dot" and node.parent.type != "dot":
             assembled = self.__assembleDot(node)
             if assembled:
-                replacement = self.get(assembled)
+                replacement = self.getCode(assembled)
                 
                 # constants
                 if replacement:
@@ -91,7 +111,7 @@ class Permutation:
                 elif assembled == "qx.core.Variant.isSet" and node.parent.type == "call":
                     callNode = node.parent
                     params = callNode[1]
-                    replacement = self.get(params[0].value)
+                    replacement = self.getCode(params[0].value)
                     if replacement:
                         targetIdentifier = parseExpression(replacement).value
                         if targetIdentifier in str(params[1].value).split("|"):
@@ -106,7 +126,7 @@ class Permutation:
                 elif assembled == "qx.core.Setting.get" and node.parent.type == "call":
                     callNode = node.parent
                     params = callNode[1]
-                    replacement = self.get(params[0].value)
+                    replacement = self.getCode(params[0].value)
                     if replacement:
                         replacementNode = parseExpression(replacement)
                         callNode.parent.replace(callNode, replacementNode)
@@ -116,7 +136,7 @@ class Permutation:
                 elif assembled == "qx.core.Variant.select" and node.parent.type == "call":
                     callNode = node.parent
                     params = callNode[1]
-                    replacement = self.get(params[0].value)
+                    replacement = self.getCode(params[0].value)
                     if replacement:
                         targetIdentifier = parseExpression(replacement).value
 
@@ -146,7 +166,7 @@ class Permutation:
 
                 # has.js requires that there is exactly one param with a string value
                 if len(params) == 1 and params[0].type == "string":
-                    replacement = self.get(params[0].value)
+                    replacement = self.getCode(params[0].value)
 
                     # Only boolean replacements allowed
                     if replacement in ("true","false"):
