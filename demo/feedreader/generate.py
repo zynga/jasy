@@ -113,7 +113,8 @@ def build():
 
         # Compressing classes
         translation = session.getTranslation(permutation.get("jasy.locale"))
-        compressedCode = Combiner(permutation, translation, optimization, formatting).compress(Sorter(resolver, permutation).getSortedClasses())
+        classes = Sorter(resolver, permutation).getSortedClasses()
+        compressedCode = Combiner().compress(classes, permutation, translation, optimization, formatting)
         
         # Boot logic
         bootCode = "qx.core.Init.boot(feedreader.Application)"

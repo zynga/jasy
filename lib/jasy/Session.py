@@ -200,8 +200,8 @@ class Session():
         resolver = Resolver(self.getProjects(), permutation)
         resolver.addClassName("jasy.Permutation")
         classes = Sorter(resolver, permutation).getSortedClasses()
-        combinedCode = Combiner(permutation, None, optimization, formatting).compress(classes)
-        writefile(fileName, combinedCode)
+        compressedCode = Combiner().compress(classes, permutation, None, optimization, formatting)
+        writefile(fileName, compressedCode)
         
         return resolver.getIncludedClasses()
     
