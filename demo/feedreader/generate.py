@@ -88,6 +88,15 @@ def build():
     # Copy HTML file from source
     updatefile("source/index.html", "build/index.html")
 
+    # Collecting Resources
+    resolver = Resolver(session.getProjects())
+    resolver.addClassName("feedreader.Application")
+    resolver.addClassName("qx.theme.Modern")
+    resources = Resources(session, resolver.getIncludedClasses())
+    resources.publishFiles("build/resource")
+    resources.publishManifest("build/manifest", "resource")
+    resourceCode = resources.exportInfo(replaceRoots="resource")
+
     # Permutation independend config
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
     formatting = Format()
@@ -96,18 +105,6 @@ def build():
     for permutation in session.getPermutations():
         print("------------------------------------------------------------------------------")
 
-        # Build file header
-        headerCode = ""
-        headerCode += "/*\n"
-        headerCode += " * Copyright 2010\n"
-        headerCode += " *\n"
-        headerCode += " * Permutation: %s\n" % permutation
-        headerCode += " * Optimizations: %s\n" % optimization
-        headerCode += " */\n\n"
-    
-        # Boot
-        bootCode = "qx.core.Init.boot(feedreader.Application);"
-        
         # Get projects
         projects = session.getProjects(permutation)
 
@@ -118,22 +115,15 @@ def build():
         resolver.excludeClasses(loaderIncluded)
         classes = resolver.getIncludedClasses()
 
-        # Collecting Resources
-        resources = Resources(session, classes, permutation)
-        resources.publishFiles("build/resource")
-        resources.publishManifest("build/manifest", "resource")
-        resourceCode = resources.exportInfo(replaceRoots="resource")
-
-        # Preparation
-        translation = session.getTranslation(permutation.get("jasy.locale"))
-        combiner = Combiner(permutation, translation, optimization, formatting)
-        sorter = Sorter(resolver, permutation)
-        
         # Compressing classes
-        compressedCode = combiner.compress(sorter.getSortedClasses())
+        translation = session.getTranslation(permutation.get("jasy.locale"))
+        compressedCode = Combiner(permutation, translation, optimization, formatting).compress(Sorter(resolver, permutation).getSortedClasses())
+        
+        # Boot logic
+        bootCode = "qx.core.Init.boot(feedreader.Application)"
 
         # Write file
-        writefile("build/script/feedreader-%s.js" % permutation.getChecksum(), headerCode + resourceCode + compressedCode + bootCode)
+        writefile("build/script/feedreader-%s.js" % permutation.getChecksum(), resourceCode + compressedCode + bootCode)
 
 
 
