@@ -17,7 +17,6 @@ from jasy import *
 def clear():
     # Setup session
     session = Session()
-    session.addProject(Project("../../data/jscore"))
     session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
 
@@ -30,7 +29,6 @@ def clear():
 def source():
     # Setup session
     session = Session()
-    session.addProject(Project("../../data/jscore"))
     session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     
@@ -75,7 +73,6 @@ def source():
 def build():
     # Setup session
     session = Session()
-    session.addProject(Project("../../data/jscore"))
     session.addProject(Project("../../../qooxdoo/qooxdoo/framework"))
     session.addProject(Project("../../../qooxdoo/qooxdoo/application/feedreader"))
     

@@ -30,8 +30,7 @@ class Session():
         self.__localeProjects = {}
         self.__values = {}
         
-        
-        self.__coreProject = Project("../../data/jscore")
+        self.__coreProject = Project(coreProject())
     
     
     #
@@ -46,10 +45,15 @@ class Session():
         
         
     def getProjects(self, permutation=None):
-        """ Returns all currently known projects """
+        """ 
+        Returns all currently known projects.
+        Automatically adds the Jasy core project and the currently configured locale project.
+        """
         
         # Dynamically add the locale matching CLDR project to the list
-        dynadd = []
+        projects = []
+        projects.append(self.__coreProject)
+        
         if permutation:
             locale = permutation.get("jasy.locale")
             if locale != "default":
@@ -60,26 +64,26 @@ class Session():
                 
                     self.__localeProjects[locale] = Project(localePath)
             
-                dynadd.append(self.__localeProjects[locale])
+                projects.append(self.__localeProjects[locale])
         
-        return self.__projects + dynadd
+        return projects + self.__projects
     
     
     #
     # Core
     #
         
-    def clearCache(self):
+    def clearCache(self, permutation=None):
         """ Clears all caches of known projects """
         
-        for project in self.__projects:
+        for project in self.getProjects():
             project.clearCache()
 
     def close(self):
         """ Closes the session and stores cache to the harddrive. """
         
         logging.info("Closing session...")
-        for project in self.__projects:
+        for project in self.getProjects():
             project.close()
     
     
