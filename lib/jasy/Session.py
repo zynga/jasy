@@ -133,7 +133,7 @@ class Session():
     def __permutationsToExpr(self):
         #
         # Export structure:
-        # [ [ name, [value1, value2], test ], ...]
+        # [ [ name, [value1, ...], test? ], ...]
         #
         
         export = []
@@ -143,7 +143,7 @@ class Session():
             content = []
             content.append("'%s'" % key)
             
-            if "values" in source:
+            if "values" in sorted(source):
                 if len(source["values"]) > 1:
                     
                     # Place default value in front of other allowed values
