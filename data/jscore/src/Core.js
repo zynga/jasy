@@ -24,7 +24,8 @@
       var test;
     
       // Fast-check for existing segments
-      while(test=current[splits[i]]) {
+      while(test=current[splits[i]]) 
+      {
         current = test;
         i++;
       }
@@ -46,18 +47,21 @@
      */
     resolve : function(name)
     {
-      var splitted = name.split(".");
       var current = global;
-    
-      for (var i=0, l=splitted.length; i<l; i++) 
+      
+      if (name)
       {
-        current = current[splitted[i]];
-        if (!current) {
-          throw new Error("Unknown name: " + name);
+        var splitted = name.split(".");
+        for (var i=0, l=splitted.length; i<l; i++) 
+        {
+          current = current[splitted[i]];
+          if (!current) {
+            break;
+          }
         }
       }
     
-      return current;
+      return current || null;
     }
   });
 })(this);
