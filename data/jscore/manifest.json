@@ -1,4 +1,13 @@
 {
   "name" : "jasy",
-  "kind" : "basic"
+  "kind" : "basic",
+
+  "values" :
+  {
+    "locale" : 
+    {
+      "check" : "String",
+      "default" : "en"
+    }
+  }
 }
