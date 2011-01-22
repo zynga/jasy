@@ -26,7 +26,10 @@ class Permutation:
             
         self.__checksum = checksum
         
+        
     def __buildKey(self, combination):
+        """ Computes the permutations' key based on the given combination """
+        
         result = []
         for key in sorted(combination):
             value = combination[key]
@@ -43,11 +46,17 @@ class Permutation:
             result.append("%s:%s" % (key, value))
 
         return ";".join(result)
+        
             
     def has(self, key):
+        """ Whether the permutation holds a value for the given key """
+        
         return key in self.__combination
         
+        
     def get(self, key):
+        """ Returns the value of the given key in the permutation """
+        
         if key in self.__combination:
             return self.__combination[key]
             
@@ -55,6 +64,8 @@ class Permutation:
         
         
     def getCode(self, key):
+        """ Returns the code equivalent of the stored value for the given key """
+        
         code = self.get(key)
         if code == None:
             return code
@@ -74,10 +85,14 @@ class Permutation:
         
         
     def getKey(self):
+        """ Returns the computed key from this permutation """
+        
         return self.__key
         
         
     def getChecksum(self):
+        """ Returns the computed checksum based on the key of this permutation """
+        
         return self.__checksum
         
         
