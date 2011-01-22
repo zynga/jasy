@@ -27,11 +27,8 @@ class Session():
 
         self.__timestamp = time.time()
         self.__projects = []
-
-        self.__values = {}
-        self.__valueTests = {}
-
         self.__localeProjects = {}
+        self.__values = {}
     
     
     #
@@ -40,6 +37,8 @@ class Session():
         
     def addProject(self, project):
         self.__projects.append(project)
+        self.__values.update(project.getValues())
+        
         
     def removeProject(self, project):
         self.__projects.remove(project)
@@ -49,14 +48,15 @@ class Session():
         dynadd = []
         if permutation:
             locale = permutation.get("locale")
-            if not locale in self.__localeProjects:
-                localePath = localeProject(locale)
-                if not os.path.exists(localePath):
-                    storeLocale(locale)
+            if locale != "default":
+                if not locale in self.__localeProjects:
+                    localePath = localeProject(locale)
+                    if not os.path.exists(localePath):
+                        storeLocale(locale)
                 
-                self.__localeProjects[locale] = Project(localePath)
+                    self.__localeProjects[locale] = Project(localePath)
             
-            dynadd.append(self.__localeProjects[locale])
+                dynadd.append(self.__localeProjects[locale])
         
         return self.__projects + dynadd
     
@@ -83,15 +83,31 @@ class Session():
         if type(values) != list:
             values = [values]
             
-        self.__values[name] = values
+        if not name in self.__values:
+            raise Exception("Unsupported key: %s" % name)
+            
+        entry = self.__values[name]
+            
+        if "check" in entry:
+            check = entry["check"]
+            for value in values:
+                if check == "Boolean" and type(value) == bool:
+                    pass
+                elif check == "String" and type(value) == str:
+                    pass
+                elif type(check) == list and value in check:
+                    pass
+                else:
+                    raise Exception("Unsupported value %s for %s" % (name, value))
+        
+        entry["values"] = values
 
         if test:
-            self.__valueTests[name] = test
+            entry["test"] = test
             
         
     def clearValues(self):
         self.__values = {}
-        self.__valueTests = {}
         
         
     def getPermutations(self):
@@ -99,49 +115,52 @@ class Session():
         Combines all values to a set of permutations.
         These define all possible combinations of the configured settings
         """
-
-        values = self.__values
         
+        values = {}
+        for key in self.__values:
+            entry = self.__values[key]
+            if "values" in entry:
+                values[key] = entry["values"]
+            elif "default" in entry:
+                values[key] = [entry["default"]]
+
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         names = sorted(values)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
         permutations = [Permutation(combi) for combi in combinations]
 
         return permutations
-    
-    
-    def getLoadPermutation(self):
-        """
-        Exports the permutation data into a new permutation which can be used for loading files based on this data.
-        """
 
-        # Collecting values from all projects
-        values = {}
-        for project in self.__projects:
-            values.update(project.getValues())
-        
-        # Getting defaults and replace them with given values when available
-        defaults = { key : [values[key]["default"]] for key in values }
-        defaults.update(self.__values)
-        
-        
-        # TODO
-        # This is still not nice.
-        # Need to rethink about this a bit to find a good way to merge defaults, checks, tests, ... in maybe one data structure
-        # Defaults are not allowed to influence the key/checksum
 
-        
-        values = toJSON(defaults, True)
-        tests = "{%s}" % ",".join([ "'%s':%s" % (key, self.__valueTests[key]) for key in self.__valueTests ])
-        
-        return Permutation({
-          "jasy.Permutation.values" : values, 
-          "jasy.Permutation.tests" : tests
-        })
+    def __permutationsToExpr(self):
+        export = []
+        for key in self.__values:
+            source = self.__values[key]
+            
+            content = []
+            
+            if "values" in source:
+                content.append("values:[%s]" % toJSON(source["values"]))
+                
+                if "default" in source and source["default"] in source["values"]:
+                    content.append("'default':%s" % toJSON(source["default"]))
+            
+            elif "default" in source:
+                content.append("values:[%s]" % toJSON(source["default"]))
+                
+            if "test" in source:
+                content.append("test:%s" % source["test"])
+            
+            export.append("'%s':{%s}" % (key, ",".join(content)))
+            
+        return "{%s}" % ",".join(export)
     
     
     def writeLoader(self, fileName):
-        loaderPermutation = self.getLoadPermutation()
+        loaderPermutation = Permutation({
+          "jasy.Permutation.values" : self.__permutationsToExpr()
+        })
+        
         resolver = Resolver(self.getProjects(), loaderPermutation)
         resolver.addClassName("jasy.Permutation")
 
