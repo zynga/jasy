@@ -58,14 +58,12 @@ def source():
         resourceCode = resources.exportInfo(prefixRoots="../")
         
         # Generate Loader
-        loader = Loader(Sorter(resolver).getSortedClasses(), "../")
-        loaderCode = loader.generate("qx.core.Init.boot(feedreader.Application)")
+        loaderCode = Loader(Sorter(resolver).getSortedClasses(), "../").generate("qx.core.Init.boot(feedreader.Application)")
         
         # Prepare translation
-        translation = session.getTranslation(permutation.get("jasy.locale"))
-        translationCode = translation.generate()
+        translationCode = session.getTranslation(permutation.get("jasy.locale")).generate()
         
-        # Finally write file
+        # Write file
         writefile("source/script/feedreader-%s.js" % permutation.getChecksum(), translationCode + resourceCode + loaderCode)
 
 
