@@ -36,7 +36,6 @@ def source():
     
     # Setup values
     session.addValue("jasy.locale", ["en","de","ro"], "jasy.detect.Param")
-    session.addValue("qx.debug", ["on","off"])
     session.addValue("qx.client", ["gecko","webkit"])
     
     # Store loader script
