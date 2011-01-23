@@ -107,10 +107,42 @@ class Permutation:
     # Preflight API
     #
     
-    def preflight(self, node):
+    def preflight(self, node, keys=None):
+        if not keys:
+            keys = set()
+
+        # Assemble dot operators
+        if node.type == "dot" and node.parent.type != "dot":
+            assembled = self.__assembleDot(node)
+            if assembled:
+                replacement = self.getCode(assembled)
+                
+                # jasy specific: jasy.Permutation.isSet(key, expected)
+                # jasy specific: jasy.Permutation.getValue(key)
+                # qooxdoo specific: qx.core.Variant.isSet(key, expected)
+                # qooxdoo specific: qx.core.Settings.get(key)
+                # qooxdoo specific: qx.core.Variant.select(key, map)
+                if node.parent.type == "call":
+                    if assembled == "jasy.Permutation.isSet" or assembled == "qx.core.Variant.isSet" or assembled == "jasy.Permutation.getValue" or assembled == "qx.core.Setting.get" or assembled == "qx.core.Variant.select":
+                        callNode = node.parent
+                        params = callNode[1]
+                        keys.add(params[0].value)
+
+        # Global function calls
+        elif node.type == "call" and node[0].type == "identifier":
+
+            # has.js specific: has(key)
+            if node[0].value == "has":
+                params = node[1]
+                keys.add(params[0].value)
+
+        # Process children
+        for child in reversed(node):
+            if child != None:
+                self.preflight(child, keys):
         
-        pass
-        
+        return keys
+    
     
     
     #
