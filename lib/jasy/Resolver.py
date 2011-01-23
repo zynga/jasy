@@ -68,7 +68,7 @@ class Resolver():
             return self.__included
         
         pstart()
-        logging.info("Collecting included classes...")
+        logging.info("Collecting classes...")
         
         collection = set()
         for classObj in self.__required:
@@ -80,7 +80,7 @@ class Resolver():
                 collection.remove(classObj)
         
         self.__included = collection
-        logging.info(" - %s classes" % len(collection))
+        logging.info("Including %s classes" % len(collection))
         pstop()
         
         return self.__included

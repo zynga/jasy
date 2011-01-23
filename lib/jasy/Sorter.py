@@ -47,7 +47,7 @@ class Sorter:
                 self.__getLoadDeps(classNames[className])
             pstop()
 
-            logging.info("Sorting classes for final loading...")
+            logging.info("Sorting classes...")
             result = []
             requiredClasses = self.__resolver.getRequiredClasses()
             for classObj in requiredClasses:
