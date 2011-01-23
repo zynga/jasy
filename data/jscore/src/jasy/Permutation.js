@@ -4,9 +4,13 @@
  */
 (function()
 {
-  // This is quite magic and only works because of the build system
-  // replacing these constants via the loader permutation
-  var values = jasy.values;
+  // Small hack to correctly bootstrap the next line
+  jasy.Permutation = {getValue:function(){}};
+  
+  // The build system is replacing this call via the loader permutation
+  var values = jasy.Permutation.getValue("jasy.values");
+  
+  // Stores all selected values in a simple map
   var selected = {};
   
   var checksum = values ? (function()
@@ -54,6 +58,13 @@
     /** {Number} Holds the checksum for the current permutation which is auto detected by features or by compiled-in data */
     CHECKSUM : checksum,
     
+    isEnabled : function(name) {
+      return !!selected[name];
+    },
+    
+    isSet : function(name, value) {
+      return selected[name] == value;
+    },
     
     getValue : function(name) {
       return selected[name];

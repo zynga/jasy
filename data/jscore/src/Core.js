@@ -9,31 +9,37 @@
 {
   var cache = {};
   
-  var declare = function(namespace, object)
+  // Define Core initially in a primitive way to have same signature like
+  // all following modules/classes.
+  var Core = 
   {
-    var splits = namespace.split(".");
-    var current = global;
-    var length = splits.length-1;
-    var i = 0;
-    var test;
-  
-    // Fast-check for existing segments
-    while(test=current[splits[i]]) 
+    declare : function(namespace, object)
     {
-      current = test;
-      i++;
-    }
+      var splits = namespace.split(".");
+      var current = global;
+      var length = splits.length-1;
+      var i = 0;
+      var test;
   
-    // Create missing segments
-    while(i<length) {
-      current = current[splits[i++]] = {};
-    }
+      // Fast-check for existing segments
+      while(test=current[splits[i]]) 
+      {
+        current = test;
+        i++;
+      }
   
-    // Store Object
-    return cache[namespace] = current[splits[i]] = object;
+      // Create missing segments
+      while(i<length) {
+        current = current[splits[i++]] = {};
+      }
+  
+      // Store Object
+      return cache[namespace] = current[splits[i]] = object;
+    }
   };
   
-  declare("Core",
+  // Finally declare the real class
+  Core.declare("Core",
   {
     /**
      * Declares the given namespace and stores the given object onto it.
@@ -41,7 +47,7 @@
      * @param namespace {String} Namespace/Package e.g. foo.bar.baz
      * @param object {Object} Any object
      */
-    declare : declare,
+    declare : Core.declare,
 
 
     /**

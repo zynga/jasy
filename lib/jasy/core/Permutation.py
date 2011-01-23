@@ -100,6 +100,17 @@ class Permutation:
     __repr__ = getKey
     __str__ = getKey
     
+
+
+
+    #
+    # Preflight API
+    #
+    
+    def preflight(self, node):
+        
+        pass
+        
     
     
     #
@@ -116,14 +127,9 @@ class Permutation:
             if assembled:
                 replacement = self.getCode(assembled)
                 
-                # constants
-                if replacement:
-                    repl = parseExpression(replacement)
-                    node.parent.replace(node, repl)            
-                    modified = True
-
+                # jasy specific: jasy.Permutation.isSet(key, expected)
                 # qooxdoo specific: qx.core.Variant.isSet(key, expected)
-                elif assembled == "qx.core.Variant.isSet" and node.parent.type == "call":
+                if (assembled == "jasy.Permutation.isSet" or assembled == "qx.core.Variant.isSet") and node.parent.type == "call":
                     callNode = node.parent
                     params = callNode[1]
                     replacement = self.getCode(params[0].value)
@@ -136,9 +142,10 @@ class Permutation:
 
                         callNode.parent.replace(callNode, replacementNode)
                         modified = True
-
+                
+                # jasy specific: jasy.Permutation.getValue(key)
                 # qooxdoo specific: qx.core.Settings.get(key)
-                elif assembled == "qx.core.Setting.get" and node.parent.type == "call":
+                elif (assembled == "jasy.Permutation.getValue" or assembled == "qx.core.Setting.get") and node.parent.type == "call":
                     callNode = node.parent
                     params = callNode[1]
                     replacement = self.getCode(params[0].value)
@@ -184,7 +191,7 @@ class Permutation:
                     replacement = self.getCode(params[0].value)
 
                     # Only boolean replacements allowed
-                    if replacement in ("true","false"):
+                    if replacement in ("true", "false"):
                         replacementNode = parseExpression(replacement)
                         node.parent.replace(node, replacementNode)
 
