@@ -93,8 +93,6 @@ class Resolver():
     def __resolveDependencies(self, classObj, collection):
         """ Internal resolver engine which works recursively through all dependencies """
         
-        logging.debug("Resolving dependencies of %s..." % classObj)
-
         collection.add(classObj)
         dependencies = classObj.getDependencies(self.__permutation, classes=self.__classes)
         

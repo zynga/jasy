@@ -8,7 +8,7 @@ import time, logging
 __all__ = ["pstart", "pstop"]
 
 __start = None
-__enabled = False
+__enabled = True
 
 def penable():
     global __enabled
