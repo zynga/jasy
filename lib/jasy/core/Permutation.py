@@ -64,6 +64,21 @@ def getKeys(node, keys=None):
     return keys
 
 
+PermutationCache = {}
+
+def getPermutation(combination):
+    """ Small wrapper to omit double creation of identical permutations in filter() method """
+    
+    key = str(combination)
+    if key in PermutationCache:
+        return PermutationCache[key]
+        
+    PermutationCache[key] = Permutation(combination)
+    return PermutationCache[key]
+    
+
+
+
 class Permutation:
     def __init__(self, combination):
         self.__combination = combination
@@ -169,7 +184,7 @@ class Permutation:
             if key in available:
                 filtered[key] = self.__combination[key]
         
-        return Permutation(filtered)
+        return getPermutation(filtered)
     
     
     #
