@@ -54,10 +54,14 @@ class Resolver():
 
 
     def excludeClasses(self, classObjects):
+        """ Excludes the given class objects (just a hard-exclude which is applied after calculating the current dependencies) """
+        
         self.__excluded.extend(classObjects)
         
 
     def getRequiredClasses(self):
+        """ Returns the user added classes - the so-called required classes. """
+        
         return self.__required
 
 
