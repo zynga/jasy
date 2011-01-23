@@ -82,28 +82,30 @@ class Class():
             if name != self.name and name in classes:
                 result.add(classes[name])
         
-        # Real filtering
+        # Add classes from detected package access
         for package in stats.packages:
-            if package in aliases and package in classes:
-                result.add(classes[package])
+            if package in aliases:
+                className = aliases[package]
+                if className in classes:
+                    result.add(classes[className])
+                    continue
             
-            else:
-                orig = package
-                while True:
-                    if package == self.name:
+            orig = package
+            while True:
+                if package == self.name:
+                    break
+            
+                elif package in classes:
+                    aliases[orig] = package
+                    result.add(classes[package])
+                    break
+            
+                else:
+                    pos = package.rfind(".")
+                    if pos == -1:
                         break
-                
-                    elif package in classes:
-                        aliases[orig] = package
-                        result.add(classes[package])
-                        break
-                
-                    else:
-                        pos = package.rfind(".")
-                        if pos == -1:
-                            break
-                        
-                        package = package[0:pos]
+                    
+                    package = package[0:pos]
         
         return result        
         
