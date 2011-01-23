@@ -75,7 +75,7 @@ class Sorter:
         if classObj in result:
             return
             
-        logging.debug("Adding class: %s", classObj)
+        # logging.debug("Adding class: %s", classObj)
         result.append(classObj)
 
         # Insert circular dependencies as soon as possible
