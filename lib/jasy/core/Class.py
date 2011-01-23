@@ -7,7 +7,8 @@ import os, logging, copy, hashlib
 
 from jasy.core.DeadCode import cleanup
 from jasy.core.MetaData import MetaData
-from jasy.core.Permutation import preflight
+from jasy.core.Permutation import getKeys
+from jasy.core.Translation import hasText
 from jasy.parser.Parser import parse
 from jasy.process.Compressor import compress
 from jasy.process.Variables import scan
@@ -131,28 +132,37 @@ class Class():
         return meta
         
         
-    def getAvailablePermutations(self):
+    def getPermutationKeys(self):
         field = "permutations[%s]" % (self.rel)
         result = self.__cache.read(field, self.__mtime)
         if result == None:
-            result = preflight(self.getTree())
+            result = getKeys(self.getTree())
             self.__cache.store(field, result, self.__mtime)
         
         return result
 
 
+    def usesTranslation(self):
+        field = "translation[%s]" % (self.rel)
+        result = self.__cache.read(field, self.__mtime)
+        if result == None:
+            result = hasText(self.getTree())
+            self.__cache.store(field, result, self.__mtime)
+        
+        return result
+        
+        
     def filterPermutation(self, permutation):
         if permutation:
-            availablePermutations = self.getAvailablePermutations()
-            if availablePermutations:
-                return permutation.filter(availablePermutations)
+            keys = self.getPermutationKeys()
+            if keys:
+                return permutation.filter(keys)
 
         return None
         
         
     def filterTranslation(self, translation):
-        if translation:
-            # TODO: Check whether this class makes use of any tr(), trc(), ...
+        if translation and self.usesTranslation():
             return translation
             
         return None

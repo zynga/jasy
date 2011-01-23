@@ -7,7 +7,32 @@ import logging, re, copy, json
 from jasy.parser.Node import Node
 from jasy.ext import polib
 
-__all__ = ["TranslationError", "Translation"]
+__all__ = ["TranslationError", "Translation", "hasText"]
+
+
+methods = ("tr", "trc", "trn")
+
+
+def hasText(node):
+    if node.type == "call":
+        funcName = None
+        
+        if node[0].type == "identifier":
+            funcName = node[0].value
+        elif node[0].type == "dot" and node[0][1].type == "identifier":
+            funcName = node[0][1].value
+        
+        if funcName in methods:
+            return True
+            
+    # Process children
+    for child in node:
+        if child != None:
+            ret = hasText(child)
+            if ret:
+                return True
+    
+    return False
 
 
 class TranslationError(Exception):
@@ -77,7 +102,6 @@ class Translation:
     #
     
 
-    __methods = ("tr", "trc", "trn")
     __replacer = re.compile("(%[0-9])")
     
 
@@ -145,7 +169,7 @@ class Translation:
             elif node[0].type == "dot" and node[0][1].type == "identifier":
                 funcName = node[0][1].value
             
-            if funcName in self.__methods:
+            if funcName in methods:
                 params = node[1]
                 table = self.__table
 

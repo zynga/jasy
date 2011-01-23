@@ -7,7 +7,7 @@ import logging, binascii, zlib
 from jasy.tokenizer.Tokenizer import Tokenizer
 from jasy.parser.Parser import parseExpression
 
-__all__ = ["Permutation", "preflight"]
+__all__ = ["Permutation", "getKeys"]
 
 
 # jasy specific: jasy.Permutation.isSet(key, expected)
@@ -45,7 +45,7 @@ def assembleDot(node, result=None):
     return ".".join(result)
 
 
-def preflight(node, keys=None):
+def getKeys(node, keys=None):
     if keys is None:
         keys = set()
 
@@ -59,7 +59,7 @@ def preflight(node, keys=None):
     # Process children
     for child in reversed(node):
         if child != None:
-            preflight(child, keys)
+            getKeys(child, keys)
     
     return keys
 
