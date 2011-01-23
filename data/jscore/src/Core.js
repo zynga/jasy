@@ -7,6 +7,8 @@
 
 (function(global)
 {
+  var cache = {};
+  
   var declare = function(namespace, object)
   {
     var splits = namespace.split(".");
@@ -28,7 +30,7 @@
     }
   
     // Store Object
-    return current[splits[i]] = object;
+    return cache[namespace] = current[splits[i]] = object;
   };
   
   declare("Core",
@@ -45,25 +47,30 @@
     /**
      * Resolves a given namespace into the already existing object/class.
      *
-     * @param name {String} Name to resolve
+     * @param namespace {String} Name to resolve
      */
-    resolve : function(name)
+    resolve : function(namespace)
     {
-      var current = global;
-      
-      if (name)
+      var current = cache[namespace];
+      if (!current)
       {
-        var splitted = name.split(".");
-        for (var i=0, l=splitted.length; i<l; i++) 
+        current = global;
+        if (namespace)
         {
-          current = current[splitted[i]];
-          if (!current) {
-            break;
+          var splitted = namespace.split(".");
+          for (var i=0, l=splitted.length; i<l; i++) 
+          {
+            current = current[splitted[i]];
+            if (!current) 
+            {
+              current = null;
+              break;
+            }
           }
         }
       }
     
-      return current || null;
+      return current;
     }
   });
 })(this);
