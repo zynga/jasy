@@ -7,6 +7,7 @@ import os, logging, copy, hashlib
 
 from jasy.core.DeadCode import cleanup
 from jasy.core.MetaData import MetaData
+from jasy.core.Permutation import preflight
 from jasy.parser.Parser import parse
 from jasy.process.Compressor import compress
 from jasy.process.Variables import scan
@@ -34,7 +35,10 @@ class Class():
     def getText(self):
         return open(self.path, mode="r", encoding="utf-8").read()
 
+
     def getTree(self, permutation=None):
+        permutation = self.filterPermutation(permutation)
+        
         field = "tree[%s]-%s" % (self.rel, permutation)
         tree = self.__cache.read(field, self.__mtime)
         if tree is not None:
@@ -60,6 +64,8 @@ class Class():
         Returns a set of dependencies seen through the given list of known 
         classes (ignoring all unknown items in original set) 
         """
+        
+        permutation = self.filterPermutation(permutation)
         
         meta = self.getMeta(permutation)
         stats = self.getStats(permutation)
@@ -102,6 +108,8 @@ class Class():
         
         
     def getStats(self, permutation=None):
+        permutation = self.filterPermutation(permutation)
+        
         field = "stats[%s]-%s" % (self.rel, permutation)
         stats = self.__cache.read(field, self.__mtime)
         if stats == None:
@@ -112,6 +120,8 @@ class Class():
         
         
     def getMeta(self, permutation=None):
+        permutation = self.filterPermutation(permutation)
+        
         field = "meta[%s]-%s" % (self.rel, permutation)
         meta = self.__cache.read(field, self.__mtime)
         if meta == None:
@@ -121,12 +131,44 @@ class Class():
         return meta
         
         
+    def getAvailablePermutations(self):
+        field = "permutations[%s]" % (self.rel)
+        result = self.__cache.read(field, self.__mtime)
+        if result == None:
+            result = preflight(self.getTree())
+            self.__cache.store(field, result, self.__mtime)
+        
+        return result
+
+
+    def filterPermutation(self, permutation):
+        if permutation:
+            availablePermutations = self.getAvailablePermutations()
+            if availablePermutations:
+                return permutation.filter(availablePermutations)
+
+        return None
+        
+        
+    def filterTranslation(self, translation):
+        if translation:
+            # TODO: Check whether this class makes use of any tr(), trc(), ...
+            return translation
+            
+        return None
+        
+        
     def getCompressed(self, permutation=None, translation=None, optimization=None, format=None):
+        permutation = self.filterPermutation(permutation)
+        translation = self.filterTranslation(translation)
+        
         field = "compressed[%s]-%s-%s-%s-%s" % (self.rel, permutation, translation, optimization, format)
+        xxxx = field
         field = hashlib.md5(field.encode("utf-8")).hexdigest()
         
         compressed = self.__cache.read(field, self.__mtime)
         if compressed == None:
+            print("Compress: %s" % xxxx)
             tree = self.getTree(permutation)
             
             if translation or optimization:
@@ -142,6 +184,7 @@ class Class():
             self.__cache.store(field, compressed, self.__mtime)
             
         return compressed
+            
             
     def __str__(self):
         return self.name

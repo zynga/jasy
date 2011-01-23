@@ -7,6 +7,63 @@ import logging, binascii, zlib
 from jasy.tokenizer.Tokenizer import Tokenizer
 from jasy.parser.Parser import parseExpression
 
+__all__ = ["Permutation", "preflight"]
+
+
+# jasy specific: jasy.Permutation.isSet(key, expected)
+# jasy specific: jasy.Permutation.getValue(key)
+# qooxdoo specific: qx.core.Variant.isSet(key, expected)
+# qooxdoo specific: qx.core.Settings.get(key)
+# qooxdoo specific: qx.core.Variant.select(key, map)
+__dotcalls = ("jasy.Permutation.isSet", "qx.core.Variant.isSet", "jasy.Permutation.getValue", "qx.core.Setting.get", "qx.core.Variant.select")
+
+# hasjs specific: has(key)
+__globalcalls = ("has")
+
+def testNode(node):
+    # Assemble dot operators
+    if node.type == "dot" and node.parent.type == "call" and assembleDot(node) in __dotcalls:
+        return "dotcall"
+
+    # Global function calls
+    elif node.type == "call" and node[0].type == "identifier" and node[0].value in __globalcalls:
+        return "globalcall"
+
+
+def assembleDot(node, result=None):
+    if result == None:
+        result = []
+
+    for child in node:
+        if child.type == "identifier":
+            result.append(child.value)
+        elif child.type == "dot":
+            assembleDot(child, result)
+        else:
+            return None
+
+    return ".".join(result)
+
+
+def preflight(node, keys=None):
+    if keys is None:
+        keys = set()
+
+    result = testNode(node)
+    if result:
+        if result == "dotcall":
+            keys.add(node.parent[1][0].value)
+        elif result == "globalcall":
+            keys.add(node[1][0].value)
+    
+    # Process children
+    for child in reversed(node):
+        if child != None:
+            preflight(child, keys)
+    
+    return keys
+
+
 class Permutation:
     def __init__(self, combination):
         self.__combination = combination
@@ -100,49 +157,19 @@ class Permutation:
     __repr__ = getKey
     __str__ = getKey
     
-
-
-
+    
+    
     #
-    # Preflight API
+    # Filter API
     #
     
-    def preflight(self, node, keys=None):
-        if not keys:
-            keys = set()
-
-        # Assemble dot operators
-        if node.type == "dot" and node.parent.type != "dot":
-            assembled = self.__assembleDot(node)
-            if assembled:
-                replacement = self.getCode(assembled)
-                
-                # jasy specific: jasy.Permutation.isSet(key, expected)
-                # jasy specific: jasy.Permutation.getValue(key)
-                # qooxdoo specific: qx.core.Variant.isSet(key, expected)
-                # qooxdoo specific: qx.core.Settings.get(key)
-                # qooxdoo specific: qx.core.Variant.select(key, map)
-                if node.parent.type == "call":
-                    if assembled == "jasy.Permutation.isSet" or assembled == "qx.core.Variant.isSet" or assembled == "jasy.Permutation.getValue" or assembled == "qx.core.Setting.get" or assembled == "qx.core.Variant.select":
-                        callNode = node.parent
-                        params = callNode[1]
-                        keys.add(params[0].value)
-
-        # Global function calls
-        elif node.type == "call" and node[0].type == "identifier":
-
-            # has.js specific: has(key)
-            if node[0].value == "has":
-                params = node[1]
-                keys.add(params[0].value)
-
-        # Process children
-        for child in reversed(node):
-            if child != None:
-                self.preflight(child, keys):
+    def filter(self, available):
+        filtered = {}
+        for key in self.__combination:
+            if key in available:
+                filtered[key] = self.__combination[key]
         
-        return keys
-    
+        return Permutation(filtered)
     
     
     #
@@ -151,81 +178,77 @@ class Permutation:
     
     def patch(self, node):
         """ Replaces all occourences with incoming values """
+
         modified = False
+        result = testNode(node)
+        
+        if result == "dotcall":
+            assembled = assembleDot(node)
+            # jasy specific: jasy.Permutation.isSet(key, expected)
+            # qooxdoo specific: qx.core.Variant.isSet(key, expected)
+            if (assembled == "jasy.Permutation.isSet" or assembled == "qx.core.Variant.isSet") and node.parent.type == "call":
+                callNode = node.parent
+                params = callNode[1]
+                replacement = self.getCode(params[0].value)
+                if replacement:
+                    targetIdentifier = parseExpression(replacement).value
+                    if targetIdentifier in str(params[1].value).split("|"):
+                        replacementNode = parseExpression("true")
+                    else:
+                        replacementNode = parseExpression("false")
 
-        # Assemble dot operators
-        if node.type == "dot" and node.parent.type != "dot":
-            assembled = self.__assembleDot(node)
-            if assembled:
-                replacement = self.getCode(assembled)
-                
-                # jasy specific: jasy.Permutation.isSet(key, expected)
-                # qooxdoo specific: qx.core.Variant.isSet(key, expected)
-                if (assembled == "jasy.Permutation.isSet" or assembled == "qx.core.Variant.isSet") and node.parent.type == "call":
-                    callNode = node.parent
-                    params = callNode[1]
-                    replacement = self.getCode(params[0].value)
-                    if replacement:
-                        targetIdentifier = parseExpression(replacement).value
-                        if targetIdentifier in str(params[1].value).split("|"):
-                            replacementNode = parseExpression("true")
-                        else:
-                            replacementNode = parseExpression("false")
+                    callNode.parent.replace(callNode, replacementNode)
+                    modified = True
+            
+            # jasy specific: jasy.Permutation.getValue(key)
+            # qooxdoo specific: qx.core.Settings.get(key)
+            elif (assembled == "jasy.Permutation.getValue" or assembled == "qx.core.Setting.get") and node.parent.type == "call":
+                callNode = node.parent
+                params = callNode[1]
+                replacement = self.getCode(params[0].value)
+                if replacement:
+                    replacementNode = parseExpression(replacement)
+                    callNode.parent.replace(callNode, replacementNode)
+                    modified = True 
 
-                        callNode.parent.replace(callNode, replacementNode)
-                        modified = True
-                
-                # jasy specific: jasy.Permutation.getValue(key)
-                # qooxdoo specific: qx.core.Settings.get(key)
-                elif (assembled == "jasy.Permutation.getValue" or assembled == "qx.core.Setting.get") and node.parent.type == "call":
-                    callNode = node.parent
-                    params = callNode[1]
-                    replacement = self.getCode(params[0].value)
-                    if replacement:
-                        replacementNode = parseExpression(replacement)
-                        callNode.parent.replace(callNode, replacementNode)
-                        modified = True 
+            # qooxdoo specific: qx.core.Variant.select(key, map)
+            elif assembled == "qx.core.Variant.select" and node.parent.type == "call":
+                callNode = node.parent
+                params = callNode[1]
+                replacement = self.getCode(params[0].value)
+                if replacement:
+                    targetIdentifier = parseExpression(replacement).value
 
-                # qooxdoo specific: qx.core.Variant.select(key, map)
-                elif assembled == "qx.core.Variant.select" and node.parent.type == "call":
-                    callNode = node.parent
-                    params = callNode[1]
-                    replacement = self.getCode(params[0].value)
-                    if replacement:
-                        targetIdentifier = parseExpression(replacement).value
+                    # Directly try to find matching identifier in second param (map)
+                    objectInit = params[1]
+                    if objectInit.type == "object_init":
+                        fallbackNode = None
+                        for propertyInit in objectInit:
+                            if propertyInit[0].value == "default":
+                                fallbackNode = propertyInit[1]
 
-                        # Directly try to find matching identifier in second param (map)
-                        objectInit = params[1]
-                        if objectInit.type == "object_init":
-                            fallbackNode = None
-                            for propertyInit in objectInit:
-                                if propertyInit[0].value == "default":
-                                    fallbackNode = propertyInit[1]
-
-                                elif targetIdentifier in str(propertyInit[0].value).split("|"):
-                                    callNode.parent.replace(callNode, propertyInit[1])
-                                    modified = True
-                                    break
-
-                            if not modified and fallbackNode is not None:
-                                callNode.parent.replace(callNode, fallbackNode)
+                            elif targetIdentifier in str(propertyInit[0].value).split("|"):
+                                callNode.parent.replace(callNode, propertyInit[1])
                                 modified = True
+                                break
 
-        # Global function calls
-        elif node.type == "call" and node[0].type == "identifier":
+                        if not modified and fallbackNode is not None:
+                            callNode.parent.replace(callNode, fallbackNode)
+                            modified = True
+                            
+            
+        elif result == "globalcall":
+            params = node[1]
 
-            # has.js specific: has("function-bind")
-            if node[0].value == "has":
-                params = node[1]
+            # has.js requires that there is exactly one param with a string value
+            if len(params) == 1 and params[0].type == "string":
+                replacement = self.getCode(params[0].value)
 
-                # has.js requires that there is exactly one param with a string value
-                if len(params) == 1 and params[0].type == "string":
-                    replacement = self.getCode(params[0].value)
+                # Only boolean replacements allowed
+                if replacement in ("true", "false"):
+                    replacementNode = parseExpression(replacement)
+                    node.parent.replace(node, replacementNode)
 
-                    # Only boolean replacements allowed
-                    if replacement in ("true", "false"):
-                        replacementNode = parseExpression(replacement)
-                        node.parent.replace(node, replacementNode)
 
         # Process children
         for child in reversed(node):
@@ -233,19 +256,4 @@ class Permutation:
                 if self.patch(child):
                     modified = True
 
-        return modified
-
-
-    def __assembleDot(self, node, result=None):
-        if result == None:
-            result = []
-
-        for child in node:
-            if child.type == "identifier":
-                result.append(child.value)
-            elif child.type == "dot":
-                self.__assembleDot(child, result)
-            else:
-                return None
-
-        return ".".join(result)    
+        return modified  
