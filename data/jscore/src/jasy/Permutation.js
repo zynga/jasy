@@ -10,6 +10,8 @@
   // The build system is replacing this call via the loader permutation
   var values = jasy.Permutation.getValue("jasy.values");
   
+  delete jasy.Permutation;
+  
   // Stores all selected values in a simple map
   var selected = {};
   
