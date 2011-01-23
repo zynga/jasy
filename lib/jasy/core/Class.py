@@ -173,12 +173,10 @@ class Class():
         translation = self.filterTranslation(translation)
         
         field = "compressed[%s]-%s-%s-%s-%s" % (self.rel, permutation, translation, optimization, format)
-        xxxx = field
         field = hashlib.md5(field.encode("utf-8")).hexdigest()
         
         compressed = self.__cache.read(field, self.__mtime)
         if compressed == None:
-            print("Compress: %s" % xxxx)
             tree = self.getTree(permutation)
             
             if translation or optimization:
