@@ -79,7 +79,7 @@ class Resources:
             # Pre cache (for time measurement reasons)
             filtered = self.getFiltered()
             
-            logging.info("Sorting files...")
+            logging.info("Categorizing resources...")
             pstart()
             
             roots = self.__collectRoots()
