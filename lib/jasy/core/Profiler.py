@@ -8,15 +8,30 @@ import time, logging
 __all__ = ["pstart", "pstop"]
 
 __start = None
+__enabled = False
+
+def penable():
+    global __enabled
+    __enabled = True
+    
+def pdisable():
+    global __enabled
+    __enabled = False
 
 def pstart():
     global __start
-    __start = time.time()
+    global __enabled
+
+    if __enabled:
+        __start = time.time()
     
     
 def pstop():
     global __start
-    now = time.time()
-    logging.info(" - in %sms" % int((now-__start)*1000))
-    __start = now
+    global __enabled
+
+    if __enabled:
+        now = time.time()
+        logging.info(" - in %sms" % int((now-__start)*1000))
+        __start = now
     

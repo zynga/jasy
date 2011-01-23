@@ -40,8 +40,11 @@ def source():
     loaderIncluded = session.writeLoader("source/script/feedreader.js")
     
     # Process every possible permutation
-    for permutation in session.getPermutations():
-        print("------------------------------------------------------------------------------")
+    permutations = session.getPermutations()
+    for pos, permutation in enumerate(permutations):
+        print("=====================================================================")
+        logging.info("Permutation %s/%s" % (pos+1, len(permutations)))
+        print("=====================================================================")
         
         # Get projects
         projects = session.getProjects(permutation)
@@ -98,8 +101,11 @@ def build():
     resourceCode = resources.exportInfo(replaceRoots="resource")
 
     # Process every possible permutation
-    for permutation in session.getPermutations():
-        print("------------------------------------------------------------------------------")
+    permutations = session.getPermutations()
+    for pos, permutation in enumerate(permutations):
+        print("=====================================================================")
+        logging.info("Permutation %s/%s" % (pos+1, len(permutations)))
+        print("=====================================================================")
 
         # Get projects
         projects = session.getProjects(permutation)
