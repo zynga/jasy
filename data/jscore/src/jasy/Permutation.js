@@ -59,7 +59,7 @@
     CHECKSUM : checksum,
     
     isEnabled : function(name) {
-      return !!selected[name];
+      return selected[name] == true;
     },
     
     isSet : function(name, value) {
