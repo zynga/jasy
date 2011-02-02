@@ -98,7 +98,7 @@ def build():
     resolver.addClassName("qx.theme.Modern")
     resources = Resources(session, resolver.getIncludedClasses())
     resources.publishFiles("build/resource")
-    resources.publishManifest("build/manifest", "resource")
+    resources.publishManifest("build/feedreader.appcache", "resource")
     resourceCode = resources.exportInfo(replaceRoots="resource")
 
     # Process every possible permutation

@@ -283,6 +283,9 @@ class Resources:
         
         
     def publishManifest(self, manifest, root, network=None, cache=None):
+        # Extension for manifest files should be ".appcache"
+        # http://html5.org/tools/web-apps-tracker?from=5811&to=5812
+        
         filtered = self.getFiltered()
         
         logging.info("Generating manifest...")

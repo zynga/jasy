@@ -27,6 +27,7 @@ __cache = {}
 def __recurser(node, modified=False):
     if node.type == "identifier":
         value = node.value
+        # Protect e.g. __proto__ from optimization
         if type(value) == str and value.startswith("__") and not value.endswith("__"):
             if value in __cache:
                 repl = __cache[value]
