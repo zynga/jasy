@@ -42,9 +42,7 @@ def source():
     # Process every possible permutation
     permutations = session.getPermutations()
     for pos, permutation in enumerate(permutations):
-        print("=====================================================================")
         logging.info("Permutation %s/%s" % (pos+1, len(permutations)))
-        print("=====================================================================")
         
         # Get projects
         projects = session.getProjects(permutation)
@@ -84,8 +82,7 @@ def build():
     session.addValue("feature.appcache", [True,False])
     session.addValue("feature.worker", [True,False])
     session.addValue("feature.xhr", [True,False])
-    session.addValue("feature.localstorage", [True,False])
-    #session.addValue("feature.sessionstorage", [True,False])
+    session.addValue("feature.storage", [True,False])
     #session.addValue("feature.gl", [True,False])
     #session.addValue("feature.message", [True,False])
     #session.addValue("feature.db", [True,False])
@@ -114,9 +111,7 @@ def build():
     # Process every possible permutation
     permutations = session.getPermutations()
     for pos, permutation in enumerate(permutations):
-        print("=====================================================================")
         logging.info("Permutation %s/%s" % (pos+1, len(permutations)))
-        print("=====================================================================")
 
         # Get projects
         projects = session.getProjects(permutation)

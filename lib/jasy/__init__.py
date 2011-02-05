@@ -9,19 +9,12 @@
 
 import logging
 
-logging.basicConfig(filename="log.txt", level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(filename="log.txt", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Define a Handler which writes INFO messages or higher to the sys.stderr
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
-
-# Set a format which is simpler for console use
-formatter = logging.Formatter('>>> %(message)s', '%H:%M:%S')
-
-# Tell the handler to use this format
-console.setFormatter(formatter)
-
-# Add the handler to the root logger
+console.setFormatter(logging.Formatter('>>> %(message)s', '%H:%M:%S'))
 logging.getLogger('').addHandler(console)
 
 
