@@ -81,6 +81,16 @@ def build():
     session.addValue("jasy.locale", ["de","en","ro"], "jasy.detect.Param")
     session.addValue("qx.debug", ["on"])
     session.addValue("qx.client", ["gecko","webkit"])
+    session.addValue("feature.appcache", [True,False])
+    session.addValue("feature.worker", [True,False])
+    session.addValue("feature.xhr", [True,False])
+    session.addValue("feature.localstorage", [True,False])
+    #session.addValue("feature.sessionstorage", [True,False])
+    #session.addValue("feature.gl", [True,False])
+    #session.addValue("feature.message", [True,False])
+    #session.addValue("feature.db", [True,False])
+    #session.addValue("feature.json", [True,False])
+    #session.addValue("feature.socket", [True,False])
 
     # Permutation independend config
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])

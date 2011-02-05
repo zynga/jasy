@@ -36,7 +36,10 @@ Core.declare("jasy.detect.Param",
       map[name] = value;
     }
     
-    return function(name) {
+    // Cleanup temporary reference types
+    items = translate = null;
+    
+    return function get(name) {
       return name in map ? map[name] : null;
     }
   })()

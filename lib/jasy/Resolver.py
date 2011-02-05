@@ -34,7 +34,7 @@ class Resolver():
         if not className in self.__classes:
             raise Exception("Unknown Class: %s" % className)
             
-        logging.info("Adding class: %s" % className)
+        logging.debug("Adding class: %s", className)
         self.__required.append(self.__classes[className])
         
         del self.__included[:]
@@ -84,7 +84,7 @@ class Resolver():
                 collection.remove(classObj)
         
         self.__included = collection
-        logging.info("Including %s classes" % len(collection))
+        logging.info("Including %s classes", len(collection))
         pstop()
         
         return self.__included
