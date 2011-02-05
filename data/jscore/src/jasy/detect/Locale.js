@@ -1,3 +1,6 @@
+/**
+ * Detects browser language settings
+ */
 Core.declare("jasy.detect.Locale", 
 {
   VALUE : (function()

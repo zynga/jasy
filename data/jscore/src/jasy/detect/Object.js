@@ -6,7 +6,8 @@ Core.declare("jasy.detect.Object",
 {
   get : (function(global)
   {
-    // Not possible here: 
+    // TODO
+    // But not possible here: 
     // - Canvas
     // - SVG
     // - GeoLocation (navigator)
