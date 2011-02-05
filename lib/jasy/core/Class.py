@@ -137,7 +137,7 @@ class Class():
     def getPermutationKeys(self):
         field = "permutations[%s]" % (self.rel)
         result = self.__cache.read(field, self.__mtime)
-        if result == None:
+        if result is None:
             result = getKeys(self.getTree())
             self.__cache.store(field, result, self.__mtime)
         
