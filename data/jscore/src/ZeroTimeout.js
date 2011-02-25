@@ -1,3 +1,10 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 /** 
  * Cross-browser-compatible setZeroTimeout
  *
@@ -43,6 +50,8 @@
  * Like setTimeout, but only takes a function argument. There's
  * no time argument (always zero) and no arguments (you have to
  * use a closure).
+ *
+ * @param fn {Function} Function to execute with zero timeout
  */
 this.setZeroTimeout = (function(global) 
 {
@@ -62,7 +71,8 @@ this.setZeroTimeout = (function(global)
       }
     }, true);
     
-    return function(fn) {
+    return function(fn) 
+    {
       timeouts.push(fn);
       postMessage(messageName, "*");
     };
