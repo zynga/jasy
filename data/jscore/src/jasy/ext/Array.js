@@ -1,7 +1,7 @@
-if (typeof Array.isArray === "undefined") 
+if (typeof Array.isArray == "undefined") 
 {
   Array.isArray = function (arg) {
-    return Object.prototype.toString.call(arg) === "[object Array]";
+    return arg instanceof Array || Object.prototype.toString.call(arg) === "[object Array]";
   };
 }
 
