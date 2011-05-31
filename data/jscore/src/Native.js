@@ -18,7 +18,7 @@ String.prototype.repeat = function(nr) {
 };
 
 Number.prototype.pad = function(nr) {
-	return "0".repeat(nr) + this).slice(-nr);
+	return "0".repeat(nr) + this.slice(-nr);
 };
 
 // Via: http://es5.github.com/#x15.5.4.11
