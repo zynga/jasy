@@ -112,9 +112,12 @@ class Project():
                         
                         # This is by far slower and not the default but helps in specific project structures
                         if self.__fuzzy:
-                            className = classObj.getMeta().name
-                            if className != None:
-                                classObj.setName(className)
+                            classNameForced = classObj.getMeta().name
+                            if classNameForced != None:
+                                classObj.setName(classNameForced)
+                                className = classNameForced
+                            else:
+                                logging.debug("No name given to class: %s" % className)
 
                         classes[className] = classObj
                 
