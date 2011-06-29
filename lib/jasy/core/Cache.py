@@ -30,6 +30,8 @@ class Cache:
             self.__db.close()
 
         logging.debug("Initialize cache file %s..." % self.__file)
+        
+        self.__db.close()
         self.__db = shelve.open(self.__file, flag="n")
         
         
