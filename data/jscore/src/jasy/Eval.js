@@ -49,5 +49,5 @@ Core.declare("jasy.Eval",
     }
 
     // otherwise, globalEval is `undefined` since nothing is returned
-  })();
+  })()
 })
