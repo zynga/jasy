@@ -26,6 +26,9 @@ class Class():
         self.path = path
         self.rel = os.path.splitext(rel)[0]
         self.name = self.rel.replace("/", ".")
+        
+    def setName(self, name):
+        self.name = name        
 
     def getName(self):
         return self.name

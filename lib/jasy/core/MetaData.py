@@ -11,10 +11,10 @@ class MetaData:
     systems for optiomal cachability using Pickle
     """
     
-    __slots__ = ["provides", "requires", "optionals", "breaks", "assets"]
+    __slots__ = ["name", "requires", "optionals", "breaks", "assets"]
     
     def __init__(self, tree):
-        self.provides = set()
+        self.name = None
         self.requires = set()
         self.optionals = set()
         self.breaks = set()
@@ -36,8 +36,9 @@ class MetaData:
             for comment in comments:
                 commentTags = comment.getTags()
                 if commentTags:
-                    if "provide" in commentTags:
-                        self.provides.update(set(commentTags["provide"]))
+
+                    if "name" in commentTags:
+                        self.name = commentTags["name"]
                     if "require" in commentTags:
                         self.requires.update(set(commentTags["require"]))
                     if "optional" in commentTags:

@@ -31,7 +31,12 @@ class Project():
         
         self.__name = manifestData["name"]
         self.__kind = manifestData["kind"]
-        
+
+        if "fuzzy" in manifestData:
+            self.__fuzzy = manifestData["fuzzy"]
+        else:
+            self.__fuzzy = False
+            
         # Read default values (for settings, variants, permutations, etc.)
         if "values" in manifestData:
             self.__values = manifestData["values"]
@@ -103,7 +108,13 @@ class Project():
                         relPath = filePath[classPathLen:]
 
                         classObj = Class(filePath, relPath, self)
-                        className = classObj.getName()
+
+                        if self.__fuzzy:
+                            # This is by far slower and not the default but helps in specific project structures
+                            className = classObj.getMeta().name
+                            classObj.setName(className)
+                        else:
+                            className = classObj.getName()
 
                         classes[className] = classObj
                 

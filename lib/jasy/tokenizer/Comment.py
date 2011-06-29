@@ -99,7 +99,7 @@ class Comment():
 
             
     hasName = ["param"]
-    hasType = ["return", "param", "type", "enum", "implements", "require", "optional", "break", "throws", "asset"]
+    hasType = ["return", "param", "type", "enum", "implements", "require", "optional", "break", "throws", "asset", "name"]
     hasDescription = ["deprecated", "license", "preserve", "param", "return", "throws"]        
     isList = ["require", "optional", "break", "throws", "asset"]
         
@@ -132,6 +132,9 @@ class Comment():
         
         # lists
         @throws {Type} Description
+
+        # pre-compiler
+        @name {Type}
 
         # pre-compiler (lists)
         @require {Type}
