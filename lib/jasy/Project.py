@@ -52,7 +52,11 @@ class Project():
             self.translationPath = os.path.join(self.__path, "source", "translation")
         elif self.__kind == "basic":
             self.classPath = os.path.join(self.__path, "src")
-            self.resourcePath = None
+            self.resourcePath = os.path.join(self.__path, "src")
+            self.translationPath = None
+        elif self.__kind == "flat":
+            self.classPath = self.__path
+            self.resourcePath = self.__path
             self.translationPath = None
         else:
             raise ProjectException("Unsupported kind of project: %s" % self.__kind)
