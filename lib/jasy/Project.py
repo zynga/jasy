@@ -117,7 +117,7 @@ class Project():
                                 classObj.setName(classNameForced)
                                 className = classNameForced
                             else:
-                                logging.debug("No name given to class: %s" % className)
+                                logging.warn("No name given to class: %s" % className)
 
                         classes[className] = classObj
                 

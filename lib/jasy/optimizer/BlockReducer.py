@@ -275,6 +275,11 @@ def cleanParens(node):
         # instead like: new foo.bar.Object("param").doSomething()
         pass
         
+    elif node.type == "unary_plus" or node.type == "unary_minus":
+        # Prevent unary operators from getting joined with parent
+        # x+(+x) => x++x => FAIL
+        pass
+        
     elif node.type in expressions and parent.type in expressions:
         prio = expressionOrder[node.type]
         parentPrio = expressionOrder[node.parent.type]
