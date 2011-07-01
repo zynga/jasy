@@ -1,7 +1,4 @@
-/**
- * @name {z.property.Property}
- */
-z.Module("z.property.Property", {
+Module("jasy.property.Property", {
 	
   ID : 0,
 	

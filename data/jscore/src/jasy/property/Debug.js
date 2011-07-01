@@ -1,7 +1,4 @@
-/**
- * @name {z.property.Debug}
- */
-z.Module("jasy.property.Debug", {
+Module("jasy.property.Debug", {
 	
 	/**
 	 * Validates the incoming parameters of a setter method

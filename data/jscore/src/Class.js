@@ -1,3 +1,10 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 Core.declare("Class", function(name, config) {
 	
 	var placeholder = new Function;
@@ -32,7 +39,7 @@ Core.declare("Class", function(name, config) {
 	// Add properties
 	var properties = construct.__properties = config.properties || {};
 	for (var key in properties) {
-		Property.add(proto, key, properties[key]);
+		jasy.property.Property.add(proto, key, properties[key]);
 	}
 	
 	// Register events
