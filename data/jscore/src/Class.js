@@ -32,7 +32,7 @@ Core.declare("Class", function(name, config) {
 	// Add properties
 	var properties = construct.__properties = config.properties || {};
 	for (var key in properties) {
-		z.Property.add(proto, key, properties[key]);
+		Property.add(proto, key, properties[key]);
 	}
 	
 	// Register events
@@ -94,11 +94,14 @@ Core.declare("Class", function(name, config) {
 			}
 
 			try {
-				z.Interface.assert(construct, iface);
+				Interface.assert(construct, iface);
 			} catch(ex) {
 				throw new Error("Class " + name + " fails to implement given interface: " + iface + ": " + ex);
 			}
 		}
 	}
+	
+	// Attach class utilities
+	construct.getEvents = 
 	
 });
