@@ -1,3 +1,10 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 /**
  * Convenient type check API with focus on a small base set features, mainly as
  * used by the property system, and an additional possibility to register
@@ -17,9 +24,9 @@
  * * Lists of possible values e.g. ["top","bottom"]
  * * Custom check functions e.g. function(value) { return xxx } (should return boolean)
  *
- * @name {z.Type}
- * @break {z.Class}
- * @break {z.Interface}
+ * @name {Type}
+ * @break {Class}
+ * @break {Interface}
  */
 Module("Type", 
 {
