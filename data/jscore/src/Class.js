@@ -109,6 +109,6 @@ Core.declare("Class", function(name, config) {
 	}
 	
 	// Attach class utilities
-	construct.getEvents = 
+	// construct.getEvents = 
 	
 });
