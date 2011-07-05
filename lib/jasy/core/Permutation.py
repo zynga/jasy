@@ -12,10 +12,8 @@ __all__ = ["Permutation", "getKeys"]
 
 # jasy specific: jasy.Permutation.isSet(key, expected)
 # jasy specific: jasy.Permutation.getValue(key)
-# qooxdoo specific: qx.core.Variant.isSet(key, expected)
-# qooxdoo specific: qx.core.Settings.get(key)
 # qooxdoo specific: qx.core.Variant.select(key, map)
-__dotcalls = ("jasy.Permutation.isSet", "qx.core.Variant.isSet", "jasy.Permutation.getValue", "qx.core.Setting.get", "qx.core.Variant.select")
+__dotcalls = ("jasy.Permutation.isSet", "jasy.Permutation.getValue", "qx.core.Variant.select")
 
 # hasjs specific: has(key)
 __globalcalls = ("has")
@@ -200,24 +198,40 @@ class Permutation:
         if result == "dotcall":
             assembled = assembleDot(node)
             # jasy specific: jasy.Permutation.isSet(key, expected)
-            # qooxdoo specific: qx.core.Variant.isSet(key, expected)
-            if (assembled == "jasy.Permutation.isSet" or assembled == "qx.core.Variant.isSet") and node.parent.type == "call":
+            # also supports boolean like: jasy.Permutation.isSet(key) or !jasy.Permutation.isSet(key)
+            if assembled == "jasy.Permutation.isSet" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
                 replacement = self.getCode(params[0].value)
                 if replacement:
-                    targetIdentifier = parseExpression(replacement).value
-                    if targetIdentifier in str(params[1].value).split("|"):
-                        replacementNode = parseExpression("true")
+                    # Auto-fill second parameter with boolean "true"
+                    if len(params) > 1:
+                        valueParam = str(params[1]).split("|")
                     else:
-                        replacementNode = parseExpression("false")
+                        valueParam = ["true"]
+                        
+                    # Compare
+                    parsedReplacement = parseExpression(replacement)
+                    replacementResult = None
+                    if parsedReplacement.type == "true":
+                        replacementResult = "true" in valueParam or "on" in valueParam
+                        print("TRUE: %s" % valueParam)
+                        
+                    elif parsedReplacement.type == "false":
+                        replacementResult = "false" in valueParam or "off" in valueParam
+                    elif parsedReplacement.type == "string" or parsedReplacement.type == "number":
+                        replacementResult = parsedReplacement.value in valueParam
+                    else:
+                        raise Exception("Could not process: %s=%s with %s" % (params[0].value, valueParam, replacement))
 
-                    callNode.parent.replace(callNode, replacementNode)
-                    modified = True
+                    # Do actual replacement
+                    if replacementResult != None:
+                        replacementNode = parseExpression("true" if replacementResult else "false")
+                        callNode.parent.replace(callNode, replacementNode)
+                        modified = True
             
             # jasy specific: jasy.Permutation.getValue(key)
-            # qooxdoo specific: qx.core.Settings.get(key)
-            elif (assembled == "jasy.Permutation.getValue" or assembled == "qx.core.Setting.get") and node.parent.type == "call":
+            elif assembled == "jasy.Permutation.getValue" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
                 replacement = self.getCode(params[0].value)

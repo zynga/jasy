@@ -1,68 +1,75 @@
 {
-  "name" : "jasy",
-  "kind" : "basic",
+	"name" : "jasy",
+	"kind" : "basic",
 
-  "values" :
-  {
-    "jasy.locale" : 
-    {
-      "check" : "String",
-      "default" : "en",
-      "test" : "jasy.detect.Locale"
-    },
-    
-    "feature.appcache" : 
-    {
-      "check" : "Boolean",
-      "test" : "jasy.detect.Object"
-    },
-    
-    "feature.worker" : 
-    {
-      "check" : "Boolean",
-      "test" : "jasy.detect.Object"
-    },
-    
-    "feature.xhr" : 
-    {
-      "check" : "Boolean",
-      "test" : "jasy.detect.Object"
-    },
-    
-    "feature.storage" : 
-    {
-      "check" : "Boolean",
-      "test" : "jasy.detect.Object"
-    },
-    
-    "feature.gl" : 
-    {
-      "check" : "Boolean",
-      "test" : "jasy.detect.Object"
-    },
-    
-    "feature.message" : 
-    {
-      "check" : "Boolean",
-      "test" : "jasy.detect.Object"
-    },
-    
-    "feature.db" : 
-    {
-      "check" : "Boolean",
-      "test" : "jasy.detect.Object"
-    },
-    
-    "feature.json" : 
-    {
-      "check" : "Boolean",
-      "test" : "jasy.detect.Object"
-    },
-    
-    "feature.socket" : 
-    {
-      "check" : "Boolean",
-      "test" : "jasy.detect.Object"
-    }
-  }
+	"values" :
+	{
+		"debug" : 
+		{
+			"check" : "Boolean",
+			"default" : false,
+			"test" : "jasy.detect.Param"
+		},
+
+		"locale" : 
+		{
+			"check" : "String",
+			"default" : "en",
+			"test" : "jasy.detect.Locale"
+		},
+		
+		"feature.appcache" : 
+		{
+			"check" : "Boolean",
+			"test" : "jasy.detect.Object"
+		},
+		
+		"feature.worker" : 
+		{
+			"check" : "Boolean",
+			"test" : "jasy.detect.Object"
+		},
+		
+		"feature.xhr" : 
+		{
+			"check" : "Boolean",
+			"test" : "jasy.detect.Object"
+		},
+		
+		"feature.storage" : 
+		{
+			"check" : "Boolean",
+			"test" : "jasy.detect.Object"
+		},
+		
+		"feature.gl" : 
+		{
+			"check" : "Boolean",
+			"test" : "jasy.detect.Object"
+		},
+		
+		"feature.message" : 
+		{
+			"check" : "Boolean",
+			"test" : "jasy.detect.Object"
+		},
+		
+		"feature.db" : 
+		{
+			"check" : "Boolean",
+			"test" : "jasy.detect.Object"
+		},
+		
+		"feature.json" : 
+		{
+			"check" : "Boolean",
+			"test" : "jasy.detect.Object"
+		},
+		
+		"feature.socket" : 
+		{
+			"check" : "Boolean",
+			"test" : "jasy.detect.Object"
+		}
+	}
 }
