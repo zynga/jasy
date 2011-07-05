@@ -4,7 +4,14 @@
 
   "values" :
   {
-    "jasy.locale" : 
+    "debug" : 
+    {
+      "check" : "Boolean",
+      "default" : false,
+      "test" : "jasy.detect.Param"
+    },
+
+    "locale" : 
     {
       "check" : "String",
       "default" : "en",
