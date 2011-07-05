@@ -55,8 +55,8 @@ class Session():
         dyn = []
         
         if permutation:
-            locale = permutation.get("jasy.locale")
-            if locale != "default":
+            locale = permutation.get("locale")
+            if locale != None and locale != "default":
                 if not locale in self.__localeProjects:
                     localePath = localeProject(locale)
                     if not os.path.exists(localePath):
