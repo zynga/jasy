@@ -29,7 +29,7 @@ Module("jasy.property.Property", {
 
 		// Improve compressibility
 		var Undefined;
-		var SimpleProperty = this;
+		var Property = this;
 		var fireDataEvent = "fireDataEvent";
 		var dataStore = "$$data";
 
@@ -37,17 +37,17 @@ Module("jasy.property.Property", {
 		var db, id, members, initKey;
 
 		// Increase counter
-		SimpleProperty.__counter++;
+		Property.__counter++;
 
 		// Generate property ID
 		// Identically named property might store data on the same field
 		// as in this case this is typicall on different classes.
-		db = SimpleProperty.__propertyNameToId;
+		db = Property.__propertyNameToId;
 		id = db[name];
 		if (!id) 
 		{
-			id = db[name] = SimpleProperty.ID;
-			SimpleProperty.ID++
+			id = db[name] = Property.ID;
+			Property.ID++
 		}
 
 		// Store init value (shared data between instances)
@@ -58,7 +58,9 @@ Module("jasy.property.Property", {
 		}
 
 		// Precalc
-		var Bootstrap=qx.Bootstrap, up=(Bootstrap.$$firstUp[name] || Bootstrap.firstUp(name));
+		var up = function(str) {
+			return str.charAt(0).toUpperCase() + str.substring(1);
+		};
 
 		// Shorthands: Better compression/obfuscation/performance
 		var propertyNullable=config.nullable, propertyEvent=config.event, 
@@ -78,8 +80,8 @@ Module("jasy.property.Property", {
 			var context, data, value;
 			context = this;
 
-			if (qx.core.Variant.isSet("qx.debug", "on")) {
-				qx.core.property.Debug.checkGetter(context, config, arguments);
+			if (jasy.Permutation.isSet("debug", "on")) {
+				jasy.property.Debug.checkGetter(context, config, arguments);
 			}
 
 			data = context[dataStore];
@@ -93,7 +95,7 @@ Module("jasy.property.Property", {
 					return context[initKey];
 				}
 
-				if (qx.core.Variant.isSet("qx.debug", "on"))
+				if (jasy.Permutation.isSet("debug", "on"))
 				{
 					if (!propertyNullable) {
 						context.error("Missing value for: " + name + " (during get())");
@@ -149,12 +151,12 @@ Module("jasy.property.Property", {
 			var context, data, old;
 			context = this;
 
-			if (qx.core.Variant.isSet("qx.debug", "on")) {
-				qx.core.property.Debug.checkSetter(context, config, arguments);
+			if (jasy.Permutation.isSet("debug", "on")) {
+				jasy.property.Debug.checkSetter(context, config, arguments);
 			}
 
 			if (propertyValidate) {
-				qx.core.Type.check(value, propertyValidate, context, qx.core.ValidationError);
+				Type.check(value, propertyValidate, context);
 			}
 
 			data = context[dataStore];
@@ -197,8 +199,8 @@ Module("jasy.property.Property", {
 			var context, data, old, value;
 			context = this;
 
-			if (qx.core.Variant.isSet("qx.debug", "on")) {
-				qx.core.property.Debug.checkResetter(context, config, arguments);
+			if (jasy.Permutation.isSet("debug", "on")) {
+				jasy.property.Debug.checkResetter(context, config, arguments);
 			}
 
 			data = context[dataStore];
@@ -216,7 +218,7 @@ Module("jasy.property.Property", {
 				if (initKey) {
 					value = context[initKey];
 				}
-				else if (qx.core.Variant.isSet("qx.debug", "on"))
+				else if (jasy.Permutation.isSet("debug", "on"))
 				{
 					// Still no value. We warn about that the property is not nullable.
 					if (!propertyNullable) {
@@ -246,10 +248,10 @@ Module("jasy.property.Property", {
 		{
 			members["toggle" + up] = function() {
 				this["set" + up](!this["get" + up]());
-			}
+			};
 
 			members["is" + up] = members["get" + up];
 		}
+	}
 	
-	
-})
+});
