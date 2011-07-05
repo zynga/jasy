@@ -8,6 +8,9 @@ import os, shutil, filecmp, sys, stat
 def makedir(dirname):
     """ Creates missing hierarchy levels for given directory """
     
+    if dirname == "":
+        return
+        
     if not os.path.exists(dirname):
         os.makedirs(dirname)
 
