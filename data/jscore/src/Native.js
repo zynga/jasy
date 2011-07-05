@@ -9,6 +9,21 @@ Array.min = function(arr){
 	return Math.min.apply(Math, arr);
 };
 
+// Via: https://twitter.com/dmitrysoshnikov/status/83884864096567296
+Array.prototype.unique = function() {
+	var t={}, i=0, a;
+	while(a=this[i++]) {
+		t[a] = 1;
+	}
+  
+	return Object.keys(t);
+};
+
+// Via: https://twitter.com/__davidflanagan/status/80717484193366016
+if (!Array.forEach) {
+  Array.forEach = Function.prototype.call.bind(Array.prototype.forEach);
+}
+
 String.prototype.contains = Array.prototype.contains = function(sub) {
 	return ~this.indexOf(sub);
 };
