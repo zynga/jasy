@@ -27,8 +27,8 @@ def clear():
 def build():
     # Setup session
     session = Session()
-    session.addValue("debug", [True,False], "jasy.detect.Param")
-    session.addValue("locale", ["en"], "jasy.detect.Param")
+    session.activateField("debug")
+    session.activateField("locale", ["en"])
     
     # Permutation independend config
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])

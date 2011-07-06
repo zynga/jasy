@@ -80,7 +80,7 @@ Module("jasy.property.Property", {
 			var context, data, value;
 			context = this;
 
-			if (jasy.Permutation.isSet("debug", "on")) {
+			if (jasy.Permutation.isSet("debug")) {
 				jasy.property.Debug.checkGetter(context, config, arguments);
 			}
 
@@ -95,7 +95,7 @@ Module("jasy.property.Property", {
 					return context[initKey];
 				}
 
-				if (jasy.Permutation.isSet("debug", "on"))
+				if (jasy.Permutation.isSet("debug"))
 				{
 					if (!propertyNullable) {
 						context.error("Missing value for: " + name + " (during get())");
@@ -151,7 +151,7 @@ Module("jasy.property.Property", {
 			var context, data, old;
 			context = this;
 
-			if (jasy.Permutation.isSet("debug", "on")) {
+			if (jasy.Permutation.isSet("debug")) {
 				jasy.property.Debug.checkSetter(context, config, arguments);
 			}
 
@@ -199,7 +199,7 @@ Module("jasy.property.Property", {
 			var context, data, old, value;
 			context = this;
 
-			if (jasy.Permutation.isSet("debug", "on")) {
+			if (jasy.Permutation.isSet("debug")) {
 				jasy.property.Debug.checkResetter(context, config, arguments);
 			}
 
@@ -218,7 +218,7 @@ Module("jasy.property.Property", {
 				if (initKey) {
 					value = context[initKey];
 				}
-				else if (jasy.Permutation.isSet("debug", "on"))
+				else if (jasy.Permutation.isSet("debug"))
 				{
 					// Still no value. We warn about that the property is not nullable.
 					if (!propertyNullable) {
