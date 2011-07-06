@@ -3,7 +3,7 @@ Module("jasy.property.Debug", {
 	/**
 	 * Validates the incoming parameters of a setter method
 	 * 
-	 * @param obj {qx.core.Object} Object which is modified
+	 * @param obj {Object} Object which is modified
 	 * @param config {Map} Property configuration
 	 * @param args {arguments} List of all arguments send to the setter
 	 */
@@ -34,7 +34,7 @@ Module("jasy.property.Debug", {
 			if (check)
 			{
 				try {
-					qx.core.Type.check(value, check, obj);
+					Type.check(value, check, obj);
 				} catch(ex) {
 					throw new Error("Could not set() property " + name + " of object " + obj + ": " + ex);
 				}
@@ -46,7 +46,7 @@ Module("jasy.property.Debug", {
 	/**
 	 * Validates the incoming parameters of a resetter method
 	 * 
-	 * @param obj {qx.core.Object} Object which is modified
+	 * @param obj {Object} Object which is modified
 	 * @param config {Map} Property configuration
 	 * @param args {arguments} List of all arguments send to the setter
 	 */
@@ -63,7 +63,7 @@ Module("jasy.property.Debug", {
 	/**
 	 * Validates the incoming parameters of a getter method
 	 * 
-	 * @param obj {qx.core.Object} Object which is queried
+	 * @param obj {Object} Object which is queried
 	 * @param config {Map} Property configuration
 	 * @param args {arguments} List of all arguments send to the setter
 	 */
@@ -82,7 +82,7 @@ Module("jasy.property.Debug", {
 	 *
 	 * @internal
 	 */
-	__propertyKeys :qx.core.Variant.select("qx.debug",
+	__propertyKeys : jasy.Permutation.select("debug",
 	{
 		"on" : 
 		{
@@ -107,11 +107,11 @@ Module("jasy.property.Debug", {
 	 * @param config {Map} configuration map
 	 * @param patch {Boolean ? false} enable refine/patch?
 	 */
-	validateConfig : qx.core.Variant.select("qx.debug",
+	validateConfig : jasy.Permutation.select("debug",
 	{
 		"on": function(clazz, name, config)
 		{
-			var Util = qx.core.property.Util;
+			var Util = jasy.property.Util;
 			var has = Util.hasProperty(clazz, name);
 
 			if (has)
