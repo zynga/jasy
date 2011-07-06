@@ -34,7 +34,7 @@ Module("jasy.property.Debug", {
 			if (check)
 			{
 				try {
-					Type.check(value, check, obj);
+					jasy.Type.check(value, check, obj);
 				} catch(ex) {
 					throw new Error("Could not set() property " + name + " of object " + obj + ": " + ex);
 				}

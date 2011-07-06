@@ -156,7 +156,7 @@ Module("jasy.property.Property", {
 			}
 
 			if (propertyValidate) {
-				Type.check(value, propertyValidate, context);
+				jasy.Type.check(value, propertyValidate, context);
 			}
 
 			data = context[dataStore];
