@@ -101,7 +101,7 @@ Module("Type",
 	{
 		var db = this.__addons;
 		
-		if (jasy.Permutation.isSet("debug", "on"))
+		if (jasy.Permutation.isSet("debug"))
 		{
 			if (db[type]) {
 				throw new Error("Type if already registered by another class: " + type);
@@ -137,7 +137,7 @@ Module("Type",
 		{
 			result = check == "Null";
 			
-			if (jasy.Permutation.isSet("debug", "on"))
+			if (jasy.Permutation.isSet("debug"))
 			{
 				if (result == false) {
 					throw new Error("Value: '" + value + "' is null but needs to be: " + check + "!");
@@ -186,7 +186,7 @@ Module("Type",
 					}
 				}
 				
-				if (jasy.Permutation.isSet("debug", "on"))
+				if (jasy.Permutation.isSet("debug"))
 				{
 					if (result == false) {
 						throw new Error("Value: '" + value + "' is not type of: " + check + "!");
@@ -201,7 +201,7 @@ Module("Type",
 				result = nodeType != null && 
 					(check == "Node" || (nodeType == 1 && check == "Element") || (nodeType == 9 && check == "Document"));
 				
-				if (jasy.Permutation.isSet("debug", "on"))
+				if (jasy.Permutation.isSet("debug"))
 				{
 					if (result == false) {
 						throw new Error("Value: '" + value + "' is not type of " + check + "!");
@@ -214,12 +214,12 @@ Module("Type",
 			{
 				result = value.$$type == check;
 				
-				if (jasy.Permutation.isSet("debug", "on"))
+				if (jasy.Permutation.isSet("debug"))
 				{
 					if (result == false) {
 						throw new Error("Value: '" + value + "' is not type of " + check + "!");
 					}
-				}						 
+				}
 			}
 			
 			else
@@ -230,7 +230,7 @@ Module("Type",
 				{
 					result = value.hasOwnProperty && value instanceof clazz;
 					
-					if (jasy.Permutation.isSet("debug", "on"))
+					if (jasy.Permutation.isSet("debug"))
 					{
 						if (result == false) {
 							throw new Error("Value: '" + value + "' is not an instance of " + check + "!");
@@ -245,7 +245,7 @@ Module("Type",
 					{
 						result = qx.Bootstrap.hasInterface(construct, iface);
 						
-						if (jasy.Permutation.isSet("debug", "on"))
+						if (jasy.Permutation.isSet("debug"))
 						{
 							if (result == false) {
 								throw new Error("Value: '" + value + "' do not implement interface: " + check + "!");
@@ -259,7 +259,7 @@ Module("Type",
 						{
 							result = qx.Class && qx.Class.hasMixin(construct, mixin);
 							
-							if (jasy.Permutation.isSet("debug", "on"))
+							if (jasy.Permutation.isSet("debug"))
 							{
 								if (result == false) {
 									throw new Error("Value: '" + value + "' does not include mixin: " + check + "!");
@@ -300,7 +300,7 @@ Module("Type",
 				}
 			}
 			
-			if (jasy.Permutation.isSet("debug", "on"))
+			if (jasy.Permutation.isSet("debug"))
 			{
 				if (result == false) {
 					throw new Error("Value: '" + value + "' is not listed in possible values: " + check);
@@ -314,7 +314,7 @@ Module("Type",
 			z.Type.check(value, "String");
 			result = check.match(value);
 			
-			if (jasy.Permutation.isSet("debug", "on"))
+			if (jasy.Permutation.isSet("debug"))
 			{
 				if (result == false) {
 					throw new Error("Value: '" + value + "' does not match regular expression: " + check);
@@ -337,14 +337,14 @@ Module("Type",
 			} 
 			catch(ex) 
 			{
-				if (jasy.Permutation.isSet("debug", "on")) {
+				if (jasy.Permutation.isSet("debug")) {
 					throw new Error("Value: '" + value + "' is not accepted by check routine: " + ex);
 				} else {
 					result = false;
 				}
 			}
 			
-			if (jasy.Permutation.isSet("debug", "on"))
+			if (jasy.Permutation.isSet("debug"))
 			{
 				if (result == false) {
 					throw new Error("Value: '" + value + "' is not accepted by check routine.");
