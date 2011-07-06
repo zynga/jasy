@@ -42,7 +42,19 @@ class Session():
         """ Adds the given project to the list of known projects """
         
         self.__projects.append(project)
-        self.__values.update(project.getValues())
+
+        # Import project defined values
+        values = project.getValues()
+        for name in values:
+            entry = values[name]
+            if "check" in entry:
+                check = entry["check"]
+                if check in ["Boolean", "String", "Number"] or type(check) == list:
+                    pass
+                else:
+                    raise Exception("Unsupported check: %s for %s" % (check, name))
+                    
+            self.__values[name] = entry
         
         
     def getProjects(self, permutation=None):
@@ -91,12 +103,12 @@ class Session():
     # Permutation Support
     #
     
-    def addValue(self, name, values, test=None):
+    def addValue(self, name, values, detect=None):
         """
         Adds the given key/value pair to the session. It supports
-        an optional tests. A test is required as soon as their is
-        more than one value available. The test is typically already
-        defined by the project declaring the key/value pair.
+        an optional tests. A test is required as soon as there is
+        more than one value available. The detection method is typically 
+        already defined by the project declaring the key/value pair.
         """
         
         if type(values) != list:
@@ -110,21 +122,25 @@ class Session():
         if "check" in entry:
             check = entry["check"]
             for value in values:
-                if check == "Boolean" and type(value) == bool:
-                    pass
-                elif check == "String" and type(value) == str:
-                    pass
-                elif check == "Number" and type(value) in (int, float):
-                    pass
-                elif type(check) == list and value in check:
-                    pass
+                if check == "Boolean":
+                    if type(value) == bool:
+                        continue
+                elif check == "String":
+                    if type(value) == str:
+                        continue
+                elif check == "Number":
+                    if type(value) in (int, float):
+                        continue
                 else:
-                    raise Exception("Unsupported value %s for %s" % (name, value))
+                    if value in check:
+                        continue
+                
+                raise Exception("Unsupported value %s for %s" % (name, value))
         
         entry["values"] = values
 
-        if test:
-            entry["test"] = test
+        if detect:
+            entry["detect"] = detect
         
         
     def getPermutations(self):
@@ -144,7 +160,7 @@ class Session():
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         names = sorted(values)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
-        permutations = [Permutation(combi) for combi in combinations]
+        permutations = [Permutation(combi, values) for combi in combinations]
 
         return permutations
 
