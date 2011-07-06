@@ -1,4 +1,6 @@
-if (!document.head) {
-  document.head = document.getElementsByTagName('head')[0]
-}
+(function(doc) {
+	if (!doc.head) {
+	  doc.head = doc.getElementsByTagName('head')[0]
+	}
+})(document);
 
