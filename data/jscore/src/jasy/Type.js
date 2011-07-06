@@ -79,6 +79,8 @@
 	
 	var addons = {};
 	
+	var toString = Object.prototype.toString;
+	
 	
 	Module("jasy.Type", 
 	{
@@ -141,7 +143,7 @@
 					} 
 
 					if (!result) {
-						result = builtinString[Object.prototype.toString.call(value)] == check;
+						result = builtinString[toString.call(value)] == check;
 					}
 
 					if (result && check == "Number") {
