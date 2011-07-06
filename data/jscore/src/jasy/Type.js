@@ -28,7 +28,7 @@
  * @break {Class}
  * @break {Interface}
  */
-(function() 
+(function(global) 
 {
 	var builtins =
 	{
@@ -125,11 +125,8 @@
 			{
 				result = check == "Null";
 
-				if (jasy.Permutation.isSet("debug"))
-				{
-					if (result == false) {
-						throw new Error("Value: '" + value + "' is null but needs to be: " + check + "!");
-					}
+				if (jasy.Permutation.isSet("debug") && !result) {
+					throw new Error("Value: '" + value + "' is null but needs to be: " + check + "!");
 				}
 			}
 
@@ -222,7 +219,7 @@
 				{
 					addon = addons[check];
 					if (addon) {
-						result = addon.method.call(addon.context||window, value);
+						result = addon.method.call(addon.context||global, value);
 					}
 				}				
 			}
@@ -247,12 +244,9 @@
 					}
 				}
 
-				if (jasy.Permutation.isSet("debug"))
-				{
-					if (result == false) {
-						throw new Error("Value: '" + value + "' is not listed in possible values: " + check);
-					}
-				}				 
+				if (jasy.Permutation.isSet("debug") && !result) {
+					throw new Error("Value: '" + value + "' is not listed in possible values: " + check);
+				}
 			}
 
 			// Custom regexps
@@ -261,12 +255,9 @@
 				z.Type.check(value, "String");
 				result = check.match(value);
 
-				if (jasy.Permutation.isSet("debug"))
-				{
-					if (result == false) {
-						throw new Error("Value: '" + value + "' does not match regular expression: " + check);
-					}
-				}				 
+				if (jasy.Permutation.isSet("debug") && !result) {
+					throw new Error("Value: '" + value + "' does not match regular expression: " + check);
+				}
 			}
 
 			// Custom functions
@@ -274,7 +265,7 @@
 			{
 				try 
 				{
-					result = check.call(context||window, value);
+					result = check.call(context||global, value);
 
 					// If function has no return value, but did not throw an exception
 					// than we think it's OK.
@@ -291,19 +282,16 @@
 					}
 				}
 
-				if (jasy.Permutation.isSet("debug"))
-				{
-					if (result == false) {
-						throw new Error("Value: '" + value + "' is not accepted by check routine.");
-					}
+				if (jasy.Permutation.isSet("debug") && !result) {
+					throw new Error("Value: '" + value + "' is not accepted by check routine.");
 				}
-			}			 
+			}
 
 			// Done
 			if (result == null || result == false)
 			{
 				if (!Error) {
-					Error = Error;
+					Error = global.Error;
 				}
 
 				if (result == null) {
@@ -314,5 +302,5 @@
 			}
 		}
 	});
-})();
+})(this);
 
