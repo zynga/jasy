@@ -35,7 +35,7 @@ def build():
     formatting = Format()
 
     # Store loader script
-    loaderIncluded = session.writeLoader("oo.js", optimization, formatting)
+    loaderIncluded = session.writeLoader("loader.js", optimization, formatting)
 
     # Process every possible permutation
     permutations = session.getPermutations()
