@@ -94,7 +94,7 @@
 		add : function(type, method, context)
 		{
 			if (jasy.Permutation.isSet("debug") && addons[type]) {
-				throw new Error("Type if already registered by another class: " + type);
+				throw new Error("This type if already registered by another class: " + type);
 			}
 
 			addons[type] = {
