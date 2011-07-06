@@ -13,4 +13,16 @@
  */
 Core.declare("Module", function(name, members) {
 	Core.declare(name, members);
+	
+	var prefix = name + ".";
+	var value;
+	
+	for (var key in members) {
+		value = members[key];
+		
+		// Performance would better using typeof but instanceof is required to exclude RegExps
+		if (value instanceof Function) {
+			value.displayName = prefix + key;
+		}
+	}
 });
