@@ -5,12 +5,9 @@
 ==================================================================================================
 */
 
-(function(global)
+(function(translations)
 {
-  var translations = global.$$translation;
-  
-  // Export object
-  global.i18n = 
+  Module("i18n", 
   {
     /**
      * Quick and easy string templating using %1, %2, etc. as placeholders 
@@ -116,5 +113,5 @@
       
       return arguments.length <= 3 ? result : i18n.template(result, arguments, 3);
     }
-  }
-})(this);
+  });
+})(this.$$translation);
