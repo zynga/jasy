@@ -224,10 +224,7 @@ class Permutation:
                     
                     # Prepare check
                     field = self.__fields[name]
-                    if "check" in field:
-                        check = field["check"]
-                    else:
-                        check = None
+                    check = field["check"] if "check" in field else None
                         
                     # Special handling for boolean values
                     if check == "Boolean":
@@ -246,7 +243,9 @@ class Permutation:
                 params = callNode[1]
                 replacement = self.getJSValue(params[0].value)
                 if replacement:
-                    targetIdentifier = parseExpression(replacement).value
+                    parsedReplacement = parseExpression(replacement)
+                    if parsedReplacement.type != "string":
+                        raise Exception("Permutation.select requires that the given replacement is of type string.")
 
                     # Directly try to find matching identifier in second param (map)
                     objectInit = params[1]
@@ -256,7 +255,7 @@ class Permutation:
                             if propertyInit[0].value == "default":
                                 fallbackNode = propertyInit[1]
 
-                            elif targetIdentifier in str(propertyInit[0].value).split("|"):
+                            elif parsedReplacement.value in str(propertyInit[0].value).split("|"):
                                 callNode.parent.replace(callNode, propertyInit[1])
                                 modified = True
                                 break
