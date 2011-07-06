@@ -55,13 +55,13 @@ Core.declare("Class", function(name, config) {
 		for (var i=0, l=include.length; i<l; i++) {
 			mixin = include[i];
 			mixinproto = mixin.prototype;
-			if (!mixinproto) {
+			if (jasy.Permutation.isSet("debug") && !mixinproto) {
 				throw new Error("Class " + name + " includes invalid mixin " + include[i] + " at position: " + i + "!");
 			}
 			
 			// Merge in member section
 			for (var key in mixin) {
-				if (proto[key]) {
+				if (jasy.Permutation.isSet("debug") && proto[key]) {
 					throw new Error("Class " + name + " has already a member with the name: " + key + "! Class " + mixin.classname + " could not be included!");
 				}
 				
@@ -71,7 +71,7 @@ Core.declare("Class", function(name, config) {
 			// Copy over event data
 			var mixinEvents = mixin.__events;
 			for (var key in mixinEvents) {
-				if (key in events) {
+				if (jasy.Permutation.isSet("debug") && key in events) {
 					throw new Error("Class " + name + " has already a property with the name: " + key + "! Class " + mixin.classname + " could not be included!");
 				}
 				
@@ -81,7 +81,7 @@ Core.declare("Class", function(name, config) {
 			// Copy over property data (setter/getters are already on the member section)
 			var mixinProperties = mixin.__properties;
 			for (var key in mixinProperties) {
-				if (key in properties) {
+				if (jasy.Permutation.isSet("debug") && key in properties) {
 					throw new Error("Class " + name + " has already a property with the name: " + key + "! Class " + mixin.classname + " could not be included!");
 				}
 				
@@ -91,19 +91,21 @@ Core.declare("Class", function(name, config) {
 	}
 	
 	// Verify interfaces
-	var implement = config.implement;
-	if (implement) {
-		var iface;
-		for (var i=0, l=implement.length; i<l; i++) {
-			iface = implement[i];
-			if (!iface) {
-				throw new Error("Class " + name + " implements invalid interface " + iface + " at position: " + i);
-			}
+	if (jasy.Permutation.isSet("debug")) {
+		var implement = config.implement;
+		if (implement) {
+			var iface;
+			for (var i=0, l=implement.length; i<l; i++) {
+				iface = implement[i];
+				if (!iface) {
+					throw new Error("Class " + name + " implements invalid interface " + iface + " at position: " + i);
+				}
 
-			try {
-				Interface.assert(construct, iface);
-			} catch(ex) {
-				throw new Error("Class " + name + " fails to implement given interface: " + iface + ": " + ex);
+				try {
+					Interface.assert(construct, iface);
+				} catch(ex) {
+					throw new Error("Class " + name + " fails to implement given interface: " + iface + ": " + ex);
+				}
 			}
 		}
 	}
