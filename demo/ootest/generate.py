@@ -27,6 +27,7 @@ def clear():
 def build():
     # Setup session
     session = Session()
+    session.addProject(Project("."))
     session.activateField("debug")
     session.activateField("locale", ["en"])
     
@@ -47,7 +48,8 @@ def build():
 
         # Resolving dependencies
         resolver = Resolver(projects, permutation)
-        resolver.addClassName("Class")
+        resolver.addClassName("Dog")
+        resolver.addClassName("Cat")
         resolver.excludeClasses(loaderIncluded)
         classes = resolver.getIncludedClasses()
 

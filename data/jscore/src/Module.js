@@ -7,7 +7,7 @@
 
 (function() {
 	var genericToString = function() {
-		return "[Module " + this.name + "]";
+		return "[Module " + this.moduleName + "]";
 	};
 	
 	/**
@@ -36,8 +36,8 @@
 		}
 
 		// Add module name, implement toString() and valueOf()
-		if(members.name == null) {
-			members.name = name;
+		if(members.moduleName == null) {
+			members.moduleName = name;
 		}
 
 		if(!members.hasOwnProperty("toString")) {

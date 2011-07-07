@@ -7,7 +7,7 @@
 
 (function() {
 	var genericToString = function() {
-		return "[Class " + this.name + "]";
+		return "[Class " + this.className + "]";
 	};
 	
 	Core.declare("Class", function(name, config) {
@@ -19,7 +19,7 @@
 		var proto = construct.prototype;
 	
 		// Store name
-		construct.name = name;
+		construct.className = name;
 	
 		// Add toString() / valueOf()
 		construct.toString = genericToString;

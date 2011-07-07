@@ -8,7 +8,7 @@
 
 (function() {
 	var genericToString = function() {
-		return "[Interface " + this.name + "]";
+		return "[Interface " + this.interfaceName + "]";
 	};
 	
 	/**
@@ -25,7 +25,7 @@
 			__events : config.events,
 			__members : config.members,
 			__isInterface : true,
-			name : name,
+			interfaceName : name,
 			toString : genericToString,
 			valueOf : genericToString
 		});
