@@ -3,7 +3,7 @@ Class("Cat", {
 	
 	construct : function() {
 		Hair.call(this, "red");
-		Feets.call(this, 4);
+		Feets.call(this, 4, 12);
 		
 	}
 });
