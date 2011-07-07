@@ -10,16 +10,25 @@
 		return "[Class " + this.className + "]";
 	};
 	
+	var detectConflicts = function(obj1, obj2, where, target) {
+		for (var key in obj1) {
+			if (key in obj2) {
+				throw new Error("Conflicting fields in " + where + " through " + obj1 + " and " + obj2 + " joining in: " + target);
+			}
+		}
+	};
+	
+	
 	Core.declare("Class", function(name, config) {
 	
 		console.debug("Defining class: " + name);
 	
 		var placeholder = new Function;
 		var construct = config.construct || placeholder;
-		var proto = construct.prototype;
 	
-		// Store name
+		// Store name / type
 		construct.className = name;
+		construct.__isClass = true;
 	
 		// Add toString() / valueOf()
 		construct.toString = genericToString;
@@ -27,14 +36,51 @@
 
 		// Attach to namespace
 		Core.declare(name, construct);
+
+		// Prototype (stuff attached to all instances)
+		var proto = construct.prototype;
 	
-		// Add members
-		if (config.members) {
-			var proto = construct.prototype = config.members;
-		} else {
-			var proto = construct.prototype;
+		// Insert mixins
+		var include = config.include;
+		if (include) {
+			var mixin, mixinproto;
+			for (var i=0, l=include.length; i<l; i++) {
+				mixin = include[i];
+				mixinproto = mixin.prototype;
+				if (jasy.Permutation.isSet("debug") && !mixinproto) {
+					throw new Error("Class " + name + " includes invalid mixin " + include[i] + " at position: " + i + "!");
+				}
+			
+				detectConflicts(proto, mixin);
+				
+				for (var key in mixinproto) {
+					proto[key] = mixinproto[key];
+				}
+			}
 		}
-	
+		
+		// Attach members
+		var members = config.members;
+		var orig, entry;
+		
+		for (var key in members) {
+			
+			orig = proto[key];
+			entry = proto[key] = members[key];
+			
+			if (entry instanceof Function) {
+				
+				if (orig instanceof Function) {
+					entry.__super = orig;
+				}
+				
+				entry.displayName = name + "." + key;
+			}
+		}
+		
+		
+
+		
 		// Add destructor 
 		proto.destruct = config.destruct || placeholder;
 	
@@ -52,48 +98,9 @@
 		for (var key in events) {
 
 		}
-	
-		// Insert mixins
-		var include = config.include;
-		if (include) {
-			var mixin, mixinproto;
-			for (var i=0, l=include.length; i<l; i++) {
-				mixin = include[i];
-				mixinproto = mixin.prototype;
-				if (jasy.Permutation.isSet("debug") && !mixinproto) {
-					throw new Error("Class " + name + " includes invalid mixin " + include[i] + " at position: " + i + "!");
-				}
-			
-				// Merge in member section
-				for (var key in mixin) {
-					if (jasy.Permutation.isSet("debug") && proto[key]) {
-						throw new Error("Class " + name + " has already a member with the name: " + key + "! Class " + mixin.classname + " could not be included!");
-					}
-				
-					proto[key] = mixinproto[key];
-				}
-			
-				// Copy over event data
-				var mixinEvents = mixin.__events;
-				for (var key in mixinEvents) {
-					if (jasy.Permutation.isSet("debug") && key in events) {
-						throw new Error("Class " + name + " has already a property with the name: " + key + "! Class " + mixin.classname + " could not be included!");
-					}
-				
-					events[key] = mixinEvents[key];
-				}
-
-				// Copy over property data (setter/getters are already on the member section)
-				var mixinProperties = mixin.__properties;
-				for (var key in mixinProperties) {
-					if (jasy.Permutation.isSet("debug") && key in properties) {
-						throw new Error("Class " + name + " has already a property with the name: " + key + "! Class " + mixin.classname + " could not be included!");
-					}
-				
-					properties[key] = mixinProperties[key];
-				}
-			}
-		}
+		
+		
+		
 	
 		// Verify interfaces
 		if (jasy.Permutation.isSet("debug")) {

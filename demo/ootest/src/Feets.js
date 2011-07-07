@@ -1,5 +1,5 @@
 Class("Feets", {
-	construct : function(color) {
+	construct : function(feets) {
 		this.__feets = feets;
 	},
 	
