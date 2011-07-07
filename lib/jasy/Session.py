@@ -29,7 +29,7 @@ class Session():
         self.__timestamp = time.time()
         self.__projects = []
         self.__localeProjects = {}
-        self.__values = {}
+        self.__fields = {}
         
         self.addProject(Project(coreProject()))
     
@@ -42,7 +42,19 @@ class Session():
         """ Adds the given project to the list of known projects """
         
         self.__projects.append(project)
-        self.__values.update(project.getValues())
+
+        # Import project defined values
+        values = project.getValues()
+        for name in values:
+            entry = values[name]
+            if "check" in entry:
+                check = entry["check"]
+                if check in ["Boolean", "String", "Number"] or type(check) == list:
+                    pass
+                else:
+                    raise Exception("Unsupported check: %s for %s" % (check, name))
+                    
+            self.__fields[name] = entry
         
         
     def getProjects(self, permutation=None):
@@ -91,40 +103,56 @@ class Session():
     # Permutation Support
     #
     
-    def addValue(self, name, values, test=None):
+    def activateField(self, name, values=None, detect=None):
         """
         Adds the given key/value pair to the session. It supports
-        an optional tests. A test is required as soon as their is
-        more than one value available. The test is typically already
-        defined by the project declaring the key/value pair.
+        an optional tests. A test is required as soon as there is
+        more than one value available. The detection method is typically 
+        already defined by the project declaring the key/value pair.
         """
         
-        if type(values) != list:
-            values = [values]
-            
-        if not name in self.__values:
-            raise Exception("Unsupported key: %s" % name)
-            
-        entry = self.__values[name]
-            
-        if "check" in entry:
-            check = entry["check"]
-            for value in values:
-                if check == "Boolean" and type(value) == bool:
-                    pass
-                elif check == "String" and type(value) == str:
-                    pass
-                elif check == "Number" and type(value) in (int, float):
-                    pass
-                elif type(check) == list and value in check:
-                    pass
-                else:
-                    raise Exception("Unsupported value %s for %s" % (name, value))
-        
-        entry["values"] = values
+        if not name in self.__fields:
+            raise Exception("Unsupported field (not defined by any project): %s" % name)
 
-        if test:
-            entry["test"] = test
+        entry = self.__fields[name]
+            
+        if values:
+            if type(values) != list:
+                values = [values]
+
+            entry["values"] = values
+
+            # Verifying values from build script with value definition in project manifests
+            if "check" in entry:
+                check = entry["check"]
+                for value in values:
+                    if check == "Boolean":
+                        if type(value) == bool:
+                            continue
+                    elif check == "String":
+                        if type(value) == str:
+                            continue
+                    elif check == "Number":
+                        if type(value) in (int, float):
+                            continue
+                    else:
+                        if value in check:
+                            continue
+
+                    raise Exception("Unsupported value %s for %s" % (value, name))
+                    
+        elif "check" in entry and entry["check"] == "Boolean":
+            entry["values"] = [True, False]
+            
+        elif "default" in entry:
+            entry["values"] = [entry["default"]]
+            
+        else:
+            raise Exception("Could not activate field: %s! Requires value list for non-boolean fields which have no defaults." % name)
+
+        # Store class which is responsible for detection (overrides data from project)
+        if detect:
+            entry["detect"] = detect
         
         
     def getPermutations(self):
@@ -132,24 +160,19 @@ class Session():
         Combines all values to a set of permutations.
         These define all possible combinations of the configured settings
         """
-        
-        values = {}
-        for key in self.__values:
-            entry = self.__values[key]
-            if "values" in entry:
-                values[key] = entry["values"]
-            elif "default" in entry:
-                values[key] = [entry["default"]]
 
+        fields = self.__fields
+        values = { key:fields[key]["values"] for key in fields if "values" in fields[key] }
+               
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         names = sorted(values)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
-        permutations = [Permutation(combi) for combi in combinations]
+        permutations = [Permutation(combi, fields) for combi in combinations]
 
         return permutations
 
 
-    def __valuesToExpr(self):
+    def __exportFields(self):
         """
         Converts data from values to a compact data structure for being used to 
         compute a checksum in JavaScript.
@@ -161,23 +184,20 @@ class Session():
         #
         
         export = []
-        for key in sorted(self.__values):
-            source = self.__values[key]
+        for key in sorted(self.__fields):
+            source = self.__fields[key]
             
             content = []
             content.append("'%s'" % key)
             
             if "values" in source:
-                if "test" in source and len(source["values"]) > 1:
+                if "detect" in source and len(source["values"]) > 1:
                     content.append(toJSON(source["values"]))
-                    content.append(source["test"])
+                    content.append(source["detect"])
             
                 else:
                     content.append(toJSON(source["values"][0]))
 
-            elif "default" in source:
-                content.append("%s" % toJSON(source["default"]))
-                
             else:
                 continue
                 
@@ -195,7 +215,7 @@ class Session():
         """
         
         permutation = Permutation({
-          "jasy.values" : self.__valuesToExpr()
+          "jasy.fields" : self.__exportFields()
         })
         
         resolver = Resolver(self.getProjects(), permutation)

@@ -1,7 +1,7 @@
 /* 
 ==================================================================================================
-  Jasy - JavaScript Tooling Refined
-  Copyright 2010-2011 Sebastian Werner
+	Jasy - JavaScript Tooling Refined
+	Copyright 2010-2011 Sebastian Werner
 ==================================================================================================
 */
 
@@ -55,32 +55,32 @@
  */
 this.setZeroTimeout = (function(global) 
 {
-  if (global.postMessage && global.addEventListener) 
-  {
-    var timeouts = [];
-    var messageName = "zero-timeout";
-    
-    global.addEventListener("message", function(event) 
-    {
-      if (event.source == global && event.data == messageName) 
-      {
-        event.stopPropagation();
-        if (timeouts.length) {
-          timeouts.shift()();
-        }
-      }
-    }, true);
-    
-    return function(fn) 
-    {
-      timeouts.push(fn);
-      postMessage(messageName, "*");
-    };
-  }
-  else
-  {
-    return function(fn) {
-      setTimeout(fn, 0);
-    };
-  }
+	if (global.postMessage && global.addEventListener) 
+	{
+		var timeouts = [];
+		var messageName = "zero-timeout";
+		
+		global.addEventListener("message", function(event) 
+		{
+			if (event.source == global && event.data == messageName) 
+			{
+				event.stopPropagation();
+				if (timeouts.length) {
+					timeouts.shift()();
+				}
+			}
+		}, true);
+		
+		return function(fn) 
+		{
+			timeouts.push(fn);
+			postMessage(messageName, "*");
+		};
+	}
+	else
+	{
+		return function(fn) {
+			setTimeout(fn, 0);
+		};
+	}
 }(this));

@@ -3,17 +3,17 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging, binascii, zlib
+import logging, binascii, zlib, json
 from jasy.tokenizer.Tokenizer import Tokenizer
 from jasy.parser.Parser import parseExpression
 
 __all__ = ["Permutation", "getKeys"]
 
 
-# jasy specific: jasy.Permutation.isSet(key, expected)
+# jasy specific: jasy.Permutation.isSet(key, expected?)
 # jasy specific: jasy.Permutation.getValue(key)
-# qooxdoo specific: qx.core.Variant.select(key, map)
-__dotcalls = ("jasy.Permutation.isSet", "jasy.Permutation.getValue", "qx.core.Variant.select")
+# jasy specific: jasy.Permutation.select(key, map)
+__dotcalls = ("jasy.Permutation.isSet", "jasy.Permutation.getValue", "jasy.Permutation.select")
 
 # hasjs specific: has(key)
 __globalcalls = ("has")
@@ -64,22 +64,24 @@ def getKeys(node, keys=None):
 
 PermutationCache = {}
 
-def getPermutation(combination):
+def getPermutation(combination, fields=None):
     """ Small wrapper to omit double creation of identical permutations in filter() method """
     
     key = str(combination)
     if key in PermutationCache:
         return PermutationCache[key]
         
-    PermutationCache[key] = Permutation(combination)
+    PermutationCache[key] = Permutation(combination, fields)
     return PermutationCache[key]
     
 
 
 
 class Permutation:
-    def __init__(self, combination):
+    def __init__(self, combination, fields=None):
+        
         self.__combination = combination
+        self.__fields = fields
         self.__key = self.__buildKey(combination)
         
         # Convert to same value as in JavaScript
@@ -133,14 +135,14 @@ class Permutation:
         return None
         
         
-    def getCode(self, key):
+    def getJSValue(self, key):
         """ Returns the code equivalent of the stored value for the given key """
         
         code = self.get(key)
-        if code == None:
-            return code
         
-        if code is True:
+        if code is None:
+            pass
+        elif code is True:
             code = "true"
         elif code is False:
             code = "false"
@@ -182,7 +184,7 @@ class Permutation:
             if key in available:
                 filtered[key] = self.__combination[key]
         
-        return getPermutation(filtered)
+        return getPermutation(filtered, self.__fields)
     
     
     #
@@ -197,56 +199,53 @@ class Permutation:
         
         if result == "dotcall":
             assembled = assembleDot(node)
-            # jasy specific: jasy.Permutation.isSet(key, expected)
-            # also supports boolean like: jasy.Permutation.isSet(key) or !jasy.Permutation.isSet(key)
-            if assembled == "jasy.Permutation.isSet" and node.parent.type == "call":
-                callNode = node.parent
-                params = callNode[1]
-                replacement = self.getCode(params[0].value)
-                if replacement:
-                    # Auto-fill second parameter with boolean "true"
-                    if len(params) > 1:
-                        valueParam = str(params[1]).split("|")
-                    else:
-                        valueParam = ["true"]
-                        
-                    # Compare
-                    parsedReplacement = parseExpression(replacement)
-                    replacementResult = None
-                    if parsedReplacement.type == "true":
-                        replacementResult = "true" in valueParam or "on" in valueParam
-                        print("TRUE: %s" % valueParam)
-                        
-                    elif parsedReplacement.type == "false":
-                        replacementResult = "false" in valueParam or "off" in valueParam
-                    elif parsedReplacement.type == "string" or parsedReplacement.type == "number":
-                        replacementResult = parsedReplacement.value in valueParam
-                    else:
-                        raise Exception("Could not process: %s=%s with %s" % (params[0].value, valueParam, replacement))
-
-                    # Do actual replacement
-                    if replacementResult != None:
-                        replacementNode = parseExpression("true" if replacementResult else "false")
-                        callNode.parent.replace(callNode, replacementNode)
-                        modified = True
             
-            # jasy specific: jasy.Permutation.getValue(key)
-            elif assembled == "jasy.Permutation.getValue" and node.parent.type == "call":
+            # jasy.Permutation.getValue(key)
+            if assembled == "jasy.Permutation.getValue" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
-                replacement = self.getCode(params[0].value)
+                replacement = self.getJSValue(params[0].value)
                 if replacement:
                     replacementNode = parseExpression(replacement)
                     callNode.parent.replace(callNode, replacementNode)
-                    modified = True 
-
-            # qooxdoo specific: qx.core.Variant.select(key, map)
-            elif assembled == "qx.core.Variant.select" and node.parent.type == "call":
+                    modified = True            
+            
+            # jasy.Permutation.isSet(key, expected)
+            # also supports boolean like: jasy.Permutation.isSet(key)
+            elif assembled == "jasy.Permutation.isSet" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
-                replacement = self.getCode(params[0].value)
+                name = params[0].value
+                replacement = self.getJSValue(name)
+                
+                if replacement != None:
+                    # Auto-fill second parameter with boolean "true"
+                    expected = params[1] if len(params) > 1 else parseExpression("true")
+                    
+                    # Prepare check
+                    field = self.__fields[name]
+                    check = field["check"] if "check" in field else None
+                        
+                    # Special handling for boolean values
+                    if check == "Boolean":
+                        replacementResult = expected.type == parseExpression(replacement).type
+                    else:
+                        replacementResult = replacement in str(expected.value).split("|")
+
+                    # Do actual replacement
+                    replacementNode = parseExpression("true" if replacementResult else "false")
+                    callNode.parent.replace(callNode, replacementNode)
+                    modified = True
+            
+            # jasy.Permutation.select(key, map)
+            elif assembled == "jasy.Permutation.select" and node.parent.type == "call":
+                callNode = node.parent
+                params = callNode[1]
+                replacement = self.getJSValue(params[0].value)
                 if replacement:
-                    targetIdentifier = parseExpression(replacement).value
+                    parsedReplacement = parseExpression(replacement)
+                    if parsedReplacement.type != "string":
+                        raise Exception("Permutation.select requires that the given replacement is of type string.")
 
                     # Directly try to find matching identifier in second param (map)
                     objectInit = params[1]
@@ -256,7 +255,7 @@ class Permutation:
                             if propertyInit[0].value == "default":
                                 fallbackNode = propertyInit[1]
 
-                            elif targetIdentifier in str(propertyInit[0].value).split("|"):
+                            elif parsedReplacement.value in str(propertyInit[0].value).split("|"):
                                 callNode.parent.replace(callNode, propertyInit[1])
                                 modified = True
                                 break
@@ -271,7 +270,7 @@ class Permutation:
 
             # has.js requires that there is exactly one param with a string value
             if len(params) == 1 and params[0].type == "string":
-                replacement = self.getCode(params[0].value)
+                replacement = self.getJSValue(params[0].value)
 
                 # Only boolean replacements allowed
                 if replacement in ("true", "false"):

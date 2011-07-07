@@ -8,21 +8,21 @@
   jasy.Permutation = {getValue:function(){}};
   
   // The build system is replacing this call via the loader permutation
-  var values = jasy.Permutation.getValue("jasy.values");
+  var fields = jasy.Permutation.getValue("jasy.fields");
   
   // Cleanup for first line
   delete jasy.Permutation;
   
-  // Stores all selected values in a simple map
+  // Stores all selected fields in a simple map
   var selected = {};
   
-  var checksum = values ? (function()
+  var checksum = fields ? (function()
   {
     // Process entries
     var key = [];
-    for (var i=0, l=values.length; i<l; i++) 
+    for (var i=0, l=fields.length; i<l; i++) 
     {
-      var entry = values[i];
+      var entry = fields[i];
       var name = entry[0];
       var allowed = entry[1];
 
@@ -38,7 +38,7 @@
       }
       else
       {
-        // In cases with no test, we don't have an array of values but just a value
+        // In cases with no test, we don't have an array of fields but just a value
         value = allowed;
       }
 
@@ -55,7 +55,7 @@
   
   Core.declare("jasy.Permutation",
   {
-    /** {Map} Currently selected values from Permutation data */
+    /** {Map} Currently selected fields from Permutation data */
     selected : selected,
 
     /** {Number} Holds the checksum for the current permutation which is auto detected by features or by compiled-in data */

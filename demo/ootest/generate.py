@@ -27,15 +27,16 @@ def clear():
 def build():
     # Setup session
     session = Session()
-    session.addValue("debug", [True,False], "jasy.detect.Param")
-    session.addValue("locale", ["en"], "jasy.detect.Param")
+    session.addProject(Project("."))
+    session.activateField("debug")
+    session.activateField("locale", ["en"])
     
     # Permutation independend config
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
     formatting = Format()
 
     # Store loader script
-    loaderIncluded = session.writeLoader("oo.js", optimization, formatting)
+    loaderIncluded = session.writeLoader("loader.js", optimization, formatting)
 
     # Process every possible permutation
     permutations = session.getPermutations()
@@ -47,7 +48,8 @@ def build():
 
         # Resolving dependencies
         resolver = Resolver(projects, permutation)
-        resolver.addClassName("Class")
+        resolver.addClassName("Dog")
+        resolver.addClassName("Cat")
         resolver.excludeClasses(loaderIncluded)
         classes = resolver.getIncludedClasses()
 
