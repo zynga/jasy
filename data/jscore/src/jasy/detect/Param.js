@@ -10,14 +10,13 @@ Module("jasy.detect.Param",
 	{
 		var items = location.search.substring(1).split("&");
 		var map = {};
-		var undef;
 		
 		var translate = 
 		{
 			"true" : true,
 			"false" : false,
 			"null" : null
-		};		
+		};
 		
 		for (var i=0, l=items.length; i<l; i++) 
 		{
@@ -42,5 +41,5 @@ Module("jasy.detect.Param",
 		return function get(name) {
 			return name in map ? map[name] : null;
 		}
-	})()
+	})();
 });
