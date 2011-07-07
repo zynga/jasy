@@ -172,7 +172,7 @@ class Session():
         return permutations
 
 
-    def __fieldsToExpr(self):
+    def __exportFields(self):
         """
         Converts data from values to a compact data structure for being used to 
         compute a checksum in JavaScript.
@@ -191,9 +191,9 @@ class Session():
             content.append("'%s'" % key)
             
             if "values" in source:
-                if "test" in source and len(source["values"]) > 1:
+                if "detect" in source and len(source["values"]) > 1:
                     content.append(toJSON(source["values"]))
-                    content.append(source["test"])
+                    content.append(source["detect"])
             
                 else:
                     content.append(toJSON(source["values"][0]))
@@ -215,7 +215,7 @@ class Session():
         """
         
         permutation = Permutation({
-          "jasy.fields" : self.__fieldsToExpr()
+          "jasy.fields" : self.__exportFields()
         })
         
         resolver = Resolver(self.getProjects(), permutation)
