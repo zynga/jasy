@@ -5,112 +5,126 @@
 ==================================================================================================
 */
 
-Core.declare("Class", function(name, config) {
+(function() {
+	var genericToString = function() {
+		return "[Class " + this.name + "]";
+	};
 	
-	var placeholder = new Function;
-	var construct = config.construct || placeholder;
-	var proto = construct.prototype;
+	Core.declare("Class", function(name, config) {
 	
-	// Store name
-	construct.classname = name;
+		console.debug("Define class: " + name);
 	
-	// Add toString()
-	construct.toString = new Function(name, "return '[Class ' + name + ']'");
-
-	// Attach to namespace
-	Core.declare(name, construct);
-	
-	// Add members
-	if (config.members) {
-		var proto = construct.prototype = config.members;
-	} else {
+		var placeholder = new Function;
+		var construct = config.construct || placeholder;
 		var proto = construct.prototype;
-	}
 	
-	// Add classname
-  proto.classname = name;
+		// Store name
+		construct.name = name;
 	
-	// Add destructor 
-	proto.destruct = config.destruct || placeholder;
-	
-	// Add reset method
-	proto.reset = config.reset || placeholder;
-	
-	// Add properties
-	var properties = construct.__properties = config.properties || {};
-	for (var key in properties) {
-		jasy.property.Property.add(proto, key, properties[key]);
-	}
-	
-	// Register events
-	var events = construct.__events = config.events || {};
-	for (var key in events) {
+		// Add toString() / valueOf()
+		construct.toString = genericToString;
+		construct.valueOf = genericToString;
 
-	}
+		// Attach to namespace
+		Core.declare(name, construct);
 	
-	// Insert mixins
-	var include = config.include;
-	if (include) {
-		var mixin, mixinproto;
-		for (var i=0, l=include.length; i<l; i++) {
-			mixin = include[i];
-			mixinproto = mixin.prototype;
-			if (jasy.Permutation.isSet("debug") && !mixinproto) {
-				throw new Error("Class " + name + " includes invalid mixin " + include[i] + " at position: " + i + "!");
-			}
-			
-			// Merge in member section
-			for (var key in mixin) {
-				if (jasy.Permutation.isSet("debug") && proto[key]) {
-					throw new Error("Class " + name + " has already a member with the name: " + key + "! Class " + mixin.classname + " could not be included!");
-				}
-				
-				proto[key] = mixinproto[key];
-			}
-			
-			// Copy over event data
-			var mixinEvents = mixin.__events;
-			for (var key in mixinEvents) {
-				if (jasy.Permutation.isSet("debug") && key in events) {
-					throw new Error("Class " + name + " has already a property with the name: " + key + "! Class " + mixin.classname + " could not be included!");
-				}
-				
-				events[key] = mixinEvents[key];
-			}
-
-			// Copy over property data (setter/getters are already on the member section)
-			var mixinProperties = mixin.__properties;
-			for (var key in mixinProperties) {
-				if (jasy.Permutation.isSet("debug") && key in properties) {
-					throw new Error("Class " + name + " has already a property with the name: " + key + "! Class " + mixin.classname + " could not be included!");
-				}
-				
-				properties[key] = mixinProperties[key];
-			}
+		// Add members
+		if (config.members) {
+			var proto = construct.prototype = config.members;
+		} else {
+			var proto = construct.prototype;
 		}
-	}
 	
-	// Verify interfaces
-	if (jasy.Permutation.isSet("debug")) {
-		var implement = config.implement;
-		if (implement) {
-			var iface;
-			for (var i=0, l=implement.length; i<l; i++) {
-				iface = implement[i];
-				if (!iface) {
-					throw new Error("Class " + name + " implements invalid interface " + iface + " at position: " + i);
+		// Add destructor 
+		proto.destruct = config.destruct || placeholder;
+	
+		// Add reset method
+		proto.reset = config.reset || placeholder;
+	
+		// Add properties
+		var properties = construct.__properties = config.properties || {};
+		for (var key in properties) {
+			jasy.property.Property.add(proto, key, properties[key]);
+		}
+	
+		// Register events
+		var events = construct.__events = config.events || {};
+		for (var key in events) {
+
+		}
+	
+		// Insert mixins
+		var include = config.include;
+		if (include) {
+			var mixin, mixinproto;
+			for (var i=0, l=include.length; i<l; i++) {
+				mixin = include[i];
+				mixinproto = mixin.prototype;
+				if (jasy.Permutation.isSet("debug") && !mixinproto) {
+					throw new Error("Class " + name + " includes invalid mixin " + include[i] + " at position: " + i + "!");
+				}
+			
+				// Merge in member section
+				for (var key in mixin) {
+					if (jasy.Permutation.isSet("debug") && proto[key]) {
+						throw new Error("Class " + name + " has already a member with the name: " + key + "! Class " + mixin.classname + " could not be included!");
+					}
+				
+					proto[key] = mixinproto[key];
+				}
+			
+				// Copy over event data
+				var mixinEvents = mixin.__events;
+				for (var key in mixinEvents) {
+					if (jasy.Permutation.isSet("debug") && key in events) {
+						throw new Error("Class " + name + " has already a property with the name: " + key + "! Class " + mixin.classname + " could not be included!");
+					}
+				
+					events[key] = mixinEvents[key];
 				}
 
-				try {
-					Interface.assert(construct, iface);
-				} catch(ex) {
-					throw new Error("Class " + name + " fails to implement given interface: " + iface + ": " + ex);
+				// Copy over property data (setter/getters are already on the member section)
+				var mixinProperties = mixin.__properties;
+				for (var key in mixinProperties) {
+					if (jasy.Permutation.isSet("debug") && key in properties) {
+						throw new Error("Class " + name + " has already a property with the name: " + key + "! Class " + mixin.classname + " could not be included!");
+					}
+				
+					properties[key] = mixinProperties[key];
 				}
 			}
 		}
+	
+		// Verify interfaces
+		if (jasy.Permutation.isSet("debug")) {
+			var implement = config.implement;
+			if (implement) {
+				var iface;
+				for (var i=0, l=implement.length; i<l; i++) {
+					iface = implement[i];
+					if (!iface) {
+						throw new Error("Class " + name + " implements invalid interface " + iface + " at position: " + i);
+					}
+
+					try {
+						Interface.assert(construct, iface);
+					} catch(ex) {
+						throw new Error("Class " + name + " fails to implement given interface: " + iface + ": " + ex);
+					}
+				}
+			}
+		}
+	
+		// Attach class utilities
+		// construct.getEvents = 
+	
+	});
+
+
+	/**
+	 * Whether the given object is a Model
+	 */
+	Class.isClass = function(cls) {
+		return !!(cls && typeof cls == "object" && cls.__isClass);
 	}
-	
-	// Attach class utilities
-	// construct.getEvents = 
-	
-});
+})();
