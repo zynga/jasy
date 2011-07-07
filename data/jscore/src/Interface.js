@@ -18,12 +18,16 @@
 	 * @param config {Map} Data structure containing the keys 'events', 'properties' and 'members'.
 	 */
 	Core.declare("Interface", function(name, config) {
-		console.debug("Define interface: " + name);
+		console.debug("Defining interface: " + name);
 		
 		Core.declare(name, {
 			__properties : config.properties,
 			__events : config.events,
-			__members : config.members
+			__members : config.members,
+			__isInterface : true,
+			name : name,
+			toString : genericToString,
+			valueOf : genericToString
 		});
 	});
 
@@ -49,7 +53,7 @@
 	/**
 	 * Whether the given object is a Model
 	 */
-	Module.isModule = function(module) {
-		return !!(module && typeof module == "object" && module.__isModule);
+	Interface.isInterface = function(iface) {
+		return !!(iface && typeof iface == "object" && iface.__isInterface);
 	}
 })();

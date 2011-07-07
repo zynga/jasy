@@ -21,7 +21,7 @@
 		// Store module in namespace first
 		Core.declare(name, members);
 		
-		console.debug("Define module: " + name);
+		console.debug("Defining module: " + name);
 
 		var prefix = name + ".";
 		var value;

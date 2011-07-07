@@ -12,7 +12,7 @@
 	
 	Core.declare("Class", function(name, config) {
 	
-		console.debug("Define class: " + name);
+		console.debug("Defining class: " + name);
 	
 		var placeholder = new Function;
 		var construct = config.construct || placeholder;
