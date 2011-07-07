@@ -41,5 +41,5 @@ Module("jasy.detect.Param",
 		return function get(name) {
 			return name in map ? map[name] : null;
 		}
-	})();
+	})()
 });
