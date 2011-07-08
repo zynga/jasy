@@ -54,6 +54,8 @@
 
 	/**
 	 * Whether the given object is a Model
+	 *
+	 * @return {Boolean} Whether the given argument is an valid Model.
 	 */
 	Module.isModule = function(module) {
 		return !!(module && typeof module == "object" && module.__isModule);

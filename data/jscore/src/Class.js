@@ -129,7 +129,9 @@
 
 
 	/**
-	 * Whether the given object is a Model
+	 * Whether the given object is a Class
+	 *
+	 * @return {Boolean} Whether the given argument is an valid Class.
 	 */
 	Class.isClass = function(cls) {
 		return !!(cls && typeof cls == "object" && cls.__isClass);
