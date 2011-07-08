@@ -36,7 +36,10 @@ def build():
     formatting = Format()
 
     # Store loader script
-    loaderIncluded = session.writeLoader("loader.js", optimization, formatting)
+    loaderIncluded = session.writeLoader("generated" + os.sep + "loader.js", optimization, formatting)
+    
+    # Copy HTML file from source
+    updatefile("index.html", "generated" + os.sep + "index.html")
 
     # Process every possible permutation
     permutations = session.getPermutations()
@@ -61,7 +64,7 @@ def build():
         bootCode = ""
 
         # Write file
-        writefile("oo-%s.js" % permutation.getChecksum(), compressedCode + bootCode)
+        writefile("generated" + os.sep + "oo-%s.js" % permutation.getChecksum(), compressedCode + bootCode)
 
 
 
