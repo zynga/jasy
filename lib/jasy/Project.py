@@ -13,8 +13,13 @@ class ProjectException(Exception):
         
 class Project():
     def __init__(self, path):
+        path = os.path.normpath(path)
+
         if not os.path.isdir(path):
             raise ProjectException("Invalid project path: %s (Absolute: %s)" % (path, os.path.abspath(path)))
+        
+        # Only store and work with full path
+        path = os.path.abspath(path)
         
         self.__path = path
         self.__dirFilter = [".svn",".git",".hg",".bzr"]
@@ -29,9 +34,31 @@ class Project():
         except ValueError as err:
             raise ProjectException("Could not parse manifest.json at %s: %s" % (manifestPath, err))
         
-        self.__name = manifestData["name"]
-        self.__kind = manifestData["kind"]
+        # Read name from manifest or use the basename of the project's path
+        if "name" in manifestData:
+            self.__name = manifestData["name"]
+        else:
+            self.__name = os.path.basename(path)
 
+        # Defined whenever no namespace is defined and classes/assets are not stored in the toplevel structure.
+        if "namespace" in manifestData:
+            self.__namespace = manifestData["namespace"]
+        else:
+            self.__namespace = ""
+        
+        # Detect kind automatically
+        if "kind" in manifestData:
+            self.__kind = manifestData["kind"]
+        elif os.path.isdir(os.path.join(self.__path, "source", "class")):
+            self.__kind = "full"
+        elif os.path.isdir(os.path.join(self.__path, "class")):
+            self.__kind = "basic"
+        elif os.path.isdir(os.path.join(self.__path, "src")):
+            self.__kind = "classic"
+        else:
+            self.__kind = "flat"
+        
+        # Whether we need to parse files for get their correct name (using @name attributes)
         if "fuzzy" in manifestData:
             self.__fuzzy = manifestData["fuzzy"]
         else:
@@ -46,18 +73,22 @@ class Project():
         logging.info("Initialized project %s (%s)" % (self.__name, self.__kind))
 
         # Do kind specific intialization
-        if self.__kind == "qooxdoo":
+        if self.__kind == "full":
             self.classPath = os.path.join(self.__path, "source", "class")
-            self.resourcePath = os.path.join(self.__path, "source", "resource")
+            self.assetPath = os.path.join(self.__path, "source", "asset")
             self.translationPath = os.path.join(self.__path, "source", "translation")
         elif self.__kind == "basic":
+            self.classPath = os.path.join(self.__path, "class")
+            self.assetPath = os.path.join(self.__path, "asset")
+            self.translationPath = os.path.join(self.__path, "translation")
+        elif self.__kind == "classic":
             self.classPath = os.path.join(self.__path, "src")
-            self.resourcePath = os.path.join(self.__path, "src")
-            self.translationPath = None
+            self.assetPath = os.path.join(self.__path, "src")
+            self.translationPath = os.path.join(self.__path, "src")
         elif self.__kind == "flat":
             self.classPath = self.__path
-            self.resourcePath = self.__path
-            self.translationPath = None
+            self.assetPath = self.__path
+            self.translationPath = self.__path
         else:
             raise ProjectException("Unsupported kind of project: %s" % self.__kind)
     
@@ -130,17 +161,17 @@ class Project():
             return classes
 
 
-    def getResources(self):
+    def getAssets(self):
         try:
             return self.resources
             
         except AttributeError:
-            resourcePath = self.resourcePath
+            assetPath = self.assetPath
             resources = {}
 
-            if resourcePath and os.path.exists(resourcePath):
-                resourcePathLen = len(resourcePath) + 1
-                for dirPath, dirNames, fileNames in os.walk(resourcePath):
+            if assetPath and os.path.exists(assetPath):
+                assetPathLen = len(assetPath) + 1
+                for dirPath, dirNames, fileNames in os.walk(assetPath):
                     for dirName in dirNames:
                         if dirName in self.__dirFilter:
                             dirNames.remove(dirName)
@@ -150,11 +181,11 @@ class Project():
                             continue
 
                         filePath = os.path.join(dirPath, fileName)
-                        relPath = filePath[resourcePathLen:]            
+                        relPath = filePath[assetPathLen:]            
 
                         resources[relPath] = filePath
                     
-            logging.info("Project %s contains %s resources", self.__name, len(resources))
+            logging.info("Project %s contains %s assets", self.__name, len(resources))
             self.resources = resources
             return resources
 

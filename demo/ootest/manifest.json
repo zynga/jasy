@@ -1,4 +1,4 @@
 {
 	"name" : "ootest",
-	"kind" : "basic"
+	"namespace" : "ootest"
 }
