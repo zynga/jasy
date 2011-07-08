@@ -1,3 +1,6 @@
+/**
+ * Adds feets to any object 
+ */
 Class("ootest.Feets", {
 	construct : function(feets, speed) {
 		this.__feets = feets;
