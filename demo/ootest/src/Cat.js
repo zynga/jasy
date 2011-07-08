@@ -1,9 +1,9 @@
-Class("Cat", {
-	include : [Hair, Feets],
+Class("ootest.Cat", {
+	include : [ootest.Hair, ootest.Feets],
 	
 	construct : function() {
-		Hair.call(this, "red");
-		Feets.call(this, 4, 12);
+		ootest.Hair.call(this, "red");
+		ootest.Feets.call(this, 4, 12);
 		
 	}
 });

@@ -1,4 +1,4 @@
-Class("Hair", {
+Class("ootest.Hair", {
 	construct : function(color) {
 		this.__color = color;
 	},

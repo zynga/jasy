@@ -1,9 +1,9 @@
 Class("Dog", {
-	include : [Hair, Feets],
+	include : [ootest.Hair, ootest.Feets],
 	
 	construct : function() {
-		Hair.call(this, "black");
-		Feets.call(this, 4);
+		ootest.Hair.call(this, "black");
+		ootest.Feets.call(this, 4);
 		
 	}
 });

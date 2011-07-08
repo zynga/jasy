@@ -1,4 +1,4 @@
-Class("Feets", {
+Class("ootest.Feets", {
 	construct : function(feets, speed) {
 		this.__feets = feets;
 		this.__speed = speed || 10;
