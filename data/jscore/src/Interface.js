@@ -12,6 +12,7 @@
 	
 	var removedUnusedArgs = !(function(arg1){}).length;
 	
+	
 	/**
 	 * Define a interface which can be used for validation of objects.
 	 * 
@@ -26,9 +27,33 @@
 			__events : config.events,
 			__members : config.members,
 			__isInterface : true,
+			
+			/** {String} Name of the interface */
 			interfaceName : name,
+			
+			/**
+			 * Returns a string representing the Interface.
+			 *
+			 * @signature function() {}
+			 * @return {String} String representing
+			 */
 			toString : genericToString,
+
+			/**
+			 * Returns a string representing the Interface.
+			 *
+			 * @signature function() {}
+			 * @return {String} String representing
+			 */
 			valueOf : genericToString,
+			
+			/**
+			 * Returns a string representing the Interface.
+			 *
+			 * @signature function(objOrClass) {}
+			 * @param objOrClass {Object|Class} Object or Class to verify
+			 * @throws Whenever the object or class does not implements the interface.
+			 */
 			assert : Interface.assert
 		});
 	});
@@ -47,19 +72,18 @@
 		}
 		
 		var cls = typeof objOrClass == "object" ? objOrClass.constructor : objOrClass;
-		var clsMembers = cls.prototype;
-		
 		if (!Class.isClass(cls)) {
 			throw new Error("Invalid class or object to verify interface with: " + objOrClass);
 		}
 		
+		var clsMembers = cls.prototype;
 		var iface = iface || this;
-		var ifaceMembers = iface.__members;
 		
 		if (!Interface.isInterface(iface)) {
 			throw new Error("Invalid interface " + iface);
 		}
 
+		var ifaceMembers = iface.__members;
 		var commonErrMsg = "Class " + cls.className + " does not implement interface " + iface.interfaceName + ": ";
 		
 		for (var key in ifaceMembers) {
