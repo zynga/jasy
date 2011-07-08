@@ -5,11 +5,12 @@
 ==================================================================================================
 */
 
-
 (function() {
 	var genericToString = function() {
 		return "[Interface " + this.interfaceName + "]";
 	};
+	
+	var removedUnusedArgs = !(function(arg1){}).length;
 	
 	/**
 	 * Define a interface which can be used for validation of objects.
@@ -31,29 +32,44 @@
 		});
 	});
 
-	Interface.assert = function(object, iface) {
-
-		var clazz = object.constructor;
-	
-		var ievents = iface.__events;
-		if (clazz.getEvents()) {
+	/**
+	 *
+	 */
+	Interface.assert = function(objOrClass, iface) {
 		
+		var cls = typeof objOrClass == "object" ? objOrClass.constructor : objOrClass;
+		var clsMembers = cls.prototype;
+		var iface = this.__isInterface ? this : iface;
+		var ifaceMembers = iface.__members;
+		
+		var commonErrMsg = "Class " + cls.className + " does not implement interface " + iface.interfaceName + ": ";
+		
+		for (var key in ifaceMembers) {
+			var iMember = ifaceMembers[key];
+			var cMember = clsMembers[key];
+			
+			if (typeof iMember == typeof cMember) {
+				if (iMember instanceof Function) {
+					if (cMember instanceof Function) {
+						if (!removedUnusedArgs && iMember.length != cMember.length) {
+							throw new Error(commonErrMsg + "Different number of arguments in function '" + key + "'. Expecting " + iMember.length + "!");
+						}
+					} else {
+						throw new Error(commonErrMsg + "Different member types in: " + key + "!");
+					}
+				}
+			} else {
+				throw new Error(commonErrMsg + "Different member types in: " + key + "!");
+			}
 		}
-	
-	
-		var iproperties = iface.__properties;
-		var imembers = iface.__members;
-	
-	
-	
-	
+		
+		
 	};
-
 
 	/**
 	 * Whether the given object is a Model
 	 */
 	Interface.isInterface = function(iface) {
 		return !!(iface && typeof iface == "object" && iface.__isInterface);
-	}
+	};
 })();
