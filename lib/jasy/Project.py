@@ -165,6 +165,7 @@ class Project():
                             else:
                                 logging.warn("No name given to class: %s" % className)
                                 
+                        # Support for pre-fixed namespace which is not used in filesystem, but in classes
                         elif namespace:
                             className = namespace + "." + className
                             classObj.setName(className)
@@ -183,6 +184,7 @@ class Project():
         except AttributeError:
             assetPath = self.assetPath
             assets = {}
+            namespace = self.__namespace
 
             if assetPath and os.path.exists(assetPath):
                 assetPathLen = len(assetPath) + 1
@@ -196,7 +198,11 @@ class Project():
                             continue
 
                         filePath = os.path.join(dirPath, fileName)
-                        relPath = filePath[assetPathLen:]            
+                        relPath = filePath[assetPathLen:]
+                        
+                        # Support for pre-fixed namespace which is not used in filesystem, but in assets
+                        if namespace:
+                            relPath = os.path.join(namespace, relPath)
 
                         assets[relPath] = filePath
                     
