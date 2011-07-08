@@ -30,9 +30,9 @@ Class("ootest.Dog", {
 	
 	// Destructor to finally cleanup object
 	destruct : function() {
-		this.__weight = null;
+		ootest.Hair.prototype.destruct.call(this);
+		ootest.Feets.prototype.destruct.call(this);
 		
-		ootest.Hair.destruct.call(this);
-		ootest.Feets.destruct.call(this);
+		this.__weight = null;
 	}
 });
