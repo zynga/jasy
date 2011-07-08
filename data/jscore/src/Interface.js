@@ -28,7 +28,8 @@
 			__isInterface : true,
 			interfaceName : name,
 			toString : genericToString,
-			valueOf : genericToString
+			valueOf : genericToString,
+			assert : Interface.assert
 		});
 	});
 
@@ -39,12 +40,21 @@
 	 * @param iface {Interface?this} Interface to check for. Falls back to the context being called in.
 	 * @throws Whenever the object or class does not implements the interface.
 	 */
-	Interface.assert = Interface.prototype.assert = function(objOrClass, iface) {
+	Interface.assert = function(objOrClass, iface) {
 		var cls = typeof objOrClass == "object" ? objOrClass.constructor : objOrClass;
 		var clsMembers = cls.prototype;
-		var iface = this.__isInterface ? this : iface;
+		
+		if (!Class.isClass(cls)) {
+			throw new Error("Invalid class or object to verify interface with: " + objOrClass);
+		}
+		
+		var iface = iface || this;
 		var ifaceMembers = iface.__members;
 		
+		if (!Interface.isInterface(iface)) {
+			throw new Error("Invalid interface " + iface);
+		}
+
 		var commonErrMsg = "Class " + cls.className + " does not implement interface " + iface.interfaceName + ": ";
 		
 		for (var key in ifaceMembers) {

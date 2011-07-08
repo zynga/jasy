@@ -134,6 +134,6 @@
 	 * @return {Boolean} Whether the given argument is an valid Class.
 	 */
 	Class.isClass = function(cls) {
-		return !!(cls && typeof cls == "object" && cls.__isClass);
+		return !!(cls && typeof cls == "function" && cls.__isClass);
 	}
 })();
