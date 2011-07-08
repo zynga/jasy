@@ -1,4 +1,4 @@
-Class("Dog", {
+Class("ootest.Dog", {
 	include : [ootest.Hair, ootest.Feets],
 	
 	construct : function() {

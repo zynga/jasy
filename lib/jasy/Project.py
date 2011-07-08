@@ -117,7 +117,17 @@ class Project():
         try:
             return self.getClasses()[className]
         except KeyError:
-            return None            
+            return None         
+        
+    
+    def getClassPath(self):
+        return self.classPath
+
+    def getAssetPath(self):
+        return self.assetPath
+
+    def getTranslationPath(self):
+        return self.translationPath
 
 
     def getClasses(self):
@@ -127,6 +137,7 @@ class Project():
         except AttributeError:
             classPath = self.classPath
             classes = {}
+            namespace = self.__namespace
             
             if classPath and os.path.exists(classPath):
                 classPathLen = len(classPath) + 1
@@ -142,7 +153,7 @@ class Project():
                         filePath = os.path.join(dirPath, fileName)
                         relPath = filePath[classPathLen:]
 
-                        classObj = Class(filePath, relPath, self)
+                        classObj = Class(relPath, self)
                         className = classObj.getName()
                         
                         # This is by far slower and not the default but helps in specific project structures
@@ -153,7 +164,11 @@ class Project():
                                 className = classNameForced
                             else:
                                 logging.warn("No name given to class: %s" % className)
-
+                                
+                        elif namespace:
+                            className = namespace + "." + className
+                            classObj.setName(className)
+                            
                         classes[className] = classObj
                 
             logging.info("Project %s contains %s classes", self.__name, len(classes))
@@ -163,11 +178,11 @@ class Project():
 
     def getAssets(self):
         try:
-            return self.resources
+            return self.assets
             
         except AttributeError:
             assetPath = self.assetPath
-            resources = {}
+            assets = {}
 
             if assetPath and os.path.exists(assetPath):
                 assetPathLen = len(assetPath) + 1
@@ -183,11 +198,11 @@ class Project():
                         filePath = os.path.join(dirPath, fileName)
                         relPath = filePath[assetPathLen:]            
 
-                        resources[relPath] = filePath
+                        assets[relPath] = filePath
                     
-            logging.info("Project %s contains %s assets", self.__name, len(resources))
-            self.resources = resources
-            return resources
+            logging.info("Project %s contains %s assets", self.__name, len(assets))
+            self.assets = assets
+            return assets
 
 
     def getTranslations(self):

@@ -18,14 +18,13 @@ aliases = {}
 __all__ = ["Class"]
 
 class Class():
-    def __init__(self, path, rel, project):
-        self.__project = project
+    def __init__(self, path, project):
         self.__cache = project.getCache()
-        self.__mtime = os.stat(path).st_mtime
-
+        self.__fullpath = os.path.join(project.getClassPath(), path)
+        self.__mtime = os.stat(self.__fullpath).st_mtime
+        
         self.path = path
-        self.rel = os.path.splitext(rel)[0]
-        self.name = self.rel.replace("/", ".")
+        self.name = os.path.splitext(path.replace(os.sep, "."))[0]
         
     def setName(self, name):
         self.name = name        
@@ -37,19 +36,19 @@ class Class():
         return self.__mtime
 
     def getText(self):
-        return open(self.path, mode="r", encoding="utf-8").read()
+        return open(self.__fullpath, mode="r", encoding="utf-8").read()
 
 
     def getTree(self, permutation=None):
         permutation = self.filterPermutation(permutation)
         
-        field = "tree[%s]-%s" % (self.rel, permutation)
+        field = "tree[%s]-%s" % (self.path, permutation)
         tree = self.__cache.read(field, self.__mtime)
         if tree is not None:
             return tree
             
         # Parse tree
-        tree = parse(self.getText(), self.rel)
+        tree = parse(self.getText(), self.path)
 
         # Apply permutation
         if permutation:
@@ -77,12 +76,12 @@ class Class():
         
         # Manually defined names/classes
         for name in meta.requires:
-            if name != self.name and name in classes:
+            if name != self.path and name in classes:
                 result.add(classes[name])
         
         # Globally modified names (mostly relevant when working without namespaces)
         for name in stats.shared:
-            if name != self.name and name in classes:
+            if name != self.path and name in classes:
                 result.add(classes[name])
         
         # Add classes from detected package access
@@ -95,7 +94,7 @@ class Class():
             
             orig = package
             while True:
-                if package == self.name:
+                if package == self.path:
                     break
             
                 elif package in classes:
@@ -116,7 +115,7 @@ class Class():
     def getStats(self, permutation=None):
         permutation = self.filterPermutation(permutation)
         
-        field = "stats[%s]-%s" % (self.rel, permutation)
+        field = "stats[%s]-%s" % (self.path, permutation)
         stats = self.__cache.read(field, self.__mtime)
         if stats == None:
             stats = self.getTree(permutation).stats
@@ -128,7 +127,7 @@ class Class():
     def getMeta(self, permutation=None):
         permutation = self.filterPermutation(permutation)
         
-        field = "meta[%s]-%s" % (self.rel, permutation)
+        field = "meta[%s]-%s" % (self.path, permutation)
         meta = self.__cache.read(field, self.__mtime)
         if meta == None:
             meta = MetaData(self.getTree(permutation))
@@ -138,7 +137,7 @@ class Class():
         
         
     def getPermutationKeys(self):
-        field = "permutations[%s]" % (self.rel)
+        field = "permutations[%s]" % (self.path)
         result = self.__cache.read(field, self.__mtime)
         if result is None:
             result = getKeys(self.getTree())
@@ -148,7 +147,7 @@ class Class():
 
 
     def usesTranslation(self):
-        field = "translation[%s]" % (self.rel)
+        field = "translation[%s]" % (self.path)
         result = self.__cache.read(field, self.__mtime)
         if result == None:
             result = hasText(self.getTree())
@@ -177,7 +176,7 @@ class Class():
         permutation = self.filterPermutation(permutation)
         translation = self.filterTranslation(translation)
         
-        field = "compressed[%s]-%s-%s-%s-%s" % (self.rel, permutation, translation, optimization, format)
+        field = "compressed[%s]-%s-%s-%s-%s" % (self.path, permutation, translation, optimization, format)
         field = hashlib.md5(field.encode("utf-8")).hexdigest()
         
         compressed = self.__cache.read(field, self.__mtime)
