@@ -33,6 +33,7 @@
 		});
 	});
 
+
 	/**
 	 * Verifies whether the given object or class implements the given interface.
 	 *
@@ -41,6 +42,10 @@
 	 * @throws Whenever the object or class does not implements the interface.
 	 */
 	Interface.assert = function(objOrClass, iface) {
+		if (!objOrClass) {
+			throw new Error("Invalid class or object to verify interface with: " + objOrClass);
+		}
+		
 		var cls = typeof objOrClass == "object" ? objOrClass.constructor : objOrClass;
 		var clsMembers = cls.prototype;
 		
@@ -59,6 +64,11 @@
 		
 		for (var key in ifaceMembers) {
 			var iMember = ifaceMembers[key];
+			
+			if (!(key in clsMembers)) {
+				throw new Error(commonErrMsg + "Missing member: " + key + "!");
+			}
+			
 			var cMember = clsMembers[key];
 			
 			if (typeof iMember == typeof cMember) {
@@ -76,6 +86,7 @@
 			}
 		}
 	};
+
 
 	/**
 	 * Whether the given object is a Interface
