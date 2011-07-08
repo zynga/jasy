@@ -48,8 +48,8 @@ def build():
 
         # Resolving dependencies
         resolver = Resolver(projects, permutation)
-        resolver.addClassName("Dog")
-        resolver.addClassName("Cat")
+        resolver.addClassName("ootest.Dog")
+        resolver.addClassName("ootest.Cat")
         resolver.excludeClasses(loaderIncluded)
         classes = resolver.getIncludedClasses()
 
