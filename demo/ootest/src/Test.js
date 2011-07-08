@@ -1,12 +1,13 @@
 var dog = new ootest.Dog;
 var cat = new ootest.Cat;
 
-dog.run();
-cat.run();
-dog.run();
-cat.run();
-dog.run();
-cat.run();
+for(var i=0; i<12; i++) {
+	Math.random() < 0.5 ? dog.run() : cat.run();
+}
 
-console.debug("Dog: " + dog.getPosition());
-console.debug("Cat: " + cat.getPosition());
+if (dog.getPosition() > cat.getPosition()) {
+	console.debug("Dog wins");
+} else {
+	console.debug("Cat wins");
+}
+
