@@ -64,11 +64,11 @@ class Project():
         else:
             self.__fuzzy = False
             
-        # Read default values (for settings, variants, permutations, etc.)
-        if "values" in manifestData:
-            self.__values = manifestData["values"]
+        # Read fields (for injecting data into the project and build permuations)
+        if "fields" in manifestData:
+            self.__fields = manifestData["fields"]
         else:
-            self.__values = {}
+            self.__fields = {}
 
         logging.info("Initialized project %s (%s)" % (self.__name, self.__kind))
 
@@ -109,8 +109,9 @@ class Project():
         self.__cache.close()
         
         
-    def getValues(self):
-        return self.__values
+    def getFields(self):
+        """ Return the project defined fields which may be configured by the build script """
+        return self.__fields
         
         
     def getClassByName(self, className):
@@ -121,16 +122,20 @@ class Project():
         
     
     def getClassPath(self):
+        """ Returns the full path to the JavaScript classes """
         return self.classPath
 
     def getAssetPath(self):
+        """ Returns the full path to the assets (images, stylesheets, etc.) """
         return self.assetPath
 
     def getTranslationPath(self):
+        """ Returns the full path to the translation files (gettext *.po files) """
         return self.translationPath
 
 
     def getClasses(self):
+        """ Returns all project JavaScript classes """
         try:
             return self.classes
             
@@ -178,6 +183,7 @@ class Project():
 
 
     def getAssets(self):
+        """ Returns all project asssets (images, stylesheets, etc.) """
         try:
             return self.assets
             
@@ -212,6 +218,7 @@ class Project():
 
 
     def getTranslations(self):
+        """ Returns all translation files (gettext *.po files)"""
         try:
             return self.translations
             

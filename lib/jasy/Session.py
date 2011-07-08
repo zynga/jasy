@@ -43,10 +43,10 @@ class Session():
         
         self.__projects.append(project)
 
-        # Import project defined values
-        values = project.getValues()
-        for name in values:
-            entry = values[name]
+        # Import project defined fields which might be configured using "activateField()"
+        fields = project.getFields()
+        for name in fields:
+            entry = fields[name]
             if "check" in entry:
                 check = entry["check"]
                 if check in ["Boolean", "String", "Number"] or type(check) == list:
