@@ -19,7 +19,12 @@
     var global = this;
     $(function() {
       
-      module("Namespace");
+      module("Namespace", {
+        teardown : function() {
+          delete global.foo;
+          delete global.abc;
+        }
+      });
       
       test("Creating global", function() {
         Core.declare('foo', 3);
@@ -33,11 +38,17 @@
       
       
       
-      module("Modules");
+      module("Modules", {
+        teardown : function() {
+          delete global.abc;
+        }
+      });
       
       test("Creating empty module", function() {
         Module("abc.Module1", {});
         equals(Module.isModule(abc.Module1), true);
+        equals(abc.Module1.moduleName, "abc.Module1");
+        equals(abc.Module1.toString(), "[Module abc.Module1]");
       });
 
       test("Module validation", function() {
