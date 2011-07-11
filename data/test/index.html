@@ -20,14 +20,36 @@
     $(function() {
       
       module("Namespace");
-      test("Creating Namespace", function() {
+      
+      test("Creating global", function() {
         Core.declare('foo', 3);
         equals(global.foo, 3);
       });
+
+      test("Creating namespace", function() {
+        Core.declare('abc.def', 5);
+        equals(global.abc.def, 5);
+      });
+      
+      
       
       module("Modules");
-      test("Creating Modules", function() {
-        
+      
+      test("Creating empty module", function() {
+        Module("abc.Module1", {});
+        equals(Module.isModule(abc.Module1), true);
+      });
+
+      test("Object is not module", function() {
+        equals(Module.isModule({}), false);
+      });
+
+      test("Number is not module", function() {
+        equals(Module.isModule(3), false);
+      });
+
+      test("Null is not module", function() {
+        equals(Module.isModule(null), false);
       });
       
       

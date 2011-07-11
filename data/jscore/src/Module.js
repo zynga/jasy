@@ -11,7 +11,11 @@
 	};
 	
 	/**
-	 * Define a module with static methods
+	 * Define a module with static methods/fields.
+	 * 
+	 * As there are new fields added to the member data structure and the module
+	 * itself this is not feasible to being used as a structure for looping through
+	 * via for-in loops.
 	 * 
 	 * @param name {String} Name of Module
 	 * @param members {Map} Data structure containing the members
