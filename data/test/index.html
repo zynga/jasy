@@ -40,21 +40,27 @@
         equals(Module.isModule(abc.Module1), true);
       });
 
-      test("Object is not module", function() {
+      test("Module validation", function() {
         equals(Module.isModule({}), false);
-      });
-
-      test("Number is not module", function() {
         equals(Module.isModule(3), false);
-      });
-
-      test("Null is not module", function() {
         equals(Module.isModule(null), false);
-      });
-
-      test("Fake is not module", function() {
         equals(Module.isModule({__isModule:true}), false);
       });
+      
+      test("Creating method module", function() {
+        Module("abc.Module2", {
+          method1 : function() {},
+          method2 : function() {},
+          method3 : function() {}
+        });
+        equals(Module.isModule(abc.Module2), true);
+        ok(abc.Module2.method1 instanceof Function);
+        ok(abc.Module2.method2 instanceof Function);
+        ok(abc.Module2.method3 instanceof Function);
+        equals(abc.Module2.method1.displayName, "abc.Module2.method1");
+        equals(abc.Module2.method2.displayName, "abc.Module2.method2");
+        equals(abc.Module2.method3.displayName, "abc.Module2.method3");
+      });      
       
       
       
