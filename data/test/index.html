@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <title>Jasy Test Suite</title>
+    
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <script src="qunit.js" type="text/javascript" charset="utf-8"></script>
+    
+    <script src="../jscore/src/Core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../jscore/src/Module.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../jscore/src/Class.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../jscore/src/Interface.js" type="text/javascript" charset="utf-8"></script>
+    
+  </head>
+  <body>
+    <ol id="qunit-tests"></ol>
+    
+    <script type="text/javascript">
+    var global = this;
+    $(function() {
+      
+      module("Namespace");
+      test("Creating Namespace", function() {
+        Core.declare('foo', 3);
+        equals(global.foo, 3);
+      });
+      
+      module("Modules");
+      test("Creating Modules", function() {
+        
+      });
+      
+      
+    })
+    </script>
+  </body>
+</html>
