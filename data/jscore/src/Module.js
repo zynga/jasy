@@ -10,6 +10,8 @@
 		return "[Module " + this.moduleName + "]";
 	};
 	
+	var isModuleValue = +new Date;
+	
 	/**
 	 * Define a module with static methods/fields.
 	 * 
@@ -53,7 +55,7 @@
 		}
 
 		// Mark as module
-		members.__isModule = true;
+		members.__isModule = isModuleValue;
 	});
 
 	/**
@@ -62,6 +64,6 @@
 	 * @return {Boolean} Whether the given argument is an valid Model.
 	 */
 	Module.isModule = function(module) {
-		return !!(module && typeof module == "object" && module.__isModule);
+		return !!(module && typeof module == "object" && module.__isModule === isModuleValue);
 	}
 })();

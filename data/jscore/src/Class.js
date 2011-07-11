@@ -18,6 +18,7 @@
 		}
 	};
 	
+	var isClassValue = +new Date;
 	
 	Core.declare("Class", function(name, config) {
 	
@@ -28,7 +29,7 @@
 	
 		// Store name / type
 		construct.className = name;
-		construct.__isClass = true;
+		construct.__isClass = isClassValue;
 	
 		// Add toString() / valueOf()
 		construct.toString = genericToString;
@@ -134,6 +135,6 @@
 	 * @return {Boolean} Whether the given argument is an valid Class.
 	 */
 	Class.isClass = function(cls) {
-		return !!(cls && typeof cls == "function" && cls.__isClass);
+		return !!(cls && typeof cls == "function" && cls.__isClass === isClassValue);
 	}
 })();

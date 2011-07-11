@@ -51,6 +51,11 @@
       test("Null is not module", function() {
         equals(Module.isModule(null), false);
       });
+
+      test("Fake is not module", function() {
+        equals(Module.isModule({__isModule:true}), false);
+      });
+      
       
       
     })

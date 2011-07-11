@@ -11,7 +11,7 @@
 	};
 	
 	var removedUnusedArgs = !(function(arg1){}).length;
-	
+	var isInterfaceValue = +new Date;
 	
 	/**
 	 * Define a interface which can be used for validation of objects.
@@ -26,7 +26,7 @@
 			__properties : config.properties,
 			__events : config.events,
 			__members : config.members,
-			__isInterface : true,
+			__isInterface : isInterfaceValue,
 			
 			/** {String} Name of the interface */
 			interfaceName : name,
@@ -118,6 +118,6 @@
 	 * @return {Boolean} Whether the given argument is an valid Interface.
 	 */
 	Interface.isInterface = function(iface) {
-		return !!(iface && typeof iface == "object" && iface.__isInterface);
+		return !!(iface && typeof iface == "object" && iface.__isInterface === isInterfaceValue);
 	};
 })();
