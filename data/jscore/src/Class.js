@@ -22,13 +22,11 @@
 	
 	Core.declare("Class", function(name, config) {
 	
-		console.debug("Defining class: " + name);
-		
 		if (Permutation.isSet("debug")) {
 			Assert.isTrue(Module.isValidName(name), "Invalid class name!");
 			Assert.isMap(config, "Invalid class configuration");
 		}
-	
+
 		var placeholder = new Function;
 		var construct = config.construct || placeholder;
 	

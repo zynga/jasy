@@ -26,8 +26,6 @@
 			Assert.isMap(config, "Invalid interface configuration!");
 		}
 		
-		console.debug("Defining interface: " + name);
-		
 		Core.declare(name, {
 			__properties : config.properties,
 			__events : config.events,
