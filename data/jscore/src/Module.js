@@ -24,6 +24,11 @@
 	 */
 	Core.declare("Module", function(name, members) {
 
+		if (jasy.Permutation.isSet("debug")) {
+			Assert.isTrue(Module.isValidName(name), "Invalid module name!");
+			Assert.isMap(config, "Invalid module configuration");
+		}
+
 		// Store module in namespace first
 		Core.declare(name, members);
 		
@@ -57,6 +62,18 @@
 		// Mark as module
 		members.__isModule = isModuleValue;
 	});
+
+
+	/** 
+	 * Validator expression for module/class/interface names
+	 *
+	 * @param name {String} Module name to use
+	 * @return {Boolean} Whether the given names is valid for being used as a module name.
+	 */
+	Module.isValidName = function(name) {
+		return /^(([a-z][a-z0-9]+\.)*)([A-Z][a-zA-Z0-9]*)$/.test(name);
+	},
+
 
 	/**
 	 * Whether the given object is a Model

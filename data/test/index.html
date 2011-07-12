@@ -7,6 +7,9 @@
     <script src="qunit.js" type="text/javascript" charset="utf-8"></script>
     
     <script src="../jscore/src/Core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../jscore/src/jasy/Permutation.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../jscore/src/Assert.js" type="text/javascript" charset="utf-8"></script>
+
     <script src="../jscore/src/Module.js" type="text/javascript" charset="utf-8"></script>
     <script src="../jscore/src/Class.js" type="text/javascript" charset="utf-8"></script>
     <script src="../jscore/src/Interface.js" type="text/javascript" charset="utf-8"></script>
@@ -35,6 +38,7 @@
         Core.declare('abc.def', 5);
         equals(global.abc.def, 5);
       });
+      
       
       
       
@@ -71,7 +75,19 @@
         equals(abc.Module2.method1.displayName, "abc.Module2.method1");
         equals(abc.Module2.method2.displayName, "abc.Module2.method2");
         equals(abc.Module2.method3.displayName, "abc.Module2.method3");
-      });      
+      });
+      
+      
+      
+      
+      module("Classes");
+      
+      test("Creating empty class", function() {
+        Class("abc.Class1", {});
+        equals(Class.isClass(abc.Class1), true);
+        equals(abc.Class1.moduleName, "abc.Class1");
+        equals(abc.Class1.toString(), "[Class abc.Class1]");
+      });
       
       
       

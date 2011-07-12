@@ -20,6 +20,12 @@
 	 * @param config {Map} Data structure containing the keys 'events', 'properties' and 'members'.
 	 */
 	Core.declare("Interface", function(name, config) {
+		
+		if (jasy.Permutation.isSet("debug")) {
+			Assert.isTrue(Module.isValidName(name), "Invalid interface name!");
+			Assert.isMap(config, "Invalid interface configuration");
+		}
+		
 		console.debug("Defining interface: " + name);
 		
 		Core.declare(name, {
