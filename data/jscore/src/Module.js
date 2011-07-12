@@ -26,7 +26,7 @@
 
 		if (Permutation.isSet("debug")) {
 			Assert.isTrue(Module.isValidName(name), "Invalid module name!");
-			Assert.isMap(config, "Invalid module configuration");
+			Assert.isMap(members, "Invalid module members!");
 		}
 
 		// Store module in namespace first

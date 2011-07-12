@@ -4,10 +4,12 @@
 	
 	Core.declare("Assert", {
 		
-		add : function(func, context, methodName, typeName, msg) {
+		add : function(func, methodName, typeName, msg) {
 			// Wrap method and throw error
 			this[methodName] = function(value) {
-				(context ? func.call(contect, value) : func(value)) // throw new Error(msg);
+				if (!func(value)) {
+					throw new Error(msg);
+				}
 			};
 			
 			// Add display name
@@ -20,17 +22,35 @@
 		},
 		
 		is : function(value, type) {
-			return types[type].call(this, value);
+			try{
+				return types[type](value);
+			} catch(ex) {
+				return false;
+			}
+			
+			return true;
 		}
 		
 	});
 	
+	// Alias for better compression
+	var cls = Assert;
 	
-	Assert.add(function() { return value === true; }, null, "isTrue", "true", "Expected 'true'!");
-	Assert.add(function() { return value === false; }, null,"isFalse", "false", "Expected 'false'!");
-	Assert.add(function() { return value === 0; }, null, "isZero", "zero", "Expected primitive zero!");
-	Assert.add(function() { return value === null; }, null, "isNull", "null", "Expected 'null'!");
-	Assert.add(function() { return value !== null; }, null, "isNotNull", "notNull", "Expected a non-'null' value!");
-	
+	cls.add(function(value) { return typeof value == "boolean"; }, "isBoolean", "boolean", "Expected a boolean!");
+	cls.add(function(value) { return value === true; }, "isTrue", "true", "Expected 'true'!");
+	cls.add(function(value) { return value === false; },"isFalse", "false", "Expected 'false'!");
+
+	cls.add(function(value) { return typeof value == "string"; }, "isString", "string", "Expected a string!");
+	cls.add(function(value) { return typeof value == "string" && value.length > 0; }, "isNonEmptyString", "nonEmptyString", "Expected a non empty string!");
+
+	cls.add(function(value) { return typeof value == "number"; }, "isNumber", "number", "Expected a number!");
+	cls.add(function(value) { return value === 0; }, "isZero", "zero", "Expected primitive zero!");
+
+	cls.add(function(value) { return typeof value == "object"; }, "isObject", "object", "Expected an object!");
+	cls.add(function(value) { return value === null; }, "isNull", "null", "Expected 'null'!");
+	cls.add(function(value) { return value !== null; }, "isNotNull", "notNull", "Expected a non-'null' value!");
+	cls.add(function(value) { return typeof value == "object" && value.constructor === global.Object; }, "isMap", "map", "Expected a object!");
+	cls.add(function(value) { return typeof value == "object" && value.constructor === global.Array; }, "isArray", "array", "Expected a array!");
+
 })(this);
 

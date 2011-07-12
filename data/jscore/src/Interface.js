@@ -23,7 +23,7 @@
 		
 		if (Permutation.isSet("debug")) {
 			Assert.isTrue(Module.isValidName(name), "Invalid interface name!");
-			Assert.isMap(config, "Invalid interface configuration");
+			Assert.isMap(config, "Invalid interface configuration!");
 		}
 		
 		console.debug("Defining interface: " + name);
