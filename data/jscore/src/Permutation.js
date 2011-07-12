@@ -2,16 +2,16 @@
  * This class is the client-side representation for the permutation features of 
  * Jasy and supports features like auto-selecting builds based on specific feature sets.
  */
-(function(global)
+(function(global, undef)
 {
 	// Small hack to correctly bootstrap the next line
-	jasy.Permutation = {getValue:function(){}};
+	global.Permutation = {getValue:function(){}};
 	
 	// The build system is replacing this call via the loader permutation
-	var fields = jasy.Permutation.getValue("jasy.fields");
+	var fields = Permutation.getValue("Permutation.fields");
 	
 	// Cleanup for first line
-	delete jasy.Permutation;
+	global.Permutation = undef;
 	
 	// Stores all selected fields in a simple map
 	var selected = {};
@@ -53,7 +53,7 @@
 		return checksum;
 	})() : "";
 	
-	Core.declare("jasy.Permutation",
+	Core.declare("Permutation",
 	{
 		/** {Map} Currently selected fields from Permutation data */
 		selected : selected,
@@ -99,5 +99,5 @@
 			}
 		}
 	});
-})();
+})(this);
 

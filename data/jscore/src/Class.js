@@ -24,7 +24,7 @@
 	
 		console.debug("Defining class: " + name);
 		
-		if (jasy.Permutation.isSet("debug")) {
+		if (Permutation.isSet("debug")) {
 			Assert.isTrue(Module.isValidName(name), "Invalid class name!");
 			Assert.isMap(config, "Invalid class configuration");
 		}
@@ -53,7 +53,7 @@
 			for (var i=0, l=include.length; i<l; i++) {
 				mixin = include[i];
 				mixinproto = mixin.prototype;
-				if (jasy.Permutation.isSet("debug") && !mixinproto) {
+				if (Permutation.isSet("debug") && !mixinproto) {
 					throw new Error("Class " + name + " includes invalid mixin " + include[i] + " at position: " + i + "!");
 				}
 			
@@ -109,7 +109,7 @@
 		
 	
 		// Verify interfaces
-		if (jasy.Permutation.isSet("debug")) {
+		if (Permutation.isSet("debug")) {
 			var implement = config.implement;
 			if (implement) {
 				var iface;

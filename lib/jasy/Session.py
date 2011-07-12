@@ -215,11 +215,11 @@ class Session():
         """
         
         permutation = Permutation({
-          "jasy.fields" : self.__exportFields()
+          "Permutation.fields" : self.__exportFields()
         })
         
         resolver = Resolver(self.getProjects(), permutation)
-        resolver.addClassName("jasy.Permutation")
+        resolver.addClassName("Permutation")
         classes = Sorter(resolver, permutation).getSortedClasses()
         compressedCode = Combiner(classes).compress(permutation, None, optimization, formatting)
         writefile(fileName, compressedCode)

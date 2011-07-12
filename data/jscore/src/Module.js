@@ -24,7 +24,7 @@
 	 */
 	Core.declare("Module", function(name, members) {
 
-		if (jasy.Permutation.isSet("debug")) {
+		if (Permutation.isSet("debug")) {
 			Assert.isTrue(Module.isValidName(name), "Invalid module name!");
 			Assert.isMap(config, "Invalid module configuration");
 		}

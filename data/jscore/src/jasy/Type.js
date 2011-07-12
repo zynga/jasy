@@ -95,7 +95,7 @@
 		 */
 		add : function(type, method, context)
 		{
-			if (jasy.Permutation.isSet("debug") && addons[type]) {
+			if (Permutation.isSet("debug") && addons[type]) {
 				throw new Error("This type if already registered by another class: " + type);
 			}
 
@@ -127,7 +127,7 @@
 			{
 				result = check == "Null";
 
-				if (jasy.Permutation.isSet("debug") && !result) {
+				if (Permutation.isSet("debug") && !result) {
 					throw new Error("Value: '" + value + "' is null but needs to be: " + check + "!");
 				}
 			}
@@ -150,7 +150,7 @@
 						result = isFinite(value);
 					}
 
-					if (jasy.Permutation.isSet("debug") && !result) {
+					if (Permutation.isSet("debug") && !result) {
 						throw new Error("Value: '" + value + "' is not type of: " + check + "!");
 					}
 				}
@@ -162,7 +162,7 @@
 					result = nodeType != null && 
 						(check == "Node" || (nodeType == 1 && check == "Element") || (nodeType == 9 && check == "Document"));
 
-					if (jasy.Permutation.isSet("debug") && !result) {
+					if (Permutation.isSet("debug") && !result) {
 						throw new Error("Value: '" + value + "' is not type of " + check + "!");
 					} 
 				}
@@ -172,7 +172,7 @@
 				{
 					result = value.$$type == check;
 
-					if (jasy.Permutation.isSet("debug") && !result) {
+					if (Permutation.isSet("debug") && !result) {
 						throw new Error("Value: '" + value + "' is not type of " + check + "!");
 					}
 				}
@@ -185,7 +185,7 @@
 					{
 						result = value.hasOwnProperty && value instanceof clazz;
 
-						if (jasy.Permutation.isSet("debug") && !result) {
+						if (Permutation.isSet("debug") && !result) {
 							throw new Error("Value: '" + value + "' is not an instance of " + check + "!");
 						}
 					}
@@ -197,7 +197,7 @@
 						{
 							result = qx.Bootstrap.hasInterface(construct, iface);
 
-							if (jasy.Permutation.isSet("debug") && !result) {
+							if (Permutation.isSet("debug") && !result) {
 								throw new Error("Value: '" + value + "' do not implement interface: " + check + "!");
 							}
 						} 
@@ -208,7 +208,7 @@
 							{
 								result = qx.Class && qx.Class.hasMixin(construct, mixin);
 
-								if (jasy.Permutation.isSet("debug") && !result) {
+								if (Permutation.isSet("debug") && !result) {
 									throw new Error("Value: '" + value + "' does not include mixin: " + check + "!");
 								}
 							}
@@ -246,7 +246,7 @@
 					}
 				}
 
-				if (jasy.Permutation.isSet("debug") && !result) {
+				if (Permutation.isSet("debug") && !result) {
 					throw new Error("Value: '" + value + "' is not listed in possible values: " + check);
 				}
 			}
@@ -257,7 +257,7 @@
 				z.Type.check(value, "String");
 				result = check.match(value);
 
-				if (jasy.Permutation.isSet("debug") && !result) {
+				if (Permutation.isSet("debug") && !result) {
 					throw new Error("Value: '" + value + "' does not match regular expression: " + check);
 				}
 			}
@@ -277,14 +277,14 @@
 				} 
 				catch(ex) 
 				{
-					if (jasy.Permutation.isSet("debug")) {
+					if (Permutation.isSet("debug")) {
 						throw new Error("Value: '" + value + "' is not accepted by check routine: " + ex);
 					} else {
 						result = false;
 					}
 				}
 
-				if (jasy.Permutation.isSet("debug") && !result) {
+				if (Permutation.isSet("debug") && !result) {
 					throw new Error("Value: '" + value + "' is not accepted by check routine.");
 				}
 			}

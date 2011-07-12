@@ -82,7 +82,7 @@ Module("jasy.property.Debug", {
 	 *
 	 * @internal
 	 */
-	__propertyKeys : jasy.Permutation.isSet("debug") ?
+	__propertyKeys : Permutation.isSet("debug") ?
 	{
 		name				: "string",    // String
 		nullable		: "boolean",   // Boolean
@@ -102,7 +102,7 @@ Module("jasy.property.Debug", {
 	 * @param config {Map} configuration map
 	 * @param patch {Boolean ? false} enable refine/patch?
 	 */
-	validateConfig : jasy.Permutation.isSet("debug") ?
+	validateConfig : Permutation.isSet("debug") ?
 	function(clazz, name, config)
 	{
 		var Util = jasy.property.Util;
