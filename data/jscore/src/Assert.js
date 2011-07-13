@@ -66,9 +66,9 @@
 	}
 	
 	Assert.add(function(value) {
-    var type = typeof value;
-    return value == null || type == "boolean" || type == "number" || type == "string";
-  }, "isPrimitive", "Not a primitive value!");
+		var type = typeof value;
+		return value == null || type == "boolean" || type == "number" || type == "string";
+	}, "isPrimitive", "Not a primitive value!");
 	
 	Assert.add(function(value) { return typeof value == "boolean"; }, "isBoolean", "Not boolean!");
 	Assert.add(function(value) { return value === true; }, "isTrue", "Not 'true'!");
@@ -95,6 +95,16 @@
 	Assert.add(function(value) { return value && value.nodeType == 1; }, "isElement", "Not an element!");
 	Assert.add(function(value) { return value && value.nodeType == 3; }, "isTextNode", "Not a text node!");
 	Assert.add(function(value) { return value && value.nodeType == 9; }, "isDocument", "Not a document!");
+
+	// Host objects can return type values that are different from their actual
+	// data type. The objects we are concerned with usually return non-primitive
+	// types of object, function, or unknown.
+	var NON_HOST_TYPES = { 'boolean': 1, 'number': 1, 'string': 1, 'undefined': 1 };
+	Assert.add(function(value) {
+		var type = typeof value;
+		return type == 'object' ? !!value : !NON_HOST_TYPES[type];
+	}, "isHostType", "Not a host type!");
+
 
 
 })(this);
