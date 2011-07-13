@@ -14,11 +14,19 @@
 		 */
 		add : function(func, methodName, msg) {
 			// Wrap method and throw error
-			this[methodName] = function(value) {
-				if (!func(value)) {
-					throw new Error(msg);
-				}
-			};
+			if (func.length == 1) {
+				this[methodName] = function(value) {
+					if (!func(value)) {
+						throw new Error(msg);
+					}
+				};
+			} else {
+				this[methodName] = function(value, compareTo) {
+					if (!func(value, compareTo)) {
+						throw new Error(msg.replace("%1", ""+compareTo));
+					}
+				};
+			}
 			
 			// Add display name
 			this[methodName].displayName = "Assert." + methodName;
