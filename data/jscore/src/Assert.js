@@ -105,7 +105,26 @@
 		return type == 'object' ? !!value : !NON_HOST_TYPES[type];
 	}, "isHostType", "Not a host type!");
 
-
+	Assert.add(function(value, regexp) { 
+		return typeof value == "string" && !!value.match(regexp); 
+	}, "matchesRegExp", "Does not match regular expression!");
+	
+	Assert.add(function(value, func) { 
+		var ret = true;
+		try{
+			ret = !!func(value);
+		} catch(ex) {
+			ret = false;
+		}
+		
+		return ret;
+	}, "isAcceptedBy", "Is not accepted by defined check function!");
+	
+	Assert.add(function(value, list) {
+		return list.indexOf(value) != -1;
+	}, "isInList", "Is not in specified list!");
+	
+	
 
 })(this);
 
