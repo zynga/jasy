@@ -1,7 +1,5 @@
 (function(global, undef) {
 	
-	var types = {};
-	
 	Core.declare("Assert", {
 		
 		/**
@@ -30,18 +28,7 @@
 			
 			// Add display name
 			this[methodName].displayName = "Assert." + methodName;
-			
-			// Support for is(value, type) check
-			if (methodName.slice(0,2) == "is") {
-				var typeName = methodName.slice(2,3).toLowerCase() + methodName.slice(3);
-				types[typeName] = func;
-			}
-		},
-		
-		is : function(value, type) {
-			return types[type](value);
 		}
-		
 	});
 	
 	// Alias for better compression
@@ -91,8 +78,7 @@
 	Assert.add(function(value) { return value && value.nodeType == 1; }, "isElement", "Not an element!");
 	Assert.add(function(value) { return value && value.nodeType == 3; }, "isTextNode", "Not a text node!");
 	Assert.add(function(value) { return value && value.nodeType == 9; }, "isDocument", "Not a document!");
-	
-	
+
 
 })(this);
 
