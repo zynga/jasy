@@ -24,11 +24,13 @@
 	
 		if (Permutation.isSet("debug")) {
 			Assert.assertModuleName(name, "Invalid class name!");
-			Assert.assertMap(config, "Invalid class configuration");
+			Assert.assertMap(config, "Invalid class configuration in class " + name);
 		}
 
-		var placeholder = new Function;
-		var construct = config.construct || placeholder;
+		if (Permutation.isSet("debug")) {
+			config.construct && Assert.assertFunction("Invalid class constructor in: " + name + "!");
+		}
+		var construct = config.construct || function construct(){};
 	
 		// Store name / type
 		construct.className = name;
@@ -44,9 +46,14 @@
 		// Prototype (stuff attached to all instances)
 		var proto = construct.prototype;
 	
+	
 		// Insert mixins
 		var include = config.include;
 		if (include) {
+			if (Permutation.isSet("debug")) {
+				Assert.isArray(include, "Invalid include list in class " + name);
+			}
+			
 			var mixin, mixinproto;
 			for (var i=0, l=include.length; i<l; i++) {
 				mixin = include[i];
@@ -63,22 +70,28 @@
 			}
 		}
 		
+		
 		// Attach members
 		var members = config.members;
 		var orig, entry;
 		
-		for (var key in members) {
+		if (members) {
+			if (Permutation.isSet("debug")) {
+				Assert.isMap(include, "Invalid member section in class " + name);
+			}
 			
-			orig = proto[key];
-			entry = proto[key] = members[key];
-			
-			if (entry instanceof Function) {
-				
-				if (orig instanceof Function) {
-					entry.__super = orig;
+			for (var key in members) {
+				orig = proto[key];
+				entry = proto[key] = members[key];
+
+				if (entry instanceof Function) {
+
+					if (orig instanceof Function) {
+						entry.__super = orig;
+					}
+
+					entry.displayName = name + "." + key;
 				}
-				
-				entry.displayName = name + "." + key;
 			}
 		}
 		
@@ -86,10 +99,10 @@
 
 		
 		// Add destructor 
-		proto.destruct = config.destruct || placeholder;
+		proto.destruct = config.destruct || function destruct(){};
 	
 		// Add reset method
-		proto.reset = config.reset || placeholder;
+		proto.reset = config.reset || function reset(){};
 	
 		// Add properties
 		var properties = construct.__properties = config.properties || {};
@@ -125,9 +138,6 @@
 				}
 			}
 		}
-	
-		// Attach class utilities
-		// construct.getEvents = 
 	
 	});
 

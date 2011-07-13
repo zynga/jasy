@@ -23,7 +23,7 @@
 		
 		if (Permutation.isSet("debug")) {
 			Assert.assertModuleName(name, "Invalid interface name!");
-			Assert.assertMap(config, "Invalid interface configuration!");
+			Assert.assertMap(config, "Invalid interface configuration in " + name);
 		}
 		
 		Core.declare(name, {
