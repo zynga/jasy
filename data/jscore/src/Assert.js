@@ -11,23 +11,36 @@
 		 *
 		 */
 		add : function(func, methodName, msg) {
-			// Wrap method and throw error
+			// Attach given method as is to assertion
+			this[methodName] = func;
+			if(func.displayName == null) {
+				func.displayName = "Assert." + methodName;	
+			}
+
+			// Build assert method name
+			var assertName = "assert";
+			if (methodName.substring(0,2) == "is") {
+				assertName += methodName.substring(2);
+			} else {
+				assertName += methodName.charAt(0).toUpperCase() + methodName.substring(1);
+			}
+			
+			// Wrap method throw error for simplified throwing of exceptions in type checks
 			if (func.length == 1) {
-				this[methodName] = function(value) {
+				this[assertName] = function(value) {
 					if (!func(value)) {
-						throw new Error(msg);
+						throw new TypeError(msg);
 					}
 				};
 			} else {
-				this[methodName] = function(value, compareTo) {
+				this[assertName] = function(value, compareTo) {
 					if (!func(value, compareTo)) {
-						throw new Error(msg.replace("%1", ""+compareTo));
+						throw new TypeError(msg.replace("%1", ""+compareTo));
 					}
 				};
 			}
 			
-			// Add display name
-			this[methodName].displayName = "Assert." + methodName;
+			this[assertName].displayName = "Assert." + assertName;
 		}
 	});
 	
@@ -52,6 +65,10 @@
 		stringToClass[classToString[cls]] = cls;
 	}
 	
+	Assert.add(function(value) {
+    var type = typeof value;
+    return value == null || type == "boolean" || type == "number" || type == "string";
+  }, "isPrimitive", "Not a primitive value!");
 	
 	Assert.add(function(value) { return typeof value == "boolean"; }, "isBoolean", "Not boolean!");
 	Assert.add(function(value) { return value === true; }, "isTrue", "Not 'true'!");

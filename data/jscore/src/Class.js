@@ -23,8 +23,8 @@
 	Core.declare("Class", function(name, config) {
 	
 		if (Permutation.isSet("debug")) {
-			Assert.isModuleName(name, "Invalid class name!");
-			Assert.isMap(config, "Invalid class configuration");
+			Assert.assertModuleName(name, "Invalid class name!");
+			Assert.assertMap(config, "Invalid class configuration");
 		}
 
 		var placeholder = new Function;

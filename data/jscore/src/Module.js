@@ -25,8 +25,8 @@
 	Core.declare("Module", function(name, members) {
 
 		if (Permutation.isSet("debug")) {
-			Assert.isModuleName(name, "Invalid module name!");
-			Assert.isMap(members, "Invalid module members!");
+			Assert.assertModuleName(name, "Invalid module name!");
+			Assert.assertMap(members, "Invalid module members!");
 		}
 
 		// Store module in namespace first

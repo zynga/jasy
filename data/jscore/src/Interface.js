@@ -22,8 +22,8 @@
 	Core.declare("Interface", function(name, config) {
 		
 		if (Permutation.isSet("debug")) {
-			Assert.isModuleName(name, "Invalid interface name!");
-			Assert.isMap(config, "Invalid interface configuration!");
+			Assert.assertModuleName(name, "Invalid interface name!");
+			Assert.assertMap(config, "Invalid interface configuration!");
 		}
 		
 		Core.declare(name, {
@@ -116,7 +116,7 @@
 	};
 
 	// Add assertion for checking for interface implementation
-	Assert.add(implementsInterface, "implementsInterface", "Does not implement given interface!");
+	Assert.add(implementsInterface, "implementsInterface", "Does not implement %1!");
 
 	/**
 	 * Whether the given object is a Interface
