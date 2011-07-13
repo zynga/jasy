@@ -22,7 +22,7 @@
 	Core.declare("Interface", function(name, config) {
 		
 		if (Permutation.isSet("debug")) {
-			Assert.isTrue(Module.isValidName(name), "Invalid interface name!");
+			Assert.isModuleName(name, "Invalid interface name!");
 			Assert.isMap(config, "Invalid interface configuration!");
 		}
 		

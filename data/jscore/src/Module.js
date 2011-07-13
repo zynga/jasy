@@ -25,7 +25,7 @@
 	Core.declare("Module", function(name, members) {
 
 		if (Permutation.isSet("debug")) {
-			Assert.isTrue(Module.isValidName(name), "Invalid module name!");
+			Assert.isModuleName(name, "Invalid module name!");
 			Assert.isMap(members, "Invalid module members!");
 		}
 
@@ -62,17 +62,6 @@
 	});
 
 
-	/** 
-	 * Validator expression for module/class/interface names
-	 *
-	 * @param name {String} Module name to use
-	 * @return {Boolean} Whether the given names is valid for being used as a module name.
-	 */
-	Module.isValidName = function(name) {
-		return /^(([a-z][a-z0-9]+\.)*)([A-Z][a-zA-Z0-9]*)$/.test(name);
-	},
-
-
 	/**
 	 * Whether the given object is a Model
 	 *
@@ -82,3 +71,6 @@
 		return !!(module && typeof module == "object" && module.__isModule === isModuleValue);
 	}
 })();
+
+// Add assertion for module name
+Assert.add(function(value) { return /^(([a-z][a-z0-9]+\.)*)([A-Z][a-zA-Z0-9]*)$/.test(value); }, "isModuleName", "Invalid module name!");

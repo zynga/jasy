@@ -23,7 +23,7 @@
 	Core.declare("Class", function(name, config) {
 	
 		if (Permutation.isSet("debug")) {
-			Assert.isTrue(Module.isValidName(name), "Invalid class name!");
+			Assert.isModuleName(name, "Invalid class name!");
 			Assert.isMap(config, "Invalid class configuration");
 		}
 

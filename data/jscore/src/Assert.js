@@ -32,10 +32,6 @@
 		
 		is : function(value, type) {
 			return types[type](value);
-		},
-		
-		getClassName : function(value) {
-			return stringToClass[toString.call(value)];
 		}
 		
 	});
@@ -61,28 +57,26 @@
 		stringToClass[classToString[cls]] = cls;
 	}
 	
-	var getClassName = Assert.getClassName;
 	
-	
-	Assert.add(function(value) { return typeof value == "boolean"; }, "isBoolean", "Expected a boolean!");
-	Assert.add(function(value) { return value === true; }, "isTrue", "Expected 'true'!");
-	Assert.add(function(value) { return value === false; },"isFalse", "Expected 'false'!");
+	Assert.add(function(value) { return typeof value == "boolean"; }, "isBoolean", "Not boolean!");
+	Assert.add(function(value) { return value === true; }, "isTrue", "Not 'true'!");
+	Assert.add(function(value) { return value === false; },"isFalse", "Not 'false'!");
 
-	Assert.add(function(value) { return typeof value == "string"; }, "isString", "Expected a string!");
-	Assert.add(function(value) { return typeof value == "string" && value.length > 0; }, "isNonEmptyString", "Expected a non empty string!");
+	Assert.add(function(value) { return typeof value == "string"; }, "isString", "Not a string!");
+	Assert.add(function(value) { return typeof value == "string" && value.length > 0; }, "isNonEmptyString", "Not a non empty string!");
 
-	Assert.add(function(value) { return typeof value == "number"; }, "isNumber", "Expected a number!");
-	Assert.add(function(value) { return value === 0; }, "isZero", "Expected primitive zero!");
+	Assert.add(function(value) { return typeof value == "number"; }, "isNumber", "Not a number!");
+	Assert.add(function(value) { return value === 0; }, "isZero", "Not zero!");
 
-	Assert.add(function(value) { return typeof value == "object"; }, "isObject", "Expected an object!");
-	Assert.add(function(value) { return value === null; }, "isNull", "Expected 'null'!");
-	Assert.add(function(value) { return value !== null; }, "isNotNull", "Expected a non-'null' value!");
+	Assert.add(function(value) { return typeof value == "object"; }, "isObject", "Not an object!");
+	Assert.add(function(value) { return value === null; }, "isNull", "Not 'null'!");
+	Assert.add(function(value) { return value !== null; }, "isNotNull", "Is 'null'!");
 
-	Assert.add(function(value) { return getClassName(value) == "Object"; }, "isMap", "Expected a map (plain object)!");
-	Assert.add(function(value) { return getClassName(value) == "Array"; }, "isArray", "Expected an array!");
-	Assert.add(function(value) { return getClassName(value) == "Function"; }, "isFunction", "Expected a function!");
-	Assert.add(function(value) { return getClassName(value) == "RegExp"; }, "isRegExp", "Expected a regular expression!");
-	Assert.add(function(value) { return getClassName(value) == "Date"; }, "isDate", "Expected a date object!");
+	Assert.add(function(value) { return stringToClass[toString.call(value)] == "Object"; }, "isMap", "Not a map (plain object)!");
+	Assert.add(function(value) { return stringToClass[toString.call(value)] == "Array"; }, "isArray", "Not an array!");
+	Assert.add(function(value) { return stringToClass[toString.call(value)] == "Function"; }, "isFunction", "Not a function!");
+	Assert.add(function(value) { return stringToClass[toString.call(value)] == "RegExp"; }, "isRegExp", "Not a regular expression!");
+	Assert.add(function(value) { return stringToClass[toString.call(value)] == "Date"; }, "isDate", "Not a date object!");
 
 })(this);
 
