@@ -7,14 +7,14 @@
 		 *
 		 * @param func {Function} Function for the test. Must return boolean.
 		 * @param methodName {String} Name of the method to attach.
-		 * 
+		 * @param assertMsg {}
 		 *
 		 */
-		add : function(func, methodName, msg) {
+		add : function(func, methodName, assertMsg) {
 			// Attach given method as is to assertion
 			this[methodName] = func;
 			if(func.displayName == null) {
-				func.displayName = "Assert." + methodName;	
+				func.displayName = "Assert." + methodName;
 			}
 
 			// Build assert method name
@@ -27,15 +27,15 @@
 			
 			// Wrap method throw error for simplified throwing of exceptions in type checks
 			if (func.length == 1) {
-				this[assertName] = function(value) {
+				this[assertName] = function(value, customMsg) {
 					if (!func(value)) {
-						throw new TypeError(msg);
+						throw new TypeError('Value: "' + value + '": ' + (customMsg||assertMsg));
 					}
 				};
 			} else {
-				this[assertName] = function(value, compareTo) {
+				this[assertName] = function(value, compareTo, customMsg) {
 					if (!func(value, compareTo)) {
-						throw new TypeError(msg.replace("%1", ""+compareTo));
+						throw new TypeError('Value: "' + value + '": ' + (customMsg||assertMsg.replace("%1", ""+compareTo)));
 					}
 				};
 			}
@@ -98,7 +98,7 @@
 
 	Assert.add(function(value, regexp) { 
 		return typeof value == "string" && !!value.match(regexp); 
-	}, "matchesRegExp", "Does not match regular expression!");
+	}, "matchesRegExp", "Does not match regular expression %1!");
 	
 	Assert.add(function(value, func) { 
 		var ret = true;
