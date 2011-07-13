@@ -139,9 +139,26 @@
 	 */
 	var isClass = Class.isClass = function(cls) {
 		return !!(cls && typeof cls == "function" && cls.__isClass === isClassValue);
-	}
+	};
 	
-	// Add assertion for interface type
+	
+	/**
+	 * Whether the given class includes the given class.
+	 *
+	 * @param cls {Class} Class to check for including other class.
+	 * @param incCls {Class} Class for checking if being included into first one.
+	 * @return {Boolean} Whether the second class is included in the first class.
+	 */
+	var includesClass = Class.includesClass = function(cls, incCls) {
+		Assert.assertClass(cls, "Class to check for including class is itself not a class!");
+		Assert.assertClass(incCls, "Class to check for being included is not a class!");
+		
+		return cls.__flatIncludes.indexOf(incCls) != -1;
+	};
+	
+	
+	// Add assertions
 	Assert.add(isClass, "isClass", "Invalid class!");
+	Assert.add(includesClass, "includesClass", "Does not include mixin %1!");
 	
 })();
