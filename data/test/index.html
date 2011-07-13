@@ -82,6 +82,27 @@
         equals(abc.Module2.method3.displayName, "abc.Module2.method3");
       });
       
+      test("Checking module name", function() {
+        raises(function() {
+          Module("", {});
+        });
+        raises(function() {
+          Module(true, {});
+        });
+        raises(function() {
+          Module(" SpaceVoodoo ", {});
+        });
+        raises(function() {
+          Module("has space", {});
+        });
+        raises(function() {
+          Module("firstLow", {});
+        });
+        raises(function() {
+          Module("two..Dots", {});
+        });
+      });
+      
       
       
       
