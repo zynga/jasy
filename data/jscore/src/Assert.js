@@ -1,4 +1,4 @@
-(function(global) {
+(function(global, undef) {
 	
 	var types = {};
 	
@@ -65,8 +65,9 @@
 	Assert.add(function(value) { return typeof value == "string"; }, "isString", "Not a string!");
 	Assert.add(function(value) { return typeof value == "string" && value.length > 0; }, "isNonEmptyString", "Not a non empty string!");
 
-	Assert.add(function(value) { return typeof value == "number"; }, "isNumber", "Not a number!");
+	Assert.add(function(value) { return typeof value == "number" && isFinite(value); }, "isNumber", "Not a number!");
 	Assert.add(function(value) { return value === 0; }, "isZero", "Not zero!");
+	Assert.add(function(value) { return parseInt(value) === value; }, "isInteger", "Not an integer!");
 
 	Assert.add(function(value) { return typeof value == "object"; }, "isObject", "Not an object!");
 	Assert.add(function(value) { return value === null; }, "isNull", "Not 'null'!");
@@ -77,6 +78,13 @@
 	Assert.add(function(value) { return stringToClass[toString.call(value)] == "Function"; }, "isFunction", "Not a function!");
 	Assert.add(function(value) { return stringToClass[toString.call(value)] == "RegExp"; }, "isRegExp", "Not a regular expression!");
 	Assert.add(function(value) { return stringToClass[toString.call(value)] == "Date"; }, "isDate", "Not a date object!");
+	
+	Assert.add(function(value) { return value && value.nodeType != undef; }, "isNode", "Not a node!");
+	Assert.add(function(value) { return value && value.nodeType == 1; }, "isElement", "Not an element!");
+	Assert.add(function(value) { return value && value.nodeType == 3; }, "isTextNode", "Not a text node!");
+	Assert.add(function(value) { return value && value.nodeType == 9; }, "isDocument", "Not a document!");
+	
+	
 
 })(this);
 

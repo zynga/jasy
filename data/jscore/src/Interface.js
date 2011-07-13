@@ -121,7 +121,11 @@
 	 *
 	 * @return {Boolean} Whether the given argument is an valid Interface.
 	 */
-	Interface.isInterface = function(iface) {
+	var isInterface = Interface.isInterface = function(iface) {
 		return !!(iface && typeof iface == "object" && iface.__isInterface === isInterfaceValue);
 	};
+	
+	// Add assertion for interface type
+	Assert.add(isInterface, "isInterface", "Invalid interface!");
+	
 })();

@@ -137,7 +137,11 @@
 	 *
 	 * @return {Boolean} Whether the given argument is an valid Class.
 	 */
-	Class.isClass = function(cls) {
+	var isClass = Class.isClass = function(cls) {
 		return !!(cls && typeof cls == "function" && cls.__isClass === isClassValue);
 	}
+	
+	// Add assertion for interface type
+	Assert.add(isClass, "isClass", "Invalid class!");
+	
 })();

@@ -63,14 +63,30 @@
 
 
 	/**
+	 * Whether the given name is a valid module name.
+	 *
+	 * @param value {String} Any string
+	 * @return {Boolean} Whether the given string is a valid module name
+	 */
+	var isModuleName = Module.isModuleName = function(value) { 
+		return /^(([a-z][a-z0-9]+\.)*)([A-Z][a-zA-Z0-9]*)$/.test(value); 
+	};
+
+
+	/**
 	 * Whether the given object is a Model
 	 *
 	 * @return {Boolean} Whether the given argument is an valid Model.
 	 */
-	Module.isModule = function(module) {
+	var isModule = Module.isModule = function(module) {
 		return !!(module && typeof module == "object" && module.__isModule === isModuleValue);
 	}
-})();
+	
+	
+	// Add assertion for module name
+	Assert.add(isModuleName, "isModuleName", "Invalid module name!");
 
-// Add assertion for module name
-Assert.add(function(value) { return /^(([a-z][a-z0-9]+\.)*)([A-Z][a-zA-Z0-9]*)$/.test(value); }, "isModuleName", "Invalid module name!");
+	// Add assertion for module type
+	Assert.add(isModule, "isModule", "Invalid module!");
+	
+})();
