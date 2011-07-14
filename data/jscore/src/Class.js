@@ -18,37 +18,37 @@
 		}
 		
 		for (var i=0, l=include.length; i<l; i++) {
-			var mixin = include[i];
-			var mixinKeys = Object.keys(mixin.prototype);
+			var includedClass = include[i];
+			var includedMembers = Object.keys(includedClass.prototype);
 			
-			for(var j=0, jl=mixinKeys.length; j<jl; j++) {
-				var field = mixinKeys[j];
+			for(var j=0, jl=includedMembers.length; j<jl; j++) {
+				var key = includedMembers[j];
 				
-				if (members.hasOwnProperty(field)) {
-					// Private field conflict with including class (must fail, always)
-					if (field.substring(0,2) == "__") {
-						throw new Error("Included class " + mixin.className + " overwrites private field of class " + name);
+				if (members.hasOwnProperty(key)) {
+					// Private member conflict with including class (must fail, always)
+					if (key.substring(0,2) == "__") {
+						throw new Error("Included class " + includedClass.className + " overwrites private member of class " + name);
 					}
 					
-					// members are allowed to override protected and public fields of any included class
+					// members are allowed to override protected and public members of any included class
 				}
 				
-				if (allIncludeKeys.hasOwnProperty(field)) {
-					// Private field conflict between included classes (must fail, always)
-					if (field.substring(0,2) == "__") {
-						throw new Error("Included class " + mixin.className + " overwrites private member of other included class " + allIncludeKeys[field].className + " in class " + name);
+				if (allIncludeKeys.hasOwnProperty(key)) {
+					// Private members conflict between included classes (must fail, always)
+					if (key.substring(0,2) == "__") {
+						throw new Error("Included class " + includedClass.className + " overwrites private member of other included class " + allIncludeKeys[key].className + " in class " + name);
 					}
 					
-					// If both included classes define this field as a function check whether 
+					// If both included classes define this key as a function check whether 
 					// the members section has a function as well (which might call both of them).
-					if (field in members && members[field] instanceof Function && mixin.prototype[field] instanceof Function && allIncludeKeys[field].prototype[field] instanceof Function) {
+					if (key in members && members[key] instanceof Function && includedClass.prototype[key] instanceof Function && allIncludeKeys[key].prototype[key] instanceof Function) {
 						// pass
 					} else {
-						throw new Error("Included class " + mixin.className + " overwrites member of other included class " + allIncludeKeys[field].className + " in class " + name);
+						throw new Error("Included class " + includedClass.className + " overwrites member of other included class " + allIncludeKeys[key].className + " in class " + name);
 					}
 				}
 				
-				allIncludeKeys[field] = mixin;
+				allIncludeKeys[key] = includedClass;
 			}
 		}
 	};
@@ -114,8 +114,9 @@
 		// Attach to namespace
 		Core.declare(name, construct);
 		
-		// Attach events data
-		construct.__events = config.events || {};
+		// Attach events and properties data
+		var events = construct.__events = config.events || {};
+		var properties = construct.__properties = config.properties || {};
 		
 		// Prototype (stuff attached to all instances)
 		var proto = construct.prototype;
@@ -152,25 +153,35 @@
 		//   MIXINS
 		// ------------------------------------
 	
-		// Insert other classes (mixin)
+		// Insert other classes
 		var include = config.include;
 		if (include) {
 			if (Permutation.isSet("debug")) {
 				for (var i=0, l=include.length; i<l; i++) {
-					Assert.assertClass(include[i], "Class " + name + " includes invalid mixin " + include[i] + " at position: " + i + "!");
+					Assert.assertClass(include[i], "Class " + name + " includes invalid class " + include[i] + " at position: " + i + "!");
 				}
 				
-				if (include.length > 1) {
-					checkMixinMemberConflicts(include, members, name);
-					checkMixinPropertyConflicts();
-					checkMixinEventConflicts();
-				}
+				checkMixinMemberConflicts(include, members, name);
+				checkMixinPropertyConflicts(include, properties, name);
+				checkMixinEventConflicts(include, events, name);
 			}
 
 			for (var i=0, l=include.length; i<l; i++) {
-				var mixinproto = include[i].prototype;
-				for (var key in mixinproto) {
-					proto[key] = mixinproto[key];
+				var includedClass = include[i];
+				
+				var includeProto = includedClass.prototype;
+				for (var key in includeProto) {
+					proto[key] = includeProto[key];
+				}
+				
+				var includeProperties = includedClass.__properties;
+				for (var key in includeProperties) {
+					properties[key] = includeProperties[key];
+				}
+
+				var includeEvents = includedClass.__events;
+				for (var key in includeEvents) {
+					events[key] = includeEvents[key];
 				}
 			}
 		}
