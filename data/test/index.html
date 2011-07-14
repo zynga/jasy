@@ -40,6 +40,17 @@
     var global = this;
     $(function() {
       
+      module("setTimeout");
+      
+      asyncTest("Using arguments", 1, function() {
+        setTimeout(function(arg) {
+          equals(arg, "hello");
+          start();
+        }, 10, "hello");
+      });
+
+
+
       module("setImmediate");
       
       asyncTest("Set and Fire", 1, function() {

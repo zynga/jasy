@@ -14,7 +14,7 @@ setTimeout(function(one) {
 		return;
 	}
 
-	var slice = [].slice;
+	var slice = Array.prototype.slice;
 
 	// trap original versions
 	var Timeout = setTimeout;
