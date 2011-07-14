@@ -18,10 +18,33 @@
 		if (Permutation.isSet("debug")) {
 			Assert.assertModuleName(name, "Invalid class name!");
 			Assert.assertMap(config, "Invalid class configuration in class " + name);
-			if (config.construct) {
-				Assert.assertFunction("Invalid class constructor in: " + name + "!");
+			Assert.assertDefiningAllowedKeysOnly(config, ["construct","events","members","properties","include","implement"], "Invalid clas configuration in class " + name + "! Configuration key %1 is not allowed!");
+			
+			if ("construct" in config) {
+				Assert.assertFunction(config.construct, "Invalid constructor in class " + name + "!");
+			}
+			
+			if ("events" in config) {
+				Assert.assertMap(config.events, "Invalid event data in class " + name + "!");
+			}
+			
+			if ("members" in config) {
+				Assert.assertMap(config.members, "Invalid member section in class " + name);
+			}
+
+			if ("properties" in config) {
+				Assert.assertMap(config.properties, "Invalid properties section in class " + name);
+			}
+			
+			if ("include" in config) {
+				Assert.assertArray(config.include, "Invalid include list in class " + name);
+			}
+
+			if ("implement" in config) {
+				Assert.assertArray(config.implement, "Invalid implement list in class " + name);
 			}
 		}
+		
 		
 		
 		// ------------------------------------
@@ -59,10 +82,6 @@
 		// Attach members
 		var members = config.members;
 		if (members) {
-			if (Permutation.isSet("debug")) {
-				Assert.isMap(include, "Invalid member section in class " + name);
-			}
-			
 			for (var key in members) {
 				var entry = proto[key] = members[key];
 				if (entry instanceof Function) {
@@ -90,8 +109,6 @@
 		var include = config.include;
 		if (include) {
 			if (Permutation.isSet("debug")) {
-				Assert.isArray(include, "Invalid include list in class " + name);
-
 				var includeLength = include.length;
 				
 				if (includeLength == 1) {
@@ -124,14 +141,10 @@
 		
 		
 
+		// ------------------------------------
+		//   INTERFACES
+		// ------------------------------------
 	
-	
-
-		
-		
-		
-	
-		// Verify interfaces
 		if (Permutation.isSet("debug")) {
 			var implement = config.implement;
 			if (implement) {

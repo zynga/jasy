@@ -99,6 +99,20 @@
 	Assert.add(function(value) { return value && value.nodeType == 1; }, "isElement", "Not an element!");
 	Assert.add(function(value) { return value && value.nodeType == 3; }, "isTextNode", "Not a text node!");
 	Assert.add(function(value) { return value && value.nodeType == 9; }, "isDocument", "Not a document!");
+	
+	Assert.add(function(value, keys) {
+		Assert.assertMap(value);
+		Assert.assertArray(keys);
+		
+		var valueKeys = Object.keys(value);
+		for (var i=0, l=valueKeys.length; i<l; i++) {
+			var key = valueKeys[i];
+			if (keys.indexOf(key) == -1) {
+				return false;
+			}
+		}
+		return true;
+	}, "isDefiningAllowedKeysOnly", "Defines a key %1 which is not allowed being used!");
 
 	Assert.add(function(value, regexp) { 
 		return typeof value == "string" && !!value.match(regexp); 
