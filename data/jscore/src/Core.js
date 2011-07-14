@@ -13,7 +13,7 @@
 	// all following modules/classes.
 	var Core = 
 	{
-		declare : function(namespace, object)
+		declare : function(namespace, object, raise)
 		{
 			var splits = namespace.split(".");
 			var current = global;
@@ -46,6 +46,8 @@
 		 *
 		 * @param namespace {String} Namespace/Package e.g. foo.bar.baz
 		 * @param object {Object} Any object
+		 * @param duplicate {Boolean?false} Whether an error should be thrown when namespaces are overwritten
+		 * @return {Object} Returns the given object
 		 */
 		declare : Core.declare,
 
@@ -64,6 +66,7 @@
 		 * Resolves a given namespace into the already existing object/class.
 		 *
 		 * @param namespace {String} Name to resolve
+		 * @return {Object} Returns the object stored under the given namespace
 		 */
 		resolve : function(namespace)
 		{

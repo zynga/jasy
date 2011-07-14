@@ -127,12 +127,24 @@ $(function() {
 		}
 	});
 	
-	test("Creating empty class", function() {
+	test("Creating built-ins for empty class", function() {
 		Class("abc.Class1", {});
 		equals(Class.isClass(abc.Class1), true);
 		equals(abc.Class1.className, "abc.Class1");
 		equals(abc.Class1.toString(), "[Class abc.Class1]");
 	});
+
+	test("Creating constructor", function() {
+		Class("abc.Class1", {
+			
+		});
+
+		
+	});
+	
+	
+	
+	
 	
 	
 	/**

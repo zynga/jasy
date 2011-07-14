@@ -61,6 +61,18 @@
 			assert : Interface.assert
 		});
 	});
+	
+	
+	/**
+	 * Resolves a given Interface name
+	 *
+	 * @param interfaceName {String} Name to resolve
+	 * @return {Object} Returns the Interface stored under the given name
+	 */	
+	Interface.getByName = function(interfaceName) {
+		var obj = Core.resolve(interfaceName);
+		return isInterface(obj) ? obj : null;
+	};
 
 
 	/**

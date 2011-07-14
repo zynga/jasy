@@ -215,6 +215,48 @@
 
 
 	/**
+	 * Resolves a given Class name
+	 *
+	 * @param className {String} Name to resolve
+	 * @return {Object} Returns the Class stored under the given name
+	 */
+	Class.getByName = function(className) {
+		var obj = Core.resolve(className);
+		return isClass(obj) ? obj : null;
+	};
+
+
+	/**
+	 * Returns the events supported by the given class
+	 *
+	 * @param cls {Class} Class to query
+	 * @return {Map} Map of all events and their type
+	 */
+	Class.getEvents = function(cls) {
+		if (Permutation.isSet("debug")) {
+			Assert.assertClass(cls);
+		}
+		
+		return cls.__events;
+	};
+	
+	
+	/**
+	 * Returns the properties supported by the given class
+	 *
+	 * @param cls {Class} Class to query
+	 * @return {Map} Map of all properties and their configuration
+	 */
+	Class.getProperties = function(cls) {
+		if (Permutation.isSet("debug")) {
+			Assert.assertClass(cls);
+		}
+		
+		return cls.__properties;
+	};	
+
+
+	/**
 	 * Whether the given object is a Class
 	 *
 	 * @return {Boolean} Whether the given argument is an valid Class.
@@ -235,7 +277,7 @@
 		Assert.assertClass(cls, "Class to check for including class is itself not a class!");
 		Assert.assertClass(incCls, "Class to check for being included is not a class!");
 		
-		return cls.__flatIncludes.indexOf(incCls) != -1;
+		return cls.__includes.indexOf(incCls) != -1;
 	};
 	
 	

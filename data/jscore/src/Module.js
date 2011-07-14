@@ -63,6 +63,18 @@
 
 
 	/**
+	 * Resolves a given Module name
+	 *
+	 * @param moduleName {String} Name to resolve
+	 * @return {Object} Returns the Module stored under the given name
+	 */
+	Module.getByName = function(moduleName) {
+		var obj = Core.resolve(moduleName);
+		return isModule(obj) ? obj : null;
+	};
+
+
+	/**
 	 * Whether the given name is a valid module name.
 	 *
 	 * @param value {String} Any string
