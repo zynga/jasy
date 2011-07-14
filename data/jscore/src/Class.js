@@ -10,6 +10,54 @@
 		return "[Class " + this.className + "]";
 	};
 	
+	var checkMixinMemberConflicts = function(include, members, name) {
+		var allIncludeKeys = {};
+		
+		if (!members) {
+			members = {};
+		}
+		
+		for (var i=0, l=include.length; i<l; i++) {
+			var mixin = include[i];
+			var mixinKeys = Object.keys(mixin.prototype);
+			
+			for(var j=0, jl=mixinKeys.length; j<jl; j++) {
+				var field = mixinKeys[j];
+				
+				if (members.hasOwnProperty(field)) {
+					// Private field conflict with including class (must fail, always)
+					if (field.substring(0,2) == "__") {
+						throw new Error("Included class " + mixin.className + " overwrites private field of class " + name);
+					}
+					
+					// members are allowed to override protected and public fields of any included class
+				}
+				
+				if (allIncludeKeys.hasOwnProperty(field)) {
+					// Private field conflict between included classes (must fail, always)
+					if (field.substring(0,2) == "__") {
+						throw new Error("Included class " + mixin.className + " overwrites private member of other included class " + allIncludeKeys[field].className + " in class " + name);
+					}
+					
+					// If both included classes define this field as a function check whether 
+					// the members section has a function as well (which might call both of them).
+					if (field in members && members[field] instanceof Function && mixin.prototype[field] instanceof Function && allIncludeKeys[field].prototype[field] instanceof Function) {
+						// pass
+					} else {
+						throw new Error("Included class " + mixin.className + " overwrites member of other included class " + allIncludeKeys[field].className + " in class " + name);
+					}
+				}
+				
+				allIncludeKeys[field] = mixin;
+			}
+		}
+	};
+	
+	var checkMixinPropertyConflicts = function() {};
+	var checkMixinEventConflicts = function() {};
+	
+	
+	
 	var isClassValue = +new Date;
 
 	
@@ -18,7 +66,8 @@
 		if (Permutation.isSet("debug")) {
 			Assert.assertModuleName(name, "Invalid class name!");
 			Assert.assertMap(config, "Invalid class configuration in class " + name);
-			Assert.assertDefiningAllowedKeysOnly(config, ["construct","events","members","properties","include","implement"], "Invalid clas configuration in class " + name + "! Configuration key %1 is not allowed!");
+			Assert.assertDefiningAllowedKeysOnly(config, ["construct","events","members","properties","include","implement"], 
+				"Invalid clas configuration in class " + name + "! Configuration key %1 is not allowed!");
 			
 			if ("construct" in config) {
 				Assert.assertFunction(config.construct, "Invalid constructor in class " + name + "!");
@@ -55,10 +104,8 @@
 	
 		// Store name / type
 		construct.className = name;
-		construct.__isClass = isClassValue;
-	
-		// Add displayName
 		construct.displayName = name;
+		construct.__isClass = isClassValue;
 	
 		// Add toString() / valueOf()
 		construct.toString = genericToString;
@@ -109,25 +156,14 @@
 		var include = config.include;
 		if (include) {
 			if (Permutation.isSet("debug")) {
-				var includeLength = include.length;
+				for (var i=0, l=include.length; i<l; i++) {
+					Assert.assertClass(include[i], "Class " + name + " includes invalid mixin " + include[i] + " at position: " + i + "!");
+				}
 				
-				if (includeLength == 1) {
-					Assert.assertClass(mixin, "Class " + name + " includes invalid mixin " + include[i] + " at position: " + i + "!");
-				} else {
-					var includeMemberKeys = {};
-					for (var i=0; i<includeLength; i++) {
-						var mixin = include[i];
-						var mixinMemberKeys = Object.keys(mixin.prototype);
-						
-						for(var j=0, jl=mixinMemberKeys.length; j<jl; j++) {
-							var mixinMemberKey = mixinMemberKeys[j];
-							if (includeMemberKeys.hasOwnProperty(mixinMemberKey)) {
-								throw new Error('Conflicting member "' + mixinMemberKey + '" between classes ' + includeMemberKeys[mixinMemberKey] + ' and ' + mixin);
-							}
-
-							includeMemberKeys[mixinMemberKey] = mixin;
-						}
-					}
+				if (include.length > 1) {
+					checkMixinMemberConflicts(include, members, name);
+					checkMixinPropertyConflicts();
+					checkMixinEventConflicts();
 				}
 			}
 

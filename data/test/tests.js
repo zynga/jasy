@@ -139,7 +139,7 @@ $(function() {
 	 * Two classes which should be mixed into another one define the same member. 
 	 * A conflict arises, as both could not be merged into the target class.
 	 */
-	test("Conflicting members", function() {
+	test("Conflicting member functions", function() {
 		Class("conflict.Include1", {
 			members : {
 				foo : function() {}
@@ -160,12 +160,36 @@ $(function() {
 	
 	
 	/**
+	 * Two classes which should be mixed into another one define the same member.
+	 * A conflict arises, as both could not be merged into the target class.
+	 */
+	test("Conflicting member data", function() {
+		Class("conflict.Include1", {
+			members : {
+				foo : 1
+			}
+		});
+		Class("conflict.Include2", {
+			members : {
+				foo : 2
+			}
+		});
+
+		raises(function() {
+			Class("conflict.Join", {
+				include : [conflict.Include1, conflict.Include2]
+			});
+		});
+	});	
+	
+	
+	/**
 	 * Two classes which should be mixed into another one define the same member. 
 	 * The conflict is prevented as the affected member is also defined locally. So
 	 * the author of the including class is aware of the conflict and could call the
 	 * original methods if that makes sense.
 	 */
-	test("Conflicting members with merge", function() {
+	test("Conflicting member functions, correctly merged", function() {
 		Class("conflict.Include1", {
 			members : {
 				foo : function() {}
@@ -181,7 +205,7 @@ $(function() {
 			include : [conflict.Include1, conflict.Include2],
 			
 			members : {
-				// Merge conflict manually
+				// Merge manually
 				foo : function() {
 					conflict.Include1.prototype.foo.call(this);
 					conflict.Include2.prototype.foo.call(this);
@@ -193,7 +217,73 @@ $(function() {
 	});
 	
 	
+	/**
+	 * Two classes which should be mixed into another one define the same member. 
+	 * The conflict is tried being prevented as the affected member is also defined locally. But as
+	 * it is not a function this is not regarded as solved. The individual included classes might
+	 * require that this member is a function!
+	 */
+	test("Conflicting member functions, not merged correctly", function() {
+		Class("conflict.Include1", {
+			members : {
+				foo : function() {}
+			}
+		});
+		Class("conflict.Include2", {
+			members : {
+				foo : function() {}
+			}
+		});
+
+		raises(function() {
+			Class("conflict.Join", {
+				include : [conflict.Include1, conflict.Include2],
+			
+				members : {
+					// Invalid merge
+					foo : null
+				}
+			});
+		});
+	});	
 	
+	
+	/**
+	 * Two classes which should be mixed into another one define the same member. 
+	 * The conflict is tried to being prevented as the affected member is also defined locally. 
+	 * But this is not allowed for private members.
+	 */
+	test("Conflicting member functions with failed private merge", function() {
+		Class("conflict.Include1", {
+			members : {
+				__foo : function() {}
+			}
+		});
+		Class("conflict.Include2", {
+			members : {
+				__foo : function() {}
+			}
+		});
+
+		raises(function() {
+			Class("conflict.Join", {
+				include : [conflict.Include1, conflict.Include2],
+			
+				members : {
+					// Private merge... not allowed
+					__foo : function() {
+						conflict.Include1.prototype.foo.call(this);
+						conflict.Include2.prototype.foo.call(this);
+					
+						doSomethingElse();
+					}
+				}
+			});
+		});
+	});	
+	
+	
+
 	
 	
 	
