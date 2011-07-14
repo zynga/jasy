@@ -106,13 +106,37 @@
       
       
       
-      module("Classes");
+      module("Classes", {
+        teardown : function() {
+          delete global.abc;
+          delete global.conflict;
+        }
+      });
       
       test("Creating empty class", function() {
         Class("abc.Class1", {});
         equals(Class.isClass(abc.Class1), true);
         equals(abc.Class1.className, "abc.Class1");
         equals(abc.Class1.toString(), "[Class abc.Class1]");
+      });
+      
+      test("Conflicting members", function() {
+        Class("conflict.Include1", {
+          members : {
+            foo : function() {}
+          }
+        });
+        Class("conflict.Include2", {
+          members : {
+            foo2 : function() {}
+          }
+        });
+
+        Class("conflict.Join", {
+          include : [conflict.Include1, conflict.Include2]
+        });
+        raises(function() {
+        });
       });
       
       

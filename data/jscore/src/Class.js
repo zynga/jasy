@@ -62,6 +62,7 @@
 					for (var i=0; i<includeLength; i++) {
 						var mixin = include[i];
 						var mixinMemberKeys = Object.keys(mixin.prototype);
+						console.debug("Keys: " + mixinMemberKeys)
 						
 						for(var mixinMemberKey in mixinMemberKeys) {
 							if (includeMemberKeys.hasOwnProperty(mixinMemberKey)) {
