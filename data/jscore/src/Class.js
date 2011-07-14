@@ -23,6 +23,11 @@
 			}
 		}
 		
+		
+		// ------------------------------------
+		//   CONSTRUCTOR
+		// ------------------------------------
+		
 		var construct = config.construct || function construct(){};
 	
 		// Store name / type
@@ -39,9 +44,47 @@
 		// Attach to namespace
 		Core.declare(name, construct);
 		
+		// Attach events data
+		construct.__events = config.events || {};
+		
 		// Prototype (stuff attached to all instances)
 		var proto = construct.prototype;
 	
+	
+	
+		// ------------------------------------
+		//   LOCALS
+		// ------------------------------------
+	
+		// Attach members
+		var members = config.members;
+		if (members) {
+			if (Permutation.isSet("debug")) {
+				Assert.isMap(include, "Invalid member section in class " + name);
+			}
+			
+			for (var key in members) {
+				var entry = proto[key] = members[key];
+				if (entry instanceof Function) {
+					entry.displayName = name + "." + key;
+				}
+			}
+		}
+		
+		
+		// Add properties
+		var properties = construct.__properties = config.properties || {};
+		for (var key in properties) {
+			jasy.property.Property.add(proto, key, properties[key]);
+		}
+	
+	
+	
+	
+	
+		// ------------------------------------
+		//   MIXINS
+		// ------------------------------------
 	
 		// Insert other classes (mixin)
 		var include = config.include;
@@ -80,44 +123,10 @@
 		}
 		
 		
-		// Attach members
-		var members = config.members;
-		var orig, entry;
-		
-		if (members) {
-			if (Permutation.isSet("debug")) {
-				Assert.isMap(include, "Invalid member section in class " + name);
-			}
-			
-			for (var key in members) {
-				orig = proto[key];
-				entry = proto[key] = members[key];
-
-				if (entry instanceof Function) {
-					entry.displayName = name + "." + key;
-
-					if (orig instanceof Function) {
-						entry.__super = orig;
-					}
-				}
-			}
-		}
-		
-		
 
 	
 	
-		// Add properties
-		var properties = construct.__properties = config.properties || {};
-		for (var key in properties) {
-			jasy.property.Property.add(proto, key, properties[key]);
-		}
-	
-		// Register events
-		var events = construct.__events = config.events || {};
-		for (var key in events) {
 
-		}
 		
 		
 		
