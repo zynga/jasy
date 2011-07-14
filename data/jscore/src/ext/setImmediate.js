@@ -1,3 +1,10 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 /**
  * Emulate setImmediate/clearImmediate using postMessage or timeouts.
  * 

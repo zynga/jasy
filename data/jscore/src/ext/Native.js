@@ -1,3 +1,10 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 // By http://ejohn.org/blog/fast-javascript-maxmin/
 // Convert to prototype functions?
 
