@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" title="no title" charset="utf-8">
     <script src="qunit.js" type="text/javascript" charset="utf-8"></script>
     
+    <script src="../jscore/src/ext/setImmediate.js" type="text/javascript" charset="utf-8"></script>
+
     <script src="../jscore/src/Core.js" type="text/javascript" charset="utf-8"></script>
     <script src="../jscore/src/Permutation.js" type="text/javascript" charset="utf-8"></script>
     <script src="../jscore/src/Assert.js" type="text/javascript" charset="utf-8"></script>
@@ -26,6 +28,17 @@
     <script type="text/javascript">
     var global = this;
     $(function() {
+      
+      module("setImmediate");
+      
+      asyncTest("Set and Fire", 1, function() {
+        setImmediate(function() {
+          ok(true, "always fine");
+          start();
+        });
+      });
+
+
       
       module("Namespace", {
         teardown : function() {
@@ -128,14 +141,14 @@
         });
         Class("conflict.Include2", {
           members : {
-            foo2 : function() {}
+            foo : function() {}
           }
         });
 
-        Class("conflict.Join", {
-          include : [conflict.Include1, conflict.Include2]
-        });
         raises(function() {
+          Class("conflict.Join", {
+            include : [conflict.Include1, conflict.Include2]
+          });
         });
       });
       
