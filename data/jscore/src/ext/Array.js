@@ -20,3 +20,14 @@ if (!Array.isArray) {
 	})(Object.prototype.toString);
 }
 
+Array.max = function(arr){
+	return Math.max.apply(Math, arr);
+};
+
+Array.min = function(arr){
+	return Math.min.apply(Math, arr);
+};
+
+Array.prototype.contains = function(sub) {
+	return ~this.indexOf(sub);
+};
