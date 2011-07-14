@@ -115,6 +115,5 @@
 		return list.indexOf(value) != -1;
 	}, "isInList", "Is not in specified list!");
 	
-
 })(this);
 

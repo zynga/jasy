@@ -47,23 +47,35 @@
 		var proto = construct.prototype;
 	
 	
-		// Insert mixins
+		// Insert other classes (mixin)
 		var include = config.include;
 		if (include) {
 			if (Permutation.isSet("debug")) {
 				Assert.isArray(include, "Invalid include list in class " + name);
-			}
-			
-			var mixin, mixinproto;
-			for (var i=0, l=include.length; i<l; i++) {
-				mixin = include[i];
-				mixinproto = mixin.prototype;
-				if (Permutation.isSet("debug") && !mixinproto) {
-					throw new Error("Class " + name + " includes invalid mixin " + include[i] + " at position: " + i + "!");
-				}
-			
-				detectConflicts(proto, mixin);
+
+				var includeLength = include.length;
 				
+				if (includeLength == 1) {
+					Assert.assertClass(mixin, "Class " + name + " includes invalid mixin " + include[i] + " at position: " + i + "!");
+				} else {
+					var includeMemberKeys = {};
+					for (var i=0; i<includeLength; i++) {
+						var mixin = include[i];
+						var mixinMemberKeys = Object.keys(mixin.prototype);
+						
+						for(var mixinMemberKey in mixinMemberKeys) {
+							if (includeMemberKeys.hasOwnProperty(mixinMemberKey)) {
+								throw new Error('Conflicting member "' + mixinMemberKey + '" between classes ' + includeMemberKeys[mixinMemberKey] + ' and ' + mixin);
+							}
+
+							includeMemberKeys[mixinMemberKey] = mixin;
+						}
+					}
+				}
+			}
+
+			for (var i=0, l=include.length; i<l; i++) {
+				var mixinproto = include[i].prototype;
 				for (var key in mixinproto) {
 					proto[key] = mixinproto[key];
 				}
