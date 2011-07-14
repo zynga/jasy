@@ -11,6 +11,10 @@
 		 *
 		 */
 		add : function(func, methodName, assertMsg) {
+			if(!func) {
+				throw new Error("Invalid function during adding assertion for " + methodName);
+			}
+			
 			// Attach given method as is to assertion
 			this[methodName] = func;
 			if(func.displayName == null) {
@@ -81,15 +85,15 @@
 	Assert.add(function(value) { return value === 0; }, "isZero", "Not zero!");
 	Assert.add(function(value) { return parseInt(value) === value; }, "isInteger", "Not an integer!");
 
-	Assert.add(function(value) { return typeof value == "object"; }, "isObject", "Not an object!");
+	Assert.add(Object.isObject, "isObject", "Not an object!");
 	Assert.add(function(value) { return value === null; }, "isNull", "Not 'null'!");
 	Assert.add(function(value) { return value !== null; }, "isNotNull", "Is 'null'!");
 
-	Assert.add(function(value) { return stringToClass[toString.call(value)] == "Object"; }, "isMap", "Not a map (plain object)!");
-	Assert.add(function(value) { return stringToClass[toString.call(value)] == "Array"; }, "isArray", "Not an array!");
-	Assert.add(function(value) { return stringToClass[toString.call(value)] == "Function"; }, "isFunction", "Not a function!");
-	Assert.add(function(value) { return stringToClass[toString.call(value)] == "RegExp"; }, "isRegExp", "Not a regular expression!");
-	Assert.add(function(value) { return stringToClass[toString.call(value)] == "Date"; }, "isDate", "Not a date object!");
+	Assert.add(Object.isMap, "isMap", "Not a map (plain object)!");
+	Assert.add(Array.isArray, "isArray", "Not an array!");
+	Assert.add(Function.isFunction, "isFunction", "Not a function!");
+	Assert.add(RegExp.isRegExp, "isRegExp", "Not a regular expression!");
+	Assert.add(Date.isDate, "isDate", "Not a date object!");
 	
 	Assert.add(function(value) { return value && value.nodeType != undef; }, "isNode", "Not a node!");
 	Assert.add(function(value) { return value && value.nodeType == 1; }, "isElement", "Not an element!");

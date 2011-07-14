@@ -5,7 +5,24 @@
 ==================================================================================================
 */
 
-if (Function.prototype.bind == null) {
+if (!Function.isFunction) {
+	(function(toString){
+		/**
+		 * Whether the given value is a function.
+		 *
+		 * @signature function(value)
+		 * @param value {var} Value to test
+		 * @return {Boolean} Whether the given value is a function
+		 */
+		Function.isFunction = function(value) {
+			return value != null && toString.call(value) == "[object Function]";
+		}
+	})(Object.prototype.toString);
+}
+
+
+
+if (!Function.prototype.bind) {
 	
 	/**
 	 * Binds the given function to the specific context.

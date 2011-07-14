@@ -5,10 +5,18 @@
 ==================================================================================================
 */
 
-if (typeof Array.isArray == "undefined") 
-{
-	Array.isArray = function (arg) {
-		return arg instanceof Array || Object.prototype.toString.call(arg) === "[object Array]";
-	};
+if (!Array.isArray) {
+	(function(toString){
+		/**
+		 * Whether the given value is an array.
+		 *
+		 * @signature function(value)
+		 * @param value {var} Value to test
+		 * @return {Boolean} Whether the given value is an array
+		 */
+		Array.isArray = function(value) {
+			return value != null && toString.call(value) == "[object Array]";
+		}
+	})(Object.prototype.toString);
 }
 
