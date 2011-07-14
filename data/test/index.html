@@ -39,20 +39,22 @@
     var global = this;
     $(function() {
       
-      module("setTimeout");
+      /*
+      ---------------------------------------------------------------------------
+        EXT
+      ---------------------------------------------------------------------------
+      */
       
-      asyncTest("Using arguments", 1, function() {
+      module("Ext");
+      
+      asyncTest("setTimeout with arguments", 1, function() {
         setTimeout(function(arg) {
           equals(arg, "hello");
           start();
         }, 10, "hello");
       });
 
-
-
-      module("setImmediate");
-      
-      asyncTest("Set and Fire", 1, function() {
+      asyncTest("setImmediate", 1, function() {
         setImmediate(function() {
           ok(true, "always fine");
           start();
@@ -60,6 +62,12 @@
       });
 
 
+
+      /*
+      ---------------------------------------------------------------------------
+        CORE
+      ---------------------------------------------------------------------------
+      */
       
       module("Namespace", {
         teardown : function() {
@@ -79,7 +87,12 @@
       });
       
       
-      
+
+      /*
+      ---------------------------------------------------------------------------
+        MODULES
+      ---------------------------------------------------------------------------
+      */
       
       module("Modules", {
         teardown : function() {
@@ -139,6 +152,11 @@
       
       
       
+      /*
+      ---------------------------------------------------------------------------
+        CLASSES
+      ---------------------------------------------------------------------------
+      */
       
       module("Classes", {
         teardown : function() {
@@ -154,6 +172,11 @@
         equals(abc.Class1.toString(), "[Class abc.Class1]");
       });
       
+      
+      /**
+       * Two classes which should be mixed into another one define the same member. 
+       * A conflict arises, as both could not be merged into the target class.
+       */
       test("Conflicting members", function() {
         Class("conflict.Include1", {
           members : {
@@ -174,6 +197,12 @@
       });
       
       
+      /**
+       * Two classes which should be mixed into another one define the same member. 
+       * The conflict is prevented as the affected member is also defined locally. So
+       * the author of the including class is aware of the conflict and could call the
+       * original methods if that makes sense.
+       */
       test("Conflicting members with merge", function() {
         Class("conflict.Include1", {
           members : {
@@ -194,6 +223,8 @@
             foo : function() {
               conflict.Include1.prototype.foo.call(this);
               conflict.Include2.prototype.foo.call(this);
+              
+              doSomethingElse();
             }
           }
         });
