@@ -18,6 +18,12 @@
 		}
 	};
 	
+	var dontCopyMembers = {
+		construct : 1,
+		destruct : 1,
+		reset : 1
+	};
+	
 	var isClassValue = +new Date;
 	
 	Core.declare("Class", function(name, config) {
@@ -62,9 +68,12 @@
 					for (var i=0; i<includeLength; i++) {
 						var mixin = include[i];
 						var mixinMemberKeys = Object.keys(mixin.prototype);
-						console.debug("Keys: " + mixinMemberKeys)
 						
-						for(var mixinMemberKey in mixinMemberKeys) {
+						for(var j=0, jl=mixinMemberKeys.length; j<jl; j++) {
+							var mixinMemberKey = mixinMemberKeys[j];
+							if (dontCopyMembers[mixinMemberKey]) {
+								continue;
+							}
 							if (includeMemberKeys.hasOwnProperty(mixinMemberKey)) {
 								throw new Error('Conflicting member "' + mixinMemberKey + '" between classes ' + includeMemberKeys[mixinMemberKey] + ' and ' + mixin);
 							}
