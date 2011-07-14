@@ -221,6 +221,10 @@
 	 * @return {Object} Returns the Class stored under the given name
 	 */
 	Class.getByName = function(className) {
+		if (Permutation.isSet("debug")) {
+			Assert.assertString(className);
+		}
+		
 		var obj = Core.resolve(className);
 		return isClass(obj) ? obj : null;
 	};

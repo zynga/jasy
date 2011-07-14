@@ -69,6 +69,10 @@
 	 * @return {Object} Returns the Module stored under the given name
 	 */
 	Module.getByName = function(moduleName) {
+		if (Permutation.isSet("debug")) {
+			Assert.assertString(moduleName);
+		}
+		
 		var obj = Core.resolve(moduleName);
 		return isModule(obj) ? obj : null;
 	};

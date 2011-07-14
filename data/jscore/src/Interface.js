@@ -70,6 +70,10 @@
 	 * @return {Object} Returns the Interface stored under the given name
 	 */	
 	Interface.getByName = function(interfaceName) {
+		if (Permutation.isSet("debug")) {
+			Assert.assertString(interfaceName);
+		}
+		
 		var obj = Core.resolve(interfaceName);
 		return isInterface(obj) ? obj : null;
 	};
