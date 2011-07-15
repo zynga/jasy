@@ -67,7 +67,7 @@
 			Assert.assertModuleName(name, "Invalid class name!");
 			Assert.assertMap(config, "Invalid class configuration in class " + name);
 			Assert.assertDefiningAllowedKeysOnly(config, ["construct","events","members","properties","include","implement"], 
-				"Invalid clas configuration in class " + name + "! Configuration key %1 is not allowed!");
+				"Invalid configuration in class " + name + "! Unallowed key(s) found!");
 			
 			if ("construct" in config) {
 				Assert.assertFunction(config.construct, "Invalid constructor in class " + name + "!");
@@ -278,8 +278,10 @@
 	 * @return {Boolean} Whether the second class is included in the first class.
 	 */
 	var includesClass = Class.includesClass = function(cls, incCls) {
-		Assert.assertClass(cls, "Class to check for including class is itself not a class!");
-		Assert.assertClass(incCls, "Class to check for being included is not a class!");
+		if (Permutation.isSet("debug")) {
+			Assert.assertClass(cls, "Class to check for including class is itself not a class!");
+			Assert.assertClass(incCls, "Class to check for being included is not a class!");
+		}
 		
 		return cls.__includes.indexOf(incCls) != -1;
 	};

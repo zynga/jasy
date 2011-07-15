@@ -127,20 +127,27 @@ $(function() {
 		}
 	});
 	
-	test("Creating built-ins for empty class", function() {
+	test("Invalid config", function() {
+		raises(function() {
+			Class("abc.Class1");
+		});
+		raises(function() {
+			Class("abc.Class1", 42);
+		});
+		raises(function() {
+			Class("abc.Class1", {
+				unallowedKey : "foo"
+			});
+		});
+	});
+
+	test("Creating empty class", function() {
 		Class("abc.Class1", {});
 		equals(Class.isClass(abc.Class1), true);
 		equals(abc.Class1.className, "abc.Class1");
 		equals(abc.Class1.toString(), "[Class abc.Class1]");
 	});
 
-	test("Creating constructor", function() {
-		Class("abc.Class1", {
-			
-		});
-
-		
-	});
 	
 	
 	
