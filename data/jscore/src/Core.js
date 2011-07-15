@@ -5,7 +5,7 @@
 ==================================================================================================
 */
 
-(function(global)
+(function(global, undef)
 {
 	var cache = {};
 	
@@ -63,6 +63,31 @@
 		 */
 		getAll : function() {
 			return Object.keys(cache);
+		},
+		
+		
+		/**
+		 * Clears the object under the given namespace (incl cache)
+		 *
+		 * @param namespace {String}
+		 */
+		clear : function(namespace) {
+			if (namespace in cache) {
+				delete cache[namespace];
+				
+				var current = global;
+				var splitted = namespace.split(".");
+				for (var i=0, l=splitted.length-1; i<l; i++) {
+					current = current[splitted[i]];
+				}
+				
+				// Delete might not work when global object is affected
+				try{
+					delete current[splitted[i]];
+				} catch(ex) {
+					current[splitted[i]] = undef;
+				}
+			}
 		},
 
 
