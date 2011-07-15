@@ -152,9 +152,7 @@ $(function() {
 		equals(abc.Class1.toString(), "[Class abc.Class1]");
 	});
 
-	
-	
-	
+
 	
 	
 	
@@ -308,7 +306,39 @@ $(function() {
 	});	
 	
 	
-
+	
+	
+	/**
+	 *
+	 */
+	test("Events", function() {
+		Class("events.Mouse", {
+			events : {
+				click : "MouseEvent",
+				mousedown : "MouseEvent",
+				mouseup : "MouseEvent"
+			}
+		});
+		
+		var eventMap = Class.getEvents(events.Mouse);
+		ok(Assert.isMap(eventMap), "Events should be a returned as a map");
+		equals(eventMap.click, "MouseEvent", "No click event found");
+		
+		Class("events.Keyboard", {
+			events : {
+				keydown : "KeyEvent",
+				keyup : "KeyEvent",
+			}
+		});
+		
+		Class("events.Widget", {
+			include : [events.Mouse, events.Keyboard]
+		});
+		
+		var full = Object.keys(Class.getEvents(events.Widget)).join(",");
+		equals(full, "click,mousedown,mouseup,keydown,keyup", "Merge of events failed");
+		
+	});
 	
 	
 	

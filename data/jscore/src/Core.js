@@ -69,7 +69,8 @@
 		/**
 		 * Clears the object under the given namespace (incl cache)
 		 *
-		 * @param namespace {String}
+		 * @param namespace {String} Clears the given namespace (Only works with stuff attached via {@see #declare})
+		 * @return {Boolean} Whether clearing was successful
 		 */
 		clear : function(namespace) {
 			if (namespace in cache) {
@@ -87,7 +88,11 @@
 				} catch(ex) {
 					current[splitted[i]] = undef;
 				}
+				
+				return true;
 			}
+			
+			return false;
 		},
 
 

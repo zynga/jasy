@@ -215,8 +215,6 @@
 		
 		// Attach to namespace
 		Core.declare(name, construct, true);
-		
-	
 	});
 
 
