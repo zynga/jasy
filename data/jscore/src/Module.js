@@ -30,7 +30,7 @@
 		}
 
 		// Store module in namespace first
-		Core.declare(name, members);
+		Core.declare(name, members, true);
 
 		var prefix = name + ".";
 		var value;

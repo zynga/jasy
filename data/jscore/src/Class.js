@@ -112,7 +112,7 @@
 		construct.valueOf = genericToString;
 
 		// Attach to namespace
-		Core.declare(name, construct);
+		Core.declare(name, construct, true);
 		
 		// Attach events and properties data
 		var events = construct.__events = config.events || {};

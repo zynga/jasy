@@ -26,7 +26,7 @@
 			Assert.assertMap(config, "Invalid interface configuration in " + name);
 		}
 		
-		Core.declare(name, {
+		var iface = {
 			__properties : config.properties,
 			__events : config.events,
 			__members : config.members,
@@ -59,7 +59,10 @@
 			 * @throws Whenever the object or class does not implements the interface.
 			 */
 			assert : Interface.assert
-		});
+		};
+		
+		// Store on namespace
+		Core.declare(name, iface, true);
 	});
 	
 	
