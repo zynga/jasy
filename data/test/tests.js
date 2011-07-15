@@ -159,20 +159,20 @@ $(function() {
 	 * A conflict arises, as both could not be merged into the target class.
 	 */
 	test("Conflicting member functions", function() {
-		Class("conflict.Include1", {
+		Class("conflict.Include1A", {
 			members : {
 				foo : function() {}
 			}
 		});
-		Class("conflict.Include2", {
+		Class("conflict.Include2A", {
 			members : {
 				foo : function() {}
 			}
 		});
 
 		raises(function() {
-			Class("conflict.Join", {
-				include : [conflict.Include1, conflict.Include2]
+			Class("conflict.JoinA", {
+				include : [conflict.Include1A, conflict.Include2A]
 			});
 		});
 	});
@@ -183,20 +183,20 @@ $(function() {
 	 * A conflict arises, as both could not be merged into the target class.
 	 */
 	test("Conflicting member data", function() {
-		Class("conflict.Include1", {
+		Class("conflict.Include1B", {
 			members : {
 				foo : 1
 			}
 		});
-		Class("conflict.Include2", {
+		Class("conflict.Include2B", {
 			members : {
 				foo : 2
 			}
 		});
 
 		raises(function() {
-			Class("conflict.Join", {
-				include : [conflict.Include1, conflict.Include2]
+			Class("conflict.JoinB", {
+				include : [conflict.Include1B, conflict.Include2B]
 			});
 		});
 	});	
@@ -209,25 +209,25 @@ $(function() {
 	 * original methods if that makes sense.
 	 */
 	test("Conflicting member functions, correctly merged", function() {
-		Class("conflict.Include1", {
+		Class("conflict.Include1C", {
 			members : {
 				foo : function() {}
 			}
 		});
-		Class("conflict.Include2", {
+		Class("conflict.Include2C", {
 			members : {
 				foo : function() {}
 			}
 		});
 
 		Class("conflict.Join", {
-			include : [conflict.Include1, conflict.Include2],
+			include : [conflict.Include1C, conflict.Include2C],
 			
 			members : {
 				// Merge manually
 				foo : function() {
-					conflict.Include1.prototype.foo.call(this);
-					conflict.Include2.prototype.foo.call(this);
+					conflict.Include1C.prototype.foo.call(this);
+					conflict.Include2C.prototype.foo.call(this);
 					
 					doSomethingElse();
 				}
@@ -245,12 +245,12 @@ $(function() {
 	 * require that this member is a function!
 	 */
 	test("Conflicting member functions, not merged correctly", function() {
-		Class("conflict.Include1", {
+		Class("conflict.Include1D", {
 			members : {
 				foo : function() {}
 			}
 		});
-		Class("conflict.Include2", {
+		Class("conflict.Include2D", {
 			members : {
 				foo : function() {}
 			}
@@ -258,7 +258,7 @@ $(function() {
 
 		raises(function() {
 			Class("conflict.Join", {
-				include : [conflict.Include1, conflict.Include2],
+				include : [conflict.Include1D, conflict.Include2D],
 			
 				members : {
 					// Invalid merge
@@ -275,12 +275,12 @@ $(function() {
 	 * But this is not allowed for private members.
 	 */
 	test("Conflicting member functions with failed private merge", function() {
-		Class("conflict.Include1", {
+		Class("conflict.Include1E", {
 			members : {
 				__foo : function() {}
 			}
 		});
-		Class("conflict.Include2", {
+		Class("conflict.Include2E", {
 			members : {
 				__foo : function() {}
 			}
@@ -288,13 +288,13 @@ $(function() {
 
 		raises(function() {
 			Class("conflict.Join", {
-				include : [conflict.Include1, conflict.Include2],
+				include : [conflict.Include1E, conflict.Include2E],
 			
 				members : {
 					// Private merge... not allowed
 					__foo : function() {
-						conflict.Include1.prototype.foo.call(this);
-						conflict.Include2.prototype.foo.call(this);
+						conflict.Include1E.prototype.foo.call(this);
+						conflict.Include2E.prototype.foo.call(this);
 					
 						doSomethingElse();
 					}

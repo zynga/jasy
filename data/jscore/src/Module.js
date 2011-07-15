@@ -29,9 +29,6 @@
 			Assert.assertMap(members, "Invalid module members!");
 		}
 
-		// Store module in namespace first
-		Core.declare(name, members, true);
-
 		var prefix = name + ".";
 		var value;
 
@@ -59,6 +56,9 @@
 
 		// Mark as module
 		members.__isModule = isModuleValue;
+
+		// Attach to namespace
+		Core.declare(name, members, true);
 	});
 
 

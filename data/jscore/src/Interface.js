@@ -61,7 +61,7 @@
 			assert : Interface.assert
 		};
 		
-		// Store on namespace
+		// Attach to namespace
 		Core.declare(name, iface, true);
 	});
 	

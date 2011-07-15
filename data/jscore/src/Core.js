@@ -13,8 +13,12 @@
 	// all following modules/classes.
 	var Core = 
 	{
-		declare : function(namespace, object, raise)
+		declare : function(namespace, object, duplicate)
 		{
+			if (duplicate && namespace in cache) {
+				throw new Error("Namespace " + namespace + " is already in use by another object!");
+			}
+			
 			var splits = namespace.split(".");
 			var current = global;
 			var length = splits.length-1;
