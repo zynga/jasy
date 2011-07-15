@@ -37,9 +37,10 @@
 					}
 				};
 			} else {
-				this[assertName] = function(value, compareTo, customMsg) {
-					if (!func(value, compareTo)) {
-						throw new TypeError('Value: "' + value + '": ' + (customMsg||assertMsg.replace("%1", ""+compareTo)));
+				this[assertName] = function(value, test, customMsg) {
+					if (!func(value, test)) {
+						var msg = (customMsg||assertMsg).replace("%1", ""+test);
+						throw new TypeError('Value: "' + value + '": ' + msg);
 					}
 				};
 			}
