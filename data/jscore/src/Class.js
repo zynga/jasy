@@ -12,7 +12,8 @@
 	
 	var checkMixinMemberConflicts = function(include, members, name) {
 		var allIncludeKeys = {};
-		
+
+		// Simplifies routine
 		if (!members) {
 			members = {};
 		}
@@ -53,8 +54,29 @@
 		}
 	};
 	
-	var checkMixinPropertyConflicts = function() {};
-	var checkMixinEventConflicts = function() {};
+	var checkMixinEventConflicts = function(include, events, name) {
+		
+		// Simplifies routine
+		if (!events) {
+			events = {};
+		}
+		
+		// Events between included classes must not conflict
+		// Including class can override any event defined by included class
+
+		for (var i=0, l=include.length; i<l; i++) {
+			var includedClass = include[i];
+			var includedEvents = includedClass.__events;
+
+			for (var )
+		}
+		
+		
+	};
+
+
+
+	var checkMixinPropertyConflicts = function(include, properties, name) {};
 	
 	
 	

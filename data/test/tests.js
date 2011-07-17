@@ -128,6 +128,9 @@ $(function() {
 			Core.clear("conflict.Class1");
 			Core.clear("conflict.Include1");
 			Core.clear("conflict.Include2");
+			Core.clear("events.Keyboard");
+			Core.clear("events.Mouse");
+			Core.clear("events.Widget");
 		}
 	});
 	
@@ -309,7 +312,7 @@ $(function() {
 	
 	
 	/**
-	 *
+	 * Basic event declaration with additional test to mixin classes.
 	 */
 	test("Events", function() {
 		Class("events.Mouse", {
@@ -337,9 +340,35 @@ $(function() {
 		
 		var full = Object.keys(Class.getEvents(events.Widget)).join(",");
 		equals(full, "click,mousedown,mouseup,keydown,keyup", "Merge of events failed");
-		
 	});
 	
 	
+	
+	test("Event Conflicts", function() {
+		Class("events.Mouse", {
+			events : {
+				click : "MouseEvent",
+				mousedown : "MouseEvent",
+				mouseup : "MouseEvent"
+			}
+		});
+		
+		Class("events.Keyboard", {
+			events : {
+				keydown : "KeyEvent",
+				keyup : "KeyEvent",
+			}
+		});		
+		
+		Class("events.Widget", {
+			include : [events.Mouse, events.Keyboard],
+			
+			events : {
+				"click" : "CrazyClick"
+			}
+		});
+		
+		console.debug(Class.getEvents(events.Widget))
+	});	
 	
 });

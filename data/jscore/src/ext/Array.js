@@ -227,6 +227,11 @@ Array.min = function(arr){
 	return Math.min.apply(Math, arr);
 };
 
+Array.fromArguments = function(args) {
+	// Via: http://jsperf.com/arrayifying-arguments/4
+	return Array.apply(null, args);
+};
+
 Array.prototype.contains = function(sub) {
 	return ~this.indexOf(sub);
 };
