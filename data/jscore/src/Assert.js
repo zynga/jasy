@@ -1,7 +1,7 @@
 (function(global, undef) {
 	
-	Core.declare("Assert", {
-		
+	var Assert = global.Assert = 
+	{
 		/**
 		 * Adds a new assertion check
 		 *
@@ -10,7 +10,8 @@
 		 * @param assertMsg {}
 		 *
 		 */
-		add : function(func, methodName, assertMsg) {
+		add : function(func, methodName, assertMsg) 
+		{
 			if(!func) {
 				throw new Error("Invalid function during adding assertion for " + methodName);
 			}
@@ -30,15 +31,21 @@
 			}
 			
 			// Wrap method throw error for simplified throwing of exceptions in type checks
-			if (func.length == 1) {
-				this[assertName] = function(value, customMsg) {
+			if (func.length == 1) 
+			{
+				this[assertName] = function(value, customMsg) 
+				{
 					if (!func(value)) {
 						throw new TypeError('Value: "' + value + '": ' + (customMsg||assertMsg));
 					}
 				};
-			} else {
-				this[assertName] = function(value, test, customMsg) {
-					if (!func(value, test)) {
+			}
+			else 
+			{
+				this[assertName] = function(value, test, customMsg) 
+				{
+					if (!func(value, test)) 
+					{
 						var msg = (customMsg||assertMsg).replace("%1", ""+test);
 						throw new TypeError('Value: "' + value + '": ' + msg);
 					}
@@ -48,27 +55,6 @@
 			this[assertName].displayName = "Assert." + assertName;
 		}
 	});
-	
-	// Alias for better compression
-	var Assert = global.Assert;
-	var toString = Object.prototype.toString;
-	
-	// Build mapping list for all native global objects
-	var classToString = {
-		Object : toString.call({}),
-		Array : toString.call([]),
-		String : toString.call(''),
-		Boolean : toString.call(true),
-		Number : toString.call(1),
-		Date : toString.call(new Date),
-		RegExp : toString.call(/x/),
-		Function : toString.call(function(){})
-	};
-	
-	var stringToClass = {};
-	for (var cls in classToString) {
-		stringToClass[classToString[cls]] = cls;
-	}
 	
 	Assert.add(function(value) {
 		var type = typeof value;
@@ -130,4 +116,3 @@
 	}, "isInList", "Is not in specified list!");
 	
 })(this);
-
