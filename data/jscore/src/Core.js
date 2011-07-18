@@ -5,13 +5,13 @@
 ==================================================================================================
 */
 
-(function(global, doc, undef)
+(function(global, undef)
 {
 	var cache = {};
 	
 	// Fix for missing document.head
-	if (!doc.head) {
-		doc.head = doc.getElementsByTagName('head')[0]
+	if (!document.head) {
+		document.head = document.getElementsByTagName('head')[0]
 	}
 	
 	if (!Function.prototype.bind) 
@@ -232,4 +232,4 @@
 			return current;
 		}
 	});
-})(this, document);
+})(this);
