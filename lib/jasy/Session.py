@@ -54,6 +54,12 @@ class Session():
                 else:
                     raise Exception("Unsupported check: %s for %s" % (check, name))
                     
+            if "detect" in entry:
+                detect = entry["detect"]
+                if not self.getClass(detect):
+                    raise Exception("Field: %s uses unknown detection class %s." % (name, detect))
+                
+                    
             self.__fields[name] = entry
         
         
@@ -79,7 +85,19 @@ class Session():
                 dyn.append(self.__localeProjects[locale])
         
         return dyn + self.__projects
-    
+        
+        
+        
+    def getClass(self, className):
+        """
+        Queries all currently known projects for the given class and returns the class object
+        """
+        for project in self.__projects:
+            classes = project.getClasses()
+            if className in classes:
+                return classes[className]
+        
+
     
     #
     # Core
@@ -144,6 +162,9 @@ class Session():
         elif "check" in entry and entry["check"] == "Boolean":
             entry["values"] = [True, False]
             
+        elif "check" in entry and type(entry["check"]) == list:
+            entry["values"] = entry["check"]
+            
         elif "default" in entry:
             entry["values"] = [entry["default"]]
             
@@ -152,7 +173,11 @@ class Session():
 
         # Store class which is responsible for detection (overrides data from project)
         if detect:
+            if not self.getClass(detect):
+                raise Exception("Could not activate field: %s! Unknown detect class %s." % detect)
+                
             entry["detect"] = detect
+            
         
         
     def getPermutations(self):
@@ -202,6 +227,7 @@ class Session():
                 continue
                 
             export.append("[%s]" % ",".join(content))
+            
             
         return "[%s]" % ",".join(export)
     

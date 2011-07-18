@@ -10,6 +10,12 @@
 			"detect" : "jasy.detect.ES5"
 		},
 
+		"engine" : 
+		{
+			"check" : ["webkit","gecko","trident","presto"],
+			"detect" : "jasy.detect.Engine"
+		},
+
 		"debug" : 
 		{
 			"check" : "Boolean",
