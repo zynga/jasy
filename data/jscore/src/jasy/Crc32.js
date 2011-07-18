@@ -1,4 +1,4 @@
-Module("jasy.Crc32",
+Core.declare("jasy.Crc32",
 {
 	/**
 	 * Compute CRC-32, the 32-bit checksum of an ASCII string.

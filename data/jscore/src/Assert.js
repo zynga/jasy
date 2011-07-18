@@ -86,16 +86,11 @@
 	Assert.add(function(value) { return value === 0; }, "isZero", "Not zero!");
 	Assert.add(function(value) { return parseInt(value) === value; }, "isInteger", "Not an integer!");
 
-	Assert.add(Object.isObject, "isObject", "Not an object!");
 	Assert.add(function(value) { return value === null; }, "isNull", "Not 'null'!");
 	Assert.add(function(value) { return value !== null; }, "isNotNull", "Is 'null'!");
 
-	Assert.add(Object.isMap, "isMap", "Not a map (plain object)!");
 	Assert.add(Array.isArray, "isArray", "Not an array!");
-	Assert.add(Function.isFunction, "isFunction", "Not a function!");
-	Assert.add(RegExp.isRegExp, "isRegExp", "Not a regular expression!");
-	Assert.add(Date.isDate, "isDate", "Not a date object!");
-	
+
 	Assert.add(function(value) { return value && value.nodeType != undef; }, "isNode", "Not a node!");
 	Assert.add(function(value) { return value && value.nodeType == 1; }, "isElement", "Not an element!");
 	Assert.add(function(value) { return value && value.nodeType == 3; }, "isTextNode", "Not a text node!");

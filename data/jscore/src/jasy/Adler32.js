@@ -1,4 +1,4 @@
-Module("jasy.Adler32",
+Core.declare("jasy.Adler32",
 {
 	/**
 	 * Compute Adler-32, the 32-bit checksum of an ASCII string.

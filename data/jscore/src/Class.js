@@ -68,7 +68,6 @@
 			var includedClass = include[i];
 			var includedEvents = includedClass.__events;
 
-			for (var )
 		}
 		
 		

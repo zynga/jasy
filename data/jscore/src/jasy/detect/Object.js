@@ -2,7 +2,7 @@
  * Checks for existance of global API objects.
  *
  */
-Module("jasy.detect.Object", 
+Core.declare("jasy.detect.Object", 
 {
 	get : (function(global)
 	{

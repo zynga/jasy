@@ -19,6 +19,8 @@
 				throw new Error("Namespace " + namespace + " is already in use by another object!");
 			}
 			
+			console.debug("Core Declare: " + namespace);
+			
 			var splits = namespace.split(".");
 			var current = global;
 			var length = splits.length-1;

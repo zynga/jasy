@@ -29,6 +29,7 @@ def build():
     session = Session()
     session.addProject(Project("."))
     session.activateField("debug")
+    session.activateField("es5")
     session.activateField("locale", ["en"])
     
     # Permutation independend config

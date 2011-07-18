@@ -5,13 +5,12 @@
 ==================================================================================================
 */
 
-if (!Number.isNumber) 
-{
-	Number.isNumber = function(arg) {
-		return typeof arg == "string" || Object.prototype.toString.call(arg) === "[object Number]";
-	};
-}
-
+/**
+ * Pads the number to reach the given length
+ *
+ * @return {String} Padded number
+ */
 Number.prototype.pad = function(nr) {
-	return "0".repeat(nr) + this.slice(-nr);
+	return "0".repeat(length) + this.slice(-length);
 };
+

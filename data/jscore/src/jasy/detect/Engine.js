@@ -1,4 +1,4 @@
-Module("jasy.detect.Engine", 
+Core.declare("jasy.detect.Engine", 
 {
 	VALUE : (function(global) 
 	{

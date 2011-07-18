@@ -1,7 +1,7 @@
 /**
  * Detects browser language settings
  */
-Module("jasy.detect.Locale", 
+Core.declare("jasy.detect.Locale", 
 {
 	VALUE : (function()
 	{

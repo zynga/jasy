@@ -5,63 +5,17 @@
 ==================================================================================================
 */
 
-if (!Function.isFunction) {
-	(function(toString){
-		/**
-		 * Whether the given value is a function.
-		 *
-		 * @signature function(value)
-		 * @param value {var} Value to test
-		 * @return {Boolean} Whether the given value is a function
-		 */
-		Function.isFunction = function(value) {
-			return value != null && toString.call(value) == "[object Function]";
-		}
-	})(Object.prototype.toString);
-}
+/**
+ * Whether the given value is a function.
+ *
+ * @param value {var} Value to test
+ * @return {Boolean} Whether the given value is a function
+ */
+Function.isFunction = function isFunction(value) {
+	return value instanceof Function;
+};
 
-
-
-if (!Function.prototype.bind) {
-	
-	/**
-	 * Binds the given function to the specific context.
-	 *
-	 * Coypright WebReflection - Mit Style License
-	 *
-	 * @param context {Object} Object to bind function to.
-	 * @return {Function} Returns a new function which is bound to the given object.
-	 */
-	Function.prototype.bind = function bind(context) {
-		var self = this; // "trapped" function reference
-
-		// only if there is more than an argument
-		// we are interested into more complex operations
-		// this will speed up common bind creation
-		// avoiding useless slices over arguments
-		if (1 < arguments.length) {
-			// extra arguments to send by default
-			var extraargs = Array.prototype.slice.call(arguments, 1);
-			return function () {
-				return self.apply(
-					context,
-					// thanks @kangax for this suggestion
-					arguments.length ?
-						// concat arguments with those received
-						extraargs.concat(Array.prototype.slice.call(arguments)) :
-						// send just arguments, no concat, no slice
-						extraargs
-				);
-			};
-		}
-		
-		// optimized callback
-		return function () {
-			// speed up when function is called without arguments
-			return arguments.length ? self.apply(context, arguments) : self.call(context);
-		};
-	};
-}
+Assert.add(Function.isFunction, "isFunction", "Not a function!");
 
 /**
  * Debounces the given method.
@@ -77,13 +31,16 @@ if (!Function.prototype.bind) {
  * @param execAsap {Boolean?false} Whether the execution should happen at begin.
  * @return {Function} Debounced method
  */
-Function.prototype.debounce = function(threshold, execAsap) {
+Function.prototype.debounce = function debounce(threshold, execAsap) 
+{
 	var func = this;
 	var timeout;
  
-	return function debounced() {
+	return function debounced() 
+	{
 		var obj = this, args = arguments;
-		function delayed() {
+		function delayed() 
+		{
 			if (!execAsap) {
 				func.apply(obj, args);
 			}

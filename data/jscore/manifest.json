@@ -3,6 +3,13 @@
 
 	"fields" :
 	{
+		"es5" : 
+		{
+			"check" : "Boolean",
+			"default" : false,
+			"detect" : "jasy.detect.ES5"
+		},
+
 		"debug" : 
 		{
 			"check" : "Boolean",
