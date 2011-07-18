@@ -25,14 +25,14 @@
 			var entry = fields[i];
 			var name = entry[0];
 			var allowed = entry[1];
-
+			
 			var test = entry[2];
 			if (test)
 			{
 				var value = "VALUE" in test ? test.VALUE : test.get(name);
 				
 				// Fallback to first value if test results in unsupported value
-				if (allowed.indexOf(value) == -1) {
+				if (value == null || allowed.indexOf(value) == -1) {
 					value = allowed[0];
 				}
 			}
