@@ -5,6 +5,15 @@
 ==================================================================================================
 */
 
+// Include ES5 support if not natively supported
+if(!Permutation.isSet("es5")) 
+{
+	es5.Array;
+	es5.Date;
+	es5.String;
+	es5.JSON;
+}
+
 (function() {
 	var genericToString = function() {
 		return "[Class " + this.className + "]";
