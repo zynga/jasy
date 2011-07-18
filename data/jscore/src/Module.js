@@ -21,8 +21,11 @@
 	
 	var isModuleValue = +new Date;
 	
-	// Small hack to correctly bootstrap
-	global.Permutation = {getValue:function(){}, isSet:function(){}};
+	// Small hack to correctly bootstrap system
+	global.Permutation = {
+		getValue : function() {}, 
+		isSet : function() {}
+	};
 	
 	/**
 	 * Define a module with static methods/fields.
