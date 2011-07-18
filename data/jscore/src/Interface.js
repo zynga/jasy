@@ -19,7 +19,7 @@
 	 * @param name {String} Name of Interface
 	 * @param config {Map} Data structure containing the keys 'events', 'properties' and 'members'.
 	 */
-	Core.declare("Interface", function(name, config) {
+	Module("Interface", function(name, config) {
 		
 		if (Permutation.isSet("debug")) {
 			Assert.assertModuleName(name, "Invalid interface name!");
@@ -62,7 +62,7 @@
 		};
 		
 		// Attach to namespace
-		Core.declare(name, iface, true);
+		Module.declareName(name, iface, true);
 	});
 	
 	

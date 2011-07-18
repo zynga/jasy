@@ -1,4 +1,11 @@
-Core.declare("jasy.Adler32",
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
+Module("jasy.Adler32",
 {
 	/**
 	 * Compute Adler-32, the 32-bit checksum of an ASCII string.

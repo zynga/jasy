@@ -1,8 +1,15 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 /**
  * Checks for existance of global API objects.
  *
  */
-Core.declare("jasy.detect.Object", 
+Module("jasy.detect.Object", 
 {
 	get : (function(global)
 	{

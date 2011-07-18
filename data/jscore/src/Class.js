@@ -91,9 +91,10 @@ if(!Permutation.isSet("es5"))
 	var isClassValue = +new Date;
 
 	
-	Core.declare("Class", function(name, config) {
-	
-		if (Permutation.isSet("debug")) {
+	Module("Class", function(name, config) 
+	{
+		if (Permutation.isSet("debug")) 
+		{
 			Assert.assertModuleName(name, "Invalid class name!");
 			Assert.assertMap(config, "Invalid class configuration in class " + name);
 			Assert.assertDefiningAllowedKeysOnly(config, ["construct","events","members","properties","include","implement"], 
@@ -244,7 +245,7 @@ if(!Permutation.isSet("es5"))
 		// ------------------------------------
 		
 		// Attach to namespace
-		Core.declare(name, construct, true);
+		Module.declareName(name, construct, true);
 	});
 
 

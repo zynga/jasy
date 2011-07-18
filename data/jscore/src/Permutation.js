@@ -4,14 +4,8 @@
  */
 (function(global, undef)
 {
-	// Small hack to correctly bootstrap the next line
-	global.Permutation = {getValue:function(){}};
-	
 	// The build system is replacing this call via the loader permutation
 	var fields = Permutation.getValue("Permutation.fields");
-	
-	// Cleanup for first line
-	global.Permutation = undef;
 	
 	// Stores all selected fields in a simple map
 	var selected = {};
@@ -46,14 +40,28 @@
 			key.push(name + ":" + value);
 		}
 		
-		var adler32 = jasy.Adler32.compute(key.join(";"));
+		var adler32 = (function(data)
+		{
+			var MOD_ADLER = 65521;
+			var a=1, b=0;
+
+			// Process each byte of the data in order
+			for (var index=0, len=data.length; index<len; ++index)
+			{
+				a = (a + data.charCodeAt(index)) % MOD_ADLER;
+				b = (b + a) % MOD_ADLER;
+			}
+
+			return (b << 16) | a;
+		})(key.join(";"));
+		
 		var prefix = adler32 < 0 ? "a" : "b";
 		var checksum = prefix + (adler32 < 0 ? -adler32 : adler32).toString(16);
 		
 		return checksum;
 	})() : "";
 	
-	Core.declare("Permutation",
+	Module("Permutation",
 	{
 		/** {Map} Currently selected fields from Permutation data */
 		selected : selected,

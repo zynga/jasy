@@ -1,4 +1,11 @@
-Core.declare("jasy.detect.Param",
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
+Module("jasy.detect.Param",
 {
 	/**
 	 * Returns the value of the given parameter

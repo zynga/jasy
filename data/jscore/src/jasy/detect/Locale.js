@@ -1,7 +1,14 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 /**
  * Detects browser language settings
  */
-Core.declare("jasy.detect.Locale", 
+Module("jasy.detect.Locale", 
 {
 	VALUE : (function()
 	{

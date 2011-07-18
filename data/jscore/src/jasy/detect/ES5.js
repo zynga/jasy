@@ -1,3 +1,10 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 // The "es5" package contains:
 //
 // - Array.isArray
@@ -17,12 +24,12 @@
 // 
 // - String.prototype.trim
 //
-// These are already fixed by Core:
+// These are already fixed by loading Module:
 //
 // - Object.keys
 // - Function.prototype.bind
 
-Core.declare("jasy.detect.ES5", {
+Module("jasy.detect.ES5", {
 	// If this results in false, we should load the ES5 package to fix missing features.
 	// Don't include Function.bind() as this is natively not supported widely and would mean to include a lot of code just for it.
 	VALUE : !!(Array.isArray && Array.prototype.map && Date.now && Date.prototype.toISOString && String.prototype.trim && this.JSON)

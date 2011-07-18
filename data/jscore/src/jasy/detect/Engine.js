@@ -1,4 +1,11 @@
-Core.declare("jasy.detect.Engine", 
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
+Module("jasy.detect.Engine", 
 {
 	VALUE : (function(global) 
 	{

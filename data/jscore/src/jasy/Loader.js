@@ -281,7 +281,7 @@
     return loader;
   })();
   
-  Core.declare("jasy.Loader",
+  Module("jasy.Loader",
   {
     /**
      * Checks wether the given scripts are loaded
