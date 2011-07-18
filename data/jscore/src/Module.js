@@ -5,12 +5,17 @@
 ==================================================================================================
 */
 
+// Enforce dependency to Assert module
+Assert;
+
 // Include ES5 support if not natively supported
-if(!Permutation.isSet("es5")) {
+if(!Permutation.isSet("es5")) 
+{
 	es5.Array;
 	es5.Date;
 	es5.Object;
 	es5.String;
+	es5.JSON;
 }
 
 (function() {

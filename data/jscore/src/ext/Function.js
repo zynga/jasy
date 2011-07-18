@@ -6,18 +6,6 @@
 */
 
 /**
- * Whether the given value is a function.
- *
- * @param value {var} Value to test
- * @return {Boolean} Whether the given value is a function
- */
-Function.isFunction = function isFunction(value) {
-	return value instanceof Function;
-};
-
-Assert.add(Function.isFunction, "isFunction", "Not a function!");
-
-/**
  * Debounces the given method.
  *
  * Debouncing ensures that exactly one signal is sent for an event that may be happening 

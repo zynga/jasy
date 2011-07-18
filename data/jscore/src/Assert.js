@@ -54,7 +54,7 @@
 			
 			this[assertName].displayName = "Assert." + assertName;
 		}
-	});
+	};
 	
 	Assert.add(function(value) {
 		var type = typeof value;
@@ -76,6 +76,22 @@
 	Assert.add(function(value) { return value !== null; }, "isNotNull", "Is 'null'!");
 
 	Assert.add(Array.isArray, "isArray", "Not an array!");
+
+	Assert.add(function(value) {
+		return value instanceof Function;
+	}, "isFunction", "Not a function!");
+	
+	Assert.add(function(value) {
+		return value != null && typeof value == "object";
+	}, "isObject", "Not an object!");
+
+	Assert.add(function(value) {
+		return value != null && Object.prototype.toString.call(value) == "[object Object]";
+	}, "isMap", "Not a map (plain object)!");
+	
+	Assert.add(function(value) {
+		return value instanceof RegExp;
+	}, "isRegExp", "Not a regular expression!");
 
 	Assert.add(function(value) { return value && value.nodeType != undef; }, "isNode", "Not a node!");
 	Assert.add(function(value) { return value && value.nodeType == 1; }, "isElement", "Not an element!");
