@@ -89,7 +89,7 @@
 	 * @param iface {Interface?this} Interface to check for. Falls back to the context being called in.
 	 * @throws Whenever the object or class does not implements the interface.
 	 */
-	var implementsInterface = Interface.assert = function(objOrClass, iface) {
+	Interface.assert = function(objOrClass, iface) {
 		if (!objOrClass) {
 			throw new Error("Invalid class or object to verify interface with: " + objOrClass);
 		}
@@ -136,9 +136,6 @@
 			}
 		}
 	};
-
-	// Add assertion for checking for interface implementation
-	Assert.add(implementsInterface, "implementsInterface", "Does not implement %1!");
 
 	/**
 	 * Whether the given object is a Interface
