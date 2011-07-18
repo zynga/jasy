@@ -8,7 +8,8 @@
 /**
  * @break {Permutation}
  * @require {Assert}
- * @require {fix.Essential}
+ * @require {fix.ObjectKeys}
+ * @require {fix.FunctionBind}
  */
 (function(global, undef)
 {

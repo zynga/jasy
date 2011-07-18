@@ -1,3 +1,6 @@
+/**
+ * @require {fix.DocumentHead}
+ */
 (function(global)
 {
   // All loaded scripts
@@ -5,7 +8,6 @@
   var activeScripts = {};
 
   var doc = global.document;
-  var head = doc.head || doc.getElementsByTagName("head")[0];
 
 
   var areScriptsLoaded = function(uris) 
@@ -61,7 +63,7 @@
         elem.async = false;
       }
       
-      head.insertBefore(elem, head.firstChild);
+      doc.head.insertBefore(elem, doc.head.firstChild);
     };
     
     
