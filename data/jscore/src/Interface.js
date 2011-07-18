@@ -100,7 +100,10 @@
 		}
 		
 		var clsMembers = cls.prototype;
-		var iface = iface || this;
+		
+		if (!iface && this.__isInterface) {
+			iface = this;
+		}
 		
 		if (!Interface.isInterface(iface)) {
 			throw new Error("Invalid interface " + iface);
