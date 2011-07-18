@@ -13,7 +13,6 @@ if(!Permutation.isSet("es5"))
 {
 	es5.Array;
 	es5.Date;
-	es5.Object;
 	es5.String;
 	es5.JSON;
 }
