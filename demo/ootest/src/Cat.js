@@ -26,13 +26,5 @@ Class("ootest.Cat", {
 		getWeight : function() {
 			return this.__weight;
 		}
-	}	,
-
-	// Destructor to finally cleanup object
-	destruct : function() {
-		ootest.Hair.prototype.destruct.call(this);
-		ootest.Feets.prototype.destruct.call(this);
-		
-		this.__weight = null;
 	}
 });
