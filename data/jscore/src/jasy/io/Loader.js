@@ -294,7 +294,7 @@
 		return loader;
 	})();
 	
-	Module("jasy.Loader",
+	Module("jasy.io.Loader",
 	{
 		/**
 		 * Checks wether the given scripts are loaded
@@ -316,8 +316,8 @@
 		 * @param callback {Function} Function to execute when scripts are loaded
 		 * @param context {Object} Context in which the callback should be executed
 		 * @param preload {Boolean?false} Activates preloading on legacy browsers. As files are
-		 *		requested two times it's important that the server send correct modification headers.
-		 *		Therefore this works safely on CDNs etc. but might be problematic on local servers.
+		 *   requested two times it's important that the server send correct modification headers.
+		 *   Therefore this works safely on CDNs etc. but might be problematic on local servers.
 		 */
 		loadScripts : loadScripts
 	});

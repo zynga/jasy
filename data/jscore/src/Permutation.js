@@ -68,6 +68,22 @@
 		return checksum;
 	})() : "";
 	
+	
+	var patchFilename = function(fileName) 
+	{
+		var pos = fileName.lastIndexOf(".");
+		if (pos == -1)
+		{
+			return fileName + "-" + checksum;
+		}
+		else
+		{
+			var fileExt = fileName.substring(pos+1);
+			return fileName.substring(0, pos) + "-" + checksum + "." + fileExt;
+		}
+	};
+	
+	
 	Module("Permutation",
 	{
 		/** {Map} Currently selected fields from Permutation data */
@@ -86,10 +102,6 @@
 		 * @return {Boolean} Whether the field is set to the given value
 		 */
 		isSet : function(name, value) {
-			if (Permutation.isSet("debug")) {
-				Assert.hasKey(selected, name, "Unknown field: " + name + "!");
-			}
-
 			if (value === undef) {
 				value = true;
 			}
@@ -105,38 +117,22 @@
 		 * @return {var} The value of the given field
 		 */		
 		getValue : function(name) {
-			if (Permutation.isSet("debug")) {
-				Assert.hasKey(selected, name, "Unknown field: " + name + "!");
-			}
-			
 			return selected[name];
 		},
+		
 
-
-		loadScripts : function(uris)
-		{
-			var patched = [];
-			for (var i=0, l=uris.length; i<l; i++) {
-				patched[i] = this.patchFilename(uris[i]);
-			}
-
-			return jasy.Loader.loadScripts(patched);
-		},
-
-		patchFilename : function(fileName) 
-		{
-			var pos = fileName.lastIndexOf(".");
-			var checksum = "-" + this.CHECKSUM;
-
-			if (pos == -1)
-			{
-				return fileName + checksum;
-			}
-			else
-			{
-				var fileExt = fileName.substring(pos+1);
-				return fileName.substring(0, pos) + checksum + "." + fileExt;
-			}
+		/**
+		 * Loads the given script URLs and does automatic expansion to include the computed checksum.
+		 *
+		 * @param uris {String[]} URIs of script sources to load
+		 * @param callback {Function} Function to execute when scripts are loaded
+		 * @param context {Object} Context in which the callback should be executed
+		 * @param preload {Boolean?false} Activates preloading on legacy browsers. As files are
+		 *   requested two times it's important that the server send correct modification headers.
+		 *   Therefore this works safely on CDNs etc. but might be problematic on local servers.
+		 */
+		loadScripts : function(uris, callback, context, preload) {
+			jasy.io.Loader.loadScripts(uris.map(patchFilename), callback, context, preload);
 		}
 	});
 })(this);
