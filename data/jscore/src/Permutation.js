@@ -140,7 +140,7 @@
 				patched[i] = patchFilename(uris[i]);
 			}
 			
-			jasy.io.Loader.loadScripts(patched, callback, context, preload);
+			jasy.io.ScriptLoader.load(patched, callback, context, preload);
 		}
 	});
 })(this);

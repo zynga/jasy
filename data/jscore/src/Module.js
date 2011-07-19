@@ -94,7 +94,7 @@
 			throw new Error("Namespace " + name + " is already in use by another object!");
 		}
 
-		console.debug("Module.declareName: " + name);
+		console.debug("Declare: " + name);
 
 		var splits = name.split(".");
 		var current = global;
