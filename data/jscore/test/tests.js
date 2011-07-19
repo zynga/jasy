@@ -444,12 +444,109 @@ $(function() {
 	
 	module("ClassesProperties", {
 		teardown : function() {
-			Module.clearName("properties.TextColor");
+			Module.clearName("properties.Text");
 			Module.clearName("properties.Enabled");
 			Module.clearName("properties.Widget");
 		}
 	});	
 	
+	test("Create Properties", function() 
+	{
+		Class("properties.Text", 
+		{
+			construct : function(element) {
+				this.__textElement = element;
+			},
+			
+			properties : 
+			{
+				wrap : 
+				{
+					type : "Boolean",
+					apply : function(value, old) {
+						this.__textElement.style.whiteSpace = value ? "" : "no-wrap"
+					}
+				},
+				
+				color : 
+				{
+					type : "Color",
+					fire : "changeColor",
+					apply : function(value, old) {
+						this.__textElement.style.color = value;
+					},
+				},
+				
+				fontFamily : 
+				{
+					type : ["sans-serif", "serif", "monospace"],
+					fire : "changeFontFamily",
+					apply : function(value, old) {
+						this.__textElement.style.fontFamily = value;
+					}
+				},
+				
+				lineHeight : 
+				{
+					type : "Integer",
+					fire : "changeLineHeight",
+					apply : function(value, old) {
+						this.__textElement.style.lineHeight = value;
+					}
+				}
+			},
+			
+			members : 
+			{
+				destruct : function() {
+					this.__textElement = null;
+				}
+			}
+		});
+
+		Class("properties.Dimension", 
+		{
+			properties : 
+			{
+				width : {
+					type : "Integer"
+				},
+				
+				height : {
+					type : "Integer"
+				}
+			}
+		});
+
+		
+		Class("properties.Label", 
+		{
+			include : [properties.Text, properties.Dimension],
+			
+			construct : function() {
+				this.__labelElement = document.createElement("label");
+				
+				properties.Text.call(this, this.__labelElement);
+				
+				this.setLineHeight(2);
+			},
+			
+			properties : 
+			{
+				
+			},
+			
+			members :
+			{
+				destruct : function() 
+				{
+					properties.Text.prototype.destruct.call(this);
+					this.__labelElement = null;
+				}
+			}
+		});
+		
+	})
 	
 	
 	
