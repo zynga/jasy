@@ -27,7 +27,7 @@
  *
  * @break {qx.core.ValidationError}
  */
-Module("qx.core.property.Simple",
+Module("jasy.property.Simple",
 {
 	/** {Integer} Number of properties created. For debug proposes. */
 	__counter : 0,
@@ -65,7 +65,7 @@ Module("qx.core.property.Simple",
 		
 		// Increase counter
 		SimpleProperty.__counter++;
-					
+		
 		// Generate property ID
 		// Identically named property might store data on the same field
 		// as in this case this is typicall on different classes.
@@ -73,10 +73,10 @@ Module("qx.core.property.Simple",
 		id = db[name];
 		if (!id) 
 		{
-			id = db[name] = qx.core.property.Core.ID;
-			qx.core.property.Core.ID++
+			id = db[name] = jasy.property.Core.ID;
+			jasy.property.Core.ID++;
 		}
-					
+		
 		// Store init value (shared data between instances)
 		members = clazz.prototype;
 		if (config.init !== Undefined) 
@@ -99,15 +99,15 @@ Module("qx.core.property.Simple",
 		---------------------------------------------------------------------------
 			 FACTORY METHODS :: GET
 		---------------------------------------------------------------------------
-		*/			
+		*/
 		
-		members["get" + up] = function() 
+		var get = function get() 
 		{
 			var context, data, value;
 			context = this;		 
 			
-			if (qx.core.Variant.isSet("qx.debug", "on")) {
-				qx.core.property.Debug.checkGetter(context, config, arguments);
+			if (Permutation.isSet("debug")) {
+				jasy.property.Debug.checkGetter(context, config, arguments);
 			}
 			 
 			data = context[dataStore];
@@ -121,17 +121,17 @@ Module("qx.core.property.Simple",
 					return context[initKey];
 				}						 
 				
-				if (qx.core.Variant.isSet("qx.debug", "on"))
+				if (Permutation.isSet("debug"))
 				{
 					if (!propertyNullable) {
 						context.error("Missing value for: " + name + " (during get())");
 					}
 				}	 
 				
-				value = null;					 
+				value = null;
 			}
 			
-			return value;					 
+			return value;
 		};
 		
 		
@@ -159,10 +159,10 @@ Module("qx.core.property.Simple",
 					// Fire event
 					if (propertyEvent) {
 						context[fireDataEvent](propertyEvent, context[initKey], Undefined);
-					}					 
+					}
 				}
 			};
-		}			 
+		}
 		
 		
 		
@@ -177,8 +177,8 @@ Module("qx.core.property.Simple",
 			var context, data, old;
 			context = this;
 
-			if (qx.core.Variant.isSet("qx.debug", "on")) {
-				qx.core.property.Debug.checkSetter(context, config, arguments);
+			if (Permutation.isSet("debug")) {
+				jasy.property.Debug.checkSetter(context, config, arguments);
 			}
 			
 			if (propertyValidate) {
@@ -209,7 +209,7 @@ Module("qx.core.property.Simple",
 				}
 			}
 			
-			return value;				 
+			return value;
 		};
 		
 		
@@ -220,13 +220,13 @@ Module("qx.core.property.Simple",
 		---------------------------------------------------------------------------
 		*/			
 		
-		members["reset" + up] = function()
+		members.reset = function()
 		{
 			var context, data, old, value;
 			context = this;
 
-			if (qx.core.Variant.isSet("qx.debug", "on")) {
-				qx.core.property.Debug.checkResetter(context, config, arguments);
+			if (Permutation.isSet("debug")) {
+				jasy.property.Debug.checkResetter(context, config, arguments);
 			}
 
 			data = context[dataStore];
@@ -244,7 +244,7 @@ Module("qx.core.property.Simple",
 				if (initKey) {
 					value = context[initKey];
 				}
-				else if (qx.core.Variant.isSet("qx.debug", "on"))
+				else if (Permutation.isSet("debug"))
 				{
 					// Still no value. We warn about that the property is not nullable.
 					if (!propertyNullable) {
@@ -259,8 +259,8 @@ Module("qx.core.property.Simple",
 				if (propertyEvent) {
 					context[fireDataEvent](propertyEvent, value, old);
 				}
-			}							
-		};	 
+			}
+		};
 		
 		
 		
@@ -270,13 +270,15 @@ Module("qx.core.property.Simple",
 		---------------------------------------------------------------------------
 		*/
 		
-		if (config.check === "Boolean") 
+		if (config.type === "Boolean") 
 		{
-			members["toggle" + up] = function() {
-				this["set" + up](!this["get" + up]());
-			}
+			members.toggle = function() {
+				return setter.call(this, !getter.call(this));
+			};
 
-			members["is" + up] = members["get" + up];
+			members.is = members.get;
 		}
+		
+		return members;
 	}
 });

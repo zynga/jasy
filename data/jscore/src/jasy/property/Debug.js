@@ -145,7 +145,7 @@ Module("jasy.property.Debug",
 	{
 		"on": function(clazz, name, config, patch)
 		{
-			var Util = qx.core.property.Util;
+			var Util = jasy.property.Util;
 			var has = Util.hasProperty(clazz, name);
 
 			if (has)

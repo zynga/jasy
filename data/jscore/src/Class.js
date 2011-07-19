@@ -198,8 +198,17 @@ if(!Permutation.isSet("es5"))
 		
 		// Add properties
 		var properties = construct.__properties = config.properties || {};
-		for (var key in properties) {
-			jasy.property.Property.add(proto, key, properties[key]);
+		for (var name in properties) 
+		{
+			var propertyConfig = properties[name];
+			
+			if (config.group) {
+				jasy.property.Group.add(proto, name, propertyConfig);
+			} else if (config.themeable || config.inheritable || jasy.property.Core.RUNTIME_OVERRIDE) {	
+				jasy.property.Multi.add(proto, name, propertyConfig);
+			} else {
+				jasy.property.Simple.add(proto, name, propertyConfig);
+			}
 		}
 	
 	

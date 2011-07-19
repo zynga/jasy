@@ -61,7 +61,7 @@
 	var Undefined;
 	var Bootstrap = qx.Bootstrap;
 	var Type = qx.core.Type;
-	var PropertyUtil = qx.core.property.Util;	 
+	var PropertyUtil = jasy.property.Util;	 
 
 	
 	/*
@@ -97,7 +97,7 @@
 		var propertyInitKey = initKeyPrefix + propertyName;
 
 		var child, childData, childOldPriority, childOldValue, childOldGetter, childNewValue;
-		var Util = qx.core.property.Util;
+		var Util = jasy.property.Util;
 
 		for (var i=0, l=children.length; i<l; i++)
 		{
@@ -248,10 +248,10 @@
 			var propertyId = propertyNameToId[name];
 			if (!propertyId) 
 			{
-				propertyId = propertyNameToId[name] = qx.core.property.Core.ID;
+				propertyId = propertyNameToId[name] = jasy.property.Core.ID;
 			
 				// Number of fields + meta field to store where we store the data
-				qx.core.property.Core.ID += 5;
+				jasy.property.Core.ID += 5;
 			}
 	
 			// Store init value (shared data between instances)
@@ -283,8 +283,8 @@
 				{
 					var context = this;
 
-					if (qx.core.Variant.isSet("qx.debug", "on")) {
-						qx.core.property.Debug.checkSetter(context, config, arguments);
+					if (Permutation.isSet("debug")) {
+						jasy.property.Debug.checkSetter(context, config, arguments);
 					}
 				
 					if (propertyValidate) {
@@ -369,8 +369,8 @@
 				{
 					var context = this;
 
-					if (qx.core.Variant.isSet("qx.debug", "on")) {
-						qx.core.property.Debug.checkResetter(context, config, arguments);
+					if (Permutation.isSet("debug")) {
+						jasy.property.Debug.checkResetter(context, config, arguments);
 					}
 				
 					var data = context[dataKey];				
@@ -409,7 +409,7 @@
 							if (propertyInitKey) {
 								newValue = context[propertyInitKey];
 							}
-							else if (qx.core.Variant.isSet("qx.debug", "on"))
+							else if (Permutation.isSet("debug"))
 							{
 								// Still no value. We warn about that the property is not nullable.
 								if (!propertyNullable) {
@@ -461,8 +461,8 @@
 			{
 				var context = this;
 
-				if (qx.core.Variant.isSet("qx.debug", "on")) {
-					qx.core.property.Debug.checkGetter(context, config, arguments);
+				if (Permutation.isSet("debug")) {
+					jasy.property.Debug.checkGetter(context, config, arguments);
 				}
 			
 				var data = context[dataKey];
@@ -482,7 +482,7 @@
 						return null;
 					}
 				
-					if (qx.core.Variant.isSet("qx.debug", "on")) 
+					if (Permutation.isSet("debug")) 
 					{
 						context.error("Missing value for: " + name + 
 							" (during get()). Either define an init value, make the property nullable or define a fallback value.");
@@ -495,7 +495,7 @@
 				var currentGetter = priorityToFieldConfig[currentPriority].get;
 				if (currentGetter) 
 				{
-					if (qx.core.Variant.isSet("qx.debug", "on"))
+					if (Permutation.isSet("debug"))
 					{
 						var value = context[currentGetter](name);
 						if (value === Undefined) {
@@ -599,7 +599,7 @@
 		getSingleValue : function(obj, propertyName, field) 
 		{
 			var key = propertyNameToId[propertyName] + fieldToPriority[field];
-			if (qx.core.Variant.isSet("qx.debug", "on"))
+			if (Permutation.isSet("debug"))
 			{
 				if (typeof key != "number" || isNaN(key)) {
 					throw new Error("Invalid property or field: " + propertyName + ", " + field);
@@ -638,7 +638,7 @@
 			{
 				propertyId = propertyNameToId[propertyName];
 				
-				if (qx.core.Variant.isSet("qx.debug", "on"))
+				if (Permutation.isSet("debug"))
 				{
 					if (propertyId === undefined) {
 						throw new Error(obj + ": Invalid property to import: " + propertyName);
@@ -717,7 +717,7 @@
 						{
 							newValue = obj[propertyInitKey];
 						}
-						else if (qx.core.Variant.isSet("qx.debug", "on"))
+						else if (Permutation.isSet("debug"))
 						{
 							// Still no value. We warn about that the property is not nullable.
 							var config = PropertyUtil.getPropertyDefinition(obj.constructor, propertyName);
@@ -774,7 +774,7 @@
 		 * Returns a list of all inheritable properties supported by the given class.
 		 *
 		 * You may choose to access inheritable properties via: 
-		 * obj.$$inheritables || qx.core.property.Multi.getInheritableProperties(obj) 
+		 * obj.$$inheritables || jasy.property.Multi.getInheritableProperties(obj) 
 		 * for better performance.
 		 * 
 		 * @param clazz {Class} Class to query
