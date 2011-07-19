@@ -20,7 +20,8 @@
 			error : helper,
 			warn : helper,
 			info : helper,
-			log : helper
+			log : helper,
+			trace : helper
 		};
 	}
 })(this);
