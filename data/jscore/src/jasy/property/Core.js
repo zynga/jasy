@@ -5,11 +5,8 @@
 ==================================================================================================
 */
 
-qx.Bootstrap.define("qx.core.property.Core",
+Module("jasy.property.Core",
 {
-	statics :
-	{
-		RUNTIME_OVERRIDE : false,
-		ID : 0
-	}
+	RUNTIME_OVERRIDE : false,
+	ID : 0
 });
