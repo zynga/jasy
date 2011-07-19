@@ -5,6 +5,9 @@
 ==================================================================================================
 */
 
+/**
+ * Just a dump placeholder for environments without "console" object.
+ */
 (function(global)
 {
 	if (!global.console) 
@@ -15,6 +18,7 @@
 		{
 			debug : helper,
 			error : helper,
+			warn : helper,
 			info : helper,
 			log : helper
 		};

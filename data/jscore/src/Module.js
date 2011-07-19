@@ -8,6 +8,7 @@
 /**
  * @break {Permutation}
  * @require {Assert}
+ * @require {fix.Console}
  * @require {fix.ObjectKeys}
  * @require {fix.FunctionBind}
  */
