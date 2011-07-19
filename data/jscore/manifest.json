@@ -3,6 +3,13 @@
 
 	"fields" :
 	{
+		"debug" : 
+		{
+			"check" : "Boolean",
+			"default" : false,
+			"detect" : "jasy.detect.Param"
+		},
+
 		"es5" : 
 		{
 			"check" : "Boolean",
@@ -14,13 +21,6 @@
 		{
 			"check" : ["webkit","gecko","trident","presto"],
 			"detect" : "jasy.detect.Engine"
-		},
-
-		"debug" : 
-		{
-			"check" : "Boolean",
-			"default" : false,
-			"detect" : "jasy.detect.Param"
 		},
 
 		"locale" : 
