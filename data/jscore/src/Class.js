@@ -202,13 +202,22 @@ if(!Permutation.isSet("es5"))
 		{
 			var propertyConfig = properties[name];
 			
+			// Inject property name into config
+			propertyConfig.name = name;
+
+			// Create members via specific property implementation 
+			
 			if (config.group) {
-				jasy.property.Group.add(proto, name, propertyConfig);
+				var propertyMembers = jasy.property.Group.create(propertyConfig);
 			} else if (config.themeable || config.inheritable || jasy.property.Core.RUNTIME_OVERRIDE) {	
-				jasy.property.Multi.add(proto, name, propertyConfig);
+				var propertyMembers = jasy.property.Multi.create(propertyConfig);
 			} else {
-				jasy.property.Simple.add(proto, name, propertyConfig);
+				var propertyMembers = jasy.property.Simple.create(propertyConfig);
 			}
+			
+			// TODO: Inject members
+			// displayname etc.
+			
 		}
 	
 	
