@@ -1,3 +1,10 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 Assert.add(function(value) { 
 	return value && value.nodeType != undef; 
 }, "isNode", "Not a node!");

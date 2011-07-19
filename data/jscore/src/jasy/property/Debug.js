@@ -1,4 +1,12 @@
-Module("jasy.property.Debug", {
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
+Module("jasy.property.Debug", 
+{
 	
 	/**
 	 * Validates the incoming parameters of a setter method

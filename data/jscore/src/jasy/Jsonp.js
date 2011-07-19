@@ -1,3 +1,10 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 var JSONP = function(global){
     // (C) WebReflection Essential - Mit Style
     // 216 bytes minified + gzipped via Google Closure Compiler

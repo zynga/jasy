@@ -1,3 +1,10 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 /**
  * This class is the client-side representation for the permutation features of 
  * Jasy and supports features like auto-selecting builds based on specific feature sets.
