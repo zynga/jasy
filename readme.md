@@ -1,12 +1,9 @@
 Jasy - JavaScript Tooling Refined
 =================================
 
-Jasy is a collection of tools for dealing JavaScript source code. It is based on Python and relies on a stable parser engine based 
-on Narcissus/Spidermonkey by Mozilla.
+Jasy is a collection of tools for dealing JavaScript source code. It is based on Python and relies on a stable parser engine based on Narcissus/Spidermonkey by Mozilla.
 
-Jasy is meant as a replacement for qooxdoo's toolchain. There should be standalone tools for dealing with JavaScript files to apply typical
-things to them like parsing, compressing, optimizing, etc. Jasy should also offer a API which could be used by Python developers to write
-their custom scripts based on the available modules. This is meant to be used like SCons, Waf, etc.
+Jasy should offer standalone tools for dealing with JavaScript files to apply typical things to them like compressing, optimizing, formatting, translating, etc. Jasy should also offer a API which could be used by Python developers to write their custom scripts based on the available modules. This is meant to be used like SCons, Waf, etc.
 
 License
 -------
@@ -53,11 +50,6 @@ Permutation Features
 
 - Permutation Support (building different results from one code base)
 - Might be used to remove debug blocks or alternative code
-- At the moment is supports:
-  - hasJS (has("string-trim"))
-  - qooxdoo variants (qx.core.Variant.select("qx.client"), qx.core.Variant.isSet("qx.debug", "on"))
-  - qooxdoo settings (qx.core.Setting.get("qx.version"))
-  - constant lookups (my.app.Application.VERSION)
 
 Compression Features
 --------------------
@@ -84,7 +76,6 @@ Developer Support
 -----------------
 
 - Generates a so-named "source" version which loads the original class files which is useful during the development phase of an application.
-- This feature is based on LabJS for best loading performance.
 
 
 Localization Features
@@ -101,7 +92,6 @@ Localization Features
   - Replaces string instances directly inside the original file
   - Removes overhead through translation as no function call is needed anymore
   - Optimizes template replacement e.g. via %1 into a string "plus" operation
-
 
 
 Todo
