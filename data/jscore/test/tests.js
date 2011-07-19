@@ -343,23 +343,31 @@ $(function() {
 	/**
 	 * Basic event declaration with additional test to mixin classes.
 	 */
+	
+	// Prepare event classes
+	Class("MouseEvent", {});
+	Class("KeyEvent", {});
+	Class("TouchEvent", {});
+	Class("DataEvent", {});
+
+	
 	test("Events", function() {
 		Class("events.Mouse", {
 			events : {
-				click : "MouseEvent",
-				mousedown : "MouseEvent",
-				mouseup : "MouseEvent"
+				click : MouseEvent,
+				mousedown : MouseEvent,
+				mouseup : MouseEvent
 			}
 		});
 		
 		var eventMap = Class.getEvents(events.Mouse);
 		ok(Assert.isMap(eventMap), "Events should be a returned as a map");
-		equals(eventMap.click, "MouseEvent", "No click event found");
+		equals(eventMap.click, MouseEvent, "No click event found");
 		
 		Class("events.Keyboard", {
 			events : {
-				keydown : "KeyEvent",
-				keyup : "KeyEvent",
+				keydown : KeyEvent,
+				keyup : KeyEvent,
 			}
 		});
 		
@@ -373,7 +381,7 @@ $(function() {
 		Class("events.Widget2", {
 			include : [events.Mouse, events.Keyboard],
 			events : {
-				custom : "Data"
+				custom : DataEvent
 			}
 		});
 
@@ -386,16 +394,16 @@ $(function() {
 	test("Event Conflicts", function() {
 		Class("events.Mouse", {
 			events : {
-				click : "MouseEvent",
-				mousedown : "MouseEvent",
-				mouseup : "MouseEvent"
+				click : MouseEvent,
+				mousedown : MouseEvent,
+				mouseup : MouseEvent
 			}
 		});
 		
 		Class("events.Keyboard", {
 			events : {
-				keydown : "KeyEvent",
-				keyup : "KeyEvent",
+				keydown : KeyEvent,
+				keyup : KeyEvent,
 			}
 		});
 		
@@ -404,14 +412,14 @@ $(function() {
 			
 			events : {
 				// This override should be okay
-				click : "CrazyClick"
+				click : MouseEvent
 			}
 		});
 		
 		Class("events.Touch", {
 			events : {
-				click : "TouchEvent",
-				tap : "TouchEvent"
+				click : TouchEvent,
+				tap : TouchEvent
 			}
 		});		
 		
