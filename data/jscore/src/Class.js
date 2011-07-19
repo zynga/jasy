@@ -8,10 +8,13 @@
 // Include ES5 support if not natively supported
 if(!Permutation.isSet("es5")) 
 {
-	es5.Array;
-	es5.Date;
-	es5.String;
-	es5.JSON;
+	// These classes don't really exist, so we need to protect the access.
+	try{
+		es5.Array;
+		es5.Date;
+		es5.String;
+		es5.JSON;
+	} catch(ex) {};
 }
 
 (function() {

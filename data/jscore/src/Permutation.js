@@ -68,18 +68,15 @@
 		return checksum;
 	})() : "";
 	
+	var checksumPostfix = checksum == "" ? "" : "-" + checksum;
 	
 	var patchFilename = function(fileName) 
 	{
 		var pos = fileName.lastIndexOf(".");
-		if (pos == -1)
-		{
-			return fileName + "-" + checksum;
-		}
-		else
-		{
-			var fileExt = fileName.substring(pos+1);
-			return fileName.substring(0, pos) + "-" + checksum + "." + fileExt;
+		if (pos == -1) {
+			return fileName + checksumPostfix;
+		} else {
+			return fileName.substring(0, pos) + checksumPostfix + "." + fileName.substring(pos+1);
 		}
 	};
 	
