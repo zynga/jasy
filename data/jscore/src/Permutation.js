@@ -134,7 +134,12 @@
 		 *   Therefore this works safely on CDNs etc. but might be problematic on local servers.
 		 */
 		loadScripts : function(uris, callback, context, preload) {
-			jasy.io.Loader.loadScripts(uris.map(patchFilename), callback, context, preload);
+			var patched = [];
+			for (var i=0, l=uris.length; i<l; i++) {
+				patched[i] = patchFilename(uris[i]);
+			}
+			
+			jasy.io.Loader.loadScripts(patched, callback, context, preload);
 		}
 	});
 })(this);
