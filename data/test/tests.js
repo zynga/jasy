@@ -27,11 +27,11 @@ $(function() {
 
 	/*
 	---------------------------------------------------------------------------
-		CORE
+		NAMES
 	---------------------------------------------------------------------------
 	*/
 	
-	module("Namespace", {
+	module("Names", {
 		teardown : function() {
 			delete global.foo;
 			delete global.abc;
@@ -39,12 +39,12 @@ $(function() {
 	});
 	
 	test("Creating global", function() {
-		Core.declare('foo', 3);
+		Module.declareName('foo', 3);
 		equals(global.foo, 3);
 	});
 
 	test("Creating namespace", function() {
-		Core.declare('abc.def', 5);
+		Module.declareName('abc.def', 5);
 		equals(global.abc.def, 5);
 	});
 	
@@ -122,15 +122,15 @@ $(function() {
 	
 	module("Classes", {
 		teardown : function() {
-			Core.clear("abc.Class1");
-			Core.clear("abc.Class2");
-			Core.clear("abc.Class3");
-			Core.clear("conflict.Class1");
-			Core.clear("conflict.Include1");
-			Core.clear("conflict.Include2");
-			Core.clear("events.Keyboard");
-			Core.clear("events.Mouse");
-			Core.clear("events.Widget");
+			Module.clearName("abc.Class1");
+			Module.clearName("abc.Class2");
+			Module.clearName("abc.Class3");
+			Module.clearName("conflict.Class1");
+			Module.clearName("conflict.Include1");
+			Module.clearName("conflict.Include2");
+			Module.clearName("events.Keyboard");
+			Module.clearName("events.Mouse");
+			Module.clearName("events.Widget");
 		}
 	});
 	

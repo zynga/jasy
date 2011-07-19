@@ -19,7 +19,8 @@ if(!Permutation.isSet("es5"))
 		return "[Class " + this.className + "]";
 	};
 	
-	var checkMixinMemberConflicts = function(include, members, name) {
+	var checkMixinMemberConflicts = function(include, members, name) 
+	{
 		var allIncludeKeys = {};
 
 		// Simplifies routine
@@ -27,14 +28,17 @@ if(!Permutation.isSet("es5"))
 			members = {};
 		}
 		
-		for (var i=0, l=include.length; i<l; i++) {
+		for (var i=0, l=include.length; i<l; i++) 
+		{
 			var includedClass = include[i];
 			var includedMembers = Object.keys(includedClass.prototype);
 			
-			for(var j=0, jl=includedMembers.length; j<jl; j++) {
+			for(var j=0, jl=includedMembers.length; j<jl; j++) 
+			{
 				var key = includedMembers[j];
 				
-				if (members.hasOwnProperty(key)) {
+				if (members.hasOwnProperty(key)) 
+				{
 					// Private member conflict with including class (must fail, always)
 					if (key.substring(0,2) == "__") {
 						throw new Error("Included class " + includedClass.className + " overwrites private member of class " + name);
@@ -43,7 +47,8 @@ if(!Permutation.isSet("es5"))
 					// members are allowed to override protected and public members of any included class
 				}
 				
-				if (allIncludeKeys.hasOwnProperty(key)) {
+				if (allIncludeKeys.hasOwnProperty(key)) 
+				{
 					// Private members conflict between included classes (must fail, always)
 					if (key.substring(0,2) == "__") {
 						throw new Error("Included class " + includedClass.className + " overwrites private member of other included class " + allIncludeKeys[key].className + " in class " + name);
@@ -191,8 +196,8 @@ if(!Permutation.isSet("es5"))
 				}
 				
 				checkMixinMemberConflicts(include, members, name);
-				checkMixinPropertyConflicts(include, properties, name);
 				checkMixinEventConflicts(include, events, name);
+				checkMixinPropertyConflicts(include, properties, name);
 			}
 
 			for (var i=0, l=include.length; i<l; i++) {
