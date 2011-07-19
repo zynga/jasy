@@ -87,10 +87,11 @@
 	Module("Permutation",
 	{
 		/** {Map} Currently selected fields from Permutation data */
-		selected : selected,
+		SELECTED : selected,
 
 		/** {Number} Holds the checksum for the current permutation which is auto detected by features or by compiled-in data */
 		CHECKSUM : checksum,
+		
 		
 		/**
 		 * Whether the given field was set to the given value. Boolean 
@@ -101,7 +102,8 @@
 		 * @param value {var?true} Value to compare to (defaults to true)
 		 * @return {Boolean} Whether the field is set to the given value
 		 */
-		isSet : function(name, value) {
+		isSet : function(name, value) 
+		{
 			if (value === undef) {
 				value = true;
 			}
