@@ -27,6 +27,7 @@
 		isSet : function() {}
 	};
 	
+	
 	/**
 	 * Define a module with static methods/fields.
 	 * 
@@ -39,7 +40,8 @@
 	 */
 	var Module = global.Module = function(name, members) 
 	{
-		if (Permutation.isSet("debug")) {
+		if (Permutation.isSet("debug")) 
+		{
 			Assert.assertModuleName(name, "Invalid module name!");
 			Assert.assertMap(members, "Invalid module members!");
 		}
@@ -47,7 +49,8 @@
 		var prefix = name + ".";
 		var value;
 
-		for (var key in members) {
+		for (var key in members) 
+		{
 			value = members[key];
 
 			// Performance would better using typeof but instanceof is required to exclude RegExps
@@ -130,8 +133,10 @@
 	 * @param name {String} Clears the given name (Only works with stuff attached via {@see #declare})
 	 * @return {Boolean} Whether clearing was successful
 	 */
-	Module.clearName = function(name) {
-		if (name in cache) {
+	Module.clearName = function(name) 
+	{
+		if (name in cache) 
+		{
 			delete cache[name];
 			
 			var current = global;
@@ -191,7 +196,8 @@
 	 * @param moduleName {String} Name to resolve
 	 * @return {Object} Returns the Module stored under the given name
 	 */
-	Module.getByName = function(moduleName) {
+	Module.getByName = function(moduleName) 
+	{
 		if (Permutation.isSet("debug")) {
 			Assert.assertString(moduleName);
 		}
