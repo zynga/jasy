@@ -134,6 +134,7 @@
 		 *   Therefore this works safely on CDNs etc. but might be problematic on local servers.
 		 */
 		loadScripts : function(uris, callback, context, preload) {
+			// Mapping URLs to patched version. Could not use ES5 Array.map here yet.
 			var patched = [];
 			for (var i=0, l=uris.length; i<l; i++) {
 				patched[i] = patchFilename(uris[i]);
