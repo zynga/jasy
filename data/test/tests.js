@@ -131,6 +131,7 @@ $(function() {
 			Module.clearName("events.Keyboard");
 			Module.clearName("events.Mouse");
 			Module.clearName("events.Widget");
+			Module.clearName("events.Widget2");
 		}
 	});
 	
@@ -340,6 +341,16 @@ $(function() {
 		
 		var full = Object.keys(Class.getEvents(events.Widget)).join(",");
 		equals(full, "click,mousedown,mouseup,keydown,keyup", "Merge of events failed");
+
+		Class("events.Widget2", {
+			include : [events.Mouse, events.Keyboard],
+			events : {
+				custom : "Data"
+			}
+		});
+
+		var full = Object.keys(Class.getEvents(events.Widget2)).join(",");
+		equals(full, "custom,click,mousedown,mouseup,keydown,keyup", "Merge of events with own events failed");
 	});
 	
 	
@@ -358,17 +369,26 @@ $(function() {
 				keydown : "KeyEvent",
 				keyup : "KeyEvent",
 			}
-		});		
+		});
 		
 		Class("events.Widget", {
 			include : [events.Mouse, events.Keyboard],
 			
 			events : {
-				"click" : "CrazyClick"
+				// This override should be okay
+				click : "CrazyClick"
 			}
 		});
 		
-		console.debug(Class.getEvents(events.Widget))
+		var full = Object.keys(Class.getEvents(events.Widget)).join(",");
+		equals(full, "click,mousedown,mouseup,keydown,keyup", "Merge of events failed");
+		
+		raises(function() {
+			Class("events.Widget2", {
+				// This should fail, two click events in include list
+				include : [events.Mouse, events.Keyboard, events.Widget]
+			});		
+		})
 	});	
 	
 });

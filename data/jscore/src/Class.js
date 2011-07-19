@@ -24,7 +24,7 @@ if(!Permutation.isSet("es5"))
 	
 	var checkMixinMemberConflicts = function(include, members, name) 
 	{
-		var allIncludeKeys = {};
+		var allIncludeMembers = {};
 
 		// Simplifies routine
 		if (!members) {
@@ -50,45 +50,47 @@ if(!Permutation.isSet("es5"))
 					// members are allowed to override protected and public members of any included class
 				}
 				
-				if (allIncludeKeys.hasOwnProperty(key)) 
+				if (allIncludeMembers.hasOwnProperty(key)) 
 				{
 					// Private members conflict between included classes (must fail, always)
 					if (key.substring(0,2) == "__") {
-						throw new Error("Included class " + includedClass.className + " overwrites private member of other included class " + allIncludeKeys[key].className + " in class " + name);
+						throw new Error("Included class " + includedClass.className + " overwrites private member of other included class " + allIncludeMembers[key].className + " in class " + name);
 					}
 					
 					// If both included classes define this key as a function check whether 
 					// the members section has a function as well (which might call both of them).
-					if (key in members && members[key] instanceof Function && includedClass.prototype[key] instanceof Function && allIncludeKeys[key].prototype[key] instanceof Function) {
+					if (key in members && members[key] instanceof Function && includedClass.prototype[key] instanceof Function && allIncludeMembers[key].prototype[key] instanceof Function) {
 						// pass
 					} else {
-						throw new Error("Included class " + includedClass.className + " overwrites member of other included class " + allIncludeKeys[key].className + " in class " + name);
+						throw new Error("Included class " + includedClass.className + " overwrites member of other included class " + allIncludeMembers[key].className + " in class " + name);
 					}
 				}
 				
-				allIncludeKeys[key] = includedClass;
+				allIncludeMembers[key] = includedClass;
 			}
 		}
 	};
 	
-	var checkMixinEventConflicts = function(include, events, name) {
-		
-		// Simplifies routine
-		if (!events) {
-			events = {};
-		}
+	var checkMixinEventConflicts = function(include, events, name) 
+	{
+		var allIncludeEvents = {};
 		
 		// Events between included classes must not conflict
-		// Including class can override any event defined by included class
+		// Including class can override any event 
 
-		for (var i=0, l=include.length; i<l; i++) {
+		for (var i=0, l=include.length; i<l; i++) 
+		{
 			var includedClass = include[i];
 			var includedEvents = includedClass.__events;
-
-
+			
+			for (var eventName in includedEvents) {
+				if (eventName in allIncludeEvents) {
+					throw new Error("Included class " + includedClass.className + " overwrites event of other included class " + allIncludeEvents[key].className + " in class " + name);
+				}
+				
+				allIncludeEvents[eventName] = includedClass;
+			}
 		}
-		
-		
 	};
 
 
