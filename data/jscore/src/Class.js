@@ -22,85 +22,103 @@ if(!Permutation.isSet("es5"))
 		return "[Class " + this.className + "]";
 	};
 	
-	var checkMixinMemberConflicts = function(include, members, name) 
-	{
-		var allIncludeMembers = {};
-
-		// Simplifies routine
-		if (!members) {
-			members = {};
-		}
-		
-		for (var i=0, l=include.length; i<l; i++) 
-		{
-			var includedClass = include[i];
-			var includedMembers = Object.keys(includedClass.prototype);
-			
-			for(var j=0, jl=includedMembers.length; j<jl; j++) 
-			{
-				var key = includedMembers[j];
-				
-				if (members.hasOwnProperty(key)) 
-				{
-					// Private member conflict with including class (must fail, always)
-					if (key.substring(0,2) == "__") {
-						throw new Error("Included class " + includedClass.className + " overwrites private member of class " + name);
-					}
-					
-					// members are allowed to override protected and public members of any included class
-				}
-				
-				if (allIncludeMembers.hasOwnProperty(key)) 
-				{
-					// Private members conflict between included classes (must fail, always)
-					if (key.substring(0,2) == "__") {
-						throw new Error("Included class " + includedClass.className + " overwrites private member of other included class " + allIncludeMembers[key].className + " in class " + name);
-					}
-					
-					// If both included classes define this key as a function check whether 
-					// the members section has a function as well (which might call both of them).
-					if (key in members && members[key] instanceof Function && includedClass.prototype[key] instanceof Function && allIncludeMembers[key].prototype[key] instanceof Function) {
-						// pass
-					} else {
-						throw new Error("Included class " + includedClass.className + " overwrites member of other included class " + allIncludeMembers[key].className + " in class " + name);
-					}
-				}
-				
-				allIncludeMembers[key] = includedClass;
-			}
-		}
-	};
-	
-	var checkMixinEventConflicts = function(include, events, name) 
-	{
-		var allIncludeEvents = {};
-		
-		// Events between included classes must not conflict
-		// Including class can override any event 
-
-		for (var i=0, l=include.length; i<l; i++) 
-		{
-			var includedClass = include[i];
-			var includedEvents = includedClass.__events;
-			
-			for (var eventName in includedEvents) {
-				if (eventName in allIncludeEvents) {
-					throw new Error("Included class " + includedClass.className + " overwrites event of other included class " + allIncludeEvents[key].className + " in class " + name);
-				}
-				
-				allIncludeEvents[eventName] = includedClass;
-			}
-		}
-	};
-
-
-
-	var checkMixinPropertyConflicts = function(include, properties, name) {};
-	
-	
-	
 	var isClassValue = +new Date;
 
+	
+	
+	if (Permutation.isSet("debug"))
+	{
+		var checkMixinMemberConflicts = function(include, members, name) 
+		{
+			// Simplifies routine
+			if (!members) {
+				members = {};
+			}
+
+			var allIncludeMembers = {};
+			for (var i=0, l=include.length; i<l; i++) 
+			{
+				var includedClass = include[i];
+				var includedMembers = Object.keys(includedClass.prototype);
+
+				for(var j=0, jl=includedMembers.length; j<jl; j++) 
+				{
+					var key = includedMembers[j];
+
+					if (members.hasOwnProperty(key)) 
+					{
+						// Private member conflict with including class (must fail, always)
+						if (key.substring(0,2) == "__") {
+							throw new Error("Included class " + includedClass.className + " overwrites private member of class " + name);
+						}
+
+						// members are allowed to override protected and public members of any included class
+					}
+
+					if (allIncludeMembers.hasOwnProperty(key)) 
+					{
+						// Private members conflict between included classes (must fail, always)
+						if (key.substring(0,2) == "__") {
+							throw new Error("Included class " + includedClass.className + " overwrites private member of other included class " + allIncludeMembers[key].className + " in class " + name);
+						}
+
+						// If both included classes define this key as a function check whether 
+						// the members section has a function as well (which might call both of them).
+						if (key in members && members[key] instanceof Function && includedClass.prototype[key] instanceof Function && allIncludeMembers[key].prototype[key] instanceof Function) {
+							// pass
+						} else {
+							throw new Error("Included class " + includedClass.className + " overwrites member of other included class " + allIncludeMembers[key].className + " in class " + name);
+						}
+					}
+
+					allIncludeMembers[key] = includedClass;
+				}
+			}
+		};
+
+		// Events between included classes must not collide
+		// Including class can override any event 
+		var checkMixinEventConflicts = function(include, events, name) 
+		{
+			var allIncludeEvents = {};
+			for (var i=0, l=include.length; i<l; i++) 
+			{
+				var includedClass = include[i];
+				var includedEvents = includedClass.__events;
+
+				for (var eventName in includedEvents) {
+					if (eventName in allIncludeEvents) {
+						throw new Error("Included class " + includedClass.className + " overwrites event of other included class " + allIncludeEvents[key].className + " in class " + name);
+					}
+
+					allIncludeEvents[eventName] = includedClass;
+				}
+			}
+		};
+
+
+		// Properties between included classes must not collide
+		// Including class can override any property
+		var checkMixinPropertyConflicts = function(include, properties, name) 
+		{
+			var allIncludeProperties = {};
+			for (var i=0, l=include.length; i<l; i++) 
+			{
+				var includedClass = include[i];
+				var includedProperties = includedClass.__properties;
+
+				for (var propertyName in includedProperties) {
+					if (propertyName in allIncludeProperties) {
+						throw new Error("Included class " + includedClass.className + " overwrites event of other included class " + allIncludeEvents[key].className + " in class " + name);
+					}
+
+					allIncludeProperties[propertyName] = includedClass;
+				}
+			}
+		};
+	}
+	
+	
 	
 	Module.declareName("Class", function(name, config) 
 	{
@@ -194,8 +212,10 @@ if(!Permutation.isSet("es5"))
 	
 		// Insert other classes
 		var include = config.include;
-		if (include) {
-			if (Permutation.isSet("debug")) {
+		if (include) 
+		{
+			if (Permutation.isSet("debug")) 
+			{
 				for (var i=0, l=include.length; i<l; i++) {
 					Assert.assertClass(include[i], "Class " + name + " includes invalid class " + include[i] + " at position: " + i + "!");
 				}
@@ -205,12 +225,13 @@ if(!Permutation.isSet("es5"))
 				checkMixinPropertyConflicts(include, properties, name);
 			}
 
-			for (var i=0, l=include.length; i<l; i++) {
+			for (var i=0, l=include.length; i<l; i++) 
+			{
 				var includedClass = include[i];
 				
-				var includeProto = includedClass.prototype;
-				for (var key in includeProto) {
-					proto[key] = includeProto[key];
+				var includeMembers = includedClass.prototype;
+				for (var key in includeMembers) {
+					proto[key] = includeMembers[key];
 				}
 				
 				var includeProperties = includedClass.__properties;
@@ -231,11 +252,14 @@ if(!Permutation.isSet("es5"))
 		//   INTERFACES
 		// ------------------------------------
 	
-		if (Permutation.isSet("debug")) {
+		if (Permutation.isSet("debug")) 
+		{
 			var implement = config.implement;
-			if (implement) {
+			if (implement) 
+			{
 				var iface;
-				for (var i=0, l=implement.length; i<l; i++) {
+				for (var i=0, l=implement.length; i<l; i++) 
+				{
 					iface = implement[i];
 					if (!iface) {
 						throw new Error("Class " + name + " implements invalid interface " + iface + " at position: " + i);
