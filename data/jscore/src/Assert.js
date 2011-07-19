@@ -63,54 +63,53 @@
 		}
 	};
 	
+	Assert.add(function(value) { return typeof value == "boolean"; }, "isBoolean", "Not boolean!");
+	Assert.add(function(value) { return value === true; }, "isTrue", "Not 'true'!");
+	Assert.add(function(value) { return value === false; },"isFalse", "Not 'false'!");
+	Assert.add(function(value) { return typeof value == "string"; }, "isString", "Not a string!");
+	Assert.add(function(value) { return typeof value == "number" && isFinite(value); }, "isNumber", "Not a number!");
+	Assert.add(function(value) { return parseInt(value) === value; }, "isInteger", "Not an integer!");
+	Assert.add(function(value) { return value !== null; }, "isNotNull", "Is null!");
+
 	Assert.add(function(value) {
 		var type = typeof value;
 		return value == null || type == "boolean" || type == "number" || type == "string";
 	}, "isPrimitive", "Not a primitive value!");
-	
-	Assert.add(function(value) { return typeof value == "boolean"; }, "isBoolean", "Not boolean!");
-	Assert.add(function(value) { return value === true; }, "isTrue", "Not 'true'!");
-	Assert.add(function(value) { return value === false; },"isFalse", "Not 'false'!");
 
-	Assert.add(function(value) { return typeof value == "string"; }, "isString", "Not a string!");
-	Assert.add(function(value) { return typeof value == "string" && value.length > 0; }, "isNonEmptyString", "Not a non empty string!");
+	Assert.add(function(value) {
+		return value != null && typeof value == "object";
+	}, "isObject", "Not an object!");
 
-	Assert.add(function(value) { return typeof value == "number" && isFinite(value); }, "isNumber", "Not a number!");
-	Assert.add(function(value) { return value === 0; }, "isZero", "Not zero!");
-	Assert.add(function(value) { return parseInt(value) === value; }, "isInteger", "Not an integer!");
-
-	Assert.add(function(value) { return value === null; }, "isNull", "Not 'null'!");
-	Assert.add(function(value) { return value !== null; }, "isNotNull", "Is 'null'!");
-
-	Assert.add(Array.isArray, "isArray", "Not an array!");
+	Assert.add(function(value) {
+		return value instanceof Array;
+	}, "isArray", "Not an array!");
 
 	Assert.add(function(value) {
 		return value instanceof Function;
 	}, "isFunction", "Not a function!");
 	
 	Assert.add(function(value) {
-		return value != null && typeof value == "object";
-	}, "isObject", "Not an object!");
+		return value instanceof RegExp;
+	}, "isRegExp", "Not a regular expression!");
 
 	Assert.add(function(value) {
 		return value != null && Object.prototype.toString.call(value) == "[object Object]";
 	}, "isMap", "Not a map (plain object)!");
 	
-	Assert.add(function(value) {
-		return value instanceof RegExp;
-	}, "isRegExp", "Not a regular expression!");
-
-	Assert.add(function(value, keys) {
+	Assert.add(function(value, keys) 
+	{
 		Assert.assertMap(value);
 		Assert.assertArray(keys);
 		
 		var valueKeys = Object.keys(value);
-		for (var i=0, l=valueKeys.length; i<l; i++) {
+		for (var i=0, l=valueKeys.length; i<l; i++) 
+		{
 			var key = valueKeys[i];
 			if (keys.indexOf(key) == -1) {
 				return false;
 			}
 		}
+		
 		return true;
 	}, "isDefiningAllowedKeysOnly", "Defines a key %1 which is not allowed being used!");
 
