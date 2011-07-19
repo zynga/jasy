@@ -6,7 +6,8 @@
 */
 
 (function() {
-	Module("jasy.EventManager", {
+	Module("jasy.event.Manager", 
+	{
 		addListener : function(target, type, callback, context, capture) {
 
 		},
