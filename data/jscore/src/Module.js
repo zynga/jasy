@@ -43,8 +43,8 @@
 	{
 		if (Permutation.isSet("debug")) 
 		{
-			Assert.assertModuleName(name, "Invalid module name!");
-			Assert.assertMap(members, "Invalid module members!");
+			Assert.assertModuleName(name, "Invalid module name " + name + "!");
+			Assert.assertMap(members, "Invalid map as module configuration in " + name + "!");
 		}
 
 		var prefix = name + ".";

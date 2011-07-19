@@ -92,12 +92,12 @@ if(!Permutation.isSet("es5"))
 	var isClassValue = +new Date;
 
 	
-	Module("Class", function(name, config) 
+	Module.declareName("Class", function(name, config) 
 	{
 		if (Permutation.isSet("debug")) 
 		{
-			Assert.assertModuleName(name, "Invalid class name!");
-			Assert.assertMap(config, "Invalid class configuration in class " + name);
+			Assert.assertModuleName(name, "Invalid class name " + name + "!");
+			Assert.assertMap(config, "Invalid class configuration in " + name);
 			Assert.assertHasAllowedKeysOnly(config, ["construct","events","members","properties","include","implement"], 
 				"Invalid configuration in class " + name + "! Unallowed key(s) found!");
 			
