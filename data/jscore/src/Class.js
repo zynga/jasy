@@ -218,6 +218,8 @@ if(!Permutation.isSet("es5"))
 			// TODO: Inject members
 			// displayname etc.
 			
+			console.debug("Members for: " + name, propertyMembers);
+			
 		}
 	
 	
