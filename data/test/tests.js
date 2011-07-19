@@ -309,8 +309,8 @@ $(function() {
 		});
 	});	
 	
-	
-	
+
+
 	
 	/**
 	 * Basic event declaration with additional test to mixin classes.
@@ -380,13 +380,20 @@ $(function() {
 			}
 		});
 		
+		Class("events.Touch", {
+			events : {
+				click : "TouchEvent",
+				tap : "TouchEvent"
+			}
+		});		
+		
 		var full = Object.keys(Class.getEvents(events.Widget)).join(",");
 		equals(full, "click,mousedown,mouseup,keydown,keyup", "Merge of events failed");
 		
 		raises(function() {
 			Class("events.Widget2", {
 				// This should fail, two click events in include list
-				include : [events.Mouse, events.Keyboard, events.Widget]
+				include : [events.Mouse, events.Keyboard, events.Touch]
 			});		
 		})
 	});	
