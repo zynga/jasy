@@ -14,71 +14,89 @@
 	// The build system is replacing this call via the loader permutation
 	var fields = Permutation.getValue("Permutation.fields");
 	
-	// Stores all selected fields in a simple map
-	var selected = {};
-	
-	var checksum = fields ? (function()
+	if (fields) 
 	{
-		// Process entries
-		var key = [];
-		for (var i=0, l=fields.length; i<l; i++) 
+		// Stores all selected fields in a simple map
+		var selected = {};
+		
+		var checksum = (function()
 		{
-			var entry = fields[i];
-			var name = entry[0];
-			var allowed = entry[1];
-			
-			var test = entry[2];
-			if (test)
+			// Process entries
+			var key = [];
+			for (var i=0, l=fields.length; i<l; i++) 
 			{
-				var value = "VALUE" in test ? test.VALUE : test.get(name);
-				
-				// Fallback to first value if test results in unsupported value
-				if (value == null || allowed.indexOf(value) == -1) {
-					value = allowed[0];
+				var entry = fields[i];
+				var name = entry[0];
+				var allowed = entry[1];
+
+				var test = entry[2];
+				if (test)
+				{
+					var value = "VALUE" in test ? test.VALUE : test.get(name);
+
+					// Fallback to first value if test results in unsupported value
+					if (value == null || allowed.indexOf(value) == -1) {
+						value = allowed[0];
+					}
 				}
-			}
-			else
-			{
-				// In cases with no test, we don't have an array of fields but just a value
-				value = allowed;
+				else
+				{
+					// In cases with no test, we don't have an array of fields but just a value
+					value = allowed;
+				}
+
+				selected[name] = value;
+				key.push(name + ":" + value);
 			}
 
-			selected[name] = value;
-			key.push(name + ":" + value);
-		}
-		
-		var adler32 = (function(data)
+			var adler32 = (function(data)
+			{
+				var MOD_ADLER = 65521;
+				var a=1, b=0;
+
+				// Process each byte of the data in order
+				for (var index=0, len=data.length; index<len; ++index)
+				{
+					a = (a + data.charCodeAt(index)) % MOD_ADLER;
+					b = (b + a) % MOD_ADLER;
+				}
+
+				return (b << 16) | a;
+			})(key.join(";"));
+
+			var prefix = adler32 < 0 ? "a" : "b";
+			var checksum = prefix + (adler32 < 0 ? -adler32 : adler32).toString(16);
+
+			return checksum;
+		})();
+
+		var checksumPostfix = "-" + checksum;
+
+		var patchFilename = function(fileName) 
 		{
-			var MOD_ADLER = 65521;
-			var a=1, b=0;
-
-			// Process each byte of the data in order
-			for (var index=0, len=data.length; index<len; ++index)
-			{
-				a = (a + data.charCodeAt(index)) % MOD_ADLER;
-				b = (b + a) % MOD_ADLER;
+			var pos = fileName.lastIndexOf(".");
+			if (pos == -1) {
+				return fileName + checksumPostfix;
+			} else {
+				return fileName.substring(0, pos) + checksumPostfix + "." + fileName.substring(pos+1);
 			}
-
-			return (b << 16) | a;
-		})(key.join(";"));
-		
-		var prefix = adler32 < 0 ? "a" : "b";
-		var checksum = prefix + (adler32 < 0 ? -adler32 : adler32).toString(16);
-		
-		return checksum;
-	})() : "";
-	
-	var checksumPostfix = checksum == "" ? "" : "-" + checksum;
-	
-	var patchFilename = function(fileName) 
+		};
+	} 
+	else
 	{
-		var pos = fileName.lastIndexOf(".");
-		if (pos == -1) {
-			return fileName + checksumPostfix;
-		} else {
-			return fileName.substring(0, pos) + checksumPostfix + "." + fileName.substring(pos+1);
+		// Enable debug by default
+		var selected = {
+			debug : true
+		};
+		
+		// No checksum available
+		var checksum = null;
+		
+		// Disable support for checksum based loading
+		var patchFilename = function() {
+			throw new Error("Not supported!");
 		}
-	};
+	}
 	
 	
 	Module("Permutation",
