@@ -23,6 +23,13 @@ $(function() {
 		});
 	});
 
+	asyncTest("requestAnimationFrame", 1, function() {
+		requestAnimationFrame(function() {
+			ok(true, "always fine");
+			start();
+		});
+	});
+
 
 
 	/*
