@@ -2,15 +2,7 @@ if (!Object.keys)
 {
 	// Fix for IE bug with enumerables
 	var hasDontEnumBug = true;
-	var dontEnums = [
-		'toString',
-		'toLocaleString',
-		'valueOf',
-		'hasOwnProperty',
-		'isPrototypeOf',
-		'propertyIsEnumerable',
-		'constructor'
-	];
+	var dontEnums = "toString,toLocaleString,valueOf,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,constructor".split(",");
 
 	var dontEnumsLength = dontEnums.length;
 	for (var key in {"toString": null}) {

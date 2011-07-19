@@ -176,9 +176,11 @@
 				for (var i=0, l=uris.length; i<l; i++)
 				{
 					var currentUri = uris[i];
-					
+
 					if (!loadedScripts[currentUri])
 					{
+						console.debug("Loading " + currentUri);
+
 						// When a callback needs to be moved to the queue instead of being executed directly
 						if (executeDirectly)
 						{
@@ -224,6 +226,8 @@
 					var currentUri = uris[i];
 					if (!loadedScripts[currentUri])
 					{
+						console.debug("Loading " + currentUri);
+						
 						// When a callback needs to be moved to the queue instead of being executed directly
 						if (executeDirectly)
 						{

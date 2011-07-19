@@ -93,11 +93,6 @@
 		return value instanceof RegExp;
 	}, "isRegExp", "Not a regular expression!");
 
-	Assert.add(function(value) { return value && value.nodeType != undef; }, "isNode", "Not a node!");
-	Assert.add(function(value) { return value && value.nodeType == 1; }, "isElement", "Not an element!");
-	Assert.add(function(value) { return value && value.nodeType == 3; }, "isTextNode", "Not a text node!");
-	Assert.add(function(value) { return value && value.nodeType == 9; }, "isDocument", "Not a document!");
-	
 	Assert.add(function(value, keys) {
 		Assert.assertMap(value);
 		Assert.assertArray(keys);
@@ -116,19 +111,12 @@
 		return typeof value == "string" && !!value.match(regexp); 
 	}, "matchesRegExp", "Does not match regular expression %1!");
 	
-	Assert.add(function(value, func) { 
-		var ret = true;
-		try{
-			ret = !!func(value);
-		} catch(ex) {
-			ret = false;
-		}
-		
-		return ret;
-	}, "isAcceptedBy", "Is not accepted by defined check function!");
-	
 	Assert.add(function(value, list) {
 		return list.indexOf(value) != -1;
 	}, "isInList", "Is not in specified list!");
+
+	Assert.add(function(obj, key) {
+		return key in obj;
+	}, "hasKey", "Missing key %1!");
 	
 })(this);

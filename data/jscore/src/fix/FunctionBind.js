@@ -21,7 +21,8 @@ if (!Function.prototype.bind)
 		if (1 < arguments.length) 
 		{
 			// extra arguments to send by default
-			var extraargs = Array.prototype.slice.call(arguments, 1);
+			var slice = Array.prototype.slice;
+			var extraargs = slice.call(arguments, 1);
 			return function()
 			{
 				return self.apply(
@@ -29,7 +30,7 @@ if (!Function.prototype.bind)
 					// thanks @kangax for this suggestion
 					arguments.length ?
 						// concat arguments with those received
-						extraargs.concat(Array.prototype.slice.call(arguments)) :
+						extraargs.concat(slice.call(arguments)) :
 						// send just arguments, no concat, no slice
 						extraargs
 				);

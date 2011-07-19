@@ -69,17 +69,42 @@
 		/** {Number} Holds the checksum for the current permutation which is auto detected by features or by compiled-in data */
 		CHECKSUM : checksum,
 		
-		isEnabled : function(name) {
-			return selected[name] == true;
-		},
-		
+		/**
+		 * Whether the given field was set to the given value. Boolean 
+		 * fields could also be checked without a given value as the value
+		 * defaults to <code>true</code>.
+		 *
+		 * @param name {String} Name of the field to query
+		 * @param value {var?true} Value to compare to (defaults to true)
+		 * @return {Boolean} Whether the field is set to the given value
+		 */
 		isSet : function(name, value) {
+			if (Permutation.isSet("debug")) {
+				Assert.hasKey(selected, name, "Unknown field: " + name + "!");
+			}
+
+			if (value === undef) {
+				value = true;
+			}
+			
 			return selected[name] == value;
 		},
 		
+		
+		/**
+		 * Returns the value of the given field
+		 *
+		 * @param name {String} Name of the field to query
+		 * @return {var} The value of the given field
+		 */		
 		getValue : function(name) {
+			if (Permutation.isSet("debug")) {
+				Assert.hasKey(selected, name, "Unknown field: " + name + "!");
+			}
+			
 			return selected[name];
 		},
+
 
 		loadScripts : function(uris)
 		{
