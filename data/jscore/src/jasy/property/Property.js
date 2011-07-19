@@ -66,9 +66,7 @@ Module("jasy.property.Property",
 		}
 
 		// Precalc
-		var up = function(str) {
-			return str.charAt(0).toUpperCase() + str.substring(1);
-		};
+		var up = name.charAt(0).toUpperCase() + name.substring(1);
 
 		// Shorthands: Better compression/obfuscation/performance
 		var propertyNullable=config.nullable, propertyEvent=config.event, 

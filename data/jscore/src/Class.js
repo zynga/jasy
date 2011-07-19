@@ -67,7 +67,7 @@ if(!Permutation.isSet("es5"))
 						if (key in members && members[key] instanceof Function && includedClass.prototype[key] instanceof Function && allIncludeMembers[key].prototype[key] instanceof Function) {
 							// pass
 						} else {
-							throw new Error("Included class " + includedClass.className + " overwrites member of other included class " + allIncludeMembers[key].className + " in class " + name);
+							throw new Error("Included class " + includedClass.className + " overwrites member " + key + " of other included class " + allIncludeMembers[key].className + " in class " + name);
 						}
 					}
 

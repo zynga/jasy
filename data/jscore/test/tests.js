@@ -445,8 +445,8 @@ $(function() {
 	module("ClassesProperties", {
 		teardown : function() {
 			Module.clearName("properties.Text");
-			Module.clearName("properties.Enabled");
-			Module.clearName("properties.Widget");
+			Module.clearName("properties.Dimension");
+			Module.clearName("properties.Label");
 		}
 	});	
 	
