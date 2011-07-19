@@ -123,25 +123,18 @@ $(function() {
 	
 	/*
 	---------------------------------------------------------------------------
-		CLASSES
+		CLASSES :: CORE
 	---------------------------------------------------------------------------
 	*/
 	
-	module("Classes", {
+	module("ClassesCore", {
 		teardown : function() {
 			Module.clearName("abc.Class1");
 			Module.clearName("abc.Class2");
 			Module.clearName("abc.Class3");
-			Module.clearName("conflict.Class1");
-			Module.clearName("conflict.Include1");
-			Module.clearName("conflict.Include2");
-			Module.clearName("events.Keyboard");
-			Module.clearName("events.Mouse");
-			Module.clearName("events.Widget");
-			Module.clearName("events.Widget2");
 		}
 	});
-	
+
 	test("Invalid config", function() {
 		raises(function() {
 			Class("abc.Class1");
@@ -162,9 +155,22 @@ $(function() {
 		equals(abc.Class1.className, "abc.Class1");
 		equals(abc.Class1.toString(), "[Class abc.Class1]");
 	});
-
-
 	
+	
+	
+	/*
+	---------------------------------------------------------------------------
+		CLASSES :: MEMBERS
+	---------------------------------------------------------------------------
+	*/	
+	
+	module("ClassesMembers", {
+		teardown : function() {
+			Module.clearName("members.Class1");
+			Module.clearName("members.Include1");
+			Module.clearName("members.Include2");
+		}
+	});
 	
 	
 	/**
@@ -172,20 +178,20 @@ $(function() {
 	 * A conflict arises, as both could not be merged into the target class.
 	 */
 	test("Conflicting member functions", function() {
-		Class("conflict.Include1", {
+		Class("members.Include1", {
 			members : {
 				foo : function() {}
 			}
 		});
-		Class("conflict.Include2", {
+		Class("members.Include2", {
 			members : {
 				foo : function() {}
 			}
 		});
 
 		raises(function() {
-			Class("conflict.Join", {
-				include : [conflict.Include1, conflict.Include2]
+			Class("members.Join", {
+				include : [members.Include1, members.Include2]
 			});
 		});
 	});
@@ -196,20 +202,20 @@ $(function() {
 	 * A conflict arises, as both could not be merged into the target class.
 	 */
 	test("Conflicting member data", function() {
-		Class("conflict.Include1", {
+		Class("members.Include1", {
 			members : {
 				foo : 1
 			}
 		});
-		Class("conflict.Include2", {
+		Class("members.Include2", {
 			members : {
 				foo : 2
 			}
 		});
 
 		raises(function() {
-			Class("conflict.Join", {
-				include : [conflict.Include1, conflict.Include2]
+			Class("members.Join", {
+				include : [members.Include1, members.Include2]
 			});
 		});
 	});	
@@ -222,25 +228,25 @@ $(function() {
 	 * original methods if that makes sense.
 	 */
 	test("Conflicting member functions, correctly merged", function() {
-		Class("conflict.Include1", {
+		Class("members.Include1", {
 			members : {
 				foo : function() {}
 			}
 		});
-		Class("conflict.Include2", {
+		Class("members.Include2", {
 			members : {
 				foo : function() {}
 			}
 		});
 
-		Class("conflict.Join", {
-			include : [conflict.Include1, conflict.Include2],
+		Class("members.Join", {
+			include : [members.Include1, members.Include2],
 			
 			members : {
 				// Merge manually
 				foo : function() {
-					conflict.Include1.prototype.foo.call(this);
-					conflict.Include2.prototype.foo.call(this);
+					members.Include1.prototype.foo.call(this);
+					members.Include2.prototype.foo.call(this);
 					
 					doSomethingElse();
 				}
@@ -258,20 +264,20 @@ $(function() {
 	 * require that this member is a function!
 	 */
 	test("Conflicting member functions, not merged correctly", function() {
-		Class("conflict.Include1", {
+		Class("members.Include1", {
 			members : {
 				foo : function() {}
 			}
 		});
-		Class("conflict.Include2", {
+		Class("members.Include2", {
 			members : {
 				foo : function() {}
 			}
 		});
 
 		raises(function() {
-			Class("conflict.Join", {
-				include : [conflict.Include1, conflict.Include2],
+			Class("members.Join", {
+				include : [members.Include1, members.Include2],
 			
 				members : {
 					// Invalid merge
@@ -288,26 +294,26 @@ $(function() {
 	 * But this is not allowed for private members.
 	 */
 	test("Conflicting member functions with failed private merge", function() {
-		Class("conflict.Include1", {
+		Class("members.Include1", {
 			members : {
 				__foo : function() {}
 			}
 		});
-		Class("conflict.Include2", {
+		Class("members.Include2", {
 			members : {
 				__foo : function() {}
 			}
 		});
 
 		raises(function() {
-			Class("conflict.Join", {
-				include : [conflict.Include1, conflict.Include2],
+			Class("members.Join", {
+				include : [members.Include1, members.Include2],
 			
 				members : {
 					// Private merge... not allowed
 					__foo : function() {
-						conflict.Include1.prototype.foo.call(this);
-						conflict.Include2.prototype.foo.call(this);
+						members.Include1.prototype.foo.call(this);
+						members.Include2.prototype.foo.call(this);
 					
 						doSomethingElse();
 					}
@@ -318,7 +324,22 @@ $(function() {
 	
 
 
+	/*
+	---------------------------------------------------------------------------
+		CLASSES :: EVENTS
+	---------------------------------------------------------------------------
+	*/
 	
+	module("ClassesEvents", {
+		teardown : function() {
+			Module.clearName("events.Keyboard");
+			Module.clearName("events.Mouse");
+			Module.clearName("events.Widget");
+			Module.clearName("events.Widget2");
+		}
+	});
+	
+		
 	/**
 	 * Basic event declaration with additional test to mixin classes.
 	 */
@@ -403,6 +424,25 @@ $(function() {
 				include : [events.Mouse, events.Keyboard, events.Touch]
 			});		
 		})
+	});
+	
+	
+	
+	/*
+	---------------------------------------------------------------------------
+		CLASSES :: PROPERTIES
+	---------------------------------------------------------------------------
+	*/
+	
+	module("ClassesProperties", {
+		teardown : function() {
+			Module.clearName("properties.TextColor");
+			Module.clearName("properties.Enabled");
+			Module.clearName("properties.Widget");
+		}
 	});	
+	
+	
+	
 	
 });
