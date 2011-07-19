@@ -80,7 +80,7 @@
 			Assert.assertString(interfaceName);
 		}
 		
-		var obj = Core.resolve(interfaceName);
+		var obj = Module.resolveName(interfaceName);
 		return isInterface(obj) ? obj : null;
 	};
 

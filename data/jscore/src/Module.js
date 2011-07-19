@@ -203,7 +203,7 @@
 			Assert.assertString(moduleName);
 		}
 		
-		var obj = Core.resolve(moduleName);
+		var obj = Module.resolveName(moduleName);
 		return isModule(obj) ? obj : null;
 	};
 

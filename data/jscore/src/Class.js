@@ -261,7 +261,7 @@ if(!Permutation.isSet("es5"))
 			Assert.assertString(className);
 		}
 		
-		var obj = Core.resolve(className);
+		var obj = Module.resolveName(className);
 		return isClass(obj) ? obj : null;
 	};
 
