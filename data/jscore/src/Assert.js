@@ -111,7 +111,7 @@
 		}
 		
 		return true;
-	}, "isDefiningAllowedKeysOnly", "Defines a key %1 which is not allowed being used!");
+	}, "hasAllowedKeysOnly", "Defines a key %1 which is not allowed being used!");
 
 	Assert.add(function(value, regexp) { 
 		return typeof value == "string" && !!value.match(regexp); 

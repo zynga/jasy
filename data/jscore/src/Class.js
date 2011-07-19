@@ -77,6 +77,7 @@ if(!Permutation.isSet("es5"))
 			var includedClass = include[i];
 			var includedEvents = includedClass.__events;
 
+
 		}
 		
 		
@@ -97,7 +98,7 @@ if(!Permutation.isSet("es5"))
 		{
 			Assert.assertModuleName(name, "Invalid class name!");
 			Assert.assertMap(config, "Invalid class configuration in class " + name);
-			Assert.assertDefiningAllowedKeysOnly(config, ["construct","events","members","properties","include","implement"], 
+			Assert.assertHasAllowedKeysOnly(config, ["construct","events","members","properties","include","implement"], 
 				"Invalid configuration in class " + name + "! Unallowed key(s) found!");
 			
 			if ("construct" in config) {
