@@ -198,12 +198,12 @@ if(!Permutation.isSet("es5"))
 		
 		// Add properties
 		var properties = construct.__properties = config.properties || {};
-		for (var name in properties) 
+		for (var propertyName in properties) 
 		{
-			var propertyConfig = properties[name];
+			var propertyConfig = properties[propertyName];
 			
 			// Inject property name into config
-			propertyConfig.name = name;
+			propertyConfig.name = propertyName;
 
 			// Create members via specific property implementation 
 			
@@ -218,7 +218,7 @@ if(!Permutation.isSet("es5"))
 			// TODO: Inject members
 			// displayname etc.
 			
-			console.debug("Members for: " + name, propertyMembers);
+			console.debug("Members for: " + propertyName, propertyMembers);
 			
 		}
 	

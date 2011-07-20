@@ -50,28 +50,52 @@
 			---------------------------------------------------------------------------
 			*/
 			
-			// Validation
-			if (Permutation.isSet("debug")) 
-			{
-				Assert.assertHasAllowedKeysOnly(config, ["name","nullable","init","event","apply"],
-					"Invalid property configuration in class " + config.name + "! Unallowed key(s) found!");
-			}
-			
 			// Shorthands: Better compression/obfuscation/performance
 			var propertyName = config.name;
 			var propertyNullable = config.nullable;
 			var propertyInit = config.init;
-			var propertyEvent = config.event;
+			var propertyType = config.type;
+			var propertyFire = config.fire;
 			var propertyApply = config.apply;
 
+			// Validation
+			if (Permutation.isSet("debug")) 
+			{
+				Assert.assertHasAllowedKeysOnly(config, ["name","nullable","init","type","fire","apply"],
+					"Invalid property configuration in class " + propertyName + "! Unallowed key(s) found!");
 
+				Assert.assertString(propertyName);
+				
+				if (propertyNullable !== undef) {
+					Assert.assertBoolean(propertyNullable);
+				}
+
+				if (propertyInit) {
+					Assert.assertNonNull(propertyInit);
+				}
+
+				if (propertyType) {
+					// TODO
+				}
+
+				if (propertyFire) {
+					Assert.assertString(propertyFire);
+				}
+
+				if (propertyApply) {
+					Assert.assertFunction(propertyApply);
+				}
+			}
+			
 			// Generate property ID
 			// Identically named property might store data on the same field
 			// as in this case this is typicall on different classes.
-			var id = propertyNameToId[name];
-			if (!id) {
-				id = propertyNameToId[name] = (jasy.property.Core.ID++);
+			var propertyId = propertyNameToId[propertyName];
+			if (!propertyId) {
+				propertyId = propertyNameToId[propertyName] = (jasy.property.Core.ID++);
 			}
+			
+			console.debug("Property " + propertyName + " = " + propertyId);
 			
 			// Prepare return value
 			var members = {};
@@ -84,10 +108,10 @@
 			---------------------------------------------------------------------------
 			*/
 
-			var get = members.get = function() 
+			members.get = function() 
 			{
 				var context, data, value;
-				context = this;		 
+				context = this;
 
 				if (Permutation.isSet("debug")) {
 					jasy.property.Debug.checkGetter(context, config, arguments);
@@ -95,7 +119,7 @@
 
 				data = context[dataStore];
 				if (data) {
-					value = data[id];
+					value = data[propertyId];
 				}
 
 				if (value === undef) 
@@ -107,7 +131,7 @@
 					if (Permutation.isSet("debug"))
 					{
 						if (!propertyNullable) {
-							context.error("Missing value for: " + name + " (during get())");
+							context.error("Missing value for: " + propertyName + " (during get())");
 						}
 					}	 
 
@@ -132,7 +156,7 @@
 					var context=this, data=context[dataStore];
 
 					// Check whether there is already local data (which is higher prio than init data)
-					if (!data || data[id] === undef) 
+					if (!data || data[propertyId] === undef) 
 					{
 						// Call apply
 						if (propertyApply) {
@@ -140,8 +164,8 @@
 						}
 
 						// Fire event
-						if (propertyEvent) {
-							context.fireEvent(propertyEvent, propertyInit, undef);
+						if (propertyFire) {
+							context.fireEvent(propertyFire, propertyInit, undef);
 						}
 					}
 				};
@@ -167,7 +191,7 @@
 				if (!data) {
 					data = context[dataStore] = {};
 				} else {
-					old = data[id];
+					old = data[propertyId];
 				}
 
 				if (value !== old) 
@@ -176,14 +200,14 @@
 						old = propertyInit;
 					}
 
-					data[id] = value;
+					data[propertyId] = value;
 
 					if (propertyApply) {
 						propertyApply.call(context, value, old);
 					}
 
-					if (propertyEvent) {
-						context.fireEvent(propertyEvent, value, old);
+					if (propertyFire) {
+						context.fireEvent(propertyFire, value, old);
 					}
 				}
 
@@ -212,12 +236,12 @@
 					return;
 				}
 
-				old = data[id];
+				old = data[propertyId];
 				value = undef;
 
 				if (old !== value) 
 				{
-					data[id] = value;
+					data[propertyId] = value;
 
 					if (propertyInit !== undef) {
 						value = propertyInit;
@@ -226,7 +250,7 @@
 					{
 						// Still no value. We warn about that the property is not nullable.
 						if (!propertyNullable) {
-							context.error("Missing value for: " + name + " (during reset())");
+							context.error("Missing value for: " + propertyName + " (during reset())");
 						}
 					}		 
 
@@ -234,8 +258,8 @@
 						propertyApply.call(context, value, old);
 					}
 
-					if (propertyEvent) {
-						context.fireEvent(propertyEvent, value, old);
+					if (propertyFire) {
+						context.fireEvent(propertyFire, value, old);
 					}
 				}
 			};
@@ -251,7 +275,7 @@
 			if (config.type === "Boolean") 
 			{
 				members.toggle = function toggle() {
-					return setter.call(this, !getter.call(this));
+					return members.setter.call(this, !members.getter.call(this));
 				};
 
 				members.is = members.get;

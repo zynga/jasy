@@ -8,5 +8,5 @@
 Module("jasy.property.Core",
 {
 	RUNTIME_OVERRIDE : false,
-	ID : 0
+	ID : 1
 });

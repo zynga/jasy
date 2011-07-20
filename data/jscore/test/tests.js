@@ -503,6 +503,7 @@ $(function() {
 				}
 			}
 		});
+		
 
 		Class("properties.Dimension", 
 		{
@@ -518,7 +519,7 @@ $(function() {
 			}
 		});
 
-		
+
 		Class("properties.Label", 
 		{
 			include : [properties.Text, properties.Dimension],
@@ -529,11 +530,6 @@ $(function() {
 				properties.Text.call(this, this.__labelElement);
 				
 				this.setLineHeight(2);
-			},
-			
-			properties : 
-			{
-				
 			},
 			
 			members :
