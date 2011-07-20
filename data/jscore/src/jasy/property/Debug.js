@@ -8,6 +8,10 @@
 /**
  * This helper class is only included into debug builds and do the 
  * generic property checks defined using the property configuration.
+ *
+ * It's used by both standard property system: jasy.property.Simple and jasy.property.Multi.
+ *
+ * @require {fix.Console}
  */
 Module("jasy.property.Debug",
 {
@@ -26,27 +30,44 @@ Module("jasy.property.Debug",
 			throw new Error("Called set() method of property " + name + " on object " + obj + " with no arguments!");
 		}
 		
-		if (args.length > 1) 
-		{
-			obj.warn("Called set() method of property " + name + " on object " + obj + " with too many arguments!");
-			obj.trace();
+		if (args.length > 1) {
+			throw new Error("Called set() method of property " + name + " on object " + obj + " with too many arguments!");
 		}
 		
 		var value = args[0];
 		if (value == null)
 		{
-			if (!config.nullable) {
+			if (value !== null) {
+				throw new Error("Property " + name + " in object " + obj + " got invalid undefined value during set!");
+			} else if (!config.nullable) {
 				throw new Error("Property " + name + " in object " + obj + " is not nullable!");
 			}
 		}
 		else
 		{
-			var check = config.check;
-			if (check)
+			var type = config.type;
+			if (type)
 			{
-				try {
-					//qx.core.Type.check(value, check, obj);
-				} catch(ex) {
+				try 
+				{
+					if (type instanceof Array) {
+						Assert.assertInList(value, type);
+					} else if (Class.isClass(type)) {
+						Assert.assertInstanceOf(value, type);
+					} else if (Interface.isInterface(type)) {
+						Interface.assert(value, type);
+					}
+					else
+					{
+						var assertName = "assert" + type;
+						if (Assert[assertName]) {
+							Assert[assertName](value);
+						} else {
+							console.warn("Unsupported type check: " + type + "!");
+						}
+					}
+				} 
+				catch(ex) {
 					throw new Error("Could not set() property " + name + " of object " + obj + ": " + ex);
 				}
 			}
@@ -63,10 +84,8 @@ Module("jasy.property.Debug",
 	 */
 	checkResetter : function(obj, config, args)
 	{
-		if (args.length != 0) 
-		{
-			obj.warn("Called reset method of property " + config.name + " on " + obj + " with too many arguments!");
-			obj.trace();
+		if (args.length != 0) {
+			throw new Error("Called reset method of property " + config.name + " on " + obj + " with too many arguments!");
 		}
 	},
 	
@@ -80,10 +99,8 @@ Module("jasy.property.Debug",
 	 */
 	checkGetter : function(obj, config, args)
 	{
-		if (args.length != 0) 
-		{
-			obj.warn("Called get method of property " + config.name + " on " + obj + " with too many arguments!");
-			obj.trace();
+		if (args.length != 0) {
+			throw new Error("Called get method of property " + config.name + " on " + obj + " with too many arguments!");
 		}
 	}
 });

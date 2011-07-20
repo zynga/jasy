@@ -120,6 +120,10 @@
 	Assert.add(function(value, list) {
 		return list.indexOf(value) != -1;
 	}, "isInList", "Is not in specified list!");
+	
+	Assert.add(function(value, clazz) {
+		return value instanceof clazz;
+	}, "isInstanceOf", "Is not a instance of %1!");	
 
 	Assert.add(function(obj, key) {
 		return key in obj;
