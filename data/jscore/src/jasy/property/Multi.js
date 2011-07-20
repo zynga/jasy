@@ -55,13 +55,11 @@
 	
 	// Shared variables (constants)
 	var initKeyPrefix = "$$init-";
-	var dataKey = "$$data";
+	var store = "$$data";
 	
 	// Improve compressibility
 	var Undefined;
-	var Bootstrap = qx.Bootstrap;
-	var Type = qx.core.Type;
-	var PropertyUtil = jasy.property.Util;	 
+	var PropertyUtil = jasy.property.Util;
 
 	
 	/*
@@ -108,9 +106,9 @@
 				continue;
 			}
 		
-			childData = child[dataKey];
+			childData = child[store];
 			if (!childData) {
-				childData = child[dataKey] = {};
+				childData = child[store] = {};
 			}
 		
 			// Quick lookup (higher priority value exist)
@@ -287,13 +285,9 @@
 						jasy.property.Debug.checkSetter(context, config, arguments);
 					}
 				
-					if (propertyValidate) {
-						Type.check(newValue, propertyValidate, context, qx.core.ValidationError);
-					}					 
-				
-					var data = context[dataKey];
+					var data = context[store];
 					if (!data) {
-						data = context[dataKey] = {};
+						data = context[store] = {};
 					}
 					else
 					{
@@ -373,7 +367,7 @@
 						jasy.property.Debug.checkResetter(context, config, arguments);
 					}
 				
-					var data = context[dataKey];				
+					var data = context[store];				
 				
 					// context.debug("Delete " + name + "[" + modifyPriority + "]");
 
@@ -465,7 +459,7 @@
 					jasy.property.Debug.checkGetter(context, config, arguments);
 				}
 			
-				var data = context[dataKey];
+				var data = context[store];
 
 				var currentPriority = data && data[propertyId];
 				if (currentPriority === Undefined) 
@@ -533,7 +527,7 @@
 				members["init" + up] = function()
 				{
 					var context = this;
-					var data = context[dataKey];
+					var data = context[store];
 					if (data) 
 					{
 						// Check whether there is already another value assigned.
@@ -606,7 +600,7 @@
 				}
 			}
 		
-			return obj[dataKey][key];
+			return obj[store][key];
 		},
 	
 	
@@ -623,9 +617,9 @@
 		importData : function(obj, values, oldValues, field)
 		{
 			// Check existence of data structure
-			var data = obj[dataKey];
+			var data = obj[store];
 			if (!data) {
-				data = obj[dataKey] = {};
+				data = obj[store] = {};
 			}
 
 			// Commonly used variables
@@ -841,13 +835,13 @@
 			inheritedPriority = fieldToPriority.inherited;
 
 			// Cache data field from object
-			data = obj[dataKey];
+			data = obj[store];
 			if (!data) {
-				data = obj[dataKey] = {};
+				data = obj[store] = {};
 			}
 
 			// Cache data field from new parent
-			newParentData = newParent ? newParent[dataKey] : Undefined;
+			newParentData = newParent ? newParent[store] : Undefined;
 
 			// Iterate through all inheritable properties
 			clazz = obj.constructor;
