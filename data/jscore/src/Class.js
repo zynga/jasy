@@ -17,7 +17,7 @@ if(!Permutation.isSet("es5"))
 	} catch(ex) {};
 }
 
-(function() {
+(function(global, undef) {
 	var genericToString = function() {
 		return "[Class " + this.className + "]";
 	};
@@ -119,6 +119,9 @@ if(!Permutation.isSet("es5"))
 	}
 	
 	
+	var propertyJoinableNames = {};
+	
+	
 	
 	Module.declareName("Class", function(name, config) 
 	{
@@ -184,18 +187,6 @@ if(!Permutation.isSet("es5"))
 		//   LOCALS
 		// ------------------------------------
 	
-		// Attach members
-		var members = config.members;
-		if (members) {
-			for (var key in members) {
-				var entry = proto[key] = members[key];
-				if (entry instanceof Function) {
-					entry.displayName = name + "." + key;
-				}
-			}
-		}
-		
-		
 		// Add properties
 		var properties = construct.__properties = config.properties || {};
 		for (var propertyName in properties) 
@@ -215,12 +206,39 @@ if(!Permutation.isSet("es5"))
 				var propertyMembers = jasy.property.Simple.create(propertyConfig);
 			}
 			
-			// TODO: Inject members
-			// displayname etc.
+			// Prepare function names
+			var propertyMethodPostfix = propertyJoinableNames[propertyName];
+			if (propertyMethodPostfix === undef) 
+			{
+				propertyMethodPostfix = propertyName.charAt(0).toUpperCase() + propertyName.slice(1);
+				propertyJoinableNames[propertyName] = propertyMethodPostfix;
+			}
 			
-			console.debug("Members for: " + propertyName, propertyMembers);
-			
+			// Attach property methods
+			for (var propertyMemberKey in propertyMembers) 
+			{
+				var propertyMemberName = propertyMemberKey + propertyMethodPostfix;
+				var propertyMember = propertyMembers[propertyMemberKey];
+				
+				proto[propertyMemberName] = propertyMember;
+				propertyMember.displayName = name + "." + propertyMemberName;
+			}
 		}
+		
+		
+		// Attach members
+		var members = config.members;
+		if (members) {
+			for (var key in members) {
+				var entry = proto[key] = members[key];
+				if (entry instanceof Function) {
+					entry.displayName = name + "." + key;
+				}
+			}
+		}
+		
+		
+
 	
 	
 	
@@ -381,4 +399,4 @@ if(!Permutation.isSet("es5"))
 	Assert.add(isClass, "isClass", "Invalid class!");
 	Assert.add(includesClass, "includesClass", "Does not include class %1!");
 	
-})();
+})(this);
