@@ -11,7 +11,7 @@
 	var propertyNameToId = {};
 	
 	/** {String} Field where the data is stored */
-	var dataStore = "$$data";
+	var store = "$$data";
 	
 	
 	/**
@@ -95,8 +95,6 @@
 				propertyId = propertyNameToId[propertyName] = (jasy.property.Core.ID++);
 			}
 			
-			console.debug("Property " + propertyName + " = " + propertyId);
-			
 			// Prepare return value
 			var members = {};
 
@@ -117,7 +115,7 @@
 					jasy.property.Debug.checkGetter(context, config, arguments);
 				}
 
-				data = context[dataStore];
+				data = context[store];
 				if (data) {
 					value = data[propertyId];
 				}
@@ -153,7 +151,7 @@
 			{
 				member.init = function()
 				{
-					var context=this, data=context[dataStore];
+					var context=this, data=context[store];
 
 					// Check whether there is already local data (which is higher prio than init data)
 					if (!data || data[propertyId] === undef) 
@@ -187,9 +185,9 @@
 					jasy.property.Debug.checkSetter(context, config, arguments);
 				}
 
-				data = context[dataStore];
+				data = context[store];
 				if (!data) {
-					data = context[dataStore] = {};
+					data = context[store] = {};
 				} else {
 					old = data[propertyId];
 				}
@@ -231,7 +229,7 @@
 					jasy.property.Debug.checkResetter(context, config, arguments);
 				}
 
-				data = context[dataStore];
+				data = context[store];
 				if (!data) {
 					return;
 				}

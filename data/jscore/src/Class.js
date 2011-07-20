@@ -174,7 +174,7 @@ if(!Permutation.isSet("es5"))
 		construct.toString = genericToString;
 		construct.valueOf = genericToString;
 
-		// Attach events and properties data
+		// Attach events and properties data (use cryptic private fields for class storage)
 		var events = construct.__events = config.events || {};
 		var properties = construct.__properties = config.properties || {};
 		
@@ -262,16 +262,20 @@ if(!Permutation.isSet("es5"))
 			{
 				var includedClass = include[i];
 				
+				// Just remap members. Validation already happended in debug mode.
+				// Function name keeps to be the same after inclusion. Still refering to original class.
 				var includeMembers = includedClass.prototype;
 				for (var key in includeMembers) {
 					proto[key] = includeMembers[key];
 				}
 				
+				// Just copy over the property data. Methods are already in member section.
 				var includeProperties = includedClass.__properties;
 				for (var key in includeProperties) {
 					properties[key] = includeProperties[key];
 				}
 
+				// Events is just data to copy over.
 				var includeEvents = includedClass.__events;
 				for (var key in includeEvents) {
 					events[key] = includeEvents[key];

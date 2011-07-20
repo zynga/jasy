@@ -504,6 +504,22 @@ $(function() {
 			}
 		});
 		
+		ok(Assert.isClass(properties.Text));
+
+		ok(Assert.isFunction(properties.Text.prototype.getWrap));
+		ok(Assert.isFunction(properties.Text.prototype.getColor));
+		ok(Assert.isFunction(properties.Text.prototype.getFontFamily));
+		ok(Assert.isFunction(properties.Text.prototype.getLineHeight));
+
+		ok(Assert.isFunction(properties.Text.prototype.setWrap));
+		ok(Assert.isFunction(properties.Text.prototype.setColor));
+		ok(Assert.isFunction(properties.Text.prototype.setFontFamily));
+		ok(Assert.isFunction(properties.Text.prototype.setLineHeight));
+
+		equals(properties.Text.prototype.setLineHeight.length, 1);
+		equals(properties.Text.prototype.getLineHeight.length, 0);
+		equals(properties.Text.prototype.resetLineHeight.length, 0);
+		
 
 		Class("properties.Dimension", 
 		{
@@ -518,6 +534,8 @@ $(function() {
 				}
 			}
 		});
+
+		ok(Assert.isClass(properties.Dimension));
 
 
 		Class("properties.Label", 
@@ -541,6 +559,10 @@ $(function() {
 				}
 			}
 		});
+		
+		ok(Assert.isClass(properties.Label));
+		
+		
 		
 	})
 	
