@@ -516,6 +516,10 @@ $(function() {
 		ok(Assert.isFunction(properties.Text.prototype.setFontFamily));
 		ok(Assert.isFunction(properties.Text.prototype.setLineHeight));
 
+		equals(properties.Text.prototype.getWrap.displayName, "properties.Text.getWrap");
+		equals(properties.Text.prototype.setWrap.displayName, "properties.Text.setWrap");
+		equals(properties.Text.prototype.resetWrap.displayName, "properties.Text.resetWrap");
+
 		equals(properties.Text.prototype.setLineHeight.length, 1);
 		equals(properties.Text.prototype.getLineHeight.length, 0);
 		equals(properties.Text.prototype.resetLineHeight.length, 0);

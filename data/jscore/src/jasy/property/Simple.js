@@ -263,24 +263,6 @@
 			};
 
 
-
-			/*
-			---------------------------------------------------------------------------
-				 FACTORY METHODS :: GOODIES
-			---------------------------------------------------------------------------
-			*/
-
-			if (config.type === "Boolean") 
-			{
-				members.toggle = function toggle() {
-					return members.setter.call(this, !members.getter.call(this));
-				};
-
-				members.is = members.get;
-			}
-
-
-
 			// Return creates members section
 			return members;
 		}
