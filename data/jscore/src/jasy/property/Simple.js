@@ -149,7 +149,7 @@
 
 			if (propertyInit !== undef)
 			{
-				member.init = function()
+				members.init = function()
 				{
 					var context=this, data=context[store];
 
