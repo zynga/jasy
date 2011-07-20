@@ -563,23 +563,6 @@
 				members["setRuntime" + up] = setter(4);
 				members["resetRuntime" + up] = resetter(4);
 			}
-
-
-
-			/*
-			---------------------------------------------------------------------------
-				 FACTORY METHODS :: GOODIES
-			---------------------------------------------------------------------------
-			*/
-
-			if (config.check === "Boolean")
-			{
-				members["toggle" + up] = function() {
-					this["set" + up](!this["get" + up]());
-				}
-
-				members["is" + up] = getter;
-			}
 		},
 
 
