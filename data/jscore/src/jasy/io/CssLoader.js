@@ -1,7 +1,14 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 // Inspired by: http://www.phpied.com/when-is-a-stylesheet-really-loaded/
 // Misses webkit solution
 // Problem: Detecting which file was loaded!
-Module("jasy.CssLoader", (function(global, doc)
+Module("jasy.io.CssLoader", (function(global, doc)
 {
 	var head = doc.getElementsByTagName('head')[0];
 

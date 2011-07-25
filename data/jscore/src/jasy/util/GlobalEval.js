@@ -1,7 +1,14 @@
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
 /**
  * Contains a method for executing aribritary script content in global context
  */
-Module("jasy.Eval",
+Module("jasy.GlobalEval",
 {
 	/**
 	 * Executes the given code in global context
@@ -12,7 +19,7 @@ Module("jasy.Eval",
 	 * @param expression {String} Code to execute
 	 * @return {var} Return value of executed code
 	 */	 
-	global : (function() 
+	execute : (function() 
 	{
 		var isIndirectEvalGlobal = (function() 
 		{

@@ -29,6 +29,8 @@ def build():
     session = Session()
     session.addProject(Project("."))
     session.activateField("debug")
+    session.activateField("es5")
+    session.activateField("engine")
     session.activateField("locale", ["en"])
     
     # Permutation independend config
@@ -36,7 +38,10 @@ def build():
     formatting = Format()
 
     # Store loader script
-    loaderIncluded = session.writeLoader("loader.js", optimization, formatting)
+    loaderIncluded = session.writeLoader("generated" + os.sep + "loader.js", optimization, formatting)
+    
+    # Copy HTML file from source
+    updatefile("index.html", "generated" + os.sep + "index.html")
 
     # Process every possible permutation
     permutations = session.getPermutations()
@@ -48,8 +53,7 @@ def build():
 
         # Resolving dependencies
         resolver = Resolver(projects, permutation)
-        resolver.addClassName("Dog")
-        resolver.addClassName("Cat")
+        resolver.addClassName("ootest.Test")
         resolver.excludeClasses(loaderIncluded)
         classes = resolver.getIncludedClasses()
 
@@ -62,7 +66,7 @@ def build():
         bootCode = ""
 
         # Write file
-        writefile("oo-%s.js" % permutation.getChecksum(), compressedCode + bootCode)
+        writefile("generated" + os.sep + "oo-%s.js" % permutation.getChecksum(), compressedCode + bootCode)
 
 
 

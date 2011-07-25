@@ -1,13 +1,13 @@
 /* 
 ==================================================================================================
-	Jasy - JavaScript Tooling Refined
-	Copyright 2010 Sebastian Werner
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
 ==================================================================================================
 */
 
 (function(translations)
 {
-	Module("i18n", 
+	Module("Locale", 
 	{
 		/**
 		 * Quick and easy string templating using %1, %2, etc. as placeholders 

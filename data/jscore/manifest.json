@@ -1,14 +1,26 @@
 {
 	"name" : "jasy",
-	"kind" : "basic",
 
-	"values" :
+	"fields" :
 	{
 		"debug" : 
 		{
 			"check" : "Boolean",
 			"default" : false,
 			"detect" : "jasy.detect.Param"
+		},
+
+		"es5" : 
+		{
+			"check" : "Boolean",
+			"default" : false,
+			"detect" : "jasy.detect.ES5"
+		},
+
+		"engine" : 
+		{
+			"check" : ["webkit","gecko","trident","presto"],
+			"detect" : "jasy.detect.Engine"
 		},
 
 		"locale" : 

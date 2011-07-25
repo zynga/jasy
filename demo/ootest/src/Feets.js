@@ -1,4 +1,7 @@
-Class("Feets", {
+/**
+ * Adds feets to any object 
+ */
+Class("ootest.Feets", {
 	construct : function(feets, speed) {
 		this.__feets = feets;
 		this.__speed = speed || 10;

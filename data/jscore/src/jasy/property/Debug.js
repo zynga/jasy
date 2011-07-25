@@ -1,5 +1,20 @@
-Module("jasy.property.Debug", {
-	
+/* 
+==================================================================================================
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
+==================================================================================================
+*/
+
+/**
+ * This helper class is only included into debug builds and do the 
+ * generic property checks defined using the property configuration.
+ *
+ * It's used by both standard property system: jasy.property.Simple and jasy.property.Multi.
+ *
+ * @require {fix.Console}
+ */
+Module("jasy.property.Debug",
+{
 	/**
 	 * Validates the incoming parameters of a setter method
 	 * 
@@ -15,27 +30,44 @@ Module("jasy.property.Debug", {
 			throw new Error("Called set() method of property " + name + " on object " + obj + " with no arguments!");
 		}
 		
-		if (args.length > 1) 
-		{
-			obj.warn("Called set() method of property " + name + " on object " + obj + " with too many arguments!");
-			obj.trace();
+		if (args.length > 1) {
+			throw new Error("Called set() method of property " + name + " on object " + obj + " with too many arguments!");
 		}
 		
 		var value = args[0];
 		if (value == null)
 		{
-			if (!config.nullable) {
+			if (value !== null) {
+				throw new Error("Property " + name + " in object " + obj + " got invalid undefined value during set!");
+			} else if (!config.nullable) {
 				throw new Error("Property " + name + " in object " + obj + " is not nullable!");
 			}
 		}
 		else
 		{
-			var check = config.check;
-			if (check)
+			var type = config.type;
+			if (type)
 			{
-				try {
-					jasy.Type.check(value, check, obj);
-				} catch(ex) {
+				try 
+				{
+					if (type instanceof Array) {
+						Assert.assertInList(value, type);
+					} else if (Class.isClass(type)) {
+						Assert.assertInstanceOf(value, type);
+					} else if (Interface.isInterface(type)) {
+						Interface.assert(value, type);
+					}
+					else
+					{
+						var assertName = "assert" + type;
+						if (Assert[assertName]) {
+							Assert[assertName](value);
+						} else {
+							console.warn("Unsupported type check: " + type + "!");
+						}
+					}
+				} 
+				catch(ex) {
 					throw new Error("Could not set() property " + name + " of object " + obj + ": " + ex);
 				}
 			}
@@ -52,11 +84,9 @@ Module("jasy.property.Debug", {
 	 */
 	checkResetter : function(obj, config, args)
 	{
-		if (args.length != 0) 
-		{
-			obj.warn("Called reset method of property " + config.name + " on " + obj + " with too many arguments!");
-			obj.trace();
-		}			 
+		if (args.length != 0) {
+			throw new Error("Called reset method of property " + config.name + " on " + obj + " with too many arguments!");
+		}
 	},
 	
 	
@@ -69,68 +99,8 @@ Module("jasy.property.Debug", {
 	 */
 	checkGetter : function(obj, config, args)
 	{
-		if (args.length != 0) 
-		{
-			obj.warn("Called get method of property " + config.name + " on " + obj + " with too many arguments!");
-			obj.trace();
-		}			 
-	},
-	
-	
-	/**
-	 * Supported keys for property defintions
-	 *
-	 * @internal
-	 */
-	__propertyKeys : jasy.Permutation.isSet("debug") ?
-	{
-		name				: "string",    // String
-		nullable		: "boolean",   // Boolean
-		init				: null,        // Any
-		apply				: "function",  // Function
-		event				: "string",    // String
-		check				: null         // Array, String, RegExp, Function
-	} : null,
-
-
-	/**
-	 * Validates a property configuration
-	 * 
-	 * @signature function(clazz, name, config, patch)
-	 * @param clazz {Class} class to add property to
-	 * @param name {String} name of the property
-	 * @param config {Map} configuration map
-	 * @param patch {Boolean ? false} enable refine/patch?
-	 */
-	validateConfig : jasy.Permutation.isSet("debug") ?
-	function(clazz, name, config)
-	{
-		var Util = jasy.property.Util;
-		var has = Util.hasProperty(clazz, name);
-
-		if (has)
-		{
-			var existingProperty = Util.getPropertyDefinition(clazz, name);
-
-			if (config.refine && existingProperty.init === undefined) {
-				throw new Error("Could not refine a init value if there was previously no init value defined. Property '" + name + "' of class '" + clazz.classname + "'.");
-			}
+		if (args.length != 0) {
+			throw new Error("Called get method of property " + config.name + " on " + obj + " with too many arguments!");
 		}
-
-		var allowed = this.__propertyKeys;
-		for (var key in config)
-		{
-			if (allowed[key] === undefined) {
-				throw new Error('The configuration key "' + key + '" of property "' + name + '" in class "' + clazz.classname + '" is not allowed!');
-			}
-
-			if (config[key] === undefined) {
-				throw new Error('Invalid key "' + key + '" of property "' + name + '" in class "' + clazz.classname + '"! The value is undefined: ' + config[key]);
-			}
-
-			if (allowed[key] !== null && typeof config[key] !== allowed[key]) {
-				throw new Error('Invalid type of key "' + key + '" of property "' + name + '" in class "' + clazz.classname + '"! The type of the key must be "' + allowed[key] + '"!');
-			}
-		}
-	} : null
+	}
 });

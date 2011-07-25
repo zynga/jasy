@@ -43,16 +43,22 @@ class Session():
         
         self.__projects.append(project)
 
-        # Import project defined values
-        values = project.getValues()
-        for name in values:
-            entry = values[name]
+        # Import project defined fields which might be configured using "activateField()"
+        fields = project.getFields()
+        for name in fields:
+            entry = fields[name]
             if "check" in entry:
                 check = entry["check"]
                 if check in ["Boolean", "String", "Number"] or type(check) == list:
                     pass
                 else:
                     raise Exception("Unsupported check: %s for %s" % (check, name))
+                    
+            if "detect" in entry:
+                detect = entry["detect"]
+                if not self.getClass(detect):
+                    raise Exception("Field: %s uses unknown detection class %s." % (name, detect))
+                
                     
             self.__fields[name] = entry
         
@@ -79,7 +85,19 @@ class Session():
                 dyn.append(self.__localeProjects[locale])
         
         return dyn + self.__projects
-    
+        
+        
+        
+    def getClass(self, className):
+        """
+        Queries all currently known projects for the given class and returns the class object
+        """
+        for project in self.__projects:
+            classes = project.getClasses()
+            if className in classes:
+                return classes[className]
+        
+
     
     #
     # Core
@@ -144,6 +162,9 @@ class Session():
         elif "check" in entry and entry["check"] == "Boolean":
             entry["values"] = [True, False]
             
+        elif "check" in entry and type(entry["check"]) == list:
+            entry["values"] = entry["check"]
+            
         elif "default" in entry:
             entry["values"] = [entry["default"]]
             
@@ -152,7 +173,11 @@ class Session():
 
         # Store class which is responsible for detection (overrides data from project)
         if detect:
+            if not self.getClass(detect):
+                raise Exception("Could not activate field: %s! Unknown detect class %s." % detect)
+                
             entry["detect"] = detect
+            
         
         
     def getPermutations(self):
@@ -191,17 +216,25 @@ class Session():
             content.append("'%s'" % key)
             
             if "values" in source:
-                if "detect" in source and len(source["values"]) > 1:
-                    content.append(toJSON(source["values"]))
+                values = source["values"]
+                if "detect" in source and len(values) > 1:
+                    if "default" in source:
+                        # Make sure that default value is first in
+                        values = values[:]
+                        values.remove(source["default"])
+                        values.insert(0, source["default"])
+                    
+                    content.append(toJSON(values))
                     content.append(source["detect"])
             
                 else:
-                    content.append(toJSON(source["values"][0]))
+                    content.append(toJSON(values[0]))
 
             else:
                 continue
                 
             export.append("[%s]" % ",".join(content))
+            
             
         return "[%s]" % ",".join(export)
     
@@ -215,11 +248,11 @@ class Session():
         """
         
         permutation = Permutation({
-          "jasy.fields" : self.__exportFields()
+          "Permutation.fields" : self.__exportFields()
         })
         
         resolver = Resolver(self.getProjects(), permutation)
-        resolver.addClassName("jasy.Permutation")
+        resolver.addClassName("Permutation")
         classes = Sorter(resolver, permutation).getSortedClasses()
         compressedCode = Combiner(classes).compress(permutation, None, optimization, formatting)
         writefile(fileName, compressedCode)

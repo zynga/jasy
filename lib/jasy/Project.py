@@ -13,8 +13,13 @@ class ProjectException(Exception):
         
 class Project():
     def __init__(self, path):
+        path = os.path.normpath(path)
+
         if not os.path.isdir(path):
             raise ProjectException("Invalid project path: %s (Absolute: %s)" % (path, os.path.abspath(path)))
+        
+        # Only store and work with full path
+        path = os.path.abspath(path)
         
         self.__path = path
         self.__dirFilter = [".svn",".git",".hg",".bzr"]
@@ -29,35 +34,61 @@ class Project():
         except ValueError as err:
             raise ProjectException("Could not parse manifest.json at %s: %s" % (manifestPath, err))
         
-        self.__name = manifestData["name"]
-        self.__kind = manifestData["kind"]
+        # Read name from manifest or use the basename of the project's path
+        if "name" in manifestData:
+            self.__name = manifestData["name"]
+        else:
+            self.__name = os.path.basename(path)
 
+        # Defined whenever no namespace is defined and classes/assets are not stored in the toplevel structure.
+        if "namespace" in manifestData:
+            self.__namespace = manifestData["namespace"]
+        else:
+            self.__namespace = ""
+        
+        # Detect kind automatically
+        if "kind" in manifestData:
+            self.__kind = manifestData["kind"]
+        elif os.path.isdir(os.path.join(self.__path, "source", "class")):
+            self.__kind = "full"
+        elif os.path.isdir(os.path.join(self.__path, "class")):
+            self.__kind = "basic"
+        elif os.path.isdir(os.path.join(self.__path, "src")):
+            self.__kind = "classic"
+        else:
+            self.__kind = "flat"
+        
+        # Whether we need to parse files for get their correct name (using @name attributes)
         if "fuzzy" in manifestData:
             self.__fuzzy = manifestData["fuzzy"]
         else:
             self.__fuzzy = False
             
-        # Read default values (for settings, variants, permutations, etc.)
-        if "values" in manifestData:
-            self.__values = manifestData["values"]
+        # Read fields (for injecting data into the project and build permuations)
+        if "fields" in manifestData:
+            self.__fields = manifestData["fields"]
         else:
-            self.__values = {}
+            self.__fields = {}
 
         logging.info("Initialized project %s (%s)" % (self.__name, self.__kind))
 
         # Do kind specific intialization
-        if self.__kind == "qooxdoo":
+        if self.__kind == "full":
             self.classPath = os.path.join(self.__path, "source", "class")
-            self.resourcePath = os.path.join(self.__path, "source", "resource")
+            self.assetPath = os.path.join(self.__path, "source", "asset")
             self.translationPath = os.path.join(self.__path, "source", "translation")
         elif self.__kind == "basic":
+            self.classPath = os.path.join(self.__path, "class")
+            self.assetPath = os.path.join(self.__path, "asset")
+            self.translationPath = os.path.join(self.__path, "translation")
+        elif self.__kind == "classic":
             self.classPath = os.path.join(self.__path, "src")
-            self.resourcePath = os.path.join(self.__path, "src")
-            self.translationPath = None
+            self.assetPath = os.path.join(self.__path, "src")
+            self.translationPath = os.path.join(self.__path, "src")
         elif self.__kind == "flat":
             self.classPath = self.__path
-            self.resourcePath = self.__path
-            self.translationPath = None
+            self.assetPath = self.__path
+            self.translationPath = self.__path
         else:
             raise ProjectException("Unsupported kind of project: %s" % self.__kind)
     
@@ -78,24 +109,40 @@ class Project():
         self.__cache.close()
         
         
-    def getValues(self):
-        return self.__values
+    def getFields(self):
+        """ Return the project defined fields which may be configured by the build script """
+        return self.__fields
         
         
     def getClassByName(self, className):
         try:
             return self.getClasses()[className]
         except KeyError:
-            return None            
+            return None         
+        
+    
+    def getClassPath(self):
+        """ Returns the full path to the JavaScript classes """
+        return self.classPath
+
+    def getAssetPath(self):
+        """ Returns the full path to the assets (images, stylesheets, etc.) """
+        return self.assetPath
+
+    def getTranslationPath(self):
+        """ Returns the full path to the translation files (gettext *.po files) """
+        return self.translationPath
 
 
     def getClasses(self):
+        """ Returns all project JavaScript classes """
         try:
             return self.classes
             
         except AttributeError:
             classPath = self.classPath
             classes = {}
+            namespace = self.__namespace
             
             if classPath and os.path.exists(classPath):
                 classPathLen = len(classPath) + 1
@@ -111,7 +158,7 @@ class Project():
                         filePath = os.path.join(dirPath, fileName)
                         relPath = filePath[classPathLen:]
 
-                        classObj = Class(filePath, relPath, self)
+                        classObj = Class(relPath, self)
                         className = classObj.getName()
                         
                         # This is by far slower and not the default but helps in specific project structures
@@ -122,7 +169,12 @@ class Project():
                                 className = classNameForced
                             else:
                                 logging.warn("No name given to class: %s" % className)
-
+                                
+                        # Support for pre-fixed namespace which is not used in filesystem, but in classes
+                        elif namespace:
+                            className = namespace + "." + className
+                            classObj.setName(className)
+                            
                         classes[className] = classObj
                 
             logging.info("Project %s contains %s classes", self.__name, len(classes))
@@ -130,17 +182,19 @@ class Project():
             return classes
 
 
-    def getResources(self):
+    def getAssets(self):
+        """ Returns all project asssets (images, stylesheets, etc.) """
         try:
-            return self.resources
+            return self.assets
             
         except AttributeError:
-            resourcePath = self.resourcePath
-            resources = {}
+            assetPath = self.assetPath
+            assets = {}
+            namespace = self.__namespace
 
-            if resourcePath and os.path.exists(resourcePath):
-                resourcePathLen = len(resourcePath) + 1
-                for dirPath, dirNames, fileNames in os.walk(resourcePath):
+            if assetPath and os.path.exists(assetPath):
+                assetPathLen = len(assetPath) + 1
+                for dirPath, dirNames, fileNames in os.walk(assetPath):
                     for dirName in dirNames:
                         if dirName in self.__dirFilter:
                             dirNames.remove(dirName)
@@ -150,16 +204,21 @@ class Project():
                             continue
 
                         filePath = os.path.join(dirPath, fileName)
-                        relPath = filePath[resourcePathLen:]            
+                        relPath = filePath[assetPathLen:]
+                        
+                        # Support for pre-fixed namespace which is not used in filesystem, but in assets
+                        if namespace:
+                            relPath = os.path.join(namespace, relPath)
 
-                        resources[relPath] = filePath
+                        assets[relPath] = filePath
                     
-            logging.info("Project %s contains %s resources", self.__name, len(resources))
-            self.resources = resources
-            return resources
+            logging.info("Project %s contains %s assets", self.__name, len(assets))
+            self.assets = assets
+            return assets
 
 
     def getTranslations(self):
+        """ Returns all translation files (gettext *.po files)"""
         try:
             return self.translations
             

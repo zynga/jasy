@@ -10,10 +10,10 @@ from jasy.parser.Parser import parseExpression
 __all__ = ["Permutation", "getKeys"]
 
 
-# jasy specific: jasy.Permutation.isSet(key, expected?)
-# jasy specific: jasy.Permutation.getValue(key)
-# jasy specific: jasy.Permutation.select(key, map)
-__dotcalls = ("jasy.Permutation.isSet", "jasy.Permutation.getValue", "jasy.Permutation.select")
+# jasy specific: Permutation.isSet(key, expected?)
+# jasy specific: Permutation.getValue(key)
+# jasy specific: Permutation.select(key, map)
+__dotcalls = ("Permutation.isSet", "Permutation.getValue", "Permutation.select")
 
 # hasjs specific: has(key)
 __globalcalls = ("has")
@@ -200,8 +200,8 @@ class Permutation:
         if result == "dotcall":
             assembled = assembleDot(node)
             
-            # jasy.Permutation.getValue(key)
-            if assembled == "jasy.Permutation.getValue" and node.parent.type == "call":
+            # Permutation.getValue(key)
+            if assembled == "Permutation.getValue" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
                 replacement = self.getJSValue(params[0].value)
@@ -210,9 +210,9 @@ class Permutation:
                     callNode.parent.replace(callNode, replacementNode)
                     modified = True            
             
-            # jasy.Permutation.isSet(key, expected)
-            # also supports boolean like: jasy.Permutation.isSet(key)
-            elif assembled == "jasy.Permutation.isSet" and node.parent.type == "call":
+            # Permutation.isSet(key, expected)
+            # also supports boolean like: Permutation.isSet(key)
+            elif assembled == "Permutation.isSet" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
                 name = params[0].value
@@ -237,8 +237,8 @@ class Permutation:
                     callNode.parent.replace(callNode, replacementNode)
                     modified = True
             
-            # jasy.Permutation.select(key, map)
-            elif assembled == "jasy.Permutation.select" and node.parent.type == "call":
+            # Permutation.select(key, map)
+            elif assembled == "Permutation.select" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
                 replacement = self.getJSValue(params[0].value)
