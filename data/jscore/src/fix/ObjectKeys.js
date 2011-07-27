@@ -53,6 +53,7 @@
 		};
 	}
 
+	// non standard
 	if (!Object.isEmpty)
 	{
 		Object.empty = function(object) 
