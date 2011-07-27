@@ -5,7 +5,7 @@
 ==================================================================================================
 */
 
-(function(global, undef) {
+(function(global, toString, undef) {
 	
 	var Assert = global.Assert = 
 	{
@@ -85,19 +85,28 @@
 	// Cross frame: http://perfectionkills.com/instanceof-considered-harmful-or-how-to-write-a-robust-isarray/
 
 	Assert.add(function(value) {
-		return value != null && Object.prototype.toString.call(value) == "[object Array]";
+		return value != null && toString.call(value) == "[object Array]";
 	}, "isArray", "Not an array!");
 
 	Assert.add(function(value) {
-		return value != null && Object.prototype.toString.call(value) == "[object Function]";
+		return value != null && toString.call(value) == "[object Function]";
+	}, "isFunction", "Not a function!");
+	
+	var objectOrFunction = { 
+		"[object Object]" : 1, 
+		"[object Function]" : 1 
+	};
+	
+	Assert.add(function(value) {
+		return value != null && !!objectOrFunction[toString.call(value)];
 	}, "isFunction", "Not a function!");
 	
 	Assert.add(function(value) {
-		return value != null && Object.prototype.toString.call(value) == "[object RegExp]";
+		return value != null && toString.call(value) == "[object RegExp]";
 	}, "isRegExp", "Not a regular expression!");
 
 	Assert.add(function(value) {
-		return value != null && Object.prototype.toString.call(value) == "[object Object]";
+		return value != null && toString.call(value) == "[object Object]";
 	}, "isMap", "Not a map (plain object)!");
 	
 	Assert.add(function(value, keys) 
@@ -134,4 +143,4 @@
 		return obj != null && key in obj;
 	}, "hasKey", "Missing key %1!");
 	
-})(this);
+})(this, Object.prototype.toString);
