@@ -51,19 +51,19 @@ $(function() {
 		equals(values, "1,2,3");
 	});
 	
-	test("Array.max", function() {
+	test("Array.prototype.max", function() {
 		equals([1,4,23,3].max(), 23);
 		equals([10,10,10].max(), 10);
 		equals([].max(), -Infinity);
 	});
 
-	test("Array.min", function() {
+	test("Array.prototype.min", function() {
 		equals([1,4,23,3].min(), 1);
 		equals([10,10,10].min(), 10);
 		equals([].min(), Infinity);
 	});
 	
-	test("Array.contains", function() {
+	test("Array.prototype.contains", function() {
 		var arr1 = [1,2,3,5,6,7];
 		ok(arr1.contains(3));
 		ok(!arr1.contains(4));
@@ -81,7 +81,7 @@ $(function() {
 		ok(arr2.contains(false));
 	});
 
-	test("Array.removeRange", function() {
+	test("Array.prototype.removeRange", function() {
 		var arr = [1,2,3,4,5,6,7,8,9];
 		equals(arr.removeRange(1), 8);
 		equals(arr.join(","), "1,3,4,5,6,7,8,9");
