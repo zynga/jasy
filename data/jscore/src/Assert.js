@@ -69,7 +69,7 @@
 	Assert.add(function(value) { return typeof value == "string"; }, "isString", "Not a string!");
 	Assert.add(function(value) { return typeof value == "number" && isFinite(value); }, "isNumber", "Not a number!");
 	Assert.add(function(value) { return parseInt(value) === value; }, "isInteger", "Not an integer!");
-	Assert.add(function(value) { return value !== null; }, "isNotNull", "Is null!");
+	Assert.add(function(value) { return value != null; }, "isNotNull", "Is null!");
 
 	Assert.add(function(value) {
 		var type = typeof value;
