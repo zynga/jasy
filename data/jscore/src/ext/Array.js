@@ -93,7 +93,20 @@ Object.addPrototypeMethods("Array",
 		// Wrap method for security reaons, so params to concat are safely ignored.
 		return this.concat();
 	},
-
+	
+	
+	/**
+	 * Filters out sparse fields (including all null/undefined values if first param is <code>true</code>) and returns a new compact array.
+	 *
+	 * @param {Boolean?false} Filter out null values (not just sparse fields) as well.
+	 * @return {Array} Compacted array
+	 */
+	compact : function(nulls) 
+	{
+		// Pretty cheap way to iterate over all relevant values and create a copy
+		return this.filter(nulls ? function(value) { return value != null; } : function() { return true; });
+	},
+	
 	
 	/** 
 	 * Removes the given value (first only) from the array and returns it.

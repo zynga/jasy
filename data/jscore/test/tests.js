@@ -214,6 +214,16 @@ $(function() {
 		equals(arr.at(-20));
 	});
 	
+	test("Array.prototype.compact", function() {
+		var sparse = [1,2,3,,5,,,8];
+		equals(sparse.compact().length, 5);
+
+		var undef;
+		var sparse = [1,2,3,null,5,,undef,8];
+		equals(sparse.compact().length, 7);
+		equals(sparse.compact(true).length, 5);
+	});
+	
 	asyncTest("Function.prototype.debounce - END", 1, function() 
 	{
 		var counter = 0;
