@@ -51,7 +51,52 @@ Object.addPrototypeMethods("Array",
 	contains : function(value) {
 		return ~this.indexOf(value);
 	},
+	
+	
+	/**
+	 * Clones the whole array and returns it.
+	 *
+	 * @return {Array} Cloned array
+	 */
+	clone : function() {
+		return this.concat();
+	},
 
+	
+	/** 
+	 * Removes the given value (first only) from the array and returns it.
+	 *
+	 * @param value {var} Any value
+	 * @return {var} The removed value (if it was found, otherwise undefined)
+	 */
+	remove : function(value) 
+	{
+		var pos = this.indexOf(value);
+		if (pos != -1) 
+		{
+			this.splice(pos, 1);
+			return value;
+		}
+	},
+	
+	
+	/**
+	 * Returns a new array with all elements that are unique in the original array
+	 * based on a toString comparison. Uses first item of each from original array.
+	 * 
+	 * @return {Array} Newly created filtered array
+	 */
+	unique : function() 
+	{
+		var strings = {};
+		return this.filter(function(value) 
+		{
+			if (!strings.hasOwnProperty(value)) {
+				return strings[value] = true;
+			}
+		});
+	},
+	
 
 	/**
 	 * Removes a specific range from the array. Also support negative indexes.
@@ -69,5 +114,5 @@ Object.addPrototypeMethods("Array",
 		this.length = from < 0 ? this.length + from : from;
 		return this.push.apply(this, rest);
 	}
-})
+});
 

@@ -83,6 +83,54 @@ $(function() {
 		ok(arr2.contains(3));
 		ok(arr2.contains(false));
 	});
+	
+	test("Array.prototype.clone", function() 
+	{
+		var orig = [1,2,3];
+		var clone = orig.clone();
+		equals(orig.length, clone.length);
+		equals(orig.join(","), clone.join(","));
+
+		var orig = [1,2,,,5];
+		var clone = orig.clone();
+		equals(orig.length, clone.length);
+		equals(orig.join(","), clone.join(","));
+	});
+	
+	test("Array.prototype.remove", function() 
+	{
+		var arr = [1,2,3,4,5,6];
+		equals(arr.remove(4), 4);
+		equals(arr.length, 5);
+		equals(arr.remove(4));
+		equals(arr.length, 5);
+
+		var arr = [1,2,3,1,2,3];
+		equals(arr.remove(3), 3);
+		equals(arr.join(","), "1,2,1,2,3");
+	});
+	
+	test("Array.prototype.unique", function() 
+	{
+		var arr = [1,2,3,1,2,3];
+		equals(arr.unique().join(","), "1,2,3");
+
+		// sparse arrays supported
+		var arr = [1,2,,,2,3];
+		equals(arr.unique().join(","), "1,2,3");
+
+		// null values are treated special
+		var arr = [1,2,null,null,2,3];
+		equals(arr.unique().join(","), "1,2,,3");
+
+		// selection test
+		var arr = [1,"2",3,"1",2,"3"];
+		var unique = arr.unique();
+		equals(unique.join(","), "1,2,3");
+		equals(typeof unique[0], "number");
+		equals(typeof unique[1], "string");
+		equals(typeof unique[2], "number");
+	});
 
 	test("Array.prototype.removeRange", function() 
 	{

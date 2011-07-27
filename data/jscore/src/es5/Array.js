@@ -21,7 +21,7 @@ if (!Array.isArray)
 // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/foreach
 if (!Array.prototype.forEach) 
 {
-	Array.prototype.forEach =  function forEach(block, thisObject) 
+	Array.prototype.forEach = function forEach(block, thisObject) 
 	{
 		var len = +this.length;
 		for (var i = 0; i < len; i++) 
@@ -118,7 +118,8 @@ if (!Array.prototype.some)
 
 // ES5 15.4.4.21
 // https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Objects/Array/reduce
-if (!Array.prototype.reduce) {
+if (!Array.prototype.reduce) 
+{
 	Array.prototype.reduce = function reduce(fun /*, initial*/) 
 	{
 		var len = +this.length;
