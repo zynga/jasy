@@ -130,6 +130,23 @@ $(function() {
 		equals(typeof unique[0], "number");
 		equals(typeof unique[1], "string");
 		equals(typeof unique[2], "number");
+		
+		// does not support objects
+		var arr = [{},{},{}];
+		equals(arr.unique().join(","), "[object Object]");
+		
+		// but can work with special objects
+		var hashCode = 0;
+		var Special = function() {
+			this.hashCode = hashCode++;
+		}
+		Special.prototype.toString = function() {
+			return "[object Special#" + this.hashCode + "]";
+		}
+		arr = [new Special, new Special, new Special];
+		equals(arr.unique().join(","), "[object Special#0],[object Special#1],[object Special#2]");
+		
+
 	});
 
 	test("Array.prototype.removeRange", function() 
@@ -274,7 +291,7 @@ $(function() {
 		Module("abc.Module1", {});
 		equals(Module.isModule(abc.Module1), true);
 		equals(abc.Module1.moduleName, "abc.Module1");
-		equals(abc.Module1.toString(), "[Module abc.Module1]");
+		equals(abc.Module1.toString(), "[module abc.Module1]");
 	});
 
 	test("Module validation", function() {
@@ -354,7 +371,7 @@ $(function() {
 		Class("abc.Class1", {});
 		equals(Class.isClass(abc.Class1), true);
 		equals(abc.Class1.className, "abc.Class1");
-		equals(abc.Class1.toString(), "[Class abc.Class1]");
+		equals(abc.Class1.toString(), "[class abc.Class1]");
 	});
 	
 	
