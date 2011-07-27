@@ -204,8 +204,16 @@ $(function() {
 		}
 		arr = [new Special, new Special, new Special];
 		equals(arr.unique().join(","), "[object Special#0],[object Special#1],[object Special#2]");
-	});	
-
+	});
+	
+	test("Array.prototype.at", function() {
+		var arr = [1,2,3,4,5];
+		equals(arr.at(0), 1);
+		equals(arr.at(-1), 5);
+		equals(arr.at(20));
+		equals(arr.at(-20));
+	});
+	
 	asyncTest("Function.prototype.debounce - END", 1, function() 
 	{
 		var counter = 0;

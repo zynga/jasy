@@ -132,6 +132,22 @@ Object.addPrototypeMethods("Array",
 		});
 	},
 	
+	
+	/**
+	 * Returns the value at the given position. Supports negative indexes, too.
+	 *
+	 * @param index {Integer} Index to query
+	 * @return {var} Value at index. Might be undefined, too.
+	 */
+	at : function(index) 
+	{
+		if (Permutation.isSet("debug")) {
+			Assert.assertInteger(index, "Param 'index' must be be an integer!");
+		}
+
+		return this[index < 0 ? this.length + index : index];
+	},
+	
 
 	/** 
 	 * Removes the value at the given index.
@@ -153,7 +169,7 @@ Object.addPrototypeMethods("Array",
 
 
 	/**
-	 * Removes a specific index or range from the array. Also support negative indexes.
+	 * Removes a specific range from the array. Also support negative indexes.
 	 *
 	 * Based on Array Remove - By John Resig (MIT Licensed)
 	 * http://ejohn.org/blog/javascript-array-remove/
