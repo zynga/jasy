@@ -10,10 +10,11 @@ Object.addPrototypeMethods("Number",
 	/**
 	 * Pads the number to reach the given length
 	 *
-	 * @return {String} Padded number
+	 * @param {Integer} Expected string length
+	 * @return {String} Padded number as a string
 	 */
-	pad : function(nr) {
-		return "0".repeat(length) + this.slice(-length);
+	pad : function(length) {
+		return ("0".repeat(length) + this).slice(-length);
 	}
 });
 

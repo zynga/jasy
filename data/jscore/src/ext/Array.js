@@ -30,6 +30,7 @@ Object.addPrototypeMethods("Array",
 	max : function() {
 		return Math.max.apply(Math, this);
 	},
+	
 
 	/**
 	 * Returns the minimum number in the array.
@@ -39,6 +40,7 @@ Object.addPrototypeMethods("Array",
 	min : function() {
 		return Math.min.apply(Math, this);
 	},
+
 
 	/**
 	 * Whether the array contains the given value
@@ -50,8 +52,17 @@ Object.addPrototypeMethods("Array",
 		return ~this.indexOf(value);
 	},
 
-	// Array Remove - By John Resig (MIT Licensed)
-	// http://ejohn.org/blog/javascript-array-remove/
+
+	/**
+	 * Removes a specific range from the array. Also support negative indexes.
+	 *
+	 * Based on Array Remove - By John Resig (MIT Licensed)
+	 * http://ejohn.org/blog/javascript-array-remove/
+	 *
+	 * @param from {Integer} Start index
+	 * @param to {Integer} End index
+	 * @return {Integer} Length of modified array
+	 */
 	removeRange : function(from, to) 
 	{
 		var rest = this.slice((to || from) + 1 || this.length);

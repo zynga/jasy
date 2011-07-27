@@ -9,28 +9,33 @@ $(function() {
 	
 	module("Fix");
 	
-	asyncTest("setTimeout with arguments", 1, function() {
-		setTimeout(function(arg) {
+	asyncTest("setTimeout with arguments", 1, function() 
+	{
+		setTimeout(function(arg)
+		{
 			equals(arg, "hello");
 			start();
 		}, 10, "hello");
 	});
 
-	asyncTest("setImmediate", 1, function() {
+	asyncTest("setImmediate", 1, function() 
+	{
 		setImmediate(function() {
 			ok(true, "always fine");
 			start();
 		});
 	});
 
-	asyncTest("requestAnimationFrame", 1, function() {
+	asyncTest("requestAnimationFrame", 1, function() 
+	{
 		requestAnimationFrame(function() {
 			ok(true, "always fine");
 			start();
 		});
 	});
 	
-	test("Object.keys", function() {
+	test("Object.keys", function() 
+	{
 		var keys = Object.keys({toString:null, hello:null, foo:1}).sort().join(",");
 		equals(keys, "foo,hello,toString");
 	});
@@ -46,24 +51,28 @@ $(function() {
 	
 	module("Ext");
 
-	test("Object.values", function() {
+	test("Object.values", function() 
+	{
 		var values = Object.values({x:1, y:2, z:3}).sort().join(",");
 		equals(values, "1,2,3");
 	});
 	
-	test("Array.prototype.max", function() {
+	test("Array.prototype.max", function() 
+	{
 		equals([1,4,23,3].max(), 23);
 		equals([10,10,10].max(), 10);
 		equals([].max(), -Infinity);
 	});
 
-	test("Array.prototype.min", function() {
+	test("Array.prototype.min", function() 
+	{
 		equals([1,4,23,3].min(), 1);
 		equals([10,10,10].min(), 10);
 		equals([].min(), Infinity);
 	});
 	
-	test("Array.prototype.contains", function() {
+	test("Array.prototype.contains", function() 
+	{
 		var arr1 = [1,2,3,5,6,7];
 		ok(arr1.contains(3));
 		ok(!arr1.contains(4));
@@ -81,7 +90,8 @@ $(function() {
 		ok(arr2.contains(false));
 	});
 
-	test("Array.prototype.removeRange", function() {
+	test("Array.prototype.removeRange", function() 
+	{
 		var arr = [1,2,3,4,5,6,7,8,9];
 		equals(arr.removeRange(1), 8);
 		equals(arr.join(","), "1,3,4,5,6,7,8,9");
@@ -97,9 +107,42 @@ $(function() {
 		var arr = [1,2,3,4,5,6,7,8,9];
 		equals(arr.removeRange(1, -3), 3);
 		equals(arr.join(","), "1,8,9");
+
+		var arr = [1,2,3,4,5,6,7,8,9];
+		equals(arr.removeRange(-3, -1), 6);
+		equals(arr.join(","), "1,2,3,4,5,6");
 	});
 
-
+	asyncTest("Function.prototype.debounce", 1, function() 
+	{
+		var counter = 0;
+		var callback = function() {
+			counter++;
+		};
+		
+		var debounced = callback.debounce();
+		debounced();
+		debounced();
+		debounced();
+		debounced();
+		debounced();
+		
+		window.setTimeout(function() {
+			equals(counter, 1);
+			start();
+		}, 500)
+	});
+	
+	test("Number.prototype.pad", function() 
+	{
+		equals((23).pad(2), "23");
+		equals((23).pad(4), "0023");
+		equals((23).pad(6), "000023");
+		equals((0).pad(6), "000000");
+	});
+	
+	
+	
 
 
 	/*
