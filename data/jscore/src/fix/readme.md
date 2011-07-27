@@ -1,0 +1,1 @@
+Contains fixes for existing API or polyfills for often used API. Sometimes related to ES5 but outside of this package because of size effects e.g. Function.bind() is not supported by a wide range of otherwise ES5 supporting browsers.
