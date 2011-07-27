@@ -17,13 +17,13 @@
 	
 	var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 	var fromCharCode = String.fromCharCode;
+	var max = Math.max;
 
 	global.btoa = function btoa(string) 
 	{
 		var a, b, b1, b2, b3, b4, c;
 		var i = 0;
 		var len = string.length;
-		var max = Math.max;
 		var result = [];
 
 		while (i < len) 
