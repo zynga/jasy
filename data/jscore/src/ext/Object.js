@@ -25,11 +25,11 @@
 	var addObjectMethods = function(globalName, members) 
 	{
 		var prefix = globalName + ".";
-		var construct = global[globalName];
 		if (Permutation.isSet("debug")) {
-			Assert.assertNonNull(construct);
+			Assert.assertHasKey(global, globalName)
 		}
 
+		var construct = global[globalName];
 		for (var name in members) 
 		{
 			var func = members[name];
@@ -45,9 +45,13 @@
 	var addPrototypeMethods = function(globalName, members) 
 	{
 		var prefix = globalName + ".prototype.";
+		if (Permutation.isSet("debug")) {
+			Assert.assertHasKey(global, globalName);
+		}
+
 		var proto = global[globalName].prototype;
 		if (Permutation.isSet("debug")) {
-			Assert.assertFunction(global[globalName]);
+			Assert.assertNotNull(proto);
 		}
 
 		for (var name in members) 
@@ -76,4 +80,15 @@
 	});
 	
 })(this);
+
+
+Object.addPrototypeMethods("Object", 
+{
+	values : function(object) 
+	{
+		return Object.keys(object).map(function(key) {
+			return object[key];
+		});
+	}
+});
 

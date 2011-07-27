@@ -5,7 +5,7 @@
 ==================================================================================================
 */
 
-Object.addPrototypeMethods(Function, "Function", 
+Object.addPrototypeMethods("Function", 
 {
 	/**
 	 * Debounces the given method.

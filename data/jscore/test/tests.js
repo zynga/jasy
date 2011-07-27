@@ -3,11 +3,11 @@ $(function() {
 	
 	/*
 	---------------------------------------------------------------------------
-		EXT
+		FIX
 	---------------------------------------------------------------------------
 	*/
 	
-	module("Ext");
+	module("Fix");
 	
 	asyncTest("setTimeout with arguments", 1, function() {
 		setTimeout(function(arg) {
@@ -29,7 +29,27 @@ $(function() {
 			start();
 		});
 	});
+	
+	test("Object.keys", function() {
+		var keys = Object.keys({toString:null, hello:null, foo:1}).sort().join(",");
+		equals(keys, "foo,hello,toString");
+	});
 
+
+	
+	
+	/*
+	---------------------------------------------------------------------------
+		EXT
+	---------------------------------------------------------------------------
+	*/
+	
+	module("Ext");
+
+	test("Object.values", function() {
+		var values = Object.values({x:1, y:2, z:3}).sort().join(",");
+		equals(values, "1,2,3");
+	});
 
 
 	/*

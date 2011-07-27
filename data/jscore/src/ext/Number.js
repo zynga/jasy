@@ -5,12 +5,15 @@
 ==================================================================================================
 */
 
-/**
- * Pads the number to reach the given length
- *
- * @return {String} Padded number
- */
-Number.prototype.pad = function(nr) {
-	return "0".repeat(length) + this.slice(-length);
-};
+Object.addPrototypeMethods("Number", 
+{
+	/**
+	 * Pads the number to reach the given length
+	 *
+	 * @return {String} Padded number
+	 */
+	pad : function(nr) {
+		return "0".repeat(length) + this.slice(-length);
+	}
+});
 
