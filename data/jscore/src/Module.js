@@ -16,7 +16,7 @@
 	var cache = {};
 	
 	var genericToString = function() {
-		return "[Module " + this.moduleName + "]";
+		return "[module " + this.moduleName + "]";
 	};
 	
 	var isModuleValue = +new Date;

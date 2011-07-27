@@ -7,7 +7,7 @@
 
 (function() {
 	var genericToString = function() {
-		return "[Interface " + this.interfaceName + "]";
+		return "[interface " + this.interfaceName + "]";
 	};
 	
 	var removedUnusedArgs = !(function(arg1){}).length;

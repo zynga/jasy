@@ -19,7 +19,7 @@ if(!Permutation.isSet("es5"))
 
 (function(global, undef) {
 	var genericToString = function() {
-		return "[Class " + this.className + "]";
+		return "[class " + this.className + "]";
 	};
 	
 	var isClassValue = +new Date;
