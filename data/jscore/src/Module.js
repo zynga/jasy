@@ -9,6 +9,7 @@
  * @break {Permutation}
  * @require {Assert}
  * @require {fix.ObjectKeys}
+ * @require {fix.FunctionBind}
  */
 (function(global, undef)
 {
