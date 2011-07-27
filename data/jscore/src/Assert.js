@@ -80,16 +80,20 @@
 		return value != null && typeof value == "object";
 	}, "isObject", "Not an object!");
 
+	// Make not use of instanceof operator as it has a memory leak in IE and also does not work cross frame.
+	// Memory leak: http://ajaxian.com/archives/working-aroung-the-instanceof-memory-leak
+	// Cross frame: http://perfectionkills.com/instanceof-considered-harmful-or-how-to-write-a-robust-isarray/
+
 	Assert.add(function(value) {
-		return value instanceof Array;
+		return value != null && Object.prototype.toString.call(value) == "[object Array]";
 	}, "isArray", "Not an array!");
 
 	Assert.add(function(value) {
-		return value instanceof Function;
+		return value != null && Object.prototype.toString.call(value) == "[object Function]";
 	}, "isFunction", "Not a function!");
 	
 	Assert.add(function(value) {
-		return value instanceof RegExp;
+		return value != null && Object.prototype.toString.call(value) == "[object RegExp]";
 	}, "isRegExp", "Not a regular expression!");
 
 	Assert.add(function(value) {
@@ -122,11 +126,12 @@
 	}, "isInList", "Is not in specified list!");
 	
 	Assert.add(function(value, clazz) {
-		return value instanceof clazz;
+		// Use instanceof here, but be memory safe in IE
+		return value != null && value.hasOwnProperty && value instanceof clazz;
 	}, "isInstanceOf", "Is not a instance of %1!");	
 
 	Assert.add(function(obj, key) {
-		return key in obj;
+		return obj != null && key in obj;
 	}, "hasKey", "Missing key %1!");
 	
 })(this);
