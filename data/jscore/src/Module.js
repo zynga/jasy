@@ -8,7 +8,6 @@
 /**
  * @break {Permutation}
  * @require {Assert}
- * @require {fix.Console}
  * @require {fix.ObjectKeys}
  * @require {fix.FunctionBind}
  */
@@ -94,8 +93,6 @@
 		if (duplicate && name in cache) {
 			throw new Error("Namespace " + name + " is already in use by another object!");
 		}
-
-		console.debug("Declare: " + name);
 
 		var splits = name.split(".");
 		var current = global;
