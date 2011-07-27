@@ -71,6 +71,10 @@
 	Assert.add(function(value) { return parseInt(value) === value; }, "isInteger", "Not an integer!");
 	Assert.add(function(value) { return value != null; }, "isNotNull", "Is null!");
 
+	Assert.add(function(value, match) {
+		return value == match;
+	}, "isEqual", "Is not equal!");
+
 	Assert.add(function(value) {
 		var type = typeof value;
 		return value == null || type == "boolean" || type == "number" || type == "string";

@@ -113,8 +113,11 @@ Object.addPrototypeMethods("Array",
 	
 	
 	/**
-	 * Returns a new array with all elements that are unique in the original array
-	 * based on a toString comparison. Uses first item of each from original array.
+	 * Returns a new array with all elements that are unique. 
+	 * 
+	 * Comparison happens based on the toString() value! So numbers
+	 * and booleans might be unified with strings with the same "value".
+	 * This is mainly because of performance reasons.
 	 * 
 	 * @return {Array} Newly created filtered array
 	 */
