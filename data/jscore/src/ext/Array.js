@@ -88,7 +88,9 @@ Object.addPrototypeMethods("Array",
 	 *
 	 * @return {Array} Cloned array
 	 */
-	clone : function() {
+	clone : function() 
+	{
+		// Wrap method for security reaons, so params to concat are safely ignored.
 		return this.concat();
 	},
 
@@ -128,6 +130,25 @@ Object.addPrototypeMethods("Array",
 	},
 	
 
+	/** 
+	 * Removes the value at the given index.
+	 *
+	 * @param index {Integer} Index to delete, supports negative indexes, too
+	 * @return {var} Returns the value which was removed (if so)
+	 */
+	removeAt : function(index) 
+	{
+		if (Permutation.isSet("debug")) {
+			Assert.assertInteger(index, "Param 'index' must be be an integer!");
+		}
+		
+		var ret = this.splice(index<0?this.length+index:index, 1);
+		if (ret.length) {
+			return ret[0];
+		}
+	},
+
+
 	/**
 	 * Removes a specific index or range from the array. Also support negative indexes.
 	 *
@@ -138,8 +159,13 @@ Object.addPrototypeMethods("Array",
 	 * @param to {Integer} End index
 	 * @return {Integer} Length of modified array
 	 */
-	removeAt : function(from, to) 
+	removeRange : function(from, to) 
 	{
+		if (Permutation.isSet("debug")) {
+			Assert.assertInteger(from, "Param 'from' must be be an integer!");
+			Assert.assertInteger(to, "Param 'to' must be be an integer!");
+		}
+
 		var rest = this.slice((to || from) + 1 || this.length);
 		this.length = from < 0 ? this.length + from : from;
 		return this.push.apply(this, rest);

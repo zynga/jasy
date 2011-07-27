@@ -136,6 +136,39 @@ $(function() {
 		equals(arr.join(","), "1,2,1,2,3");
 	});
 	
+	test("Array.prototype.removeAt", function() 
+	{
+		var arr = [1,2,3,4,5,6];
+		equals(arr.removeAt(2), 3);
+		equals(arr.removeAt(12));
+		equals(arr.join(","), "1,2,4,5,6");
+	});
+	
+	test("Array.prototype.removeRange", function() 
+	{
+		raises(function() {
+			// Use removeAt() instead!
+			var arr = [1,2,3,4,5,6,7,8,9];
+			arr.removeRange(1);
+		})
+
+		var arr = [1,2,3,4,5,6,7,8,9];
+		equals(arr.removeRange(1, 1), 8);
+		equals(arr.join(","), "1,3,4,5,6,7,8,9");
+
+		var arr = [1,2,3,4,5,6,7,8,9];
+		equals(arr.removeRange(1, 3), 6);
+		equals(arr.join(","), "1,5,6,7,8,9");
+
+		var arr = [1,2,3,4,5,6,7,8,9];
+		equals(arr.removeRange(1, -3), 3);
+		equals(arr.join(","), "1,8,9");
+
+		var arr = [1,2,3,4,5,6,7,8,9];
+		equals(arr.removeRange(-3, -1), 6);
+		equals(arr.join(","), "1,2,3,4,5,6");
+	});
+	
 	test("Array.prototype.unique", function() 
 	{
 		var arr = [1,2,3,1,2,3];
@@ -171,30 +204,7 @@ $(function() {
 		}
 		arr = [new Special, new Special, new Special];
 		equals(arr.unique().join(","), "[object Special#0],[object Special#1],[object Special#2]");
-	});
-
-	test("Array.prototype.removeAt", function() 
-	{
-		var arr = [1,2,3,4,5,6,7,8,9];
-		equals(arr.removeAt(1), 8);
-		equals(arr.join(","), "1,3,4,5,6,7,8,9");
-
-		var arr = [1,2,3,4,5,6,7,8,9];
-		equals(arr.removeAt(1, 1), 8);
-		equals(arr.join(","), "1,3,4,5,6,7,8,9");
-
-		var arr = [1,2,3,4,5,6,7,8,9];
-		equals(arr.removeAt(1, 3), 6);
-		equals(arr.join(","), "1,5,6,7,8,9");
-
-		var arr = [1,2,3,4,5,6,7,8,9];
-		equals(arr.removeAt(1, -3), 3);
-		equals(arr.join(","), "1,8,9");
-
-		var arr = [1,2,3,4,5,6,7,8,9];
-		equals(arr.removeAt(-3, -1), 6);
-		equals(arr.join(","), "1,2,3,4,5,6");
-	});
+	});	
 
 	asyncTest("Function.prototype.debounce - END", 1, function() 
 	{
