@@ -65,6 +65,32 @@ $(function() {
 		equals([].min(), Infinity);
 	});
 	
+	test("Array.prototype.sum", function() 
+	{
+		equals([1,4,23,3].sum(), 31);
+		equals([1,4,23,,,3].sum(), 31);
+		equals([].sum(), 0);
+	});
+		
+	test("Array.prototype.insertAt", function() 
+	{
+		var arr1 = [1,2,3,4,5,6,7];
+		equals(arr1.insertAt("end"), "end");
+		equals(arr1.join(","), "1,2,3,4,5,6,7,end");
+
+		var arr1 = [1,2,3,4,5,6,7];
+		equals(arr1.insertAt("begin", 0), "begin");
+		equals(arr1.join(","), "begin,1,2,3,4,5,6,7");
+
+		var arr1 = [1,2,3,4,5,6,7];
+		equals(arr1.insertAt("fromBegin", 3), "fromBegin");
+		equals(arr1.join(","), "1,2,3,fromBegin,4,5,6,7");
+
+		var arr1 = [1,2,3,4,5,6,7];
+		equals(arr1.insertAt("fromEnd", -3), "fromEnd");
+		equals(arr1.join(","), "1,2,3,4,fromEnd,5,6,7");
+	});
+		
 	test("Array.prototype.contains", function() 
 	{
 		var arr1 = [1,2,3,5,6,7];
@@ -145,30 +171,28 @@ $(function() {
 		}
 		arr = [new Special, new Special, new Special];
 		equals(arr.unique().join(","), "[object Special#0],[object Special#1],[object Special#2]");
-		
-
 	});
 
-	test("Array.prototype.removeRange", function() 
+	test("Array.prototype.removeAt", function() 
 	{
 		var arr = [1,2,3,4,5,6,7,8,9];
-		equals(arr.removeRange(1), 8);
+		equals(arr.removeAt(1), 8);
 		equals(arr.join(","), "1,3,4,5,6,7,8,9");
 
 		var arr = [1,2,3,4,5,6,7,8,9];
-		equals(arr.removeRange(1, 1), 8);
+		equals(arr.removeAt(1, 1), 8);
 		equals(arr.join(","), "1,3,4,5,6,7,8,9");
 
 		var arr = [1,2,3,4,5,6,7,8,9];
-		equals(arr.removeRange(1, 3), 6);
+		equals(arr.removeAt(1, 3), 6);
 		equals(arr.join(","), "1,5,6,7,8,9");
 
 		var arr = [1,2,3,4,5,6,7,8,9];
-		equals(arr.removeRange(1, -3), 3);
+		equals(arr.removeAt(1, -3), 3);
 		equals(arr.join(","), "1,8,9");
 
 		var arr = [1,2,3,4,5,6,7,8,9];
-		equals(arr.removeRange(-3, -1), 6);
+		equals(arr.removeAt(-3, -1), 6);
 		equals(arr.join(","), "1,2,3,4,5,6");
 	});
 

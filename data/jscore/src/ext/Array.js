@@ -43,6 +43,36 @@ Object.addPrototypeMethods("Array",
 
 
 	/**
+	 * Returns the sum of all values in the array.
+	 *
+	 * @return {Number} Sum of all values.
+	 */
+	sum : function() 
+	{
+		var sum = 0;
+		this.forEach(function(value) {
+			sum += value;
+		});
+		
+		return sum;
+	},
+
+	
+	/**
+	 * Inserts the given value at the given position
+	 *
+	 * @param value {var} Any value
+	 * @param pos {Integer?null} Position to insert to (defaults to the end). Supports negative values, too
+	 * @return {var} Returns the inserted value
+	 */
+	insertAt : function(value, pos) 
+	{
+		pos == null ? this.push(value) : this.splice(pos < 0 ? this.length+pos : pos, 0, value);
+		return value;
+	},
+	
+	
+	/**
 	 * Whether the array contains the given value
 	 *
 	 * @param value {var} Any value
@@ -99,7 +129,7 @@ Object.addPrototypeMethods("Array",
 	
 
 	/**
-	 * Removes a specific range from the array. Also support negative indexes.
+	 * Removes a specific index or range from the array. Also support negative indexes.
 	 *
 	 * Based on Array Remove - By John Resig (MIT Licensed)
 	 * http://ejohn.org/blog/javascript-array-remove/
@@ -108,7 +138,7 @@ Object.addPrototypeMethods("Array",
 	 * @param to {Integer} End index
 	 * @return {Integer} Length of modified array
 	 */
-	removeRange : function(from, to) 
+	removeAt : function(from, to) 
 	{
 		var rest = this.slice((to || from) + 1 || this.length);
 		this.length = from < 0 ? this.length + from : from;
