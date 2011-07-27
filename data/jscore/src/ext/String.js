@@ -19,6 +19,36 @@ Object.addPrototypeMethods("String",
 
 
 	/**
+   * Returns true if the string has a length of 0 or contains only whitespace.
+	 *
+	 * @return {Boolean} Whether the string is blank
+	 */
+	isBlank : function() {
+		return this.trim().length == 0;
+	},
+	
+	
+	/** 
+	 * Reverses the string
+	 *
+	 * @return {String} Reversed string
+	 */
+	reverse : function() {
+		return this.split("").reverse().join("");
+	},
+
+
+	/**
+	 * Removes double spaces and line breaks.
+	 * 
+	 * @return {String} Returns a compacted string
+	 */
+	compact : function() {
+		return this.replace(/[\r\n]/g, " ").trim().replace(/([\s　])+/g, '$1');
+	},
+	
+
+	/**
 	 * Returns a hyphenated copy of the original string e.g.
 	 *
 	 * * camelCase => camel-case
@@ -30,6 +60,19 @@ Object.addPrototypeMethods("String",
 	 */
 	hyphenate : function() {
 		return this.replace(/[A-Z]/g,'-$&').toLowerCase();
+	},
+	
+
+	/**
+	 * Camelizes this string.
+	 * 
+	 * @return {String} Camelized string
+	 */
+	camelize: function () 
+	{
+		return this.replace(/\-+(\S)?/g, function(match, chr) {
+			return chr ? chr.toUpperCase() : '';
+		});
 	},
 
 
