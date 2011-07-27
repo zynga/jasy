@@ -51,12 +51,6 @@ $(function() {
 	
 	module("Ext");
 
-	test("Object.values", function() 
-	{
-		var values = Object.values({x:1, y:2, z:3}).sort().join(",");
-		equals(values, "1,2,3");
-	});
-	
 	test("Array.prototype.max", function() 
 	{
 		equals([1,4,23,3].max(), 23);
@@ -113,7 +107,7 @@ $(function() {
 		equals(arr.join(","), "1,2,3,4,5,6");
 	});
 
-	asyncTest("Function.prototype.debounce", 1, function() 
+	asyncTest("Function.prototype.debounce - END", 1, function() 
 	{
 		var counter = 0;
 		var callback = function() {
@@ -130,7 +124,30 @@ $(function() {
 		window.setTimeout(function() {
 			equals(counter, 1);
 			start();
-		}, 500)
+		}, 200)
+	});
+
+	test("Function.prototype.debounce - ASAP", function() 
+	{
+		var counter = 0;
+		var callback = function() {
+			counter++;
+		};
+		
+		var debounced = callback.debounce(100, true);
+		debounced();
+		debounced();
+		debounced();
+		debounced();
+		debounced();
+		
+		equals(counter, 1);
+	});
+		
+	test("Object.values", function() 
+	{
+		var values = Object.values({x:1, y:2, z:3}).sort().join(",");
+		equals(values, "1,2,3");
 	});
 	
 	test("Number.prototype.pad", function() 
@@ -139,6 +156,29 @@ $(function() {
 		equals((23).pad(4), "0023");
 		equals((23).pad(6), "000023");
 		equals((0).pad(6), "000000");
+	});
+	
+	test("String.prototype.contains", function() 
+	{
+		ok("hello world".contains("hello"));
+		ok("hello world".contains(""));
+		ok("hello world".contains(" "));
+		ok(!"hello world".contains(12));
+		ok(!"hello world".contains("dlrow"));
+	});
+
+	test("String.prototype.hyphenate", function() 
+	{
+		equals("backgroundColor".hyphenate(), "background-color");
+		equals("WebkitTransform".hyphenate(), "-webkit-transform");
+		equals("ISOString".hyphenate(), "-i-s-o-string");
+	});
+
+	test("String.prototype.repeat", function() 
+	{
+		equals("x".repeat(3), "xxx");
+		equals("xyz".repeat(3), "xyzxyzxyz");
+		equals("xyz".repeat(0), "");
 	});
 	
 	

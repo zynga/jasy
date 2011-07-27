@@ -39,7 +39,9 @@ Object.addPrototypeMethods("String",
 	 * @param nr {Integer} Number of times to repeat
 	 * @return {String} Repeated string
 	 */
-	repeat : function(nr) {
-		return Array(nr).join(this);
+	repeat : function(nr) 
+	{
+		// empty array magic
+		return Array(nr+1).join(this);
 	}
 });
