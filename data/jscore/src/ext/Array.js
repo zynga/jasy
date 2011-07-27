@@ -2,6 +2,8 @@
 ==================================================================================================
   Jasy - JavaScript Tooling Refined
   Copyright 2010-2011 Sebastian Werner
+--------------------------------------------------------------------------------------------------
+  Inspired by Sugar.js, Copyright © 2011 Andrew Plummer
 ==================================================================================================
 */
 
@@ -127,6 +129,14 @@ Object.addPrototypeMethods("Array",
 		});
 	
 		return result;
+	},
+	
+
+	/**
+	 * Randomizes array via Fisher-Yates algorithm.
+	 */
+	randomize : function() {
+		for(var j, x, self=this, i=self.length; i; j = parseInt(Math.random() * i), x = self[--i], self[i] = self[j], self[j] = x);
 	},
 	
 	
