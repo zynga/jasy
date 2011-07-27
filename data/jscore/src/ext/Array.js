@@ -108,6 +108,28 @@ Object.addPrototypeMethods("Array",
 	},
 	
 	
+	/**
+	 * Returns a flattened, one-dimensional copy of the array.
+	 *
+	 * @return {Array} One-dimensional copy of the array.
+	 */
+	flatten: function() 
+	{
+		var result = [];
+		
+		this.forEach(function(value) 
+		{
+			if(Assert.isArray(value)) {
+				result.push.apply(result, value.flatten());
+			} else {
+				result.push(value);
+			}
+		});
+	
+		return result;
+	},
+	
+	
 	/** 
 	 * Removes the given value (first only) from the array and returns it.
 	 *

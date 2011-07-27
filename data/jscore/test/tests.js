@@ -206,7 +206,8 @@ $(function() {
 		equals(arr.unique().join(","), "[object Special#0],[object Special#1],[object Special#2]");
 	});
 	
-	test("Array.prototype.at", function() {
+	test("Array.prototype.at", function() 
+	{
 		var arr = [1,2,3,4,5];
 		equals(arr.at(0), 1);
 		equals(arr.at(-1), 5);
@@ -214,7 +215,8 @@ $(function() {
 		equals(arr.at(-20));
 	});
 	
-	test("Array.prototype.compact", function() {
+	test("Array.prototype.compact", function() 
+	{
 		var sparse = [1,2,3,,5,,,8];
 		equals(sparse.compact().length, 5);
 
@@ -222,6 +224,12 @@ $(function() {
 		var sparse = [1,2,3,null,5,,undef,8];
 		equals(sparse.compact().length, 7);
 		equals(sparse.compact(true).length, 5);
+	});
+	
+	test("Array.prototype.flatten", function() 
+	{
+		equals([[1], 2, [3]].flatten().toString(), [1,2,3].toString());
+		equals([['a'],[],'b','c'].flatten().toString(), ['a','b','c'].toString());
 	});
 	
 	asyncTest("Function.prototype.debounce - END", 1, function() 
