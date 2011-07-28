@@ -19,7 +19,8 @@
  * Copyright (c) 2010, The Mozilla Foundation
  * All rights reserved.
  */
-(function(global) {
+(function(global) 
+{
 	if (global.setImmediate) {
 		return;
 	}

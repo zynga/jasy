@@ -5,8 +5,29 @@
 ==================================================================================================
 */
 
-(function(global, toString, undef) {
-	
+(function(global, toString, undef) 
+{
+	/**
+	 * Assertion module
+	 *
+	 * It also bundles all fixes under "fix/" before starting with the real code.
+	 *
+	 * Defined in alphabetical order here. If these have dependencies 
+	 * to each other these must be declared inside the files.
+	 *
+	 * @require {fix.ObjectKeys}
+	 * @require {fix.console}
+	 * @require {fix.Base64}
+	 * @require {fix.DateParse}
+	 * @require {fix.DocumentHead}
+	 * @require {fix.IEDOM}
+	 * @require {fix.execScript}
+	 * @require {fix.FunctionBind}
+	 * @require {fix.HTML5}
+	 * @require {fix.requestAnimationFrame}
+	 * @require {fix.setImmediate}
+	 * @require {fix.setTimeout}
+	 */
 	var Assert = global.Assert = 
 	{
 		/**
@@ -31,10 +52,10 @@
 
 			// Build assert method name
 			var assertName = "assert";
-			if (methodName.substring(0,2) == "is") {
-				assertName += methodName.substring(2);
+			if (methodName.substring(0, 2) == "is") {
+				assertName += methodName.slice(2);
 			} else {
-				assertName += methodName.charAt(0).toUpperCase() + methodName.substring(1);
+				assertName += methodName.charAt(0).toUpperCase() + methodName.slice(1);
 			}
 			
 			// Wrap method throw error for simplified throwing of exceptions in type checks

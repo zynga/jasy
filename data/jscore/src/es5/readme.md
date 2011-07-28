@@ -1,1 +1,1 @@
-Contains spec conformant polyfills for missing ES5 features.
+Contains spec conformant polyfills for missing ES5 features. These should be loaded based on feature test {@see jasy.detect.ES5}

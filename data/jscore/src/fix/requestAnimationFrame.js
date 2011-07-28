@@ -20,7 +20,8 @@
 	// http://webstuff.nfshost.com/anim-timing/Overview.html
 
 	var postfix = "RequestAnimationFrame";
-	var prefix = (function() {
+	var prefix = (function() 
+	{
 		var all = "webkit,moz,o,ms".split(",");
 		for (var i=0; i<4; i++) {
 			if (global[all[i]+postfix] != null) {
