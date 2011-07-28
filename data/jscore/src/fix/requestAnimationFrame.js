@@ -7,8 +7,11 @@
 ==================================================================================================
 */
 
-(function(global) {
-	
+/**
+ * @require {fix.ObjectKeys}
+ */
+(function(global) 
+{
 	if(global.requestAnimationFrame) {
 		return;
 	}

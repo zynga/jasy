@@ -18,8 +18,6 @@
  *
  * Copyright (c) 2010, The Mozilla Foundation
  * All rights reserved.
- *
- * @name {setImmediate}
  */
 (function(global) {
 	if (global.setImmediate) {
