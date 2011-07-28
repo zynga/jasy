@@ -8,20 +8,24 @@
 /**
  * Just a dump placeholder for environments without "console" object.
  */
-(function(global)
+(function(global, slice)
 {
-	if (!global.console) 
+	var methods = "debug,error,warn,info,trace".split(",");
+	var console = global.console;
+	
+	if (!console) {
+		console = global.console = {buffer:[]};
+	} 
+	
+	var log = console.log || function log() {
+		this.buffer.push(slice.call(arguments))
+	};
+	
+	for (var i=0, l=methods.length; i<l; i++) 
 	{
-		var helper = function() {};
-		
-		global.console = 
-		{
-			debug : helper,
-			error : helper,
-			warn : helper,
-			info : helper,
-			log : helper,
-			trace : helper
-		};
+		var name = methods[i];
+		if (!console[name]) {
+			console[name] = log;
+		}
 	}
-})(this);
+})(this, Array.prototype.slice);
