@@ -19,11 +19,15 @@ if (isNaN(Date.parse("T00:00")))
 		// Date.length === 7
 		var Date = function(Y, M, D, h, m, s, ms) 
 		{
-			var length = arguments.length;
+			if (length == 0) {
+				return;
+			}
 			
+			// If called otherwise
 			if (this instanceof NativeDate) 
 			{
-				var date = length === 1 && String(Y) === Y ? // isString(Y)
+				var length = arguments.length;
+				var date = length === 1 && String(Y) === Y ?
 					// We explicitly pass it through parse:
 					new NativeDate(Date.parse(Y)) :
 					
@@ -79,8 +83,14 @@ if (isNaN(Date.parse("T00:00")))
 			Date[key] = NativeDate[key];
 		}
 
+		// ES5 15.9.4.4
+		// Use fast now() method based on original constructor, emulate it here, because
+		// otherwise we have no chance to access the original Date class anymore.
+		Date.now = NativeDate.now || function now() {
+			return +new NativeDate();
+		};
+		
 		// Copy "native" methods explicitly; they may be non-enumerable
-		Date.now = NativeDate.now;
 		Date.UTC = NativeDate.UTC;
 		Date.prototype = NativeDate.prototype;
 		Date.prototype.constructor = Date;

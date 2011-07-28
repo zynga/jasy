@@ -8,14 +8,6 @@
 ==================================================================================================
 */
 
-// ES5 15.9.4.4
-if (!Date.now) 
-{
-	Date.now = function now() {
-		return new Date().getTime();
-	};
-}
-
 // ES5 15.9.5.43
 // Format a Date object as a string according to a subset of the ISO-8601 standard.
 // Useful in Atom, among other things.
