@@ -14,12 +14,10 @@
 	var console = global.console;
 	
 	if (!console) {
-		console = global.console = {buffer:[]};
+		console = global.console = {};
 	} 
 	
-	var log = console.log || function log() {
-		this.buffer.push(slice.call(arguments))
-	};
+	var log = console.log || new Function;
 	
 	for (var i=0, l=methods.length; i<l; i++) 
 	{
