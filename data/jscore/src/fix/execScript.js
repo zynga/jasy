@@ -11,7 +11,7 @@
  * Contains a method for executing aribritary script content in global context.
  * See also: http://msdn.microsoft.com/en-us/library/ms536420(v=vs.85).aspx
  */
-(function() 
+(function(global) 
 {
 	// if indirect eval executes code globally, use it
 	if ((function() 
