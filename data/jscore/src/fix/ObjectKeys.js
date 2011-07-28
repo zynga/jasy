@@ -2,6 +2,10 @@
 ==================================================================================================
   Jasy - JavaScript Tooling Refined
   Copyright 2010-2011 Sebastian Werner
+--------------------------------------------------------------------------------------------------
+  Based on the work of ES5 Shim
+  MIT License, Copyright (c) 2009, 280 North Inc. http://280north.com/
+  http://whattheheadsaid.com/2010/10/a-safer-object-keys-compatibility-implementation
 ==================================================================================================
 */
 
@@ -23,14 +27,18 @@
 
 	if (!Object.keys) 
 	{
-		// ES5 15.2.3.14
-		// Based on the work of ES5 Shim
-		// MIT License, Copyright (c) 2009, 280 North Inc. http://280north.com/		
-		// http://whattheheadsaid.com/2010/10/a-safer-object-keys-compatibility-implementation
+		/**
+		 * Returns an array of all own enumerable properties found upon a given object, 
+		 * in the same order as that provided by a for-in loop 
+		 * 
+		 * @see ES5 15.2.3.14
+		 * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/keys
+		 *
+		 * @param object {Object} Object to query
+		 * @return {Array} Array of strings
+		 */
 		Object.keys = function keys(object) 
 		{
-			Assert.assertObjectOrFunction(object);
-
 			var keys = [];
 			for (var name in object) {
 				if (owns(object, name)) {
@@ -53,13 +61,17 @@
 		};
 	}
 
-	// non standard
+	// non standard extension (because it's easier here than anywhere else)
 	if (!Object.isEmpty)
 	{
+		/**
+		 * Tests whether the given object is empty
+		 *
+		 * @param object {Object} Object to test
+		 * @return {Boolean} Whether the object is empty
+		 */
 		Object.empty = function(object) 
 		{
-			Assert.assertObjectOrFunction(object);
-			
 			for (var name in object) {
 				return false;
 			}

@@ -1,9 +1,9 @@
 /* 
 ==================================================================================================
-	Jasy - JavaScript Tooling Refined
-	Copyright 2010-2011 Sebastian Werner
+  Jasy - JavaScript Tooling Refined
+  Copyright 2010-2011 Sebastian Werner
 --------------------------------------------------------------------------------------------------
-	Inspired by: https://github.com/inexorabletash/raf-shim/blob/master/raf.js
+  Inspired by: https://github.com/inexorabletash/raf-shim/blob/master/raf.js
 ==================================================================================================
 */
 
@@ -43,6 +43,7 @@
 	var requests = {};
 	var rafHandle = 1;
 	var timeoutHandle = null;
+	var keys = Object.keys;
 
 	global.requestAnimationFrame = function requestAnimationFrame(callback) 
 	{
@@ -58,7 +59,7 @@
 			{
 				var time = +new Date();
 				var currentRequests = requests;
-				var keys = Object.keys(currentRequests);
+				var keys = keys(currentRequests);
 
 				// Reset data structure before executing callbacks
 				requests = {};
@@ -79,7 +80,7 @@
 		delete requests[handle];
 
 		// Stop timeout if all where removed
-		if (Object.keys(requests).length === 0) 
+		if (keys(requests).length === 0) 
 		{
 			clearTimeout(timeoutHandle);
 			timeoutHandle = null;

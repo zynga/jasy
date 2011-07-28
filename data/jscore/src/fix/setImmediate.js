@@ -2,6 +2,12 @@
 ==================================================================================================
   Jasy - JavaScript Tooling Refined
   Copyright 2010-2011 Sebastian Werner
+--------------------------------------------------------------------------------------------------
+  Inspired by http://mathiasbynens.be/notes/settimeout-onload and 
+  http://dbaron.org/log/20100309-faster-timeouts
+  By L. David Baron <dbaron@dbaron.org>, 2010-03-07, 2010-03-09
+  Released under the following license: Copyright (c) 2010, The Mozilla Foundation
+  All rights reserved.
 ==================================================================================================
 */
 
@@ -9,15 +15,6 @@
  * Emulate setImmediate/clearImmediate using postMessage or timeouts.
  * 
  * See also: http://dvcs.w3.org/hg/webperf/raw-file/tip/specs/setImmediate/Overview.html
- *
- * Inspired by http://mathiasbynens.be/notes/settimeout-onload and
- * http://dbaron.org/log/20100309-faster-timeouts
- *
- * By L. David Baron <dbaron@dbaron.org>, 2010-03-07, 2010-03-09
- * Released under the following license:
- *
- * Copyright (c) 2010, The Mozilla Foundation
- * All rights reserved.
  */
 (function(global) 
 {
