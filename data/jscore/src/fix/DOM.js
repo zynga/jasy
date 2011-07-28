@@ -19,8 +19,6 @@
  * * insertAdjacentHTML(where, html)
  * * insertAdjacentText(where, text)
  */
-
-
 (function(global, document, map, indexOf) 
 {
 	if(typeof document.documentElement.sourceIndex == "undefined") 
