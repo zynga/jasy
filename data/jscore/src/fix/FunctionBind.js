@@ -2,6 +2,11 @@
 ==================================================================================================
   Jasy - JavaScript Tooling Refined
   Copyright 2010-2011 Sebastian Werner
+--------------------------------------------------------------------------------------------------
+  Based on the work of Andrea Giammarchi
+  Vice-Versa Project: http://code.google.com/p/vice-versa/
+  http://webreflection.blogspot.com/2010/02/functionprototypebind.html
+  MIT LICENSE
 ==================================================================================================
 */
 
@@ -11,8 +16,6 @@ if (!Function.prototype.bind)
 	 * Binds the given function to the specific context.
 	 *
 	 * https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
-	 *
-	 * Coypright WebReflection - Mit Style License
 	 *
 	 * @param context {Object} Object to bind function to.
 	 * @return {Function} Returns a new function which is bound to the given object.
