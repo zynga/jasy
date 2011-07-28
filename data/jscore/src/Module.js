@@ -16,8 +16,6 @@
 		return "[module " + this.moduleName + "]";
 	};
 	
-	var isModuleValue = +new Date;
-	
 	// Small hack to correctly bootstrap system
 	global.Permutation = {
 		getValue : function() {}, 
@@ -70,7 +68,7 @@
 		}
 
 		// Mark as module
-		members.__isModule = isModuleValue;
+		members.__isModule = true;
 
 		// Attach to name
 		Module.declareName(name, members, true);
@@ -219,7 +217,7 @@
 	 * @return {Boolean} Whether the given argument is an valid Model.
 	 */
 	var isModule = Module.isModule = function(module) {
-		return !!(module && typeof module == "object" && module.__isModule === isModuleValue);
+		return !!(module && typeof module == "object" && module.__isModule);
 	}
 	
 	

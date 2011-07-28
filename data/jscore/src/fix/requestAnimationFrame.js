@@ -9,6 +9,7 @@
 
 /**
  * @require {fix.ObjectKeys}
+ * @require {fix.DateParse}
  */
 (function(global) 
 {
@@ -57,7 +58,7 @@
 		{
 			timeoutHandle = setTimeout(function() 
 			{
-				var time = +new Date();
+				var time = Date.now();
 				var currentRequests = requests;
 				var keys = keys(currentRequests);
 

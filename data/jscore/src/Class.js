@@ -22,8 +22,6 @@ if(!Permutation.isSet("es5"))
 		return "[class " + this.className + "]";
 	};
 	
-	var isClassValue = +new Date;
-
 	
 	
 	if (Permutation.isSet("debug"))
@@ -168,7 +166,7 @@ if(!Permutation.isSet("es5"))
 		// Store name / type
 		construct.className = name;
 		construct.displayName = name;
-		construct.__isClass = isClassValue;
+		construct.__isClass = true;
 	
 		// Add toString() / valueOf()
 		construct.toString = genericToString;
@@ -373,7 +371,7 @@ if(!Permutation.isSet("es5"))
 	 * @return {Boolean} Whether the given argument is an valid Class.
 	 */
 	var isClass = Class.isClass = function(cls) {
-		return !!(cls && typeof cls == "function" && cls.__isClass === isClassValue);
+		return !!(cls && typeof cls == "function" && cls.__isClass);
 	};
 	
 	
