@@ -20,7 +20,6 @@
 	 * @require {fix.Base64}
 	 * @require {fix.DateParse}
 	 * @require {fix.DocumentHead}
-	 * @require {fix.IEDOM}
 	 * @require {fix.execScript}
 	 * @require {fix.FunctionBind}
 	 * @require {fix.HTML5}
