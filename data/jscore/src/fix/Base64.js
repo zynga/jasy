@@ -4,7 +4,7 @@
   Copyright 2010-2011 Sebastian Werner
 --------------------------------------------------------------------------------------------------
   Based on base64 implementation by: 
-  https://bitbucket.org/davidchambers
+  https://bitbucket.org/davidchambers/base64.js
 ==================================================================================================
 */
 

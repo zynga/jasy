@@ -20,27 +20,10 @@ $(function() {
 
 	asyncTest("setImmediate", 1, function() 
 	{
-		var done = false;
-		
-		setTimeout(function() {
-			if (done) {
-				return;
-			}
-			ok(false, "always fail - before");
-		}, 0);
-				
 		setImmediate(function() {
-			done = true;
 			ok(true, "always fine");
 			start();
 		});
-		
-		setTimeout(function() {
-			if (done) {
-				return;
-			}
-			ok(false, "always fail - after");
-		}, 0);
 	});
 
 	asyncTest("requestAnimationFrame", 1, function() 
