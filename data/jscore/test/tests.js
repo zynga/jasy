@@ -354,11 +354,10 @@ $(function() {
 		equals(abc.Module1.toString(), "[module abc.Module1]");
 	});
 
-	test("Module validation", function() {
-		equals(Module.isModule({}), false);
-		equals(Module.isModule(3), false);
-		equals(Module.isModule(null), false);
-		equals(Module.isModule({__isModule:true}), false);
+	test("Module false validation", function() {
+		ok(!Module.isModule({}));
+		ok(!Module.isModule(3));
+		ok(!Module.isModule(null));
 	});
 	
 	test("Creating method module", function() {
@@ -434,6 +433,13 @@ $(function() {
 		equals(abc.Class1.toString(), "[class abc.Class1]");
 	});
 	
+	test("Class false validation", function() {
+		ok(!Class.isClass({}));
+		ok(!Class.isClass(3));
+		ok(!Class.isClass(null));
+	});
+	
+		
 	
 	
 	/*
