@@ -44,7 +44,6 @@
 	var requests = {};
 	var rafHandle = 1;
 	var timeoutHandle = null;
-	var keys = Object.keys;
 
 	global.requestAnimationFrame = function requestAnimationFrame(callback) 
 	{
@@ -60,7 +59,7 @@
 			{
 				var time = Date.now();
 				var currentRequests = requests;
-				var keys = keys(currentRequests);
+				var keys = Object.keys(currentRequests);
 
 				// Reset data structure before executing callbacks
 				requests = {};
@@ -81,7 +80,7 @@
 		delete requests[handle];
 
 		// Stop timeout if all where removed
-		if (keys(requests).length === 0) 
+		if (Object.empty(requests)) 
 		{
 			clearTimeout(timeoutHandle);
 			timeoutHandle = null;
