@@ -108,30 +108,36 @@
 	// Memory leak: http://ajaxian.com/archives/working-aroung-the-instanceof-memory-leak
 	// Cross frame: http://perfectionkills.com/instanceof-considered-harmful-or-how-to-write-a-robust-isarray/
 
+	var toStringMap = {};
+	"Array Function RegExp Object".replace(/\w+/g, function(cls) {
+		toStringMap[cls] = "[object " + cls + "]";
+	});
+
 	Assert.add(function(value) {
-		return value != null && toString.call(value) == "[object Array]";
+		return value != null && toString.call(value) == toStringMap.Array;
 	}, "isArray", "Not an array!");
 
 	Assert.add(function(value) {
-		return value != null && toString.call(value) == "[object Function]";
-	}, "isFunction", "Not a function!");
-	
-	var objectOrFunction = { 
-		"[object Object]" : 1, 
-		"[object Function]" : 1 
-	};
-	
-	Assert.add(function(value) {
-		return value != null && !!objectOrFunction[toString.call(value)];
+		return value != null && toString.call(value) == toStringMap.Function;
 	}, "isFunction", "Not a function!");
 	
 	Assert.add(function(value) {
-		return value != null && toString.call(value) == "[object RegExp]";
+		return value != null && toString.call(value) == toStringMap.RegExp;
 	}, "isRegExp", "Not a regular expression!");
 
 	Assert.add(function(value) {
-		return value != null && toString.call(value) == "[object Object]";
+		return value != null && toString.call(value) == toStringMap.Object;
 	}, "isMap", "Not a map (plain object)!");
+
+
+	var objectOrFunction = { 
+		"object" : 1, 
+		"function" : 1 
+	};
+	
+	Assert.add(function(value) {
+		return value != null && objectOrFunction[typeof value] == 1;
+	}, "isObjectOrFunction", "Not a function or object!");
 	
 	Assert.add(function(value, keys) 
 	{
