@@ -20,10 +20,27 @@ $(function() {
 
 	asyncTest("setImmediate", 1, function() 
 	{
+		var done = false;
+		
+		setTimeout(function() {
+			if (done) {
+				return;
+			}
+			ok(false, "always fail - before");
+		}, 0);
+				
 		setImmediate(function() {
+			done = true;
 			ok(true, "always fine");
 			start();
 		});
+		
+		setTimeout(function() {
+			if (done) {
+				return;
+			}
+			ok(false, "always fail - after");
+		}, 0);
 	});
 
 	asyncTest("requestAnimationFrame", 1, function() 
@@ -36,11 +53,24 @@ $(function() {
 	
 	test("Object.keys", function() 
 	{
+		// Basic first
+		var keys = Object.keys({hello:null, foo:1}).sort().join(",");
+		equals(keys, "foo,hello");
+
+		// toString etc. are special in IE because these are built-in keys
 		var keys = Object.keys({toString:null, hello:null, foo:1}).sort().join(",");
 		equals(keys, "foo,hello,toString");
 	});
 
-
+	test("Object.empty", function() 
+	{
+		// toString etc. are special in IE because these are built-in keys
+		ok(Object.empty({}));
+		ok(!Object.empty({toString:null}));
+		ok(!Object.empty({toString:null, hello:null, foo:1}));
+	});
+	
+	
 	
 	
 	/*
