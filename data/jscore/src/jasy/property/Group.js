@@ -62,30 +62,21 @@ Module("jasy.property.Group",
 	
 			
 	/**
-	 * Adds a new property group to the given class
+	 * Creates a new property group and returns the corresponding methods.
 	 * 
-	 * @param clazz {Class} Class to add the property group to
-	 * @param name {String} Name of property group
-	 * @param config {Map} Configuration map
+	 * @param config {Map} Property configuration map
 	 */
-	add : function(clazz, name, config)
+	create : function(config)
 	{
 		var upname = qx.Bootstrap.firstUp(name);
 		var members = clazz.prototype;
-
-		var groups = clazz.$$propertyGroups;
-		if (!groups) {
-			groups = clazz.$$propertyGroups = {};
-		}
-		clazz.$$propertyGroups[name] = config;		 
-
 		var shorthand = config.shorthand;
 		var group = config.group;
 		var length = group.length;
 		var self = this;
+		var members = {};
 		
-		// Attach setter
-		members["set" + upname] = function(first)
+		members.set = function(first, second, third, fourth)
 		{
 			var data = first instanceof Array ? first : arguments;
 			if (shorthand) {
@@ -100,12 +91,13 @@ Module("jasy.property.Group",
 			this.set(map);
 		};
 
-		// Attach resetter
-		members["reset" + upname] = function()
+		members.reset = function()
 		{
 			for (var i=0; i<length; i++) {
 				this.reset(group[i]);
 			}
 		};
+		
+		return members;
 	}
 });
