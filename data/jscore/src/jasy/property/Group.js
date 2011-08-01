@@ -71,31 +71,30 @@
 			var group = config.group;
 			var length = group.length;
 			var self = this;
-			var members = {};
+			
+			return {
+				set : function(first, second, third, fourth)
+				{
+					var data = arguments.length > 1 ? arguments : first;
+					if (shorthand) {
+						data = expandShortHand(slice.call(data));
+					}
 
-			members.set = function(first, second, third, fourth)
-			{
-				var data = arguments.length > 1 ? arguments : first;
-				if (shorthand) {
-					data = expandShortHand(slice.call(data));
+					var map = {};
+					for (var i=0; i<length; i++) {
+						map[group[i]] = data[i];
+					}
+
+					this.set(map);
+				},
+				
+				get : function()
+				{
+					for (var i=0; i<length; i++) {
+						this.reset(group[i]);
+					}
 				}
-
-				var map = {};
-				for (var i=0; i<length; i++) {
-					map[group[i]] = data[i];
-				}
-
-				this.set(map);
 			};
-
-			members.reset = function()
-			{
-				for (var i=0; i<length; i++) {
-					this.reset(group[i]);
-				}
-			};
-
-			return members;
 		}
 	});
 })(Array.prototype.slice);
