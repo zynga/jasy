@@ -785,6 +785,14 @@ $(function() {
 			Module.clearName("properties.Text");
 			Module.clearName("properties.Dimension");
 			Module.clearName("properties.Label");
+			Module.clearName("properties.Simple");
+			Module.clearName("properties.IColor");
+			Module.clearName("properties.IFontSize");
+			Module.clearName("properties.ColorImplementer");
+			Module.clearName("properties.ColorWrongImplementer");
+			Module.clearName("properties.FontSizeImplementer");
+			Module.clearName("properties.FontSizeMissing");
+			Module.clearName("properties.FontSizeWrongImplementer");
 		}
 	});	
 	
@@ -850,7 +858,119 @@ $(function() {
 	});
 	
 	
-	test("Creating Properties - Error Cases", function()
+	test("Property Interfaces", function()
+	{
+		Interface("properties.IColor", 
+		{
+			properties : 
+			{
+				color : {
+					type : "String",
+					fire : "changeColor"
+				}
+			}
+		});
+		
+		Class("properties.ColorImplementer", 
+		{
+			implement : [properties.IColor],
+			properties : 
+			{
+				color : 
+				{
+					type : "String",
+					fire : "changeColor"
+				}
+			},
+			
+			members : 
+			{
+				// Interface implementation
+				fireEvent : function(type, value, old) {
+					// pass
+				}
+			}
+		});
+		
+		raises(function() {
+			Class("properties.ColorImplementer",
+			{
+				implement : [properties.IColor],
+				properties : 
+				{
+					color : 
+					{
+						type : "String"
+					}
+				}
+			});
+		});
+	
+		Interface("properties.IFontSize", 
+		{
+			properties : 
+			{
+				fontSize : {
+					type : "Integer",
+					inheritable : true
+				}
+			}
+		});
+		
+		Class("properties.FontSizeImplementer", 
+		{
+			implement : [properties.IFontSize],
+			properties : 
+			{
+				fontSize : 
+				{
+					type : "Integer",
+					inheritable : true
+				}
+			},
+			
+			members : 
+			{
+				// Interface implementation
+				getInheritedValue : function(property) {
+					// pass
+				}
+			}
+		});
+		
+		raises(function() 
+		{
+			Class("properties.FontSizeMissing", {
+				implement : [properties.IFontSize]
+			});
+		})
+		
+		raises(function() 
+		{
+			Class("properties.FontSizeWrongImplementer", 
+			{
+				implement : [properties.IFontSize],
+				properties : 
+				{
+					fontSize : 
+					{
+						type : "String",
+						inheritable : true
+					}
+				},
+
+				members : 
+				{
+					// Interface implementation
+					getInheritedValue : function(property) {
+						// pass
+					}
+				}
+			});
+		});
+	});
+	
+	test("Creating specific properties in classes without matching interfaces", function()
 	{
 		raises(function() 
 		{

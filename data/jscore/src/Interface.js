@@ -167,7 +167,7 @@
 			var cProperties = Class.getProperties(cls);
 			for (var name in ifaceProperties) 
 			{
-				if (!(name in cMembers)) {
+				if (!(name in cProperties)) {
 					throw new Error(commonErrMsg + "Missing property: " + name + "!");
 				}
 				
