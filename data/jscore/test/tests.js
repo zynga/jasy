@@ -655,6 +655,7 @@ $(function() {
 	Class("KeyEvent", {});
 	Class("TouchEvent", {});
 	Class("DataEvent", {});
+	Class("FocusEvent", {});
 
 	
 	test("Events", function() {
@@ -738,6 +739,34 @@ $(function() {
 				include : [events.Mouse, events.Keyboard, events.Touch]
 			});		
 		})
+	});
+	
+	test("Event Interfaces", function() 
+	{
+		Interface("events.UserActions", 
+		{
+			events : 
+			{
+				click : MouseEvent,
+				mousedown : MouseEvent,
+				mouseup : MouseEvent,
+				focus : FocusEvent,
+				blur : FocusEvent,
+				keydown : KeyEvent,
+				keyup : KeyEvent
+			}
+		});
+		
+		var MouseEvent = true;
+		Class("events.Mouse", 
+		{
+			implement : [events.UserActions],
+			events : {
+				click : MouseEvent,
+				mousedown : MouseEvent,
+				mouseup : MouseEvent
+			}
+		});
 	});
 	
 	

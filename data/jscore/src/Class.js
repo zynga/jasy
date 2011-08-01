@@ -180,6 +180,7 @@ if(!Permutation.isSet("es5"))
 		var proto = construct.prototype;
 	
 	
+	
 		// ------------------------------------
 		//   MIXINS
 		// ------------------------------------
