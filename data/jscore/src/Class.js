@@ -270,8 +270,10 @@ if(!Permutation.isSet("es5"))
 		
 		// Attach members
 		var members = config.members;
-		if (members) {
-			for (var key in members) {
+		if (members) 
+		{
+			for (var key in members) 
+			{
 				var entry = proto[key] = members[key];
 				if (entry instanceof Function) {
 					entry.displayName = name + "." + key;
