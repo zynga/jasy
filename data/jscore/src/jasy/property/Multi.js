@@ -30,12 +30,12 @@
 		// User (aka Instance-specific value)
 		3: {},
 
-		// Theme
+		// Theme, see {@link jasy.property.IThemeable}
 		2: {
 			get : "getThemedValue"
 		},
 
-		// Inheritance
+		// Inheritance, see {@link jasy.property.IInheritable}
 		1 : {
 			get : "getInheritedValue"
 		}
@@ -229,7 +229,7 @@
 		 * @param name {String} Name of the property. Camel-case. No special characters.
 		 * @param config {Map} Configuration for the property to being created
 		 */
-		add : function(clazz, name, config)
+		create : function(config)
 		{
 			/*
 			---------------------------------------------------------------------------
@@ -252,20 +252,16 @@
 				jasy.property.Core.ID += 5;
 			}
 
-			// Store init value (shared data between instances)
-			var members = clazz.prototype;
-			if (config.init !== Undefined)
-			{
-				var propertyInitKey = initKeyPrefix + name;
-				members[propertyInitKey] = config.init;
-			}
-
-			// Precalc
-			var up = Bootstrap.$$firstUp[name] || Bootstrap.firstUp(name);
+			var name = config.name;
+			var members = {};
 
 			// Shorthands: Better compression/obfuscation/performance
-			var propertyNullable=config.nullable, propertyEvent=config.event, propertyApply=config.apply,
-				propertyValidate=config.validate, propertyInheritable=config.inheritable;
+			var propertyNullable = config.nullable;
+			var propertyInit = config.init;
+			var propertyEvent = config.event;
+			var propertyApply = config.apply;
+			var propertyValidate = config.validate;
+			var propertyInheritable = config.inheritable;
 
 
 
@@ -320,8 +316,8 @@
 						// Fallback to init value on prototype chain (when supported)
 						// This is always the value on the current class, not explicitely the class which creates the property.
 						// This is mainly for supporting init value overrides with "refined" properties
-						if (oldValue === Undefined && propertyInitKey) {
-							oldValue = context[propertyInitKey];
+						if (oldValue === Undefined && propertyInit !== Undefined) {
+							oldValue = propertyInit;
 						}
 
 						// this.debug("Value Compare: " + newValue + " !== " + oldValue);
@@ -400,8 +396,8 @@
 							newPriority = Undefined;
 
 							// Let's try the class-wide init value
-							if (propertyInitKey) {
-								newValue = context[propertyInitKey];
+							if (propertyInit !== Undefined) {
+								newValue = propertyInit;
 							}
 							else if (Permutation.isSet("debug"))
 							{
@@ -467,8 +463,8 @@
 					// Fallback to init value on prototype chain (when supported)
 					// This is always the value on the current class, not explicitely the class which creates the property.
 					// This is mainly for supporting init value overrides with "refined" properties
-					if (propertyInitKey) {
-						return context[propertyInitKey];
+					if (propertyInit !== Undefined) {
+						return propertyInit;
 					}
 
 					// Alternatively chose null, if possible
@@ -517,14 +513,14 @@
 			---------------------------------------------------------------------------
 			*/
 
-			members["get" + up] = getter;
+			members.get = getter;
 
 			// There are exactly two types of init methods:
 			// 1. Initializing the value given in the property configuration (calling apply methods, firing events, etc.)
 			// 2. Initializing the value during instance creation (useful for instance-specific non-shared values)
-			if (propertyInitKey)
+			if (propertyInit !== Undefined)
 			{
-				members["init" + up] = function()
+				members.init = function()
 				{
 					var context = this;
 					var data = context[store];
@@ -540,23 +536,23 @@
 
 					// Call apply
 					if (propertyApply) {
-						context[propertyApply](context[propertyInitKey], Undefined, config.name);
+						context[propertyApply](propertyInit, Undefined, config.name);
 					}
 
 					// Fire event
 					if (propertyEvent) {
-						context.fireDataEvent(propertyEvent, context[propertyInitKey], Undefined);
+						context.fireDataEvent(propertyEvent, propertyInit, Undefined);
 					}
 
 					// Inheritance support
 					if (propertyInheritable) {
-						changeInheritedHelper(context, context[propertyInitKey], Undefined, config);
+						changeInheritedHelper(context, propertyInit, Undefined, config);
 					}
 				};
 			}
 
-			members["set" + up] = setter(3);
-			members["reset" + up] = resetter(3);
+			members.set = setter(3);
+			members.reset = resetter(3);
 		},
 
 
@@ -602,7 +598,7 @@
 			// Commonly used variables
 			var modifyPriority = fieldToPriority[field];
 
-			var propertyName, propertyId, newValue, oldValue, oldPriority, propertyInitKey;
+			var propertyName, propertyId, newValue, oldValue, oldPriority, propertyInit;
 
 			// Import every given property
 			for (propertyName in values)
@@ -682,11 +678,10 @@
 					{
 						newPriority = Undefined;
 
-						// Let's try the class-wide init value
-						propertyInitKey = initKeyPrefix + propertyName;
-						if (propertyInitKey)
+						// Let's try the property-wide init value
+						if (propertyInit !== Undefined)
 						{
-							newValue = obj[propertyInitKey];
+							newValue = propertyInit;
 						}
 						else if (Permutation.isSet("debug"))
 						{
@@ -745,7 +740,7 @@
 		 * Returns a list of all inheritable properties supported by the given class.
 		 *
 		 * You may choose to access inheritable properties via:
-		 * obj.$$inheritables || jasy.property.Multi.getInheritableProperties(obj)
+		 * obj.__inheritables || jasy.property.Multi.getInheritableProperties(obj)
 		 * for better performance.
 		 *
 		 * @param clazz {Class} Class to query
@@ -753,7 +748,7 @@
 		 */
 		getInheritableProperties : function(clazz)
 		{
-			var result = clazz.$$inheritables = {};
+			var result = clazz.__inheritables = {};
 
 			// Find all local properties which are inheritable
 			var props = clazz.$$properties;
@@ -770,7 +765,7 @@
 			var superClass = clazz.superclass;
 			if (superClass && superClass !== Object)
 			{
-				var remote = superClass.$$inheritables || this.getInheritableProperties(superClass);
+				var remote = superClass.__inheritables || this.getInheritableProperties(superClass);
 				for (var name in remote) {
 					result[name] = remote[name];
 				}
@@ -804,7 +799,7 @@
 
 			// Runtime variables
 			var inheritedPriority,
-				clazz, properties, propertyName, propertyId, propertyConfig, propertyInitKey,
+				clazz, properties, propertyName, propertyId, propertyConfig,
 				data, oldPriority, oldValue, newValue,
 				newParentData, newParentPriority, newParentGetter;
 
@@ -822,11 +817,10 @@
 
 			// Iterate through all inheritable properties
 			clazz = obj.constructor;
-			properties = clazz.$$inheritables || this.getInheritableProperties(clazz);
+			properties = clazz.__inheritables || this.getInheritableProperties(clazz);
 			for (propertyName in properties)
 			{
 				propertyId = propertyNameToId[propertyName];
-				propertyInitKey = initKeyPrefix + propertyName;
 
 
 				//
@@ -837,7 +831,7 @@
 				if (oldPriority === Undefined)
 				{
 					// Fallback to class-wide init value
-					oldValue = obj[propertyInitKey];
+					oldValue = properties[propertyName].init;
 				}
 				else if (oldPriority == inheritedPriority)
 				{
@@ -863,10 +857,13 @@
 					if (newParentPriority === Undefined)
 					{
 						// try to read old value from init value
-						newValue = newParent[propertyInitKey];
+						parentConstructor = newParent.constructor;
+						parentProperties = parentConstructor.__inheritables || this.getInheritableProperties(parentConstructor);
+						newValue = parentProperties[propertyName].init;
 					}
 					else
 					{
+						// Deal with special getters (value comes from inheritable/themeable)
 						newParentGetter = priorityToFieldConfig[newParentPriority].get;
 						if (newParentGetter) {
 							newValue = newParent[newParentGetter] ? newParent[newParentGetter](propertyName) : Undefined;
