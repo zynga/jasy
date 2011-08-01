@@ -180,6 +180,51 @@ if(!Permutation.isSet("es5"))
 		var proto = construct.prototype;
 	
 	
+		// ------------------------------------
+		//   MIXINS
+		// ------------------------------------
+	
+		// Insert other classes
+		var include = config.include;
+		if (include) 
+		{
+			if (Permutation.isSet("debug")) 
+			{
+				for (var i=0, l=include.length; i<l; i++) {
+					Assert.assertClass(include[i], "Class " + name + " includes invalid class " + include[i] + " at position: " + i + "!");
+				}
+				
+				checkMixinMemberConflicts(include, members, name);
+				checkMixinEventConflicts(include, events, name);
+				checkMixinPropertyConflicts(include, properties, name);
+			}
+
+			for (var i=0, l=include.length; i<l; i++) 
+			{
+				var includedClass = include[i];
+				
+				// Just remap members. Validation already happended in debug mode.
+				// Function name keeps to be the same after inclusion. Still refering to original class.
+				var includeMembers = includedClass.prototype;
+				for (var key in includeMembers) {
+					proto[key] = includeMembers[key];
+				}
+				
+				// Just copy over the property data. Methods are already in member section.
+				var includeProperties = includedClass.__properties;
+				for (var key in includeProperties) {
+					properties[key] = includeProperties[key];
+				}
+
+				// Events is just data to copy over.
+				var includeEvents = includedClass.__events;
+				for (var key in includeEvents) {
+					events[key] = includeEvents[key];
+				}
+			}
+		}	
+	
+	
 	
 		// ------------------------------------
 		//   LOCALS
@@ -233,56 +278,9 @@ if(!Permutation.isSet("es5"))
 				}
 			}
 		}
-		
-		
 	
 	
-		// ------------------------------------
-		//   MIXINS
-		// ------------------------------------
 	
-		// Insert other classes
-		var include = config.include;
-		if (include) 
-		{
-			if (Permutation.isSet("debug")) 
-			{
-				for (var i=0, l=include.length; i<l; i++) {
-					Assert.assertClass(include[i], "Class " + name + " includes invalid class " + include[i] + " at position: " + i + "!");
-				}
-				
-				checkMixinMemberConflicts(include, members, name);
-				checkMixinEventConflicts(include, events, name);
-				checkMixinPropertyConflicts(include, properties, name);
-			}
-
-			for (var i=0, l=include.length; i<l; i++) 
-			{
-				var includedClass = include[i];
-				
-				// Just remap members. Validation already happended in debug mode.
-				// Function name keeps to be the same after inclusion. Still refering to original class.
-				var includeMembers = includedClass.prototype;
-				for (var key in includeMembers) {
-					proto[key] = includeMembers[key];
-				}
-				
-				// Just copy over the property data. Methods are already in member section.
-				var includeProperties = includedClass.__properties;
-				for (var key in includeProperties) {
-					properties[key] = includeProperties[key];
-				}
-
-				// Events is just data to copy over.
-				var includeEvents = includedClass.__events;
-				for (var key in includeEvents) {
-					events[key] = includeEvents[key];
-				}
-			}
-		}
-		
-		
-
 		// ------------------------------------
 		//   INTERFACES
 		// ------------------------------------
