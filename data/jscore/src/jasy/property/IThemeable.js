@@ -8,7 +8,7 @@
 /**
  * For classes which use inheritable properties.
  */
-Interface("jasy.property.IThemeable"
+Interface("jasy.property.IThemeable",
 {
 	members : 
 	{

@@ -8,7 +8,7 @@
 /**
  * For classes which use inheritable properties.
  */
-Interface("jasy.property.IInheritable"
+Interface("jasy.property.IInheritable",
 {
 	members : 
 	{

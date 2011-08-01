@@ -392,10 +392,12 @@ if(!Permutation.isSet("es5"))
 	Class.getPropertyFeatures = function(cls) 
 	{
 		var all = {};
-		for (var name in cls.__properties) 
+		var properties = cls.__properties;
+		for (var name in properties)
 		{
-			if (!(name in all)) {
-				all[name] = true;
+			var config = properties[name];
+			for (var key in config) {
+				all[key] || (all[key] = true);
 			}
 		}
 		

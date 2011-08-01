@@ -783,7 +783,7 @@ $(function() {
 			members : 
 			{
 				// Interface implementation
-				fireEvent : function(type) {
+				fireEvent : function(type, value, old) {
 					// pass
 				}
 			}
@@ -833,8 +833,8 @@ $(function() {
 			});
 		});
 		
-		//raises(function() 
-		//{
+		raises(function() 
+		{
 			Class("properties.NoGetThemed", 
 			{
 				properties : 
@@ -844,10 +844,10 @@ $(function() {
 					}
 				}
 			});
-		//});
+		});
 		
-		//raises(function() 
-		//{
+		raises(function() 
+		{
 			Class("properties.NoGetInherited", 
 			{
 				properties : 
@@ -857,7 +857,7 @@ $(function() {
 					}
 				}
 			});
-		//});
+		});
 	});
 	
 	
@@ -882,7 +882,6 @@ $(function() {
 				color : 
 				{
 					type : "String",
-					fire : "changeColor",
 					apply : function(value, old) {
 						this.__textElement.style.color = value;
 					},
@@ -891,7 +890,6 @@ $(function() {
 				fontFamily : 
 				{
 					type : ["sans-serif", "serif", "monospace"],
-					fire : "changeFontFamily",
 					apply : function(value, old) {
 						this.__textElement.style.fontFamily = value;
 					}
@@ -900,7 +898,6 @@ $(function() {
 				lineHeight : 
 				{
 					type : "Integer",
-					fire : "changeLineHeight",
 					apply : function(value, old) {
 						this.__textElement.style.lineHeight = value;
 					}
@@ -955,10 +952,6 @@ $(function() {
 			
 			members :
 			{
-				fireEvent : function(type) {
-					
-				},
-				
 				destruct : function() 
 				{
 					properties.Text.prototype.destruct.call(this);
