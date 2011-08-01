@@ -194,9 +194,9 @@ if(!Permutation.isSet("es5"))
 					Assert.assertClass(include[i], "Class " + name + " includes invalid class " + include[i] + " at position: " + i + "!");
 				}
 				
-				checkMixinMemberConflicts(include, members, name);
-				checkMixinEventConflicts(include, events, name);
-				checkMixinPropertyConflicts(include, properties, name);
+				checkMixinMemberConflicts(include, config.members, name);
+				checkMixinEventConflicts(include, config.events, name);
+				checkMixinPropertyConflicts(include, config.properties, name);
 			}
 
 			for (var i=0, l=include.length; i<l; i++) 
@@ -231,7 +231,6 @@ if(!Permutation.isSet("es5"))
 		// ------------------------------------
 	
 		// Add properties
-		var properties = construct.__properties = config.properties || {};
 		for (var propertyName in properties) 
 		{
 			var propertyConfig = properties[propertyName];
