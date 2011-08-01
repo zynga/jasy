@@ -347,12 +347,7 @@ $(function() {
 		equals(global.abc.def, 5);
 	});
 
-	test("Creating namespace with one character", function() {
-		Module.declareName('a.def', 5);
-		equals(global.a.def, 5);
-	});
-	
-	
+
 
 	/*
 	---------------------------------------------------------------------------
@@ -363,6 +358,7 @@ $(function() {
 	module("Modules", {
 		teardown : function() {
 			delete global.abc;
+			delete global.x;
 		}
 	});
 	
@@ -371,6 +367,13 @@ $(function() {
 		equals(Module.isModule(abc.Module1), true);
 		equals(abc.Module1.moduleName, "abc.Module1");
 		equals(abc.Module1.toString(), "[module abc.Module1]");
+	});
+	
+	test("Creating module with short namespace", function() {
+		Module("x.Module1", {});
+		equals(Module.isModule(x.Module1), true);
+		equals(x.Module1.moduleName, "x.Module1");
+		equals(x.Module1.toString(), "[module x.Module1]");
 	});
 
 	test("Module false validation", function() {
