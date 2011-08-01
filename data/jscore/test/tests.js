@@ -333,6 +333,7 @@ $(function() {
 		teardown : function() {
 			delete global.foo;
 			delete global.abc;
+			delete global.a;
 		}
 	});
 	
@@ -344,6 +345,11 @@ $(function() {
 	test("Creating namespace", function() {
 		Module.declareName('abc.def', 5);
 		equals(global.abc.def, 5);
+	});
+
+	test("Creating namespace with one character", function() {
+		Module.declareName('a.def', 5);
+		equals(global.a.def, 5);
 	});
 	
 	

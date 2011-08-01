@@ -207,7 +207,7 @@
 	 * @return {Boolean} Whether the given string is a valid module name
 	 */
 	var isModuleName = Module.isModuleName = function(value) { 
-		return /^(([a-z][a-z0-9]+\.)*)([A-Z][a-zA-Z0-9]*)$/.test(value); 
+		return /^(([a-z][a-z0-9]*\.)*)([A-Z][a-zA-Z0-9]*)$/.test(value); 
 	};
 
 
@@ -218,7 +218,7 @@
 	 */
 	var isModule = Module.isModule = function(module) {
 		return !!(module && typeof module == "object" && module.__isModule);
-	}
+	};
 	
 	
 	// Add assertion for module name
