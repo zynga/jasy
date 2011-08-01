@@ -87,6 +87,10 @@
 	/**
 	 * Verifies whether the given object or class implements the given interface.
 	 *
+	 * * Tests all members of being defined and being the same type (based on Object.toString).
+	 * * Tests all properties regarding existance. Also checks whether the outer visible aspects: events, group, themeable and inheritable are identical.
+	 * * Tests all events regarding existance and whether there EventClass - if defined - is identical.
+	 *
 	 * @param objOrClass {Object|Class} Object or Class to verify
 	 * @param iface {Interface?this} Interface to check for. Falls back to the context being called in.
 	 * @throws Whenever the object or class does not implements the interface.
@@ -102,8 +106,6 @@
 			throw new Error("Invalid class or object to verify interface with: " + objOrClass);
 		}
 		
-		var clsMembers = cls.prototype;
-		
 		if (!iface && this.__isInterface) {
 			iface = this;
 		}
@@ -113,35 +115,104 @@
 		}
 
 		var ifaceMembers = iface.__members;
+		var ifaceProperties = iface.__properties;
+		var ifaceEvents = iface.__events;
+		
 		var commonErrMsg = "Class " + cls.className + " does not implement interface " + iface.interfaceName + ": ";
 		
-		for (var key in ifaceMembers) {
-			var iMember = ifaceMembers[key];
-			
-			if (!(key in clsMembers)) {
-				throw new Error(commonErrMsg + "Missing member: " + key + "!");
-			}
-			
-			var cMember = clsMembers[key];
-			
-			if (typeof iMember == typeof cMember) 
+		if (ifaceMembers)
+		{
+			var cMembers = cls.prototype;
+			for (var name in ifaceMembers) 
 			{
-				if (iMember instanceof Function) 
+				if (!(name in cMembers)) {
+					throw new Error(commonErrMsg + "Missing member: " + name + "!");
+				}
+
+				var iMember = ifaceMembers[name];
+				var cMember = cMembers[name];
+
+				if (typeof iMember == typeof cMember) 
 				{
-					if (!(cMember instanceof Function)) {
-						throw new Error(commonErrMsg + "Different member types in: " + key + "! Expecting a function!");
-					} else if (!removedUnusedArgs && iMember.length != cMember.length) {
-						throw new Error(commonErrMsg + "Different number of arguments in function '" + key + "'. Expecting " + iMember.length + "!");
+					if (iMember == null) {
+						continue;
+					}
+					
+					if (cMember == null) {
+						throw new Error(commonErrMsg + "Missing member: " + name + "!");
+					}
+					
+					if (Object.prototype.toString.call(iMember).slice(8,-1) != Object.prototype.toString.call(cMember).slice(8,-1)) {
+						throw new Error(commonErrMsg + "Invalid member type in :" + name + "! Expecting: " + Object.prototype.toString.call(iMember).slice(8,-1).toLowerCase());
+					}
+					
+					if (iMember instanceof Function) 
+					{
+						if (!(cMember instanceof Function)) {
+							throw new Error(commonErrMsg + "Different member types in: " + name + "! Expecting a function!");
+						} else if (!removedUnusedArgs && iMember.length != cMember.length) {
+							throw new Error(commonErrMsg + "Different number of arguments in function '" + name + "'. Expecting " + iMember.length + "!");
+						}
 					}
 				}
-				else if (iMember instanceof Array && !(cMember instanceof Array)) 
+				else
 				{
-					throw new Error(commonErrMsg + "Different member types in: " + key + "! Expecting an array.");
+					throw new Error(commonErrMsg + "Different member types in: " + name + "! Expecting type " + (typeof iMember));
 				}
 			}
-			else
+		}
+		
+		if (ifaceProperties)
+		{
+			var cProperties = Class.getProperties(cls);
+			for (var name in ifaceProperties) 
 			{
-				throw new Error(commonErrMsg + "Different member types in: " + key + "! Expecting type " + (typeof iMember));
+				if (!(name in cMembers)) {
+					throw new Error(commonErrMsg + "Missing property: " + name + "!");
+				}
+				
+				var iProperty = ifaceProperties[name];
+				var cProperty = cProperties[name];
+
+				// "apply" has not outer visibility
+				// "init" has not outer visibility
+				// "type" is value compared
+				// all others are just tested for pure existence.
+
+				if (iProperty.type !== cProperty.type) {
+					throw new Error(commonErrMsg + "Invalid property: " + name + "! Different types! Expecting " + iProperty.type + "!");
+				}
+
+				if ("nullable" in iProperty && !("nullable" in cProperty)) {
+					throw new Error(commonErrMsg + "Invalid property: " + name + "! Missing 'nullable' definition!");
+				}
+
+				if ("fire" in iProperty && !("fire" in cProperty)) {
+					throw new Error(commonErrMsg + "Invalid property: " + name + "! Missing 'fire' definition!");
+				}
+
+				if ("group" in iProperty && !("group" in cProperty)) {
+					throw new Error(commonErrMsg + "Invalid property: " + name + "! Missing 'group' definition!");
+				}
+				
+				if ("themeable" in iProperty && !("themeable" in cProperty)) {
+					throw new Error(commonErrMsg + "Invalid property: " + name + "! Missing 'themeable' definition!");
+				}
+				
+				if ("inheritable" in iProperty && !("inheritable" in cProperty)) {
+					throw new Error(commonErrMsg + "Invalid property: " + name + "! Missing 'inheritable' definition!");
+				}
+			}
+		}
+
+		if (ifaceEvents)
+		{
+			var cEvents = Class.getEvents(cls);
+			for (var name in ifaceEvents) 
+			{
+				if (!(name in cEvents)) {
+					throw new Error(commonErrMsg + "Missing event: " + name + "!");
+				}
 			}
 		}
 	};

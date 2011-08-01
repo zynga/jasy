@@ -757,15 +757,18 @@ $(function() {
 			}
 		});
 		
-		var MouseEvent = true;
-		Class("events.Mouse", 
+		raises(function() 
 		{
-			implement : [events.UserActions],
-			events : {
-				click : MouseEvent,
-				mousedown : MouseEvent,
-				mouseup : MouseEvent
-			}
+			var MouseEvent = true;
+			Class("events.Mouse", 
+			{
+				implement : [events.UserActions],
+				events : {
+					click : MouseEvent,
+					mousedown : MouseEvent,
+					mouseup : MouseEvent
+				}
+			});
 		});
 	});
 	
