@@ -756,7 +756,64 @@ $(function() {
 		}
 	});	
 	
-	test("Create Properties", function() 
+	test("Creating Properties", function() 
+	{
+		Class("properties.Simple", 
+		{
+			properties : 
+			{
+				color : 
+				{
+					type : "String",
+					apply : function(value, old) {
+						// pass
+					}
+				},
+				
+				backgroundColor : 
+				{
+					type : "String",
+					apply : function(value, old) {
+						// pass
+					},
+					fire : "changeBackgroundColor"
+				}
+			},
+			
+			members : 
+			{
+				fireEvent : function(type) {
+					// pass
+				}
+			}
+		});
+		
+		ok(Assert.isClass(properties.Simple));
+		equals(Object.keys(Class.getProperties(properties.Simple)).join(","), "color,backgroundColor");
+
+		ok(Assert.isFunction(properties.Simple.prototype.getColor));
+		ok(Assert.isFunction(properties.Simple.prototype.getBackgroundColor));
+		ok(Assert.isFunction(properties.Simple.prototype.setColor));
+		ok(Assert.isFunction(properties.Simple.prototype.setBackgroundColor));
+
+		equals(properties.Simple.prototype.getColor.displayName, "properties.Simple.getColor");
+		equals(properties.Simple.prototype.getBackgroundColor.displayName, "properties.Simple.getBackgroundColor");
+		equals(properties.Simple.prototype.setColor.displayName, "properties.Simple.setColor");
+		equals(properties.Simple.prototype.setBackgroundColor.displayName, "properties.Simple.setBackgroundColor");
+		
+		equals(properties.Simple.prototype.getColor.length, 0);
+		equals(properties.Simple.prototype.getBackgroundColor.length, 0);
+		equals(properties.Simple.prototype.setColor.length, 1);
+		equals(properties.Simple.prototype.setBackgroundColor.length, 1);
+		
+		var obj1 = new properties.Simple;
+		equals(obj1.setColor("red"), "red");
+		equals(obj1.setBackgroundColor("black"), "black");
+		equals(obj1.getColor(), "red");
+		equals(obj1.getBackgroundColor(), "black");
+	});
+	
+	test("Inheriting Properties", function() 
 	{
 		Class("properties.Text", 
 		{
@@ -811,25 +868,9 @@ $(function() {
 		});
 		
 		ok(Assert.isClass(properties.Text));
+		equals(Object.keys(Class.getProperties(properties.Text)).join(","), "wrap,color,fontFamily,lineHeight");
 
-		ok(Assert.isFunction(properties.Text.prototype.getWrap));
-		ok(Assert.isFunction(properties.Text.prototype.getColor));
-		ok(Assert.isFunction(properties.Text.prototype.getFontFamily));
-		ok(Assert.isFunction(properties.Text.prototype.getLineHeight));
 
-		ok(Assert.isFunction(properties.Text.prototype.setWrap));
-		ok(Assert.isFunction(properties.Text.prototype.setColor));
-		ok(Assert.isFunction(properties.Text.prototype.setFontFamily));
-		ok(Assert.isFunction(properties.Text.prototype.setLineHeight));
-
-		equals(properties.Text.prototype.getWrap.displayName, "properties.Text.getWrap");
-		equals(properties.Text.prototype.setWrap.displayName, "properties.Text.setWrap");
-		equals(properties.Text.prototype.resetWrap.displayName, "properties.Text.resetWrap");
-
-		equals(properties.Text.prototype.setLineHeight.length, 1);
-		equals(properties.Text.prototype.getLineHeight.length, 0);
-		equals(properties.Text.prototype.resetLineHeight.length, 0);
-		
 
 		Class("properties.Dimension", 
 		{
@@ -846,13 +887,17 @@ $(function() {
 		});
 
 		ok(Assert.isClass(properties.Dimension));
+		equals(Object.keys(Class.getProperties(properties.Dimension)).join(","), "width,height");
+		
+		
 
 
 		Class("properties.Label", 
 		{
 			include : [properties.Text, properties.Dimension],
 			
-			construct : function() {
+			construct : function() 
+			{
 				this.__labelElement = document.createElement("label");
 				
 				properties.Text.call(this, this.__labelElement);
@@ -871,10 +916,13 @@ $(function() {
 		});
 		
 		ok(Assert.isClass(properties.Label));
+		equals(Object.keys(Class.getProperties(properties.Label)).join(","), "wrap,color,fontFamily,lineHeight,width,height");
 		
 		
 		
-	})
+		var ll = new properties.Label;
+		equals(ll.getLineHeight(), 2);
+	});
 	
 	
 	
