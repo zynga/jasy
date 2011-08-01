@@ -197,7 +197,7 @@ if(!Permutation.isSet("es5"))
 			// Create members via specific property implementation 
 			if (config.group) {
 				var propertyMembers = jasy.property.Group.create(propertyConfig);
-			} else if (config.themeable || config.inheritable || jasy.property.Core.RUNTIME_OVERRIDE) {	
+			} else if (config.themeable || config.inheritable) {	
 				var propertyMembers = jasy.property.Multi.create(propertyConfig);
 			} else {
 				var propertyMembers = jasy.property.Simple.create(propertyConfig);

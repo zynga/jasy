@@ -62,7 +62,7 @@
 			if (Permutation.isSet("debug"))
 			{
 				Assert.assertHasAllowedKeysOnly(config, ["name","nullable","init","type","fire","apply"],
-					"Invalid property configuration in class " + propertyName + "! Unallowed key(s) found!");
+					"Invalid simple property configuration in class " + propertyName + "! Unallowed key(s) found!");
 
 				Assert.assertString(propertyName);
 

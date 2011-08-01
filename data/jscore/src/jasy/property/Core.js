@@ -5,8 +5,6 @@
 ==================================================================================================
 */
 
-Module("jasy.property.Core",
-{
-	RUNTIME_OVERRIDE : false,
+Module("jasy.property.Core", {
 	ID : 1
 });

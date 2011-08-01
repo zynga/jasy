@@ -817,6 +817,7 @@ $(function() {
 		equals(obj1.getBackgroundColor(), "black");
 	});
 	
+	
 	test("Creating Properties - Error Cases", function()
 	{
 		raises(function() 
@@ -825,15 +826,40 @@ $(function() {
 			{
 				properties : 
 				{
-					size : 
-					{
-						type : "Integer",
+					size : {
 						fire : "changeSize"
 					}
 				}
 			});
 		});
+		
+		//raises(function() 
+		//{
+			Class("properties.NoGetThemed", 
+			{
+				properties : 
+				{
+					size : {
+						themeable : true
+					}
+				}
+			});
+		//});
+		
+		//raises(function() 
+		//{
+			Class("properties.NoGetInherited", 
+			{
+				properties : 
+				{
+					size : {
+						inheritable : true
+					}
+				}
+			});
+		//});
 	});
+	
 	
 	test("Inheriting Properties", function() 
 	{

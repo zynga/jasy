@@ -557,12 +557,6 @@
 
 			members["set" + up] = setter(3);
 			members["reset" + up] = resetter(3);
-
-			if (this.RUNTIME_OVERRIDE)
-			{
-				members["setRuntime" + up] = setter(4);
-				members["resetRuntime" + up] = resetter(4);
-			}
 		},
 
 
