@@ -8,13 +8,13 @@
 /**
  * For classes which use inheritable properties.
  */
-Interface("jasy.property.IInheritable"
+Interface("jasy.property.IThemeable"
 {
 	members : 
 	{
 		/**
-		 * Returns the inherited value of the given property
+		 * Returns the themed value of the given property
 		 */
-		getInheritedValue : function(property) {}
+		getThemedValue : function(property) {}
 	}
 });

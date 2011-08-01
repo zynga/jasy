@@ -307,6 +307,22 @@ if(!Permutation.isSet("es5"))
 					}
 				}
 			}
+			
+			var propertyFeatures = Class.getPropertyFeatures(construct);
+			if (propertyFeatures) 
+			{
+				if (propertyFeatures.fire) {
+					Interface.assert(construct, jasy.property.IEvent);
+				}
+
+				if (propertyFeatures.themeable) {
+					Interface.assert(construct, jasy.property.IThemeable);
+				}
+
+				if (propertyFeatures.inheritable) {
+					Interface.assert(construct, jasy.property.IInheritable);
+				}
+			}
 		}
 		
 		
@@ -325,7 +341,8 @@ if(!Permutation.isSet("es5"))
 	 * @param className {String} Name to resolve
 	 * @return {Object} Returns the Class stored under the given name
 	 */
-	Class.getByName = function(className) {
+	Class.getByName = function(className) 
+	{
 		if (Permutation.isSet("debug")) {
 			Assert.assertString(className);
 		}
@@ -341,7 +358,8 @@ if(!Permutation.isSet("es5"))
 	 * @param cls {Class} Class to query
 	 * @return {Map} Map of all events and their type
 	 */
-	Class.getEvents = function(cls) {
+	Class.getEvents = function(cls) 
+	{
 		if (Permutation.isSet("debug")) {
 			Assert.assertClass(cls);
 		}
@@ -356,13 +374,33 @@ if(!Permutation.isSet("es5"))
 	 * @param cls {Class} Class to query
 	 * @return {Map} Map of all properties and their configuration
 	 */
-	Class.getProperties = function(cls) {
+	Class.getProperties = function(cls) 
+	{
 		if (Permutation.isSet("debug")) {
 			Assert.assertClass(cls);
 		}
 		
 		return cls.__properties;
-	};	
+	};
+	
+	
+	/**
+	 * Returns a list of all property features used in the given class.
+	 *
+	 * @return {Map} Map of all features (feature is used as a key for fast lookup)
+	 */
+	Class.getPropertyFeatures = function(cls) 
+	{
+		var all = {};
+		for (var name in cls.__properties) 
+		{
+			if (!(name in all)) {
+				all[name] = true;
+			}
+		}
+		
+		return all;
+	};
 
 
 	/**
@@ -382,7 +420,8 @@ if(!Permutation.isSet("es5"))
 	 * @param incCls {Class} Class for checking if being included into first one.
 	 * @return {Boolean} Whether the second class is included in the first class.
 	 */
-	var includesClass = Class.includesClass = function(cls, incCls) {
+	var includesClass = Class.includesClass = function(cls, incCls) 
+	{
 		if (Permutation.isSet("debug")) {
 			Assert.assertClass(cls, "Class to check for including class is itself not a class!");
 			Assert.assertClass(incCls, "Class to check for being included is not a class!");

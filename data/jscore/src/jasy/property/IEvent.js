@@ -5,10 +5,17 @@
 ==================================================================================================
 */
 
-Interface("jasy.property.IInheritable"
+/**
+ * For classes which use event firing properties.
+ */
+Interface("jasy.property.IEvent"
 {
 	members : 
 	{
-		fireEvent : function(type) {}
+		/**
+		 * Fires the given event type with the data of the properties
+		 * current and old value to the object's event system.
+		 */
+		fireEvent : function(type, value, old) {}
 	}
 });

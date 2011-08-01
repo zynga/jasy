@@ -782,6 +782,7 @@ $(function() {
 			
 			members : 
 			{
+				// Interface implementation
 				fireEvent : function(type) {
 					// pass
 				}
@@ -790,6 +791,9 @@ $(function() {
 		
 		ok(Assert.isClass(properties.Simple));
 		equals(Object.keys(Class.getProperties(properties.Simple)).join(","), "color,backgroundColor");
+
+		equals(Class.getProperties(properties.Simple).color.type, "String");
+		equals(typeof Class.getProperties(properties.Simple).color.apply, "function");
 
 		ok(Assert.isFunction(properties.Simple.prototype.getColor));
 		ok(Assert.isFunction(properties.Simple.prototype.getBackgroundColor));
@@ -813,6 +817,24 @@ $(function() {
 		equals(obj1.getBackgroundColor(), "black");
 	});
 	
+	test("Creating Properties - Error Cases", function()
+	{
+		raises(function() 
+		{
+			Class("properties.NoFireEvent", 
+			{
+				properties : 
+				{
+					size : 
+					{
+						type : "Integer",
+						fire : "changeSize"
+					}
+				}
+			});
+		});
+	});
+	
 	test("Inheriting Properties", function() 
 	{
 		Class("properties.Text", 
@@ -833,7 +855,7 @@ $(function() {
 				
 				color : 
 				{
-					type : "Color",
+					type : "String",
 					fire : "changeColor",
 					apply : function(value, old) {
 						this.__textElement.style.color = value;
@@ -907,6 +929,10 @@ $(function() {
 			
 			members :
 			{
+				fireEvent : function(type) {
+					
+				},
+				
 				destruct : function() 
 				{
 					properties.Text.prototype.destruct.call(this);
