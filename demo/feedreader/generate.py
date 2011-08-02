@@ -53,8 +53,8 @@ def source():
         resolver.addClassName("qx.theme.Modern")
         resolver.excludeClasses(loaderIncluded)
         
-        # Collect Resources
-        resources = Resources(session, resolver.getIncludedClasses())
+        # Collect Asset
+        resources = Asset(session, resolver.getIncludedClasses())
         resourceCode = resources.exportInfo(prefixRoots="../")
         
         # Generate Loader
@@ -99,11 +99,11 @@ def build():
     # Copy HTML file from source
     updatefile("source/index.html", "build/index.html")
 
-    # Collecting Resources
+    # Collecting Asset
     resolver = Resolver(session.getProjects())
     resolver.addClassName("feedreader.Application")
     resolver.addClassName("qx.theme.Modern")
-    resources = Resources(session, resolver.getIncludedClasses())
+    resources = Asset(session, resolver.getIncludedClasses())
     resources.publishFiles("build/resource")
     resources.publishManifest("build/feedreader.appcache", "resource")
     resourceCode = resources.exportInfo(replaceRoots="resource")

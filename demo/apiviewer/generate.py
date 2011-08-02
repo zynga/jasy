@@ -39,8 +39,8 @@ def source():
     resolver.addClassName("apiviewer.Application")
     resolver.addClassName("apiviewer.Theme")
 
-    # Collect Resources
-    resources = Resources(session, resolver.getIncludedClasses())
+    # Collect Asset
+    resources = Asset(session, resolver.getIncludedClasses())
     resourceCode = resources.exportInfo(prefixRoots="../")
 
     # Generate Loader
@@ -91,8 +91,8 @@ def build():
         resolver.addClassName("apiviewer.Theme")
         classes = resolver.getIncludedClasses()
 
-        # Collecting Resources
-        resources = Resources(session, classes, permutation)
+        # Collecting Asset
+        resources = Asset(session, classes, permutation)
         resources.publishFiles("build/resource")
         resources.publishManifest("build/manifest", "resource")
         resourceCode = resources.exportInfo(replaceRoots="resource")

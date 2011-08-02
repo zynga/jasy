@@ -10,10 +10,10 @@ from jasy.core.ImageInfo import ImgInfo
 from jasy.File import *
 from jasy.Project import Project
 
-__all__ = ["Resources"]
+__all__ = ["Assets"]
 
 
-class Resources:
+class Assets:
     def __init__(self, session, classes, permutation=None):
         self.__session = session
         self.__classes = classes
@@ -24,7 +24,7 @@ class Resources:
         """ 
         Returns the merged list of all resources and their origin.
         
-        Resources might be overritten by projects listed later in the
+        Assets might be overritten by projects listed later in the
         project chain.
         """
         
@@ -34,7 +34,7 @@ class Resources:
         except AttributeError:
             merged = {}
             for project in self.__session.getProjects():
-                for resource in project.getResources():
+                for resource in project.getAssets():
                     merged[resource] = project
                     
             self.__merged = merged
