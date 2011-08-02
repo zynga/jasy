@@ -22,7 +22,7 @@ class Assets:
         
     def getMerged(self):
         """ 
-        Returns the merged list of all resources and their origin.
+        Returns the merged list of all assets and their origin.
         
         Assets might be overritten by projects listed later in the
         project chain.
@@ -34,8 +34,8 @@ class Assets:
         except AttributeError:
             merged = {}
             for project in self.__session.getProjects():
-                for resource in project.getAssets():
-                    merged[resource] = project
+                for asset in project.getAssets():
+                    merged[asset] = project
                     
             self.__merged = merged
             return merged
@@ -43,7 +43,7 @@ class Assets:
     
     def getFiltered(self):
         """ 
-        Returns a list of resources which is used by the classes
+        Returns a list of assets which is used by the classes
         given at creation time.
         """
         
@@ -63,9 +63,9 @@ class Assets:
             
             # Filter merged assets
             merged = self.getMerged()
-            self.__filtered = { resource: merged[resource] for resource in merged if expr.match(resource) }
+            self.__filtered = { asset: merged[asset] for asset in merged if expr.match(asset) }
 
-            logging.info("Selected classes make use of %s resources" % len(self.__filtered))
+            logging.info("Selected classes make use of %s assets" % len(self.__filtered))
             pstop()
             
             return self.__filtered
@@ -79,7 +79,7 @@ class Assets:
             # Pre cache (for time measurement reasons)
             filtered = self.getFiltered()
             
-            logging.info("Categorizing resources...")
+            logging.info("Categorizing assets...")
             pstart()
             
             roots = self.__collectRoots()
@@ -100,60 +100,60 @@ class Assets:
             
             
     def __collectRoots(self):
-        return [project.resourcePath for project in self.__session.getProjects() if project.resourcePath != None]
+        return [project.assetPath for project in self.__session.getProjects() if project.assetPath != None]
             
             
     def __collectFiles(self):
         """
-        Returns { dirName : { resourceName : projectObj }}
+        Returns { dirName : { assetName : projectObj }}
         """
                 
         files = {}
         filtered = self.getFiltered()
-        for resource in filtered:
+        for asset in filtered:
             # black list matching
-            if resource.endswith((".png", ".jpeg", ".jpg", ".gif", ".meta", "sprites.json")):
+            if asset.endswith((".png", ".jpeg", ".jpg", ".gif", ".meta", "sprites.json")):
                 continue
                 
-            resdir = dirname(resource)
+            resdir = dirname(asset)
             if not resdir in files:
                 files[resdir] = {}
                 
-            files[resdir][basename(resource)] = filtered[resource]
+            files[resdir][basename(asset)] = filtered[asset]
             
         return files
         
         
     def __collectImages(self):
         """
-        Returns { dirName : { resourceName : [projectObj, imageWidth, imageHeight] }}
+        Returns { dirName : { assetName : [projectObj, imageWidth, imageHeight] }}
         """
         
         images = {}
         filtered = self.getFiltered()
-        for resource in filtered:
+        for asset in filtered:
             # white list matching
-            if not resource.endswith((".png", ".jpeg", ".jpg", ".gif")):
+            if not asset.endswith((".png", ".jpeg", ".jpg", ".gif")):
                 continue
 
-            resdir = dirname(resource)
+            resdir = dirname(asset)
             if not resdir in images:
                 images[resdir] = {}
 
-            project = filtered[resource]
-            path = os.path.join(project.resourcePath, resource)
+            project = filtered[asset]
+            path = os.path.join(project.assetPath, asset)
             info = ImgInfo(path).getInfo()
             if info is None:
-                raise Exception("Invalid image: %s" % resource)
+                raise Exception("Invalid image: %s" % asset)
                 
-            images[resdir][basename(resource)] = [project, info[0], info[1]]
+            images[resdir][basename(asset)] = [project, info[0], info[1]]
 
         return images
 
 
     def __collectSprites(self, images):
         """
-        Returns { dirName : [[ resourceName, projectObj, imageWidth, imageHeight, hasOffsetX, hasOffsetY ], [...]]}
+        Returns { dirName : [[ assetName, projectObj, imageWidth, imageHeight, hasOffsetX, hasOffsetY ], [...]]}
         Deletes sprites from images
         Modifies images to contain sprite data:
         [projectObj, imageWidth, imageHeight] => [projectObj, imageWidth, imageHeight, spriteIndex, offsetA, offsetB]
@@ -163,17 +163,17 @@ class Assets:
         
         sprites = {}
         filtered = self.getFiltered()
-        for resource in filtered:
+        for asset in filtered:
             # white list matching
-            if basename(resource) != "sprites.json":
+            if basename(asset) != "sprites.json":
                 continue
                 
             # Load sprite data from JSON file
-            project = filtered[resource]
-            path = os.path.join(project.resourcePath, resource)
+            project = filtered[asset]
+            path = os.path.join(project.assetPath, asset)
             data = json.load(open(path))
 
-            resdir = dirname(resource)
+            resdir = dirname(asset)
             pos = 0
             for combined in data:
                 # Ignore if combined files which are not included
@@ -228,11 +228,11 @@ class Assets:
                 entry.append(singles[filename][1])
 
 
-    def exportInfo(self, replaceRoots=None, prefixRoots=None, to="$$resources"):
+    def exportInfo(self, replaceRoots=None, prefixRoots=None, to="$$assets"):
         """ 
         Exports the info from getCategorized() into a JavaScript function
         call. This creates a global variable with the default name
-        $$resources which contains all resource information.
+        $$assets which contains all asset information.
         """
 
         info = self.getCategorized()
@@ -243,7 +243,7 @@ class Assets:
 
         session = self.__session
         class ProjectEncoder(json.JSONEncoder):
-            projectIds = { project: pos for pos, project in enumerate(filter(lambda project: project.resourcePath != None, session.getProjects())) }
+            projectIds = { project: pos for pos, project in enumerate(filter(lambda project: project.assetPath != None, session.getProjects())) }
 
             def default(self, obj):
                 if isinstance(obj, Project):
@@ -270,9 +270,9 @@ class Assets:
         pstart()
         
         counter = 0
-        for resource in filtered:
-            srcFile = os.path.join(filtered[resource].resourcePath, resource)
-            dstFile = os.path.join(dst, resource)
+        for asset in filtered:
+            srcFile = os.path.join(filtered[asset].assetPath, asset)
+            dstFile = os.path.join(dst, asset)
             
             if updatefile(srcFile, dstFile):
                 counter += 1

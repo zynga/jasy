@@ -84,11 +84,11 @@ class Project():
         elif self.__kind == "classic":
             self.classPath = os.path.join(self.__path, "src")
             self.assetPath = os.path.join(self.__path, "src")
-            self.translationPath = os.path.join(self.__path, "src")
+            self.translationPath = None
         elif self.__kind == "flat":
             self.classPath = self.__path
             self.assetPath = self.__path
-            self.translationPath = self.__path
+            self.translationPath = None
         else:
             raise ProjectException("Unsupported kind of project: %s" % self.__kind)
     
@@ -202,8 +202,11 @@ class Project():
                         if dirName in self.__dirFilter:
                             dirNames.remove(dirName)
 
-                    for fileName in fileNames:    
-                        if fileName[0] == ".":
+                    for fileName in fileNames:
+                        if fileName in ["manifest.json", "generate.py"]:
+                            continue
+                            
+                        if fileName[0] == "." or fileName.endswith(".js") or fileName.endswith(".txt") or fileName.endswith(".md"):
                             continue
 
                         filePath = os.path.join(dirPath, fileName)
