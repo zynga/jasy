@@ -203,7 +203,7 @@ class Project():
                             dirNames.remove(dirName)
 
                     for fileName in fileNames:
-                        if fileName in ["manifest.json", "generate.py"]:
+                        if fileName in ["manifest.json", "generate.py", "cache"]:
                             continue
                             
                         if fileName[0] == "." or fileName.endswith(".js") or fileName.endswith(".txt") or fileName.endswith(".md"):
