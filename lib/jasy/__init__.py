@@ -28,7 +28,7 @@ from jasy.Project import *
 from jasy.Resolver import *
 from jasy.Sorter import *
 from jasy.Combiner import *
-from jasy.Asset import * 
+from jasy.Assets import * 
 from jasy.Optimization import *
 from jasy.Format import *
 from jasy.File import *
