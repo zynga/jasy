@@ -168,7 +168,10 @@ class Project():
                                 classObj.setName(classNameForced)
                                 className = classNameForced
                             else:
-                                logging.warn("No name given to class: %s" % className)
+                                if namespace:
+                                    logging.warn("No name given to class: %s.%s" % (namespace, className))
+                                else:
+                                    logging.warn("No name given to class: %s" % className)
                                 
                         # Support for pre-fixed namespace which is not used in filesystem, but in classes
                         elif namespace:
