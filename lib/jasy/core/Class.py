@@ -19,19 +19,28 @@ __all__ = ["Class"]
 
 class Class():
     def __init__(self, path, project=None):
-        self.__package = project.getPackage()
-        self.__cache = project.getCache()
         self.__path = path
         self.__mtime = os.stat(path).st_mtime
         
+        if project:
+            self.__root = project.getClassPath()
+            self.__package = project.getPackage()
+            self.__cache = project.getCache()
+            self.__id = path[len(project.getClassPath())+1:-3]
+        else:
+            self.__root = os.path.dirname(path)
+            self.__package = ""
+            self.__cache = Cache(self.__root)
+            self.__id = os.path.filename(path)
+        
         # This is by far slower and not the default but helps in specific project structures
         if project is None or project.isFuzzy():
-            self.__name = classObj.getMeta().name
+            self.__name = self.getMeta().name
             if self.__name is None:
                 raise Exception("Could not figure out fuzzy class name of: %s" % path)
         else:
-            classPathLength = len(project.getClassPath())+1
-            self.__name = path[classPathLength:-3].replace(os.sep, ".")
+            self.__name = self.__id.replace(os.path.sep, ".")
+            print("NAME: %s" % self.__name)
         
 
     def getName(self):
@@ -47,13 +56,13 @@ class Class():
     def getTree(self, permutation=None):
         permutation = self.filterPermutation(permutation)
         
-        field = "tree[%s]-%s" % (self.path, permutation)
+        field = "tree[%s]-%s" % (self.__id, permutation)
         tree = self.__cache.read(field, self.__mtime)
         if tree is not None:
             return tree
             
         # Parse tree
-        tree = parse(self.getText(), self.path)
+        tree = parse(self.getText(), self.__id)
 
         # Apply permutation
         if permutation:
@@ -81,12 +90,12 @@ class Class():
         
         # Manually defined names/classes
         for name in meta.requires:
-            if name != self.path and name in classes:
+            if name != self.__id and name in classes:
                 result.add(classes[name])
         
         # Globally modified names (mostly relevant when working without namespaces)
         for name in stats.shared:
-            if name != self.path and name in classes:
+            if name != self.__id and name in classes:
                 result.add(classes[name])
         
         # Add classes from detected package access
@@ -99,7 +108,7 @@ class Class():
             
             orig = package
             while True:
-                if package == self.path:
+                if package == self.__id:
                     break
             
                 elif package in classes:
@@ -120,7 +129,7 @@ class Class():
     def getStats(self, permutation=None):
         permutation = self.filterPermutation(permutation)
         
-        field = "stats[%s]-%s" % (self.path, permutation)
+        field = "stats[%s]-%s" % (self.__id, permutation)
         stats = self.__cache.read(field, self.__mtime)
         if stats == None:
             stats = self.getTree(permutation).stats
@@ -132,7 +141,7 @@ class Class():
     def getMeta(self, permutation=None):
         permutation = self.filterPermutation(permutation)
         
-        field = "meta[%s]-%s" % (self.path, permutation)
+        field = "meta[%s]-%s" % (self.__id, permutation)
         meta = self.__cache.read(field, self.__mtime)
         if meta == None:
             meta = MetaData(self.getTree(permutation))
@@ -142,7 +151,7 @@ class Class():
         
         
     def getPermutationKeys(self):
-        field = "permutations[%s]" % (self.path)
+        field = "permutations[%s]" % (self.__id)
         result = self.__cache.read(field, self.__mtime)
         if result is None:
             result = getKeys(self.getTree())
@@ -152,7 +161,7 @@ class Class():
 
 
     def usesTranslation(self):
-        field = "translation[%s]" % (self.path)
+        field = "translation[%s]" % (self.__id)
         result = self.__cache.read(field, self.__mtime)
         if result == None:
             result = hasText(self.getTree())
@@ -181,7 +190,7 @@ class Class():
         permutation = self.filterPermutation(permutation)
         translation = self.filterTranslation(translation)
         
-        field = "compressed[%s]-%s-%s-%s-%s" % (self.path, permutation, translation, optimization, format)
+        field = "compressed[%s]-%s-%s-%s-%s" % (self.__id, permutation, translation, optimization, format)
         field = hashlib.md5(field.encode("utf-8")).hexdigest()
         
         compressed = self.__cache.read(field, self.__mtime)
