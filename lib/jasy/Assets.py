@@ -272,7 +272,7 @@ class Assets:
         
         result.append("")
         result.append("CACHE:")
-        result.extend([entry for entry in sorted(assets)])
+        result.extend(["%s/%s" % (root, entry) for entry in sorted(assets)])
 
         if cache:
             result.extend(cache)
