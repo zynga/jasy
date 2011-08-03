@@ -29,12 +29,9 @@ class Class():
             self.__name = classObj.getMeta().name
             if self.__name is None:
                 raise Exception("Could not figure out fuzzy class name of: %s" % path)
-            print("NAME-2: %s" % self.__name)
-            
         else:
-            classPathLength = len(project.getClassPath())
+            classPathLength = len(project.getClassPath())+1
             self.__name = path[classPathLength:-3].replace(os.sep, ".")
-            print("NAME-1: %s" % self.__name)
         
 
     def getName(self):
