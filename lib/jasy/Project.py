@@ -160,7 +160,12 @@ class Project():
                     for fileName in fileNames:
                         if fileName.endswith(".js") and fileName[0] != ".":
                             classObj = Class(os.path.join(dirPath, fileName), self)
-                            classes[classObj.getName()] = classObj
+                            className = classObj.getName()
+                            
+                            if className in classes:
+                                raise Exception("Class duplication detected: %s and %s" % (fol))
+                                
+                            classes[className] = classObj
                 
             logging.info("Project %s contains %s classes", self.__name, len(classes))
             self.classes = classes
@@ -196,8 +201,12 @@ class Project():
                         
                         # Support for pre-fixed package which is not used in filesystem, but in assets
                         if package:
-                            relPath = os.path.join(package, relPath)
+                            relPath = "%s%s%s" % (package, os.sep, relPath)
+                            
+                        # relPath is always unix
+                        relPath = relPath.replace(os.sep, "/")
 
+                        print("ASSET: %s => %s" % (relPath, filePath))
                         assets[relPath] = filePath
                     
             logging.info("Project %s contains %s assets", self.__name, len(assets))

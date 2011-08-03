@@ -36,19 +36,22 @@ class Class():
         # This is by far slower and not the default but helps in specific project structures
         if project is None or project.isFuzzy():
             self.__name = self.getMeta().name
-            print("META: %s" % self.__name)
             if self.__name is None:
                 raise Exception("Could not figure out fuzzy class name of: %s" % path)
         else:
-            self.__name = self.__id.replace(os.path.sep, ".")
+            self.__name = self.__id.replace(os.sep, ".")
             if self.__package:
                 self.__name = self.__package + "." + self.__name
-            
-            print("NAME: %s" % self.__name)
-        
+
 
     def getName(self):
         return self.__name
+        
+    def getId(self):
+        return self.__id
+        
+    def getPath(self):
+        return self.__path
         
     def getModificationTime(self):
         return self.__mtime
