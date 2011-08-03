@@ -244,8 +244,8 @@ class Assets:
         
         counter = 0
         for asset in filtered:
-            srcFile = os.path.join(filtered[asset].assetPath, asset)
-            dstFile = os.path.join(dst, asset)
+            srcFile = filtered[asset]["path"]
+            dstFile = os.path.join(dst, asset.replace("/", os.sep))
             
             if updatefile(srcFile, dstFile):
                 counter += 1

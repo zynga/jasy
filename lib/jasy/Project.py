@@ -201,13 +201,12 @@ class Project():
                         
                         # Support for pre-fixed package which is not used in filesystem, but in assets
                         if package:
-                            relPath = "%s%s%s" % (package, os.sep, relPath)
+                            name = "%s%s%s" % (package, os.sep, relPath)
+                        else:
+                            name = relPath
                             
-                        # relPath is always unix
-                        relPath = relPath.replace(os.sep, "/")
-
-                        print("ASSET: %s => %s" % (relPath, filePath))
-                        assets[relPath] = filePath
+                        # always using unix paths for the asset ID
+                        assets[name.replace(os.sep, "/")] = filePath
                     
             logging.info("Project %s contains %s assets", self.__name, len(assets))
             self.assets = assets
