@@ -219,12 +219,11 @@ class Assets:
                     
                 return json.JSONEncoder.default(self, obj)
 
-        roots = ["%s/%s" % (folder, project.getName()) for project in projects]
         code = json.dumps({
             "files" : self.__files,
             "images" : self.__images,
             "sprites" : self.__sprites,
-            "roots" : roots
+            "roots" : [folder for project in projects]
         }, separators=(',',':'), cls=ProjectEncoder)
         to = "$$assets"
         
