@@ -95,7 +95,11 @@ class Project():
     
     def __str__(self):
         return self.__path
+
     
+    def getName(self):
+        return self.__name
+
     
     def getPackage(self):
         return self.__package

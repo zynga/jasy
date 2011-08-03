@@ -15,15 +15,23 @@ __all__ = ["Assets"]
 
 class Assets:
     def __init__(self, session, classes, permutation=None):
-        self.__session = session
-
+        self.__projects = session.getProjects()
+        self.__classes = classes
+        self.__permutation = permutation
         
-        # ---------------------------------------------------------------------------------
-        # Building the merged list of all assets and their origin project.
-        # ---------------------------------------------------------------------------------
+        self.__collectAssets()
+        self.__collectFiles()
+        self.__collectImages()
+        self.__collectSprites()
 
+
+    def __collectAssets(self):
+        """
+        Priority merge of all assets and filter them by the required ones based 
+        on the current class selection.
+        """
         merged = {}
-        for project in session.getProjects():
+        for project in self.__projects:
             assets = project.getAssets()
             for name in assets:
                 merged[name] = { 
@@ -31,15 +39,10 @@ class Assets:
                     "path" : assets[name]
                 }
 
-
-        # ---------------------------------------------------------------------------------
-        # Filtering assets as used by current class collection (respecting permutation)
-        # ---------------------------------------------------------------------------------
-        
         # Merge asset hints from all classes and remove duplicates
         hints = set()
-        for classObj in classes:
-            hints.update(classObj.getMeta(permutation).assets)
+        for classObj in self.__classes:
+            hints.update(classObj.getMeta(self.__permutation).assets)
         
         # Compile filter expressions
         expr = re.compile("^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints]))
@@ -49,37 +52,13 @@ class Assets:
             name: merged[name] for name in merged if expr.match(name) 
         }
         
-        logging.info("Selected classes make use of %s assets" % len(self.__assets))
+        logging.info("Selected classes make use of %s assets" % len(self.__assets))        
 
 
 
-        # ---------------------------------------------------------------------------------
-        # Categorize assets
-        # ---------------------------------------------------------------------------------
-        
-        roots = self.__collectRoots()
-        files = self.__collectFiles()
-        images = self.__collectImages()
-        sprites = self.__collectSprites(images)
-        
-        self.__categories = {
-            "roots" : roots,
-            "files" : files,
-            "images" : images,
-            "sprites" : sprites
-        }
-
-
-
-
-
-    def __collectRoots(self):
-        return [project.assetPath for project in self.__session.getProjects() if project.assetPath != None]
-            
-            
     def __collectFiles(self):
         """
-        Returns { dirName : { assetName : projectObj }}
+        Stores __files as { dirName : { assetName : projectObj }}
         """
                 
         files = {}
@@ -95,12 +74,12 @@ class Assets:
                 
             files[resdir][basename(name)] = assets[name]["project"]
             
-        return files
+        self.__files = files
         
         
     def __collectImages(self):
         """
-        Returns { dirName : { assetName : [projectObj, imageWidth, imageHeight] }}
+        Stores __images as { dirName : { assetName : [projectObj, imageWidth, imageHeight] }}
         """
         
         images = {}
@@ -121,21 +100,23 @@ class Assets:
                 
             images[resdir][basename(name)] = [entry["project"], info[0], info[1]]
 
-        return images
+        self.__images = images
 
 
-    def __collectSprites(self, images):
+    def __collectSprites(self):
         """
         Returns { dirName : [[ assetName, projectObj, imageWidth, imageHeight, hasOffsetX, hasOffsetY ], [...]]}
-        Deletes sprites from images
+        Deletes sprites from __images
         Modifies images to contain sprite data:
         [projectObj, imageWidth, imageHeight] => [projectObj, imageWidth, imageHeight, spriteIndex, offsetA, offsetB]
         Whether an image is part of a sprite can easily checked via the fourth item in the array (spriteIndex)
         SpriteIndex is the position of the sprite data in the directory-local sprite array (see above)
         """
         
-        sprites = {}
+        images = self.__images
         assets = self.__assets
+        sprites = {}
+
         for name in assets:
             # white list matching
             if basename(name) != "sprites.json":
@@ -171,7 +152,7 @@ class Assets:
                 # Increment directory-local sprite identifier
                 pos += 1
                 
-        return sprites
+        self.__sprites = sprites
 
 
     def __detectOffsets(self, data):
@@ -201,37 +182,8 @@ class Assets:
                 entry.append(singles[filename][1])
 
 
-    def exportInfo(self, replaceRoots=None, prefixRoots=None, to="$$assets"):
-        """ 
-        Exports the asset info into a JavaScript function
-        call. This creates a global variable with the default name
-        $$assets which contains all asset information.
-        """
 
-        categories = self.__categories
-        # FIXME: Overwriting cache!!!
-        if replaceRoots:
-            categories["roots"] = [replaceRoots for entry in categories["roots"]]
-        elif prefixRoots:
-            categories["roots"] = [prefixRoots + entry for entry in categories["roots"]]
-
-        session = self.__session
-        class ProjectEncoder(json.JSONEncoder):
-            projectIds = { project: pos for pos, project in enumerate(filter(lambda project: project.assetPath != None, session.getProjects())) }
-
-            def default(self, obj):
-                if isinstance(obj, Project):
-                    return self.projectIds[obj]
-                    
-                return json.JSONEncoder.default(self, obj)
-        
-        code = json.dumps(categories, separators=(',',':'), cls=ProjectEncoder)
-        
-        return "this.%s=%s;\n" % (to, code)
-        
-        
-        
-    def publishFiles(self, dst):
+    def publishFiles(self, root, folder):
         """
         This method publishes the selected files to the given root
         directory. This merges files from different projects into one
@@ -239,6 +191,7 @@ class Assets:
         """
 
         assets = self.__assets
+        projects = self.__projects
 
         logging.info("Publishing files...")
         pstart()
@@ -246,7 +199,7 @@ class Assets:
         counter = 0
         for name in assets:
             srcFile = assets[name]["path"]
-            dstFile = os.path.join(dst, name.replace("/", os.sep))
+            dstFile = os.path.join(root, folder, name.replace("/", os.sep))
             
             if updatefile(srcFile, dstFile):
                 counter += 1
@@ -255,33 +208,39 @@ class Assets:
         pstop()
         
         
-        
-    def publishManifest(self, manifest, root, network=None, cache=None):
-        # Extension for manifest files should be ".appcache"
-        # http://html5.org/tools/web-apps-tracker?from=5811&to=5812
-        
-        assets = self.__assets
-        
-        logging.info("Generating manifest...")
-        pstart()
-        
-        result = []
-        
-        result.append("CACHE MANIFEST")
-        result.append("# This file is auto generated by Jasy")
-        
-        result.append("")
-        result.append("CACHE:")
-        result.extend(["%s/%s" % (root, entry) for entry in sorted(assets)])
+        class ProjectEncoder(json.JSONEncoder):
+            __projectIds = { 
+                project: pos for pos, project in enumerate(filter(lambda project: project.assetPath != None, projects)) 
+            }
 
-        if cache:
-            result.extend(cache)
+            def default(self, obj):
+                if isinstance(obj, Project):
+                    return self.__projectIds[obj]
+                    
+                return json.JSONEncoder.default(self, obj)
+
+        roots = ["%s/%s" % (folder, project.getName()) for project in projects]
+        code = json.dumps({
+            "files" : self.__files,
+            "images" : self.__images,
+            "sprites" : self.__sprites,
+            "roots" : roots
+        }, separators=(',',':'), cls=ProjectEncoder)
+        to = "$$assets"
         
-        if network:
-            result.append("")
-            result.append("NETWORK:")
-            result.extend(network)
-            
-        writefile(manifest, "\n".join(result))
-        pstop()
+        return "this.%s=%s;\n" % (to, code)
+        
+        
+        
+    def indexFiles(self):
+        """ 
+        Exports asset data for source version
+        """
+        
+        return 
+        
+        
+        
+        
+
         
