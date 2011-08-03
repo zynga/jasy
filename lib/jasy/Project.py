@@ -163,7 +163,7 @@ class Project():
                             className = classObj.getName()
                             
                             if className in classes:
-                                raise Exception("Class duplication detected: %s and %s" % (fol))
+                                raise Exception("Class duplication detected: %s and %s" % (classObj.getPath(), classes[className].getPath()))
                                 
                             classes[className] = classObj
                 
