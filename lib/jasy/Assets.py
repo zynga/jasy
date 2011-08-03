@@ -16,89 +16,63 @@ __all__ = ["Assets"]
 class Assets:
     def __init__(self, session, classes, permutation=None):
         self.__session = session
-        self.__classes = classes
-        self.__permutation = permutation
-        
-        
-    def getMerged(self):
-        """ 
-        Returns the merged list of all assets and their origin.
-        
-        Assets might be overritten by projects listed later in the
-        project chain.
-        """
-        
-        try:
-            return self.__merged
-        
-        except AttributeError:
-            merged = {}
-            for project in self.__session.getProjects():
-                for asset in project.getAssets():
-                    merged[asset] = project
-                    
-            self.__merged = merged
-            return merged
-    
-    
-    def getFiltered(self):
-        """ 
-        Returns a list of assets which is used by the classes
-        given at creation time.
-        """
-        
-        try:
-            return self.__filtered
-        
-        except AttributeError:
-            pstart()
-            
-            # Merge asset hints from all classes and remove duplicates
-            assets = set()
-            for classObj in self.__classes:
-                assets.update(classObj.getMeta(self.__permutation).assets)
-                
-            # Compile filter expressions
-            expr = re.compile("^%s$" % "|".join(["(%s)" % fnmatch.translate(asset) for asset in assets]))
-            
-            # Filter merged assets
-            merged = self.getMerged()
-            self.__filtered = { asset: merged[asset] for asset in merged if expr.match(asset) }
 
-            logging.info("Selected classes make use of %s assets" % len(self.__filtered))
-            pstop()
-            
-            return self.__filtered
-            
-            
-    def getCategorized(self):
-        try:
-            return self.__info
         
-        except AttributeError:
-            # Pre cache (for time measurement reasons)
-            filtered = self.getFiltered()
-            
-            logging.info("Categorizing assets...")
-            pstart()
-            
-            roots = self.__collectRoots()
-            files = self.__collectFiles()
-            images = self.__collectImages()
-            sprites = self.__collectSprites(images)
-            
-            self.__info = {
-                "roots" : roots,
-                "files" : files,
-                "images" : images,
-                "sprites" : sprites
-            }
-            
-            pstop()
-            
-            return self.__info
-            
-            
+        # ---------------------------------------------------------------------------------
+        # Building the merged list of all assets and their origin project.
+        # ---------------------------------------------------------------------------------
+
+        merged = {}
+        for project in session.getProjects():
+            assets = project.getAssets()
+            for name in assets:
+                merged[name] = { 
+                    "project" : project,
+                    "path" : assets[name]
+                }
+
+
+        # ---------------------------------------------------------------------------------
+        # Filtering assets as used by current class collection (respecting permutation)
+        # ---------------------------------------------------------------------------------
+        
+        # Merge asset hints from all classes and remove duplicates
+        hints = set()
+        for classObj in classes:
+            hints.update(classObj.getMeta(permutation).assets)
+        
+        # Compile filter expressions
+        expr = re.compile("^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints]))
+        
+        # Filter merged assets
+        self.__filtered = { 
+            name: merged[name] for name in merged if expr.match(name) 
+        }
+        
+        logging.info("Selected classes make use of %s assets" % len(self.__filtered))
+
+
+
+        # ---------------------------------------------------------------------------------
+        # Categorize filtered assets
+        # ---------------------------------------------------------------------------------
+        
+        roots = self.__collectRoots()
+        files = self.__collectFiles()
+        images = self.__collectImages()
+        sprites = self.__collectSprites(images)
+        
+        self.__info = {
+            "roots" : roots,
+            "files" : files,
+            "images" : images,
+            "sprites" : sprites
+        }
+
+
+
+
+
     def __collectRoots(self):
         return [project.assetPath for project in self.__session.getProjects() if project.assetPath != None]
             
@@ -109,7 +83,7 @@ class Assets:
         """
                 
         files = {}
-        filtered = self.getFiltered()
+        filtered = self.__filtered
         for asset in filtered:
             # black list matching
             if asset.endswith((".png", ".jpeg", ".jpg", ".gif", ".meta", "sprites.json")):
@@ -119,7 +93,7 @@ class Assets:
             if not resdir in files:
                 files[resdir] = {}
                 
-            files[resdir][basename(asset)] = filtered[asset]
+            files[resdir][basename(asset)] = filtered[asset]["project"]
             
         return files
         
@@ -130,7 +104,7 @@ class Assets:
         """
         
         images = {}
-        filtered = self.getFiltered()
+        filtered = self.__filtered
         for asset in filtered:
             # white list matching
             if not asset.endswith((".png", ".jpeg", ".jpg", ".gif")):
@@ -140,7 +114,7 @@ class Assets:
             if not resdir in images:
                 images[resdir] = {}
 
-            project = filtered[asset]
+            project = filtered[asset]["project"]
             path = os.path.join(project.assetPath, asset)
             info = ImgInfo(path).getInfo()
             if info is None:
@@ -162,7 +136,7 @@ class Assets:
         """
         
         sprites = {}
-        filtered = self.getFiltered()
+        filtered = self.__filtered
         for asset in filtered:
             # white list matching
             if basename(asset) != "sprites.json":
@@ -264,15 +238,13 @@ class Assets:
         folder. Ideal for preparing a deployment.
         """
 
-        filtered = self.getFiltered()
+        filtered = self.__filtered
 
         logging.info("Publishing files...")
         pstart()
         
         counter = 0
         for asset in filtered:
-            print(asset)
-            print(filtered[asset])
             srcFile = os.path.join(filtered[asset].assetPath, asset)
             dstFile = os.path.join(dst, asset)
             
@@ -288,7 +260,7 @@ class Assets:
         # Extension for manifest files should be ".appcache"
         # http://html5.org/tools/web-apps-tracker?from=5811&to=5812
         
-        filtered = self.getFiltered()
+        filtered = self.__filtered
         
         logging.info("Generating manifest...")
         pstart()
