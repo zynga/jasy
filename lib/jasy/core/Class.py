@@ -42,7 +42,7 @@ class Class():
             self.__name = self.__id.replace(os.sep, ".")
             if self.__package:
                 self.__name = self.__package + "." + self.__name
-
+                
 
     def getName(self):
         return self.__name

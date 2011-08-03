@@ -40,12 +40,6 @@ class Project():
         else:
             self.__name = os.path.basename(path)
 
-        # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
-        if "package" in manifestData:
-            self.__package = manifestData["package"]
-        else:
-            self.__package = self.__name
-        
         # Detect kind automatically
         if "kind" in manifestData:
             self.__kind = manifestData["kind"]
@@ -57,6 +51,12 @@ class Project():
             self.__kind = "classic"
         else:
             self.__kind = "flat"
+                
+        # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
+        if "package" in manifestData:
+            self.__package = manifestData["package"]
+        else:
+            self.__package = self.__name
         
         # Whether we need to parse files for get their correct name (using @name attributes)
         if "fuzzy" in manifestData:
