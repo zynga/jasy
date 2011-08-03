@@ -41,6 +41,9 @@ class Class():
                 raise Exception("Could not figure out fuzzy class name of: %s" % path)
         else:
             self.__name = self.__id.replace(os.path.sep, ".")
+            if self.__package:
+                self.__name = self.__package + "." + self.__name
+            
             print("NAME: %s" % self.__name)
         
 
