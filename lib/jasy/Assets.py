@@ -271,6 +271,8 @@ class Assets:
         
         counter = 0
         for asset in filtered:
+            print(asset)
+            print(filtered[asset])
             srcFile = os.path.join(filtered[asset].assetPath, asset)
             dstFile = os.path.join(dst, asset)
             

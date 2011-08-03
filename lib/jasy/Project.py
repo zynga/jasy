@@ -40,11 +40,11 @@ class Project():
         else:
             self.__name = os.path.basename(path)
 
-        # Defined whenever no namespace is defined and classes/assets are not stored in the toplevel structure.
-        if "namespace" in manifestData:
-            self.__namespace = manifestData["namespace"]
+        # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
+        if "package" in manifestData:
+            self.__package = manifestData["package"]
         else:
-            self.__namespace = ""
+            self.__package = self.__name
         
         # Detect kind automatically
         if "kind" in manifestData:
@@ -95,6 +95,14 @@ class Project():
     
     def __str__(self):
         return self.__path
+    
+    
+    def getPackage(self):
+        return self.__package
+        
+    
+    def isFuzzy(self):
+        return self.__fuzzy
         
         
     def getCache(self):
@@ -142,43 +150,17 @@ class Project():
         except AttributeError:
             classPath = self.classPath
             classes = {}
-            namespace = self.__namespace
             
             if classPath and os.path.exists(classPath):
-                classPathLen = len(classPath) + 1
                 for dirPath, dirNames, fileNames in os.walk(classPath):
                     for dirName in dirNames:
                         if dirName in self.__dirFilter:
                             dirNames.remove(dirName)
 
                     for fileName in fileNames:
-                        if fileName[0] == "." or "_" in fileName or not fileName.endswith(".js"):
-                            continue
-
-                        filePath = os.path.join(dirPath, fileName)
-                        relPath = filePath[classPathLen:]
-
-                        classObj = Class(relPath, self)
-                        className = classObj.getName()
-                        
-                        # This is by far slower and not the default but helps in specific project structures
-                        if self.__fuzzy:
-                            classNameForced = classObj.getMeta().name
-                            if classNameForced != None:
-                                classObj.setName(classNameForced)
-                                className = classNameForced
-                            else:
-                                if namespace:
-                                    logging.warn("No name given to class: %s.%s" % (namespace, className))
-                                else:
-                                    logging.warn("No name given to class: %s" % className)
-                                
-                        # Support for pre-fixed namespace which is not used in filesystem, but in classes
-                        elif namespace:
-                            className = namespace + "." + className
-                            classObj.setName(className)
-                            
-                        classes[className] = classObj
+                        if fileName.endswith(".js") and fileName[0] != ".":
+                            classObj = Class(os.path.join(dirPath, fileName), self)
+                            classes[classObj.getName()] = classObj
                 
             logging.info("Project %s contains %s classes", self.__name, len(classes))
             self.classes = classes
@@ -193,7 +175,7 @@ class Project():
         except AttributeError:
             assetPath = self.assetPath
             assets = {}
-            namespace = self.__namespace
+            package = self.__package
 
             if assetPath and os.path.exists(assetPath):
                 assetPathLen = len(assetPath) + 1
@@ -203,18 +185,18 @@ class Project():
                             dirNames.remove(dirName)
 
                     for fileName in fileNames:
-                        if fileName in ["manifest.json", "generate.py", "cache"]:
+                        if fileName in ("manifest.json", "generate.py", "cache"):
                             continue
                             
-                        if fileName[0] == "." or fileName.endswith(".js") or fileName.endswith(".txt") or fileName.endswith(".md"):
+                        if fileName[0] == "." or fileName.endswith((".js", ".txt", ".md")):
                             continue
 
                         filePath = os.path.join(dirPath, fileName)
                         relPath = filePath[assetPathLen:]
                         
-                        # Support for pre-fixed namespace which is not used in filesystem, but in assets
-                        if namespace:
-                            relPath = os.path.join(namespace, relPath)
+                        # Support for pre-fixed package which is not used in filesystem, but in assets
+                        if package:
+                            relPath = os.path.join(package, relPath)
 
                         assets[relPath] = filePath
                     

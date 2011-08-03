@@ -18,25 +18,33 @@ aliases = {}
 __all__ = ["Class"]
 
 class Class():
-    def __init__(self, path, project):
+    def __init__(self, path, project=None):
+        self.__package = project.getPackage()
         self.__cache = project.getCache()
-        self.__fullpath = os.path.join(project.getClassPath(), path)
-        self.__mtime = os.stat(self.__fullpath).st_mtime
+        self.__path = path
+        self.__mtime = os.stat(path).st_mtime
         
-        self.path = path
-        self.name = os.path.splitext(path.replace(os.sep, "."))[0]
+        # This is by far slower and not the default but helps in specific project structures
+        if project is None or project.isFuzzy():
+            self.__name = classObj.getMeta().name
+            if self.__name is None:
+                raise Exception("Could not figure out fuzzy class name of: %s" % path)
+            print("NAME-2: %s" % self.__name)
+            
+        else:
+            classPathLength = len(project.getClassPath())
+            self.__name = path[classPathLength:-3].replace(os.sep, ".")
+            print("NAME-1: %s" % self.__name)
         
-    def setName(self, name):
-        self.name = name        
 
     def getName(self):
-        return self.name
+        return self.__name
         
     def getModificationTime(self):
         return self.__mtime
 
     def getText(self):
-        return open(self.__fullpath, mode="r", encoding="utf-8").read()
+        return open(self.__path, mode="r", encoding="utf-8").read()
 
 
     def getTree(self, permutation=None):
@@ -199,9 +207,9 @@ class Class():
             
             
     def __str__(self):
-        return self.name
+        return self.__name
 
     def __repr__(self):
-        return self.name
+        return self.__name
         
         
