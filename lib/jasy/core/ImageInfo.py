@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import struct
+import struct, logging
 
 class ImgFile(object):
     def __init__(self, filename):

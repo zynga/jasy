@@ -105,22 +105,21 @@ class Assets:
         
         images = {}
         filtered = self.__filtered
-        for asset in filtered:
+        for name in filtered:
             # white list matching
-            if not asset.endswith((".png", ".jpeg", ".jpg", ".gif")):
+            if not name.endswith((".png", ".jpeg", ".jpg", ".gif")):
                 continue
 
-            resdir = dirname(asset)
+            resdir = dirname(name)
             if not resdir in images:
                 images[resdir] = {}
 
-            project = filtered[asset]["project"]
-            path = os.path.join(project.assetPath, asset)
-            info = ImgInfo(path).getInfo()
+            entry = filtered[name]
+            info = ImgInfo(entry["path"]).getInfo()
             if info is None:
-                raise Exception("Invalid image: %s" % asset)
+                raise Exception("Invalid image: %s" % name)
                 
-            images[resdir][basename(asset)] = [project, info[0], info[1]]
+            images[resdir][basename(name)] = [entry["project"], info[0], info[1]]
 
         return images
 
