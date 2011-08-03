@@ -45,16 +45,16 @@ class Assets:
         expr = re.compile("^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints]))
         
         # Filter merged assets
-        self.__filtered = { 
+        self.__assets = { 
             name: merged[name] for name in merged if expr.match(name) 
         }
         
-        logging.info("Selected classes make use of %s assets" % len(self.__filtered))
+        logging.info("Selected classes make use of %s assets" % len(self.__assets))
 
 
 
         # ---------------------------------------------------------------------------------
-        # Categorize filtered assets
+        # Categorize assets
         # ---------------------------------------------------------------------------------
         
         roots = self.__collectRoots()
@@ -62,7 +62,7 @@ class Assets:
         images = self.__collectImages()
         sprites = self.__collectSprites(images)
         
-        self.__info = {
+        self.__categories = {
             "roots" : roots,
             "files" : files,
             "images" : images,
@@ -83,17 +83,17 @@ class Assets:
         """
                 
         files = {}
-        filtered = self.__filtered
-        for asset in filtered:
+        assets = self.__assets
+        for name in assets:
             # black list matching
-            if asset.endswith((".png", ".jpeg", ".jpg", ".gif", ".meta", "sprites.json")):
+            if name.endswith((".png", ".jpeg", ".jpg", ".gif", ".meta", "sprites.json")):
                 continue
                 
-            resdir = dirname(asset)
+            resdir = dirname(name)
             if not resdir in files:
                 files[resdir] = {}
                 
-            files[resdir][basename(asset)] = filtered[asset]["project"]
+            files[resdir][basename(name)] = assets[name]["project"]
             
         return files
         
@@ -104,8 +104,8 @@ class Assets:
         """
         
         images = {}
-        filtered = self.__filtered
-        for name in filtered:
+        assets = self.__assets
+        for name in assets:
             # white list matching
             if not name.endswith((".png", ".jpeg", ".jpg", ".gif")):
                 continue
@@ -114,7 +114,7 @@ class Assets:
             if not resdir in images:
                 images[resdir] = {}
 
-            entry = filtered[name]
+            entry = assets[name]
             info = ImgInfo(entry["path"]).getInfo()
             if info is None:
                 raise Exception("Invalid image: %s" % name)
@@ -135,18 +135,18 @@ class Assets:
         """
         
         sprites = {}
-        filtered = self.__filtered
-        for asset in filtered:
+        assets = self.__assets
+        for name in assets:
             # white list matching
-            if basename(asset) != "sprites.json":
+            if basename(name) != "sprites.json":
                 continue
                 
             # Load sprite data from JSON file
-            project = filtered[asset]
-            path = os.path.join(project.assetPath, asset)
+            project = assets[name]
+            path = os.path.join(project.assetPath, name)
             data = json.load(open(path))
 
-            resdir = dirname(asset)
+            resdir = dirname(name)
             pos = 0
             for combined in data:
                 # Ignore if combined files which are not included
@@ -203,16 +203,17 @@ class Assets:
 
     def exportInfo(self, replaceRoots=None, prefixRoots=None, to="$$assets"):
         """ 
-        Exports the info from getCategorized() into a JavaScript function
+        Exports the asset info into a JavaScript function
         call. This creates a global variable with the default name
         $$assets which contains all asset information.
         """
 
-        info = self.getCategorized()
+        categories = self.__categories
+        # FIXME: Overwriting cache!!!
         if replaceRoots:
-            info["roots"] = [replaceRoots for entry in info["roots"]]
+            categories["roots"] = [replaceRoots for entry in categories["roots"]]
         elif prefixRoots:
-            info["roots"] = [prefixRoots + entry for entry in info["roots"]]
+            categories["roots"] = [prefixRoots + entry for entry in categories["roots"]]
 
         session = self.__session
         class ProjectEncoder(json.JSONEncoder):
@@ -224,7 +225,7 @@ class Assets:
                     
                 return json.JSONEncoder.default(self, obj)
         
-        code = json.dumps(info, separators=(',',':'), cls=ProjectEncoder)
+        code = json.dumps(categories, separators=(',',':'), cls=ProjectEncoder)
         
         return "this.%s=%s;\n" % (to, code)
         
@@ -237,20 +238,20 @@ class Assets:
         folder. Ideal for preparing a deployment.
         """
 
-        filtered = self.__filtered
+        assets = self.__assets
 
         logging.info("Publishing files...")
         pstart()
         
         counter = 0
-        for asset in filtered:
-            srcFile = filtered[asset]["path"]
-            dstFile = os.path.join(dst, asset.replace("/", os.sep))
+        for name in assets:
+            srcFile = assets[name]["path"]
+            dstFile = os.path.join(dst, name.replace("/", os.sep))
             
             if updatefile(srcFile, dstFile):
                 counter += 1
         
-        logging.info("Updated %s/%s files" % (counter, len(filtered)))
+        logging.info("Updated %s/%s files" % (counter, len(assets)))
         pstop()
         
         
@@ -259,7 +260,7 @@ class Assets:
         # Extension for manifest files should be ".appcache"
         # http://html5.org/tools/web-apps-tracker?from=5811&to=5812
         
-        filtered = self.__filtered
+        assets = self.__assets
         
         logging.info("Generating manifest...")
         pstart()
@@ -271,7 +272,7 @@ class Assets:
         
         result.append("")
         result.append("CACHE:")
-        result.extend([entry for entry in sorted(filtered)])
+        result.extend([entry for entry in sorted(assets)])
 
         if cache:
             result.extend(cache)
