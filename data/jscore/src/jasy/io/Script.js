@@ -294,7 +294,7 @@
 		return loader;
 	})();
 	
-	Module("jasy.io.ScriptLoader",
+	Module("jasy.io.Script",
 	{
 		/**
 		 * Checks wether the given scripts are loaded. This is synchronous and might be helpful for a quick check.
