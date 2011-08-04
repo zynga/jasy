@@ -119,10 +119,12 @@
 		 */
 		isSet : function(name, value) 
 		{
+			// Fallback to value of true
 			if (value === undef) {
 				value = true;
 			}
 			
+			// Explicit use of normal equal here to not differ between numbers and strings etc.
 			return selected[name] == value;
 		},
 		
@@ -148,7 +150,8 @@
 		 *   requested two times it's important that the server send correct modification headers.
 		 *   Therefore this works safely on CDNs etc. but might be problematic on local servers.
 		 */
-		loadScripts : function(uris, callback, context, preload) {
+		loadScripts : function(uris, callback, context, preload) 
+		{
 			// Mapping URLs to patched version. Could not use ES5 Array.map here yet.
 			var patched = [];
 			for (var i=0, l=uris.length; i<l; i++) {
