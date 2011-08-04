@@ -9,7 +9,7 @@
 
 import logging
 
-logging.basicConfig(filename="log.txt", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(filename="log.txt", level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Define a Handler which writes INFO messages or higher to the sys.stderr
 console = logging.StreamHandler()
