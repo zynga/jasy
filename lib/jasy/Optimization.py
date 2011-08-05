@@ -26,7 +26,7 @@ class Optimization:
     def disable(self, identifier):
         self.__optimizations.remove(identifier)
         
-    def apply(self, tree):
+    def apply(self, tree, stats):
         enabled = self.__optimizations
         logging.debug("Apply: %s" % self)
         
@@ -40,7 +40,7 @@ class Optimization:
             BlockReducer.optimize(tree)
 
         if "variables" in enabled:
-            LocalVariables.optimize(tree)
+            LocalVariables.optimize(tree, stats)
 
         if "privates" in enabled:
             CryptPrivates.optimize(tree)

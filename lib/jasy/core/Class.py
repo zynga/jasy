@@ -211,7 +211,7 @@ class Class():
                     translation.patch(tree)
 
                 if optimization:
-                    optimization.apply(tree)
+                    optimization.apply(tree, self.getStats(permutation))
                 
             compressed = compress(tree, format)
             self.__cache.store(field, compressed, self.__mtime)

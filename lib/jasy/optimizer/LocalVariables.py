@@ -15,8 +15,15 @@ __all__ = ["optimize"]
 # Public API
 #
 
-def optimize(node):
-    __patch(node)
+def optimize(node, stats):
+    """
+    Node to optimize with the global variables to ignore as names
+    """
+    
+    blocked = set(stats.shared.keys())
+    blocked.update(stats.modified)
+    
+    __patch(node, blocked)
 
 
 
@@ -37,7 +44,7 @@ def __baseEncode(num, alphabet=string.ascii_letters):
     return "".join(arr)
 
 
-def __patch(node, enable=False, translate=None):
+def __patch(node, blocked=None, enable=False, translate=None):
     # Start with first level scopes (global scope should not be affected)
     if node.type == "script" and hasattr(node, "parent"):
         enable = True
@@ -90,7 +97,7 @@ def __patch(node, enable=False, translate=None):
                     while True:
                         repl = __baseEncode(pos)
                         pos += 1
-                        if not repl in usedRepl and not repl in keywords:
+                        if not repl in usedRepl and not repl in keywords and not repl in blocked:
                             break
                 
                     # print("Translate: %s => %s" % (name, repl))
@@ -153,6 +160,6 @@ def __patch(node, enable=False, translate=None):
     for child in node:
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
-            __patch(child, enable, translate)
+            __patch(child, blocked, enable, translate)
 
 
