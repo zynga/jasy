@@ -89,8 +89,6 @@
 			throw new Error("Namespace " + name + " is already in use by another object!");
 		}
 
-		console.debug("DeclareName: " + name);
-		
 		var splits = name.split(".");
 		var current = global;
 		var length = splits.length-1;
