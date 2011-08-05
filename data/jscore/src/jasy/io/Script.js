@@ -128,6 +128,8 @@
 					
 					// Add to shared loaded registry
 					loadedScripts[uri] = true;
+					
+					console.debug("Script loaded: " + uri);
 				}
 				
 				if (callback) 
@@ -233,7 +235,7 @@
 					var currentUri = uris[i];
 					if (!loadedScripts[currentUri])
 					{
-						console.debug("Loading: " + currentUri);
+						console.debug("Loading script: " + currentUri);
 						
 						// When a callback needs to be moved to the queue instead of being executed directly
 						if (executeDirectly)
