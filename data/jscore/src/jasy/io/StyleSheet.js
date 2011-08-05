@@ -19,8 +19,8 @@ Module("jasy.io.StyleSheet",
 	 * @param {Function} callback callback that fires when stylesheet is loaded
 	 * @param {Object} context context in which the callback is being executed. Defaults to global context.
 	 */
-	load: function(url, callback, context) {
-
+	load: function(url, callback, context) 
+	{
 		var head = document.getElementsByTagName('head')[0];
 
 		context = context || window;
@@ -36,8 +36,14 @@ Module("jasy.io.StyleSheet",
 			{
 				for (var i = 0, l = sheets.length; i < l; i++)  
 				{
-					if (sheets[i].ownerNode === link) {
+					if (sheets[i].ownerNode === link) 
+					{
 						clearInterval(handle);
+						
+						if (Permutation.isSet("debug")) {
+							console.debug("Loaded stylesheet: " + url);
+						}
+						
 						callback.call(context);
 					}
 				}
@@ -63,6 +69,11 @@ Module("jasy.io.StyleSheet",
 					// MAGIC: only populated when file is loaded
 					style.sheet.cssRules;
 					clearInterval(handle);
+					
+					if (Permutation.isSet("debug")) {
+						console.debug("Loaded stylesheet: " + url);
+					}
+					
 					callback.call(context);
 				} catch(e) {}
 			}, 10);
@@ -77,6 +88,11 @@ Module("jasy.io.StyleSheet",
 			link.onload = function() 
 			{
 				link.onload = null;
+				
+				if (Permutation.isSet("debug")) {
+					console.debug("Loaded stylesheet: " + url);
+				}
+				
 				callback.call(context);
 			};
 
