@@ -10,9 +10,9 @@ from jasy.parser.Parser import parseExpression
 __all__ = ["Permutation", "getKeys"]
 
 
-# jasy specific: Permutation.isSet(key, expected?)
-# jasy specific: Permutation.getValue(key)
-# jasy specific: Permutation.select(key, map)
+# Permutation.isSet(key, expected?)
+# Permutation.getValue(key)
+# Permutation.select(key, map)
 __dotcalls = ("Permutation.isSet", "Permutation.getValue", "Permutation.select")
 
 # hasjs specific: has(key)

@@ -47,19 +47,22 @@ class Session():
         fields = project.getFields()
         for name in fields:
             entry = fields[name]
+
+            if name in self.__fields:
+                raise Exception("Field '%s' was already defined!")
+
             if "check" in entry:
                 check = entry["check"]
                 if check in ["Boolean", "String", "Number"] or type(check) == list:
                     pass
                 else:
-                    raise Exception("Unsupported check: %s for %s" % (check, name))
+                    raise Exception("Unsupported check: '%s' for field '%s'" % (check, name))
                     
             if "detect" in entry:
                 detect = entry["detect"]
                 if not self.getClass(detect):
-                    raise Exception("Field: %s uses unknown detection class %s." % (name, detect))
+                    raise Exception("Field '%s' uses unknown detection class %s." % (name, detect))
                 
-                    
             self.__fields[name] = entry
         
         
@@ -121,11 +124,12 @@ class Session():
     # Permutation Support
     #
     
-    def activateField(self, name, values=None, detect=None):
+    def permutateField(self, name, values=None, detect=None):
         """
-        Adds the given key/value pair to the session. It supports
-        an optional tests. A test is required as soon as there is
-        more than one value available. The detection method is typically 
+        Adds the given key/value pair to the session for permutation usage.
+        
+        It supports an optional test. A test is required as soon as there is
+        more than one value available. The detection method and values are typically 
         already defined by the project declaring the key/value pair.
         """
         
@@ -169,12 +173,12 @@ class Session():
             entry["values"] = [entry["default"]]
             
         else:
-            raise Exception("Could not activate field: %s! Requires value list for non-boolean fields which have no defaults." % name)
+            raise Exception("Could not permutate field: %s! Requires value list for non-boolean fields which have no defaults." % name)
 
         # Store class which is responsible for detection (overrides data from project)
         if detect:
             if not self.getClass(detect):
-                raise Exception("Could not activate field: %s! Unknown detect class %s." % detect)
+                raise Exception("Could not permutate field: %s! Unknown detect class %s." % detect)
                 
             entry["detect"] = detect
             
@@ -215,7 +219,11 @@ class Session():
             content = []
             content.append("'%s'" % key)
             
+            # We have available values to permutate for
             if "values" in source:
+                # Trueish for permutate this value
+                content.append("1")
+                
                 values = source["values"]
                 if "detect" in source and len(values) > 1:
                     if "default" in source:
@@ -230,8 +238,18 @@ class Session():
                 else:
                     content.append(toJSON(values[0]))
 
+            # Has no relevance for permutation, just insert the test
             else:
-                continue
+                if "detect" in source:
+                    # Falsy for not permutate this value
+                    content.append("0")
+
+                    # Add detection class
+                    content.append(source["detect"])
+                
+                else:
+                    # Has no detection and no permutation. Ignore it completely
+                    continue
                 
             export.append("[%s]" % ",".join(content))
             

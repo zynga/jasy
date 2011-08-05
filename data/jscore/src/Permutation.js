@@ -25,17 +25,23 @@
 			var key = [];
 			for (var i=0, l=fields.length; i<l; i++) 
 			{
+				// possible variants
+				// name, permutate=true, [val1, val2], test
+				// name, permutate=true, val1 (default)
+				// name, permutate=false, test
+				
 				var entry = fields[i];
 				var name = entry[0];
-				var allowed = entry[1];
-
-				var test = entry[2];
+				var permutate = entry[1]
+				var allowed = permutate ? entry[2] : null;
+				var test = permutate ? entry[3] : entry[2];
+				
 				if (test)
 				{
 					var value = "VALUE" in test ? test.VALUE : test.get(name);
 
 					// Fallback to first value if test results in unsupported value
-					if (value == null || allowed.indexOf(value) == -1) {
+					if (allowed && (value == null || allowed.indexOf(value) == -1)) {
 						value = allowed[0];
 					}
 				}
@@ -46,7 +52,10 @@
 				}
 
 				selected[name] = value;
-				key.push(name + ":" + value);
+				
+				if (permutate) {
+					key.push(name + ":" + value);
+				}
 			}
 
 			var adler32 = (function(data)
