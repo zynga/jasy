@@ -32,16 +32,15 @@ Module("jasy.io.StyleSheet",
 			var sheets = document.styleSheets;
 			var startPos = sheets.length;
 
-			handle = setInterval(function() {
-
-				for (var i = 0, l = sheets.length; i < l; i++)  {
-
+			handle = setInterval(function() 
+			{
+				for (var i = 0, l = sheets.length; i < l; i++)  
+				{
 					if (sheets[i].ownerNode === link) {
 						clearInterval(handle);
 						callback.call(context);
 					}
 				}
-
 			}, 10);
 
 			link.rel = "stylesheet";
@@ -57,14 +56,15 @@ Module("jasy.io.StyleSheet",
 			var style = document.createElement("style");
 			style.textContent = "@import '" + url + "'";
 
-			var handle = setInterval(function() {
-				try {
+			var handle = setInterval(function() 
+			{
+				try 
+				{
 					// MAGIC: only populated when file is loaded
 					style.sheet.cssRules;
 					clearInterval(handle);
 					callback.call(context);
 				} catch(e) {}
-
 			}, 10);
 
 			head.appendChild(style);
@@ -74,7 +74,8 @@ Module("jasy.io.StyleSheet",
 		else 
 		{
 			var link = document.createElement("link");
-			link.onload = function() {
+			link.onload = function() 
+			{
 				link.onload = null;
 				callback.call(context);
 			};
