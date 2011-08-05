@@ -11,8 +11,8 @@
 (function(global)
 {
 	// All loaded scripts
-	var loadedScripts = {};
-	var activeScripts = {};
+	var completed = {};
+	var loading = {};
 
 	var doc = global.document;
 
@@ -21,7 +21,7 @@
 	{
 		for (var i=0, l=uris.length; i<l; i++) 
 		{
-			if (!loadedScripts[uris[i]]) {
+			if (!completed[uris[i]]) {
 				return false;
 			}
 		}
@@ -93,7 +93,7 @@
 				for (var i=0, l=uris.length; i<l; i++) 
 				{
 					var currentUri = uris[i];
-					if (!loadedScripts[currentUri]) {
+					if (!completed[currentUri]) {
 						waitingScripts[currentUri] = true;
 					}
 				}
@@ -102,11 +102,7 @@
 			return function(type, uri, elem)
 			{
 				var isErrornous = type == "error";
-				if (isErrornous) 
-				{
-					console.error("Could not load script: " + uri);
-				}
-				else
+				if (!isErrornous) 
 				{
 					var readyState = elem.readyState;
 					if (readyState && readyState !== "complete" && readyState !== "loaded") {
@@ -119,17 +115,19 @@
 				
 				// Clear entry from local waiting registry
 				delete waitingScripts[uri];
-				
+
 				// Register as being loaded (keep at false during pre-caching)
 				if (elem.type != preloadMimeType) 
 				{
 					// Delete from shared activity registry
-					delete activeScripts[uri];
+					delete loading[uri];
 					
 					// Add to shared loaded registry
-					loadedScripts[uri] = true;
+					completed[uri] = true;
 					
-					console.debug("Script loaded: " + uri);
+					if (Permutation.isSet("debug")) {
+						console.log("Script loaded: " + uri);
+					}
 				}
 				
 				if (callback) 
@@ -140,6 +138,10 @@
 					}
 
 					callback.call(context||global);
+				}
+				
+				if (isErrornous) {
+					throw new Error("Could not load script: " + uri);
 				}
 			};
 		};
@@ -155,7 +157,7 @@
 		var flushCallbacks = function()
 		{
 			// Check whether all known scripts are loaded
-			for (var uri in activeScripts) {
+			for (var uri in loading) {
 				return;
 			}
 			
@@ -186,9 +188,11 @@
 				{
 					var currentUri = uris[i];
 
-					if (!loadedScripts[currentUri])
+					if (!completed[currentUri])
 					{
-						console.debug("Loading: " + currentUri);
+						if (Permutation.isSet("debug")) {
+							console.log("Loading: " + currentUri);
+						}
 
 						// When a callback needs to be moved to the queue instead of being executed directly
 						if (executeDirectly)
@@ -199,9 +203,9 @@
 
 						// When script is not being loaded already, then start with it here
 						// (Otherwise we just added the callback to the queue and wait for it to be executed)
-						if (!activeScripts[currentUri])
+						if (!loading[currentUri])
 						{
-							activeScripts[currentUri] = true;
+							loading[currentUri] = true;
 
 							// Prepare load listener which flushes callbacks
 							if (!onLoad) {
@@ -233,9 +237,11 @@
 				for (var i=0, l=uris.length; i<l; i++)
 				{
 					var currentUri = uris[i];
-					if (!loadedScripts[currentUri])
+					if (!completed[currentUri])
 					{
-						console.debug("Loading script: " + currentUri);
+						if (Permutation.isSet("debug")) {
+							console.log("Loading script: " + currentUri);
+						}
 						
 						// When a callback needs to be moved to the queue instead of being executed directly
 						if (executeDirectly)
@@ -246,9 +252,9 @@
 						
 						// When script is not being loaded already, then start with it here
 						// (Otherwise we just added the callback to the queue and wait for it to be executed)
-						if (!activeScripts[currentUri])
+						if (!loading[currentUri])
 						{
-							activeScripts[currentUri] = true;
+							loading[currentUri] = true;
 							queuedUris.push(currentUri);
 						}
 					}

@@ -7,101 +7,129 @@
 ==================================================================================================
 */
 
-Module("jasy.io.StyleSheet",
+(function(global, doc) 
 {
-	/**
-	 * Loads a stylesheet and fires a callback when the stylesheet is applied to the page.
-	 *
-	 * Inspired by:
-	 * http://www.phpied.com/when-is-a-stylesheet-really-loaded/
-	 *
-	 * @param {string} url url pointing to the stylesheet
-	 * @param {Function} callback callback that fires when stylesheet is loaded
-	 * @param {Object} context context in which the callback is being executed. Defaults to global context.
+	var completed = {};
+	var loading = {};
+	
+	/** 
+	 * Stylesheet (CSS) loader and manager. Tracks status of all loaded files.
 	 */
-	load: function(url, callback, context) 
+	Module("jasy.io.StyleSheet",
 	{
-		var head = document.getElementsByTagName('head')[0];
-
-		context = context || window;
-
-		// Use listener to stylesheet list and compare elements
-		if (Permutation.isSet("engine", "webkit")) 
-		{
-			var link = document.createElement('link');
-			var sheets = document.styleSheets;
-			var startPos = sheets.length;
-
-			handle = setInterval(function() 
-			{
-				for (var i = 0, l = sheets.length; i < l; i++)  
-				{
-					if (sheets[i].ownerNode === link) 
-					{
-						clearInterval(handle);
-						
-						if (Permutation.isSet("debug")) {
-							console.debug("Loaded stylesheet: " + url);
-						}
-						
-						callback.call(context);
-					}
-				}
-			}, 10);
-
-			link.rel = "stylesheet";
-			link.type = "text/css";
-			link.href = url;
-
-			head.appendChild(link);
-		}
+		/**
+		 * Whether the given stylesheet is loaded.
+		 * 
+		 * @param url {String} URL pointing to the stylesheet
+		 * @return {Boolean} Whether the stylesheet is loaded
+		 */
+		isLoaded : function(url) {
+			return !!completed[url];
+		},
 		
-		// Use style import fallback for buggy GECKO 
-		else if (Permutation.isSet("engine", "gecko")) 
-		{
-			var style = document.createElement("style");
-			style.textContent = "@import '" + url + "'";
-
-			var handle = setInterval(function() 
-			{
-				try 
-				{
-					// MAGIC: only populated when file is loaded
-					style.sheet.cssRules;
-					clearInterval(handle);
-					
-					if (Permutation.isSet("debug")) {
-						console.debug("Loaded stylesheet: " + url);
-					}
-					
-					callback.call(context);
-				} catch(e) {}
-			}, 10);
-
-			head.appendChild(style);
-		}
 		
-		// Load event only supported by MSIE and OPERA 
-		else 
+		/**
+		 * Loads a stylesheet and fires a callback when the stylesheet is applied to the page.
+		 *
+		 * Inspired by:
+		 * http://www.phpied.com/when-is-a-stylesheet-really-loaded/
+		 *
+		 * @param url {String} URL pointing to the stylesheet
+		 * @param callback {Function} Callback that fires when stylesheet is loaded
+		 * @param context {Object} Context in which the callback is being executed. Defaults to global context.
+		 */
+		load: function(url, callback, context) 
 		{
-			var link = document.createElement("link");
-			link.onload = function() 
+			var head = doc.getElementsByTagName('head')[0];
+
+			context = context || global;
+
+			if (Permutation.isSet("debug")) {
+				console.log("Loading stylesheet: " + url);
+			}
+			
+			if (loading[url]) {
+				throw new Error("Stylesheet is already loading: " + url);
+			}
+			
+			loading[url] = true;
+
+			var load = function load() 
 			{
-				link.onload = null;
+				completed[url] = true;
+				delete loading[url];
 				
 				if (Permutation.isSet("debug")) {
-					console.debug("Loaded stylesheet: " + url);
+					console.log("Stylesheet loaded: " + url);
 				}
-				
-				callback.call(context);
+
+				if (callback) {
+					callback.call(context);
+				}
 			};
 
-			link.rel = "stylesheet";
-			link.type = "text/css";
-			link.href = url;
+			// Use listener to stylesheet list and compare elements
+			if (Permutation.isSet("engine", "webkit")) 
+			{
+				var link = doc.createElement('link');
+				var sheets = doc.styleSheets;
+				var startPos = sheets.length;
 
-			head.appendChild(link);
+				handle = setInterval(function() 
+				{
+					for (var i = 0, l = sheets.length; i < l; i++)  
+					{
+						if (sheets[i].ownerNode === link) 
+						{
+							clearInterval(handle);
+							load();
+						}
+					}
+				}, 10);
+
+				link.rel = "stylesheet";
+				link.type = "text/css";
+				link.href = url;
+
+				head.appendChild(link);
+			}
+
+			// Use style import fallback for buggy GECKO 
+			else if (Permutation.isSet("engine", "gecko")) 
+			{
+				var style = doc.createElement("style");
+				style.textContent = "@import '" + url + "'";
+
+				var handle = setInterval(function() 
+				{
+					try 
+					{
+						// MAGIC: only populated when file is loaded
+						style.sheet.cssRules;
+						clearInterval(handle);
+						load();
+					} catch(e) {}
+				}, 10);
+
+				head.appendChild(style);
+			}
+
+			// Load event only supported by MSIE and OPERA 
+			else 
+			{
+				var link = doc.createElement("link");
+				link.onload = function() 
+				{
+					link.onload = null;
+					load();
+				};
+
+				link.rel = "stylesheet";
+				link.type = "text/css";
+				link.href = url;
+
+				head.appendChild(link);
+			}
 		}
-	}
-});
-
+	});
+})(this, document);

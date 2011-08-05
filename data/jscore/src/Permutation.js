@@ -167,6 +167,9 @@
 				patched[i] = patchFilename(uris[i]);
 			}
 			
+			/**
+			 * @break {jasy.io.Script}
+			 */
 			jasy.io.Script.load(patched, callback, context, preload);
 		}
 	});
