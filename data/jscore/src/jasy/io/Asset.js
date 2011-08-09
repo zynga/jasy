@@ -11,9 +11,13 @@
  */
 (function(global) 
 {
-	var assets = global.$$assets;
 	// TODO: Implement using permutation injection
 	// Permutation.getValue("assets");
+	var assets = global.$$assets;
+	if (!assets) {
+		console.error("Asset data is not available!");
+	}
+	
 	var cache = {};
 	var sprites = {};
 	

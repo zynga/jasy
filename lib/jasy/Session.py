@@ -95,6 +95,14 @@ class Session():
         return dyn + self.__projects
         
         
+    def getMainProject(self):
+        """
+        The main project is basically the project with the currently running build script
+        """
+        
+        return self.__mainProject
+        
+        
     def getRelativePath(self, project):
         """ Returns the relative path of any project to the main project """
         mainProject = self.__mainProject
