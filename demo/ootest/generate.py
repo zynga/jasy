@@ -28,10 +28,10 @@ def build():
     # Setup session
     session = Session()
     session.addProject(Project("."))
-    session.activateField("debug")
-    session.activateField("es5")
-    session.activateField("engine")
-    session.activateField("locale", ["en"])
+    session.permutateField("debug")
+    session.permutateField("es5")
+    session.permutateField("engine")
+    session.permutateField("locale", ["en"])
     
     # Permutation independend config
     optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])

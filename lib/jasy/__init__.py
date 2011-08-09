@@ -3,26 +3,6 @@
 # Copyright 2010 Sebastian Werner
 #
 
-#
-# Configure logging
-#
-
-import logging
-
-logging.basicConfig(filename="log.txt", level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
-
-# Define a Handler which writes INFO messages or higher to the sys.stderr
-console = logging.StreamHandler()
-console.setLevel(logging.INFO)
-console.setFormatter(logging.Formatter('>>> %(message)s', '%H:%M:%S'))
-logging.getLogger('').addHandler(console)
-
-
-
-#
-# Import core classes
-#
-
 from jasy.Session import *
 from jasy.Project import *
 from jasy.Resolver import *
