@@ -130,9 +130,14 @@
 			}
 
 			var data = cache[id] || getData(id);
+			
+			// Differ between images (first case) and files (second case)
 			var root = assets.roots[data.join ? data[0] : data];
-			var url = root + "/" + id;
-
+			
+			// Replace project identifier with root
+			var project = id.slice(0, id.indexOf("/"));
+			var url = id.replace(project, root);
+			
 			return url;
 		}
 	});	
