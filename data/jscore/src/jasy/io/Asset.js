@@ -7,7 +7,7 @@
 
 /**
  * Contains information about images (size, format, clipping, ...) and
- * other resources like CSS files, local data, ...
+ * other assets like CSS files, local data, ...
  */
 Module("jasy.io.Asset",
 {
@@ -16,9 +16,9 @@ Module("jasy.io.Asset",
 	
 	
 	/**
-	 * Get information about an resource.
+	 * Get information about an asset.
 	 *
-	 * @param id {String} The resource to get the information for
+	 * @param id {String} The asset to get the information for
 	 * @return {Array} Registered data or <code>null</code>
 	 */
 	getData : function(id) 
@@ -44,10 +44,10 @@ Module("jasy.io.Asset",
 	
 	
 	/**
-	 * Whether the registry has information about the given resource.
+	 * Whether the registry has information about the given asset.
 	 *
-	 * @param id {String} The resource to get the information for
-	 * @return {Boolean} <code>true</code> when the resource is known.
+	 * @param id {String} The asset to get the information for
+	 * @return {Boolean} <code>true</code> when the asset is known.
 	 */
 	has : function(id) {
 		return this.__cache[id] || this.getData(id) != null;
@@ -55,43 +55,17 @@ Module("jasy.io.Asset",
 
 
 	/**
-	 * Returns the width of the given resource ID,
-	 * when it is not a known image <code>0</code> is
-	 * returned.
-	 *
-	 * @param id {String} Resource identifier
-	 * @return {Integer} The image width, maybe <code>null</code> when the width is unknown
-	 */
-	getImageWidth : function(id)
-	{
-		var data = this.getData(id);
-		return data && data[1];
-	},
-
-
-	/**
-	 * Returns the height of the given resource ID,
-	 * when it is not a known image <code>0</code> is
-	 * returned.
-	 *
-	 * @param id {String} Resource identifier
-	 * @return {Integer} The image height, maybe <code>null</code> when the height is unknown
-	 */
-	getImageHeight : function(id)
-	{
-		var data = this.getData(id);
-		return data && data[2];
-	},
-	
-	
-	/**
 	 * Returns the dimensions of the given image ID
 	 */
 	getImageSize : function(id) 
 	{
 		var data = this.getData(id);
-		if (data) {
-			return { width: data[1], height: data[2] };
+		if (data) 
+		{
+			return { 
+				width: data[1], 
+				height: data[2] 
+			};
 		}
 	},
 	
@@ -101,7 +75,7 @@ Module("jasy.io.Asset",
 	 *
 	 * Nothing is returned when the given ID is not available as part of an image sprite.
 	 *
-	 * @param id {String} Resource identifier
+	 * @param id {String} Asset identifier
 	 * @return {Map} 
 	 */
 	getImageSprite : function(id)
@@ -134,10 +108,11 @@ Module("jasy.io.Asset",
 	
 
 	/**
-	 * Converts the given resource ID to a full qualified URI
+	 * Converts the given asset ID to a full qualified URI
 	 *
-	 * @param id {String} Resource ID
+	 * @param id {String} Asset ID
 	 * @return {String} Resulting URI
+	 * @throws when the asset ID is unknown
 	 */
 	toUri : function(id)
 	{
@@ -146,9 +121,7 @@ Module("jasy.io.Asset",
 		}
 
 		var data = this.getData(id);
-		if (data == null) {
-			return id;
-		}
+		Assert.assertNotNull(data, "Invalid asset identifier: " + id);
 
 		var root = $$assets.roots[data.join ? data[0] : data];
 		var url = root + "/" + id;
