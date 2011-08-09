@@ -57,6 +57,10 @@
 					key.push(name + ":" + value);
 				}
 			}
+			
+			if (selected.debug) {
+				console.info("Permutation: " + key.join(", "));
+			}
 
 			var adler32 = (function(data)
 			{
