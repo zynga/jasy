@@ -27,7 +27,7 @@ class Class():
             self.__root = project.getClassPath()
             self.__package = project.getPackage()
             self.__cache = project.getCache()
-            self.__localPath = path[len(project.getClassPath())+1:]
+            self.__localPath = os.path.relpath(path, project.getClassPath())
             self.__id = self.__localPath[:-3]
         else:
             self.__root = os.path.dirname(path)
