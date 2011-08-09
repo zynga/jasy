@@ -27,10 +27,22 @@ class Combiner():
         return "".join([classObj.getCompressed(permutation, translation, optimization, format) for classObj in self.__classList])
 
 
-    def getLoaderCode(self, bootCode, toRoot):
+    def getLoaderCode(self, bootCode, relativeRoot, session):
         logging.info("Generating loader...")
 
+
+
+        files = []
+        for classObj in self.__classList:
+            project = classObj.getProject()
+
+            fromMainProjectRoot = os.path.join(session.getRelativePath(project), project.getClassPath(True), classObj.getLocalPath())
+            fromWebFolder = os.path.relpath(fromMainProjectRoot, relativeRoot)
+            
+            files.append('"%s"' % fromWebFolder)
+
+        loader = ",".join(files)
         boot = "function(){%s}" % bootCode if bootCode else "null"
-        result = 'jasy.io.Script.load([%s], %s)' % (",".join(['"%s"' % os.path.join(toRoot, classObj.getLocalPath()) for classObj in self.__classList]), boot)
+        result = 'jasy.io.Script.load([%s], %s)' % (loader, boot)
 
         return result

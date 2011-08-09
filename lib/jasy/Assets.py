@@ -126,7 +126,7 @@ class Assets:
                 
             # Load sprite data from JSON file
             project = assets[name]
-            path = os.path.join(project.assetPath, name)
+            path = os.path.join(project.getAssetPath(), name)
             data = json.load(open(path))
 
             resdir = dirname(name)
@@ -212,7 +212,7 @@ class Assets:
         
         class ProjectEncoder(json.JSONEncoder):
             __projectIds = { 
-                project: pos for pos, project in enumerate(filter(lambda project: project.assetPath != None, projects)) 
+                project: pos for pos, project in enumerate(filter(lambda project: project.getAssetPath() != None, projects)) 
             }
 
             def default(self, obj):

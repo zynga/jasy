@@ -23,6 +23,7 @@ class Class():
         self.__mtime = os.stat(path).st_mtime
         
         if project:
+            self.__project = project
             self.__root = project.getClassPath()
             self.__package = project.getPackage()
             self.__cache = project.getCache()
@@ -45,6 +46,9 @@ class Class():
             if self.__package:
                 self.__name = self.__package + "." + self.__name
                 
+    
+    def getProject(self):
+        return self.__project
 
     def getName(self):
         return self.__name
