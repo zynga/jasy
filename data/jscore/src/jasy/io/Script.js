@@ -125,9 +125,11 @@
 					// Add to shared loaded registry
 					completed[uri] = true;
 					
+					/*
 					if (Permutation.isSet("debug")) {
 						console.log("Script loaded: " + uri);
 					}
+					*/
 				}
 				
 				if (callback) 
