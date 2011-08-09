@@ -26,12 +26,14 @@ class Class():
             self.__root = project.getClassPath()
             self.__package = project.getPackage()
             self.__cache = project.getCache()
-            self.__id = path[len(project.getClassPath())+1:-3]
+            self.__localPath = path[len(project.getClassPath())+1:]
+            self.__id = self.__localPath[:-3]
         else:
             self.__root = os.path.dirname(path)
             self.__package = ""
             self.__cache = Cache(self.__root)
             self.__id = os.path.filename(path)
+            self.__localPath = path
         
         # This is by far slower and not the default but helps in specific project structures
         if project is None or project.isFuzzy():
@@ -52,6 +54,9 @@ class Class():
         
     def getPath(self):
         return self.__path
+        
+    def getLocalPath(self):
+        return self.__localPath
         
     def getModificationTime(self):
         return self.__mtime
