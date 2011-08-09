@@ -10,12 +10,12 @@ class Environment:
         pass
 
     def addTask(self, task):
-        logging.info("Registering task: %s" % task.name)
+        logging.debug("Registering task: %s" % task.name)
         self.tasks[task.name] = task
         
     def executeTask(self, name):
         if name in self.tasks:
-            logging.info("Executing task: %s" % name)
+            logging.debug("Executing task: %s" % name)
             self.tasks[name]()
         else:
             raise Exception("No such task: %s" % name)
