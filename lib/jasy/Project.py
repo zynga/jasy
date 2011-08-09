@@ -175,7 +175,7 @@ class Project():
                                 
                             classes[className] = classObj
                 
-            logging.info("Project %s contains %s classes", self.__name, len(classes))
+            logging.debug("Project %s contains %s classes", self.__name, len(classes))
             self.classes = classes
             return classes
 
@@ -216,7 +216,7 @@ class Project():
                         # always using unix paths for the asset ID
                         assets[name.replace(os.sep, "/")] = filePath
                     
-            logging.info("Project %s contains %s assets", self.__name, len(assets))
+            logging.debug("Project %s contains %s assets", self.__name, len(assets))
             self.assets = assets
             return assets
 
@@ -242,7 +242,7 @@ class Project():
 
                         translations[os.path.splitext(fileName)[0]] = os.path.join(dirPath, fileName)
             
-            logging.info("Project %s contains %s translations", self.__name, len(translations))
+            logging.debug("Project %s contains %s translations", self.__name, len(translations))
             self.translations = translations
             return translations
         
