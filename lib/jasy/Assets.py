@@ -45,7 +45,9 @@ class Assets:
             hints.update(classObj.getMeta(self.__permutation).assets)
         
         # Compile filter expressions
-        expr = re.compile("^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints]))
+        matcher = "^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints])
+        logging.debug("Matching assets using: %s" % matcher)
+        expr = re.compile(matcher)
         
         # Filter merged assets
         self.__assets = { 
