@@ -98,17 +98,13 @@
 		while(i<length) 
 		{
 			segment = splits[i++];
-			if (!(segment in current)) {
+			if (current[segment] == null) {
 				current = current[segment] = {};
 			} else {
 				current = current[segment];
 			}
 		}
 		
-		if (!current) {
-			throw new Error("Unknown error! Could not declare name: " + name);
-		}
-
 		// Store Object
 		return cache[name] = current[splits[i]] = object;
 	};
