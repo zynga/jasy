@@ -31,10 +31,10 @@ class Combiner():
     def compress(self, permutation=None, translation=None, optimization=None, format=None):
         """ Combines the compressed result of the stored class list """
         
-        logging.info("Compressing classes...")
-        pstart()
+        #logging.info("Compressing classes...")
+        #pstart()
         result = "".join([classObj.getCompressed(permutation, translation, optimization, format) for classObj in self.__classList])
-        pstop()
+        #pstop()
 
         return result
 
@@ -44,11 +44,7 @@ class Combiner():
 
         relPath = self.__relPath
 
-        if bootCode:
-            boot = "function(){%s}" % bootCode
-        else:
-            boot = "null"
-
+        boot = "function(){%s}" % bootCode if bootCode else "null"
         result = 'jasy.io.Script.load([%s], %s)' % (",".join(['"%s"' % os.path.join(relPath, classObj.getPath()) for classObj in self.__classList]), boot)
 
         return result
