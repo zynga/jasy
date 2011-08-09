@@ -49,6 +49,6 @@ class Combiner():
         else:
             boot = "null"
 
-        result = 'jasy.Loader.loadScripts([%s], %s)' % (",".join(['"%s"' % os.path.join(relPath, classObj.path) for classObj in self.__classList]), boot)
+        result = 'jasy.io.Script.load([%s], %s)' % (",".join(['"%s"' % os.path.join(relPath, classObj.getPath()) for classObj in self.__classList]), boot)
 
         return result
