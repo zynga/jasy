@@ -59,7 +59,7 @@ def source():
         
         # Generate Loader
         classes = Sorter(resolver).getSortedClasses()
-        loaderCode = Combiner(classes, "../").loader("qx.core.Init.boot(feedreader.Application)")
+        loaderCode = Combiner(classes).getLoaderCode("qx.core.Init.boot(feedreader.Application)", "../")
         
         # Prepare translation
         translationCode = session.getTranslation(permutation.get("jasy.locale")).generate()
@@ -126,7 +126,7 @@ def build():
         # Compressing classes
         translation = session.getTranslation(permutation.get("jasy.locale"))
         classes = Sorter(resolver, permutation).getSortedClasses()
-        compressedCode = Combiner(classes).compress(permutation, translation, optimization, formatting)
+        compressedCode = Combiner(classes).getCompressedCode(permutation, translation, optimization, formatting)
         
         # Boot logic
         bootCode = "qx.core.Init.boot(feedreader.Application)"

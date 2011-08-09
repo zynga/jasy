@@ -38,10 +38,15 @@ class Session():
     # Project Managment
     #
         
-    def addProject(self, project):
+    def addProject(self, project, main=False):
         """ Adds the given project to the list of known projects """
         
         self.__projects.append(project)
+        
+        # That's the project from where all paths are computed
+        if main:
+            logging.info("Main project is: %s" % project.getName())
+            self.__mainProject = project
 
         # Import project defined fields which might be configured using "activateField()"
         fields = project.getFields()
@@ -88,6 +93,24 @@ class Session():
                 dyn.append(self.__localeProjects[locale])
         
         return dyn + self.__projects
+        
+        
+    def getMainProject(self):
+        """
+        The main project is basically the project with the currently running build script
+        """
+        
+        return self.__mainProject
+        
+        
+    def getRelativePath(self, project):
+        """ Returns the relative path of any project to the main project """
+        mainProject = self.__mainProject
+        
+        mainPath = mainProject.getPath()
+        projectPath = project.getPath()
+        
+        return os.path.relpath(projectPath, mainPath)
         
         
         
@@ -272,7 +295,7 @@ class Session():
         resolver = Resolver(self.getProjects(), permutation)
         resolver.addClassName("Permutation")
         classes = Sorter(resolver, permutation).getSortedClasses()
-        compressedCode = Combiner(classes).compress(permutation, None, optimization, formatting)
+        compressedCode = Combiner(classes).getCompressedCode(permutation, None, optimization, formatting)
         writefile(fileName, compressedCode)
         
         return resolver.getIncludedClasses()

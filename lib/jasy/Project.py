@@ -74,21 +74,21 @@ class Project():
 
         # Do kind specific intialization
         if self.__kind == "full":
-            self.classPath = os.path.join(self.__path, "source", "class")
-            self.assetPath = os.path.join(self.__path, "source", "asset")
-            self.translationPath = os.path.join(self.__path, "source", "translation")
+            self.__classPath = os.path.join("source", "class")
+            self.__assetPath = os.path.join("source", "asset")
+            self.__translationPath = os.path.join("source", "translation")
         elif self.__kind == "basic":
-            self.classPath = os.path.join(self.__path, "class")
-            self.assetPath = os.path.join(self.__path, "asset")
-            self.translationPath = os.path.join(self.__path, "translation")
+            self.__classPath = "class"
+            self.__assetPath = "asset"
+            self.__translationPath = "translation"
         elif self.__kind == "classic":
-            self.classPath = os.path.join(self.__path, "src")
-            self.assetPath = os.path.join(self.__path, "src")
-            self.translationPath = None
+            self.__classPath = "src"
+            self.__assetPath = "src"
+            self.__translationPath = None
         elif self.__kind == "flat":
-            self.classPath = self.__path
-            self.assetPath = self.__path
-            self.translationPath = None
+            self.__classPath = ""
+            self.__assetPath = ""
+            self.__translationPath = None
         else:
             raise ProjectException("Unsupported kind of project: %s" % self.__kind)
     
@@ -99,6 +99,10 @@ class Project():
     
     def getName(self):
         return self.__name
+
+    
+    def getPath(self):
+        return self.__path
 
     
     def getPackage(self):
@@ -133,17 +137,17 @@ class Project():
             return None         
         
     
-    def getClassPath(self):
+    def getClassPath(self, relative=False):
         """ Returns the full path to the JavaScript classes """
-        return self.classPath
+        return self.__classPath if relative else os.path.join(self.__path, self.__classPath)
 
-    def getAssetPath(self):
+    def getAssetPath(self, relative=False):
         """ Returns the full path to the assets (images, stylesheets, etc.) """
-        return self.assetPath
+        return self.__assetPath if relative else os.path.join(self.__path, self.__assetPath)
 
-    def getTranslationPath(self):
+    def getTranslationPath(self, relative=False):
         """ Returns the full path to the translation files (gettext *.po files) """
-        return self.translationPath
+        return self.__translationPath if relative else os.path.join(self.__path, self.__translationPath)
 
 
     def getClasses(self):
@@ -152,7 +156,7 @@ class Project():
             return self.classes
             
         except AttributeError:
-            classPath = self.classPath
+            classPath = os.path.join(self.__path, self.__classPath)
             classes = {}
             
             if classPath and os.path.exists(classPath):
@@ -182,7 +186,7 @@ class Project():
             return self.assets
             
         except AttributeError:
-            assetPath = self.assetPath
+            assetPath = os.path.join(self.__path, self.__assetPath)
             assets = {}
             package = self.__package
 
@@ -223,7 +227,7 @@ class Project():
             return self.translations
             
         except AttributeError:
-            translationPath = self.translationPath
+            translationPath = os.path.join(self.__path, self.__translationPath)
             translations = {}
 
             if translationPath and os.path.exists(translationPath):

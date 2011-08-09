@@ -59,9 +59,11 @@
 				completed[url] = true;
 				delete loading[url];
 				
+				/*
 				if (Permutation.isSet("debug")) {
 					console.log("Stylesheet loaded: " + url);
 				}
+				*/
 
 				if (callback) {
 					callback.call(context);

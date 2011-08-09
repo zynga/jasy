@@ -15,6 +15,7 @@ __all__ = ["Assets"]
 
 class Assets:
     def __init__(self, session, classes, permutation=None):
+        self.__session = session
         self.__projects = session.getProjects()
         self.__classes = classes
         self.__permutation = permutation
@@ -45,7 +46,9 @@ class Assets:
             hints.update(classObj.getMeta(self.__permutation).assets)
         
         # Compile filter expressions
-        expr = re.compile("^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints]))
+        matcher = "^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints])
+        logging.debug("Matching assets using: %s" % matcher)
+        expr = re.compile(matcher)
         
         # Filter merged assets
         self.__assets = { 
@@ -124,7 +127,7 @@ class Assets:
                 
             # Load sprite data from JSON file
             project = assets[name]
-            path = os.path.join(project.assetPath, name)
+            path = os.path.join(project.getAssetPath(), name)
             data = json.load(open(path))
 
             resdir = dirname(name)
@@ -210,7 +213,7 @@ class Assets:
         
         class ProjectEncoder(json.JSONEncoder):
             __projectIds = { 
-                project: pos for pos, project in enumerate(filter(lambda project: project.assetPath != None, projects)) 
+                project: pos for pos, project in enumerate(filter(lambda project: project.getAssetPath() != None, projects)) 
             }
 
             def default(self, obj):
@@ -225,21 +228,44 @@ class Assets:
             "sprites" : self.__sprites,
             "roots" : [folder for project in projects]
         }, separators=(',',':'), cls=ProjectEncoder)
-        to = "$$assets"
         
-        return "this.%s=%s;\n" % (to, code)
-        
+        return "this.$$assets=%s;\n" % code
         
         
-    def indexFiles(self):
+        
+    def exportData(self, relativeRoot):
         """ 
         Exports asset data for source version
         """
         
-        return 
+        projects = self.__projects
         
+        class ProjectEncoder(json.JSONEncoder):
+            __projectIds = { 
+                project: pos for pos, project in enumerate(filter(lambda project: project.getAssetPath() != None, projects)) 
+            }
+
+            def default(self, obj):
+                if isinstance(obj, Project):
+                    return self.__projectIds[obj]
+                    
+                return json.JSONEncoder.default(self, obj)
+
+        roots = []
+        webPath = os.path.join(self.__session.getMainProject().getPath(), relativeRoot)
         
+        for project in projects:
+            roots.append(os.path.relpath(project.getAssetPath(), webPath))
+
+        code = json.dumps({
+            "files" : self.__files,
+            "images" : self.__images,
+            "sprites" : self.__sprites,
+            "roots" : roots
+        }, separators=(',',':'), cls=ProjectEncoder)
+
+        print(code)
         
-        
+        return "this.$$assets=%s;\n" % code
 
         

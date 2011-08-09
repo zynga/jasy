@@ -3,7 +3,6 @@
 # Copyright 2010 Sebastian Werner
 #
 
-from jasy.core.Profiler import *
 import logging, os
 
 __all__ = ["Combiner"]
@@ -12,43 +11,38 @@ __all__ = ["Combiner"]
 class Combiner():
     """ Combines the code/path of a list of classes into one string """
     
-    def __init__(self, classList, relPath="./"):
+    def __init__(self, classList):
         self.__classList = classList
-        self.__relPath = relPath
         
     
-    def combine(self):
+    def getCombinedCode(self):
         """ Combines the unmodified content of the stored class list """
 
-        logging.info("Combining classes...")
-        pstart()
-        result = "".join([classObj.getText() for classObj in self.__classList])
-        pstop()
-
-        return result
+        return "".join([classObj.getText() for classObj in self.__classList])
     
     
-    def compress(self, permutation=None, translation=None, optimization=None, format=None):
+    def getCompressedCode(self, permutation=None, translation=None, optimization=None, format=None):
         """ Combines the compressed result of the stored class list """
-        
-        logging.info("Compressing classes...")
-        pstart()
-        result = "".join([classObj.getCompressed(permutation, translation, optimization, format) for classObj in self.__classList])
-        pstop()
 
-        return result
+        return "".join([classObj.getCompressed(permutation, translation, optimization, format) for classObj in self.__classList])
 
 
-    def loader(self, bootCode):
+    def getLoaderCode(self, bootCode, relativeRoot, session):
         logging.info("Generating loader...")
 
-        relPath = self.__relPath
 
-        if bootCode:
-            boot = "function(){%s}" % bootCode
-        else:
-            boot = "null"
 
-        result = 'jasy.Loader.loadScripts([%s], %s)' % (",".join(['"%s"' % os.path.join(relPath, classObj.path) for classObj in self.__classList]), boot)
+        files = []
+        for classObj in self.__classList:
+            project = classObj.getProject()
+
+            fromMainProjectRoot = os.path.join(session.getRelativePath(project), project.getClassPath(True), classObj.getLocalPath())
+            fromWebFolder = os.path.relpath(fromMainProjectRoot, relativeRoot)
+            
+            files.append('"%s"' % fromWebFolder)
+
+        loader = ",".join(files)
+        boot = "function(){%s}" % bootCode if bootCode else "null"
+        result = 'jasy.io.Script.load([%s], %s)' % (loader, boot)
 
         return result
