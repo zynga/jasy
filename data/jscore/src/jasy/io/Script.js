@@ -45,27 +45,18 @@
 		 *
 		 * @param uri {String} URI to load
 		 * @param onload {Function} Callback function to execute when script was loaded
-		 * @param type {String?null} Script type to request
-		 * @param charset {String?null} Specify the charset of the script
+		 * @param nocache {Boolean?false} Whether we should inject a dynamic part to the URL to omit caching
 		 */
-		var createScriptTag = function(uri, onload, type, charset)
+		var createScriptTag = function(uri, onload, nocache)
 		{
 			var elem = doc.createElement("script");
 			
-			if (type) {
-				elem.type = type;
-			}
-			
-			if (charset) {
-				elem.charset = charset;
-			}
-
 			// load script via 'src' attribute, set onload/onreadystatechange listeners
 			elem.onload = elem.onerror = elem.onreadystatechange = function(e) {
 				onload(e.type, uri, elem);
 			};
 			
-			elem.src = uri;
+			elem.src = nocache ? uri + dynamicUri : uri;
 			
 			if (supportsScriptAsync) {
 				elem.async = false;
@@ -189,7 +180,7 @@
 				for (var i=0, l=uris.length; i<l; i++)
 				{
 					var currentUri = uris[i];
-
+					
 					if (!completed[currentUri])
 					{
 						if (Permutation.isSet("debug")) {
@@ -214,7 +205,7 @@
 								onLoad = getOnLoad(flushCallbacks, global, uris);
 							}
 
-							createScriptTag(nocache ? currentUri + dynamicUri : currentUri, onLoad);
+							createScriptTag(currentUri, onLoad, nocache);
 						}
 					}
 				}
@@ -274,7 +265,7 @@
 						var currentUri = queuedUris.shift();
 						if (currentUri) 
 						{
-							createScriptTag(nocache ? currentUri + dynamicUri : currentUri, getOnLoad(executeOneByOne));
+							createScriptTag(currentUri, getOnLoad(executeOneByOne), nocache);
 						}
 						else
 						{
@@ -289,7 +280,7 @@
 						// 3. Insert first script and wait for load (from cache) then continue with next one
 						var onPreload = getOnLoad(executeOneByOne, global, queuedUris);
 						for (var i=0, l=queuedUris.length; i<l; i++) {
-							createScriptTag(nocache ? queuedUris[i] + dynamicUri : queuedUris[i], onPreload, preloadMimeType);
+							createScriptTag(queuedUris[i], onPreload, preloadMimeType, nocache);
 						}
 					}
 					else
