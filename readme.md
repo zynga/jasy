@@ -1,18 +1,16 @@
 Jasy - JavaScript Tooling Framework 
 ===================================
 
-Jasy is a collection of tools for dealing JavaScript source code. It is based on Python and relies on a stable parser engine based on Narcissus/Spidermonkey by Mozilla.
+Jasy is a collection of tools for dealing with JavaScript source code. It is based on Python3 and relies on a stable parser engine based on Narcissus/Spidermonkey by Mozilla.
 
-The main goal of Jasy is to offer an API which could be used by Python developers to write their custom build/deployment scripts. Jasy offers an Python3-API. Your build script is just a normal Python script which includes the Jasy-API and defines so-called tasks.
+The main goal of Jasy is to offer an API which could be used by developers to write their custom build/deployment scripts. Jasy offers an rich Python3-API. Your build script is just a normal Python script which includes the Jasy-API and defines so-called tasks.
 
-Jasy also offers standalone tools for dealing with single JavaScript files to e.g. compress them.
+Jasy also offers standalone tools for dealing with single JavaScript files to e.g. compress or format them.
 
 License
 -------
 
-Licensed under a dual license MIT + Apache V2. See separate license files for details.
-
-The parser implementation is under a triple open source license MPL 1.1/GPL 2.0/LGPL 2.1 as these are from the original Spidermonkey code.
+Jasy is licensed under a dual license MIT + Apache V2. See separate license files for details. The parser implementation is under a triple open source license MPL 1.1/GPL 2.0/LGPL 2.1 as these are from the original Spidermonkey code.
 
 Parser
 ------
