@@ -1,6 +1,6 @@
 /* 
 ==================================================================================================
-  Jasy - JavaScript Tooling Refined
+  Jasy - JavaScript Tooling Framework
   Copyright 2010-2011 Sebastian Werner
 --------------------------------------------------------------------------------------------------
   Inspired by: http://remysharp.com/2011/04/19/broken-offline-support/

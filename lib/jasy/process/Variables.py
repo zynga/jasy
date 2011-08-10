@@ -1,6 +1,6 @@
 #
 # JavaScript Tools - Scanner for variables
-# Copyright 2010 Sebastian Werner
+# Copyright 2010-2011 Sebastian Werner
 #
 
 import logging

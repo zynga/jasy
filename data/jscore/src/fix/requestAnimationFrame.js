@@ -1,6 +1,6 @@
 /* 
 ==================================================================================================
-  Jasy - JavaScript Tooling Refined
+  Jasy - JavaScript Tooling Framework
   Copyright 2010-2011 Sebastian Werner
 --------------------------------------------------------------------------------------------------
   Inspired by: https://github.com/inexorabletash/raf-shim/blob/master/raf.js

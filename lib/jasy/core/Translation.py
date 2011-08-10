@@ -1,6 +1,6 @@
 #
-# Jasy - JavaScript Tooling Refined
-# Copyright 2010 Sebastian Werner
+# Jasy - JavaScript Tooling Framework
+# Copyright 2010-2011 Sebastian Werner
 #
 
 import logging, re, copy, json
