@@ -1,9 +1,11 @@
-Jasy - JavaScript Tooling Refined
-=================================
+Jasy - JavaScript Tooling Framework 
+===================================
 
 Jasy is a collection of tools for dealing JavaScript source code. It is based on Python and relies on a stable parser engine based on Narcissus/Spidermonkey by Mozilla.
 
-Jasy should offer standalone tools for dealing with JavaScript files to apply typical things to them like compressing, optimizing, formatting, translating, etc. Jasy should also offer a API which could be used by Python developers to write their custom scripts based on the available modules. This is meant to be used like SCons, Waf, etc.
+The main goal of Jasy is to offer an API which could be used by Python developers to write their custom build/deployment scripts. Jasy offers an Python3-API. Your build script is just a normal Python script which includes the Jasy-API and defines so-called tasks.
+
+Jasy also offers standalone tools for dealing with single JavaScript files to e.g. compress them.
 
 License
 -------
@@ -41,7 +43,7 @@ Dead Code Removal
 - Resolves conditions and removes blocks which could not be reached
 - Function part of the permutation support
 - Supports switch statements
-- Supppors conditional statements (?:)
+- Supports conditional statements (?:)
 - Resolves boolean, number and string compares
 - Supports AND and OR operators
 
