@@ -230,7 +230,7 @@ class Permutation:
                     if check == "Boolean":
                         replacementResult = expected.type == parseExpression(replacement).type
                     else:
-                        replacementResult = replacement in str(expected.value).split("|")
+                        replacementResult = parseExpression(replacement).value in str(expected.value).split("|")
 
                     # Do actual replacement
                     replacementNode = parseExpression("true" if replacementResult else "false")
