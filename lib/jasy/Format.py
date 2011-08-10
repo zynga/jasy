@@ -3,35 +3,30 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-from datetime import datetime
 import zlib
 
 __all__ = ["Format"]
 
 class Format:
-    def __init__(self):
-        return
+    def __init__(self, *args):
+        self.__formatting = set()
+        
+        for identifier in args:
+            self.enable(identifier)
+        
+    def enable(self, identifier):
+        self.__formatting.add(identifier)
+        
+    def disable(self, identifier):
+        self.__formatting.remove(identifier)
+        
+    def has(self, identifier):
+        return identifier in self.__formatting
 
-
-    def __str__(self):
-        return "none"
-
-
-    def old(self):
-        result.append("")
-        result.append("// %s" % classObj.getName())
-        result.append("// - Modified: %s" % datetime.fromtimestamp(classObj.getModificationTime()).isoformat())
-
-        if computeSize:
-            result.append("// - %s" % size(compressed))
-
-
-
-    def size(self, content, encoding="utf-8"):
-        """ Returns a user friendly formatted string about the size of the given content. """
-
-        normalSize = len(content)
-        zippedSize = len(zlib.compress(content.encode(encoding)))
-
-        return "Size: {:.2f}KB ({:.2f}KB zipped => {:.2%})".format(normalSize/1024, zippedSize/1024, zippedSize/normalSize)
+    def getKey(self):
+        return "+".join(sorted(self.__formatting))
+        
+    # Map Python built-ins
+    __repr__ = getKey
+    __str__ = getKey
 

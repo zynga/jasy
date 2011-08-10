@@ -25,13 +25,17 @@ def compress(node, format=False):
 #
 
 class Compressor:
-    def __init__(self, format=False):
+    __semicolonSymbol = ";"
+    __commaSymbol = ","
+    
+
+    def __init__(self, format=None):
         if format:
-            self.__semicolonSymbol = ";\n"
-            self.__commaSymbol = ",\n"
-        else:
-            self.__semicolonSymbol = ";"
-            self.__commaSymbol = ","
+            if format.has("semicolon"):
+                self.__semicolonSymbol = ";\n"
+            
+            if format.has("comma"):
+                self.__commaSymbol = ",\n"
             
         self.__forcedSemicolon = False
 

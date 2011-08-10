@@ -13,12 +13,11 @@ import jasy.optimizer.UnusedCleaner as UnusedCleaner
 
 
 class Optimization:
-    def __init__(self, enable):
+    def __init__(self, *args):
         self.__optimizations = set()
         
-        for identifier in enable:
+        for identifier in args:
             self.enable(identifier)
-        
         
     def enable(self, identifier):
         self.__optimizations.add(identifier)
@@ -28,7 +27,6 @@ class Optimization:
         
     def apply(self, tree, stats):
         enabled = self.__optimizations
-        logging.debug("Apply: %s" % self)
         
         if "unused" in enabled:
             UnusedCleaner.optimize(tree)
@@ -45,8 +43,6 @@ class Optimization:
         if "privates" in enabled:
             CryptPrivates.optimize(tree)
 
-            
-            
     def getKey(self):
         return "+".join(sorted(self.__optimizations))
         
