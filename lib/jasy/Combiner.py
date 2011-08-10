@@ -27,7 +27,7 @@ class Combiner():
         return "".join([classObj.getCompressed(permutation, translation, optimization, format) for classObj in self.__classList])
 
 
-    def getLoaderCode(self, bootCode, relativeRoot, session, nocache=True):
+    def getLoaderCode(self, bootCode, relativeRoot, session, noCache=True):
         logging.info("Generating loader...")
 
         files = []
