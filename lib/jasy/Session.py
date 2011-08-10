@@ -147,7 +147,7 @@ class Session():
     # Permutation Support
     #
     
-    def permutateField(self, name, values=None, detect=None):
+    def permutateField(self, name, values=None, detect=None, default=None):
         """
         Adds the given key/value pair to the session for permutation usage.
         
@@ -185,6 +185,9 @@ class Session():
                             continue
 
                     raise Exception("Unsupported value %s for %s" % (value, name))
+                    
+            if default is not None:
+                entry["default"] = default
                     
         elif "check" in entry and entry["check"] == "Boolean":
             entry["values"] = [True, False]
@@ -231,8 +234,10 @@ class Session():
         """
         
         #
-        # Export structure:
-        # [ [ name, [value1, ...], test? ], ...]
+        # Export structures:
+        # 1. [ name, 1, test, [value1, ...] ]
+        # 2. [ name, 2, value ]
+        # 3. [ name, 3, test, default? ]
         #
         
         export = []
@@ -244,11 +249,12 @@ class Session():
             
             # We have available values to permutate for
             if "values" in source:
-                # Trueish for permutate this value
-                content.append("1")
-                
                 values = source["values"]
                 if "detect" in source and len(values) > 1:
+                    # EXPORT STRUCT 1
+                    content.append("1")
+                    content.append(source["detect"])
+
                     if "default" in source:
                         # Make sure that default value is first in
                         values = values[:]
@@ -256,19 +262,24 @@ class Session():
                         values.insert(0, source["default"])
                     
                     content.append(toJSON(values))
-                    content.append(source["detect"])
             
                 else:
+                    # EXPORT STRUCT 2
+                    content.append("2")
                     content.append(toJSON(values[0]))
 
             # Has no relevance for permutation, just insert the test
             else:
                 if "detect" in source:
-                    # Falsy for not permutate this value
-                    content.append("0")
+                    # EXPORT STRUCT 3
+                    content.append("3")
 
                     # Add detection class
                     content.append(source["detect"])
+                    
+                    # Add default value if available
+                    if "default" in source:
+                        content.append(toJSON(source["default"]))
                 
                 else:
                     # Has no detection and no permutation. Ignore it completely
@@ -276,8 +287,8 @@ class Session():
                 
             export.append("[%s]" % ",".join(content))
             
-            
         return "[%s]" % ",".join(export)
+
     
     
     def writeLoader(self, fileName, optimization=None, formatting=None):
@@ -287,6 +298,8 @@ class Session():
         the classes which are included by the script so you can exclude it from the 
         real build files.
         """
+        
+        print(self.__exportFields())
         
         permutation = Permutation({
           "Permutation.fields" : self.__exportFields()

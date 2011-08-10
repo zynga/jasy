@@ -26,34 +26,38 @@
 			for (var i=0, l=fields.length; i<l; i++) 
 			{
 				// possible variants
-				// name, permutate=true, [val1, val2], test
-				// name, permutate=true, val1 (default)
-				// name, permutate=false, test
+				// 1: name, 1, test, [val1, val2]
+				// 2: name, 2, value
+				// 3: name, 3, test, default
 				
 				var entry = fields[i];
 				var name = entry[0];
-				var permutate = entry[1]
-				var allowed = permutate ? entry[2] : null;
-				var test = permutate ? entry[3] : entry[2];
-				
-				if (test)
+				var type = entry[1]
+				if (type == 1 || type == 3)
 				{
+					var test = entry[2];
 					var value = "VALUE" in test ? test.VALUE : test.get(name);
-
+					var third = entry[3];
+					
 					// Fallback to first value if test results in unsupported value
-					if (allowed && (value == null || allowed.indexOf(value) == -1)) {
-						value = allowed[0];
+					if (type == 1 && third.indexOf(value) == -1) {
+						value = third[0];
+					} 
+					
+					// Fill in missing value with default
+					else if (type == 3 && value == null) {
+						value = third;
 					}
 				}
 				else
 				{
 					// In cases with no test, we don't have an array of fields but just a value
-					value = allowed;
+					value = entry[2];
 				}
 
 				selected[name] = value;
 				
-				if (permutate) {
+				if (type != 3) {
 					key.push(name + ":" + value);
 				}
 			}
