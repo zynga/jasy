@@ -185,7 +185,10 @@ class Assets:
                 entry.append(singles[filename][1])
 
 
-    def exportHelper(self, roots):
+    def __exportHelper(self, roots):
+        """
+        Exports the internal data into a JSON structure
+        """
         
         projects = self.__projects
         
@@ -211,11 +214,10 @@ class Assets:
 
 
 
-    def publishFiles(self, root, folder):
+    def publishFiles(self, dest):
         """
-        This method publishes the selected files to the given root
-        directory. This merges files from different projects into one
-        folder. Ideal for preparing a deployment.
+        Publishes the selected files to the given root directory. This merges files from different projects 
+        to one folder. Ideal for preparing the final deployment.
         """
 
         assets = self.__assets
@@ -227,7 +229,7 @@ class Assets:
         counter = 0
         for name in assets:
             srcFile = assets[name]["path"]
-            dstFile = os.path.join(root, folder, name.replace("/", os.sep))
+            dstFile = os.path.join(dest, name.replace("/", os.sep))
             
             if updatefile(srcFile, dstFile):
                 counter += 1
@@ -235,17 +237,21 @@ class Assets:
         logging.info("Updated %s/%s files" % (counter, len(assets)))
         pstop()
         
+        
+        
+    def exportMerged(self, folder):
+        projects = self.__projects
         roots = []
         for project in projects:
             roots.append("%s/%s" % (folder, project.getName()))
             
-        return self.exportHelper(roots)
+        return self.__exportHelper(roots)
         
         
         
-    def exportData(self, relativeRoot):
+    def exportOriginal(self, relativeRoot):
         """ 
-        Exports asset data for source version
+        Exports asset data for the source version using assets from their original paths
         """
         
         projects = self.__projects
@@ -254,6 +260,6 @@ class Assets:
         for project in projects:
             roots.append(os.path.relpath(project.getAssetPath(), webPath))
 
-        return self.exportHelper(roots)
+        return self.__exportHelper(roots)
 
         
