@@ -12,7 +12,7 @@
 (function(global, undef)
 {
 	// The build system is replacing this call via the loader permutation
-	var fields = Permutation.getValue("Permutation.fields");
+	var fields = Permutation.getValue("fields");
 	
 	if (fields) 
 	{

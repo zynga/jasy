@@ -147,6 +147,29 @@ class Session():
     # Permutation Support
     #
     
+    def setField(self, name, value):
+        """
+        Statically configure the value of the given field.
+        
+        This field is just injected into Permutation data but not used for actual permutations.
+        """
+        
+        if not name in self.__fields:
+            raise Exception("Unsupported field (not defined by any project): %s" % name)
+
+        entry = self.__fields[name]
+        
+        # Replace current value with single value
+        entry["values"] = [value]
+        
+        # Additonally set the default
+        entry["default"] = value
+
+        # Delete detection if configured by the project
+        if "detect" in entry:
+            del entry["detect"]
+        
+        
     def permutateField(self, name, values=None, detect=None, default=None):
         """
         Adds the given key/value pair to the session for permutation usage.
@@ -299,10 +322,8 @@ class Session():
         real build files.
         """
         
-        print(self.__exportFields())
-        
         permutation = Permutation({
-          "Permutation.fields" : self.__exportFields()
+          "fields" : self.__exportFields()
         })
         
         resolver = Resolver(self.getProjects(), permutation)
