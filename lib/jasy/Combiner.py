@@ -27,7 +27,7 @@ class Combiner():
         return "".join([classObj.getCompressed(permutation, translation, optimization, format) for classObj in self.__classList])
 
 
-    def getLoaderCode(self, bootCode, relativeRoot, session, noCache=True):
+    def getLoaderCode(self, bootCode, relativeRoot, session):
         logging.info("Generating loader...")
 
         files = []
@@ -37,10 +37,6 @@ class Combiner():
             fromMainProjectRoot = os.path.join(session.getRelativePath(project), project.getClassPath(True), classObj.getLocalPath())
             fromWebFolder = os.path.relpath(fromMainProjectRoot, relativeRoot)
 
-            # Inject random number to trick browser caching
-            if noCache:
-                fromWebFolder = "%s?r=%s" % (fromWebFolder, random.random())
-            
             files.append('"%s"' % fromWebFolder)
 
         loader = ",".join(files)
