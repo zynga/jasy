@@ -222,11 +222,15 @@ class Assets:
                     
                 return json.JSONEncoder.default(self, obj)
 
+        roots = []
+        for project in projects:
+            roots.append("%s/%s" % (folder, project.getName()))
+
         code = json.dumps({
             "files" : self.__files,
             "images" : self.__images,
             "sprites" : self.__sprites,
-            "roots" : [folder for project in projects]
+            "roots" : roots
         }, separators=(',',':'), cls=ProjectEncoder)
         
         return "this.$$assets=%s;\n" % code
@@ -264,8 +268,6 @@ class Assets:
             "roots" : roots
         }, separators=(',',':'), cls=ProjectEncoder)
 
-        print(code)
-        
         return "this.$$assets=%s;\n" % code
 
         
