@@ -41,6 +41,6 @@ class Combiner():
 
         loader = ",".join(files)
         boot = "function(){%s}" % bootCode if bootCode else "null"
-        result = 'jasy.io.Script.load([%s], %s)' % (loader, boot)
+        result = 'jasy.io.Script.load([%s], %s, null, true)' % (loader, boot)
 
         return result

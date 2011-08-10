@@ -37,7 +37,8 @@
 		var supportsScriptAsync = doc.createElement("script").async === true;
 		
 		var preloadMimeType = "script/cache";
-
+		
+		var dynamicUri = "?r=" + Date.now();
 
 		/**
 		 * Creates and appends script tag for given URI
@@ -174,10 +175,9 @@
 		
 		// Firefox(prior to Firefox 4) & Opera preserve execution order with script tags automatically,
 		// so just add all scripts as fast as possible. Firefox 4 has async=false to do the same.
-		var engine = jasy.detect.Engine.VALUE;
-		if (supportsScriptAsync || engine == "gecko" || engine == "opera")
+		if (supportsScriptAsync || Permutation.isSet("engine", "gecko") || Permutation.isSet("engine", "opera"))
 		{
-			var loader = function loader(uris, callback, context, preload)
+			var loader = function loader(uris, callback, context, nocache, preload)
 			{
 				var onLoad;
 				var executeDirectly = !!callback;
@@ -214,7 +214,7 @@
 								onLoad = getOnLoad(flushCallbacks, global, uris);
 							}
 
-							createScriptTag(currentUri, onLoad);
+							createScriptTag(nocache ? currentUri + dynamicUri : currentUri, onLoad);
 						}
 					}
 				}
@@ -227,7 +227,7 @@
 		}
 		else
 		{
-			var loader = function loader(uris, callback, context, preload)
+			var loader = function loader(uris, callback, context, nocache, preload)
 			{
 				var executeDirectly = !!callback;
 				var queuedUris = [];
@@ -274,7 +274,7 @@
 						var currentUri = queuedUris.shift();
 						if (currentUri) 
 						{
-							createScriptTag(currentUri, getOnLoad(executeOneByOne));
+							createScriptTag(nocache ? currentUri + dynamicUri : currentUri, getOnLoad(executeOneByOne));
 						}
 						else
 						{
@@ -289,7 +289,7 @@
 						// 3. Insert first script and wait for load (from cache) then continue with next one
 						var onPreload = getOnLoad(executeOneByOne, global, queuedUris);
 						for (var i=0, l=queuedUris.length; i<l; i++) {
-							createScriptTag(queuedUris[i], onPreload, preloadMimeType);
+							createScriptTag(nocache ? queuedUris[i] + dynamicUri : queuedUris[i], onPreload, preloadMimeType);
 						}
 					}
 					else
@@ -325,6 +325,7 @@
 		 * @param uris {String[]} URIs of script sources to load
 		 * @param callback {Function} Function to execute when scripts are loaded
 		 * @param context {Object} Context in which the callback should be executed
+		 * @param nocache {Boolean?false} Appends a dynamic parameter to each script to force a fresh copy
 		 * @param preload {Boolean?false} Activates preloading on legacy browsers. As files are
 		 *   requested two times it's important that the server send correct modification headers.
 		 *   Therefore this works safely on CDNs etc. but might be problematic on local servers.
