@@ -28,7 +28,7 @@
 				// possible variants
 				// 1: name, 1, test, [val1, val2]
 				// 2: name, 2, value
-				// 3: name, 3, test, default
+				// 3: name, 3, test, default (not permutated)
 				
 				var entry = fields[i];
 				var name = entry[0];

@@ -151,7 +151,8 @@ class Session():
         """
         Statically configure the value of the given field.
         
-        This field is just injected into Permutation data but not used for actual permutations.
+        This field is just injected into Permutation data and used for permutations, but as
+        it only holds a single value all alternatives paths are removed/ignored.
         """
         
         if not name in self.__fields:
