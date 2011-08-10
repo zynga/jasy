@@ -185,6 +185,31 @@ class Assets:
                 entry.append(singles[filename][1])
 
 
+    def exportHelper(self, roots):
+        
+        projects = self.__projects
+        
+        class ProjectEncoder(json.JSONEncoder):
+            __projectIds = { 
+                project: pos for pos, project in enumerate(filter(lambda project: project.getAssetPath() != None, projects)) 
+            }
+
+            def default(self, obj):
+                if isinstance(obj, Project):
+                    return self.__projectIds[obj]
+                    
+                return json.JSONEncoder.default(self, obj)
+
+        code = json.dumps({
+            "files" : self.__files,
+            "images" : self.__images,
+            "sprites" : self.__sprites,
+            "roots" : roots
+        }, separators=(',',':'), cls=ProjectEncoder)
+        
+        return "this.$$assets=%s;\n" % code        
+
+
 
     def publishFiles(self, root, folder):
         """
@@ -210,30 +235,11 @@ class Assets:
         logging.info("Updated %s/%s files" % (counter, len(assets)))
         pstop()
         
-        
-        class ProjectEncoder(json.JSONEncoder):
-            __projectIds = { 
-                project: pos for pos, project in enumerate(filter(lambda project: project.getAssetPath() != None, projects)) 
-            }
-
-            def default(self, obj):
-                if isinstance(obj, Project):
-                    return self.__projectIds[obj]
-                    
-                return json.JSONEncoder.default(self, obj)
-
         roots = []
         for project in projects:
             roots.append("%s/%s" % (folder, project.getName()))
-
-        code = json.dumps({
-            "files" : self.__files,
-            "images" : self.__images,
-            "sprites" : self.__sprites,
-            "roots" : roots
-        }, separators=(',',':'), cls=ProjectEncoder)
-        
-        return "this.$$assets=%s;\n" % code
+            
+        return self.exportHelper(roots)
         
         
         
@@ -243,31 +249,11 @@ class Assets:
         """
         
         projects = self.__projects
-        
-        class ProjectEncoder(json.JSONEncoder):
-            __projectIds = { 
-                project: pos for pos, project in enumerate(filter(lambda project: project.getAssetPath() != None, projects)) 
-            }
-
-            def default(self, obj):
-                if isinstance(obj, Project):
-                    return self.__projectIds[obj]
-                    
-                return json.JSONEncoder.default(self, obj)
-
-        roots = []
         webPath = os.path.join(self.__session.getMainProject().getPath(), relativeRoot)
-        
+        roots = []
         for project in projects:
             roots.append(os.path.relpath(project.getAssetPath(), webPath))
 
-        code = json.dumps({
-            "files" : self.__files,
-            "images" : self.__images,
-            "sprites" : self.__sprites,
-            "roots" : roots
-        }, separators=(',',':'), cls=ProjectEncoder)
-
-        return "this.$$assets=%s;\n" % code
+        return self.exportHelper(roots)
 
         
