@@ -168,7 +168,7 @@
 		// so just add all scripts as fast as possible. Firefox 4 has async=false to do the same.
 		if (supportsScriptAsync || Permutation.isSet("engine", "gecko") || Permutation.isSet("engine", "opera"))
 		{
-			var loader = function loader(uris, callback, context, nocache, preload)
+			var loader = function loader(uris, callback, context, nocache)
 			{
 				var onLoad;
 				var executeDirectly = !!callback;
@@ -183,10 +183,6 @@
 					
 					if (!completed[currentUri])
 					{
-						if (Permutation.isSet("debug")) {
-							console.log("Loading: " + currentUri);
-						}
-
 						// When a callback needs to be moved to the queue instead of being executed directly
 						if (executeDirectly)
 						{
@@ -205,6 +201,10 @@
 								onLoad = getOnLoad(flushCallbacks, global, uris);
 							}
 
+							if (Permutation.isSet("debug")) {
+								console.log("Loading: " + currentUri);
+							}
+
 							createScriptTag(currentUri, onLoad, nocache);
 						}
 					}
@@ -218,7 +218,7 @@
 		}
 		else
 		{
-			var loader = function loader(uris, callback, context, nocache, preload)
+			var loader = function loader(uris, callback, context, nocache)
 			{
 				var executeDirectly = !!callback;
 				var queuedUris = [];
@@ -232,10 +232,6 @@
 					var currentUri = uris[i];
 					if (!completed[currentUri])
 					{
-						if (Permutation.isSet("debug")) {
-							console.log("Loading script: " + currentUri);
-						}
-						
 						// When a callback needs to be moved to the queue instead of being executed directly
 						if (executeDirectly)
 						{
@@ -265,6 +261,10 @@
 						var currentUri = queuedUris.shift();
 						if (currentUri) 
 						{
+							if (Permutation.isSet("debug")) {
+								console.log("Loading: " + currentUri);
+							}
+							
 							createScriptTag(currentUri, getOnLoad(executeOneByOne), nocache);
 						}
 						else
@@ -273,21 +273,8 @@
 						}
 					};
 
-					if (preload)
-					{
-						// 1. Load all via script/cache first
-						// 2. Wait for all being loaded
-						// 3. Insert first script and wait for load (from cache) then continue with next one
-						var onPreload = getOnLoad(executeOneByOne, global, queuedUris);
-						for (var i=0, l=queuedUris.length; i<l; i++) {
-							createScriptTag(queuedUris[i], onPreload, preloadMimeType, nocache);
-						}
-					}
-					else
-					{
-						// Load and execute first script, then continue with next until last one
-						executeOneByOne();
-					}
+					// Load and execute first script, then continue with next until last one
+					executeOneByOne();
 				}
 			};
 		}
@@ -310,16 +297,11 @@
 		 * Loads the scripts at the given URIs.
 		 *
 		 * Automatically using preloading of scripts in modern browsers and falls back to sequential loading/executing on others.
-		 * For better performance one can enable preloading on legacy browsers as well, but this requires correctly configured servers
-		 * to not download identical files two times.
 		 *
 		 * @param uris {String[]} URIs of script sources to load
 		 * @param callback {Function} Function to execute when scripts are loaded
 		 * @param context {Object} Context in which the callback should be executed
 		 * @param nocache {Boolean?false} Appends a dynamic parameter to each script to force a fresh copy
-		 * @param preload {Boolean?false} Activates preloading on legacy browsers. As files are
-		 *   requested two times it's important that the server send correct modification headers.
-		 *   Therefore this works safely on CDNs etc. but might be problematic on local servers.
 		 */
 		load : load
 	});
