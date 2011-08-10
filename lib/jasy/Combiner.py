@@ -3,7 +3,7 @@
 # Copyright 2010 Sebastian Werner
 #
 
-import logging, os
+import logging, os, random
 
 __all__ = ["Combiner"]
 
@@ -27,10 +27,8 @@ class Combiner():
         return "".join([classObj.getCompressed(permutation, translation, optimization, format) for classObj in self.__classList])
 
 
-    def getLoaderCode(self, bootCode, relativeRoot, session):
+    def getLoaderCode(self, bootCode, relativeRoot, session, nocache=True):
         logging.info("Generating loader...")
-
-
 
         files = []
         for classObj in self.__classList:
@@ -38,6 +36,10 @@ class Combiner():
 
             fromMainProjectRoot = os.path.join(session.getRelativePath(project), project.getClassPath(True), classObj.getLocalPath())
             fromWebFolder = os.path.relpath(fromMainProjectRoot, relativeRoot)
+
+            # Inject random number to trick browser caching
+            if noCache:
+                fromWebFolder = "%s?r=%s" % (fromWebFolder, random.random())
             
             files.append('"%s"' % fromWebFolder)
 
