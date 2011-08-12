@@ -34,7 +34,7 @@ def build():
     session.permutateField("locale", ["en"])
     
     # Permutation independend config
-    optimization = Optimization(["unused", "privates", "variables", "declarations", "blocks"])
+    optimization = Optimization("unused", "privates", "variables", "declarations", "blocks")
     formatting = Format()
 
     # Store loader script

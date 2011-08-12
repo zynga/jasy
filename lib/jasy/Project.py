@@ -39,7 +39,7 @@ class Project():
             self.__name = manifestData["name"]
         else:
             self.__name = os.path.basename(path)
-
+            
         # Detect kind automatically
         if "kind" in manifestData:
             self.__kind = manifestData["kind"]
@@ -139,14 +139,26 @@ class Project():
     
     def getClassPath(self, relative=False):
         """ Returns the full path to the JavaScript classes """
+
+        if self.__classPath is None:
+            return None
+
         return self.__classPath if relative else os.path.join(self.__path, self.__classPath)
 
     def getAssetPath(self, relative=False):
         """ Returns the full path to the assets (images, stylesheets, etc.) """
+
+        if self.__assetPath is None:
+            return None
+
         return self.__assetPath if relative else os.path.join(self.__path, self.__assetPath)
 
     def getTranslationPath(self, relative=False):
         """ Returns the full path to the translation files (gettext *.po files) """
+        
+        if self.__translationPath is None:
+            return None
+        
         return self.__translationPath if relative else os.path.join(self.__path, self.__translationPath)
 
 
