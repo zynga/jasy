@@ -23,6 +23,28 @@ def clear():
     session.clearCache()
 
 
+
+@task
+def simple():
+    # Setup session
+    session = Session()
+    session.addProject(Project("."))
+
+    # Collecting projects
+    resolver = Resolver(session.getProjects())
+    resolver.addClassName("ootest.Test")
+    
+    # Resolving classes
+    classes = Sorter(resolver).getSortedClasses()
+    
+    # Compressing classes
+    compressedCode = Combiner(classes).getCompressedCode()
+    
+    # Writing files
+    writefile("build/simple.js", compressedCode)
+
+
+
 @task
 def build():
     # Setup session
