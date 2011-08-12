@@ -373,7 +373,7 @@ class Session():
         for entry in check:
             for project in self.__projects:
                 translations = project.getTranslations()
-                if entry in translations:
+                if translations and entry in translations:
                     files.append(translations[entry])
         
         return Translation(locale, files)

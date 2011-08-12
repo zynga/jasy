@@ -164,6 +164,10 @@ class Project():
 
     def getClasses(self):
         """ Returns all project JavaScript classes """
+        
+        if self.__classPath is None:
+            return None
+        
         try:
             return self.classes
             
@@ -194,6 +198,10 @@ class Project():
 
     def getAssets(self):
         """ Returns all project asssets (images, stylesheets, etc.) """
+        
+        if self.__assetPath is None:
+            return None
+        
         try:
             return self.assets
             
@@ -235,6 +243,10 @@ class Project():
 
     def getTranslations(self):
         """ Returns all translation files (gettext *.po files)"""
+        
+        if self.__translationPath is None:
+            return None
+        
         try:
             return self.translations
             

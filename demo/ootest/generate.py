@@ -60,13 +60,13 @@ def build():
         # Compressing classes
         translation = session.getTranslation(permutation.get("locale"))
         classes = Sorter(resolver, permutation).getSortedClasses()
-        compressedCode = Combiner(classes).compress(permutation, translation, optimization, formatting)
+        compressedCode = Combiner(classes).getCompressedCode(permutation, translation, optimization, formatting)
         
         # Boot logic
         bootCode = ""
 
         # Write file
-        writefile("generated" + os.sep + "oo-%s.js" % permutation.getChecksum(), compressedCode + bootCode)
+        writefile("generated/oo-%s.js" % permutation.getChecksum(), compressedCode + bootCode)
 
 
 
