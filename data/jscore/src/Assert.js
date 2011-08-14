@@ -12,16 +12,13 @@
 	 *
 	 * It also bundles all fixes under "fix/" before starting with the real code.
 	 *
-	 * @require {fix.ObjectKeys}
 	 * @require {fix.ArrayIndexOf}
-	 * @require {fix.DocumentHead}
 	 * @require {fix.console}
-	 * @require {fix.Base64}
+	 * @require {fix.DocumentHead}
 	 * @require {fix.execScript}
 	 * @require {fix.FunctionBind}
 	 * @require {fix.HTML5}
-	 * @require {fix.requestAnimationFrame}
-	 * @require {fix.setImmediate}
+	 * @require {fix.ObjectKeys}
 	 * @require {fix.setTimeout}
 	 */
 	var Assert = global.Assert = 

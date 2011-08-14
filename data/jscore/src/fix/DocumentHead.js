@@ -1,11 +1,13 @@
 /* 
 ==================================================================================================
-  Jasy - JavaScript Tooling Framework
-  Copyright 2010-2011 Sebastian Werner
+	Jasy - JavaScript Tooling Framework
+	Copyright 2010-2011 Sebastian Werner
 ==================================================================================================
 */
 
 // Fix for missing document.head
-if (!document.head) {
-	document.head = document.getElementsByTagName('head')[0];
-}
+(function(doc) {
+	if (doc && !doc.head) {
+		doc.head = doc.getElementsByTagName('head')[0];
+	}
+})(document);
