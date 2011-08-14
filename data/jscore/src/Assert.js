@@ -14,6 +14,7 @@
 	 *
 	 * @require {fix.ArrayIndexOf}
 	 * @require {fix.Console}
+	 * @require {fix.DateNow}
 	 * @require {fix.DocumentHead}
 	 * @require {fix.ExecScript}
 	 * @require {fix.FunctionBind}
