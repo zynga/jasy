@@ -16,7 +16,7 @@
 (function(global, slice, undef) 
 {
 	// Only fix where support is missing
-	if (this.setTimeout.length !== undef) {
+	if (global.setTimeout.length !== undef) {
 		return;
 	}
 	
