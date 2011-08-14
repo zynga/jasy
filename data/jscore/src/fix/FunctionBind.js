@@ -10,48 +10,51 @@
 ==================================================================================================
 */
 
-if (!Function.prototype.bind) 
+(function(proto, slice)
 {
-	/**
-	 * Binds the given function to the specific context.
-	 *
-	 * https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
-	 *
-	 * @param context {Object} Object to bind function to.
-	 * @return {Function} Returns a new function which is bound to the given object.
-	 */
-	Function.prototype.bind = function bind(context) 
+	if (!proto.bind)
 	{
-		var self = this; // "trapped" function reference
-
-		// only if there is more than an argument
-		// we are interested into more complex operations
-		// this will speed up common bind creation
-		// avoiding useless slices over arguments
-		if (1 < arguments.length) 
+		/**
+		 * Binds the given function to the specific context.
+		 *
+		 * https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
+		 *
+		 * @param context {Object} Object to bind function to.
+		 * @return {Function} Returns a new function which is bound to the given object.
+		 */
+		proto.bind = function(context) 
 		{
-			// extra arguments to send by default
-			var slice = Array.prototype.slice;
-			var extraargs = slice.call(arguments, 1);
-			return function()
+			var self = this; // "trapped" function reference
+			var args = arguments;
+
+			// only if there is more than an argument
+			// we are interested into more complex operations
+			// this will speed up common bind creation
+			// avoiding useless slices over arguments
+			if (1 < args.length) 
 			{
-				return self.apply(
-					context,
-					// thanks @kangax for this suggestion
-					arguments.length ?
-						// concat arguments with those received
-						extraargs.concat(slice.call(arguments)) :
-						// send just arguments, no concat, no slice
-						extraargs
-				);
-			};
-		}
+				// extra arguments to send by default
+				var extraargs = slice.call(args, 1);
+				return function()
+				{
+					return self.apply(
+						context,
+						// thanks @kangax for this suggestion
+						args.length ?
+							// concat arguments with those received
+							extraargs.concat(slice.call(args)) :
+							// send just arguments, no concat, no slice
+							extraargs
+					);
+				};
+			}
 
-		// optimized callback
-		return function() 
-		{
-			// speed up when function is called without arguments
-			return arguments.length ? self.apply(context, arguments) : self.call(context);
+			// optimized callback
+			return function() 
+			{
+				// speed up when function is called without arguments
+				return args.length ? self.apply(context, args) : self.call(context);
+			};
 		};
-	};
-}
+	}	
+})(Function.prototype, Array.prototype.slice);
