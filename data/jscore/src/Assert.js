@@ -15,11 +15,11 @@
 	 * Defined in alphabetical order here. If these have dependencies 
 	 * to each other these must be declared inside the files.
 	 *
+	 * @require {fix.DocumentHead}
 	 * @require {fix.ObjectKeys}
+	 * @require {fix.ArrayIndexOf}
 	 * @require {fix.console}
 	 * @require {fix.Base64}
-	 * @require {fix.DateParse}
-	 * @require {fix.DocumentHead}
 	 * @require {fix.execScript}
 	 * @require {fix.FunctionBind}
 	 * @require {fix.HTML5}

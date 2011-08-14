@@ -57,7 +57,7 @@ def build():
     
     # Permutation independend config
     optimization = Optimization("unused", "privates", "variables", "declarations", "blocks")
-    formatting = Format()
+    formatting = Format("semicolon", "comma")
 
     # Store loader script
     loaderIncluded = session.writeLoader("build/loader.js", optimization, formatting)
