@@ -10,7 +10,7 @@
  */
 (function(global, slice)
 {
-	var methods = "debug,error,warn,info,trace".split(",");
+	var methods = "log,clear,assert,debug,error,warn,info,trace".split(",");
 	var console = global.console;
 	
 	if (!console) {
