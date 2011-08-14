@@ -20,7 +20,7 @@ from jasy.process.Variables import scan
 from jasy.process.Compressor import compress
 
 
-def jsoptimize(source, filename=None, format=True):
+def jsoptimize(source, filename=None):
     values = {
         "js.Variant.VERSION" : "0.3",
         "js.Variant.DEBUG" : "true",
@@ -55,10 +55,10 @@ def jsoptimize(source, filename=None, format=True):
     BlockReducer.optimize(tree)
     
     CombineDeclarations.optimize(tree)
-    LocalVariables.optimize(tree)
+    LocalVariables.optimize(tree, tree.stats)
     CryptPrivates.optimize(tree)
     
-    return compress(tree, format=format)
+    return compress(tree)
 
 
 if __name__ == "__main__":

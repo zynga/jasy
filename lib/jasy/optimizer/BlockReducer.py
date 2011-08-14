@@ -49,12 +49,14 @@ def optimize(node):
         else:
             if operator == "mul":
                 result = firstNumber.value * secondNumber.value
-            elif operator == "div":
+            elif operator == "div" and secondNumber.value is not 0:
                 result = firstNumber.value / secondNumber.value
             elif operator == "mod":
                 result = firstNumber.value % secondNumber.value
+            else:
+                result = None
             
-            if len(str(result)) < len(compress(node)):
+            if result is not None and len(str(result)) < len(compress(node)):
                 firstNumber.value = result
                 node.parent.replace(node, firstNumber)
 
