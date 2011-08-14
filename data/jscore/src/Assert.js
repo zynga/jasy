@@ -12,12 +12,9 @@
 	 *
 	 * It also bundles all fixes under "fix/" before starting with the real code.
 	 *
-	 * Defined in alphabetical order here. If these have dependencies 
-	 * to each other these must be declared inside the files.
-	 *
-	 * @require {fix.DocumentHead}
 	 * @require {fix.ObjectKeys}
 	 * @require {fix.ArrayIndexOf}
+	 * @require {fix.DocumentHead}
 	 * @require {fix.console}
 	 * @require {fix.Base64}
 	 * @require {fix.execScript}
