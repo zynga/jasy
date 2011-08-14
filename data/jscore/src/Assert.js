@@ -13,13 +13,13 @@
 	 * It also bundles all fixes under "fix/" before starting with the real code.
 	 *
 	 * @require {fix.ArrayIndexOf}
-	 * @require {fix.console}
+	 * @require {fix.Console}
 	 * @require {fix.DocumentHead}
-	 * @require {fix.execScript}
+	 * @require {fix.ExecScript}
 	 * @require {fix.FunctionBind}
-	 * @require {fix.HTML5}
+	 * @require {fix.HTML5Markup}
 	 * @require {fix.ObjectKeys}
-	 * @require {fix.setTimeout}
+	 * @require {fix.SetTimeoutArgs}
 	 */
 	var Assert = global.Assert = 
 	{
