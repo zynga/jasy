@@ -53,7 +53,7 @@
 			
 			// load script via 'src' attribute, set onload/onreadystatechange listeners
 			elem.onload = elem.onerror = elem.onreadystatechange = function(e) {
-				onload(e.type, uri, elem);
+				onload((e?e:event).type, uri, elem);
 			};
 			
 			elem.src = nocache ? uri + dynamicUri : uri;
