@@ -8,15 +8,10 @@
 /**
  * Just a dump placeholder for environments without "console" object.
  */
-(function(global, slice)
+(function(global)
 {
 	var methods = "log,clear,assert,debug,error,warn,info,trace".split(",");
-	var console = global.console;
-	
-	if (!console) {
-		console = global.console = {};
-	} 
-	
+	var console = global.console || (global.console = {});
 	var log = console.log || new Function;
 	
 	for (var i=0, l=methods.length; i<l; i++) 
@@ -26,4 +21,4 @@
 			console[name] = log;
 		}
 	}
-})(this, Array.prototype.slice);
+})(this);

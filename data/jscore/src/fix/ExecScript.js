@@ -33,7 +33,7 @@
 		}
 	})())
 	{
-		global.execScript = function execScript(expression) 
+		global.execScript = function(expression) 
 		{
 			global.eval(expression);
 			
