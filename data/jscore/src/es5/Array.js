@@ -182,7 +182,6 @@ if (!Array.prototype.reduce)
 	};
 }
 
-
 // ES5 15.4.4.22
 // https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Objects/Array/reduceRight
 if (!Array.prototype.reduceRight) 
@@ -230,41 +229,6 @@ if (!Array.prototype.reduceRight)
 		}
 
 		return rv;
-	};
-}
-
-// ES5 15.4.4.14
-// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/indexOf
-if (!Array.prototype.indexOf) 
-{
-	Array.prototype.indexOf = function indexOf(value /*, fromIndex */ ) 
-	{
-		var length = this.length;
-		if (!length) {
-			return -1;
-		}
-			
-		var i = arguments[1] || 0;
-		if (i >= length) {
-			return -1;
-		}
-			
-		if (i < 0) {
-			i += length;
-		}
-			
-		for (; i < length; i++) 
-		{
-			if (!(i in this)) {
-				continue;
-			}
-				
-			if (value === this[i]) {
-				return i;
-			}
-		}
-		
-		return -1;
 	};
 }
 
