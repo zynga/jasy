@@ -20,20 +20,27 @@
 		 * https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
 		 *
 		 * @param context {Object} Object to bind function to.
+		 * @param varargs {var} Static arguments
 		 * @return {Function} Returns a new function which is bound to the given object.
 		 */
 		proto.bind = function(context) 
 		{
-			var self = this; // "trapped" function reference
-			var args = arguments;
+			// closest thing possible to the ECMAScript 5 internal IsCallable function
+			if (typeof this !== "function") {
+				throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+			}
+			
+			// "trapped" function reference
+			var self = this;
 
 			// only if there is more than an argument
 			// we are interested into more complex operations
 			// this will speed up common bind creation
 			// avoiding useless slices over arguments
-			if (1 < args.length) 
+			if (1 < arguments.length) 
 			{
 				// extra arguments to send by default
+				var args = arguments;
 				var extraargs = slice.call(args, 1);
 				return function()
 				{
@@ -48,13 +55,15 @@
 					);
 				};
 			}
-
-			// optimized callback
-			return function() 
+			else
 			{
-				// speed up when function is called without arguments
-				return args.length ? self.apply(context, args) : self.call(context);
-			};
+				// optimized callback
+				return function() 
+				{
+					// speed up when function is called without arguments
+					return arguments.length ? self.apply(context, arguments) : self.call(context);
+				};
+			}
 		};
 	}	
 })(Function.prototype, Array.prototype.slice);
