@@ -20,7 +20,7 @@
 	 */
 	Module.declareName("Interface", function(name, config) 
 	{
-		if (Permutation.isSet("debug")) 
+		if (Env.isSet("debug")) 
 		{
 			Assert.assertModuleName(name, "Invalid interface name " + name + "!");
 			Assert.assertMap(config, "Invalid interface configuration in " + name);
@@ -75,7 +75,7 @@
 	 */	
 	Interface.getByName = function(interfaceName) 
 	{
-		if (Permutation.isSet("debug")) {
+		if (Env.isSet("debug")) {
 			Assert.assertString(interfaceName);
 		}
 		

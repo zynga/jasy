@@ -12,7 +12,7 @@
 (function(global) 
 {
 	// TODO: Implement using permutation injection
-	// Permutation.getValue("assets");
+	// Env.getValue("assets");
 	var assets = global.$$assets;
 	if (!assets) {
 		console.error("Asset data is not available!");
@@ -43,7 +43,7 @@
 		var fileName = id.substring(lastSlash+1);
 
 		var file = (files[dirName] && files[dirName][fileName]) || (images[dirName] && images[dirName][fileName]) || null;
-		if (Permutation.isSet("debug")) {
+		if (Env.isSet("debug")) {
 			Assert.assertNotNull(file, "Invalid asset identifier: " + id);
 		}
 

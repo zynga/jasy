@@ -44,7 +44,7 @@
 
 			context = context || global;
 
-			if (Permutation.isSet("debug")) {
+			if (Env.isSet("debug")) {
 				console.log("Loading stylesheet: " + url);
 			}
 			
@@ -60,7 +60,7 @@
 				delete loading[url];
 				
 				/*
-				if (Permutation.isSet("debug")) {
+				if (Env.isSet("debug")) {
 					console.log("Stylesheet loaded: " + url);
 				}
 				*/
@@ -71,7 +71,7 @@
 			};
 
 			// Use listener to stylesheet list and compare elements
-			if (Permutation.isSet("engine", "webkit")) 
+			if (Env.isSet("engine", "webkit")) 
 			{
 				var link = doc.createElement('link');
 				var sheets = doc.styleSheets;
@@ -97,7 +97,7 @@
 			}
 
 			// Use style import fallback for buggy GECKO 
-			else if (Permutation.isSet("engine", "gecko")) 
+			else if (Env.isSet("engine", "gecko")) 
 			{
 				var style = doc.createElement("style");
 				style.textContent = "@import '" + url + "'";

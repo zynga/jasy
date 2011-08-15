@@ -186,7 +186,7 @@ Object.addPrototypeMethods("Array",
 	 */
 	at : function(index) 
 	{
-		if (Permutation.isSet("debug")) {
+		if (Env.isSet("debug")) {
 			Assert.assertInteger(index, "Param 'index' must be be an integer!");
 		}
 
@@ -202,7 +202,7 @@ Object.addPrototypeMethods("Array",
 	 */
 	removeAt : function(index) 
 	{
-		if (Permutation.isSet("debug")) {
+		if (Env.isSet("debug")) {
 			Assert.assertInteger(index, "Param 'index' must be be an integer!");
 		}
 		
@@ -225,7 +225,7 @@ Object.addPrototypeMethods("Array",
 	 */
 	removeRange : function(from, to) 
 	{
-		if (Permutation.isSet("debug")) {
+		if (Env.isSet("debug")) {
 			Assert.assertInteger(from, "Param 'from' must be be an integer!");
 			Assert.assertInteger(to, "Param 'to' must be be an integer!");
 		}

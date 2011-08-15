@@ -12,7 +12,7 @@
 (function(global, undef)
 {
 	// The build system is replacing this call via the loader permutation
-	var fields = Permutation.getValue("fields");
+	var fields = Env.getValue("fields");
 	
 	if (fields) 
 	{
@@ -63,7 +63,7 @@
 			}
 			
 			if (selected.debug) {
-				console.info("Permutation: " + key.join(", "));
+				console.info("Env: " + key.join(", "));
 			}
 
 			var adler32 = (function(data)
@@ -116,9 +116,9 @@
 	}
 	
 	
-	Module("Permutation",
+	Module("Env",
 	{
-		/** {Map} Currently selected fields from Permutation data */
+		/** {Map} Currently selected fields from Env data */
 		SELECTED : selected,
 
 		/** {Number} Holds the checksum for the current permutation which is auto detected by features or by compiled-in data */

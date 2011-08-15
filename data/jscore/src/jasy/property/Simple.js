@@ -59,7 +59,7 @@
 			var propertyApply = config.apply;
 
 			// Validation
-			if (Permutation.isSet("debug"))
+			if (Env.isSet("debug"))
 			{
 				Assert.assertHasAllowedKeysOnly(config, ["name","nullable","init","type","fire","apply"],
 					"Invalid simple property configuration of '" + propertyName + "'! Unallowed key(s) found!");
@@ -111,7 +111,7 @@
 				var context, data, value;
 				context = this;
 
-				if (Permutation.isSet("debug")) {
+				if (Env.isSet("debug")) {
 					jasy.property.Debug.checkGetter(context, config, arguments);
 				}
 
@@ -126,7 +126,7 @@
 						return propertyInit;
 					}
 
-					if (Permutation.isSet("debug"))
+					if (Env.isSet("debug"))
 					{
 						if (!propertyNullable) {
 							context.error("Missing value for: " + propertyName + " (during get())");
@@ -181,7 +181,7 @@
 			{
 				var context=this, data, old;
 
-				if (Permutation.isSet("debug")) {
+				if (Env.isSet("debug")) {
 					jasy.property.Debug.checkSetter(context, config, arguments);
 				}
 
@@ -225,7 +225,7 @@
 				var context, data, old, value;
 				context = this;
 
-				if (Permutation.isSet("debug")) {
+				if (Env.isSet("debug")) {
 					jasy.property.Debug.checkResetter(context, config, arguments);
 				}
 
@@ -244,7 +244,7 @@
 					if (propertyInit !== undef) {
 						value = propertyInit;
 					}
-					else if (Permutation.isSet("debug"))
+					else if (Env.isSet("debug"))
 					{
 						// Still no value. We warn about that the property is not nullable.
 						if (!propertyNullable) {

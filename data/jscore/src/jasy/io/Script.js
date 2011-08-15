@@ -118,7 +118,7 @@
 					completed[uri] = true;
 					
 					/*
-					if (Permutation.isSet("debug")) {
+					if (Env.isSet("debug")) {
 						console.log("Script loaded: " + uri);
 					}
 					*/
@@ -166,7 +166,7 @@
 		
 		// Firefox(prior to Firefox 4) & Opera preserve execution order with script tags automatically,
 		// so just add all scripts as fast as possible. Firefox 4 has async=false to do the same.
-		if (supportsScriptAsync || Permutation.isSet("engine", "gecko") || Permutation.isSet("engine", "opera"))
+		if (supportsScriptAsync || Env.isSet("engine", "gecko") || Env.isSet("engine", "opera"))
 		{
 			var loader = function loader(uris, callback, context, nocache)
 			{
@@ -201,7 +201,7 @@
 								onLoad = getOnLoad(flushCallbacks, global, uris);
 							}
 
-							if (Permutation.isSet("debug")) {
+							if (Env.isSet("debug")) {
 								console.log("Loading: " + currentUri);
 							}
 
@@ -261,7 +261,7 @@
 						var currentUri = queuedUris.shift();
 						if (currentUri) 
 						{
-							if (Permutation.isSet("debug")) {
+							if (Env.isSet("debug")) {
 								console.log("Loading: " + currentUri);
 							}
 							

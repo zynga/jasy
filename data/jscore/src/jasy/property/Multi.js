@@ -277,7 +277,7 @@
 				{
 					var context = this;
 
-					if (Permutation.isSet("debug")) {
+					if (Env.isSet("debug")) {
 						jasy.property.Debug.checkSetter(context, config, arguments);
 					}
 
@@ -359,7 +359,7 @@
 				{
 					var context = this;
 
-					if (Permutation.isSet("debug")) {
+					if (Env.isSet("debug")) {
 						jasy.property.Debug.checkResetter(context, config, arguments);
 					}
 
@@ -399,7 +399,7 @@
 							if (propertyInit !== Undefined) {
 								newValue = propertyInit;
 							}
-							else if (Permutation.isSet("debug"))
+							else if (Env.isSet("debug"))
 							{
 								// Still no value. We warn about that the property is not nullable.
 								if (!propertyNullable) {
@@ -451,7 +451,7 @@
 			{
 				var context = this;
 
-				if (Permutation.isSet("debug")) {
+				if (Env.isSet("debug")) {
 					jasy.property.Debug.checkGetter(context, config, arguments);
 				}
 
@@ -472,7 +472,7 @@
 						return null;
 					}
 
-					if (Permutation.isSet("debug"))
+					if (Env.isSet("debug"))
 					{
 						context.error("Missing value for: " + name +
 							" (during get()). Either define an init value, make the property nullable or define a fallback value.");
@@ -485,7 +485,7 @@
 				var currentGetter = priorityToFieldConfig[currentPriority].get;
 				if (currentGetter)
 				{
-					if (Permutation.isSet("debug"))
+					if (Env.isSet("debug"))
 					{
 						var value = context[currentGetter](name);
 						if (value === Undefined) {
@@ -566,7 +566,7 @@
 		getSingleValue : function(obj, propertyName, field)
 		{
 			var key = propertyNameToId[propertyName] + fieldToPriority[field];
-			if (Permutation.isSet("debug"))
+			if (Env.isSet("debug"))
 			{
 				if (typeof key != "number" || isNaN(key)) {
 					throw new Error("Invalid property or field: " + propertyName + ", " + field);
@@ -605,7 +605,7 @@
 			{
 				propertyId = propertyNameToId[propertyName];
 
-				if (Permutation.isSet("debug"))
+				if (Env.isSet("debug"))
 				{
 					if (propertyId === undefined) {
 						throw new Error(obj + ": Invalid property to import: " + propertyName);
@@ -683,7 +683,7 @@
 						{
 							newValue = propertyInit;
 						}
-						else if (Permutation.isSet("debug"))
+						else if (Env.isSet("debug"))
 						{
 							// Still no value. We warn about that the property is not nullable.
 							var config = PropertyUtil.getPropertyDefinition(obj.constructor, propertyName);

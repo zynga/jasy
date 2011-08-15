@@ -6,7 +6,7 @@
 */
 
 /**
- * @break {Permutation}
+ * @break {Env}
  */
 (function(global, undef)
 {
@@ -17,7 +17,7 @@
 	};
 	
 	// Small hack to correctly bootstrap system
-	global.Permutation = {
+	global.Env = {
 		getValue : function() {}, 
 		isSet : function() {}
 	};
@@ -35,7 +35,7 @@
 	 */
 	var Module = global.Module = function(name, members) 
 	{
-		if (Permutation.isSet("debug")) 
+		if (Env.isSet("debug")) 
 		{
 			Assert.assertModuleName(name, "Invalid module name " + name + "!");
 			Assert.assertMap(members, "Invalid map as module configuration in " + name + "!");
@@ -191,7 +191,7 @@
 	 */
 	Module.getByName = function(moduleName) 
 	{
-		if (Permutation.isSet("debug")) {
+		if (Env.isSet("debug")) {
 			Assert.assertString(moduleName);
 		}
 		

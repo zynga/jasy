@@ -6,7 +6,7 @@
 */
 
 // Include ES5 support if not natively supported
-if(!Permutation.isSet("es5")) 
+if(!Env.isSet("es5")) 
 {
 	// These classes don't really exist, so we need to protect the access.
 	try{
@@ -24,7 +24,7 @@ if(!Permutation.isSet("es5"))
 	
 	
 	
-	if (Permutation.isSet("debug"))
+	if (Env.isSet("debug"))
 	{
 		var checkMixinMemberConflicts = function(include, members, name) 
 		{
@@ -123,7 +123,7 @@ if(!Permutation.isSet("es5"))
 	
 	Module.declareName("Class", function(name, config) 
 	{
-		if (Permutation.isSet("debug")) 
+		if (Env.isSet("debug")) 
 		{
 			Assert.assertModuleName(name, "Invalid class name " + name + "!");
 			Assert.assertMap(config, "Invalid class configuration in " + name);
@@ -189,7 +189,7 @@ if(!Permutation.isSet("es5"))
 		var include = config.include;
 		if (include) 
 		{
-			if (Permutation.isSet("debug")) 
+			if (Env.isSet("debug")) 
 			{
 				for (var i=0, l=include.length; i<l; i++) {
 					Assert.assertClass(include[i], "Class " + name + " includes invalid class " + include[i] + " at position: " + i + "!");
@@ -287,7 +287,7 @@ if(!Permutation.isSet("es5"))
 		//   INTERFACES
 		// ------------------------------------
 	
-		if (Permutation.isSet("debug")) 
+		if (Env.isSet("debug")) 
 		{
 			var implement = config.implement;
 			if (implement) 
@@ -343,7 +343,7 @@ if(!Permutation.isSet("es5"))
 	 */
 	Class.getByName = function(className) 
 	{
-		if (Permutation.isSet("debug")) {
+		if (Env.isSet("debug")) {
 			Assert.assertString(className);
 		}
 		
@@ -360,7 +360,7 @@ if(!Permutation.isSet("es5"))
 	 */
 	Class.getEvents = function(cls) 
 	{
-		if (Permutation.isSet("debug")) {
+		if (Env.isSet("debug")) {
 			Assert.assertClass(cls);
 		}
 		
@@ -376,7 +376,7 @@ if(!Permutation.isSet("es5"))
 	 */
 	Class.getProperties = function(cls) 
 	{
-		if (Permutation.isSet("debug")) {
+		if (Env.isSet("debug")) {
 			Assert.assertClass(cls);
 		}
 		
@@ -424,7 +424,7 @@ if(!Permutation.isSet("es5"))
 	 */
 	var includesClass = Class.includesClass = function(cls, incCls) 
 	{
-		if (Permutation.isSet("debug")) {
+		if (Env.isSet("debug")) {
 			Assert.assertClass(cls, "Class to check for including class is itself not a class!");
 			Assert.assertClass(incCls, "Class to check for being included is not a class!");
 		}
