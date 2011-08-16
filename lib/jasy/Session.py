@@ -329,7 +329,7 @@ class Session():
         
         resolver = Resolver(self.getProjects(), permutation)
         resolver.addClassName("Env")
-        classes = Sorter(resolver).getSortedClasses()
+        classes = Sorter(resolver, permutation).getSortedClasses()
         compressedCode = Combiner(classes).getCompressedCode(permutation, None, optimization, formatting)
         writefile(fileName, compressedCode)
         
