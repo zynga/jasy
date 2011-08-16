@@ -15,7 +15,7 @@
 	// Env.getValue("assets");
 	var assets = global.$$assets;
 	if (!assets) {
-		console.error("Asset data is not available!");
+		console.warn("Asset data is not available!");
 	}
 	
 	var cache = {};
@@ -28,7 +28,7 @@
 	 * @param id {String} The asset to get the information for
 	 * @return {Array} Registered data or <code>null</code>
 	 */
-	var getData = function(id) 
+	var getData = assets ? function(id) 
 	{
 		var file = cache[id];
 		if (file != null) {
@@ -48,6 +48,8 @@
 		}
 
 		return cache[id] = file;
+	} : function(id) {
+		return null;
 	};
 	
 	
