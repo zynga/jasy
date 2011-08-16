@@ -6,7 +6,7 @@
 */
 
 /**
- * @break {Env}
+ * @break {jasy.Env}
  */
 (function(global, undef)
 {
