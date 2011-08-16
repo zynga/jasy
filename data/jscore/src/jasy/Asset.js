@@ -12,7 +12,7 @@
 (function(global) 
 {
 	// TODO: Implement using permutation injection
-	// Env.getValue("assets");
+	// jasy.Env.getValue("assets");
 	var assets = global.$$assets;
 	if (!assets) {
 		console.warn("Asset data is not available!");
@@ -43,8 +43,8 @@
 		var fileName = id.substring(lastSlash+1);
 
 		var file = (files[dirName] && files[dirName][fileName]) || (images[dirName] && images[dirName][fileName]) || null;
-		if (Env.isSet("debug")) {
-			Assert.assertNotNull(file, "Invalid asset identifier: " + id);
+		if (jasy.Env.isSet("debug")) {
+			jasy.Test.assertNotNull(file, "Invalid asset identifier: " + id);
 		}
 
 		return cache[id] = file;
@@ -53,7 +53,7 @@
 	};
 	
 	
-	Module("jasy.io.Asset",
+	Module("jasy.Asset",
 	{
 		/**
 		 * Whether the registry has information about the given asset.

@@ -328,7 +328,7 @@ class Session():
         })
         
         resolver = Resolver(self.getProjects(), permutation)
-        resolver.addClassName("Env")
+        resolver.addClassName("jasy.Env")
         classes = Sorter(resolver, permutation).getSortedClasses()
         compressedCode = Combiner(classes).getCompressedCode(permutation, None, optimization, formatting)
         writefile(fileName, compressedCode)

@@ -51,19 +51,19 @@ Module("jasy.property.Debug",
 				try 
 				{
 					if (type instanceof Array) {
-						Assert.assertInList(value, type);
+						jasy.Test.assertInList(value, type);
 					} else if (Class.isClass(type)) {
-						Assert.assertInstanceOf(value, type);
+						jasy.Test.assertInstanceOf(value, type);
 					} else if (Interface.isInterface(type)) {
 						Interface.assert(value, type);
 					}
 					else
 					{
 						var assertName = "assert" + type;
-						if (Assert[assertName]) {
-							Assert[assertName](value);
+						if (jasy.Test[assertName]) {
+							jasy.Test[assertName](value);
 						} else {
-							console.warn("Unsupported type check: " + type + "!");
+							console.warn("Unsupported check: " + type + "!");
 						}
 					}
 				} 

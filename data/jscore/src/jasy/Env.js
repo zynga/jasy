@@ -12,7 +12,7 @@
 (function(global, undef)
 {
 	// The build system is replacing this call via the loader permutation
-	var fields = Env.getValue("fields");
+	var fields = jasy.Env.getValue("fields");
 	
 	if (fields) 
 	{
@@ -63,7 +63,7 @@
 			}
 			
 			if (selected.debug) {
-				console.info("Env: " + key.join(", "));
+				console.info("jasy.Env: " + key.join(", "));
 			}
 
 			var adler32 = (function(data)
@@ -116,7 +116,7 @@
 	}
 	
 	
-	Module("Env",
+	Module("jasy.Env",
 	{
 		/** {Map} Currently selected fields from Env data */
 		SELECTED : selected,

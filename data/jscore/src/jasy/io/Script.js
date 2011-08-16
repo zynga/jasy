@@ -118,7 +118,7 @@
 					completed[uri] = true;
 					
 					/*
-					if (Env.isSet("debug")) {
+					if (jasy.Env.isSet("debug")) {
 						console.log("Script loaded: " + uri);
 					}
 					*/
@@ -166,7 +166,7 @@
 		
 		// Firefox(prior to Firefox 4) & Opera preserve execution order with script tags automatically,
 		// so just add all scripts as fast as possible. Firefox 4 has async=false to do the same.
-		if (supportsScriptAsync || Env.isSet("engine", "gecko") || Env.isSet("engine", "opera"))
+		if (supportsScriptAsync || jasy.Env.isSet("engine", "gecko") || jasy.Env.isSet("engine", "opera"))
 		{
 			var loader = function loader(uris, callback, context, nocache)
 			{
@@ -201,7 +201,7 @@
 								onLoad = getOnLoad(flushCallbacks, global, uris);
 							}
 
-							if (Env.isSet("debug")) {
+							if (jasy.Env.isSet("debug")) {
 								console.log("Loading: " + currentUri);
 							}
 
@@ -261,7 +261,7 @@
 						var currentUri = queuedUris.shift();
 						if (currentUri) 
 						{
-							if (Env.isSet("debug")) {
+							if (jasy.Env.isSet("debug")) {
 								console.log("Loading: " + currentUri);
 							}
 							

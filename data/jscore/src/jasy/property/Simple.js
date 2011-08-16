@@ -59,19 +59,19 @@
 			var propertyApply = config.apply;
 
 			// Validation
-			if (Env.isSet("debug"))
+			if (jasy.Env.isSet("debug"))
 			{
-				Assert.assertHasAllowedKeysOnly(config, ["name","nullable","init","type","fire","apply"],
+				jasy.Test.assertHasAllowedKeysOnly(config, ["name","nullable","init","type","fire","apply"],
 					"Invalid simple property configuration of '" + propertyName + "'! Unallowed key(s) found!");
 
-				Assert.assertString(propertyName);
+				jasy.Test.assertString(propertyName);
 
 				if (propertyNullable !== undef) {
-					Assert.assertBoolean(propertyNullable);
+					jasy.Test.assertBoolean(propertyNullable);
 				}
 
 				if (propertyInit) {
-					Assert.assertNonNull(propertyInit);
+					jasy.Test.assertNonNull(propertyInit);
 				}
 
 				if (propertyType) {
@@ -79,11 +79,11 @@
 				}
 
 				if (propertyFire) {
-					Assert.assertString(propertyFire);
+					jasy.Test.assertString(propertyFire);
 				}
 
 				if (propertyApply) {
-					Assert.assertFunction(propertyApply);
+					jasy.Test.assertFunction(propertyApply);
 				}
 			}
 
@@ -111,7 +111,7 @@
 				var context, data, value;
 				context = this;
 
-				if (Env.isSet("debug")) {
+				if (jasy.Env.isSet("debug")) {
 					jasy.property.Debug.checkGetter(context, config, arguments);
 				}
 
@@ -126,7 +126,7 @@
 						return propertyInit;
 					}
 
-					if (Env.isSet("debug"))
+					if (jasy.Env.isSet("debug"))
 					{
 						if (!propertyNullable) {
 							context.error("Missing value for: " + propertyName + " (during get())");
@@ -181,7 +181,7 @@
 			{
 				var context=this, data, old;
 
-				if (Env.isSet("debug")) {
+				if (jasy.Env.isSet("debug")) {
 					jasy.property.Debug.checkSetter(context, config, arguments);
 				}
 
@@ -225,7 +225,7 @@
 				var context, data, old, value;
 				context = this;
 
-				if (Env.isSet("debug")) {
+				if (jasy.Env.isSet("debug")) {
 					jasy.property.Debug.checkResetter(context, config, arguments);
 				}
 
@@ -244,7 +244,7 @@
 					if (propertyInit !== undef) {
 						value = propertyInit;
 					}
-					else if (Env.isSet("debug"))
+					else if (jasy.Env.isSet("debug"))
 					{
 						// Still no value. We warn about that the property is not nullable.
 						if (!propertyNullable) {

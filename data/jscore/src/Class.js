@@ -6,7 +6,7 @@
 */
 
 // Include ES5 support if not natively supported
-if(!Env.isSet("es5")) 
+if(!jasy.Env.isSet("es5")) 
 {
 	// These classes don't really exist, so we need to protect the access.
 	try{
@@ -24,7 +24,7 @@ if(!Env.isSet("es5"))
 	
 	
 	
-	if (Env.isSet("debug"))
+	if (jasy.Env.isSet("debug"))
 	{
 		var checkMixinMemberConflicts = function(include, members, name) 
 		{
@@ -123,35 +123,35 @@ if(!Env.isSet("es5"))
 	
 	Module.declareName("Class", function(name, config) 
 	{
-		if (Env.isSet("debug")) 
+		if (jasy.Env.isSet("debug")) 
 		{
-			Assert.assertModuleName(name, "Invalid class name " + name + "!");
-			Assert.assertMap(config, "Invalid class configuration in " + name);
-			Assert.assertHasAllowedKeysOnly(config, ["construct","events","members","properties","include","implement"], 
+			jasy.Test.assertModuleName(name, "Invalid class name " + name + "!");
+			jasy.Test.assertMap(config, "Invalid class configuration in " + name);
+			jasy.Test.assertHasAllowedKeysOnly(config, ["construct","events","members","properties","include","implement"], 
 				"Invalid configuration in class " + name + "! Unallowed key(s) found!");
 			
 			if ("construct" in config) {
-				Assert.assertFunction(config.construct, "Invalid constructor in class " + name + "!");
+				jasy.Test.assertFunction(config.construct, "Invalid constructor in class " + name + "!");
 			}
 			
 			if ("events" in config) {
-				Assert.assertMap(config.events, "Invalid event data in class " + name + "!");
+				jasy.Test.assertMap(config.events, "Invalid event data in class " + name + "!");
 			}
 			
 			if ("members" in config) {
-				Assert.assertMap(config.members, "Invalid member section in class " + name);
+				jasy.Test.assertMap(config.members, "Invalid member section in class " + name);
 			}
 
 			if ("properties" in config) {
-				Assert.assertMap(config.properties, "Invalid properties section in class " + name);
+				jasy.Test.assertMap(config.properties, "Invalid properties section in class " + name);
 			}
 			
 			if ("include" in config) {
-				Assert.assertArray(config.include, "Invalid include list in class " + name);
+				jasy.Test.assertArray(config.include, "Invalid include list in class " + name);
 			}
 
 			if ("implement" in config) {
-				Assert.assertArray(config.implement, "Invalid implement list in class " + name);
+				jasy.Test.assertArray(config.implement, "Invalid implement list in class " + name);
 			}
 		}
 		
@@ -189,10 +189,10 @@ if(!Env.isSet("es5"))
 		var include = config.include;
 		if (include) 
 		{
-			if (Env.isSet("debug")) 
+			if (jasy.Env.isSet("debug")) 
 			{
 				for (var i=0, l=include.length; i<l; i++) {
-					Assert.assertClass(include[i], "Class " + name + " includes invalid class " + include[i] + " at position: " + i + "!");
+					jasy.Test.assertClass(include[i], "Class " + name + " includes invalid class " + include[i] + " at position: " + i + "!");
 				}
 				
 				checkMixinMemberConflicts(include, config.members, name);
@@ -287,7 +287,7 @@ if(!Env.isSet("es5"))
 		//   INTERFACES
 		// ------------------------------------
 	
-		if (Env.isSet("debug")) 
+		if (jasy.Env.isSet("debug")) 
 		{
 			var implement = config.implement;
 			if (implement) 
@@ -343,8 +343,8 @@ if(!Env.isSet("es5"))
 	 */
 	Class.getByName = function(className) 
 	{
-		if (Env.isSet("debug")) {
-			Assert.assertString(className);
+		if (jasy.Env.isSet("debug")) {
+			jasy.Test.assertString(className);
 		}
 		
 		var obj = Module.resolveName(className);
@@ -360,8 +360,8 @@ if(!Env.isSet("es5"))
 	 */
 	Class.getEvents = function(cls) 
 	{
-		if (Env.isSet("debug")) {
-			Assert.assertClass(cls);
+		if (jasy.Env.isSet("debug")) {
+			jasy.Test.assertClass(cls);
 		}
 		
 		return cls.__events;
@@ -376,8 +376,8 @@ if(!Env.isSet("es5"))
 	 */
 	Class.getProperties = function(cls) 
 	{
-		if (Env.isSet("debug")) {
-			Assert.assertClass(cls);
+		if (jasy.Env.isSet("debug")) {
+			jasy.Test.assertClass(cls);
 		}
 		
 		return cls.__properties;
@@ -424,9 +424,9 @@ if(!Env.isSet("es5"))
 	 */
 	var includesClass = Class.includesClass = function(cls, incCls) 
 	{
-		if (Env.isSet("debug")) {
-			Assert.assertClass(cls, "Class to check for including class is itself not a class!");
-			Assert.assertClass(incCls, "Class to check for being included is not a class!");
+		if (jasy.Env.isSet("debug")) {
+			jasy.Test.assertClass(cls, "Class to check for including class is itself not a class!");
+			jasy.Test.assertClass(incCls, "Class to check for being included is not a class!");
 		}
 		
 		return cls.__includes.indexOf(incCls) != -1;
@@ -434,7 +434,7 @@ if(!Env.isSet("es5"))
 	
 	
 	// Add assertions
-	Assert.add(isClass, "isClass", "Invalid class!");
-	Assert.add(includesClass, "includesClass", "Does not include class %1!");
+	jasy.Test.add(isClass, "isClass", "Invalid class!");
+	jasy.Test.add(includesClass, "includesClass", "Does not include class %1!");
 	
 })(this);

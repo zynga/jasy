@@ -20,10 +20,10 @@
 	 */
 	Module.declareName("Interface", function(name, config) 
 	{
-		if (Env.isSet("debug")) 
+		if (jasy.Env.isSet("debug")) 
 		{
-			Assert.assertModuleName(name, "Invalid interface name " + name + "!");
-			Assert.assertMap(config, "Invalid interface configuration in " + name);
+			jasy.Test.assertModuleName(name, "Invalid interface name " + name + "!");
+			jasy.Test.assertMap(config, "Invalid interface configuration in " + name);
 		}
 		
 		var iface = 
@@ -75,8 +75,8 @@
 	 */	
 	Interface.getByName = function(interfaceName) 
 	{
-		if (Env.isSet("debug")) {
-			Assert.assertString(interfaceName);
+		if (jasy.Env.isSet("debug")) {
+			jasy.Test.assertString(interfaceName);
 		}
 		
 		var obj = Module.resolveName(interfaceName);
@@ -229,6 +229,6 @@
 	
 	
 	// Add assertion for interface type
-	Assert.add(isInterface, "isInterface", "Invalid interface!");
+	jasy.Test.add(isInterface, "isInterface", "Invalid interface!");
 	
 })();

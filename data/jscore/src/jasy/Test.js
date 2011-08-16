@@ -7,8 +7,12 @@
 
 (function(global, toString, undef) 
 {
+	if (!global.jasy) {
+		global.jasy = {};
+	}
+	
 	/**
-	 * Assertion module
+	 * Test module
 	 *
 	 * It also bundles all fixes under "fix/" before starting with the real code.
 	 *
@@ -22,7 +26,7 @@
 	 * @require {fix.ObjectKeys}
 	 * @require {fix.SetTimeoutArgs}
 	 */
-	var Assert = global.Assert = 
+	var Test = jasy.Test = 
 	{
 		/**
 		 * Adds a new assertion check
@@ -41,7 +45,7 @@
 			// Attach given method as is to assertion
 			this[methodName] = func;
 			if(func.displayName == null) {
-				func.displayName = "Assert." + methodName;
+				func.displayName = "jasy.Test." + methodName;
 			}
 
 			// Build assert method name
@@ -74,28 +78,28 @@
 				};
 			}
 			
-			this[assertName].displayName = "Assert." + assertName;
+			this[assertName].displayName = "jasy.Test." + assertName;
 		}
 	};
 	
-	Assert.add(function(value) { return typeof value == "boolean"; }, "isBoolean", "Not boolean!");
-	Assert.add(function(value) { return value === true; }, "isTrue", "Not 'true'!");
-	Assert.add(function(value) { return value === false; },"isFalse", "Not 'false'!");
-	Assert.add(function(value) { return typeof value == "string"; }, "isString", "Not a string!");
-	Assert.add(function(value) { return typeof value == "number" && isFinite(value); }, "isNumber", "Not a number!");
-	Assert.add(function(value) { return parseInt(value) === value; }, "isInteger", "Not an integer!");
-	Assert.add(function(value) { return value != null; }, "isNotNull", "Is null!");
+	Test.add(function(value) { return typeof value == "boolean"; }, "isBoolean", "Not boolean!");
+	Test.add(function(value) { return value === true; }, "isTrue", "Not 'true'!");
+	Test.add(function(value) { return value === false; },"isFalse", "Not 'false'!");
+	Test.add(function(value) { return typeof value == "string"; }, "isString", "Not a string!");
+	Test.add(function(value) { return typeof value == "number" && isFinite(value); }, "isNumber", "Not a number!");
+	Test.add(function(value) { return parseInt(value) === value; }, "isInteger", "Not an integer!");
+	Test.add(function(value) { return value != null; }, "isNotNull", "Is null!");
 
-	Assert.add(function(value, match) {
+	Test.add(function(value, match) {
 		return value == match;
 	}, "isEqual", "Is not equal!");
 
-	Assert.add(function(value) {
+	Test.add(function(value) {
 		var type = typeof value;
 		return value == null || type == "boolean" || type == "number" || type == "string";
 	}, "isPrimitive", "Not a primitive value!");
 
-	Assert.add(function(value) {
+	Test.add(function(value) {
 		return value != null && typeof value == "object";
 	}, "isObject", "Not an object!");
 
@@ -108,19 +112,19 @@
 		toStringMap[cls] = "[object " + cls + "]";
 	});
 
-	Assert.add(function(value) {
+	Test.add(function(value) {
 		return value != null && toString.call(value) == toStringMap.Array;
 	}, "isArray", "Not an array!");
 
-	Assert.add(function(value) {
+	Test.add(function(value) {
 		return value != null && toString.call(value) == toStringMap.Function;
 	}, "isFunction", "Not a function!");
 	
-	Assert.add(function(value) {
+	Test.add(function(value) {
 		return value != null && toString.call(value) == toStringMap.RegExp;
 	}, "isRegExp", "Not a regular expression!");
 
-	Assert.add(function(value) {
+	Test.add(function(value) {
 		return value != null && toString.call(value) == toStringMap.Object;
 	}, "isMap", "Not a map (plain object)!");
 
@@ -130,14 +134,14 @@
 		"function" : 1 
 	};
 	
-	Assert.add(function(value) {
+	Test.add(function(value) {
 		return value != null && objectOrFunction[typeof value] == 1;
 	}, "isObjectOrFunction", "Not a function or object!");
 	
-	Assert.add(function(value, keys) 
+	Test.add(function(value, keys) 
 	{
-		Assert.assertMap(value);
-		Assert.assertArray(keys);
+		Test.assertMap(value);
+		Test.assertArray(keys);
 		
 		var valueKeys = Object.keys(value);
 		for (var i=0, l=valueKeys.length; i<l; i++) 
@@ -151,20 +155,20 @@
 		return true;
 	}, "hasAllowedKeysOnly", "Defines a key %1 which is not allowed being used!");
 
-	Assert.add(function(value, regexp) { 
+	Test.add(function(value, regexp) { 
 		return typeof value == "string" && !!value.match(regexp); 
 	}, "matchesRegExp", "Does not match regular expression %1!");
 	
-	Assert.add(function(value, list) {
+	Test.add(function(value, list) {
 		return list.indexOf(value) != -1;
 	}, "isInList", "Is not in specified list!");
 	
-	Assert.add(function(value, clazz) {
+	Test.add(function(value, clazz) {
 		// Use instanceof here, but be memory safe in IE
 		return value != null && value.hasOwnProperty && value instanceof clazz;
 	}, "isInstanceOf", "Is not a instance of %1!");	
 
-	Assert.add(function(obj, key) {
+	Test.add(function(obj, key) {
 		return obj != null && key in obj;
 	}, "hasKey", "Missing key %1!");
 	
