@@ -245,7 +245,8 @@ class Tokenizer(object):
                     #print("Ignoring comment in %s: %s" % (self.fileId, commentError))
                     pass
 
-            elif ch == " " or ch == "\t":
+            # check for whitespace, also for special cases like 0xA0
+            elif ch in "\xA0 \t":
                 indent += ch
 
             else:
@@ -556,7 +557,7 @@ class Tokenizer(object):
             self.lexString(ch)
         
         else:
-            raise ParseError("Illegal token: %s" % ch, self.fileId, self.line)
+            raise ParseError("Illegal token: %s (Code: %s)" % (ch, ord(ch)), self.fileId, self.line)
 
         token.end = self.cursor
         return token.type
