@@ -26,8 +26,8 @@
 		}
 		
 		var lastSlash = id.lastIndexOf("/");
-		var dirName = id.substring(0, lastSlash);
-		var fileName = id.substring(lastSlash+1);
+		var dirName = id.slice(0, lastSlash);
+		var fileName = id.slice(lastSlash+1);
 
 		var images = assets.images;
 		if (images && images[dirName]) {
