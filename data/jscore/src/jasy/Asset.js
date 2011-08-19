@@ -11,46 +11,52 @@
  */
 (function(global) 
 {
-	// TODO: Implement using permutation injection
-	// jasy.Env.getValue("assets");
-	var assets = global.$$assets;
-	if (!assets) {
-		console.warn("Asset data is not available!");
-	}
+	var entryCache = {};
+	var spriteCache = {};
 	
-	var cache = {};
-	var sprites = {};
-	
-	
-	/**
-	 * Get information about an asset.
-	 *
-	 * @param id {String} The asset to get the information for
-	 * @return {Array} Registered data or <code>null</code>
-	 */
-	var getData = assets ? function(id) 
+	var getEntry = function(id) 
 	{
-		var file = cache[id];
-		if (file != null) {
-			return file;
+		if (jasy.Env.isSet("debug")) {
+			Test.assetString(id, "Invalid asset identifier: " + id);
 		}
-
-		var files = assets.files;
-		var images = assets.images;
-
+		
+		var entry = entryCache[id];
+		if (entry != null) {
+			return entry;
+		}
+		
 		var lastSlash = id.lastIndexOf("/");
 		var dirName = id.substring(0, lastSlash);
 		var fileName = id.substring(lastSlash+1);
 
-		var file = (files[dirName] && files[dirName][fileName]) || (images[dirName] && images[dirName][fileName]) || null;
-		if (jasy.Env.isSet("debug")) {
-			jasy.Test.assertNotNull(file, "Invalid asset identifier: " + id);
+		var images = assets.images;
+		if (images && images[dirName]) {
+			var entry = images[dirName][fileName];
 		}
 
-		return cache[id] = file;
-	} : function(id) {
-		return null;
+		if (!entry)
+		{
+			var files = assets.files;
+			if (files && files[dirName]) {
+				var entry = files[dirName][fileName];
+			}
+		}
+		
+		if (entry) {
+			return entryCache[id] = entry;
+		}
 	};
+	
+	// TODO: Implement using permutation injection
+	// jasy.Env.getValue("assets");
+	var assets = global.$$assets;
+	if (!assets) 
+	{
+		console.warn("Asset data is not available!");
+		
+		// override getter to always return undefined
+		getEntry = new Function;
+	}
 	
 	
 	Module("jasy.Asset",
@@ -62,7 +68,7 @@
 		 * @return {Boolean} <code>true</code> when the asset is known.
 		 */
 		has : function(id) {
-			return cache[id] || getData(id) != null;
+			return entryCache[id] || getEntry(id) != null;
 		},
 
 
@@ -71,14 +77,15 @@
 		 */
 		getImageSize : function(id) 
 		{
-			var data = cache[id] || getData(id);
-			if (data) 
-			{
-				return { 
-					width: data[1], 
-					height: data[2] 
-				};
+			var entry = entryCache[id] || getEntry(id);
+			if (jasy.Env.isSet("debug") && (!entry || entry.length < 3)) {
+				throw new Error("Unknown image: " + id);
 			}
+			
+			return { 
+				width: entry[1], 
+				height: entry[2] 
+			};
 		},
 
 
@@ -92,26 +99,27 @@
 		 */
 		getImageSprite : function(id)
 		{
-			var result = sprites[id];
+			var result = spriteCache[id];
 			if (!result) 
 			{
-				var data = cache[id] || getData(id);
-				if (data.length > 3) 
-				{
-					var lastSlash = id.lastIndexOf("/");
-					var dirName = id.substring(0, lastSlash);
-					var spriteData = assets.sprites[dirName][data[3]];
-					var needsPosX = spriteData[4] == 1;
-					var needsPosY = spriteData[5] == 1;
-
-					sprites[id] = result = {
-						uri : assets.roots[spriteData[1]] + "/" + dirName + "/" + spriteData[0],
-						left : needsPosX ? data[4] : 0,
-						top : needsPosY ? needsPosX ? data[5] : data[4] : 0,
-						width : spriteData[2],
-						height : spriteData[3]
-					};
+				var entry = entryCache[id] || getEntry(id);
+				if (jasy.Env.isSet("debug") && (!entry || entry.length < 5)) {
+					throw new Error("Unknown image sprite: " + id);
 				}
+				
+				var lastSlash = id.lastIndexOf("/");
+				var dirName = id.substring(0, lastSlash);
+				var spriteData = assets.sprites[dirName][entry[3]];
+				var needsPosX = spriteData[4] == 1;
+				var needsPosY = spriteData[5] == 1;
+
+				spriteCache[id] = result = {
+					uri : assets.roots[spriteData[1]] + "/" + dirName + "/" + spriteData[0],
+					left : needsPosX ? entry[4] : 0,
+					top : needsPosY ? needsPosX ? entry[5] : entry[4] : 0,
+					width : spriteData[2],
+					height : spriteData[3]
+				};
 			}
 
 			return result;
@@ -131,16 +139,16 @@
 				return id;
 			}
 
-			var data = cache[id] || getData(id);
+			var entry = entryCache[id] || getEntry(id);
+			if (jasy.Env.isSet("debug") && !entry) {
+				throw new Error("Could not figure out URL for asset: " + id);
+			}
 			
-			// Differ between images (first case) and files (second case)
-			var root = assets.roots[data.join ? data[0] : data];
+			// Differ between files (first case) and images (second case)
+			var root = assets.roots[typeof entry == "number" ? entry : entry[0]];
 			
-			// Replace project identifier with root
-			var project = id.slice(0, id.indexOf("/"));
-			var url = id.replace(project, root);
-			
-			return url;
+			// Merge to full qualified URI
+			return root + id.slice(id.indexOf("/"));
 		}
 	});	
 })(this);
