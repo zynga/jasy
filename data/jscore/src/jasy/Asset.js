@@ -17,7 +17,7 @@
 	var getEntry = function(id) 
 	{
 		if (jasy.Env.isSet("debug")) {
-			jasy.Test.assetString(id, "Invalid asset identifier: " + id);
+			jasy.Test.assertString(id, "Invalid asset identifier: " + id);
 		}
 		
 		var entry = entryCache[id];
