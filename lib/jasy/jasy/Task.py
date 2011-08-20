@@ -1,5 +1,7 @@
+import types
 import logging
 import jasy.Error
+
 
 __tasks__ = {}
 
@@ -15,19 +17,24 @@ def executeTask(name):
         raise jasy.Error.UserError("No such task: %s" % name)
         
 def printTasks():
-    for task in __tasks__:
-        logging.info("%s" % task)
+    for name in __tasks__:
+        obj = __tasks__[name]
+        if obj.desc:
+            logging.info("%s: %s" % (name, obj.desc))
+        else:
+            logging.info("%s" % name)
 
 
 
 class Task:
     __doc__ = ""
     
-    def __init__(self, func):
+    def __init__(self, func, desc=""):
         name = func.__name__
         self.__func = func
         
         self.name = name
+        self.desc = desc
         self.fullname = "%s.%s" % (func.__module__, name)
         
         try:
@@ -50,13 +57,18 @@ class Task:
 
 def task(func):
     """ Specifies that this function is a task. """
-
-    # TODO: Support Task arguments in decorators:
-    # http://stackoverflow.com/questions/739654/understanding-python-decorators/1594484#1594484
-
+    
     if isinstance(func, Task):
         return func
 
-    return Task(func)
+    elif isinstance(func, types.FunctionType):
+        return Task(func)
+    
+    else:
+        # Used for descriptions
+        def wrapper(finalfunc):
+            return Task(finalfunc, func)
+            
+        return wrapper
 
     

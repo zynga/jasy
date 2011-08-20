@@ -9,7 +9,7 @@ def clear():
 
 
 
-@task
+@task("Simple Test")
 def simple():
     # Setup session
     session = Session()
@@ -30,7 +30,7 @@ def simple():
 
 
 
-@task
+@task("Full Test")
 def build():
     # Setup session
     session = Session()
