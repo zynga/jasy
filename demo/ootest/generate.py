@@ -1,18 +1,3 @@
-#!/usr/bin/env python3
-
-# Extend PYTHONPATH with 'lib'
-import sys, os
-sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, os.pardir, "lib")))
-
-# Import JavaScript tooling
-from jasy import *
-
-
-
-#
-# Tasks
-#
-
 @task
 def clear():
     # Setup session
@@ -89,11 +74,3 @@ def build():
 
         # Write file
         writefile("build/oo-%s.js" % permutation.getChecksum(), compressedCode + bootCode)
-
-
-
-#
-# Execute Jasy
-#
-
-run()
