@@ -3,8 +3,6 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-import markdown2
-
 class CommentException(Exception):
     def __init__(self, message, lineNo=0, tag=None):
         if tag:
