@@ -1,4 +1,5 @@
 import logging
+import jasy.Error
 
 __tasks__ = {}
 
@@ -11,7 +12,7 @@ def executeTask(name):
         logging.debug("Executing task: %s" % name)
         __tasks__[name]()
     else:
-        raise UserError("No such task: %s" % name)
+        raise jasy.Error.UserError("No such task: %s" % name)
         
 def printTasks():
     for task in __tasks__:

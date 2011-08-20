@@ -114,7 +114,7 @@ def run():
         sys.exit(1)
 
     for name in args:
-        env.executeTask(name)
+        executeTask(name)
         
         
 
