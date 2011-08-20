@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+
+#
+# Jasy - JavaScript Tooling Framework
+# Copyright 2010-2011 Sebastian Werner
+#
+
+#
+# This one is heavily inspired by the SCons Script Header. 
+# Thank you very much guys!
+# 
+# SCons - a Software Constructor
+#
+# Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 The SCons Foundation
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+# KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+
+import os
+import os.path
+import sys
+
+__version__ = "1.0-alpha1"
+
+script_dir = sys.path[0]
+
+if script_dir in sys.path:
+    sys.path.remove(script_dir)
+
+libs = []
+
+local_version = 'jasy-local-' + __version__
+local = 'jasy-local'
+if script_dir:
+    local_version = os.path.join(script_dir, local_version)
+    local = os.path.join(script_dir, local)
+libs.append(os.path.abspath(local_version))
+libs.append(os.path.abspath(local))
+
+jasy_version = 'jasy-%s' % __version__
+
+prefs = []
+
+if sys.platform == 'win32':
+    # sys.prefix is (likely) C:\Python*;
+    # check only C:\Python*.
+    prefs.append(sys.prefix)
+    prefs.append(os.path.join(sys.prefix, 'Lib', 'site-packages'))
+else:
+    # On other (POSIX) platforms, things are more complicated due to
+    # the variety of path names and library locations.  Try to be smart
+    # about it.
+    if script_dir == 'bin':
+        # script_dir is `pwd`/bin;
+        # check `pwd`/lib/jasy*.
+        prefs.append(os.getcwd())
+    else:
+        if script_dir == '.' or script_dir == '':
+            script_dir = os.getcwd()
+        head, tail = os.path.split(script_dir)
+        if tail == "bin":
+            # script_dir is /foo/bin;
+            # check /foo/lib/jasy*.
+            prefs.append(head)
+
+    head, tail = os.path.split(sys.prefix)
+    if tail == "usr":
+        # sys.prefix is /foo/usr;
+        # check /foo/usr/lib/jasy* first,
+        # then /foo/usr/local/lib/jasy*.
+        prefs.append(sys.prefix)
+        prefs.append(os.path.join(sys.prefix, "local"))
+    elif tail == "local":
+        h, t = os.path.split(head)
+        if t == "usr":
+            # sys.prefix is /foo/usr/local;
+            # check /foo/usr/local/lib/jasy* first,
+            # then /foo/usr/lib/jasy*.
+            prefs.append(sys.prefix)
+            prefs.append(head)
+        else:
+            # sys.prefix is /foo/local;
+            # check only /foo/local/lib/jasy*.
+            prefs.append(sys.prefix)
+    else:
+        # sys.prefix is /foo (ends in neither /usr or /local);
+        # check only /foo/lib/jasy*.
+        prefs.append(sys.prefix)
+
+    temp = [os.path.join(x, 'lib') for x in prefs]
+    temp.extend([os.path.join(x,
+           'lib',
+           'python' + sys.version[:3],
+           'site-packages') for x in prefs])
+    prefs = temp
+
+    # Add the parent directory of the current python's library to the
+    # preferences.  On SuSE-91/AMD64, for example, this is /usr/lib64,
+    # not /usr/lib.
+    try:
+        libpath = os.__file__
+    except AttributeError:
+        pass
+    else:
+        # Split /usr/libfoo/python*/os.py to /usr/libfoo/python*.
+        libpath, tail = os.path.split(libpath)
+        # Split /usr/libfoo/python* to /usr/libfoo
+        libpath, tail = os.path.split(libpath)
+        # Check /usr/libfoo/jasy*.
+        prefs.append(libpath)
+
+    try:
+        import pkg_resources
+    except ImportError:
+        pass
+    else:
+        # when running from an egg add the egg's directory 
+        try:
+            d = pkg_resources.get_distribution('jasy')
+        except pkg_resources.DistributionNotFound:
+            pass
+        else:
+            prefs.append(d.location)
+
+# Look first for 'jasy-__version__' in all of our preference libs,
+# then for 'jasy'.
+libs.extend([os.path.join(x, jasy_version) for x in prefs])
+libs.extend([os.path.join(x, 'jasy') for x in prefs])
+
+sys.path = libs + sys.path
+
+if __name__ == "__main__":
+    import Jasy
+    Jasy.main()
