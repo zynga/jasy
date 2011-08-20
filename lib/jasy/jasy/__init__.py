@@ -19,24 +19,8 @@ VERSION = 1.0
 
 __all__ = ["main", "VERSION"]
 
-import sys, logging
+import sys, logging, os
 from optparse import OptionParser
-
-
-
-def __exists(dirname='', filelist=[]):
-    """This function checks that an SConstruct file exists in a directory.
-    If so, it returns the path of the file. By default, it checks the
-    current directory.
-    """
-    if not filelist:
-        filelist = ['generate', 'generate.py', 'Generate', 'Generate.py']
-    for file in filelist:
-        sfile = os.path.join(dirname, file)
-        if os.path.isfile(sfile):
-            return sfile
-
-    return None
 
 
 def run():
@@ -88,18 +72,22 @@ def run():
     # Find and execute build script
     #
     
-    scripts = []
+    script = None
     if options.file:
-        scripts.extend(options.file)
-    if not scripts:
-        sfile = __exists(filelist=options.file)
-        if sfile:
-            scripts.append(sfile)
+        if os.path.isfile(options.file):
+            script = options.file
+    else:
+        for name in ["generate", "generate.py", "Generate", "Generate.py"]:
+            if os.path.isfile(name):
+                script = name
 
-    if not scripts:
-        raise UserError("No generate file found!")
+    if script is None:
+        if options.file:
+            raise UserError("No generate file '%s' found!" % options.file)
+        else:
+            raise UserError("No generate file found!")
 
-    buildfile = open(scripts[0], "r")
+    buildfile = open(script, "r")
     exec(buildfile.read())
 
 
