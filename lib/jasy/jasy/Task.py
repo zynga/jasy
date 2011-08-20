@@ -1,27 +1,21 @@
 import logging
 
+__tasks__ = {}
 
-class Environment:
-    tasks = {}
-    verbose = None
+def addTask(task):
+    logging.debug("Registering task: %s" % task.name)
+    __tasks__[task.name] = task
     
-    def __init__(self):
-        pass
-
-    def addTask(self, task):
-        logging.debug("Registering task: %s" % task.name)
-        self.tasks[task.name] = task
+def executeTask(name):
+    if name in __tasks__:
+        logging.debug("Executing task: %s" % name)
+        __tasks__[name]()
+    else:
+        raise UserError("No such task: %s" % name)
         
-    def executeTask(self, name):
-        if name in self.tasks:
-            logging.debug("Executing task: %s" % name)
-            self.tasks[name]()
-        else:
-            raise Exception("No such task: %s" % name)
-            
-
-            
-env = Environment()
+def printTasks():
+    for task in __tasks__:
+        logging.info("%s" % task)
 
 
 
@@ -40,7 +34,7 @@ class Task:
         except AttributeError:
             pass
             
-        env.addTask(self)
+        addTask(self)
         
 
     def __call__(self, *args, **kw):

@@ -109,7 +109,9 @@ def run():
     #
     
     if not args:
-        logging.error("No tasks given")
+        logging.error("No tasks to execute. Please choose from: ")
+        printTasks()
+        sys.exit(1)
 
     for name in args:
         env.executeTask(name)
