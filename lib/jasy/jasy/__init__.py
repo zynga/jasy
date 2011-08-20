@@ -3,6 +3,7 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
+from jasy.Error import *
 from jasy.Session import *
 from jasy.Project import *
 from jasy.Resolver import *
@@ -22,16 +23,41 @@ import sys, logging
 from optparse import OptionParser
 
 
+
+def __exists(dirname='', filelist=[]):
+    """This function checks that an SConstruct file exists in a directory.
+    If so, it returns the path of the file. By default, it checks the
+    current directory.
+    """
+    if not filelist:
+        filelist = ['generate', 'generate.py', 'Generate', 'Generate.py']
+    for file in filelist:
+        sfile = os.path.join(dirname, file)
+        if os.path.isfile(sfile):
+            return sfile
+
+    return None
+
+
 def run():
     """ Main routine which should be called on startup """
+
+    #
+    # Parse options
+    #
 
     parser = OptionParser()
     parser.add_option("-q", "--quiet", action="store_false", dest="verbose", help="don't print status messages to stdout")
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="print more detailed status messages to stdout")
     parser.add_option("-l", "--log", dest="logfile", help="Write debug messages to given logfile")
-    parser.add_option("-f", "--file", dest="buildscript", help="Use the given build script")
+    parser.add_option("-f", "--file", dest="file", help="Use the given build script")
 
     (options, args) = parser.parse_args()
+
+
+    #
+    # Configure logging
+    # 
 
     if options.logfile:
         logging.basicConfig(filename=options.logfile, level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -57,8 +83,33 @@ def run():
     console.setFormatter(logging.Formatter('>>> %(message)s', '%H:%M:%S'))
     logging.getLogger().addHandler(console)
 
-    for name, value in vars(options).items():
-        setattr(env, name, value)
+
+    #
+    # Find and execute build script
+    #
+    
+    scripts = []
+    if options.file:
+        scripts.extend(options.file)
+    if not scripts:
+        sfile = __exists(filelist=options.file)
+        if sfile:
+            scripts.append(sfile)
+
+    if not scripts:
+        raise UserError("No generate file found!")
+
+    buildfile = open(scripts[0], "r")
+    exec(buildfile.read())
+
+
+
+    #
+    # Execute tasks
+    #
+    
+    if not args:
+        logging.error("No tasks given")
 
     for name in args:
         env.executeTask(name)
@@ -72,19 +123,15 @@ def main():
         sys.stderr.write(msg % (VERSION, sys.version.split()[0]))
         sys.exit(1)
 
-    exitStatus = 0
-
     try:
         run()
-        
-    except SystemExit as s:
-        if s:
-            exit_status = s
-    except KeyboardInterrupt:
-        print("Build interrupted!")
-        sys.exit(2)
-    #except:
-    #    print("Unknown error!")
-    #    sys.exit(2)
 
-    sys.exit(exitStatus)
+    except UserError as user:
+        sys.stderr.write("%s\n" % user)
+        sys.exit(1)
+        
+    except KeyboardInterrupt:
+        sys.stderr.write("Build interrupted!\n")
+        sys.exit(2)
+
+    sys.exit(0)
