@@ -1,7 +1,7 @@
 /* 
 ==================================================================================================
-  Jasy - JavaScript Tooling Framework
-  Copyright 2010-2011 Sebastian Werner
+	Jasy - JavaScript Tooling Framework
+	Copyright 2010-2011 Sebastian Werner
 ==================================================================================================
 */
 
@@ -22,6 +22,33 @@ if(!jasy.Env.isSet("es5"))
 		return "[class " + this.className + "]";
 	};
 	
+	
+	var extendClass = function(clazz, construct, superClass, name, basename)
+	{
+		var superproto = superClass.prototype;
+
+		// Use helper function/class to save the unnecessary constructor call while
+		// setting up inheritance.
+		var helper = new Function;
+		helper.prototype = superproto;
+		var proto = new helper;
+
+		// Apply prototype to new helper instance
+		clazz.prototype = proto;
+
+		// Store names in prototype
+		proto.name = proto.classname = name;
+		proto.basename = basename;
+
+		// Store base constructor to constructor-
+		// Store reference to extend class
+		construct.base = clazz.superclass = superClass;
+
+		// Store statics/constructor onto constructor/prototype
+	 	// Store correct constructor
+		// Store statics onto prototype
+		construct.self = clazz.constructor = proto.constructor = clazz;
+	};
 	
 	
 	if (jasy.Env.isSet("debug"))
@@ -158,7 +185,7 @@ if(!jasy.Env.isSet("es5"))
 		
 		
 		// ------------------------------------
-		//   CONSTRUCTOR
+		//	 CONSTRUCTOR
 		// ------------------------------------
 		
 		var construct = config.construct || function construct(){};
@@ -182,7 +209,7 @@ if(!jasy.Env.isSet("es5"))
 	
 	
 		// ------------------------------------
-		//   MIXINS
+		//	 MIXINS
 		// ------------------------------------
 	
 		// Insert other classes
@@ -223,12 +250,12 @@ if(!jasy.Env.isSet("es5"))
 					events[key] = includeEvents[key];
 				}
 			}
-		}	
+		} 
 	
 	
 	
 		// ------------------------------------
-		//   LOCALS
+		//	 LOCALS
 		// ------------------------------------
 	
 		// Add properties
@@ -284,7 +311,7 @@ if(!jasy.Env.isSet("es5"))
 	
 	
 		// ------------------------------------
-		//   INTERFACES
+		//	 INTERFACES
 		// ------------------------------------
 	
 		if (jasy.Env.isSet("debug")) 
@@ -327,7 +354,7 @@ if(!jasy.Env.isSet("es5"))
 		
 		
 		// ------------------------------------
-		//   FINISH
+		//	 FINISH
 		// ------------------------------------
 		
 		// Attach to namespace
