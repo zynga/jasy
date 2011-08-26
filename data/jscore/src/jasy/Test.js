@@ -104,7 +104,7 @@
 	}, "isObject", "Not an object!");
 	
 	// Via: https://github.com/dperini/nwmatcher/blob/master/src/nwmatcher.js#L182-190
-	var nativeCompare = (doc.appendChild + '').replace(/appendChild/g, '');
+	var nativeCompare = (document.appendChild + '').replace(/appendChild/g, '');
 	Test.add(function(object, method) {
 		var m = object && object[method] || false;
 		return m && typeof m != 'string' &&
