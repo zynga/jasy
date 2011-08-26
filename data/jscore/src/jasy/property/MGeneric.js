@@ -57,7 +57,7 @@
 						jasy.Test.assertMap(property);
 					}
 					
-					for (var i=0, i=property.length; i<l; i++) 
+					for (var i=0, l=property.length; i<l; i++) 
 					{
 						
 						var name = property[i];
@@ -107,7 +107,7 @@
 					
 					var ret = {};
 					
-					for (var i=0, i=property.length; i<l; i++) 
+					for (var i=0, l=property.length; i<l; i++) 
 					{
 						
 						var name = property[i];
