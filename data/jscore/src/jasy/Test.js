@@ -1,7 +1,7 @@
 /* 
 ==================================================================================================
-  Jasy - JavaScript Tooling Framework
-  Copyright 2010-2011 Sebastian Werner
+	Jasy - JavaScript Tooling Framework
+	Copyright 2010-2011 Sebastian Werner
 ==================================================================================================
 */
 
@@ -102,6 +102,14 @@
 	Test.add(function(value) {
 		return value != null && typeof value == "object";
 	}, "isObject", "Not an object!");
+	
+	// Via: https://github.com/dperini/nwmatcher/blob/master/src/nwmatcher.js#L182-190
+	var nativeCompare = (document.appendChild + '').replace(/appendChild/g, '');
+	Test.add(function(object, method) {
+		var m = object && object[method] || false;
+		return m && typeof m != 'string' &&
+			nativeCompare == (m + '').replace(new RegExp(method, 'g'), '');
+	}, "isNative", "Not a native method!");
 
 	// Make not use of instanceof operator as it has a memory leak in IE and also does not work cross frame.
 	// Memory leak: http://ajaxian.com/archives/working-aroung-the-instanceof-memory-leak
@@ -127,7 +135,6 @@
 	Test.add(function(value) {
 		return value != null && toString.call(value) == toStringMap.Object;
 	}, "isMap", "Not a map (plain object)!");
-
 
 	var objectOrFunction = { 
 		"object" : 1, 
@@ -166,7 +173,7 @@
 	Test.add(function(value, clazz) {
 		// Use instanceof here, but be memory safe in IE
 		return value != null && value.hasOwnProperty && value instanceof clazz;
-	}, "isInstanceOf", "Is not a instance of %1!");	
+	}, "isInstanceOf", "Is not a instance of %1!"); 
 
 	Test.add(function(obj, key) {
 		return obj != null && key in obj;

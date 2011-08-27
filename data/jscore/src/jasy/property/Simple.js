@@ -70,10 +70,6 @@
 					jasy.Test.assertBoolean(propertyNullable);
 				}
 
-				if (propertyInit) {
-					jasy.Test.assertNonNull(propertyInit);
-				}
-
 				if (propertyType) {
 					// TODO
 				}
