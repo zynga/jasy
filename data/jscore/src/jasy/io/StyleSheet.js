@@ -11,6 +11,7 @@
 {
 	var completed = {};
 	var loading = {};
+	var dynamicUri = "?r=" + Date.now();
 	
 	/** 
 	 * Stylesheet (CSS) loader and manager. Tracks status of all loaded files.
@@ -37,11 +38,16 @@
 		 * @param url {String} URL pointing to the stylesheet
 		 * @param callback {Function} Callback that fires when stylesheet is loaded
 		 * @param context {Object} Context in which the callback is being executed. Defaults to global context.
+		 * @param nocache {Boolean?false} Appends a dynamic parameter to each script to force a fresh copy
 		 */
-		load: function(url, callback, context) 
+		load: function(url, callback, context, nocache) 
 		{
 			var head = doc.getElementsByTagName('head')[0];
-
+			
+			if (jasy.Env.isSet("debug")) {
+				nocache = true;
+			}
+			
 			context = context || global;
 
 			if (loading[url]) {
@@ -81,7 +87,7 @@
 
 				link.rel = "stylesheet";
 				link.type = "text/css";
-				link.href = url;
+				link.href = url + (nocache ? dynamicUri : "");
 
 				head.appendChild(link);
 			}
@@ -90,7 +96,7 @@
 			else if (jasy.Env.isSet("engine", "gecko")) 
 			{
 				var style = doc.createElement("style");
-				style.textContent = "@import '" + url + "'";
+				style.textContent = "@import '" + url + (nocache ? dynamicUri : "") + "'";
 
 				var handle = setInterval(function() 
 				{
@@ -101,7 +107,7 @@
 						clearInterval(handle);
 						load();
 					} catch(e) {}
-				}, 10);
+				}, 30);
 
 				head.appendChild(style);
 			}
@@ -118,7 +124,7 @@
 
 				link.rel = "stylesheet";
 				link.type = "text/css";
-				link.href = url;
+				link.href = url + (nocache ? dynamicUri : "");
 
 				head.appendChild(link);
 			}
