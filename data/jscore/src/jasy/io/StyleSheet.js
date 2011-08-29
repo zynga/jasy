@@ -44,10 +44,6 @@
 
 			context = context || global;
 
-			if (jasy.Env.isSet("debug")) {
-				console.log("Loading stylesheet: " + url);
-			}
-			
 			if (loading[url]) {
 				throw new Error("Stylesheet is already loading: " + url);
 			}
@@ -58,12 +54,6 @@
 			{
 				completed[url] = true;
 				delete loading[url];
-				
-				/*
-				if (jasy.Env.isSet("debug")) {
-					console.log("Stylesheet loaded: " + url);
-				}
-				*/
 
 				if (callback) {
 					callback.call(context);

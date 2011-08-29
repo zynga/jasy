@@ -116,12 +116,6 @@
 					
 					// Add to shared loaded registry
 					completed[uri] = true;
-					
-					/*
-					if (jasy.Env.isSet("debug")) {
-						console.log("Script loaded: " + uri);
-					}
-					*/
 				}
 				
 				if (callback) 
@@ -201,10 +195,6 @@
 								onLoad = getOnLoad(flushCallbacks, global, uris);
 							}
 
-							if (jasy.Env.isSet("debug")) {
-								console.log("Loading: " + currentUri);
-							}
-
 							createScriptTag(currentUri, onLoad, nocache);
 						}
 					}
@@ -259,16 +249,9 @@
 					var executeOneByOne = function()
 					{
 						var currentUri = queuedUris.shift();
-						if (currentUri) 
-						{
-							if (jasy.Env.isSet("debug")) {
-								console.log("Loading: " + currentUri);
-							}
-							
+						if (currentUri) {
 							createScriptTag(currentUri, getOnLoad(executeOneByOne), nocache);
-						}
-						else
-						{
+						} else {
 							flushCallbacks();
 						}
 					};
