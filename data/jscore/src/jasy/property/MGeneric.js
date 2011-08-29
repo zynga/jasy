@@ -64,7 +64,7 @@
 							method = setters[name] = "set" + up(name);
 						}
 
-						this[method](property[value]);
+						this[method](property[name]);
 					}
 				}
 			},
