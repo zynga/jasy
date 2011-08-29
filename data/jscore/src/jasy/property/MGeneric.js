@@ -57,10 +57,8 @@
 						jasy.Test.assertMap(property);
 					}
 					
-					for (var i=0, l=property.length; i<l; i++) 
+					for (var name in property) 
 					{
-						
-						var name = property[i];
 						var method = setters[name];
 						if (!method) {
 							method = setters[name] = "set" + up(name);
