@@ -157,7 +157,7 @@
 	// so just add all scripts as fast as possible. Firefox 4 has async=false to do the same.
 	if (supportsScriptAsync || jasy.Env.isSet("engine", "gecko") || jasy.Env.isSet("engine", "opera"))
 	{
-		var load = function loader(uris, callback, context, nocache)
+		var load = function(uris, callback, context, nocache)
 		{
 			var onLoad;
 			var executeDirectly = !!callback;
@@ -203,7 +203,7 @@
 	}
 	else
 	{
-		var load = function loader(uris, callback, context, nocache)
+		var load = function(uris, callback, context, nocache)
 		{
 			var executeDirectly = !!callback;
 			var queuedUris = [];
@@ -257,6 +257,11 @@
 		};
 	}
 	
+	/**
+	 * Generic script loader for features. Could be used for loading feature/class packages after initial load.
+	 *
+	 * (though limited feature set and file registration not useful for data transaction)
+	 */
 	Module("jasy.io.Script",
 	{
 		/**
