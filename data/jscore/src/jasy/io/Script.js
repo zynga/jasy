@@ -19,6 +19,8 @@
 	// the following is a feature sniff for the ability to set async=false on dynamically created script elements, as proposed to the W3C
 	// RE: http://wiki.whatwg.org/wiki/Dynamic_Script_Execution_Order
 	var supportsScriptAsync = doc.createElement("script").async === true;
+	
+	// Dynamic URI can be shared because we do not support reloading files
 	var dynamicUri = "?r=" + Date.now();
 
 
@@ -151,6 +153,9 @@
 			todo[i].call(todo[i+1]);
 		}
 	};
+
+
+
 
 	
 	// Firefox(prior to Firefox 4) & Opera preserve execution order with script tags automatically,
