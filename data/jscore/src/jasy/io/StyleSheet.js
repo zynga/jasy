@@ -7,6 +7,9 @@
 ==================================================================================================
 */
 
+/**
+ * @require {fix.DocumentHead}
+ */
 (function(global, doc) 
 {
 	var completed = {};
@@ -119,7 +122,7 @@
 				}
 			}
 			
-			var head = doc.getElementsByTagName('head')[0];
+			var head = doc.head;
 			
 			if (jasy.Env.isSet("debug")) {
 				nocache = true;
