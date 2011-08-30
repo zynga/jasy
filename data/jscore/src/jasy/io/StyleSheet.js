@@ -68,20 +68,16 @@
 				}
 			}
 			
-			var caller = function(uri) 
+			for (var i=0, l=uris.length; i<l; i++) 
 			{
-				return function() 
+				this.load(uris[i], function(url) 
 				{
-					delete keys[uri];
+					delete keys[url];
 			
 					if (Object.empty(keys)) {
 						callback.call(context||global);
 					}
-				}
-			};
-			
-			for (var i=0, l=uris.length; i<l; i++) {
-				this.load(uris[i], caller(uris[i]), null, nocache);
+				}, null, nocache);
 			}
 		},
 		
@@ -136,7 +132,7 @@
 				delete loading[url];
 
 				if (callback) {
-					callback.call(context);
+					callback.call(context, url);
 				}
 			};
 
