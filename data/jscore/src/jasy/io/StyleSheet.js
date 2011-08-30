@@ -156,7 +156,7 @@
 							load();
 						}
 					}
-				}, 10);
+				}, 50);
 
 				link.rel = "stylesheet";
 				link.type = "text/css";
@@ -180,7 +180,7 @@
 						clearInterval(handle);
 						load();
 					} catch(e) {}
-				}, 30);
+				}, 50);
 
 				head.appendChild(style);
 			}
