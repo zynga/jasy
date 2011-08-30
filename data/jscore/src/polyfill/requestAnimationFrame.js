@@ -7,10 +7,6 @@
 ==================================================================================================
 */
 
-/**
- * @require {fix.ObjectKeys}
- * @require {fix.DateParse}
- */
 (function(global) 
 {
 	if(global.requestAnimationFrame) {
@@ -75,7 +71,7 @@
 		return callbackHandle;
 	};
 
-	global.cancelRequestAnimationFrame = function cancelRequestAnimationFrame(handle) 
+	global.cancelRequestAnimationFrame = function(handle) 
 	{
 		delete requests[handle];
 
