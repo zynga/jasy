@@ -45,7 +45,7 @@
 	var rafHandle = 1;
 	var timeoutHandle = null;
 
-	global.requestAnimationFrame = function requestAnimationFrame(callback) 
+	global.requestAnimationFrame = function(callback, root) 
 	{
 		var callbackHandle = rafHandle++;
 		
