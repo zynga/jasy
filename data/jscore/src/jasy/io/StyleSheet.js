@@ -58,12 +58,16 @@
 				}
 			}
 			
+			if (!context) {
+				context = global;
+			}
+			
 			var queued = {};
 			for (var i=0, l=uris.length; i<l; i++) 
 			{
 				var uri = uris[i];
 				
-				if (!completed[uri]) 
+				if (!completed[uri] && !loading[uri]) 
 				{
 					queued[uri] = true;
 					
@@ -72,10 +76,15 @@
 						delete queued[uri];
 
 						if (Object.empty(queued)) {
-							callback.call(context||global);
+							callback.call(context);
 						}
 					}, null, nocache);
 				}
+			}
+
+			// All already loaded/loading (not really a good solution for still loading though)
+			if (Object.empty(queued)) {
+				callback.call(context);
 			}
 		},
 		
