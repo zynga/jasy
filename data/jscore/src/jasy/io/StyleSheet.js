@@ -118,11 +118,10 @@
 			{
 				var link = doc.createElement('link');
 				var sheets = doc.styleSheets;
-				var startPos = sheets.length;
 
 				handle = setInterval(function() 
 				{
-					for (var i = startPos, l = sheets.length; i < l; i++)  
+					for (var i = 0, l = sheets.length; i < l; i++)  
 					{
 						if (sheets[i].ownerNode === link) 
 						{
