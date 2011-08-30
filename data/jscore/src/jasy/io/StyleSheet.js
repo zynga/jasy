@@ -29,6 +29,16 @@
 		},
 		
 		
+		/**
+		 * Loads all given stylesheets and execute the given callback after
+		 * they have been loaded. Stylesheets are requested in order of the list and
+		 * should be applied in the same order.
+		 *
+		 * @param uris {Array} URLs pointing to all stylesheets
+		 * @param callback {Function} Callback that fires when stylesheet is loaded
+		 * @param context {Object} Context in which the callback is being executed. Defaults to global context.
+		 * @param nocache {Boolean?false} Appends a dynamic parameter to each script to force a fresh copy
+		 */
 		loadAll: function(uris, callback, context, nocache) 
 		{
 			if (jasy.Env.isSet("debug")) 
@@ -89,6 +99,23 @@
 		 */
 		load: function(url, callback, context, nocache) 
 		{
+			if (jasy.Env.isSet("debug")) 
+			{
+				jasy.Test.assertString(url);
+
+				if (callback != null) {
+					jasy.Test.assertFunction(callback);
+				}
+				
+				if (context != null) {
+					jasy.Test.assertObject(context);
+				}
+				
+				if (nocache != null) {
+					jasy.Test.assertBoolean(nocache);
+				}
+			}
+			
 			var head = doc.getElementsByTagName('head')[0];
 			
 			if (jasy.Env.isSet("debug")) {
