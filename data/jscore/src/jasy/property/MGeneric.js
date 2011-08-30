@@ -17,6 +17,9 @@
 	
 	/**
 	 * Generic setter/getter support for property API.
+	 *
+	 * Include this if your class uses properties and want to be able to generically 
+	 * set/get them based on the property names
 	 */
 	Class("jasy.property.MGeneric",
 	{
@@ -26,9 +29,10 @@
 			 * Generic setter. Supports two possible use cases:
 			 *
 			 * <code>
-			 * set(property, value);
+			 * set("property", value);
 			 * set({
-			 *   property: value
+			 *   property1: value1,
+			 *   property2: value2
 			 * });
 			 * </code>
 			 *
@@ -74,11 +78,11 @@
 			 * Generic getter. Supports two possible use cases:
 			 *
 			 * <code>
-			 * get(property);
-			 * get(["width", "height"]);
+			 * get("property");
+			 * get(["property1", "property2"]);
 			 * </code>
 			 *
-			 * @param property {String | Map} Name of property or map of key values
+			 * @param property {String | Array} String name of property or Array of names
 			 * @param value {var} Any value
 			 * @return {var} Returns the value from the setter (if single property is used)
 			 */
