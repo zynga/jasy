@@ -58,26 +58,24 @@
 				}
 			}
 			
-			var keys = {};
+			var queued = {};
 			for (var i=0, l=uris.length; i<l; i++) 
 			{
 				var uri = uris[i];
 				
-				if (!completed[uri]) {
-					keys[uri] = true;
-				}
-			}
-			
-			for (var i=0, l=uris.length; i<l; i++) 
-			{
-				this.load(uris[i], function(url) 
+				if (!completed[uri]) 
 				{
-					delete keys[url];
-			
-					if (Object.empty(keys)) {
-						callback.call(context||global);
-					}
-				}, null, nocache);
+					queued[uri] = true;
+					
+					this.load(uri, function(uri) 
+					{
+						delete queued[uri];
+
+						if (Object.empty(queued)) {
+							callback.call(context||global);
+						}
+					}, null, nocache);
+				}
 			}
 		},
 		
