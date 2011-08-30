@@ -122,7 +122,7 @@
 
 				handle = setInterval(function() 
 				{
-					for (var i = 0, l = sheets.length; i < l; i++)  
+					for (var i = startPos, l = sheets.length; i < l; i++)  
 					{
 						if (sheets[i].ownerNode === link) 
 						{
