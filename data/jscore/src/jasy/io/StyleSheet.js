@@ -29,6 +29,53 @@
 		},
 		
 		
+		loadAll: function(uris, callback, context, nocache) 
+		{
+			if (jasy.Env.isSet("debug")) 
+			{
+				jasy.Test.assertArray(uris);
+
+				if (callback != null) {
+					jasy.Test.assertFunction(callback);
+				}
+				
+				if (context != null) {
+					jasy.Test.assertObject(context);
+				}
+				
+				if (nocache != null) {
+					jasy.Test.assertBoolean(nocache);
+				}
+			}
+			
+			var keys = {};
+			for (var i=0, l=uris.length; i<l; i++) 
+			{
+				var uri = uris[i];
+				
+				if (!completed[uri]) {
+					keys[uri] = true;
+				}
+			}
+			
+			var caller = function(uri) 
+			{
+				return function() 
+				{
+					delete keys[uri];
+			
+					if (Object.empty(keys)) {
+						callback.call(context||global);
+					}
+				}
+			};
+			
+			for (var i=0, l=uris.length; i<l; i++) {
+				this.load(uris[i], caller(uris[i]), null, nocache);
+			}
+		},
+		
+		
 		/**
 		 * Loads a stylesheet and fires a callback when the stylesheet is applied to the page.
 		 *
