@@ -53,6 +53,10 @@
 						method = setters[property] = "set" + up(property);
 					}
 					
+					if (jasy.Env.isSet("debug")) {
+						jasy.Test.assertFunction(this[method], "Invalid property to set(): " + property);
+					}
+					
 					return this[method](value);
 				} 
 				else
@@ -66,6 +70,10 @@
 						var method = setters[name];
 						if (!method) {
 							method = setters[name] = "set" + up(name);
+						}
+						
+						if (jasy.Env.isSet("debug")) {
+							jasy.Test.assertFunction(this[method], "Invalid property to set(): " + name);
 						}
 
 						this[method](property[name]);
@@ -99,6 +107,10 @@
 						method = getters[property] = "get" + up(property);
 					}
 					
+					if (jasy.Env.isSet("debug")) {
+						jasy.Test.assertFunction(this[method], "Invalid property to get(): " + property);
+					}
+					
 					return this[method]();
 				} 
 				else 
@@ -111,11 +123,14 @@
 					
 					for (var i=0, l=property.length; i<l; i++) 
 					{
-						
 						var name = property[i];
 						var method = getters[name];
 						if (!method) {
 							method = getters[name] = "get" + up(name);
+						}
+
+						if (jasy.Env.isSet("debug")) {
+							jasy.Test.assertFunction(this[method], "Invalid property to get(): " + name);
 						}
 
 						ret[name] = this[method]();
