@@ -19,6 +19,11 @@
 	// Dynamic URI can be shared because we do not support reloading files
 	var dynamicUri = "?r=" + Date.now();
 	
+	// Used for shorten calls
+	var assign = function(elem, value) {
+		elem.onload = elem.onerror = elem.onreadystatechange = value;
+	};
+	
 
 	/**
 	 * Generic script loader for features. Could be used for loading feature/class packages after initial load.
@@ -46,7 +51,7 @@
 			var elem = doc.createElement("script");
 
 			// load script via 'src' attribute, set onload/onreadystatechange listeners
-			elem.onload = elem.onerror = elem.onreadystatechange = function(e) 
+			assign(elem, function(e) 
 			{
 				if (!e) {
 					e = window.event;
@@ -61,11 +66,11 @@
 				}
 
 				// Prevent memory leaks
-				elem.onload = elem.onerror = elem.onreadystatechange = null;
+				assign(elem, null);
 
 				// Execute callback
 				context ? callback.call(context) : callback();
-			};
+			});
 
 			elem.src = nocache ? uri + dynamicUri : uri;
 
