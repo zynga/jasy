@@ -154,31 +154,6 @@
 		 */		
 		getValue : function(name) {
 			return selected[name];
-		},
-		
-
-		/**
-		 * Loads the given script URLs and does automatic expansion to include the computed checksum.
-		 *
-		 * @param uris {String[]} URIs of script sources to load
-		 * @param callback {Function} Function to execute when scripts are loaded
-		 * @param context {Object} Context in which the callback should be executed
-		 * @param preload {Boolean?false} Activates preloading on legacy browsers. As files are
-		 *   requested two times it's important that the server send correct modification headers.
-		 *   Therefore this works safely on CDNs etc. but might be problematic on local servers.
-		 */
-		loadScripts : function(uris, callback, context, preload) 
-		{
-			// Mapping URLs to patched version. Could not use ES5 Array.map here yet.
-			var patched = [];
-			for (var i=0, l=uris.length; i<l; i++) {
-				patched[i] = patchFilename(uris[i]);
-			}
-			
-			/**
-			 * @break {jasy.io.Script}
-			 */
-			jasy.io.Script.load(patched, callback, context, preload);
 		}
 	});
 })(this);

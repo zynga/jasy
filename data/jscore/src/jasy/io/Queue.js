@@ -44,6 +44,19 @@
 	
 	Module("jasy.io.Queue",
 	{
+		hasLoaded : function(uris) 
+		{
+			for (var i=0, l=uris.length; i<l; i++) 
+			{
+				if (!completed[uris[i]]) {
+					return false;
+				}
+			}
+
+			return true;
+		},
+		
+		
 		load : function(uris, callback, context, nocache, type) 
 		{
 			var executeDirectly = !!callback;
