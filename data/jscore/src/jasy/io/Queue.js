@@ -18,7 +18,27 @@
 		return dot > 0 ? filename.slice(dot+1) : null;
 	};
 	
+	/** {Array} List of function, context where each entry consumes two array fields */
+	var cachedCallbacks = [];
 
+	/**
+	 * Flushes the cached callbacks as soon as no more active scripts are detected.
+	 * This methods is called by the different complete scenarios from the loader functions.
+	 */
+	var flushCallbacks = function()
+	{
+		// Check whether all known scripts are loaded
+		for (var uri in loading) {
+			return;
+		}
+		
+		// Then execute all callbacks (copy to protect loop from follow-up changes)
+		var todo = cachedCallbacks.concat();
+		cachedCallbacks.length = 0;
+		for (var i=0, l=todo.length; i<l; i+=2) {
+			todo[i].call(todo[i+1]);
+		}
+	};
 
 	
 	
@@ -26,13 +46,14 @@
 	{
 		load : function(uris, callback, context, nocache, type) 
 		{
-			var onLoad;
 			var executeDirectly = !!callback;
 			var autoType = !type;
-			var queuedUris = [];
-
-			var onLoad = function(uri) {
-
+			
+			// List of sequential items sorted by type
+			var sequential = {};
+			
+			var onLoad = function(uri) 
+			{
 				delete loading[uri];
 				completed[uri] = true;
 
@@ -40,10 +61,27 @@
 					return;
 				}
 
-				callback.call(context);
+				flushCallbacks();
 			};
 
-
+			var executeOneByOne = function(type)
+			{
+				var current = sequential[type].shift();
+				if (current) 
+				{
+					current.loader.load(current.uri, function(uri) 
+					{
+						onLoad(uri);
+						executeOneByOne(type);
+					}, 
+					null, nocache);
+				} 
+				else
+				{
+					flushCallbacks();
+				}
+			};
+			
 			for (var i=0, l=uris.length; i<l; i++)
 			{
 				var currentUri = uris[i];
@@ -52,14 +90,17 @@
 				{
 					if (autoType) {
 						type = extractExtension(currentUri);
-					}
+					}	
 					
 					var loader = typeLoader[type];
 
-					// When a callback needs to be moved to the queue instead of being executed directly
+					// Only queue callback once
 					if (executeDirectly)
 					{
+						// As we are waiting for things to load, we can't execute the callback directly anymore
 						executeDirectly = false;
+						
+						// Directly push to global callback list
 						cachedCallbacks.push(callback, context);
 					}
 
@@ -67,12 +108,24 @@
 					// (Otherwise we just added the callback to the queue and wait for it to be executed)
 					if (!loading[currentUri])
 					{
+						// Register globally as loading
 						loading[currentUri] = true;
+						
+						// Register as required for local callback
+						waiting[currentUri] = true;
 
-						if (loader.SUPPORTS_PARALLEL) {
+						// Differenciate between loader capabilities
+						if (loader.SUPPORTS_PARALLEL) 
+						{
 							loader.load(currentUri, onLoad, null, nocache);
-						} else {
-							queuedUris.push(currentUri);
+						}
+						else
+						{
+							if (sequential[type]) {
+								sequential[type].push(currentUri);
+							} else {
+								sequential[type] = [currentUri];
+							}
 						}
 					}
 				}
@@ -81,22 +134,15 @@
 			// If all scripts are loaded already, just execute the callback
 			if (executeDirectly) 
 			{
+				// Nothing to load, execute callback directly
 				callback.call(context);
 			} 
-			else if (queuedUris.length > 0)
+			else
 			{
-				var executeOneByOne = function()
-				{
-					var currentUri = queuedUris.shift();
-					if (currentUri) {
-						loader.load(currentUri, onLoad, null, nocache);
-					} else {
-						flushCallbacks();
-					}
-				};
-
 				// Load and execute first script, then continue with next until last one
-				executeOneByOne();
+				for (var type in sequential) {
+					executeOneByOne(type);
+				}
 			}
 		}
 	});
