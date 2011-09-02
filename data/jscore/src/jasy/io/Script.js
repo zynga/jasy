@@ -50,7 +50,7 @@
 		{
 			if (jasy.Env.isSet("debug")) 
 			{
-				jasy.Test.assertString(url);
+				jasy.Test.assertString(uri);
 
 				if (callback != null) {
 					jasy.Test.assertFunction(callback, "Invalid callback method!");
