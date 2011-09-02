@@ -23,9 +23,25 @@
 	
 	if (!jasy.Env) 
 	{
-		jasy.Env = {
-			getValue : function() {}, 
-			isSet : function() {}
+		var selected = {};
+		jasy.Env = 
+		{
+			define : function(name, value) {
+				selected[name] = value;
+			},
+			
+			getValue : function() {
+				return selected[name];
+			}, 
+			
+			isSet : function(name, value) 
+			{
+				if (value === undefined) {
+					value = true;
+				}
+
+				return selected[name] == value;
+			}
 		};
 	}
 	
