@@ -124,9 +124,6 @@
 						// Register globally as loading
 						loading[currentUri] = true;
 						
-						// Register as required for local callback
-						waiting[currentUri] = true;
-
 						// Differenciate between loader capabilities
 						if (loader.SUPPORTS_PARALLEL) 
 						{
