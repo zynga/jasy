@@ -10,11 +10,7 @@
 	var typeLoader = 
 	{
 		js : jasy.io.Script,
-		css : jasy.io.StyleSheet,
-		png : jasy.io.Image,
-		gif : jasy.io.Image,
-		jpg : jasy.io.Image,
-		jpeg : jasy.io.Image
+		css : jasy.io.StyleSheet
 	};
 
 
