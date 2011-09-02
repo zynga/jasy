@@ -17,10 +17,10 @@
 	var supportsScriptAsync = doc.createElement("script").async === true;
 	
 	// Dynamic URI can be shared because we do not support reloading files
-	var dynamicUri = "?r=" + Date.now();
+	var dynamicExtension = "?r=" + Date.now();
 	
 	// Used for shorten calls
-	var assign = function(elem, value) {
+	var assignCallback = function(elem, value) {
 		elem.onload = elem.onerror = elem.onreadystatechange = value;
 	};
 	
@@ -51,7 +51,7 @@
 			var elem = doc.createElement("script");
 
 			// load script via 'src' attribute, set onload/onreadystatechange listeners
-			assign(elem, function(e) 
+			assignCallback(elem, function(e) 
 			{
 				if (!e) {
 					e = window.event;
@@ -66,13 +66,15 @@
 				}
 
 				// Prevent memory leaks
-				assign(elem, null);
+				assignCallback(elem, null);
 
 				// Execute callback
-				context ? callback.call(context) : callback();
+				if (callback) {
+					context ? callback.call(context) : callback();
+				}
 			});
 
-			elem.src = nocache ? uri + dynamicUri : uri;
+			elem.src = nocache ? uri + dynamicExtension : uri;
 
 			if (supportsScriptAsync) {
 				elem.async = false;
