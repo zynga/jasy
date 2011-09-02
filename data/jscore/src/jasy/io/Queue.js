@@ -44,8 +44,18 @@
 	
 	Module("jasy.io.Queue",
 	{
-		hasLoaded : function(uris) 
+		/**
+		 * Whether the given URI or URIs are loaded through the queue
+		 *
+		 * @param uris {String|Array} One or multiple URIs to verify
+		 * @return {Boolean} Whether all given URIs have been loaded
+		 */
+		isLoaded : function(uris) 
 		{
+			if (typeof uris === "string") {
+				return !!completed[uris];
+			}
+			
 			for (var i=0, l=uris.length; i<l; i++) 
 			{
 				if (!completed[uris[i]]) {
@@ -57,6 +67,15 @@
 		},
 		
 		
+		/**
+		 * Loads the given URIs and optionally executes the given callback after all are completed
+		 *
+		 * @param uris {Array} List of URLs to load
+		 * @param callback {Function ? null} Callback method to execute
+		 * @param context {Object ? null} Context in which the callback function should be executed
+		 * @param nocache {Boolean ? false} Whether a cache prevention logic should be applied (to force a fresh copy)
+		 * @param type {String ? auto} Whether the automatic type detection should be disabled and the given type should be used.
+		 */
 		load : function(uris, callback, context, nocache, type) 
 		{
 			var executeDirectly = !!callback;
@@ -157,6 +176,4 @@
 		}
 	});
 })();
-
-
 
