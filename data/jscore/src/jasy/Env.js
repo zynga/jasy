@@ -86,18 +86,6 @@
 
 			return checksum;
 		})();
-
-		var checksumPostfix = "-" + checksum;
-
-		var patchFilename = function(fileName) 
-		{
-			var pos = fileName.lastIndexOf(".");
-			if (pos == -1) {
-				return fileName + checksumPostfix;
-			} else {
-				return fileName.substring(0, pos) + checksumPostfix + "." + fileName.substring(pos+1);
-			}
-		};
 	} 
 	else
 	{
@@ -108,11 +96,6 @@
 		
 		// No checksum available
 		var checksum = null;
-		
-		// Disable support for checksum based loading
-		var patchFilename = function() {
-			throw new Error("Not supported!");
-		}
 	}
 	
 	

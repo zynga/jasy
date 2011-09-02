@@ -32,8 +32,8 @@
 		 * http://www.phpied.com/when-is-a-stylesheet-really-loaded/
 		 *
 		 * @param uri {String} URI pointing to the stylesheet
-		 * @param callback {Function} Callback that fires when stylesheet is loaded
-		 * @param context {Object} Context in which the callback is being executed. Defaults to global context.
+		 * @param callback {Function ? null} Callback that fires when stylesheet is loaded
+		 * @param context {Object ? null} Context in which the callback is being executed. Defaults to global context.
 		 * @param nocache {Boolean ? false} Appends a dynamic parameter to each URL to force a fresh copy
 		 */
 		load: function(uri, callback, context, nocache) 
