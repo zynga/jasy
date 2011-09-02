@@ -1,8 +1,12 @@
-(function() {
-	
+(function() 
+{
+	/** {Map} Keys are all URIs which are currently loading */
 	var loading = {};
+
+	/** {Map} Keys are all URIs which are completely loaded */
 	var completed = {};
 	
+	/** {Map} Maps extensions to loader classes */
 	var typeLoader = 
 	{
 		js : jasy.io.Script,
@@ -12,14 +16,24 @@
 		jpg : jasy.io.Image,
 		jpeg : jasy.io.Image
 	};
-	
-	var extractExtension = function(filename) {
+
+
+	/**
+	 * Returns the extension of the given filename
+	 *
+	 * @param filename {String} Name of file or full URI
+	 * @return {String} Extension part or <code>null</code> if no extension was found
+	 */
+	var extractExtension = function(filename) 
+	{
 		var dot = filename.lastIndexOf(".");
 		return dot > 0 ? filename.slice(dot+1) : null;
 	};
 	
+
 	/** {Array} List of function, context where each entry consumes two array fields */
 	var cachedCallbacks = [];
+
 
 	/**
 	 * Flushes the cached callbacks as soon as no more active scripts are detected.
@@ -40,8 +54,37 @@
 		}
 	};
 
+
+	/**
+	 * Registers the given URI as being loaded. 
+	 * 
+	 * @param uri {String} URI to mark as being loaded
+	 */
+	var onLoad = function(uri) 
+	{
+		delete loading[uri];
+		completed[uri] = true;
+
+		for (var queued in loading) {
+			return;
+		}
+
+		flushCallbacks();
+	};
 	
 	
+	/**
+	 * Generic URLs loader queue with support for different type "backend" modules.
+	 *
+	 * Uses parallel loading where available and load all other resources
+	 * sequentially. Sequential loading is done by type so that multiple
+	 * different types are loaded in parallel.
+	 *
+	 * Loader module need to implement the following interface:
+	 *
+	 * * method load(uri, callback, context, nocache) which calls the callback with the URI
+	 * * constant `SUPPORTS_PARALLEL` with a boolean value whether the loader supports parallel loading
+	 */
 	Module("jasy.io.Queue",
 	{
 		/**
@@ -84,36 +127,7 @@
 			// List of sequential items sorted by type
 			var sequential = {};
 			
-			var onLoad = function(uri) 
-			{
-				delete loading[uri];
-				completed[uri] = true;
-
-				for (var queued in loading) {
-					return;
-				}
-
-				flushCallbacks();
-			};
-
-			var executeOneByOne = function(type)
-			{
-				var uri = sequential[type].shift();
-				if (uri) 
-				{
-					typeLoader[type].load(uri, function(uri) 
-					{
-						onLoad(uri);
-						executeOneByOne(type);
-					}, 
-					null, nocache);
-				} 
-				else
-				{
-					flushCallbacks();
-				}
-			};
-			
+			// Process all URIs
 			for (var i=0, l=uris.length; i<l; i++)
 			{
 				var currentUri = uris[i];
@@ -122,7 +136,11 @@
 				{
 					if (autoType) {
 						type = extractExtension(currentUri);
-					}	
+						
+						if (jasy.Env.isSet("debug") && !type) {
+							throw new Error("Could not figure out loader to use for URI: " + currentUri);
+						}
+					}
 					
 					var loader = typeLoader[type];
 
@@ -150,6 +168,7 @@
 						}
 						else
 						{
+							// Sort in the URI into a type specific queue
 							if (sequential[type]) {
 								sequential[type].push(currentUri);
 							} else {
@@ -168,9 +187,32 @@
 			} 
 			else
 			{
-				// Load and execute first script, then continue with next until last one
+				/**
+				 * Loads the next URI for the given type
+				 *
+				 * @param type {String} Which queue to use
+				 */
+				var loadNext = function(type)
+				{
+					var uri = sequential[type].shift();
+					if (uri) 
+					{
+						typeLoader[type].load(uri, function(uri) 
+						{
+							onLoad(uri);
+							loadNext(type);
+						}, 
+						null, nocache);
+					} 
+					else
+					{
+						flushCallbacks();
+					}
+				};
+				
+				// Load and execute first item in each queue
 				for (var type in sequential) {
-					executeOneByOne(type);
+					loadNext(type);
 				}
 			}
 		}
