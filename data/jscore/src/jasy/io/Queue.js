@@ -62,6 +62,10 @@
 	 */
 	var onLoad = function(uri) 
 	{
+		if (jasy.Env.isSet("debug")) {
+			jasy.Test.assertString(uri, "Invalid URI from loader backend!");
+		}
+		
 		delete loading[uri];
 		completed[uri] = true;
 
@@ -95,10 +99,14 @@
 		 */
 		isLoaded : function(uris) 
 		{
-			if (typeof uris === "string") {
+			if (typeof uris == "string") {
 				return !!completed[uris];
 			}
 			
+			if (jasy.Env.isSet("debug")) {
+				jasy.Test.assertArray(uris, "Invalid list of URIs!");
+			}
+
 			for (var i=0, l=uris.length; i<l; i++) 
 			{
 				if (!completed[uris[i]]) {
@@ -121,6 +129,27 @@
 		 */
 		load : function(uris, callback, context, nocache, type) 
 		{
+			if (jasy.Env.isSet("debug")) 
+			{
+				jasy.Test.assertArray(uris);
+
+				if (callback != null) {
+					jasy.Test.assertFunction(callback, "Invalid callback method!");
+				}
+				
+				if (context != null) {
+					jasy.Test.assertObject(context, "Invalid callback context!");
+				}
+				
+				if (nocache != null) {
+					jasy.Test.assertBoolean(nocache);
+				}
+
+				if (type != null) {
+					jasy.Test.assertString(type);
+				}
+			}
+			
 			var executeDirectly = !!callback;
 			var autoType = !type;
 			

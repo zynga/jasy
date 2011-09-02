@@ -42,12 +42,34 @@
 		 * Automatically using preloading of scripts in modern browsers and falls back to sequential loading/executing on others.
 		 *
 		 * @param uri {String} URI of script sources to load
-		 * @param callback {Function} Function to execute when script is loaded
-		 * @param context {Object} Context in which the callback should be executed
-		 * @param nocache {Boolean?false} Appends a dynamic parameter to each script to force a fresh copy
+		 * @param callback {Function ? null} Function to execute when script is loaded
+		 * @param context {Object ? null} Context in which the callback should be executed
+		 * @param nocache {Boolean ? false} Appends a dynamic parameter to each script to force a fresh copy
 		 */
 		load : function(uri, callback, context, nocache) 
 		{
+			if (jasy.Env.isSet("debug")) 
+			{
+				jasy.Test.assertString(url);
+
+				if (callback != null) {
+					jasy.Test.assertFunction(callback, "Invalid callback method!");
+				}
+				
+				if (context != null) {
+					jasy.Test.assertObject(context, "Invalid callback context!");
+				}
+				
+				if (nocache != null) {
+					jasy.Test.assertBoolean(nocache);
+				}
+			}
+			
+			if (jasy.Env.isSet("debug") && nocache == null) {
+				nocache = true;
+			}
+
+			var head = doc.head;
 			var elem = doc.createElement("script");
 
 			// load script via 'src' attribute, set onload/onreadystatechange listeners
@@ -80,7 +102,7 @@
 				elem.async = false;
 			}
 
-			doc.head.insertBefore(elem, doc.head.firstChild);
+			head.insertBefore(elem, head.firstChild);
 		}
 	});
 })(this);
