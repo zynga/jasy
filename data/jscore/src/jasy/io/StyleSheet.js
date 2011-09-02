@@ -7,25 +7,22 @@
 ==================================================================================================
 */
 
+/**
+ * @require {fix.DocumentHead}
+ */
 (function(global, doc) 
 {
-	var completed = {};
-	var loading = {};
+	// Dynamic URI can be shared because we do not support reloading files
+	var dynamicExtension = "?r=" + Date.now();
+
 	
 	/** 
-	 * Stylesheet (CSS) loader and manager. Tracks status of all loaded files.
+	 * Stylesheet loader with support for load callback.
 	 */
 	Module("jasy.io.StyleSheet",
 	{
-		/**
-		 * Whether the given stylesheet is loaded.
-		 * 
-		 * @param url {String} URL pointing to the stylesheet
-		 * @return {Boolean} Whether the stylesheet is loaded
-		 */
-		isLoaded : function(url) {
-			return !!completed[url];
-		},
+		/** {Boolean} Whether the loader supports parallel requests. Always true for stylesheets (order should, hopefully, not be important). */
+		SUPPORTS_PARALLEL : true,
 		
 		
 		/**
@@ -34,48 +31,46 @@
 		 * Inspired by:
 		 * http://www.phpied.com/when-is-a-stylesheet-really-loaded/
 		 *
-		 * @param url {String} URL pointing to the stylesheet
-		 * @param callback {Function} Callback that fires when stylesheet is loaded
-		 * @param context {Object} Context in which the callback is being executed. Defaults to global context.
+		 * @param uri {String} URI pointing to the stylesheet
+		 * @param callback {Function ? null} Callback that fires when stylesheet is loaded
+		 * @param context {Object ? null} Context in which the callback is being executed. Defaults to global context.
+		 * @param nocache {Boolean ? false} Appends a dynamic parameter to each URL to force a fresh copy
 		 */
-		load: function(url, callback, context) 
+		load: function(uri, callback, context, nocache) 
 		{
-			var head = doc.getElementsByTagName('head')[0];
-
-			context = context || global;
-
-			if (jasy.Env.isSet("debug")) {
-				console.log("Loading stylesheet: " + url);
-			}
-			
-			if (loading[url]) {
-				throw new Error("Stylesheet is already loading: " + url);
-			}
-			
-			loading[url] = true;
-
-			var load = function load() 
+			if (jasy.Env.isSet("debug")) 
 			{
-				completed[url] = true;
-				delete loading[url];
-				
-				/*
-				if (jasy.Env.isSet("debug")) {
-					console.log("Stylesheet loaded: " + url);
-				}
-				*/
+				jasy.Test.assertString(uri);
 
-				if (callback) {
-					callback.call(context);
+				if (callback != null) {
+					jasy.Test.assertFunction(callback, "Invalid callback method!");
 				}
-			};
+				
+				if (context != null) {
+					jasy.Test.assertObject(context, "Invalid callback context!");
+				}
+				
+				if (nocache != null) {
+					jasy.Test.assertBoolean(nocache);
+				}
+			}
+			
+			// Default nocache to true when debugging is enabled
+			if (jasy.Env.isSet("debug") && nocache == null) {
+				nocache = true;
+			}
+
+			var head = doc.head;
+			
+			if (!context) {
+				context = global;
+			}
 
 			// Use listener to stylesheet list and compare elements
 			if (jasy.Env.isSet("engine", "webkit")) 
 			{
 				var link = doc.createElement('link');
 				var sheets = doc.styleSheets;
-				var startPos = sheets.length;
 
 				handle = setInterval(function() 
 				{
@@ -84,14 +79,16 @@
 						if (sheets[i].ownerNode === link) 
 						{
 							clearInterval(handle);
-							load();
+							if (callback) {
+								callback.call(context, uri);
+							}
 						}
 					}
-				}, 10);
+				}, 50);
 
 				link.rel = "stylesheet";
 				link.type = "text/css";
-				link.href = url;
+				link.href = uri + (nocache ? dynamicExtension : "");
 
 				head.appendChild(link);
 			}
@@ -100,7 +97,7 @@
 			else if (jasy.Env.isSet("engine", "gecko")) 
 			{
 				var style = doc.createElement("style");
-				style.textContent = "@import '" + url + "'";
+				style.textContent = "@import '" + uri + (nocache ? dynamicExtension : "") + "'";
 
 				var handle = setInterval(function() 
 				{
@@ -108,10 +105,13 @@
 					{
 						// MAGIC: only populated when file is loaded
 						style.sheet.cssRules;
+						
 						clearInterval(handle);
-						load();
+						if (callback) {
+							callback.call(context, uri);
+						}
 					} catch(e) {}
-				}, 10);
+				}, 50);
 
 				head.appendChild(style);
 			}
@@ -123,12 +123,14 @@
 				link.onload = function() 
 				{
 					link.onload = null;
-					load();
+					if (callback) {
+						callback.call(context, uri);
+					}
 				};
 
 				link.rel = "stylesheet";
 				link.type = "text/css";
-				link.href = url;
+				link.href = uri + (nocache ? dynamicExtension : "");
 
 				head.appendChild(link);
 			}

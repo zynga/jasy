@@ -7,10 +7,6 @@
 ==================================================================================================
 */
 
-/**
- * @require {fix.ObjectKeys}
- * @require {fix.DateParse}
- */
 (function(global) 
 {
 	if(global.requestAnimationFrame) {
@@ -45,7 +41,7 @@
 	var rafHandle = 1;
 	var timeoutHandle = null;
 
-	global.requestAnimationFrame = function requestAnimationFrame(callback) 
+	global.requestAnimationFrame = function(callback, root) 
 	{
 		var callbackHandle = rafHandle++;
 		
@@ -75,7 +71,7 @@
 		return callbackHandle;
 	};
 
-	global.cancelRequestAnimationFrame = function cancelRequestAnimationFrame(handle) 
+	global.cancelRequestAnimationFrame = function(handle) 
 	{
 		delete requests[handle];
 

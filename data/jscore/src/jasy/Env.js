@@ -86,33 +86,17 @@
 
 			return checksum;
 		})();
-
-		var checksumPostfix = "-" + checksum;
-
-		var patchFilename = function(fileName) 
-		{
-			var pos = fileName.lastIndexOf(".");
-			if (pos == -1) {
-				return fileName + checksumPostfix;
-			} else {
-				return fileName.substring(0, pos) + checksumPostfix + "." + fileName.substring(pos+1);
-			}
-		};
 	} 
 	else
 	{
 		// Enable debug by default
+		// All other data might be configured using {@link #define} later.
 		var selected = {
 			debug : true
 		};
 		
 		// No checksum available
 		var checksum = null;
-		
-		// Disable support for checksum based loading
-		var patchFilename = function() {
-			throw new Error("Not supported!");
-		}
 	}
 	
 	
@@ -123,6 +107,17 @@
 
 		/** {Number} Holds the checksum for the current permutation which is auto detected by features or by compiled-in data */
 		CHECKSUM : checksum,
+		
+		
+		/**
+		 * Configure environment data dynamically
+		 *
+		 * @param name {String} Name of the field to configure
+		 * @param value {var} Value to set
+		 */
+		define : function(name, value) {
+			selected[name] = value;
+		},
 		
 		
 		/**
@@ -154,31 +149,6 @@
 		 */		
 		getValue : function(name) {
 			return selected[name];
-		},
-		
-
-		/**
-		 * Loads the given script URLs and does automatic expansion to include the computed checksum.
-		 *
-		 * @param uris {String[]} URIs of script sources to load
-		 * @param callback {Function} Function to execute when scripts are loaded
-		 * @param context {Object} Context in which the callback should be executed
-		 * @param preload {Boolean?false} Activates preloading on legacy browsers. As files are
-		 *   requested two times it's important that the server send correct modification headers.
-		 *   Therefore this works safely on CDNs etc. but might be problematic on local servers.
-		 */
-		loadScripts : function(uris, callback, context, preload) 
-		{
-			// Mapping URLs to patched version. Could not use ES5 Array.map here yet.
-			var patched = [];
-			for (var i=0, l=uris.length; i<l; i++) {
-				patched[i] = patchFilename(uris[i]);
-			}
-			
-			/**
-			 * @break {jasy.io.Script}
-			 */
-			jasy.io.Script.load(patched, callback, context, preload);
 		}
 	});
 })(this);
