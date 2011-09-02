@@ -70,7 +70,7 @@
 
 				// Execute callback
 				if (callback) {
-					context ? callback.call(context) : callback();
+					context ? callback.call(context, uri) : callback(uri);
 				}
 			});
 

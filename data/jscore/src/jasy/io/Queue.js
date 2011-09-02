@@ -27,7 +27,6 @@
 	 */
 	var flushCallbacks = function()
 	{
-		console.debug("XXX1: " + cachedCallbacks.length)
 		// Check whether all known scripts are loaded
 		for (var uri in loading) {
 			return;
@@ -36,9 +35,6 @@
 		// Then execute all callbacks (copy to protect loop from follow-up changes)
 		var todo = cachedCallbacks.concat();
 		cachedCallbacks.length = 0;
-
-		console.debug("XXX2: " + todo.length)
-
 		for (var i=0, l=todo.length; i<l; i+=2) {
 			todo[i].call(todo[i+1]);
 		}
