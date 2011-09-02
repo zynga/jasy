@@ -329,7 +329,7 @@ class Session():
         
         resolver = Resolver(self.getProjects(), permutation)
         resolver.addClassName("jasy.Env")
-        resolver.addClassName("jasy.io.Script")
+        resolver.addClassName("jasy.io.Queue")
         classes = Sorter(resolver, permutation).getSortedClasses()
         compressedCode = Combiner(classes).getCompressedCode(permutation, None, optimization, formatting)
         writefile(fileName, compressedCode)

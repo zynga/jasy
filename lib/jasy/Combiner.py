@@ -40,7 +40,7 @@ class Combiner():
             files.append('"%s"' % fromWebFolder)
 
         loader = ",".join(files)
-        boot = "function(){%s}" % bootCode if bootCode else "null"
-        result = 'jasy.io.Script.load([%s], %s, null, true)' % (loader, boot)
+        boot = "function(){%s}" % bootCode if bootCode else ""
+        result = 'jasy.io.Queue.load([%s], %s, null, true)' % (loader, boot)
 
         return result
