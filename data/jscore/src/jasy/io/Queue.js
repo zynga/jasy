@@ -79,10 +79,10 @@
 
 			var executeOneByOne = function(type)
 			{
-				var current = sequential[type].shift();
-				if (current) 
+				var uri = sequential[type].shift();
+				if (uri) 
 				{
-					current.loader.load(current.uri, function(uri) 
+					typeLoader[type].load(uri, function(uri) 
 					{
 						onLoad(uri);
 						executeOneByOne(type);
