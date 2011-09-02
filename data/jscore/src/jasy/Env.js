@@ -90,6 +90,7 @@
 	else
 	{
 		// Enable debug by default
+		// All other data might be configured using {@link #define} later.
 		var selected = {
 			debug : true
 		};
@@ -106,6 +107,17 @@
 
 		/** {Number} Holds the checksum for the current permutation which is auto detected by features or by compiled-in data */
 		CHECKSUM : checksum,
+		
+		
+		/**
+		 * Configure environment data dynamically
+		 *
+		 * @param name {String} Name of the field to configure
+		 * @param value {var} Value to set
+		 */
+		define : function(name, value) {
+			selected[name] = value;
+		},
 		
 		
 		/**
