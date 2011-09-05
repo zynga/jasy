@@ -37,9 +37,9 @@
 		
 		
 		/**
-		 * Loads the scripts at the given URIs.
+		 * Loads a JavaScript file from the given URI.
 		 *
-		 * Automatically using preloading of scripts in modern browsers and falls back to sequential loading/executing on others.
+		 * Automatically using preloading in modern browsers.
 		 *
 		 * @param uri {String} URI of script sources to load
 		 * @param callback {Function ? null} Function to execute when script is loaded
