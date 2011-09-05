@@ -240,6 +240,12 @@
 					loadNext(type);
 				}
 			}
+			
+			// Return internal loading list for debug proposes only.
+			// Be super careful with the object
+			if (jasy.Env.isSet("debug")) {
+				return loading;
+			}
 		}
 	});
 })();
