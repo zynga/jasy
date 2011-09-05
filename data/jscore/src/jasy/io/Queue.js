@@ -162,7 +162,7 @@
 					if (autoType) {
 						type = extractExtension(currentUri);
 						
-						if (jasy.Env.isSet("debug") && (!type || typeLoader[type])) {
+						if (jasy.Env.isSet("debug") && (!type || !typeLoader[type])) {
 							throw new Error("Could not figure out loader to use for URI: " + currentUri);
 						}
 					}
