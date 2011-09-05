@@ -10,7 +10,11 @@
 	var typeLoader = 
 	{
 		js : jasy.io.Script,
-		css : jasy.io.StyleSheet
+		css : jasy.io.StyleSheet,
+		png : jasy.io.Image,
+		jpeg : jasy.io.Image,
+		jpg : jasy.io.Image,
+		gif : jasy.io.Image
 	};
 
 
@@ -22,8 +26,9 @@
 	 */
 	var extractExtension = function(filename) 
 	{
-		var dot = filename.lastIndexOf(".");
-		return dot > 0 ? filename.slice(dot+1) : null;
+		// Filter out query string and find last dot to split extension
+		var result = filename.match(/\.([^\.\?]+)(?:\?|$)/);
+		return result ? result[1] : null;
 	};
 	
 
