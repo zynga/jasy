@@ -75,11 +75,12 @@
 			// load script via 'src' attribute, set onload/onreadystatechange listeners
 			assignCallback(elem, function(e) 
 			{
-				if (!e) {
-					e = window.event;
+				var errornous = (e||global.event).type === "error";
+				if (errornous) 
+				{
+					console.warn("Could not load script: " + uri);
 				}
-
-				if (e.type !== "error") 
+				else
 				{
 					var readyState = elem.readyState;
 					if (readyState && readyState !== "complete" && readyState !== "loaded") {
@@ -92,7 +93,7 @@
 
 				// Execute callback
 				if (callback) {
-					context ? callback.call(context, uri) : callback(uri);
+					callback.call(context||global, uri, errornous);
 				}
 			});
 

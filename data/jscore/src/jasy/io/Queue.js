@@ -60,8 +60,10 @@
 	 * Registers the given URI as being loaded. 
 	 * 
 	 * @param uri {String} URI to mark as being loaded
+	 * @param errornous {Boolean?false} Whether request was not successful
+	 * @param data {Map} Additional data to exchange
 	 */
-	var onLoad = function(uri) 
+	var onLoad = function(uri, errornous, data) 
 	{
 		if (jasy.Env.isSet("debug")) {
 			jasy.Test.assertString(uri, "Invalid URI from loader backend!");

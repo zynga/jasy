@@ -120,11 +120,12 @@
 			else 
 			{
 				var link = doc.createElement("link");
-				link.onload = function() 
+				link.onload = link.onerror = function(e) 
 				{
-					link.onload = null;
+					link.onload = link.onerror = null;
+					
 					if (callback) {
-						callback.call(context, uri);
+						callback.call(context, uri, (e||global.event).type === "error");
 					}
 				};
 
