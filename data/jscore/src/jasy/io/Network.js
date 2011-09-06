@@ -61,8 +61,8 @@
 		
 		// Catch network & other problems
 		try {
-			request.send();
 			abortHandle = setTimeout(abortRequest, abortAfter);
+			request.send();
 		} catch (e) {
 			setOnline(false);
 		}
