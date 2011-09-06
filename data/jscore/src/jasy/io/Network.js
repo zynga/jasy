@@ -108,6 +108,10 @@
 		{
 			if (updateHandle) 
 			{
+				// Abort current request...
+				abortRequest();
+				
+				// ... and stop timer
 				clearTimeout(updateHandle);
 				updateHandle = null;
 			}
