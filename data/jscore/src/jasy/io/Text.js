@@ -6,18 +6,8 @@
 {
 	var empty = new Function;
 	
-	// Detect native xhr object
-	var xhr = global.XMLHttpRequest;
-	
-	// Status codes which mean successful
-	var goodCodes = 
-	{
-		0 : 1,
-		204 : 1,
-		
-		// IE sometimes returns 1223 when it should be 204
-		1223 : 1 
-	};
+	// Detect native support
+	var XHR = global.XMLHttpRequest;
 	
 	// Dynamic URI can be shared because we do not support reloading files
 	var dynamicExtension = "?r=" + Date.now();
@@ -26,7 +16,6 @@
 	{
 		/** {Boolean} Whether the loader supports parallel requests */
 		SUPPORTS_PARALLEL : true,
-
 
 		/**
 		 * Loads text content from the given URI.
@@ -46,8 +35,7 @@
 			}
 			
 			var timeoutHandle = null;
-			
-			var request = xhr ? new xhr : new ActiveXObject("Microsoft.XMLHTTP");
+			var request = XHR ? new XHR : new ActiveXObject("Microsoft.XMLHTTP");
 			
 			// Open request, we always use async GET here
 			request.open("GET", uri + (nocache ? dynamicExtension : ""), true);
@@ -55,17 +43,15 @@
 			// Attach event listener
 			request.onreadystatechange = function(e) 
 			{
-				console.debug("READY-STATE: " + request.readyState + ", STATUS: " + request.status);
-				
 				// Headers received... data following, now configuring the timeout
+				// As we don't send any data it's okay to start the timeout at this state.
 				if (request.readyState == 2 && timeout !== 0 && !timeoutHandle)
 				{
-					console.debug("Configure timeout...")
 					timeoutHandle = window.setTimeout(function() {
 						request.onreadystatechange = empty;
 						request.abort();
 						callback.call(context, uri, true);
-					});
+					}, timeout || 10000);
 				}
 				
 				if (request.readyState == 4) 
@@ -73,7 +59,8 @@
 					request.onreadystatechange = empty;
 					
 					// Finally call the user defined callback (succeed with data)
-					callback.call(context, uri, !goodCodes[request.status], { 
+					var status = request.status;
+					callback.call(context, uri, status >= 200 && status < 300 || status == 304 || status == 1223, { 
 						data : request.responseText || ""
 					});
 				}
