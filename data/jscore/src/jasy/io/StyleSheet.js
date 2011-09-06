@@ -76,6 +76,8 @@
 				{
 					for (var i = 0, l = sheets.length; i < l; i++)  
 					{
+						// In Webkit browsers the sheets array is populated as soon
+						// as the stylesheet was loaded.
 						if (sheets[i].ownerNode === link) 
 						{
 							clearInterval(handle);
