@@ -2,7 +2,7 @@
  * Loads all kinds of text content like text, HTML and JSON.
  *
  */
-(function() 
+(function(global) 
 {
 	var empty = new Function;
 	
