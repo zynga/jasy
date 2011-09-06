@@ -41,10 +41,6 @@
 	
 	var onStateChange = function(e) 
 	{
-		if (request.readyState == 2) {
-			abortHandle = setTimeout(abortRequest, abortAfter);
-		}
-		
 		if (request.readyState == 4) 
 		{
 			request.onreadystatechange = empty;
@@ -66,6 +62,7 @@
 		// Catch network & other problems
 		try {
 			request.send();
+			abortHandle = setTimeout(abortRequest, abortAfter);
 		} catch (e) {
 			setOnline(false);
 		}
