@@ -96,7 +96,7 @@
 		startMonitoring : function(interval) 
 		{
 			// allow for timeout reconfiguration
-			stopMonitoring();
+			this.stopMonitoring();
 			
 			// Reconfigure timeout and start first iteration
 			updateInterval = interval || 1000;
