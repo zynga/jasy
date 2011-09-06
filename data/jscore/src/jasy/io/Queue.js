@@ -11,6 +11,7 @@
 	{
 		js : jasy.io.Script,
 		css : jasy.io.StyleSheet,
+		jsonp : jasy.io.Jsonp,
 		png : jasy.io.Image,
 		jpeg : jasy.io.Image,
 		jpg : jasy.io.Image,
@@ -28,7 +29,18 @@
 	{
 		// Filter out query string and find last dot to split extension
 		var result = filename.match(/\.([^\.\?]+)(?:\?|$)/);
-		return result ? result[1] : null;
+		
+		// Extension found
+		if (result != null) {
+			return result[1];
+		}
+		
+		// Support for callback params in URI (JSON-P)
+		if (filename.indexOf("callback=") != -1) {
+			return "jsonp";
+		}
+		
+		return null;
 	};
 	
 
