@@ -172,23 +172,116 @@ class TestCompressor(unittest.TestCase):
     def test_hook_assign(self):
         self.assertEqual(compress('x = test1 ? case1 = 1 : case2 = 2;'), 'x=test1?case1=1:case2=2;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_hook_left_child(self):
+        self.assertEqual(compress('test1 ? test2 ? res1 : res2 : res3;'), 'test1?test2?res1:res2:res3;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_hook_right_child(self):
+        self.assertEqual(compress('test1 ? res1 : test2 ? res2 : res3;'), 'test1?res1:test2?res2:res3;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_hook_simple(self):
+        self.assertEqual(compress('test1 ? res1 : res2;'), 'test1?res1:res2;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_hook_two_children(self):
+        self.assertEqual(compress('test1 ? test2 ? res1 : res2 : test3 ? res3 : res4;'), 'test1?test2?res1:res2:test3?res3:res4;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_if_else_noblocks(self):
+        self.assertEqual(compress('if (foo) hello(); else quit();'), 'if(foo)hello();else quit();')
         
+    def test_if_else(self):
+        self.assertEqual(compress('if (bar) { hello(); } else { quit(); }'), 'if(bar){hello()}else{quit()}')
+
+    def test_if_else_if_noblocks(self):
+        self.assertEqual(compress('if (foo) hello(); else if (x) quit();'), 'if(foo)hello();else if(x)quit();')
+
+    def test_if_else_if(self):
+        self.assertEqual(compress('if (bar) { hello(); } else if (x) { quit(); }'), 'if(bar){hello()}else if(x){quit()}')
+
+    def test_if_empty(self):
+        self.assertEqual(compress('if(foo && bar) {}'), 'if(foo&&bar){}')
+
+    def test_if_not_else(self):
+        self.assertEqual(compress('if (!bar) { first; } else { second; }'), 'if(!bar){first}else{second}')
+
+    def test_if_not(self):
+        self.assertEqual(compress('if (!bar) { first; }'), 'if(!bar){first}')
+
+    def test_if_noblock(self):
+        self.assertEqual(compress('if (foo) hello();'), 'if(foo)hello();')
+
+    def test_if(self):
+        self.assertEqual(compress('if (bar) { hello(); }'), 'if(bar){hello()}')
+
+    def test_in(self):
+        self.assertEqual(compress('"foo" in obj;'), '"foo"in obj;')
+
+    def test_increment_prefix(self):
+        self.assertEqual(compress('++i;'), '++i;')
+
+    def test_increment_postfix(self):
+        self.assertEqual(compress('i++;'), 'i++;')
+
+    def test_index(self):
+        self.assertEqual(compress('list[12];'), 'list[12];')
+
+    def test_let_definition(self):
+        self.assertEqual(compress('if (x > y) { let gamma = 12.7 + y; }'), 'if(x>y){let gamma=12.7+y}')
+        
+    def test_let_expression(self):
+        self.assertEqual(compress('write(let(x = x + 10, y = 12) x + y + "<br>");'), 'write(let(x=x+10,y=12)x+y+"<br>");')
+
+    def test_let_statement(self):
+        self.assertEqual(compress('let (x = x+10, y = 12) { print(x+y); }'), 'let(x=x+10,y=12){print(x+y)}')
+
+    def test_new(self):
+        self.assertEqual(compress('var obj = new Object;'), 'var obj=new Object;')
+
+    def test_new_args(self):
+        self.assertEqual(compress('var arr = new Array(1,2,3);'), 'var arr=new Array(1,2,3);')
+
+    def test_new_args_empty(self):
+        self.assertEqual(compress('var obj = new Object();'), 'var obj=new Object;')
+
     def test_(self):
         self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')            
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')            
+            
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')            
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')            
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')            
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')            
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')            
 
     def test_(self):
         self.assertEqual(compress(''), '')
@@ -196,14 +289,6 @@ class TestCompressor(unittest.TestCase):
     def test_(self):
         self.assertEqual(compress(''), '')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
 
 
 if __name__ == '__main__':

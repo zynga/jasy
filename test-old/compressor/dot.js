@@ -1,1 +1,0 @@
-parent.child.weight;

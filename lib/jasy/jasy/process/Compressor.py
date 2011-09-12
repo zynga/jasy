@@ -251,7 +251,13 @@ class Compressor:
         return "%s(%s)" % (self.compress(node[0]), self.compress(node[1]))
 
     def type_new_with_args(self, node):
-        return "new %s(%s)" % (self.compress(node[0]), self.compress(node[1]))
+        result = "new %s" % self.compress(node[0])
+        
+        # Compress new Object(); => new Object;
+        if len(node[1]) > 0:
+            result += "(%s)" % self.compress(node[1])
+            
+        return result
 
     def type_exception(self, node):
         return node.value
