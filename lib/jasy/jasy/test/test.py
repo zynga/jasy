@@ -262,6 +262,57 @@ class TestCompressor(unittest.TestCase):
     def test_number_min(self):
         self.assertEqual(compress('5e-324;'), '5e-324;')            
 
+    def test_tofixed(self):
+        self.assertEqual(compress('0..toFixed();'), '0..toFixed();')
+
+    def test_object_init(self):
+        self.assertEqual(compress('var x = { vanilla : "vanilla", "default" : "enclosed" };'), 'var x={vanilla:"vanilla","default":"enclosed"};')
+
+    def test_object_init_trail(self):
+        self.assertEqual(compress('var x = { vanilla : "vanilla", };'), 'var x={vanilla:"vanilla"};')
+
+    def test_or(self):
+        self.assertEqual(compress('x || y'), 'x||y;')
+
+    def test_regexp(self):
+        self.assertEqual(compress('var x = /[a-z]/g.exec(foo);'), 'var x=/[a-z]/g.exec(foo);')
+
+    def test_return(self):
+        self.assertEqual(compress('function y() { return 1; }'), 'function y(){return 1}')
+
+    def test_return_empty(self):
+        self.assertEqual(compress('function x() { return; }'), 'function x(){return}')
+
+    def test_return_array(self):
+        self.assertEqual(compress('function z() { return [ 1, 2, 3 ]; }'), 'function z(){return[1,2,3]}')
+
+    def test_strict(self):
+        self.assertEqual(compress('function imStrict() { "use strict"; var x = 4+5; }'), 'function imStrict(){"use strict";var x=4+5}')
+
+    def test_string_escape(self):
+        self.assertEqual(compress(r'var x="abc\ndef";'), r'var x="abc\ndef";')
+
+    def test_string(self):
+        self.assertEqual(compress(r'var x = "hello" + "world";'), r'var x="hello"+"world";')
+
+    def test_string_quotes(self):
+        self.assertEqual(compress(r'var x = "hello" + " \"world\"";'), r'var x="hello"+" \"world\"";')
+
+    def test_switch(self):
+        self.assertEqual(compress('switch(x) { case 1: case 2: r = 2; case 3: r = 3; break; default: r = null; }'), 'switch(x){case 1:case 2:r=2;case 3:r=3;break;default:r=null}')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')            
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
     def test_(self):
         self.assertEqual(compress(''), '')
 
@@ -278,7 +329,10 @@ class TestCompressor(unittest.TestCase):
         self.assertEqual(compress(''), '')
 
     def test_(self):
-        self.assertEqual(compress(''), '')            
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
 
     def test_(self):
         self.assertEqual(compress(''), '')
@@ -290,10 +344,17 @@ class TestCompressor(unittest.TestCase):
         self.assertEqual(compress(''), '')
 
     def test_(self):
+        self.assertEqual(compress(''), '')            
+
+    def test_(self):
         self.assertEqual(compress(''), '')
 
-
-
+    def test_(self):
+        self.assertEqual(compress(''), '')
+        
+        
+        
+        
 if __name__ == '__main__':
     unittest.main()
     
