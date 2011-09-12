@@ -498,7 +498,7 @@ class TestLocalVariables(unittest.TestCase):
               }
             })(window);
             '''),
-            ''
+            '(function(b){var c=a();function a(){a()}})(window);'
         )
 
     def test_inline_access(self):
@@ -509,7 +509,7 @@ class TestLocalVariables(unittest.TestCase):
               var d, a=d;
             }
             '''),
-            ''
+            'function wrapper(){var a,b=a}'
         )
 
     def test_let_definition(self):
@@ -523,12 +523,12 @@ class TestLocalVariables(unittest.TestCase):
               } 
             }
             '''),
-            ''
+            'function wrapper(){if(x>y){let a=12.7+y;i=a*x}}'
         )
 
     def test_let_expression(self):
         self.assertEqual(variableoptimize(
-            '''
+            r'''
             function wrapper()
             {
               var x = 5;  
@@ -537,12 +537,12 @@ class TestLocalVariables(unittest.TestCase):
               document.write(x+y + "<br>\n");  
             }            
             '''),
-            ''
+            r'function wrapper(){var a=5;var b=0;document.write(let(a=a+10,b=12)a+b+"<br>\n");document.write(a+b+"<br>\n")}'
         )
 
     def test_let_statement(self):
         self.assertEqual(variableoptimize(
-            '''
+            r'''
             function wrapper()
             {
               var x = 5;
@@ -555,7 +555,7 @@ class TestLocalVariables(unittest.TestCase):
               print((x + y) + "\n");
             }
             '''),
-            ''
+            r'function wrapper(){var a=5;var b=0;let(a=a+10,b=12,c=3){print(a+b+c+"\n")}print((a+b)+"\n")}'
         )
         
     def test_(self):
