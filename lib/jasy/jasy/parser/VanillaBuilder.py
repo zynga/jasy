@@ -587,24 +587,8 @@ class VanillaBuilder:
     def PRIMARY_build(self, tokenizer, tokenType):
         # NB: tokenizer.token.type must be "null", "this", "true", "false", "identifier", "number", "string", or "regexp".
         node = Node(tokenizer, tokenType)
-        if tokenType in ("identifier", "string", "regexp"):
+        if tokenType in ("identifier", "string", "regexp", "number"):
             node.value = tokenizer.token.value
-            
-        if tokenType == "number":
-            value = tokenizer.token.value
-            if type(value) != str:
-                node.value = value
-            else:
-                # Check whether Python and JavaScript number created is the same
-                try:
-                    conv = float(value)
-                    if str(conv) == value:
-                        node.value = conv
-                    else:
-                        node.value = value
-                except ValueError:
-                    # Required for preventing issues with 0xF0 like values
-                    node.value = value
             
         return node
 

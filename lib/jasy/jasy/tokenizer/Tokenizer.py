@@ -347,8 +347,9 @@ class Tokenizer(object):
         self.cursor -= 1
 
         exponent = self.lexExponent()
-
         segment = input[token.start:self.cursor]
+        
+        # Protect float or exponent numbers
         if floating or exponent:
             token.value = segment
         else:
