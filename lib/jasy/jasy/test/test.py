@@ -151,6 +151,33 @@ class TestCompressor(unittest.TestCase):
     def test_for_in(self):
         self.assertEqual(compress('for (var key in map) { }'), 'for(var key in map){}')
 
+    def test_function_expressed(self):
+        self.assertEqual(compress('x = function() { i++ };'), 'x=function(){i++};')
+
+    def test_function_declared(self):
+        self.assertEqual(compress('function y() { i++ }'), 'function y(){i++}')
+
+    def test_generator_expression(self):
+        self.assertEqual(compress('handleResults(i for (i in obj));'), 'handleResults(i for(i in obj));')
+        
+    def test_generator_expression_guard(self):
+        self.assertEqual(compress('handleResults(i for (i in obj) if (i > 3));'), 'handleResults(i for(i in obj)if(i>3));')
+
+    def test_getter(self):
+        self.assertEqual(compress('var obj={get name() { return myName; }};'), 'var obj={get name(){return myName}};')
+
+    def test_setter(self):
+        self.assertEqual(compress('var obj={set name(value) { myName = value; }};'), 'var obj={set name(value){myName=value}};')
+
+    def test_hook_assign(self):
+        self.assertEqual(compress('x = test1 ? case1 = 1 : case2 = 2;'), 'x=test1?case1=1:case2=2;')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
     def test_(self):
         self.assertEqual(compress(''), '')
 
@@ -177,20 +204,6 @@ class TestCompressor(unittest.TestCase):
 
     def test_(self):
         self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-        
-        
-        
-        
-
 
 
 if __name__ == '__main__':
