@@ -340,26 +340,28 @@ class TestLocalVariables(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    verbosity = 2
+    
     print()
-    print("===========================================================================================")
+    print("======================================================================")
     print("  PARSER")
-    print("===========================================================================================")
+    print("======================================================================")
     parserTests = unittest.TestLoader().loadTestsFromTestCase(TestParser)
-    unittest.TextTestRunner(verbosity=2).run(parserTests)
+    unittest.TextTestRunner(verbosity=verbosity).run(parserTests)
 
     print()
-    print("===========================================================================================")
+    print("======================================================================")
     print("  COMPRESSOR")
-    print("===========================================================================================")
+    print("======================================================================")
     compressorTests = unittest.TestLoader().loadTestsFromTestCase(TestCompressor)
-    unittest.TextTestRunner(verbosity=2).run(compressorTests)
+    unittest.TextTestRunner(verbosity=verbosity).run(compressorTests)
 
     print()
-    print("===========================================================================================")
+    print("======================================================================")
     print("  LOCAL VARIABLES")
-    print("===========================================================================================")
+    print("======================================================================")
     localVariablesTests = unittest.TestLoader().loadTestsFromTestCase(TestLocalVariables)
-    unittest.TextTestRunner(verbosity=2).run(localVariablesTests)
+    unittest.TextTestRunner(verbosity=verbosity).run(localVariablesTests)
 
 
     
