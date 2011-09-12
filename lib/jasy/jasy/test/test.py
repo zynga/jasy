@@ -335,6 +335,7 @@ class TestCompressor(unittest.TestCase):
 
 
 
+
 class TestLocalVariables(unittest.TestCase):
 
     def setUp(self):
@@ -348,21 +349,176 @@ class TestLocalVariables(unittest.TestCase):
 
     def test_args(self):
         self.assertEqual(variableoptimize(
-            'function wrapper(obj, foo, hello) { obj[foo]().hello; }'), 
+            '''
+            function wrapper(obj, foo, hello) { 
+              obj[foo]().hello; 
+            }
+            '''), 
             'function wrapper(a,b,c){a[b]().hello}'
         )
 
     def test_accessor_names_like_variable_names(self):
         self.assertEqual(variableoptimize(
-          'function outer(alpha, beta, gamma) { function inner() {} var result = alpha * beta + gamma; var doNot = result.alpha.beta.gamma; return result * outer(alpha, beta, gamma); }'), 
+          '''
+          function outer(alpha, beta, gamma) 
+          { 
+            function inner() {} 
+            var result = alpha * beta + gamma; 
+            var doNot = result.alpha.beta.gamma; 
+            return result * outer(alpha, beta, gamma); 
+          }
+          '''), 
           'function outer(b,c,a){function f(){}var d=b*c+a;var e=d.alpha.beta.gamma;return d*outer(b,c,a)}'
         )
         
     def test_bind(self):
         self.assertEqual(variableoptimize(
-            'function bind(func, self, varargs) { return this.create(func, { self : self, args : null }); };'),
+            '''
+            function bind(func, self, varargs) 
+            { 
+              return this.create(func, { 
+                self : self, 
+                args : null 
+              }); 
+            };
+            '''),
             'function bind(a,b,c){return this.create(a,{self:b,args:null})};'
         )
+
+    def test_closure(self):
+        self.assertEqual(variableoptimize(
+            '''
+            (function(global)
+            {
+              var foo;
+              var bar = function()
+              {
+                var baz = foo;
+
+              }
+            })(this);
+            '''),
+            '(function(c){var a;var b=function(){var b=a}})(this);'
+        )
+
+    def test_conflict_generatedname(self):
+        self.assertEqual(variableoptimize(
+            '''
+            function wrapper()
+            {
+              var first=4;
+              var a=5;
+            }
+            '''),
+            'function wrapper(){var a=4;var b=5}'
+        )
+
+    def test_conflict_param_var(self):
+        self.assertEqual(variableoptimize(
+            '''
+            function x(config){
+              var config = 3;
+            }
+            '''),
+            'function x(a){var a=3}'
+        )
+
+    def test_conflict_same_name(self):
+        self.assertEqual(variableoptimize(
+            '''
+            function wrapper()
+            {
+              var first=4;
+              var first=5;
+            }
+            '''),
+            'function wrapper(){var a=4;var a=5}'
+        )
+
+    def test_declaration(self):
+        self.assertEqual(variableoptimize(
+            '''
+            function wrapper()
+            {
+              var first, second=5, third;
+              var [desFirst, desSecond]=destruct(), after;
+            }
+            '''),
+            'function wrapper(){var c,f=5,e;var [a,b]=destruct(),d}'
+        )
+
+    def test_exception_catchvar(self):
+        self.assertEqual(variableoptimize(
+            '''
+            function wrapper()
+            {
+              var x = 1, y = x+2;
+              try
+              {
+                something();
+              }
+              catch(ex)
+              {
+                var inCatch = 3;
+                alert(ex);
+              }
+            }
+            '''),
+            'function wrapper(){var b=1,d=b+2;try{something()}catch(a){var c=3;alert(a)}}'
+        )
+
+    def test_exception(self):
+        self.assertEqual(variableoptimize(
+            '''
+            function wrapper(param1)
+            {
+              var b = "hello";
+
+              try{
+                access.an.object[param1];
+
+              } 
+              catch(except)
+              {
+                alert(except + param1)
+              }
+            }            
+            '''),
+            'function wrapper(a){var c="hello";try{access.an.object[a]}catch(b){alert(b+a)}}'
+        )
+
+    def test_(self):
+        self.assertEqual(variableoptimize(
+            ''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(variableoptimize(
+            ''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(variableoptimize(
+            ''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(variableoptimize(
+            ''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(variableoptimize(
+            ''),
+            ''
+        )
+
+
+
 
 
 
@@ -374,14 +530,14 @@ if __name__ == '__main__':
     print("  PARSER")
     print("======================================================================")
     parserTests = unittest.TestLoader().loadTestsFromTestCase(TestParser)
-    unittest.TextTestRunner(verbosity=verbosity).run(parserTests)
+    #unittest.TextTestRunner(verbosity=verbosity).run(parserTests)
 
     print()
     print("======================================================================")
     print("  COMPRESSOR")
     print("======================================================================")
     compressorTests = unittest.TestLoader().loadTestsFromTestCase(TestCompressor)
-    unittest.TextTestRunner(verbosity=verbosity).run(compressorTests)
+    #unittest.TextTestRunner(verbosity=verbosity).run(compressorTests)
 
     print()
     print("======================================================================")
