@@ -241,23 +241,26 @@ class TestCompressor(unittest.TestCase):
     def test_new_args_empty(self):
         self.assertEqual(compress('var obj = new Object();'), 'var obj=new Object;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_number_float(self):
+        self.assertEqual(compress('4.3;'), '4.3;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')            
+    def test_number_float_short(self):
+        self.assertEqual(compress('.3;'), '.3;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_number_float_zero_prefix(self):
+        self.assertEqual(compress('0.5;'), '.5;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')            
+    def test_number_hex(self):
+        self.assertEqual(compress('0xF0;'), '0xF0;')
+
+    def test_number_int(self):
+        self.assertEqual(compress('3 + 6.0;'), '3+6;')
             
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_number_max(self):
+        self.assertEqual(compress('1.7976931348623157e+308;'), '1.7976931348623157e+308;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')            
+    def test_number_min(self):
+        self.assertEqual(compress('5e-324;'), '5e-324;')            
 
     def test_(self):
         self.assertEqual(compress(''), '')
