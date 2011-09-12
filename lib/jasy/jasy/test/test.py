@@ -9,13 +9,22 @@ sys.path.insert(0, jasyroot)
 import jasy.parser.Parser as Parser
 import jasy.process.Compressor as Compressor
 
+import jasy.process.Variables as Variables
+import jasy.optimizer.LocalVariables as LocalVariables
+
+
 def parse(code):
     return Parser.parse(code).toXml(False)
     
 def compress(code):
     return Compressor.compress(Parser.parse(code))
 
-
+def variableoptimize(code):
+    node = Parser.parse(code)
+    Variables.scan(node)
+    LocalVariables.optimize(node, node.stats)
+    return Compressor.compress(node)
+    
 
 class TestParser(unittest.TestCase):
     
@@ -331,8 +340,11 @@ class TestLocalVariables(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_and(self):
-        self.assertEqual(compress('x && y'), 'x&&y;')
+    def test_accessor_names_like_variable_names(self):
+        self.assertEqual(variableoptimize(
+          'function outer(alpha, beta, gamma) { function inner() {} var result = alpha * beta + gamma; var doNot = result.alpha.beta.gamma; return result * outer(alpha, beta, gamma); }'), 
+          'function outer(b,c,a){function f(){}var d=b*c+a;var e=d.alpha.beta.gamma;return d*outer(b,c,a)}'
+        )
         
         
         
