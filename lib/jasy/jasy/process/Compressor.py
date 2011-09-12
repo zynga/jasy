@@ -58,7 +58,24 @@ class Compressor:
                 result = self.__prefixes[node.type] + self.compress(node[0])
             
         elif type in self.__dividers:
-            result = self.__dividers[node.type].join(map(self.compress, node))
+            first = self.compress(node[0])
+            second = self.compress(node[1])
+            divider = self.__dividers[node.type]
+            
+            # Fast path
+            if node.type not in ("plus", "minus"):
+                return "%s%s%s" % (first, divider, second)
+            
+            result = first
+            if divider == "+" and first.endswith(divider):
+                result += " "
+            
+            result += divider
+            
+            if divider == "+" and second.startswith(divider):
+                result += " "
+                
+            result += second
 
         else:
             try:
