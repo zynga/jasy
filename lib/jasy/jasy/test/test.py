@@ -301,59 +301,28 @@ class TestCompressor(unittest.TestCase):
     def test_switch(self):
         self.assertEqual(compress('switch(x) { case 1: case 2: r = 2; case 3: r = 3; break; default: r = null; }'), 'switch(x){case 1:case 2:r=2;case 3:r=3;break;default:r=null}')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')            
+    def test_throw(self):
+        self.assertEqual(compress('throw new Error("Ooops");'), 'throw new Error("Ooops");')            
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_trycatch_guard(self):
+        self.assertEqual(compress('try{ x=1; } catch (ex1 if ex1 instanceof MyError) { alert(ex1); } catch (ex2) { alert(ex2); }'), 'try{x=1}catch(ex1 if ex1 instanceof MyError){alert(ex1)}catch(ex2){alert(ex2)}')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_trycatch(self):
+        self.assertEqual(compress('try{ x=1; } catch (ex) { alert(ex); }'), 'try{x=1}catch(ex){alert(ex)}')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_unary(self):
+        self.assertEqual(compress('var x = -1 * +3;'), 'var x=-1*+3;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_unicode(self):
+        # Should be allowed in UTF-8 documents
+        self.assertEqual(compress(r'var x = "\u00A9 Netscape Communications";'), r'var x="© Netscape Communications";')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')            
+    def test_while_comma_condition(self):
+        self.assertEqual(compress('while (x=1, x<3){ x++; }'), 'while(x=1,x<3){x++}')            
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_while(self):
+        self.assertEqual(compress('while (true) { x++; }'), 'while(true){x++}')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')            
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')            
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')            
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-        
-        
-        
         
 if __name__ == '__main__':
     unittest.main()
