@@ -340,14 +340,29 @@ class TestLocalVariables(unittest.TestCase):
     def setUp(self):
         pass
 
+    def test_basic(self):
+        self.assertEqual(variableoptimize(
+            'function test(para1, para2) { var result = para1 + para2; return result; }'), 
+            'function test(b,c){var a=b+c;return a}'
+        )
+
+    def test_args(self):
+        self.assertEqual(variableoptimize(
+            'function wrapper(obj, foo, hello) { obj[foo]().hello; }'), 
+            'function wrapper(a,b,c){a[b]().hello}'
+        )
+
     def test_accessor_names_like_variable_names(self):
         self.assertEqual(variableoptimize(
           'function outer(alpha, beta, gamma) { function inner() {} var result = alpha * beta + gamma; var doNot = result.alpha.beta.gamma; return result * outer(alpha, beta, gamma); }'), 
           'function outer(b,c,a){function f(){}var d=b*c+a;var e=d.alpha.beta.gamma;return d*outer(b,c,a)}'
         )
         
-        
-        
+    def test_bind(self):
+        self.assertEqual(variableoptimize(
+            'function bind(func, self, varargs) { return this.create(func, { self : self, args : null }); };'),
+            'function bind(a,b,c){return this.create(a,{self:b,args:null})};'
+        )
 
 
 
