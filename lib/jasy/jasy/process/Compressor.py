@@ -203,24 +203,21 @@ class Compressor:
 
     def type_number(self, node):
         value = node.value
-        
-        # Keep protected floats/exponential in the same format as they are in source
+
+        # Special handling for protected float/exponential
         if type(value) == str:
-            return value
+            # Convert zero-prefix
+            if value.startswith("0.") and len(value) > 2:
+                value = value[1:]
+                
+            # Convert zero postfix
+            elif value.endswith(".0"):
+                value = value[:-2]
+
         elif int(value) == value and node.parent.type != "dot":
             value = int(value)
-        else:
-            conv = str(value)
-            if conv.startswith("0.") and len(conv) > 2:
-                value = conv[1:]
 
-        # test different number formattings for their compression possibility
-        string = "%s" % value
-        exponential = "%e" % value
-        if len(string) > len(exponential):
-            return exponential
-        
-        return string
+        return "%s" % value
 
     def type_regexp(self, node):
         return node.value
