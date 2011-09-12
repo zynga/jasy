@@ -323,8 +323,45 @@ class TestCompressor(unittest.TestCase):
     def test_while(self):
         self.assertEqual(compress('while (true) { x++; }'), 'while(true){x++}')
 
+
+
+
+class TestLocalVariables(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_and(self):
+        self.assertEqual(compress('x && y'), 'x&&y;')
         
+        
+        
+
+
+
 if __name__ == '__main__':
-    unittest.main()
+    print()
+    print("===========================================================================================")
+    print("  PARSER")
+    print("===========================================================================================")
+    parserTests = unittest.TestLoader().loadTestsFromTestCase(TestParser)
+    unittest.TextTestRunner(verbosity=2).run(parserTests)
+
+    print()
+    print("===========================================================================================")
+    print("  COMPRESSOR")
+    print("===========================================================================================")
+    compressorTests = unittest.TestLoader().loadTestsFromTestCase(TestCompressor)
+    unittest.TextTestRunner(verbosity=2).run(compressorTests)
+
+    print()
+    print("===========================================================================================")
+    print("  LOCAL VARIABLES")
+    print("===========================================================================================")
+    localVariablesTests = unittest.TestLoader().loadTestsFromTestCase(TestLocalVariables)
+    unittest.TextTestRunner(verbosity=2).run(localVariablesTests)
+
+
     
+        
     
