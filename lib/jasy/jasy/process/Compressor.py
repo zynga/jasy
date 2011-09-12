@@ -67,12 +67,12 @@ class Compressor:
                 return "%s%s%s" % (first, divider, second)
             
             result = first
-            if divider == "+" and first.endswith(divider):
+            if first.endswith(divider):
                 result += " "
             
             result += divider
             
-            if divider == "+" and second.startswith(divider):
+            if second.startswith(divider):
                 result += " "
                 
             result += second

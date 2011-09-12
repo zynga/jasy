@@ -39,6 +39,12 @@ class TestCompressor(unittest.TestCase):
     def test_arithm(self):
         self.assertEqual(compress('i++; j-- + 3;'), 'i++;j--+3;')
 
+    def test_arithm_increment(self):
+        self.assertEqual(compress('x++ + y; x + ++y; x++ + ++y'), 'x++ +y;x+ ++y;x++ + ++y;')
+
+    def test_arithm_decrement(self):
+        self.assertEqual(compress('x-- - y; x - --y; x-- - --y'), 'x-- -y;x- --y;x-- - --y;')
+
     def test_array_number(self):
         self.assertEqual(compress('var data1 = [ 1, 2, 3 ];'), 'var data1=[1,2,3];')
 
