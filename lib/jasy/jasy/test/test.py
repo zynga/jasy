@@ -112,8 +112,32 @@ class TestCompressor(unittest.TestCase):
     def test_continue_label(self):
         self.assertEqual(compress('dist: while(y) { continue dist; }'), 'dist:while(y){continue dist};')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_declaration(self):
+        self.assertEqual(compress('var a, b=5, c;'), 'var a,b=5,c;')
+
+    def test_declaration_destruct(self):
+        self.assertEqual(compress('var [d, e] = destruct(), x;'), 'var [d,e]=destruct(),x;')
+
+    def test_delete(self):
+        self.assertEqual(compress('delete obj.key;'), 'delete obj.key;')
+
+    def test_destruct_assign(self):
+        self.assertEqual(compress('[first, second] = [second, first];'), '[first,second]=[second,first];')
+
+    def test_destruct_for(self):
+        self.assertEqual(compress('for (var [name, value] in Iterator(obj)) {}'), 'for(var [name,value] in Iterator(obj)){}')
+
+    def test_destruct_for_let(self):
+        self.assertEqual(compress('for (let [name, value] in Iterator(obj)) {}'), 'for(let [name,value] in Iterator(obj)){}')
+
+    def test_do_while(self):
+        self.assertEqual(compress('do{ something; } while(true);'), 'do{something}while(true);')
+
+    def test_dot(self):
+        self.assertEqual(compress('parent.child.weight;'), 'parent.child.weight;')
+
+    def test_expression_closure(self):
+        self.assertEqual(compress('node.onclick = function(x) x * x'), 'node.onclick=function(x)x*x;')
 
     def test_(self):
         self.assertEqual(compress(''), '')
@@ -135,11 +159,6 @@ class TestCompressor(unittest.TestCase):
 
     def test_(self):
         self.assertEqual(compress(''), '')
-
-    def test_(self):
-        self.assertEqual(compress(''), '')
-
-
         
         
         
