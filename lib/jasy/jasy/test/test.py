@@ -578,21 +578,14 @@ class TestLocalVariables(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    verbosity = 2
+    verbosity = 1
     
-    print()
-    print("======================================================================")
-    print("  PARSER")
-    print("======================================================================")
-    parserTests = unittest.TestLoader().loadTestsFromTestCase(TestParser)
-    #unittest.TextTestRunner(verbosity=verbosity).run(parserTests)
-
     print()
     print("======================================================================")
     print("  COMPRESSOR")
     print("======================================================================")
     compressorTests = unittest.TestLoader().loadTestsFromTestCase(TestCompressor)
-    #unittest.TextTestRunner(verbosity=verbosity).run(compressorTests)
+    unittest.TextTestRunner(verbosity=verbosity).run(compressorTests)
 
     print()
     print("======================================================================")
