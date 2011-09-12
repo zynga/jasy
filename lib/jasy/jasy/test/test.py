@@ -487,6 +487,77 @@ class TestLocalVariables(unittest.TestCase):
             'function wrapper(a){var c="hello";try{access.an.object[a]}catch(b){alert(b+a)}}'
         )
 
+    def test_function(self):
+        self.assertEqual(variableoptimize(
+            '''
+            (function(global)
+            {
+              var x = doScrollCheck();
+              function doScrollCheck() {
+                doScrollCheck();
+              }
+            })(window);
+            '''),
+            ''
+        )
+
+    def test_inline_access(self):
+        self.assertEqual(variableoptimize(
+            '''
+            function wrapper()
+            {
+              var d, a=d;
+            }
+            '''),
+            ''
+        )
+
+    def test_let_definition(self):
+        self.assertEqual(variableoptimize(
+            '''
+            function wrapper()
+            {
+              if (x > y) {  
+                let gamma = 12.7 + y;  
+                i = gamma * x;  
+              } 
+            }
+            '''),
+            ''
+        )
+
+    def test_let_expression(self):
+        self.assertEqual(variableoptimize(
+            '''
+            function wrapper()
+            {
+              var x = 5;  
+              var y = 0;  
+              document.write(let(x = x + 10, y = 12) x + y + "<br>\n");  
+              document.write(x+y + "<br>\n");  
+            }            
+            '''),
+            ''
+        )
+
+    def test_let_statement(self):
+        self.assertEqual(variableoptimize(
+            '''
+            function wrapper()
+            {
+              var x = 5;
+              var y = 0;
+
+              let (x = x+10, y = 12, z=3) {
+                print(x+y+z + "\n");
+              }
+
+              print((x + y) + "\n");
+            }
+            '''),
+            ''
+        )
+        
     def test_(self):
         self.assertEqual(variableoptimize(
             ''),
@@ -515,7 +586,7 @@ class TestLocalVariables(unittest.TestCase):
         self.assertEqual(variableoptimize(
             ''),
             ''
-        )
+        )        
 
 
 
