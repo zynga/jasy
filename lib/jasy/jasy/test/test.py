@@ -357,7 +357,7 @@ class TestLocalVariables(unittest.TestCase):
             'function wrapper(a,b,c){a[b]().hello}'
         )
 
-    def test_accessor_names_like_variable_names(self):
+    def test_accessor_names(self):
         self.assertEqual(variableoptimize(
           '''
           function outer(alpha, beta, gamma) 
@@ -558,16 +558,40 @@ class TestLocalVariables(unittest.TestCase):
             r'function wrapper(){var a=5;var b=0;let(a=a+10,b=12,c=3){print(a+b+c+"\n")}print((a+b)+"\n")}'
         )
         
-    def test_(self):
+    def test_reuse_different(self):
         self.assertEqual(variableoptimize(
-            ''),
-            ''
+            '''
+            function run()
+            {
+              var first = function() {
+                var inFirst = 1;
+              };
+
+              var second = function() {
+                var inSecond = 2;
+              };
+
+            }
+            '''),
+            'function run(){var a=function(){var a=1};var b=function(){var a=2}}'
         )
 
-    def test_(self):
+    def test_reuse_names(self):
         self.assertEqual(variableoptimize(
-            ''),
-            ''
+            '''
+            function run()
+            {
+              var first = function() {
+                var a = 1;
+              };
+
+              var second = function() {
+                var a = 2;
+              };
+
+            }
+            '''),
+            'function run(){var a=function(){var a=1};var b=function(){var a=2}}'
         )
 
     def test_(self):
