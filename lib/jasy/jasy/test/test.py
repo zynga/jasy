@@ -560,6 +560,14 @@ class TestLocalVariables(unittest.TestCase):
             'function run(){var a=function(){var a=1};var b=function(){var a=2}}'
         )
 
+
+
+
+class TestBlockReducer(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
     def test_(self):
         self.assertEqual(variableoptimize(
             ''),
@@ -578,8 +586,7 @@ class TestLocalVariables(unittest.TestCase):
             ''
         )        
 
-
-
+        
 
 
 
@@ -599,6 +606,14 @@ if __name__ == '__main__':
     print("======================================================================")
     localVariablesTests = unittest.TestLoader().loadTestsFromTestCase(TestLocalVariables)
     unittest.TextTestRunner(verbosity=verbosity).run(localVariablesTests)
+
+    print()
+    print("======================================================================")
+    print("  BLOCK REDUCER")
+    print("======================================================================")
+    blockReducerTests = unittest.TestLoader().loadTestsFromTestCase(TestBlockReducer)
+    unittest.TextTestRunner(verbosity=verbosity).run(blockReducerTests)
+
 
 
     

@@ -66,6 +66,7 @@ class Compressor:
             if node.type not in ("plus", "minus"):
                 return "%s%s%s" % (first, divider, second)
             
+            # Special code for dealing with situations like x + ++y and y-- - x
             result = first
             if first.endswith(divider):
                 result += " "
