@@ -160,6 +160,32 @@ class TestCompressor(unittest.TestCase):
     def test_(self):
         self.assertEqual(compress(''), '')
         
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
+
+    def test_(self):
+        self.assertEqual(compress(''), '')
         
         
         

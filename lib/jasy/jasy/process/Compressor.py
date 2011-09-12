@@ -436,7 +436,11 @@ class Compressor:
         else:
             body = ""
         
-        result = "for(%s in %s)%s" % (self.__removeSemicolon(self.compress(node.iterator)), self.compress(node.object), body)
+        result = "for"
+        if node.isEach:
+            result += " each"
+    
+        result += "(%s in %s)%s" % (self.__removeSemicolon(self.compress(node.iterator)), self.compress(node.object), body)
     
         if body:
             self.__handleForcedSemicolon(node.body)

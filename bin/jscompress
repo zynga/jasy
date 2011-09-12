@@ -5,7 +5,7 @@ import sys, os, logging
 logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
 
 # Extend PYTHONPATH with 'lib'
-sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
+sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib", "jasy")))
 
 from jasy.parser.Parser import parse
 from jasy.process.Compressor import compress
