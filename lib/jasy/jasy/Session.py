@@ -54,7 +54,7 @@ class Session():
             entry = fields[name]
 
             if name in self.__fields:
-                raise Exception("Field '%s' was already defined!")
+                raise Exception("Field '%s' was already defined!" % (name))
 
             if "check" in entry:
                 check = entry["check"]

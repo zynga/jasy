@@ -52,8 +52,6 @@
 	var assets = global.$$assets;
 	if (!assets) 
 	{
-		console.warn("Asset data is not available!");
-		
 		// override getter to always return undefined
 		getEntry = new Function;
 	}

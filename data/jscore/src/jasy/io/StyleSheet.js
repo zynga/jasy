@@ -76,6 +76,8 @@
 				{
 					for (var i = 0, l = sheets.length; i < l; i++)  
 					{
+						// In Webkit browsers the sheets array is populated as soon
+						// as the stylesheet was loaded.
 						if (sheets[i].ownerNode === link) 
 						{
 							clearInterval(handle);
@@ -120,11 +122,12 @@
 			else 
 			{
 				var link = doc.createElement("link");
-				link.onload = function() 
+				link.onload = link.onerror = function(e) 
 				{
-					link.onload = null;
+					link.onload = link.onerror = null;
+					
 					if (callback) {
-						callback.call(context, uri);
+						callback.call(context, uri, (e||global.event).type === "error");
 					}
 				};
 

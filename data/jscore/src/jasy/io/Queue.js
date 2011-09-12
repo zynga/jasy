@@ -10,7 +10,12 @@
 	var typeLoader = 
 	{
 		js : jasy.io.Script,
-		css : jasy.io.StyleSheet
+		css : jasy.io.StyleSheet,
+		jsonp : jasy.io.Jsonp,
+		png : jasy.io.Image,
+		jpeg : jasy.io.Image,
+		jpg : jasy.io.Image,
+		gif : jasy.io.Image
 	};
 
 
@@ -22,8 +27,20 @@
 	 */
 	var extractExtension = function(filename) 
 	{
-		var dot = filename.lastIndexOf(".");
-		return dot > 0 ? filename.slice(dot+1) : null;
+		// Filter out query string and find last dot to split extension
+		var result = filename.match(/\.([^\.\?]+)(?:\?|$)/);
+		
+		// Extension found
+		if (result != null) {
+			return result[1];
+		}
+		
+		// Support for callback params in URI (JSON-P)
+		if (filename.indexOf("callback=") != -1) {
+			return "jsonp";
+		}
+		
+		return null;
 	};
 	
 
@@ -55,8 +72,10 @@
 	 * Registers the given URI as being loaded. 
 	 * 
 	 * @param uri {String} URI to mark as being loaded
+	 * @param errornous {Boolean?false} Whether request was not successful
+	 * @param data {Map} Additional data to exchange
 	 */
-	var onLoad = function(uri) 
+	var onLoad = function(uri, errornous, data) 
 	{
 		if (jasy.Env.isSet("debug")) {
 			jasy.Test.assertString(uri, "Invalid URI from loader backend!");
@@ -162,7 +181,7 @@
 					if (autoType) {
 						type = extractExtension(currentUri);
 						
-						if (jasy.Env.isSet("debug") && !type) {
+						if (jasy.Env.isSet("debug") && (!type || !typeLoader[type])) {
 							throw new Error("Could not figure out loader to use for URI: " + currentUri);
 						}
 					}
@@ -239,6 +258,12 @@
 				for (var type in sequential) {
 					loadNext(type);
 				}
+			}
+			
+			// Return internal loading list for debug proposes only.
+			// Be super careful with the object
+			if (jasy.Env.isSet("debug")) {
+				return loading;
 			}
 		}
 	});

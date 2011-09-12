@@ -17,13 +17,14 @@
  * Gecko 2.0 => Firefox 4.0
  * Gecko 5.0 => Firefox 5.0
  * Gecko 6.0 => Firefox 6.0
+ * Gecko 7.0 => Firefox 7.0
  * 
  * Webkit 528.8 => Chrome 1.0/Safari 4.0
  * Webkit 533.8 => Chrome 6.0/Safari 5.0/Safari 4.1
  * Webkit 534.7 => Chrome 7.0
  * Webkit 534.30 => Chrome 12.0
  * Webkit 534.48 => Safari 5.1
- * Webkit 535.1 => Chrome 14.0
+ * Webkit 535.1 => Chrome 13.0
  * 
  * Before = IE7 oder IE6
  * Trident 3.1 => IE7 Mobile

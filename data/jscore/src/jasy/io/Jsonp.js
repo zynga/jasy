@@ -8,22 +8,36 @@
 ==================================================================================================
 */
 
-(function(global) {
+/**
+ * @require {fix.DocumentHead}
+ */
+(function(global, doc) {
 	
 	var id = 0;
 	var prefix = "__JSONP__";
-	var document = global.document;
-	var documentHead = document.head;
+	var head = doc.head;
+	
+	// Dynamic URI can be shared because we do not support reloading files
+	var dynamicExtension = "&r=" + Date.now();	
 
 	/**
-	 * @require {fix.DocumentHead}
+	 * Async JSON-P loader
+	 *
 	 */
 	Module("jasy.io.Jsonp", 
 	{
+		/** {Boolean} Whether the loader supports parallel requests. Always true for images. */
+		SUPPORTS_PARALLEL : true,
+		
 		/**
+		 * Loads an JSONP and fires a callback when the data was loaded
 		 *
+		 * @param uri {String} URI pointing to the image
+		 * @param callback {Function ? null} Callback that fires when image is loaded
+		 * @param context {Object ? null} Context in which the callback is being executed. Defaults to global context.
+		 * @param nocache {Boolean ? false} Appends a dynamic parameter to each URL to force a fresh copy
 		 */
-		load : function load(uri, callback) 
+		load : function load(uri, callback, context, nocache) 
 		{
 			function JSONPResponse()
 			{
@@ -33,17 +47,17 @@
 					global[src] = null;
 				}
 
-				documentHead.removeChild(script);
-				callback.apply(this, arguments);
+				head.removeChild(script);
+				callback.apply(context||global, arguments);
 			}
 
 			var src = prefix + id++;
-			var script = document.createElement("script");
+			var script = doc.createElement("script");
 
 			global[src] = JSONPResponse;
 
-			documentHead.insertBefore(script, documentHead.lastChild);
-			script.src = uri + "=" + src;
+			head.insertBefore(script, head.lastChild);
+			script.src = uri + "=" + src + (nocache ? dynamicExtension : "");
 		}
 	});
-})(this);
+})(this, document);
