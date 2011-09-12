@@ -139,17 +139,17 @@ class TestCompressor(unittest.TestCase):
     def test_expression_closure(self):
         self.assertEqual(compress('node.onclick = function(x) x * x'), 'node.onclick=function(x)x*x;')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_for_multiinit(self):
+        self.assertEqual(compress('for(x = 0, l = foo.length; x < l; x++) {}'), 'for(x=0,l=foo.length;x<l;x++){}')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_for_simple(self):
+        self.assertEqual(compress('for (var i=0; i<100; i++) {}'), 'for(var i=0;i<100;i++){}')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_for_each(self):
+        self.assertEqual(compress('for each (var item in obj) { sum += item; }'), 'for each(var item in obj){sum+=item}')
 
-    def test_(self):
-        self.assertEqual(compress(''), '')
+    def test_for_in(self):
+        self.assertEqual(compress('for (var key in map) { }'), 'for(var key in map){}')
 
     def test_(self):
         self.assertEqual(compress(''), '')
