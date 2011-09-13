@@ -51,12 +51,14 @@ def jsoptimize(source, filename=None):
 
     scan(tree)
 
-    UnusedCleaner.optimize(tree)
+    #UnusedCleaner.optimize(tree)
     BlockReducer.optimize(tree)
     
-    CombineDeclarations.optimize(tree)
-    LocalVariables.optimize(tree, tree.stats)
-    CryptPrivates.optimize(tree)
+    #CombineDeclarations.optimize(tree)
+    #LocalVariables.optimize(tree, tree.stats)
+    #CryptPrivates.optimize(tree)
+
+    print(tree)
     
     return compress(tree)
 

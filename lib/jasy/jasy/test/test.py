@@ -12,6 +12,9 @@ import jasy.process.Compressor as Compressor
 import jasy.process.Variables as Variables
 import jasy.optimizer.LocalVariables as LocalVariables
 
+import jasy.optimizer.BlockReducer as BlockReducer
+
+
 
 def parse(code):
     return Parser.parse(code).toXml(False)
@@ -23,6 +26,11 @@ def variableoptimize(code):
     node = Parser.parse(code)
     Variables.scan(node)
     LocalVariables.optimize(node, node.stats)
+    return Compressor.compress(node)
+
+def blockreduce(code):
+    node = Parser.parse(code)
+    BlockReducer.optimize(node)
     return Compressor.compress(node)
 
 
@@ -568,11 +576,21 @@ class TestBlockReducer(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_(self):
-        self.assertEqual(variableoptimize(
-            ''),
-            ''
-        )
+    def test_combine_mixed(self):
+        self.assertEqual(blockreduce('var str = 4 + 3 + "x"'), 'var str="7x";')
+
+    def test_combine_number(self):
+        self.assertEqual(blockreduce('var adds = 4 * (5+6);'), 'var adds=44;')
+
+    def test_combine_number_omit(self):
+        self.assertEqual(blockreduce('var third = 1/3;'), 'var third=1/3;')
+
+    def test_combine_string(self):
+        self.assertEqual(blockreduce('var result = "first second third " + "fourth fivs sixs";'), 'var result="first second third fourth fivs sixs";')
+
+    def test_combine_mixed_empty(self):
+        self.assertEqual(blockreduce('4 + 3 + "x"'), '')
+
 
     def test_(self):
         self.assertEqual(variableoptimize(
