@@ -717,6 +717,173 @@ class TestBlockReducer(unittest.TestCase):
 
      
 
+    def test_if_deep_if(self):
+        self.assertEqual(self.process(
+            '''
+            if(something)
+            {
+              for(g in h)
+              {
+                x++;
+                if(otherthing){
+                  y++;
+                  while(bar);
+                }
+              }
+            }
+            '''),
+            'if(something)for(g in h){x++;if(otherthing){y++;while(bar);}}'
+        )        
+
+    def test_loop_brackets(self):
+        self.assertEqual(self.process(
+            '''
+            while(true)
+            {
+              retVal = !!callback(elems[i],i);
+
+              if (inv!==retVal) {
+                ret.push(elems[i])
+              }
+            }
+            '''),
+            'while(true)retVal=!!callback(elems[i],i),inv!==retVal&&ret.push(elems[i]);'
+        )
+
+    def test_switch_return(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper(code)
+            {
+              switch(code)
+              {
+                case null:
+                case 0:
+                  return true;
+
+                case -1:
+                  return false;
+              }
+            }
+            '''),
+            'function wrapper(code){switch(code){case null:case 0:return true;case -1:return false}}'
+        )        
+
+    def test_if_else_cascaded(self):
+        self.assertEqual(self.process(
+            '''
+            if(something)
+            {
+              if (condition)
+              {
+                somethingCase1a();
+                somethingCase1b();
+              }
+              else
+              {
+                somethingCase2a();
+                somethingCase2b();
+              }
+            }
+            else
+            {
+              otherStuffA();
+              otherStuffB();
+            }
+            '''),
+            'something?condition?somethingCase1a(),somethingCase1b():somethingCase2a(),somethingCase2b():otherStuffA(),otherStuffB();'
+        )
+        
+    def test_if_else_expression(self):
+        self.assertEqual(self.process(
+            '''
+            if(foo)
+            {
+              x++;
+            }
+            else
+            {
+              x--;
+            }
+            '''),
+            'foo?x++:x--;'
+        )        
+
+    def test_if_else_both_empty(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper()
+            {
+              if(something)
+              {}
+              else
+              {}
+            }
+            '''),
+            'function wrapper(){something}'
+        )
+
+    def test_if_else_empty(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper()
+            {
+              if(something)
+              {
+                while(x);
+              }
+              else
+              {}
+            }
+            '''),
+            'function wrapper(){if(something)while(x);}'
+        )        
+
+    def test_if_else_while_if(self):
+        self.assertEqual(self.process(
+            '''
+            if(first)
+            {
+              while(second) 
+              {
+                if(x)
+                {
+                  x++;
+                }
+              }
+            }
+            else
+            {
+              y++;
+            }
+            '''),
+            'if(first)while(second)x&&x++;else y++;'
+        )        
+
+    def test_if_empty_else(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper()
+            {
+              if(something)
+              {
+              }
+              else
+              {
+                while(x); 
+              }
+            }
+            '''),
+            'function wrapper(){if(!something)while(x);}'
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
     def test_(self):
         self.assertEqual(self.process(
             '''
@@ -730,6 +897,35 @@ class TestBlockReducer(unittest.TestCase):
             '''),
             ''
         )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
 
 
 
