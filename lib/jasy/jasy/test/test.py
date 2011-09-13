@@ -877,6 +877,157 @@ class TestBlockReducer(unittest.TestCase):
             'function wrapper(){if(!something)while(x);}'
         )        
 
+    def test_ifoptimize_assign_late(self):
+        self.assertEqual(self.process(
+            '''
+            if(something) {
+              x++;
+              x=4;
+            }
+            '''),
+            'something&&x++,x=4;'
+        )
+
+    def test_ifoptimize_assign(self):
+        self.assertEqual(self.process(
+            '''
+            if (something) {
+              x = 4;
+            }
+            '''),
+            'something&&(x=4);'
+        )        
+
+    def test_ifoptimize_crazy(self):
+        self.assertEqual(self.process(
+            'if (X && !this.isRich()) { {}; }'),
+            'X&&!this.isRich();'
+        )
+
+    def test_ifoptimize_empty(self):
+        self.assertEqual(self.process(
+            'if(something){}'),
+            'something;'
+        )        
+
+    def test_mergeassign_assign(self):
+        self.assertEqual(self.process(
+            '''
+            if(foo)
+            {
+              x = 5;
+            }
+            else
+            {
+              x = 7;
+            }
+            '''),
+            'x=foo?5:7;'
+        )
+
+    def test_mergeassign_assign_plus(self):
+        self.assertEqual(self.process(
+            '''
+            if(something) {
+              x += 3;
+            } else {
+              x += 4;
+            }
+            '''),
+            'x+=something?3:4;'
+        )        
+
+    def test_mergeassign_object(self):
+        self.assertEqual(self.process(
+            '''
+            if(something) {
+              obj.foo.bar = "hello";
+            } else {
+              obj.foo.bar = "world";
+            }
+            '''),
+            'obj.foo.bar=something?"hello":"world";'
+        )
+    
+    def test_mergereturn(self):
+        self.assertEqual(self.process(
+            '''
+            function ret()
+            {
+              if(something) {
+                return "hello";
+              } else {
+                return "world";
+              }
+            }
+            '''),
+            'function ret(){return something?"hello":"world"}'
+        )
+
+    def test_parens_arithm(self):
+        self.assertEqual(self.process(
+            'x=(4*5)+4;'),
+            'x=24;'
+        )        
+
+    def test_parens_assign(self):
+        self.assertEqual(self.process(
+            'doc = (context ? context.ownerDocument || context : document);'),
+            'doc=context?context.ownerDocument||context:document;'
+        )
+
+    def test_parens_condition(self):
+        self.assertEqual(self.process(
+            '''
+            while ( (fn = readyList[ i++ ]) ) {
+              fn.call( document, jQuery );
+            }
+            '''),
+            'while(fn=readyList[i++])fn.call(document,jQuery);'
+        )        
+
+    def test_parens_directexec(self):
+        self.assertEqual(self.process(
+            '(function(){ x++; })();'),
+            '(function(){x++})();'
+        )
+
+    def test_parens_new(self):
+        self.assertEqual(self.process(
+            'var x = (new some.special.Item).setText("Hello World");'),
+            'var x=(new some.special.Item).setText("Hello World");'
+        )        
+
+    def test_parens_new_args(self):
+        self.assertEqual(self.process(
+            'var x = new some.special.Item("param").setText("Hello World");'),
+            'var x=new some.special.Item("param").setText("Hello World");'
+        )        
+
+    def test_parens_return(self):
+        self.assertEqual(self.process(
+            '''
+            function x() {
+              return (somemethod() && othermethod() != null);
+            }
+            '''),
+            'function x(){return somemethod()&&othermethod()!=null}'
+        )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
     def test_(self):
         self.assertEqual(self.process(
             '''
@@ -925,8 +1076,6 @@ class TestBlockReducer(unittest.TestCase):
             '''),
             ''
         )
-
-
 
 
 if __name__ == '__main__':
