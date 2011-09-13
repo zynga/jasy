@@ -14,6 +14,9 @@ import jasy.optimizer.LocalVariables as LocalVariables
 
 import jasy.optimizer.BlockReducer as BlockReducer
 
+import jasy.optimizer.CombineDeclarations as CombineDeclarations
+
+
 
 class TestParser(unittest.TestCase):
     
@@ -1014,6 +1017,146 @@ class TestBlockReducer(unittest.TestCase):
             'function x(){return somemethod()&&othermethod()!=null}'
         )
 
+
+
+class TestDeclarations(unittest.TestCase):
+
+    def process(self, code):
+        node = Parser.parse(code)
+        Variables.scan(node)
+        CombineDeclarations.optimize(node)
+        return Compressor.compress(node)
+
+
+    def test_combine_basic(self):
+        self.assertEqual(self.process(
+            '''
+            var foo=3;
+            var bar=4;
+            foo++;
+            var baz=foo+bar;
+            '''),
+            'var foo=3,bar=4,baz;foo++;baz=foo+bar;'
+        )        
+
+    def test_combine_closure_innerfirst(self):
+        self.assertEqual(self.process(
+            '''
+            function inner() 
+            {
+              var innerVarA = 5;
+              var innerVarB = 10;
+              doSomething();
+              var innerVarC = 15;
+            }
+            var after;
+            var afterInit = 6;
+            '''),
+            'function inner(){var innerVarA=5,innerVarB=10,innerVarC;doSomething();innerVarC=15}var after,afterInit=6;'
+        )
+
+    def test_combine_closure(self):
+        self.assertEqual(self.process(
+            '''
+            var before = 4;
+            function inner() 
+            {
+              var innerVarA = 5;
+              var innerVarB = 10;
+              doSomething();
+              var innerVarC = 15;
+            }
+            var after;
+            var afterInit = 6;
+            '''),
+            'var before=4,after,afterInit;function inner(){var innerVarA=5,innerVarB=10,innerVarC;doSomething();innerVarC=15}afterInit=6;'
+        )
+
+    def test_combine_complex(self):
+        self.assertEqual(self.process(
+            '''
+            var foo=3;
+            var bar=4;
+            foo++;
+            {
+              var baz=foo+bar;
+              var next;
+            }
+            '''),
+            'var foo=3,bar=4,baz,next;foo++;{baz=foo+bar}'
+        )        
+
+    def test_combine_destruct_assign(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper()
+            {
+              var desFirst=3;
+              while(x);
+              var [desFirst, desSecond] = destruct();
+            }
+            '''),
+            'function wrapper(){var desFirst=3,desSecond;while(x);[desFirst,desSecond]=destruct()}'
+        )
+
+    def test_combine_destruct(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper()
+            {
+              var desFirst=3, desSecond;
+              var [desFirst, desSecond] = destruct();
+            }
+            '''),
+            'function wrapper(){var desFirst=3,[desFirst,desSecond]=destruct()}'
+        )        
+
+    def test_combine_doubles(self):
+        self.assertEqual(self.process(
+            '''
+            var foo=3;
+            var foo=4;
+            '''),
+            'var foo=3,foo=4;'
+        )
+
+    def test_combine_doubles_break(self):
+        self.assertEqual(self.process(
+            '''
+            var foo = 3;
+            var bar = 2;
+            x();
+            var foo = 4;
+            '''),
+            'var foo=3,bar=2;x();foo=4;'
+        )        
+
+    def test_combine_doubles_for(self):
+        self.assertEqual(self.process(
+            '''
+            for(var key in obj) {}
+            for(var key in obj2) {}
+            for(var key2 in obj) {}
+            '''),
+            'for(key in obj){}for(key in obj2){}for(key2 in obj){}var key,key2;'
+        )
+        
+    def test_combine_doubles_oneassign(self):
+        self.assertEqual(self.process(
+            '''
+            var foo=3;
+            var foo;
+            '''),
+            'var foo=3;'
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+        
     def test_(self):
         self.assertEqual(self.process(
             '''
@@ -1033,7 +1176,42 @@ class TestBlockReducer(unittest.TestCase):
             '''
             '''),
             ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )     
+        
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
         )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
 
     def test_(self):
         self.assertEqual(self.process(
@@ -1061,21 +1239,7 @@ class TestBlockReducer(unittest.TestCase):
             '''
             '''),
             ''
-        )
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )        
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )
+        )           
 
 
 if __name__ == '__main__':
@@ -1102,7 +1266,12 @@ if __name__ == '__main__':
     blockReducerTests = unittest.TestLoader().loadTestsFromTestCase(TestBlockReducer)
     unittest.TextTestRunner(verbosity=verbosity).run(blockReducerTests)
 
-
+    print()
+    print("======================================================================")
+    print("  DECLARATIONS")
+    print("======================================================================")
+    declarationTests = unittest.TestLoader().loadTestsFromTestCase(TestDeclarations)
+    unittest.TextTestRunner(verbosity=verbosity).run(declarationTests)
 
     
         
