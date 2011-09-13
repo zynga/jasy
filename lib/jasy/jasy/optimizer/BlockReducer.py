@@ -12,6 +12,7 @@ __all__ = ["optimize"]
 
 def optimize(node):
     # Process from inside to outside
+    # on a copy of the node to prevent it from forgetting children when structure is modified
     for child in list(node):
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
@@ -32,7 +33,7 @@ def optimize(node):
     
     
     # Pre-compute numeric expressions where it makes sense
-    if node.type in ("plus","minus","mul","div","mod") and node[0].type == "number" and node[1].type == "number":
+    if node.type in ("plus", "minus", "mul", "div", "mod") and node[0].type == "number" and node[1].type == "number":
         firstNumber = node[0]
         secondNumber = node[1]
         operator = node.type
@@ -178,8 +179,8 @@ def reworkElse(node, elsePart):
         target = newBlock
         targetIndex = 1
         
-    if not target.type in ("block","script"):
-        print("No possible target found/created")
+    if not target.type in ("block", "script"):
+        # print("No possible target found/created")
         return elsePart
         
     if elsePart.type == "block":

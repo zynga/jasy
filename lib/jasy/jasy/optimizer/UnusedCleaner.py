@@ -92,7 +92,7 @@ def __clean(node, unused):
                         retval = True
                         
                     else:
-                        logging.warn("Could not automatically remove unused variable %s at line %s without possible side-effects" % (decl.name, decl.line))
+                        logging.debug("Could not automatically remove unused variable %s at line %s without possible side-effects" % (decl.name, decl.line))
                     
                 else:
                     node.remove(decl)
