@@ -584,20 +584,152 @@ class TestBlockReducer(unittest.TestCase):
     def test_combine_mixed_empty(self):
         self.assertEqual(self.process('4 + 3 + "x"'), '')
 
-
-    def test_(self):
+    def test_elseinline_return(self):
         self.assertEqual(self.process(
-            ''),
-            ''
+            '''
+            function x()
+            {
+              if (something)
+              {
+                x++;
+                while(warm) {}
+                return x;
+              }
+              else
+              {
+                y++;
+              }
+            }
+            '''),
+            'function x(){if(something){x++;while(warm);return x}y++}'
+        ) 
+               
+
+    def test_elseinline_throw(self):
+        self.assertEqual(self.process(
+            '''
+            function x()
+            {
+              if (something)
+              {
+                x++;
+                while(warm) {}
+                throw new Error("Wrong data!");
+              }
+              else
+              {
+                y++;
+              }
+            }
+            '''),
+            'function x(){if(something){x++;while(warm);throw new Error("Wrong data!")}y++}'
         )
+        
+    
+    def test_elseinline_elseif(self):
+        self.assertEqual(self.process(
+            '''
+            function x()
+            {
+              if(something)
+              {
+                while(a);
+                return 0;
+              }
+              else if(xxx)
+              {
+                while(b);
+                return 1;
+              }
+              else
+              {
+                while(c);
+                return 2;
+              }
+            }            
+            '''),
+            'function x(){if(something){while(a);return 0}if(xxx){while(b);return 1}while(c);return 2}'
+        )
+        
+        
+    def test_elseinline_elseif_nolast(self):
+        self.assertEqual(self.process(
+            '''
+            function x()
+            {
+              if(something)
+              {
+                while(a);
+                return 0;
+              }
+              else if(xxx)
+              {
+                while(b);
+                return 1;
+              }
+              else
+              {
+                i++;
+              }
+            }            
+            '''),
+            'function x(){if(something){while(a);return 0}if(xxx){while(b);return 1}i++}'
+        ) 
+        
+        
+    def test_elseinline_cascaded(self):
+        self.assertEqual(self.process(
+            '''
+            function x()
+            {
+              if(something)
+              {
+                while(x);
+                return 0;
+              }
+              else if(xxx)
+              {
+                if(test2())
+                {
+                  while(x);
+                  return 1;
+                }
+                else if(test3())
+                {
+                  while(x);
+                  return 2;
+                }
+                else
+                {
+                  while(x);
+                  return 3;
+                }
+              }
+              else
+              {
+                while(x);
+                return 4;
+              }
+            }
+            '''),
+            'function x(){if(something){while(x);return 0}if(xxx){if(test2()){while(x);return 1}if(test3()){while(x);return 2}while(x);return 3}while(x);return 4}'
+        )        
+
+     
 
     def test_(self):
         self.assertEqual(self.process(
-            ''),
+            '''
+            '''),
             ''
         )        
 
-        
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
 
 
 
