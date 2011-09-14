@@ -1138,7 +1138,7 @@ class TestDeclarations(unittest.TestCase):
             for(var key in obj2) {}
             for(var key2 in obj) {}
             '''),
-            'for(key in obj){}for(key in obj2){}for(key2 in obj){}var key,key2;'
+            'var key,key2;for(key in obj){}for(key in obj2){}for(key2 in obj){}'
         )
         
     def test_combine_doubles_oneassign(self):
