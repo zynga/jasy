@@ -15,6 +15,7 @@ import jasy.optimizer.LocalVariables as LocalVariables
 import jasy.optimizer.BlockReducer as BlockReducer
 
 import jasy.optimizer.CombineDeclarations as CombineDeclarations
+import jasy.optimizer.UnusedCleaner as UnusedCleaner
 
 
 
@@ -1019,7 +1020,7 @@ class TestBlockReducer(unittest.TestCase):
 
 
 
-class TestDeclarations(unittest.TestCase):
+class TestCombineDeclarations(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
@@ -1148,7 +1149,17 @@ class TestDeclarations(unittest.TestCase):
             var foo;
             '''),
             'var foo=3;'
-        )        
+        )
+        
+        
+        
+class TestRemoveUnused(unittest.TestCase):
+
+    def process(self, code):
+        node = Parser.parse(code)
+        Variables.scan(node)
+        UnusedCleaner.optimize(node)
+        return Compressor.compress(node)        
 
     def test_(self):
         self.assertEqual(self.process(
@@ -1268,11 +1279,16 @@ if __name__ == '__main__':
 
     print()
     print("======================================================================")
-    print("  DECLARATIONS")
+    print("  COMBINE DECLARATIONS")
     print("======================================================================")
-    declarationTests = unittest.TestLoader().loadTestsFromTestCase(TestDeclarations)
+    declarationTests = unittest.TestLoader().loadTestsFromTestCase(TestCombineDeclarations)
     unittest.TextTestRunner(verbosity=verbosity).run(declarationTests)
 
+    print()
+    print("======================================================================")
+    print("  REMOVE UNUSED")
+    print("======================================================================")
+    unusedTests = unittest.TestLoader().loadTestsFromTestCase(TestRemoveUnused)
+    unittest.TextTestRunner(verbosity=verbosity).run(unusedTests)
     
-        
     
