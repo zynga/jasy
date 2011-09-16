@@ -1164,53 +1164,63 @@ class TestRemoveUnused(unittest.TestCase):
         """ y is unused. Removed whole var block. """
         self.assertEqual(self.process(
             '''
-            var x = 4;
-            var y = 5;
-            func(x);
+            function wrapper() {
+              var x = 4;
+              var y = 5;
+              func(x);
+            }
             '''),
-            'var x=4;func(x);'
+            'function wrapper(){var x=4;func(x)}'
         )        
 
-    def test_var_multi(self):
+    def test_var_multi_last(self):
         """ y is unused. Removes list entry. """
         self.assertEqual(self.process(
             '''
-            var x = 4, y = 5;
-            func(x);
+            function wrapper() {
+              var x = 4, y = 5;
+              func(x);
+            }
             '''),
-            'var x=4;func(x);'
+            'function wrapper(){var x=4;func(x)}'
         )        
 
     def test_var_multi_first(self):
         """ y is unused. Removes list entry."""
         self.assertEqual(self.process(
             '''
-            var y = 5, x = 4;
-            func(x);
+            function wrapper() {
+              var y = 5, x = 4;
+              func(x);
+            }
             '''),
-            'var x=4;func(x);'
+            'function wrapper(){var x=4;func(x)}'
         )        
 
     def test_var_dep_closure(self):
         """ Removes y first and in a second run removes x as well. """
         self.assertEqual(self.process(
             '''
-            var x = 4;
-            var y = function() {
-              return x;
-            };
+            function wrapper() {
+              var x = 4;
+              var y = function() {
+                return x;
+              };
+            }
             '''),
-            ''
+            'function wrapper(){}'
         )
 
     def test_var_dep_blocks(self):
         """ y contains operation so could not be removed and x is still in use. """
         self.assertEqual(self.process(
             '''
-            var x = 4;
-            var y = x + 5;
+            function wrapper() {
+              var x = 4;
+              var y = x + 5;
+            }
             '''),
-            'var x=4;var y=x+5;'
+            'function wrapper(){var x=4;var y=x+5}'
         )        
 
     def test_params_last(self):
@@ -1249,42 +1259,55 @@ class TestRemoveUnused(unittest.TestCase):
     def test_func_named_called(self):
         self.assertEqual(self.process(
             '''
-            function x() {}
-            x();
+            function wrapper() {
+              function x() {}
+              x();
+            }
             '''),
-            'function x(){}x();'
+            'function wrapper(){function x(){}x()}'
         )        
 
     def test_func_named(self):
         self.assertEqual(self.process(
             '''
-            function x() {}
+            function wrapper() {
+              function x() {}
+            }
             '''),
-            ''
+            'function wrapper(){}'
         )
         
     def test_func_called(self):
         self.assertEqual(self.process(
             '''
-            var x = function() {}
-            x();
+            function wrapper() {
+              var x = function() {}
+              x();
+            }
             '''),
-            'var x=function(){};x();'
+            'function wrapper(){var x=function(){};x()}'
         )        
 
     def test_func(self):
         self.assertEqual(self.process(
             '''
-            var x = function() {}
+            function wrapper() {
+              var x = function() {}
+            }
             '''),
-            ''
+            'function wrapper(){}'
         )
 
-    def test_(self):
+    def test_func_direct_called(self):
         self.assertEqual(self.process(
             '''
+            function wrapper() {
+              (function x() { 
+                return 3; 
+              })();
+            }
             '''),
-            ''
+            'function wrapper(){(function(){return 3})()}'
         )        
 
     def test_(self):

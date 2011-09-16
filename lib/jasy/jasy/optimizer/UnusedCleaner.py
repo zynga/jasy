@@ -35,11 +35,10 @@ def __optimize(node):
     optimized = False
     
     for child in list(node):
-        if child != None:
-            if __optimize(child):
-                optimized = True
+        if child != None and __optimize(child):
+            optimized = True
 
-    if node.type == "script" and node.stats.unused:
+    if node.type == "script" and node.stats.unused and hasattr(node, "parent"):
         if __clean(node, node.stats.unused):
             optimized = True
 
@@ -81,11 +80,18 @@ def __clean(node, unused):
     elif node.type == "function":
         if hasattr(node, "name") and node.name in unused:
             if node.functionForm == "declared_form":
-                if node.parent.type != "script" or hasattr(node.parent, "parent"):
+                # Omit removal on direct execution e.g. (function x() {})();
+                if getattr(node, "parent", None) and node.parent.type != "call":
                     logging.debug("Remove unused function %s at line %s" % (node.name, node.line))
                     node.parent.remove(node)
+                else:
+                    # But still remove unused name
+                    # (function x() {})(); => (function() {})();
+                    del node.name
                 
             else:
+                # expressed_form
+                # var foo = function foo() {}; => var foo = function() {};
                 logging.debug("Clearing unused function name %s at line %s" % (node.name, node.line))
                 del node.name
     
