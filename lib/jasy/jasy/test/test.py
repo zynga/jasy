@@ -1332,13 +1332,42 @@ class TestRemoveUnused(unittest.TestCase):
             'function wrapper(){var x=function(){};x()}'
         )        
 
-    def test_(self):
+    def test_var_same_inner_outer(self):
         self.assertEqual(self.process(
             '''
+            var x = 1;
+            function wrapper() {
+              var x = 2;
+            }
             '''),
-            ''
+            'var x=1;function wrapper(){}'
         )
 
+    def test_named_func_same_inner_outer(self):
+        self.assertEqual(self.process(
+            '''
+            function x() {};
+            function wrapper() {
+              function x() {};
+            }            
+            '''),
+            'function x(){};function wrapper(){}'
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+        
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+        
     def test_(self):
         self.assertEqual(self.process(
             '''
@@ -1352,9 +1381,34 @@ class TestRemoveUnused(unittest.TestCase):
             '''),
             ''
         )        
-        
-        
-        
+    
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
         
 
 if __name__ == '__main__':
