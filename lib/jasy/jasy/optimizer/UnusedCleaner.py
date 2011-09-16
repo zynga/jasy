@@ -5,14 +5,23 @@
 
 from jasy.parser.Node import Node
 import logging
-
+import jasy.process.Variables as Variables
 
 #
 # Public API
 #
 
 def optimize(node):
-    return __optimize(node)
+    if not hasattr(node, "stats"):
+        Variables.scan(node)
+
+    # Re optimize until nothing to remove is found
+    optimized = False
+    while __optimize(node):
+        Variables.scan(node)
+        optimized = True
+        
+    return optimized
 
 
 

@@ -1157,29 +1157,93 @@ class TestRemoveUnused(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
-        Variables.scan(node)
         UnusedCleaner.optimize(node)
         return Compressor.compress(node)        
 
-    def test_(self):
+    def test_var_single(self):
+        """ y is unused. Removed whole var block. """
         self.assertEqual(self.process(
             '''
+            var x = 4;
+            var y = 5;
+            func(x);
             '''),
-            ''
-        )        
-        
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
+            'var x=4;func(x);'
         )        
 
-    def test_(self):
+    def test_var_multi(self):
+        """ y is unused. Removes list entry. """
         self.assertEqual(self.process(
             '''
+            var x = 4, y = 5;
+            func(x);
+            '''),
+            'var x=4;func(x);'
+        )        
+
+    def test_var_multi_first(self):
+        """ y is unused. Removes list entry."""
+        self.assertEqual(self.process(
+            '''
+            var y = 5, x = 4;
+            func(x);
+            '''),
+            'var x=4;func(x);'
+        )        
+
+    def test_var_dep_closure(self):
+        """ Removes y first and in a second run removes x as well. """
+        self.assertEqual(self.process(
+            '''
+            var x = 4;
+            var y = function() {
+              return x;
+            };
             '''),
             ''
+        )
+
+    def test_var_dep_blocks(self):
+        """ y contains operation so could not be removed and x is still in use. """
+        self.assertEqual(self.process(
+            '''
+            var x = 4;
+            var y = x + 5;
+            '''),
+            'var x=4;var y=x+5;'
+        )        
+
+    def test_params_last(self):
+        """ y is unused and can be removed """
+        self.assertEqual(self.process(
+            '''
+            function a(x, y) {
+              return x + 1;
+            }
+            '''),
+            'function a(x){return x+1}'
+        )           
+
+    def test_params_first(self):
+        """ x is unused but could not be removed. """
+        self.assertEqual(self.process(
+            '''
+            function a(x, y) {
+              return y + 1;
+            }
+            '''),
+            'function a(x,y){return y+1}'
+        )        
+
+    def test_params_middle(self):
+        """ y is unused but could not be removed. """
+        self.assertEqual(self.process(
+            '''
+            function a(x, y, z) {
+              return x + z;
+            }
+            '''),
+            'function a(x,y,z){return x+z}'
         )
 
     def test_(self):
@@ -1194,36 +1258,8 @@ class TestRemoveUnused(unittest.TestCase):
             '''
             '''),
             ''
-        )     
-        
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )        
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
         )
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )        
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )        
-
+        
     def test_(self):
         self.assertEqual(self.process(
             '''
@@ -1252,6 +1288,37 @@ class TestRemoveUnused(unittest.TestCase):
             ''
         )           
 
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+        
+        
+        
+        
 
 if __name__ == '__main__':
     verbosity = 1
