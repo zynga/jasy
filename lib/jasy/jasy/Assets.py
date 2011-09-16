@@ -258,7 +258,7 @@ class Assets:
         webPath = os.path.join(self.__session.getMainProject().getPath(), relativeRoot)
         roots = []
         for project in projects:
-            roots.append(os.path.relpath(project.getAssetPath(), webPath))
+            roots.append(os.path.relpath(project.getAssetPath(), webPath).replace(os.sep, '/'))
 
         return self.__exportHelper(roots)
 

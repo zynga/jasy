@@ -35,7 +35,7 @@ class Combiner():
             project = classObj.getProject()
 
             fromMainProjectRoot = os.path.join(session.getRelativePath(project), project.getClassPath(True), classObj.getLocalPath())
-            fromWebFolder = os.path.relpath(fromMainProjectRoot, relativeRoot)
+            fromWebFolder = os.path.relpath(fromMainProjectRoot, relativeRoot).replace(os.sep, '/')
 
             files.append('"%s"' % fromWebFolder)
 
