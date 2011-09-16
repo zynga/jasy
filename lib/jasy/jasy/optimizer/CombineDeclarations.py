@@ -73,6 +73,10 @@ def __combineSiblings(node):
 
 def __combineVarStatements(node):
     """Top level method called to optimize a script node"""
+    
+    if len(node.stats.declared) == 0:
+        return
+    
     firstVar = __findFirstVarStatement(node)
     
     # Special case, when a node has variables, but no valid "var" block to hold them
@@ -80,37 +84,42 @@ def __combineVarStatements(node):
     # there are no other variable declarations anywhere. In this case we are not able
     # to optimize the code further and just exit at this point
     
-    # Only size-saving when there are multiple for-in loops, but no other var statement
-    if not firstVar and len(node.stats.declared) > 1:
+    # Only size-saving when there are multiple for-in loops, but no other var statement or first
+    # "free" var declaration is after for-loops.
+    if not firstVar:
         firstVar = Node(None, "var")
-        node.append(firstVar)
+        node.insert(0, firstVar)
     
-    if firstVar:
-        __patchVarStatements(node, firstVar)
-        __cleanFirst(firstVar)
-        
-        if len(firstVar) == 0:
-            firstVar.parent.remove(firstVar)
+    __patchVarStatements(node, firstVar)
+    __cleanFirst(firstVar)
+    
+    # Remove unused "var"
+    if len(firstVar) == 0:
+        firstVar.parent.remove(firstVar)
 
-        else:
-            # When there is a classical for loop immediately after our 
-            # first var statement, then we try to move the var declaration
-            # into there as a setup expression
-        
-            firstVarParent = firstVar.parent
-            firstVarPos = firstVarParent.index(firstVar)
-            if len(firstVarParent) > firstVarPos+1:
-                possibleForStatement = firstVarParent[firstVarPos+1]
-                if possibleForStatement.type == "for" and not hasattr(possibleForStatement, "setup"):
-                    possibleForStatement.append(firstVar, "setup")
+    else:
+        # When there is a classical for loop immediately after our 
+        # first var statement, then we try to move the var declaration
+        # into there as a setup expression
+    
+        firstVarParent = firstVar.parent
+        firstVarPos = firstVarParent.index(firstVar)
+        if len(firstVarParent) > firstVarPos+1:
+            possibleForStatement = firstVarParent[firstVarPos+1]
+            if possibleForStatement.type == "for" and not hasattr(possibleForStatement, "setup"):
+                possibleForStatement.append(firstVar, "setup")
 
         
 def __findFirstVarStatement(node):
     """Returns the first var statement of the given node. Ignores inner functions."""
     
-    # Ignore variable blocks which are used as an iterator in for-in loops
-    if node.type == "var" and getattr(node, "rel", None) != "iterator":
-        return node
+    if node.type == "var":
+        # Ignore variable blocks which are used as an iterator in for-in loops
+        # In this case we return False, so that a new collector "var" is being created
+        if getattr(node, "rel", None) == "iterator":
+            return False
+        else:
+            return node
         
     for child in node:
         if child.type == "function":
@@ -119,6 +128,8 @@ def __findFirstVarStatement(node):
         result = __findFirstVarStatement(child)
         if result:
             return result
+        elif result is False:
+            return False
     
     return None
         
