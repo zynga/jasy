@@ -1310,17 +1310,6 @@ class TestRemoveUnused(unittest.TestCase):
             'function wrapper(){(function(){return 3})()}'
         )        
 
-    def test_named_vs_var(self):
-        self.assertEqual(self.process(
-            '''
-            function wrapper() {
-              var x = function y() {};
-              y();
-            }
-            '''),
-            'function wrapper(){var x=function y(){};y()}'
-        )           
-
     def test_var_vs_named(self):
         self.assertEqual(self.process(
             '''
@@ -1330,7 +1319,21 @@ class TestRemoveUnused(unittest.TestCase):
             }            
             '''),
             'function wrapper(){var x=function(){};x()}'
-        )        
+        ) 
+        
+    def test_named_vs_var(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper() {
+              var x = function y() {};
+
+              // This might be an error: y is not defined in this context.
+              // At least not here in this code.
+              y();
+            }
+            '''),
+            'function wrapper(){y()}'
+        )               
 
     def test_var_same_inner_outer(self):
         self.assertEqual(self.process(
@@ -1354,32 +1357,49 @@ class TestRemoveUnused(unittest.TestCase):
             'function x(){};function wrapper(){}'
         )        
 
-    def test_(self):
+    def test_global_var(self):
         self.assertEqual(self.process(
             '''
+            var x = 4;
             '''),
-            ''
+            'var x=4;'
         )        
         
-    def test_(self):
+    def test_global_func(self):
         self.assertEqual(self.process(
             '''
+            function x() {};
             '''),
-            ''
+            'function x(){};'
         )        
         
-    def test_(self):
+    def test_func_expressed_form_named_inner(self):
         self.assertEqual(self.process(
             '''
+            function wrapper() {
+              // y is only known inside the y-method
+              var x = function y() {
+                y();
+              };
+              x();
+            }
             '''),
-            ''
+            'function wrapper(){var x=function y(){y()};x()}'
         )        
 
-    def test_(self):
+    def test_func_expressed_form_named(self):
         self.assertEqual(self.process(
             '''
+            function wrapper() {
+              // y is only known inside the y-method
+              var x = function y() {
+                // but not used
+                z();
+              };
+              x();
+            }
             '''),
-            ''
+            'function wrapper(){var x=function(){z()};x()}'
         )        
     
     def test_(self):

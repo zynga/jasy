@@ -57,10 +57,9 @@ def __scanNode(node, stats):
     """ Scans nodes recursively and collects all variables which are declared and accessed. """
     
     if node.type == "function":
-        functionName = getattr(node, "name", None)
-        if functionName:
-            stats.declared.add(functionName)
-            stats.modified.add(functionName)
+        if node.functionForm == "declared_form":
+            stats.declared.add(node.name)
+            stats.modified.add(node.name)
     
     elif node.type == "declaration":
         varName = getattr(node, "name", None)
