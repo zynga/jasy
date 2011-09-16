@@ -78,22 +78,14 @@ def __clean(node, unused):
                     
                     
     elif node.type == "function":
+        # Remove name attribute if function is not accessed this way
         if hasattr(node, "name") and node.name in unused:
-            if node.functionForm == "declared_form":
-                # Omit removal on direct execution e.g. (function x() {})();
-                if getattr(node, "parent", None) and node.parent.type != "call":
-                    logging.debug("Remove unused function %s at line %s" % (node.name, node.line))
-                    node.parent.remove(node)
-                else:
-                    # But still remove unused name
-                    # (function x() {})(); => (function() {})();
-                    del node.name
-                
-            else:
-                # expressed_form
-                # var foo = function foo() {}; => var foo = function() {};
-                logging.debug("Clearing unused function name %s at line %s" % (node.name, node.line))
-                del node.name
+            del node.name
+            
+            # Remove declared function, but omit removal on direct execution e.g. (function x() {})();
+            if node.functionForm == "declared_form" and getattr(node, "parent", None) and node.parent.type != "call":
+                logging.debug("Remove unused function at line %s" % node.line)
+                node.parent.remove(node)
     
     
     elif node.type == "var":
@@ -101,8 +93,13 @@ def __clean(node, unused):
             if getattr(decl, "name", None) in unused:
                 if hasattr(decl, "initializer"):
                     init = decl.initializer
-                    if init.type in ("null", "this", "true", "false", "identifier", "number", "string", "regexp", "function"):
+                    if init.type in ("null", "this", "true", "false", "identifier", "number", "string", "regexp"):
                         logging.debug("Remove unused variable %s at line %s" % (decl.name, decl.line))
+                        node.remove(decl)
+                        retval = True
+                        
+                    elif init.type == "function" and (not hasattr(init, "name") or init.name in unused):
+                        logging.debug("Remove unused function %s at line %s" % (decl.name, decl.line))
                         node.remove(decl)
                         retval = True
                         

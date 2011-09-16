@@ -1310,18 +1310,26 @@ class TestRemoveUnused(unittest.TestCase):
             'function wrapper(){(function(){return 3})()}'
         )        
 
-    def test_(self):
+    def test_named_vs_var(self):
         self.assertEqual(self.process(
             '''
+            function wrapper() {
+              var x = function y() {};
+              y();
+            }
             '''),
-            ''
+            'function wrapper(){var x=function y(){};y()}'
         )           
 
-    def test_(self):
+    def test_var_vs_named(self):
         self.assertEqual(self.process(
             '''
+            function wrapper() {
+              var x = function y() {};
+              x();
+            }            
             '''),
-            ''
+            'function wrapper(){var x=function(){};x()}'
         )        
 
     def test_(self):
