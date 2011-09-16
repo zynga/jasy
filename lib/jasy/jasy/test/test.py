@@ -1246,30 +1246,36 @@ class TestRemoveUnused(unittest.TestCase):
             'function a(x,y,z){return x+z}'
         )
 
-    def test_(self):
+    def test_func_named_called(self):
         self.assertEqual(self.process(
             '''
+            function x() {}
+            x();
             '''),
-            ''
+            'function x(){}x();'
         )        
 
-    def test_(self):
+    def test_func_named(self):
         self.assertEqual(self.process(
             '''
+            function x() {}
             '''),
             ''
         )
         
-    def test_(self):
+    def test_func_called(self):
         self.assertEqual(self.process(
             '''
+            var x = function() {}
+            x();
             '''),
-            ''
+            'var x=function(){};x();'
         )        
 
-    def test_(self):
+    def test_func(self):
         self.assertEqual(self.process(
             '''
+            var x = function() {}
             '''),
             ''
         )
