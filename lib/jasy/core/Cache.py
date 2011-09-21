@@ -3,7 +3,7 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-import shelve, time, logging, os, os.path, sys, pickle
+import shelve, time, logging, os, os.path, sys, pickle, dbm
 
 class Cache:
     """ 
