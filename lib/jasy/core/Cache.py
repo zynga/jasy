@@ -11,27 +11,30 @@ class Cache:
     Supports transient only in-memory storage, too.
     """
     
+    __db = None
+    
     def __init__(self, path, clear=False):
         self.__transient = {}
-        self.__file = os.path.join(path, "cache")
-        
-        logging.debug("Cache File: %s" % self.__file)
+        self.__file = os.path.join(path, "cache.db")
         
         try:
-            logging.debug("Open cache file %s..." % self.__file)
-            self.__db = shelve.open(self.__file)
-        except:
-            logging.warn("Detected faulty cache files. Rebuilding...")
+            self.__db = shelve.open(self.__file, flag="c")
+        except dbm.error as error:
+            logging.warn("Detected faulty cache files or cache type could not be detected.")
+            logging.warn("Error: %s" % error)
+            logging.warn("Recreating cache database...")
+            
             self.clear()
     
     
     def clear(self):
-        if hasattr(self, "__db"):
+        if self.__db:
+            logging.debug("Closing cache file %s..." % self.__file)
+            
             self.__db.close()
-
-        logging.debug("Initialize cache file %s..." % self.__file)
-        
-        self.__db.close()
+            self.__db = None
+            
+        logging.debug("Clearing cache file %s..." % self.__file)
         self.__db = shelve.open(self.__file, flag="n")
         
         
