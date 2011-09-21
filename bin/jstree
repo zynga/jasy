@@ -8,12 +8,12 @@ logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib", "jasy")))
 
 from jasy.parser.Parser import parse
-
-
-def jstree(source, filename=None):
-    root = parse(source, filename)
-    return root.toXml()
+from jasy.process.Variables import scan
 
 if __name__ == "__main__":
     for fname in sys.argv[1:]:
-        print(jstree(open(fname, encoding="utf-8").read(), fname))
+        text = open(fname, encoding="utf-8").read()
+        root = parse(text, fname)
+        scan(root)
+        print(root.toXml())
+

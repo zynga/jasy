@@ -12,9 +12,30 @@ __all__ = ["scan"]
 def scan(node):
     return __scanScope(node)
     
-    
-class Stats:
+class Stats():
     __slots__ = ["params", "declared", "accessed", "modified", "shared", "unused", "packages"]
+    
+    def __iter__(self):
+        for field in self.__slots__:
+            yield field
+
+    def __getitem__(self, key):
+        if key == "params":
+            return self.params
+        elif key == "declared":
+            return self.declared
+        elif key == "accessed":
+            return self.accessed
+        elif key == "modified":
+            return self.modified
+        elif key == "shared":
+            return self.shared
+        elif key == "unused":
+            return self.unused
+        elif key == "packages":
+            return self.packages
+
+        raise KeyError("Unknown key: %s" % key)
     
     def __init__(self):
         self.params = set()

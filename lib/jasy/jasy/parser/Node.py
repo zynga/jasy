@@ -199,8 +199,9 @@ class Node(list):
         attrs = (" " + " ".join(attrsCollection)) if len(attrsCollection) > 0 else ""
         
         comments = getattr(self, "comments", None)
-
-        if len(self) == 0 and len(relatedChildren) == 0 and (not comments or len(comments) == 0):
+        stats = getattr(self, "stats", None)
+        
+        if len(self) == 0 and len(relatedChildren) == 0 and (not comments or len(comments) == 0) and not stats:
             result = "%s<%s%s/>%s" % (lead, self.type, attrs, lineBreak)
 
         else:
@@ -209,6 +210,17 @@ class Node(list):
             if comments:
                 for comment in comments:
                     result += '%s<comment context="%s" variant="%s">%s</comment>%s' % (innerLead, comment.context, comment.variant, comment.text, lineBreak)
+                    
+            if stats:
+                for statKey in stats:
+                    statValue = stats[statKey]
+                    if len(statValue) > 0:
+                        if type(statValue) is set:
+                            statValue = ",".join(statValue)
+                        elif type(statValue) is dict:
+                            statValue = ",".join(keys(statValue))
+                        
+                        result += '%s<stat name="%s">%s</stat>%s' % (innerLead, statKey, statValue, lineBreak)
 
             for child in self:
                 if not child:
