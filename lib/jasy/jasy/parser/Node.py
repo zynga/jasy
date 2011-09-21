@@ -214,7 +214,7 @@ class Node(list):
             if stats:
                 for statKey in stats:
                     statValue = stats[statKey]
-                    if len(statValue) > 0:
+                    if statValue != None and len(statValue) > 0:
                         if type(statValue) is set:
                             statValue = ",".join(statValue)
                         elif type(statValue) is dict:

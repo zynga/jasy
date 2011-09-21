@@ -13,14 +13,16 @@ def scan(node):
     return __scanScope(node)
     
 class Stats():
-    __slots__ = ["params", "declared", "accessed", "modified", "shared", "unused", "packages"]
+    __slots__ = ["name", "params", "declared", "accessed", "modified", "shared", "unused", "packages"]
     
     def __iter__(self):
         for field in self.__slots__:
             yield field
 
     def __getitem__(self, key):
-        if key == "params":
+        if key == "name":
+            return self.name
+        elif key == "params":
             return self.params
         elif key == "declared":
             return self.declared
@@ -38,6 +40,7 @@ class Stats():
         raise KeyError("Unknown key: %s" % key)
     
     def __init__(self):
+        self.name = None
         self.params = set()
         self.declared = set()
         self.accessed = {}
@@ -204,6 +207,9 @@ def __scanScope(node):
     for name in stats.declared:
         if not name in stats.accessed:
             stats.unused.add(name)
+    if stats.name and not stats.name in stats.accessed:
+        stats.unused.add(stats.name)
+        
     
     # print("Quit Scope [Line:%s]" % node.line)
     # stats.output()
@@ -217,6 +223,10 @@ def __addParams(node, stats):
 
     rel = getattr(node, "rel", None)
     if rel == "body" and node.parent.type == "function":
+        # In expressed_form the function name belongs to the function body, not to the parent scope
+        if node.parent.functionForm == "expressed_form":
+            stats.name = getattr(node.parent, "name", None)
+        
         paramList = getattr(node.parent, "params", None)
         if paramList:
             for paramIdentifier in paramList:
