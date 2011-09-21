@@ -38,7 +38,7 @@ class Stats():
             return self.packages
 
         raise KeyError("Unknown key: %s" % key)
-    
+
     def __init__(self):
         self.name = None
         self.params = set()
@@ -49,21 +49,6 @@ class Stats():
         self.unused = set()
         self.packages = {}
         
-        
-    def output(self):
-        print("- Params:", self.params)
-
-        print("- Declared Variables:", self.declared)
-        print("- Unused Variables:", self.unused)
-
-        print("- Accessed Name:", self.accessed)
-        print("- Modified Name:", self.modified)
-        print("- Shared Name:", self.shared)
-
-        print("- Packages", self.packages)
-    
-
-
     def increment(self, name, by=1):
         """ Small helper so simplify adding variables to "accessed" dict """
         if not name in self.accessed:
@@ -201,15 +186,14 @@ def __scanScope(node):
             stats.shared[name] = stats.accessed[name]
             
     # Look for variables which have been defined, but not accessed.
+    if stats.name and not stats.name in stats.accessed:
+        stats.unused.add(stats.name)
     for name in stats.params:
         if not name in stats.accessed:
             stats.unused.add(name)
     for name in stats.declared:
         if not name in stats.accessed:
             stats.unused.add(name)
-    if stats.name and not stats.name in stats.accessed:
-        stats.unused.add(stats.name)
-        
     
     # print("Quit Scope [Line:%s]" % node.line)
     # stats.output()
