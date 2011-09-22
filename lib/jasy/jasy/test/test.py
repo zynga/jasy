@@ -1220,7 +1220,7 @@ class TestRemoveUnused(unittest.TestCase):
               var y = x + 5;
             }
             '''),
-            'function wrapper(){var x=4;var y=x+5}'
+            'function wrapper(){var x=4;x+5}'
         )        
 
     def test_params_last(self):
