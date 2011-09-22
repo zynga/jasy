@@ -112,14 +112,19 @@ def __clean(node, unused):
                     
                     # If we have only one child, we replace the whole var statement with just the init block
                     elif len(node) == 1:
-                        node.parent.replace(node, init)
+                        semicolon = Node(init.tokenizer, "semicolon")
+                        semicolon.append(init, "expression")
+                        node.parent.replace(node, semicolon)
                         retval = True
 
                     # If we are the last declaration, move it out of node and append after var block
                     elif node[-1] == decl:
                         node.remove(decl)
                         nodePos = node.parent.index(node)
-                        node.parent.insert(nodePos + 1, init)
+                        semicolon = Node(init.tokenizer, "semicolon")
+                        semicolon.append(init, "expression")
+                        
+                        node.parent.insert(nodePos + 1, semicolon)
                         retval = True
                         
                     else:
