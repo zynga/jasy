@@ -18,11 +18,15 @@ def optimize(node, contextId=""):
 
     repl = {}
     for name in coll:
-        repl[name] = "__%s" % __encode("%s.%s" % (contextId, name))
-        logging.debug("Replace private field %s with %s (context: %s)", name[2:], repl[name], contextId)
+        repl[name] = "__%s" % __encode("%s.%s" % (contextId, name[2:]))
+        logging.debug("Replace private field %s with %s (context: %s)", name, repl[name], contextId)
     
     logging.debug("Found %s private fields" % len(repl))
-    return __replace(node, repl)
+    modified, reduction = __replace(node, repl)
+    
+    logging.debug("Reduced size by %s bytes" % reduction)
+    
+    return modified
     
 
 class PrivateException(Exception):
@@ -71,11 +75,13 @@ def __search(node, coll=None):
 
 def __replace(node, repl):
     modified = False
+    reduction = 0
     
     if node.type == "identifier" and getattr(node, "parent", None):
         # Only rename items which are part of a dot operator
         if node.parent.type in ("dot", "property_init") and __matcher.match(node.value):
             if node.value in repl:
+                reduction = reduction + len(node.value) - len(repl[node.value])
                 node.value = repl[node.value]
                 modified = True
             else:
@@ -84,10 +90,11 @@ def __replace(node, repl):
     for child in node:
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
-            if __replace(child, repl):
-                modified = True
+            subModified, subReduction = __replace(child, repl)
+            modified = modified or subModified
+            reduction = reduction + subReduction
             
-    return modified
+    return modified, reduction
     
     
     

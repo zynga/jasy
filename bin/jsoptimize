@@ -59,7 +59,7 @@ def jsoptimize(source, filename=None):
     LocalVariables.optimize(tree, tree.stats)
     CryptPrivates.optimize(tree)
 
-    print(tree)
+    # print(tree)
     
     return compress(tree)
 

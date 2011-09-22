@@ -1456,6 +1456,22 @@ class TestRenamePrivates(unittest.TestCase):
         CryptPrivates.optimize(node, contextId)
         return Compressor.compress(node)        
 
+    def test_assign(self):
+        self.assertEqual(self.process(
+            '''
+            this.__field1 = 123;
+            ''', 1),
+            'this.__tUFax=123;'
+        )
+        
+    def test_assign_long(self):
+        self.assertEqual(self.process(
+            '''
+            this.__titleBarBackgroundColor = "red";
+            ''', 1),
+            'this.__cGGzQe="red";'
+        )        
+            
     def test_global_obj_file1(self):
         self.assertEqual(self.process(
             '''
