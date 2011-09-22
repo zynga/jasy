@@ -16,6 +16,7 @@ import jasy.optimizer.BlockReducer as BlockReducer
 
 import jasy.optimizer.CombineDeclarations as CombineDeclarations
 import jasy.optimizer.UnusedCleaner as UnusedCleaner
+import jasy.optimizer.CryptPrivates as CryptPrivates
 
 
 
@@ -1443,7 +1444,69 @@ class TestRemoveUnused(unittest.TestCase):
             };
             '''),
             'var a=function d(){d()};'
+        )
+        
+        
+
+
+class TestRenamePrivates(unittest.TestCase):
+
+    def process(self, code, contextId=""):
+        node = Parser.parse(code)
+        CryptPrivates.optimize(node, contextId)
+        return Compressor.compress(node)        
+
+    def test_global_obj_file1(self):
+        self.assertEqual(self.process(
+            '''
+            var obj = {
+              __x : 123,
+              __y : 456
+            };
+            alert(obj.__x + ":" + obj.__y);
+            ''', 1),
+            'var obj={__eI7AU:123,__eJoDX:456};alert(obj.__eI7AU+":"+obj.__eJoDX);'
         )        
+
+    def test_global_obj_file2(self):
+        self.assertEqual(self.process(
+            '''
+            var obj = {
+              __x : 123,
+              __y : 456
+            };
+            alert(obj.__x + ":" + obj.__y);
+            ''', 2),
+            'var obj={__eKuP5:123,__eKLS8:456};alert(obj.__eKuP5+":"+obj.__eKLS8);'
+        )
+        
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+    
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
 
     def test_(self):
         self.assertEqual(self.process(
@@ -1497,5 +1560,12 @@ if __name__ == '__main__':
     print("======================================================================")
     unusedTests = unittest.TestLoader().loadTestsFromTestCase(TestRemoveUnused)
     unittest.TextTestRunner(verbosity=verbosity).run(unusedTests)
+
+    print()
+    print("======================================================================")
+    print("  RENAME PRIVATES")
+    print("======================================================================")
+    privateTests = unittest.TestLoader().loadTestsFromTestCase(TestRenamePrivates)
+    unittest.TextTestRunner(verbosity=verbosity).run(privateTests)
     
     

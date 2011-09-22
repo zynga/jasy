@@ -3,7 +3,7 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-import zlib, string
+import zlib, string, logging
 
 __all__ = ["optimize"]
 
@@ -13,8 +13,8 @@ __all__ = ["optimize"]
 # Public API
 #
 
-def optimize(node):
-    __recurser(node)
+def optimize(node, contextId=""):
+    __recurser(node, contextId)
     
     
 
@@ -24,16 +24,19 @@ def optimize(node):
 
 __cache = {}
 
-def __recurser(node, modified=False):
+def __recurser(node, contextId, modified=False):
     if node.type == "identifier":
         value = node.value
         # Protect e.g. __proto__ from optimization
         if type(value) == str and value.startswith("__") and not value.endswith("__"):
-            if value in __cache:
-                repl = __cache[value]
+            full = "%s.%s" % (contextId, value)
+            if full in __cache:
+                repl = __cache[full]
             else:
-                repl = "__%s" % __encode(value)
-                __cache[value] = repl
+                repl = "__%s" % __encode(full)
+                __cache[full] = repl
+
+                logging.debug("Replace private field %s with %s (context: %s)", value, repl, contextId)
                 
             # Updating identifier
             node.value = repl
@@ -41,7 +44,7 @@ def __recurser(node, modified=False):
     for child in node:
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
-            __recurser(child)
+            __recurser(child, contextId)
     
     
     
