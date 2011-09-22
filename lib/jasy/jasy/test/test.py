@@ -1321,6 +1321,19 @@ class TestRemoveUnused(unittest.TestCase):
             'function wrapper(){var x=function(){};x()}'
         ) 
         
+    def test_var_vs_named_inner(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper() {
+              var x = function y() {
+                setTimeout(y, 100);
+              };
+              x();
+            }            
+            '''),
+            'function wrapper(){var x=function y(){setTimeout(y,100)};x()}'
+        )        
+        
     def test_named_vs_var(self):
         self.assertEqual(self.process(
             '''
