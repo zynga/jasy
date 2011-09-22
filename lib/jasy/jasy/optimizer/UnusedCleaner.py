@@ -83,6 +83,7 @@ def __clean(node, unused):
             if funcName != None and funcName in unused:
                 logging.debug("Remove unused function name at line %s" % node.line)
                 del node.parent.name
+                retval = True
                     
                     
     elif node.type == "function":
@@ -91,6 +92,7 @@ def __clean(node, unused):
             funcName = getattr(node.parent, "name", None)
             logging.debug("Remove unused function declaration %s at line %s" % (funcName, node.line))
             node.parent.remove(node)
+            retval = True
             
     
     elif node.type == "var":
@@ -106,6 +108,10 @@ def __clean(node, unused):
                     elif init.type == "function" and (not hasattr(init, "name") or init.name in unused):
                         logging.debug("Remove unused function variable %s at line %s" % (decl.name, decl.line))
                         node.remove(decl)
+                        retval = True
+                    
+                    elif len(node) == 1:
+                        node.parent.replace(node, init)
                         retval = True
                         
                     else:
