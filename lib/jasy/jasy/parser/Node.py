@@ -218,7 +218,7 @@ class Node(list):
                         if type(statValue) is set:
                             statValue = ",".join(statValue)
                         elif type(statValue) is dict:
-                            statValue = ",".join(keys(statValue))
+                            statValue = ",".join(statValue.keys())
                         
                         result += '%s<stat name="%s">%s</stat>%s' % (innerLead, statKey, statValue, lineBreak)
 
