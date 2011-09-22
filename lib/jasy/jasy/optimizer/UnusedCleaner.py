@@ -16,10 +16,17 @@ def optimize(node):
         Variables.scan(node)
 
     # Re optimize until nothing to remove is found
+    x = 0
     optimized = False
-    while __optimize(node):
-        Variables.scan(node)
-        optimized = True
+    
+    while True:
+        x = x + 1
+        logging.debug("Run unused cleaner. Iteration: %s" % x)
+        if __optimize(node):
+            Variables.scan(node)
+            optimized = True
+        else:
+            break
         
     return optimized
 
