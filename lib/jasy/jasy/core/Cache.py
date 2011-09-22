@@ -3,7 +3,7 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-import shelve, time, logging, os, os.path, sys, pickle
+import shelve, time, logging, os, os.path, sys, pickle, dbm
 
 class Cache:
     """ 
@@ -11,27 +11,39 @@ class Cache:
     Supports transient only in-memory storage, too.
     """
     
+    __db = None
+    
     def __init__(self, path, clear=False):
         self.__transient = {}
-        self.__file = os.path.join(path, "cache")
-        
-        logging.debug("Cache File: %s" % self.__file)
+        self.__file = os.path.join(path, "cache.db")
         
         try:
-            logging.debug("Open cache file %s..." % self.__file)
-            self.__db = shelve.open(self.__file)
-        except:
-            logging.warn("Detected faulty cache files. Rebuilding...")
-            self.clear()
+            self.__db = shelve.open(self.__file, flag="c")
+        except dbm.error as error:
+            errno = None
+            try:
+                errno = error.errno
+            except:
+                pass
+                
+            if errno is 35:
+                raise IOError("Cache file is locked by another process!")
+            elif "db type could not be determined" in str(error):
+                logging.error("Could not detect cache file format!")
+                logging.warn("Recreating cache database...")
+                self.clear()
+            else:
+                raise error
     
     
     def clear(self):
-        if hasattr(self, "__db"):
+        if self.__db != None:
+            logging.debug("Closing cache file %s..." % self.__file)
+            
             self.__db.close()
+            self.__db = None
 
-        logging.debug("Initialize cache file %s..." % self.__file)
-        
-        self.__db.close()
+        logging.info("Clearing cache file %s..." % self.__file)
         self.__db = shelve.open(self.__file, flag="n")
         
         
