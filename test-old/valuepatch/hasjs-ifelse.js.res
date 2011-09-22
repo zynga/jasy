@@ -1,2 +1,0 @@
-use.Function.prototype.bind();
-

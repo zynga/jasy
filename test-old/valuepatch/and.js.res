@@ -1,2 +1,0 @@
-alert("Debugs local storage");
-
