@@ -1480,32 +1480,83 @@ class TestRenamePrivates(unittest.TestCase):
             'var obj={__eKuP5:123,__eKLS8:456};alert(obj.__eKuP5+":"+obj.__eKLS8);'
         )
         
-    def test_(self):
+    def test_remote(self):
+        self.assertRaises(CryptPrivates.PrivateException, self.process, 
+            '''
+            alert(RemoteObj.__x);
+            ''')
+
+    def test_localvar(self):
         self.assertEqual(self.process(
             '''
+            var __x = 4;
+            alert(__x);
             '''),
-            ''
+            'var __x=4;alert(__x);'
+        )
+    
+    def test_localvar_undeclared(self):
+        self.assertEqual(self.process(
+            '''
+            alert(__y);
+            '''),
+            'alert(__y);'
         )        
 
-    def test_(self):
+    def test_local_deep(self):
         self.assertEqual(self.process(
             '''
+            var obj = {
+              __field : {
+                __sub : true
+              }
+            };
+            
+            alert(obj.__field.__sub);
             '''),
-            ''
+            'var obj={__oa6Uf:{__icY1P:true}};alert(obj.__oa6Uf.__icY1P);'
         )
+
+    def test_access_same_named_external(self):
+        """ 
+        Is is somehow an unsupported edge case which is not supported correctly yet.
+        Normally one would expect that the access to __field on RemoteObj would raise an error.
+        At least it breaks this wrong access because this field is renamed based on file name as well.
+        """
+        self.assertEqual(self.process(
+            '''
+            var obj = {
+              __field : true
+            };
+            alert(RemoteObj.__field);
+            '''),
+            'var obj={__oa6Uf:true};alert(RemoteObj.__oa6Uf);'
+        )        
+
+    def test_mixin(self):
+        self.assertEqual(self.process(
+            '''
+            var source = {
+              __field1 : 123,
+              __field2 : 456
+            };
+            
+            var target = {
+              __field1 : 789
+            };
+            
+            for (var key in source) {
+              target[key] = source[key];
+            }
+            '''),
+            'var source={__rJD8U:123,__rJVbX:456};var target={__rJD8U:789};for(var key in source){target[key]=source[key]}'
+        )   
     
     def test_(self):
         self.assertEqual(self.process(
             '''
             '''),
             ''
-        )        
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
         )
 
     def test_(self):
@@ -1520,7 +1571,7 @@ class TestRenamePrivates(unittest.TestCase):
             '''
             '''),
             ''
-        )        
+        )             
         
 
 if __name__ == '__main__':
