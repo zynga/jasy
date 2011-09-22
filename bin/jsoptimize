@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, os
+import sys, os, logging
 
 # Extend PYTHONPATH with 'lib'
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib", "jasy")))
@@ -19,6 +19,8 @@ from jasy.optimizer import UnusedCleaner
 from jasy.process.Variables import scan
 from jasy.process.Compressor import compress
 
+
+logging.getLogger().setLevel(logging.DEBUG)
 
 def jsoptimize(source, filename=None):
     values = {

@@ -64,29 +64,34 @@ def __clean(node, unused):
                     
 
     if node.type == "script" and hasattr(node, "parent"):
+        # Remove unused parameters
         params = getattr(node.parent, "params", None)
         if params:
-            # start from back, as we can only remove params as long
-            # as there is not a required one after us.
+            # Start from back, as we can only remove params as long
+            # as there is not a required one after the current one
             for identifier in reversed(params):
                 if identifier.value in unused:
-                    logging.debug("Cleanup '%s' in line %s", identifier.value, identifier.line)
+                    logging.debug("Cleanup unused parameter '%s' in line %s", identifier.value, identifier.line)
                     params.remove(identifier)
                     retval = True
                 else:
                     break
+
+        # Remove function names which are unused
+        if node.parent.functionForm == "expressed_form":
+            funcName = getattr(node.parent, "name", None)
+            if funcName != None and funcName in unused:
+                logging.debug("Remove unused function name at line %s" % node.line)
+                del node.parent.name
                     
                     
     elif node.type == "function":
-        # Remove name attribute if function is not accessed this way
-        if hasattr(node, "name") and node.name in unused:
-            del node.name
+        # Remove full unused functions (when not in top-level scope)
+        if node.functionForm == "declared_form" and getattr(node, "parent", None) and node.parent.type != "call":
+            funcName = getattr(node.parent, "name", None)
+            logging.debug("Remove unused function declaration %s at line %s" % (funcName, node.line))
+            node.parent.remove(node)
             
-            # Remove declared function, but omit removal on direct execution e.g. (function x() {})();
-            if node.functionForm == "declared_form" and getattr(node, "parent", None) and node.parent.type != "call":
-                logging.debug("Remove unused function at line %s" % node.line)
-                node.parent.remove(node)
-    
     
     elif node.type == "var":
         for decl in reversed(node):
@@ -94,12 +99,12 @@ def __clean(node, unused):
                 if hasattr(decl, "initializer"):
                     init = decl.initializer
                     if init.type in ("null", "this", "true", "false", "identifier", "number", "string", "regexp"):
-                        logging.debug("Remove unused variable %s at line %s" % (decl.name, decl.line))
+                        logging.debug("Remove unused primitive variable %s at line %s" % (decl.name, decl.line))
                         node.remove(decl)
                         retval = True
                         
                     elif init.type == "function" and (not hasattr(init, "name") or init.name in unused):
-                        logging.debug("Remove unused function %s at line %s" % (decl.name, decl.line))
+                        logging.debug("Remove unused function variable %s at line %s" % (decl.name, decl.line))
                         node.remove(decl)
                         retval = True
                         
