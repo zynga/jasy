@@ -1,3 +1,0 @@
-function wrapper() {
-  var x;
-}
