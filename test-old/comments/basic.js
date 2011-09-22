@@ -1,7 +1,7 @@
 /**
  * Class documentation
  */
-qx.Class.define("my.custom.Class",
+Class.define("my.custom.Class",
 {
   /**
    * @param

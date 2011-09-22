@@ -5,7 +5,7 @@ function func1() {}
 function func2() {}
 
 /** My class foo.Bar */
-qx.Class.define("foo.Bar",
+Class.define("foo.Bar",
 {
 
 });
