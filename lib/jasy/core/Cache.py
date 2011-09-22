@@ -20,21 +20,30 @@ class Cache:
         try:
             self.__db = shelve.open(self.__file, flag="c")
         except dbm.error as error:
-            logging.warn("Detected faulty cache files or cache type could not be detected.")
-            logging.warn("Error: %s" % error)
-            logging.warn("Recreating cache database...")
-            
-            self.clear()
+            errno = None
+            try:
+                errno = error.errno
+            except:
+                pass
+                
+            if errno is 35:
+                raise IOError("Cache file is locked by another process!")
+            elif "db type could not be determined" in str(error):
+                logging.error("Could not detect cache file format!")
+                logging.warn("Recreating cache database...")
+                self.clear()
+            else:
+                raise error
     
     
     def clear(self):
-        if self.__db:
+        if self.__db != None:
             logging.debug("Closing cache file %s..." % self.__file)
             
             self.__db.close()
             self.__db = None
-            
-        logging.debug("Clearing cache file %s..." % self.__file)
+
+        logging.info("Clearing cache file %s..." % self.__file)
         self.__db = shelve.open(self.__file, flag="n")
         
         

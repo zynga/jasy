@@ -23,7 +23,11 @@ class Project():
         
         self.__path = path
         self.__dirFilter = [".svn",".git",".hg",".bzr"]
-        self.__cache = Cache(self.__path)
+
+        try:
+            self.__cache = Cache(self.__path)
+        except IOError as err:
+            raise ProjectException("Could not initialize project. Cache file could not be initialized! %s" % err)
         
         manifestPath = os.path.join(path, "manifest.json")
         if not os.path.exists(manifestPath):
