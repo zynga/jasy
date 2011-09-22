@@ -110,8 +110,16 @@ def __clean(node, unused):
                         node.remove(decl)
                         retval = True
                     
+                    # If we have only one child, we replace the whole var statement with just the init block
                     elif len(node) == 1:
                         node.parent.replace(node, init)
+                        retval = True
+
+                    # If we are the last declaration, move it out of node and append after var block
+                    elif node[-1] == decl:
+                        node.remove(decl)
+                        nodePos = node.parent.index(node)
+                        node.parent.insert(nodePos + 1, init)
                         retval = True
                         
                     else:
