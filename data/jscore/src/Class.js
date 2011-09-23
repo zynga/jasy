@@ -188,7 +188,7 @@ if(!jasy.Env.isSet("es5"))
 		//	 CONSTRUCTOR
 		// ------------------------------------
 		
-		var construct = config.construct || function construct(){};
+		var construct = config.construct || function(){};
 	
 		// Store name / type
 		construct.className = name;
@@ -226,6 +226,9 @@ if(!jasy.Env.isSet("es5"))
 				checkMixinEventConflicts(include, config.events, name);
 				checkMixinPropertyConflicts(include, config.properties, name);
 			}
+			
+			// Copy over list to class constructor
+			construct.__includes = include;
 
 			for (var i=0, l=include.length; i<l; i++) 
 			{
