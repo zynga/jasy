@@ -18,6 +18,7 @@ import jasy.optimizer.CombineDeclarations as CombineDeclarations
 import jasy.optimizer.UnusedCleaner as UnusedCleaner
 import jasy.optimizer.CryptPrivates as CryptPrivates
 
+import jasy.core.Permutation as Permutation
 
 
 class TestParser(unittest.TestCase):
@@ -308,7 +309,7 @@ class TestLocalVariables(unittest.TestCase):
     def process(self, code):
         node = Parser.parse(code)
         Variables.scan(node)
-        LocalVariables.optimize(node, node.stats)
+        LocalVariables.optimize(node)
         return Compressor.compress(node)
 
     def test_basic(self):
@@ -1568,6 +1569,17 @@ class TestRenamePrivates(unittest.TestCase):
             'var source={__kZWNQ:123,__k0dQT:456};var target={__kZWNQ:789};for(var key in source){target[key]=source[key]}'
         )   
     
+    
+    
+
+class TestInjectValue(unittest.TestCase):
+
+    def process(self, code, contextId=""):
+        node = Parser.parse(code)
+        #Permutation.
+        return Compressor.compress(node)    
+    
+    
     def test_(self):
         self.assertEqual(self.process(
             '''
@@ -1635,4 +1647,10 @@ if __name__ == '__main__':
     privateTests = unittest.TestLoader().loadTestsFromTestCase(TestRenamePrivates)
     unittest.TextTestRunner(verbosity=verbosity).run(privateTests)
     
+    print()
+    print("======================================================================")
+    print("  INJECT VALUES")
+    print("======================================================================")
+    injectTests = unittest.TestLoader().loadTestsFromTestCase(TestInjectValue)
+    unittest.TextTestRunner(verbosity=verbosity).run(injectTests)    
     
