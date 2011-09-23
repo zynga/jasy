@@ -56,12 +56,12 @@ def __search(node, coll=None):
         # Only last dot child is relevant
         if node[0][1].type == "identifier":
             name = node[0][1].value
-            if __matcher.match(name):
+            if type(name) is str and __matcher.match(name):
                 coll.add(name)
         
     elif node.type == "property_init":
         name = node[0].value
-        if __matcher.match(name):
+        if type(name) is str and __matcher.match(name):
             coll.add(name)
 
     for child in node:
@@ -79,7 +79,7 @@ def __replace(node, repl):
     
     if node.type == "identifier" and getattr(node, "parent", None):
         # Only rename items which are part of a dot operator
-        if node.parent.type in ("dot", "property_init") and __matcher.match(node.value):
+        if node.parent.type in ("dot", "property_init") and type(node.value) is str and __matcher.match(node.value):
             if node.value in repl:
                 reduction = reduction + len(node.value) - len(repl[node.value])
                 node.value = repl[node.value]
