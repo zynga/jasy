@@ -20,50 +20,26 @@ from jasy.process.Variables import scan
 from jasy.process.Compressor import compress
 
 
-logging.getLogger().setLevel(logging.DEBUG)
-
-def jsoptimize(source, filename=None):
-    values = {
-        "js.Variant.VERSION" : "0.3",
-        "js.Variant.DEBUG" : "true",
-        "js.Variant.LOCAL_STORAGE" : "true",
-        "js.Variant.NATIVE_JSON" : "true",
-        "js.Variant.THEME" : '"blueish"',
-        "js.Variant.LOCALE" : '"de_DE"',
-        
-        # jasy specific
-        "jasy.LOCALE" : '"de_DE"',
-        "jasy.DEBUG" : "false",
-        
-        # qooxdoo specific
-        "qx.debug" : '"off"',
-        "qx.dynlocale" : '"off"',
-        "qx.client" : '"webkit"',
-        "qx.application" : '"qx.application.Standalone"',
-        
-        # has.js specific
-        "string-trim" : "true",
-        "function-bind" : "true"
-    }
-    
-    tree = parse(source, filename)
-    
-    Permutation.Permutation(values).patch(tree)
-    DeadCode.cleanup(tree)
-
-    scan(tree)
-
-    UnusedCleaner.optimize(tree)
-    BlockReducer.optimize(tree)
-    CombineDeclarations.optimize(tree)
-    LocalVariables.optimize(tree, tree.stats)
-    CryptPrivates.optimize(tree)
-
-    # print(tree)
-    
-    return compress(tree)
-
-
 if __name__ == "__main__":
+    # TODO: get from args
+    level = logging.DEBUG
+    values = None
+    
+    # Run
+    logging.getLogger().setLevel(level)
+
     for fname in sys.argv[1:]:
-        print(jsoptimize(open(fname, encoding="utf-8").read(), fname))
+        text = open(fname, encoding="utf-8").read()
+        tree = parse(text, fname)
+    
+        if values:
+            Permutation.Permutation(values).patch(tree)
+
+        DeadCode.cleanup(tree)
+        UnusedCleaner.optimize(tree)
+        BlockReducer.optimize(tree)
+        CombineDeclarations.optimize(tree)
+        LocalVariables.optimize(tree)
+        CryptPrivates.optimize(tree)
+    
+        print(compress(tree))

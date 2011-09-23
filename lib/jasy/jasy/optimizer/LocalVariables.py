@@ -3,9 +3,8 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-from jasy.tokenizer.Tokenizer import keywords
-from copy import copy
 import string, logging
+from jasy.tokenizer.Tokenizer import keywords
 
 __all__ = ["optimize"]
 
@@ -15,13 +14,13 @@ __all__ = ["optimize"]
 # Public API
 #
 
-def optimize(node, stats):
+def optimize(node):
     """
     Node to optimize with the global variables to ignore as names
     """
     
-    blocked = set(stats.shared.keys())
-    blocked.update(stats.modified)
+    blocked = set(node.stats.shared.keys())
+    blocked.update(node.stats.modified)
     
     __patch(node, blocked)
 
