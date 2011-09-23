@@ -1461,7 +1461,7 @@ class TestRenamePrivates(unittest.TestCase):
             '''
             this.__field1 = 123;
             ''', 1),
-            'this.__tUFax=123;'
+            'this.__mJ02j=123;'
         )
         
     def test_assign_long(self):
@@ -1469,7 +1469,7 @@ class TestRenamePrivates(unittest.TestCase):
             '''
             this.__titleBarBackgroundColor = "red";
             ''', 1),
-            'this.__cGGzQe="red";'
+            'this.__clbJJO="red";'
         )        
             
     def test_global_obj_file1(self):
@@ -1481,7 +1481,7 @@ class TestRenamePrivates(unittest.TestCase):
             };
             alert(obj.__x + ":" + obj.__y);
             ''', 1),
-            'var obj={__eI7AU:123,__eJoDX:456};alert(obj.__eI7AU+":"+obj.__eJoDX);'
+            'var obj={__bLHVk:123,__bLYYn:456};alert(obj.__bLHVk+":"+obj.__bLYYn);'
         )        
 
     def test_global_obj_file2(self):
@@ -1493,7 +1493,7 @@ class TestRenamePrivates(unittest.TestCase):
             };
             alert(obj.__x + ":" + obj.__y);
             ''', 2),
-            'var obj={__eKuP5:123,__eKLS8:456};alert(obj.__eKuP5+":"+obj.__eKLS8);'
+            'var obj={__bMw4r:123,__bMN7u:456};alert(obj.__bMw4r+":"+obj.__bMN7u);'
         )
         
     def test_remote(self):
@@ -1530,7 +1530,7 @@ class TestRenamePrivates(unittest.TestCase):
             
             alert(obj.__field.__sub);
             '''),
-            'var obj={__oa6Uf:{__icY1P:true}};alert(obj.__oa6Uf.__icY1P);'
+            'var obj={__ihERj:{__dZ1y9:true}};alert(obj.__ihERj.__dZ1y9);'
         )
 
     def test_access_same_named_external(self):
@@ -1546,7 +1546,7 @@ class TestRenamePrivates(unittest.TestCase):
             };
             alert(RemoteObj.__field);
             '''),
-            'var obj={__oa6Uf:true};alert(RemoteObj.__oa6Uf);'
+            'var obj={__ihERj:true};alert(RemoteObj.__ihERj);'
         )        
 
     def test_mixin(self):
@@ -1565,7 +1565,7 @@ class TestRenamePrivates(unittest.TestCase):
               target[key] = source[key];
             }
             '''),
-            'var source={__rJD8U:123,__rJVbX:456};var target={__rJD8U:789};for(var key in source){target[key]=source[key]}'
+            'var source={__kZWNQ:123,__k0dQT:456};var target={__kZWNQ:789};for(var key in source){target[key]=source[key]}'
         )   
     
     def test_(self):
