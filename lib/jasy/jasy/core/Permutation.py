@@ -145,9 +145,9 @@ class Permutation:
             code = "true"
         elif code is False:
             code = "false"
-        elif code.startswith("{") and code.endswith("}"):
+        elif type(code) is str and code.startswith("{") and code.endswith("}"):
             pass
-        elif code.startswith("[") and code.endswith("]"):
+        elif type(code) is str and code.startswith("[") and code.endswith("]"):
             pass
         else:
             code = "\"%s\"" % code
@@ -221,19 +221,22 @@ class Permutation:
                     # Auto-fill second parameter with boolean "true"
                     expected = params[1] if len(params) > 1 else parseExpression("true")
 
-                    parsedReplacement = parseExpression(replacement)
-                    if "value" in expected:
-                        if "value" in parsedReplacement:
-                            replacementResult = parsedReplacement.value in str(expected.value).split("|")
+                    if expected.type in ("string", "number", "true", "false"):
+                        parsedReplacement = parseExpression(replacement)
+                        expectedValue = getattr(expected, "value", None)
+                        
+                        if expectedValue is not None:
+                            if getattr(parsedReplacement, "value", None) is not None:
+                                replacementResult = parsedReplacement.value in str(expected.value).split("|")
+                            else:
+                                replacementResult = parsedReplacement.type in str(expected.value).split("|")
                         else:
-                            replacementResult = parsedReplacement.type in str(expected.value).split("|")
-                    else:
-                        replacementResult = parsedReplacement.type == expected.type
+                            replacementResult = parsedReplacement.type == expected.type
 
-                    # Do actual replacement
-                    replacementNode = parseExpression("true" if replacementResult else "false")
-                    callNode.parent.replace(callNode, replacementNode)
-                    modified = True
+                        # Do actual replacement
+                        replacementNode = parseExpression("true" if replacementResult else "false")
+                        callNode.parent.replace(callNode, replacementNode)
+                        modified = True
             
             # Permutation.select(key, map)
             elif assembled == "jasy.Env.select" and node.parent.type == "call":

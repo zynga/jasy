@@ -1579,7 +1579,9 @@ class TestInjectValue(unittest.TestCase):
         permutation = Permutation.Permutation({
             'debug': False,
             'legacy': True,
-            'engine': 'webkit'
+            'engine': 'webkit',
+            'version': 3,
+            'fullversion': 3.11
         })
         permutation.patch(node)
         return Compressor.compress(node)    
@@ -1635,32 +1637,36 @@ class TestInjectValue(unittest.TestCase):
             'var legacy=true;'
         )             
 
-    def test_(self):
+    def test_isset_typediff(self):
         self.assertEqual(self.process(
             '''
+            var legacy = jasy.Env.isSet("legacy", "foo");
             '''),
-            ''
+            'var legacy=false;'
         )
 
-    def test_(self):
+    def test_isset_lookup(self):
         self.assertEqual(self.process(
             '''
+            var legacy = jasy.Env.isSet("legacy", x);
             '''),
-            ''
+            'var legacy=jasy.Env.isSet("legacy",x);'
         )        
         
-    def test_(self):
+    def test_isset_int_true(self):
         self.assertEqual(self.process(
             '''
+            var recent = jasy.Env.isSet("version", 3);
             '''),
-            ''
+            'var recent=true;'
         )             
 
-    def test_(self):
+    def test_isset_int_false(self):
         self.assertEqual(self.process(
             '''
+            var recent = jasy.Env.isSet("version", 5);
             '''),
-            ''
+            'var recent=false;'
         )
 
     def test_(self):
