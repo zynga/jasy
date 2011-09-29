@@ -1669,6 +1669,36 @@ class TestInjectValue(unittest.TestCase):
             'var recent=false;'
         )
 
+    def test_isset_float_true(self):
+        self.assertEqual(self.process(
+            '''
+            var buggy = jasy.Env.isSet("fullversion", 3.11);
+            '''),
+            'var buggy=true;'
+        )
+
+    def test_isset_float_false(self):
+        self.assertEqual(self.process(
+            '''
+            var buggy = jasy.Env.isSet("fullversion", 3.2);
+            '''),
+            'var buggy=false;'
+        )             
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+        
     def test_(self):
         self.assertEqual(self.process(
             '''
@@ -1695,8 +1725,63 @@ class TestInjectValue(unittest.TestCase):
             '''
             '''),
             ''
-        )        
+        )
         
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )             
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+        
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )             
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )                                    
         
 
 if __name__ == '__main__':
