@@ -1589,9 +1589,7 @@ class TestInjectValue(unittest.TestCase):
     
     def test_get(self):
         self.assertEqual(self.process(
-            '''
-            var engine = jasy.Env.getValue("engine");
-            '''),
+            'var engine = jasy.Env.getValue("engine");'),
             'var engine="webkit";'
         )
 
@@ -1605,110 +1603,117 @@ class TestInjectValue(unittest.TestCase):
             'if(false){var x=1}'
         )        
 
-    def test_isset_false(self):
+    def test_isset_bool_false(self):
         self.assertEqual(self.process(
-            '''
-            var debug = jasy.Env.isSet("debug", true);
-            '''),
+            'var debug = jasy.Env.isSet("debug", true);'),
             'var debug=false;'
         )             
         
-    def test_isset_shorthand_false(self):
+    def test_isset_bool_shorthand_false(self):
         self.assertEqual(self.process(
-            '''
-            var debug = jasy.Env.isSet("debug");
-            '''),
+            'var debug = jasy.Env.isSet("debug");'),
             'var debug=false;'
         )
         
-    def test_isset_true(self):
+    def test_isset_bool_true(self):
         self.assertEqual(self.process(
-            '''
-            var legacy = jasy.Env.isSet("legacy", true);
-            '''),
+            'var legacy = jasy.Env.isSet("legacy", true);'),
             'var legacy=true;'
         )
         
-    def test_isset_shorthand_true(self):
+    def test_isset_bool_shorthand_true(self):
         self.assertEqual(self.process(
-            '''
-            var legacy = jasy.Env.isSet("legacy");
-            '''),
+            'var legacy = jasy.Env.isSet("legacy");'),
             'var legacy=true;'
         )             
 
     def test_isset_typediff(self):
         self.assertEqual(self.process(
-            '''
-            var legacy = jasy.Env.isSet("legacy", "foo");
-            '''),
+            'var legacy = jasy.Env.isSet("legacy", "foo");'),
             'var legacy=false;'
         )
 
     def test_isset_lookup(self):
         self.assertEqual(self.process(
-            '''
-            var legacy = jasy.Env.isSet("legacy", x);
-            '''),
+            'var legacy = jasy.Env.isSet("legacy", x);'),
             'var legacy=jasy.Env.isSet("legacy",x);'
         )        
         
     def test_isset_int_true(self):
         self.assertEqual(self.process(
-            '''
-            var recent = jasy.Env.isSet("version", 3);
-            '''),
+            'var recent = jasy.Env.isSet("version", 3);'),
             'var recent=true;'
         )             
 
     def test_isset_int_false(self):
         self.assertEqual(self.process(
-            '''
-            var recent = jasy.Env.isSet("version", 5);
-            '''),
+            'var recent = jasy.Env.isSet("version", 5);'),
             'var recent=false;'
         )
 
     def test_isset_float_true(self):
         self.assertEqual(self.process(
-            '''
-            var buggy = jasy.Env.isSet("fullversion", 3.11);
-            '''),
+            'var buggy = jasy.Env.isSet("fullversion", 3.11);'),
             'var buggy=true;'
         )
 
     def test_isset_float_false(self):
         self.assertEqual(self.process(
-            '''
-            var buggy = jasy.Env.isSet("fullversion", 3.2);
-            '''),
+            'var buggy = jasy.Env.isSet("fullversion", 3.2);'),
             'var buggy=false;'
-        )             
+        )           
+        
+    def test_isset_str_single(self):
+        self.assertEqual(self.process(
+            'var modern = jasy.Env.isSet("engine", "webkit");'),
+            'var modern=true;'
+        )
+        
+    def test_isset_str_multi(self):
+        self.assertEqual(self.process(
+            'var modern = jasy.Env.isSet("engine", "gecko|webkit");'),
+            'var modern=true;'
+        )
+        
+    def test_isset_str_multilong(self):
+        self.assertEqual(self.process(
+            'var modern = jasy.Env.isSet("engine", "gecko|webkitbrowser");'),
+            'var modern=false;'
+        )            
 
     def test_select(self):
         self.assertEqual(self.process(
             '''
-            var prefix = jasy.Env.select("client", {
+            var prefix = jasy.Env.select("engine", {
               webkit: "Webkit",
               gecko: "Moz",
               trident: "ms"
             });
             '''),
-            ''
+            'var prefix="Webkit";'
         )
 
-    def test_(self):
+    def test_select_notfound(self):
         self.assertEqual(self.process(
             '''
+            var prefix = jasy.Env.select("engine", {
+              gecko: "Moz",
+              trident: "ms"
+            });            
             '''),
-            ''
+            'var prefix=jasy.Env.select("engine",{gecko:"Moz",trident:"ms"});'
         )        
         
-    def test_(self):
+    def test_select_default(self):
         self.assertEqual(self.process(
             '''
+            var prefix = jasy.Env.select("engine", {
+              gecko: "Moz",
+              trident: "ms",
+              "default": ""
+            });            
             '''),
-            ''
+            'var prefix="";'
         )
 
     def test_(self):
