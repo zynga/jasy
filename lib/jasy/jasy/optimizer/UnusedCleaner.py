@@ -96,7 +96,7 @@ def __clean(node, unused):
     elif node.type == "function":
         # Remove full unused functions (when not in top-level scope)
         if node.functionForm == "declared_form" and getattr(node, "parent", None) and node.parent.type != "call":
-            funcName = getattr(node.parent, "name", None)
+            funcName = getattr(node, "name", None)
             logging.debug("Remove unused function declaration %s at line %s" % (funcName, node.line))
             node.parent.remove(node)
             retval = True
