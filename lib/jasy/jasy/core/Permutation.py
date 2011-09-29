@@ -64,24 +64,23 @@ def getKeys(node, keys=None):
 
 PermutationCache = {}
 
-def getPermutation(combination, fields=None):
+def getPermutation(combination):
     """ Small wrapper to omit double creation of identical permutations in filter() method """
     
     key = str(combination)
     if key in PermutationCache:
         return PermutationCache[key]
         
-    PermutationCache[key] = Permutation(combination, fields)
+    PermutationCache[key] = Permutation(combination)
     return PermutationCache[key]
     
 
 
 
 class Permutation:
-    def __init__(self, combination, fields=None):
+    def __init__(self, combination):
         
         self.__combination = combination
-        self.__fields = fields
         self.__key = self.__buildKey(combination)
         
         # Convert to same value as in JavaScript
@@ -184,7 +183,7 @@ class Permutation:
             if key in available:
                 filtered[key] = self.__combination[key]
         
-        return getPermutation(filtered, self.__fields)
+        return getPermutation(filtered)
     
     
     #
@@ -221,16 +220,15 @@ class Permutation:
                 if replacement != None:
                     # Auto-fill second parameter with boolean "true"
                     expected = params[1] if len(params) > 1 else parseExpression("true")
-                    
-                    # Prepare check
-                    field = self.__fields[name]
-                    check = field["check"] if "check" in field else None
-                        
-                    # Special handling for boolean values
-                    if check == "Boolean":
-                        replacementResult = expected.type == parseExpression(replacement).type
+
+                    parsedReplacement = parseExpression(replacement)
+                    if "value" in expected:
+                        if "value" in parsedReplacement:
+                            replacementResult = parsedReplacement.value in str(expected.value).split("|")
+                        else:
+                            replacementResult = parsedReplacement.type in str(expected.value).split("|")
                     else:
-                        replacementResult = parseExpression(replacement).value in str(expected.value).split("|")
+                        replacementResult = parsedReplacement.type == expected.type
 
                     # Do actual replacement
                     replacementNode = parseExpression("true" if replacementResult else "false")

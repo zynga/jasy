@@ -1576,10 +1576,65 @@ class TestInjectValue(unittest.TestCase):
 
     def process(self, code, contextId=""):
         node = Parser.parse(code)
-        #Permutation.
+        permutation = Permutation.Permutation({
+            'debug': False,
+            'legacy': True,
+            'engine': 'webkit'
+        })
+        permutation.patch(node)
         return Compressor.compress(node)    
     
     
+    def test_get(self):
+        self.assertEqual(self.process(
+            '''
+            var engine = jasy.Env.getValue("engine");
+            '''),
+            'var engine="webkit";'
+        )
+
+    def test_if_isset(self):
+        self.assertEqual(self.process(
+            '''
+            if (jasy.Env.isSet("debug", true)) {
+                var x = 1;
+            }
+            '''),
+            'if(false){var x=1}'
+        )        
+
+    def test_isset_false(self):
+        self.assertEqual(self.process(
+            '''
+            var debug = jasy.Env.isSet("debug", true);
+            '''),
+            'var debug=false;'
+        )             
+        
+    def test_isset_shorthand_false(self):
+        self.assertEqual(self.process(
+            '''
+            var debug = jasy.Env.isSet("debug");
+            '''),
+            'var debug=false;'
+        )
+        
+    def test_isset_true(self):
+        self.assertEqual(self.process(
+            '''
+            var legacy = jasy.Env.isSet("legacy", true);
+            '''),
+            'var legacy=true;'
+        )
+        
+    def test_isset_shorthand_true(self):
+        self.assertEqual(self.process(
+            '''
+            var legacy = jasy.Env.isSet("legacy");
+            '''),
+            'var legacy=true;'
+        )             
+
     def test_(self):
         self.assertEqual(self.process(
             '''
@@ -1593,6 +1648,27 @@ class TestInjectValue(unittest.TestCase):
             '''),
             ''
         )        
+        
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )             
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
 
     def test_(self):
         self.assertEqual(self.process(
@@ -1600,6 +1676,21 @@ class TestInjectValue(unittest.TestCase):
             '''),
             ''
         )             
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )
+
+    def test_(self):
+        self.assertEqual(self.process(
+            '''
+            '''),
+            ''
+        )        
+        
         
 
 if __name__ == '__main__':
