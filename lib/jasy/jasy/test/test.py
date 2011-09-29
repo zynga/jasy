@@ -1685,9 +1685,14 @@ class TestInjectValue(unittest.TestCase):
             'var buggy=false;'
         )             
 
-    def test_(self):
+    def test_select(self):
         self.assertEqual(self.process(
             '''
+            var prefix = jasy.Env.select("client", {
+              webkit: "Webkit",
+              gecko: "Moz",
+              trident: "ms"
+            });
             '''),
             ''
         )
