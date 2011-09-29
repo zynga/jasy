@@ -1724,7 +1724,7 @@ class TestInjectValue(unittest.TestCase):
               trident: "ms",
             });            
             '''),
-            ''
+            'var prefix="Webkit";'
         )             
 
     def test_(self):
