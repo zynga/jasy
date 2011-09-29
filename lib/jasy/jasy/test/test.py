@@ -1716,9 +1716,13 @@ class TestInjectValue(unittest.TestCase):
             'var prefix="";'
         )
 
-    def test_(self):
+    def test_select_multi(self):
         self.assertEqual(self.process(
             '''
+            var prefix = jasy.Env.select("engine", {
+              "webkit|khtml": "Webkit",
+              trident: "ms",
+            });            
             '''),
             ''
         )             
