@@ -437,7 +437,7 @@ def containsIfElse(node):
             pass
             
         # Script blocks reset as well (protected by other function)
-        elif child.type == "script_":
+        elif child.type == "script":
             pass
         
         elif containsIfElse(child):
@@ -462,7 +462,7 @@ def containsIf(node):
             pass
 
         # Script blocks reset as well (protected by other function)
-        elif child.type == "script_":
+        elif child.type == "script":
             pass
 
         elif containsIf(child):
