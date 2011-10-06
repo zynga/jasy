@@ -1035,7 +1035,7 @@ class TestBlockReducer(unittest.TestCase):
               };
             }
             '''),
-            ''
+            'abc||(abc={setup:function(){if(cde)x();else return false}});'
         )
 
 

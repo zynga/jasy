@@ -28,7 +28,8 @@ def __optimize(node):
     if node.type == "semicolon" and node.parent.type in ("block", "script"):
         expr = getattr(node, "expression", None)
         if not expr or expr.type in ("null", "this", "true", "false", "identifier", "number", "string", "regexp"):
-            logging.debug("Remove empty statement at line %s of type: %s" % (expr.line, expr.type))
+            if expr is not None:
+                logging.debug("Remove empty statement at line %s of type: %s" % (expr.line, expr.type))
             node.parent.remove(node)
             return
 
