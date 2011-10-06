@@ -37,8 +37,8 @@ if __name__ == "__main__":
 
         DeadCode.cleanup(tree)
         UnusedCleaner.optimize(tree)
-        BlockReducer.optimize(tree)
         CombineDeclarations.optimize(tree)
+        BlockReducer.optimize(tree)
         LocalVariables.optimize(tree)
         CryptPrivates.optimize(tree)
     
