@@ -11,18 +11,24 @@ import logging
 __all__ = ["optimize"]
 
 def optimize(node):
+    logging.debug(">>> Reducing block complexity...")
+    return __optimize(node)
+
+
+def __optimize(node):
     # Process from inside to outside
     # on a copy of the node to prevent it from forgetting children when structure is modified
     for child in list(node):
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
-            optimize(child)
+            __optimize(child)
     
     
     # Cleans up empty semicolon statements (or pseudo-empty)
     if node.type == "semicolon" and node.parent.type in ("block", "script"):
         expr = getattr(node, "expression", None)
         if not expr or expr.type in ("null", "this", "true", "false", "identifier", "number", "string", "regexp"):
+            logging.debug("Remove empty statement at line %s of type: %s" % (expr.line, expr.type))
             node.parent.remove(node)
             return
 
@@ -42,9 +48,11 @@ def optimize(node):
         if type(firstNumber.value) == str or type(secondNumber.value) == str:
             pass
         elif operator == "plus":
+            logging.debug("Precompute numeric %s operation at line: %s" % (operator, node.line))
             firstNumber.value += secondNumber.value
             node.parent.replace(node, firstNumber)
         elif operator == "minus":
+            logging.debug("Precompute numeric %s operation at line: %s" % (operator, node.line))
             firstNumber.value -= secondNumber.value
             node.parent.replace(node, firstNumber)
         else:
@@ -58,12 +66,14 @@ def optimize(node):
                 result = None
             
             if result is not None and len(str(result)) < len(compress(node)):
+                logging.debug("Precompute numeric %s operation at line: %s" % (operator, node.line))
                 firstNumber.value = result
                 node.parent.replace(node, firstNumber)
 
 
     # Pre-combine strings (even supports mixed string + number concats)
     elif node.type == "plus" and node[0].type in ("number", "string") and node[1].type in ("number", "string"):
+        logging.debug("Joining strings at line: %s", node.line)
         node[0].value = "%s%s" % (node[0].value, node[1].value)
         node[0].type = "string"
         node.parent.replace(node, node[0])
@@ -74,7 +84,8 @@ def optimize(node):
         if node.parent.type in ("try", "catch", "finally"):
             pass
         elif len(node) == 0:
-            repl =Node(node.tokenizer, "semicolon")
+            logging.debug("Replace empty block with semicolon at line: %s", node.line)
+            repl = Node(node.tokenizer, "semicolon")
             node.parent.replace(node, repl)
             node = repl
         elif len(node) == 1:
@@ -88,20 +99,23 @@ def optimize(node):
                 # virtual blocks inside case/default statements
                 pass
             else:
+                # logging.debug("Removing block for single statement at line %s", node.line)
                 node.parent.replace(node, node[0])
                 node = node[0]
         else:
             node = combineToCommaExpression(node)
         
         
-    # Remove "empty" semicolons who are inside a block/script parent
+    # Remove "empty" semicolons which are inside a block/script parent
     if node.type == "semicolon":
         if not hasattr(node, "expression"):
             if node.parent.type in ("block", "script"):
+                logging.debug("Remove empty semicolon expression at line: %s", node.line)
                 node.parent.remove(node)
             elif node.parent.type == "if":
                 rel = getattr(node, "rel", None)
                 if rel == "elsePart":
+                    logging.debug("Remove empty else part at line: %s", node.line)
                     node.parent.remove(node)
             
             
@@ -337,13 +351,26 @@ def combineToCommaExpression(node):
     if node == None or node.type != "block":
         return node
         
+    counter = 0
     for child in node:
-        if child.type != "semicolon":
+        if child is None:
+            pass
+            
+        elif child.type != "semicolon":
             return node
+          
+        else:
+            counter = counter + 1
+            
+    if counter == 1:
+        return node
     
     comma = Node(node.tokenizer, "comma")
     
     for child in list(node):
+        if child is None:
+            pass
+
         # Ignore empty semicolons
         if hasattr(child, "expression"):
             comma.append(child.expression)
@@ -401,9 +428,16 @@ def containsIfElse(node):
         return True
 
     for child in node:
+        if child is None:
+            pass
+        
         # Blocks reset this if-else problem so we ignore them 
         # (and their content) for our scan.
-        if child.type == "block":
+        elif child.type == "block":
+            pass
+            
+        # Script blocks reset as well (protected by other function)
+        elif child.type == "script_":
             pass
         
         elif containsIfElse(child):
@@ -419,9 +453,16 @@ def containsIf(node):
         return True
 
     for child in node:
+        if child is None:
+            pass
+        
         # Blocks reset this if-else problem so we ignore them 
         # (and their content) for our scan.
         if child.type == "block":
+            pass
+
+        # Script blocks reset as well (protected by other function)
+        elif child.type == "script_":
             pass
 
         elif containsIf(child):
