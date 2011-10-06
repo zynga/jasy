@@ -56,7 +56,7 @@ class Compressor:
                 result = self.compress(node[0]) + self.__prefixes[node.type]
             else:
                 result = self.__prefixes[node.type] + self.compress(node[0])
-            
+        
         elif type in self.__dividers:
             first = self.compress(node[0])
             second = self.compress(node[1])
@@ -160,8 +160,7 @@ class Compressor:
         "gt"          : '>',
         "bitwise_or"  : '|',
         "bitwise_xor" : '^',
-        "bitwise_and" : '&',
-        "comma"       : ','
+        "bitwise_and" : '&'
     }
 
     __prefixes = {    
@@ -191,6 +190,9 @@ class Compressor:
     #
     # Expressions
     #
+    
+    def type_comma(self, node):
+        return self.__commaSymbol.join(map(self.compress, node))
 
     def type_object_init(self, node):
         return "{%s}" % self.__commaSymbol.join(map(self.compress, node))
