@@ -797,7 +797,7 @@ class TestBlockReducer(unittest.TestCase):
               otherStuffB();
             }
             '''),
-            'something?condition?somethingCase1a(),somethingCase1b():somethingCase2a(),somethingCase2b():otherStuffA(),otherStuffB();'
+            'something?condition?(somethingCase1a(),somethingCase1b()):(somethingCase2a(),somethingCase2b()):(otherStuffA(),otherStuffB());'
         )
         
     def test_if_else_expression(self):
@@ -891,7 +891,7 @@ class TestBlockReducer(unittest.TestCase):
               x=4;
             }
             '''),
-            'something&&x++,x=4;'
+            'something&&(x++,x=4);'
         )
 
     def test_ifoptimize_assign(self):

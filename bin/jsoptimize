@@ -35,11 +35,13 @@ if __name__ == "__main__":
         if values:
             Permutation.Permutation(values).patch(tree)
 
-        DeadCode.cleanup(tree)
-        UnusedCleaner.optimize(tree)
-        CombineDeclarations.optimize(tree)
+        #DeadCode.cleanup(tree)
+        #UnusedCleaner.optimize(tree)
+        #CombineDeclarations.optimize(tree)
+        print(tree)
         BlockReducer.optimize(tree)
-        LocalVariables.optimize(tree)
-        CryptPrivates.optimize(tree)
+        print(tree)
+        #LocalVariables.optimize(tree)
+        #CryptPrivates.optimize(tree)
     
         print(compress(tree))
