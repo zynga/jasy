@@ -324,17 +324,10 @@ def fixParens(node):
         prio = expressionOrder[node.type]
         parentPrio = expressionOrder[node.parent.type]
 
-        # If the child was moved to a new parent we need to figure
-        # out whether we need parens to 
         needsParens = prio < parentPrio
-        
-        # Fix minor priority issue in hook statements. They are a little bit special. 
-        # In their condition part, assignments have lower priority than the hook, in 
-        # the action parts it's the other way around.
-        if parent.type == "hook" and node.type == "assign":
-            needsParens = node.rel == "condition"
-
-        node.parenthesized = needsParens
+        if needsParens:
+            logging.debug("Adding parens around %s node at line: %s" % (node.type, node.line))
+            node.parenthesized = needsParens
 
 
 def combineToCommaExpression(node):
