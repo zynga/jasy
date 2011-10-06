@@ -6,6 +6,11 @@
 import logging
 
 def cleanup(node):
+    logging.debug(">>> Removing dead code branches...")
+    return __cleanup(node)
+
+
+def __cleanup(node):
     """ Reprocesses JavaScript to remove dead paths """
     optimized = False
     
@@ -13,7 +18,7 @@ def cleanup(node):
     for child in reversed(node):
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
-            if cleanup(child):
+            if __cleanup(child):
                 optimized = True
         
     # Optimize if cases

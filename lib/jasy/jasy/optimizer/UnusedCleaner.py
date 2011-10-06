@@ -21,7 +21,7 @@ def optimize(node):
     
     while True:
         x = x + 1
-        logging.debug("Run unused cleaner. Iteration: %s" % x)
+        logging.debug("Remove unused variables [%s]..." % x)
         if __optimize(node):
             Variables.scan(node)
             optimized = True

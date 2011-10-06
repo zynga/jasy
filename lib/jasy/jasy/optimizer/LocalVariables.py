@@ -19,6 +19,8 @@ def optimize(node):
     Node to optimize with the global variables to ignore as names
     """
     
+    logging.debug(">>> Renaming local variables...")
+    
     blocked = set(node.stats.shared.keys())
     blocked.update(node.stats.modified)
     

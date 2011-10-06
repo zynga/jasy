@@ -14,6 +14,9 @@ __all__ = ["optimize", "PrivateException"]
 #
 
 def optimize(node, contextId=""):
+    
+    logging.debug(">>> Crypting private fields...")
+    
     coll = __search(node)
 
     repl = {}

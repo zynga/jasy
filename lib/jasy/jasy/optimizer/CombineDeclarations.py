@@ -13,8 +13,13 @@ __all__ = ["optimize"]
 #
 # Public API
 #
-
 def optimize(node):
+    logging.debug(">>> Combining declarations...")
+    return __optimize(node)
+    
+
+def __optimize(node):
+    
     # stabilize list during processing modifyable stuff
     copy = node
     if node.type in ("script", "block"):
@@ -23,7 +28,7 @@ def optimize(node):
     for child in copy:
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
-            optimize(child)
+            __optimize(child)
         
     if node.type in ("script", "block"):
         __combineSiblings(node)
@@ -50,11 +55,14 @@ def __combineSiblings(node):
         if child.type == "for" and prevChild.type == "var":
             setup = getattr(child, "setup", None)
             if setup and setup.type == "var":
+                logging.debug("Removing for-loop setup section at line %s" % setup.line)
                 child.remove(setup)
                 child = setup    
 
         # Combine declarations of VAR statements
         if child.type == "var" and prevChild.type == "var":
+            logging.debug("Combining var statement at line %s" % child.line)
+            
             # Fix loop through casting node to list()
             for variable in list(child):
                 prevChild.append(variable)
