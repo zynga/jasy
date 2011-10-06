@@ -1019,6 +1019,24 @@ class TestBlockReducer(unittest.TestCase):
             '''),
             'function x(){return somemethod()&&othermethod()!=null}'
         )
+        
+    def test_single_command_if_block(self):
+        self.assertEqual(self.process(
+            '''
+            if (!abc) {
+              abc = {
+                setup: function() {
+                  if (cde) {
+                    x();
+                  } else {
+                    return false;
+                  }
+                }
+              };
+            }
+            '''),
+            ''
+        )
 
 
 
