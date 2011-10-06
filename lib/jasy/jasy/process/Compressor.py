@@ -64,19 +64,20 @@ class Compressor:
             
             # Fast path
             if node.type not in ("plus", "minus"):
-                return "%s%s%s" % (first, divider, second)
-            
-            # Special code for dealing with situations like x + ++y and y-- - x
-            result = first
-            if first.endswith(divider):
-                result += " "
-            
-            result += divider
-            
-            if second.startswith(divider):
-                result += " "
+                result = "%s%s%s" % (first, divider, second)
                 
-            result += second
+            # Special code for dealing with situations like x + ++y and y-- - x
+            else:
+                result = first
+                if first.endswith(divider):
+                    result += " "
+            
+                result += divider
+            
+                if second.startswith(divider):
+                    result += " "
+                
+                result += second
 
         else:
             try:
