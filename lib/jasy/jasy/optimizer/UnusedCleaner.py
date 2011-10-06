@@ -21,7 +21,7 @@ def optimize(node):
     
     while True:
         x = x + 1
-        logging.debug("Remove unused variables [%s]..." % x)
+        logging.debug("Removing unused variables [%s]..." % x)
         if __optimize(node):
             Variables.scan(node)
             optimized = True
@@ -78,7 +78,7 @@ def __clean(node, unused):
             # as there is not a required one after the current one
             for identifier in reversed(params):
                 if identifier.value in unused:
-                    logging.debug("Cleanup unused parameter '%s' in line %s", identifier.value, identifier.line)
+                    logging.debug("Removing unused parameter '%s' in line %s", identifier.value, identifier.line)
                     params.remove(identifier)
                     retval = True
                 else:
@@ -88,7 +88,7 @@ def __clean(node, unused):
         if node.parent.functionForm == "expressed_form":
             funcName = getattr(node.parent, "name", None)
             if funcName != None and funcName in unused:
-                logging.debug("Remove unused function name at line %s" % node.line)
+                logging.debug("Removing unused function name at line %s" % node.line)
                 del node.parent.name
                 retval = True
                     
@@ -98,7 +98,7 @@ def __clean(node, unused):
         if node.functionForm == "declared_form" and getattr(node, "parent", None) and node.parent.type != "call":
             funcName = getattr(node, "name", None)
             if funcName != None and funcName in unused:
-                logging.debug("Remove unused function declaration %s at line %s" % (funcName, node.line))
+                logging.debug("Removing unused function declaration %s at line %s" % (funcName, node.line))
                 node.parent.remove(node)
                 retval = True
             
@@ -109,12 +109,12 @@ def __clean(node, unused):
                 if hasattr(decl, "initializer"):
                     init = decl.initializer
                     if init.type in ("null", "this", "true", "false", "identifier", "number", "string", "regexp"):
-                        logging.debug("Remove unused primitive variable %s at line %s" % (decl.name, decl.line))
+                        logging.debug("Removing unused primitive variable %s at line %s" % (decl.name, decl.line))
                         node.remove(decl)
                         retval = True
                         
                     elif init.type == "function" and (not hasattr(init, "name") or init.name in unused):
-                        logging.debug("Remove unused function variable %s at line %s" % (decl.name, decl.line))
+                        logging.debug("Removing unused function variable %s at line %s" % (decl.name, decl.line))
                         node.remove(decl)
                         retval = True
                     
@@ -143,7 +143,7 @@ def __clean(node, unused):
                     retval = True
                     
         if len(node) == 0:
-            logging.debug("Remove empty 'var' block at line %s" % node.line)
+            logging.debug("Removing empty 'var' block at line %s" % node.line)
             node.parent.remove(node)
 
     return retval
