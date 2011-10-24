@@ -11,6 +11,9 @@
  * Can be used to verify whether a software version makes sense or to relate
  * unknown products (and versions) to known software.
  *
+ * Examples:
+ * Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0; SAMSUNG; SGH-i917)
+ *
  * Gecko 1.9 => Firefox 3.0
  * Gecko 1.9.1 => Firefox 3.5
  * Gecko 1.9.2 = Firefox 3.6

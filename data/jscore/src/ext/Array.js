@@ -131,6 +131,29 @@ Object.addPrototypeMethods("Array",
 		return result;
 	},
 	
+	
+	/**
+	 * Flattens the original array and returns it.
+	 *
+	 * @return {Array} One-dimensionalified array.
+	 */
+	flatten2: function()
+	{
+		var i, value;
+
+		for (i=0; i<arr.length;) {
+			value = arr[i];
+			if (value instanceof Array) {
+				// prepend `splice()` arguments to `tmp` array, to enable `apply()` call
+				arr.splice.apply(arr,[i,1].concat(arr[i]));
+			} else {
+				i++;
+			}
+		}
+
+		return arr;
+	},
+	
 
 	/**
 	 * Randomizes array via Fisher-Yates algorithm.
