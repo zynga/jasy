@@ -181,9 +181,9 @@ class Tokenizer(object):
             elif ch == "/" and next == "*":
                 self.cursor += 1
                 text = "/*"
-                inline = startLine == self.line and startLine > 0
+                inline = startLine == self.line and startLine > 1
                 commentStartLine = self.line
-                if startLine > 0 and startLine == self.line:
+                if startLine > 1 and startLine == self.line:
                     mode = "inline"
                 elif (self.line-1) > startLine:
                     mode = "section"
@@ -219,7 +219,7 @@ class Tokenizer(object):
             elif ch == "/" and next == "/":
                 self.cursor += 1
                 text = "//"
-                if startLine > 0 and startLine == self.line:
+                if startLine > 1 and startLine == self.line:
                     mode = "inline"
                 elif (self.line-1) > startLine:
                     mode = "section"
