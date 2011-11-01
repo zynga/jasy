@@ -246,7 +246,7 @@ class Session():
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         names = sorted(values)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
-        permutations = [Permutation(combi, fields) for combi in combinations]
+        permutations = [Permutation(combi) for combi in combinations]
 
         return permutations
 
