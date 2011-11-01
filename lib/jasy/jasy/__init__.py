@@ -88,7 +88,7 @@ def run():
             raise UserError("No generate file found!")
 
     buildfile = open(script, "r")
-    exec(buildfile.read())
+    retval = exec(buildfile.read(), globals())
 
 
 
