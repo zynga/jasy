@@ -29,13 +29,16 @@ class VanillaBuilder:
             # all other comment styles are attached to the current one
             else:
                 currComments.append(comment)
-                
+        
         currNode.comments = currComments
         if prevNode:
             if hasattr(prevNode, "comments"):
                 prevNode.comments.extend(prevComments)
             else:
                 prevNode.comments = prevComments
+        else:
+            # Don't loose the comment in tree (if not previous node is there, attach it to this node)
+            currNode.comments.extend(prevComments)
     
     def IF_build(self, tokenizer):
         return Node(tokenizer, "if")
