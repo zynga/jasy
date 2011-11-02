@@ -1,0 +1,4 @@
+http://unicode.org/Public/cldr/2.0.1/
+
+* keys is a custom added folder
+* main and supplemental are from CLDR main.zip

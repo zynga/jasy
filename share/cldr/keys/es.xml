@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jasy>
+  <keys>
+    <short>
+      <key type="Backspace">Retroceso</key>
+      <key type="Tab">Tab</key>
+      <key type="Space">Espacio</key>
+      <key type="Enter">Intro</key>
+      <key type="Shift">Mayús</key>
+      <key type="Control">Ctrl</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">BloqMayús</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Esc</key>
+      <key type="Left">Izquierda</key>
+      <key type="Up">Arriba</key>
+      <key type="Right">Derecha</key>
+      <key type="Down">Abajo</key>
+      <key type="PageUp">RePág</key>
+      <key type="PageDown">AvPág</key>
+      <key type="End">Fin</key>
+      <key type="Home">Inicio</key>
+      <key type="Insert">Insert</key>
+      <key type="Delete">Supr</key>
+      <key type="NumLock">BloqNum</key>
+      <key type="PrintScreen">ImprPant</key>
+      <key type="Scroll">BloqDespl</key>
+      <key type="Pause">Pausa</key>
+      <key type="Win">Win</key>
+      <key type="Apps">Aplic</key>
+    </short>
+    <full>
+      <key type="Backspace">Retroceso</key>
+      <key type="Tab">Tabulador</key>
+      <key type="Space">Espacio</key>
+      <key type="Enter">Intro</key>
+      <key type="Shift">Mayúscula</key>
+      <key type="Control">Control</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">Bloqueo Mayúsculas</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Escape</key>
+      <key type="Left">Flecha izquierda</key>
+      <key type="Up">Flecha arriba</key>
+      <key type="Right">Flecha derecha</key>
+      <key type="Down">Flecha abajo</key>
+      <key type="PageUp">Retroceder Página</key>
+      <key type="PageDown">Avanzar Página</key>
+      <key type="End">Fin</key>
+      <key type="Home">Inicio</key>
+      <key type="Insert">Insertar</key>
+      <key type="Delete">Suprimir</key>
+      <key type="NumLock">Bloqueo Numérico</key>
+      <key type="PrintScreen">Imprimir Pantalla</key>
+      <key type="Scroll">Bloq. Despl.</key>
+      <key type="Pause">Pausa</key>
+      <key type="Win">Windows</key>
+      <key type="Apps">Aplicaciones</key>
+    </full>
+  </keys>
+</jasy>

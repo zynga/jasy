@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jasy>
+  <keys>
+    <short>
+      <key type="Backspace">Effacement Arrière</key>
+      <key type="Tab">Tab</key>
+      <key type="Space">Espace</key>
+      <key type="Enter">Entrée</key>
+      <key type="Shift">Maj</key>
+      <key type="Control">Ctrl</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">Verr. Maj.</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Echap.</key>
+      <key type="Left">Gauche</key>
+      <key type="Up">Haut</key>
+      <key type="Right">Droite</key>
+      <key type="Down">Bas</key>
+      <key type="PageUp">Pg Préc.</key>
+      <key type="PageDown">Pg Suiv.</key>
+      <key type="End">Fin</key>
+      <key type="Home">Orig.</key>
+      <key type="Insert">Ins.</key>
+      <key type="Delete">Supp.</key>
+      <key type="NumLock">Verr. Num.</key>
+      <key type="PrintScreen">Imp. Écran</key>
+      <key type="Scroll">Arrêt Défil</key>
+      <key type="Pause">Pause</key>
+      <key type="Win">Win</key>
+      <key type="Apps">App.</key>
+    </short>
+    <full>
+      <key type="Backspace">Effacement arrière</key>
+      <key type="Tab">Tabulation</key>
+      <key type="Space">Espace</key>
+      <key type="Enter">Entrée</key>
+      <key type="Shift">Majuscules</key>
+      <key type="Control">Contrôle</key>
+      <key type="Alt">Alternative</key>
+      <key type="CapsLock">Verrouillage des Majuscule</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Échappement</key>
+      <key type="Left">Gauche</key>
+      <key type="Up">Haut</key>
+      <key type="Right">Droite</key>
+      <key type="Down">Bas</key>
+      <key type="PageUp">Page Précédente</key>
+      <key type="PageDown">Page Suivante</key>
+      <key type="End">Fin</key>
+      <key type="Home">Origine</key>
+      <key type="Insert">Insertion</key>
+      <key type="Delete">Suppression</key>
+      <key type="NumLock">Verouillage Numérique</key>
+      <key type="PrintScreen">Impression de l'écran</key>
+      <key type="Scroll">Arrêt défilement</key>
+      <key type="Pause">Pause</key>
+      <key type="Win">Windows</key>
+      <key type="Apps">Application</key>
+    </full>
+  </keys>
+</jasy>

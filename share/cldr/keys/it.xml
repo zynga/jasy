@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jasy>
+  <keys>
+    <short>
+      <key type="Backspace">Backspace</key>
+      <key type="Tab">Tab</key>
+      <key type="Space">Spazio</key>
+      <key type="Enter">Invio</key>
+      <key type="Shift">Maiusc</key>
+      <key type="Control">Ctrl</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">Bloc Maiusc</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Esc</key>
+      <key type="Left">Sinistra</key>
+      <key type="Up">Su</key>
+      <key type="Right">Destra</key>
+      <key type="Down">Giù</key>
+      <key type="PageUp">Pag Su</key>
+      <key type="PageDown">Pag Giù</key>
+      <key type="End">Fine</key>
+      <key type="Home">Inizio</key>
+      <key type="Insert">Ins</key>
+      <key type="Delete">Canc</key>
+      <key type="NumLock">Bloc Num</key>
+      <key type="PrintScreen">Stamp</key>
+      <key type="Scroll">Bloc Scorr</key>
+      <key type="Pause">Pausa</key>
+      <key type="Win">Win</key>
+      <key type="Apps">Menu</key>
+    </short>
+    <full>
+      <key type="Backspace">Backspace</key>
+      <key type="Tab">Tabulazione</key>
+      <key type="Space">Spazio</key>
+      <key type="Enter">Invio</key>
+      <key type="Shift">Maiuscole</key>
+      <key type="Control">Control</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">Blocca Maiuscole</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Escape</key>
+      <key type="Left">Freccia Sinistra</key>
+      <key type="Up">Freccia Su</key>
+      <key type="Right">Freccia Destra</key>
+      <key type="Down">Freccia Giù</key>
+      <key type="PageUp">Pagina Su</key>
+      <key type="PageDown">Pagina Giù</key>
+      <key type="End">Fine</key>
+      <key type="Home">Inserisci</key>
+      <key type="Insert">Insert</key>
+      <key type="Delete">Cancella</key>
+      <key type="NumLock">Blocca Numeri</key>
+      <key type="PrintScreen">Stampa Schermo</key>
+      <key type="Scroll">Blocca Scorrimento</key>
+      <key type="Pause">Pausa</key>
+      <key type="Win">Tasto Windows</key>
+      <key type="Apps">Tasto Menu</key>
+    </full>
+  </keys>
+</jasy>

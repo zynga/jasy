@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jasy>
+  <keys>
+    <short>
+      <key type="Backspace">BS</key>
+      <key type="Tab">Tabb</key>
+      <key type="Space">Space</key>
+      <key type="Enter">Enter</key>
+      <key type="Shift">Shift</key>
+      <key type="Control">Ctrl</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">Caps</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Esc</key>
+      <key type="Left">Vänster</key>
+      <key type="Up">Upp</key>
+      <key type="Right">Höger</key>
+      <key type="Down">Ner</key>
+      <key type="PageUp">PgUp</key>
+      <key type="PageDown">PgDn</key>
+      <key type="End">End</key>
+      <key type="Home">Home</key>
+      <key type="Insert">Ins</key>
+      <key type="Delete">Del</key>
+      <key type="NumLock">Num</key>
+      <key type="PrintScreen">PrnScn</key>
+      <key type="Scroll">Scroll</key>
+      <key type="Pause">Pause</key>
+      <key type="Win">Win</key>
+      <key type="Apps">Apps</key>
+    </short>
+    <full>
+      <key type="Backspace">Backspace</key>
+      <key type="Tab">Tabulator</key>
+      <key type="Space">Blanksteg</key>
+      <key type="Enter">Enter</key>
+      <key type="Shift">Shift</key>
+      <key type="Control">Control</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">CapsLock</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Escape</key>
+      <key type="Left">Vänster</key>
+      <key type="Up">Upp</key>
+      <key type="Right">Höger</key>
+      <key type="Down">Ner</key>
+      <key type="PageUp">PageUp</key>
+      <key type="PageDown">PageDown</key>
+      <key type="End">End</key>
+      <key type="Home">Home</key>
+      <key type="Insert">Insert</key>
+      <key type="Delete">Delete</key>
+      <key type="NumLock">NumLock</key>
+      <key type="PrintScreen">PrintScreen</key>
+      <key type="Scroll">Scroll</key>
+      <key type="Pause">Pause</key>
+      <key type="Win">Win</key>
+      <key type="Apps">Apps</key>
+    </full>
+  </keys>
+</jasy>

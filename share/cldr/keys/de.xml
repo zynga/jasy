@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jasy>
+  <keys>
+    <short>
+      <key type="Backspace">Rück</key>
+      <key type="Tab">Tab</key>
+      <key type="Space">Leer</key>
+      <key type="Enter">Enter</key>
+      <key type="Shift">Umschalt</key>
+      <key type="Control">Strg</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">Feststell</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Esc</key>
+      <key type="Left">Links</key>
+      <key type="Up">Hoch</key>
+      <key type="Right">Rechts</key>
+      <key type="Down">Runter</key>
+      <key type="PageUp">Bild hoch</key>
+      <key type="PageDown">Bild runter</key>
+      <key type="End">Ende</key>
+      <key type="Home">Pos1</key>
+      <key type="Insert">Einfg</key>
+      <key type="Delete">Entf</key>
+      <key type="NumLock">Num</key>
+      <key type="PrintScreen">Druck</key>
+      <key type="Scroll">Rollen</key>
+      <key type="Pause">Pause</key>
+      <key type="Win">Win</key>
+      <key type="Apps">Kontext</key>
+    </short>
+    <full>
+      <key type="Backspace">Backspace</key>
+      <key type="Tab">Tabulator</key>
+      <key type="Space">Leertaste</key>
+      <key type="Enter">Enter</key>
+      <key type="Shift">Umschalttaste</key>
+      <key type="Control">Steuerung</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">Feststelltaste</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Escape</key>
+      <key type="Left">Pfeil links</key>
+      <key type="Up">Pfeil hoch</key>
+      <key type="Right">Pfeil rechts</key>
+      <key type="Down">Pfeil runter</key>
+      <key type="PageUp">Bild hoch</key>
+      <key type="PageDown">Bild runter</key>
+      <key type="End">Ende</key>
+      <key type="Home">Position 1</key>
+      <key type="Insert">Einfügen</key>
+      <key type="Delete">Entfernen</key>
+      <key type="NumLock">NumLock</key>
+      <key type="PrintScreen">Drucken</key>
+      <key type="Scroll">Rollen</key>
+      <key type="Pause">Pause</key>
+      <key type="Win">Windows-Taste</key>
+      <key type="Apps">Kontextmenü</key>
+    </full>
+  </keys>
+</jasy>

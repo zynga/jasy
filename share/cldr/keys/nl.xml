@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jasy>
+  <keys>
+    <short>
+      <key type="Backspace">Backspace</key>
+      <key type="Tab">Tab</key>
+      <key type="Space">Spatie</key>
+      <key type="Enter">Enter</key>
+      <key type="Shift">Shift</key>
+      <key type="Control">Ctrl</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">Caps Lock</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Esc</key>
+      <key type="Left">Links</key>
+      <key type="Up">Omhoog</key>
+      <key type="Right">Rechts</key>
+      <key type="Down">Omlaag</key>
+      <key type="PageUp">PgUp</key>
+      <key type="PageDown">PgDn</key>
+      <key type="End">End</key>
+      <key type="Home">Home</key>
+      <key type="Insert">Ins</key>
+      <key type="Delete">Del</key>
+      <key type="NumLock">Num</key>
+      <key type="PrintScreen">PrtSc</key>
+      <key type="Scroll">Scroll Lock</key>
+      <key type="Pause">Pauze</key>
+      <key type="Win">Win</key>
+      <key type="Apps">Apps</key>
+    </short>
+    <full>
+      <key type="Backspace">Backspace</key>
+      <key type="Tab">Tabulator</key>
+      <key type="Space">Spatiebalk</key>
+      <key type="Enter">Enter</key>
+      <key type="Shift">Shift</key>
+      <key type="Control">Control</key>
+      <key type="Alt">Alt</key>
+      <key type="CapsLock">Caps Lock</key>
+      <key type="Meta">Meta</key>
+      <key type="Escape">Escape</key>
+      <key type="Left">Pijl links</key>
+      <key type="Up">Pijl omhoog</key>
+      <key type="Right">Pijl rechts</key>
+      <key type="Down">Pijl omlaag</key>
+      <key type="PageUp">Vorige pagina</key>
+      <key type="PageDown">Volgende pagina</key>
+      <key type="End">End</key>
+      <key type="Home">Positie 1</key>
+      <key type="Insert">Invoegen</key>
+      <key type="Delete">Verwijderen</key>
+      <key type="NumLock">Num Lock</key>
+      <key type="PrintScreen">Schermafbeelding</key>
+      <key type="Scroll">Scroll Lock</key>
+      <key type="Pause">Pauze</key>
+      <key type="Win">Windowstoets</key>
+      <key type="Apps">Contextmenu</key>
+    </full>
+  </keys>
+</jasy>
