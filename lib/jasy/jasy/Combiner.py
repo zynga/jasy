@@ -41,6 +41,6 @@ class Combiner():
 
         loader = ",".join(files)
         boot = "function(){%s}" % bootCode if bootCode else ""
-        result = 'base.io.Queue.load([%s], %s, null, true)' % (loader, boot)
+        result = 'core.io.Queue.load([%s], %s, null, true)' % (loader, boot)
 
         return result

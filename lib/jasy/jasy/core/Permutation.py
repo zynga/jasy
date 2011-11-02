@@ -10,10 +10,10 @@ from jasy.parser.Parser import parseExpression
 __all__ = ["Permutation", "getKeys"]
 
 
-# base.Env.isSet(key, expected?)
-# base.Env.getValue(key)
-# base.Env.select(key, map)
-__dotcalls = ("base.Env.isSet", "base.Env.getValue", "base.Env.select")
+# core.Env.isSet(key, expected?)
+# core.Env.getValue(key)
+# core.Env.select(key, map)
+__dotcalls = ("core.Env.isSet", "core.Env.getValue", "core.Env.select")
 
 # hasjs specific: has(key)
 __globalcalls = ("has")
@@ -200,7 +200,7 @@ class Permutation:
             assembled = assembleDot(node)
             
             # Permutation.getValue(key)
-            if assembled == "base.Env.getValue" and node.parent.type == "call":
+            if assembled == "core.Env.getValue" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
                 replacement = self.getJSValue(params[0].value)
@@ -211,7 +211,7 @@ class Permutation:
             
             # Permutation.isSet(key, expected)
             # also supports boolean like: Permutation.isSet(key)
-            elif assembled == "base.Env.isSet" and node.parent.type == "call":
+            elif assembled == "core.Env.isSet" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
                 name = params[0].value
@@ -239,14 +239,14 @@ class Permutation:
                         modified = True
             
             # Permutation.select(key, map)
-            elif assembled == "base.Env.select" and node.parent.type == "call":
+            elif assembled == "core.Env.select" and node.parent.type == "call":
                 callNode = node.parent
                 params = callNode[1]
                 replacement = self.getJSValue(params[0].value)
                 if replacement:
                     parsedReplacement = parseExpression(replacement)
                     if parsedReplacement.type != "string":
-                        raise Exception("base.Env.select requires that the given replacement is of type string.")
+                        raise Exception("core.Env.select requires that the given replacement is of type string.")
 
                     # Directly try to find matching identifier in second param (map)
                     objectInit = params[1]
