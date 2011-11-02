@@ -37,7 +37,7 @@ import os
 import os.path
 import sys
 
-VERSION = "1.0-alpha1"
+VERSION = "0.7"
 
 script_dir = sys.path[0]
 
@@ -139,10 +139,9 @@ else:
         else:
             prefs.append(d.location)
 
-# Look first for 'jasy-VERSION' in all of our preference libs,
-# then for 'jasy'.
+# Look first for 'jasy-VERSION' in all of our preference libs
 libs.extend([os.path.join(x, jasy_version) for x in prefs])
-libs.extend([os.path.join(x, 'jasy') for x in prefs])
+libs.extend(prefs)
 
 sys.path = libs + sys.path
 
