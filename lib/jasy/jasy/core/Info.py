@@ -11,8 +11,4 @@ def root():
     
 def cldrData(what):
     return os.path.join(root(), "external", "cldr", what)
-    
-def localeProject(locale):
-    return os.path.join(root(), "data", "jslocale", locale)
-    
-    
+        
