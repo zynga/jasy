@@ -2,8 +2,8 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 4763 $"/>
-		<generation date="$Date: 2010-02-27 01:03:37 -0600 (Sat, 27 Feb 2010) $"/>
+		<version number="$Revision: 5968 $"/>
+		<generation date="$Date: 2011-07-05 15:52:21 -0500 (Tue, 05 Jul 2011) $"/>
 		<language type="rm"/>
 	</identity>
 	<localeDisplayNames>
@@ -389,7 +389,6 @@
 			<language type="ro" draft="contributed">rumen</language>
 			<language type="roa" draft="contributed">lingua romana</language>
 			<language type="rom" draft="contributed">romani</language>
-			<language type="root" draft="contributed">root</language>
 			<language type="ru" draft="contributed">russ</language>
 			<language type="rup" draft="contributed">aromunic</language>
 			<language type="rw" draft="contributed">kinyarwanda</language>
@@ -610,7 +609,6 @@
 			<script type="Phnx" draft="contributed">fenizian</script>
 			<script type="Plrd" draft="contributed">fonetica da Pollard</script>
 			<script type="Prti" draft="contributed">partic dad inscripziuns</script>
-			<script type="Qaai" draft="contributed">ertà</script>
 			<script type="Rjng" draft="contributed">rejang</script>
 			<script type="Roro" draft="contributed">rongorongo</script>
 			<script type="Runr" draft="contributed">runic</script>
@@ -644,6 +642,7 @@
 			<script type="Xpeo" draft="contributed">persian vegl</script>
 			<script type="Xsux" draft="contributed">scrittira a cugn sumeric-accadica</script>
 			<script type="Yiii" draft="contributed">yi</script>
+			<script type="Zinh" draft="contributed">ertà</script>
 			<script type="Zmth" draft="contributed">notaziun matematica</script>
 			<script type="Zsym" draft="contributed">simbols</script>
 			<script type="Zxxx" draft="contributed">linguas na scrittas</script>
@@ -682,7 +681,7 @@
 			<territory type="155" draft="contributed">Europa dal Vest</territory>
 			<territory type="172" draft="contributed">Communitad dals Stadis Independents</territory>
 			<territory type="200" draft="contributed">Tschecoslovachia</territory>
-			<territory type="419" draft="contributed">America Latina e Caribica</territory>
+			<territory type="419" draft="contributed">America Latina</territory>
 			<territory type="830" draft="contributed">Inslas dal Chanal da la Mongia</territory>
 			<territory type="AD" draft="contributed">Andorra</territory>
 			<territory type="AE" draft="contributed">Emirats Arabs Unids</territory>
@@ -714,7 +713,6 @@
 			<territory type="BM" draft="contributed">Bermudas</territory>
 			<territory type="BN" draft="contributed">Brunei</territory>
 			<territory type="BO" draft="contributed">Bolivia</territory>
-			<territory type="BQ" draft="contributed">Territori Antarctic Britannic</territory>
 			<territory type="BR" draft="contributed">Brasila</territory>
 			<territory type="BS" draft="contributed">Bahamas</territory>
 			<territory type="BT" draft="contributed">Bhutan</territory>
@@ -1270,9 +1268,6 @@
 							<greatestDifference id="d" draft="contributed">E, d. - E, d. MMM</greatestDifference>
 							<greatestDifference id="M" draft="contributed">E, d. MMM - E, d. MMM</greatestDifference>
 						</intervalFormatItem>
-						<intervalFormatItem id="MMMM">
-							<greatestDifference id="M" draft="contributed">LLLL-LLLL</greatestDifference>
-						</intervalFormatItem>
 						<intervalFormatItem id="y">
 							<greatestDifference id="y" draft="contributed">y-y</greatestDifference>
 						</intervalFormatItem>
@@ -1286,12 +1281,9 @@
 							<greatestDifference id="y" draft="contributed">dd.MM.yy - dd.MM.yy</greatestDifference>
 						</intervalFormatItem>
 						<intervalFormatItem id="yMEd">
-							<greatestDifference id="d" draft="contributed">E, dd.MM.yy - E,
-								dd.MM.yy</greatestDifference>
-							<greatestDifference id="M" draft="contributed">E, dd.MM.yy - E,
-								dd.MM.yy</greatestDifference>
-							<greatestDifference id="y" draft="contributed">E, dd.MM.yy - E,
-								dd.MM.yy</greatestDifference>
+							<greatestDifference id="d" draft="contributed">E, dd.MM.yy - E, dd.MM.yy</greatestDifference>
+							<greatestDifference id="M" draft="contributed">E, dd.MM.yy - E, dd.MM.yy</greatestDifference>
+							<greatestDifference id="y" draft="contributed">E, dd.MM.yy - E, dd.MM.yy</greatestDifference>
 						</intervalFormatItem>
 						<intervalFormatItem id="yMMM">
 							<greatestDifference id="M" draft="contributed">MMM-MMM y</greatestDifference>
@@ -1305,8 +1297,7 @@
 						<intervalFormatItem id="yMMMEd">
 							<greatestDifference id="d" draft="contributed">E, d. - E, d. MMM y</greatestDifference>
 							<greatestDifference id="M" draft="contributed">E, d. MMM - E, d. MMM y</greatestDifference>
-							<greatestDifference id="y" draft="contributed">E, d. MMM y - E, d. MMM
-								y</greatestDifference>
+							<greatestDifference id="y" draft="contributed">E, d. MMM y - E, d. MMM y</greatestDifference>
 						</intervalFormatItem>
 						<intervalFormatItem id="yMMMM">
 							<greatestDifference id="M" draft="contributed">MM – MM.yyyy</greatestDifference>
@@ -1329,13 +1320,11 @@
 					</field>
 					<field type="day">
 						<displayName draft="contributed">Tag</displayName>
-						<relative type="-3" draft="contributed">squarsas</relative>
 						<relative type="-2" draft="contributed">stersas</relative>
 						<relative type="-1" draft="contributed">ier</relative>
 						<relative type="0" draft="contributed">oz</relative>
 						<relative type="1" draft="contributed">damaun</relative>
 						<relative type="2" draft="contributed">puschmaun</relative>
-						<relative type="3" draft="contributed">squartmaun</relative>
 					</field>
 					<field type="weekday">
 						<displayName draft="contributed">di da l'emna</displayName>
@@ -1361,7 +1350,6 @@
 		<timeZoneNames>
 			<hourFormat draft="contributed">+HH:mm;-HH:mm</hourFormat>
 			<gmtFormat draft="contributed">GMT{0}</gmtFormat>
-			<regionFormat draft="contributed">{0}</regionFormat>
 			<fallbackFormat draft="contributed">{1} ({0})</fallbackFormat>
 			<zone type="Etc/Unknown">
 				<exemplarCity draft="contributed">zona betg enconuschenta</exemplarCity>
@@ -1792,13 +1780,11 @@
 		</timeZoneNames>
 	</dates>
 	<numbers>
-		<symbols>
+		<symbols numberSystem="latn">
 			<decimal draft="contributed">.</decimal>
 			<group draft="contributed">’</group>
 			<list draft="contributed">;</list>
 			<percentSign draft="contributed">%</percentSign>
-			<nativeZeroDigit draft="contributed">0</nativeZeroDigit>
-			<patternDigit draft="contributed">#</patternDigit>
 			<plusSign draft="contributed">+</plusSign>
 			<minusSign draft="contributed">−</minusSign>
 			<exponential draft="contributed">E</exponential>
@@ -2666,7 +2652,7 @@
 				<displayName draft="contributed">rial dal Jemen</displayName>
 			</currency>
 			<currency type="YUD">
-				<displayName draft="contributed">dinar jugoslav  (1966-1990)</displayName>
+				<displayName draft="contributed">dinar jugoslav (1966-1990)</displayName>
 			</currency>
 			<currency type="YUM">
 				<displayName draft="contributed">nov dinar jugoslav</displayName>

@@ -2,8 +2,8 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 4770 $"/>
-		<generation date="$Date: 2010-02-27 23:27:39 -0600 (Sat, 27 Feb 2010) $"/>
+		<version number="$Revision: 5905 $"/>
+		<generation date="$Date: 2011-06-15 23:14:13 -0500 (Wed, 15 Jun 2011) $"/>
 		<language type="or"/>
 	</identity>
 	<localeDisplayNames>
@@ -607,7 +607,6 @@
 			<script type="Phnx">ଫେନୋସିଆନ୍</script>
 			<script type="Plrd">ପୋଲାର୍ଡ ଫୋନେଟିକ୍</script>
 			<script type="Prti">ଇନସ୍କ୍ରୀପସାନଲ୍ ପାର୍ଥିଆନ୍</script>
-			<script type="Qaai">ବଂଶଗତ</script>
 			<script type="Rjng">ରେଜାଙ୍ଗ</script>
 			<script type="Roro">ରୋଙ୍ଗୋରୋଙ୍ଗୋ</script>
 			<script type="Runr">ରନିକ୍</script>
@@ -641,6 +640,7 @@
 			<script type="Xpeo">ପୁରୁଣା ଫରାସୀ</script>
 			<script type="Xsux">ସୁମେରୋ-ଆକ୍କାଡିଆନ୍ ସୁନିଫର୍ମ</script>
 			<script type="Yiii">ୟୀ</script>
+			<script type="Zinh">ବଂଶଗତ</script>
 			<script type="Zmth">ଗାଣିତିକ ନୋଟେସନ୍</script>
 			<script type="Zsym">ସିମ୍ବଲ୍</script>
 			<script type="Zxxx">ଅଲିଖିତ</script>
@@ -935,9 +935,9 @@
 		</territories>
 	</localeDisplayNames>
 	<characters>
-		<exemplarCharacters>[ଅ ଆ ଇ ଈ ଉ ଊ ଋ ଏ ଐ ଓ ଔ କ ଖ ଗ ଘ ଙ ଚ ଛ ଜ ଝ ଞ ଟ ଠ ଡ ଢ ଣ ତ ଥ ଦ ଧ ନ ପ ଫ ବ ଭ ମ ଯ ର ଲ ଳ ଶ ଷ ସ ହ {ଡ\u0B3C} {ଢ\u0B3C} ୟ ୱ ଵ ଂ ଃ \u0B01 \u0B4D \u0B3C ା \u0B3F ୀ \u0B41 \u0B42 \u0B43 େ ୈ ୋ ୌ]</exemplarCharacters>
-		<exemplarCharacters type="auxiliary">[\u200C \u200D]</exemplarCharacters>
-		<exemplarCharacters type="index" draft="contributed">[ଅ ଆ ଇ ଈ ଉ ଊ ଋ ଏ ଐ ଓ ଔ କ ଖ ଗ ଘ ଙ ଚ ଛ ଜ ଝ ଞ ଟ ଠ ଡ ଢ ଣ ତ ଥ ଦ ଧ ନ ପ ଫ ବ ଭ ମ ଯ ର ଲ ଳ ଶ ଷ ସ ହ {କ୍ଷ}]</exemplarCharacters>
+		<exemplarCharacters>[\u0B3C ଅ ଆ ଇ ଈ ଉ ଊ ଋ ଏ ଐ ଓ ଔ \u0B01 ଂ ଃ କ ଖ ଗ ଘ ଙ ଚ ଛ ଜ ଝ ଞ ଟ ଠ ଡ {ଡ\u0B3C} ଢ {ଢ\u0B3C} ଣ ତ ଥ ଦ ଧ ନ ପ ଫ ବ ଭ ମ ଯ ୟ ର ଲ ଳ ଵ ୱ ଶ ଷ ସ ହ ା \u0B3F ୀ \u0B41 \u0B42 \u0B43 େ ୈ ୋ ୌ \u0B4D]</exemplarCharacters>
+		<exemplarCharacters type="auxiliary">[\u200C\u200D]</exemplarCharacters>
+		<exemplarCharacters type="index" draft="contributed">[ଅ ଆ ଇ ଈ ଉ ଊ ଋ ଏ ଐ ଓ ଔ କ ଖ ଗ ଘ ଙ ଚ ଛ ଜ ଝ ଞ ଟ ଠ ଡ ଢ ଣ ତ ଥ ଦ ଧ ନ ପ ଫ ବ ଭ ମ ଯ ର ଲ ଳ ଶ ଷ ସ ହ {କ\u0B4Dଷ}]</exemplarCharacters>
 	</characters>
 	<dates>
 		<calendars>
@@ -1078,15 +1078,19 @@
 					<standard>ଖ୍ରୀଷ୍ଟମାସ ଆଇଲ୍ୟାଣ୍ଡ ସମୟ</standard>
 				</long>
 			</metazone>
+			<metazone type="India">
+				<short>
+					<standard>IST</standard>
+				</short>
+				<commonlyUsed>true</commonlyUsed>
+			</metazone>
 		</timeZoneNames>
 	</dates>
 	<numbers>
 		<defaultNumberingSystem>orya</defaultNumberingSystem>
-		<symbols>
+		<symbols numberSystem="latn">
 			<decimal>.</decimal>
 			<group>,</group>
-			<nativeZeroDigit>0</nativeZeroDigit>
-			<nativeZeroDigit numberSystem="orya">୦</nativeZeroDigit>
 		</symbols>
 		<decimalFormats>
 			<decimalFormatLength>

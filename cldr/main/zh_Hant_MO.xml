@@ -2,14 +2,22 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 4582 $"/>
-		<generation date="$Date: 2010-02-05 10:51:25 -0600 (Fri, 05 Feb 2010) $"/>
+		<version number="$Revision: 5968 $"/>
+		<generation date="$Date: 2011-07-05 15:52:21 -0500 (Tue, 05 Jul 2011) $"/>
 		<language type="zh"/>
 		<script type="Hant"/>
 		<territory type="MO"/>
 	</identity>
 	<dates>
 		<calendars>
+			<calendar type="buddhist">
+				<dateTimeFormats>
+					<availableFormats>
+						<dateFormatItem id="Md" draft="contributed">M-d</dateFormatItem>
+						<dateFormatItem id="MEd" draft="contributed">M-d（E）</dateFormatItem>
+					</availableFormats>
+				</dateTimeFormats>
+			</calendar>
 			<calendar type="chinese">
 				<dateTimeFormats>
 					<availableFormats>
@@ -41,6 +49,16 @@
 					</dateFormatLength>
 				</dateFormats>
 				<timeFormats>
+					<timeFormatLength type="full">
+						<timeFormat>
+							<pattern draft="contributed">ah:mm:ss [zzzz]</pattern>
+						</timeFormat>
+					</timeFormatLength>
+					<timeFormatLength type="long">
+						<timeFormat>
+							<pattern draft="contributed">ah:mm:ss [z]</pattern>
+						</timeFormat>
+					</timeFormatLength>
 					<timeFormatLength type="medium">
 						<timeFormat>
 							<pattern>ahh:mm:ss</pattern>
@@ -48,21 +66,25 @@
 					</timeFormatLength>
 				</timeFormats>
 				<dateTimeFormats>
+					<dateTimeFormatLength type="full">
+						<dateTimeFormat>
+							<pattern draft="contributed">{1} {0}</pattern>
+						</dateTimeFormat>
+					</dateTimeFormatLength>
+					<dateTimeFormatLength type="long">
+						<dateTimeFormat>
+							<pattern draft="contributed">{1} {0}</pattern>
+						</dateTimeFormat>
+					</dateTimeFormatLength>
 					<availableFormats>
+						<dateFormatItem id="Md" draft="contributed">M-d</dateFormatItem>
+						<dateFormatItem id="MEd" draft="contributed">E, M-d</dateFormatItem>
+						<dateFormatItem id="MMdd" draft="contributed">dd-MM</dateFormatItem>
 						<dateFormatItem id="yyyyM" draft="provisional">yyyy/M</dateFormatItem>
 					</availableFormats>
 					<intervalFormats>
 						<intervalFormatItem id="h">
 							<greatestDifference id="h" draft="unconfirmed">ah至h時</greatestDifference>
-						</intervalFormatItem>
-						<intervalFormatItem id="hmv">
-							<greatestDifference id="a" draft="unconfirmed">ah:mm至ah:mmv</greatestDifference>
-							<greatestDifference id="h" draft="unconfirmed">ah:mm至h:mmv</greatestDifference>
-							<greatestDifference id="m" draft="unconfirmed">ah:mm至h:mmv</greatestDifference>
-						</intervalFormatItem>
-						<intervalFormatItem id="hv">
-							<greatestDifference id="a" draft="unconfirmed">ah時至ah時v</greatestDifference>
-							<greatestDifference id="h" draft="unconfirmed">ah至h時v</greatestDifference>
 						</intervalFormatItem>
 						<intervalFormatItem id="Md">
 							<greatestDifference id="d" draft="unconfirmed">M月d日至d日</greatestDifference>
@@ -111,6 +133,15 @@
 					</intervalFormats>
 				</dateTimeFormats>
 			</calendar>
+			<calendar type="roc">
+				<dateTimeFormats>
+					<availableFormats>
+						<dateFormatItem id="Md" draft="contributed">d-M</dateFormatItem>
+						<dateFormatItem id="MEd" draft="contributed">d-M（E）</dateFormatItem>
+					</availableFormats>
+				</dateTimeFormats>
+			</calendar>
 		</calendars>
 	</dates>
 </ldml>
+

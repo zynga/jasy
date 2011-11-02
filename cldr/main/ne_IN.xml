@@ -2,8 +2,8 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 4763 $"/>
-		<generation date="$Date: 2010-02-27 01:03:37 -0600 (Sat, 27 Feb 2010) $"/>
+		<version number="$Revision: 5953 $"/>
+		<generation date="$Date: 2011-07-04 18:22:55 -0500 (Mon, 04 Jul 2011) $"/>
 		<language type="ne"/>
 		<territory type="IN"/>
 	</identity>
@@ -78,7 +78,6 @@
 					<field type="day">
 						<displayName>वार</displayName>
 						<relative type="2">पर्सि</relative>
-						<relative type="3" draft="unconfirmed">निपर्सि</relative>
 					</field>
 					<field type="weekday">
 						<displayName>हप्ताको वार</displayName>

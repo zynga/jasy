@@ -2,8 +2,8 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 4753 $"/>
-		<generation date="$Date: 2010-02-26 00:32:00 -0600 (Fri, 26 Feb 2010) $"/>
+		<version number="$Revision: 5798 $"/>
+		<generation date="$Date: 2011-05-02 01:05:34 -0500 (Mon, 02 May 2011) $"/>
 		<language type="dz"/>
 	</identity>
 	<localeDisplayNames>
@@ -84,12 +84,12 @@
 			<script type="Mong" draft="unconfirmed">སོག་པོ</script>
 			<script type="Mymr" draft="unconfirmed">མི་མར</script>
 			<script type="Orya" draft="unconfirmed">ཨོ་རི་ཡ</script>
-			<script type="Qaai" draft="unconfirmed">སྔར་རྒྱུན</script>
 			<script type="Sinh" draft="unconfirmed">སིན་ཧ་ལ</script>
 			<script type="Taml" draft="unconfirmed">ཏ་མིལ</script>
 			<script type="Telu" draft="unconfirmed">ཏེ་ལུ་གུ</script>
 			<script type="Thaa" draft="unconfirmed">ཐཱ་ན</script>
 			<script type="Tibt" draft="unconfirmed">བོད</script>
+			<script type="Zinh" draft="unconfirmed">སྔར་རྒྱུན</script>
 			<script type="Zyyy" draft="unconfirmed">སྤྱིར</script>
 		</scripts>
 		<territories>
@@ -175,6 +175,7 @@
 		<exemplarCharacters>[ཀ \u0F90 ཁ \u0F91 ག \u0F92 ང \u0F94 ཅ ཆ ཇ \u0F97 ཉ \u0F99 ཏ \u0F9F ཐ ད \u0FA1 ན \u0FA3 པ \u0FA4 ཕ བ \u0FA6 མ \u0FA8 ཙ \u0FA9 ཚ ཛ \u0FAB ཝ \u0FAD ཞ ཟ འ ཡ \u0FB1 ར \u0FB2 ལ \u0FB3 ཤ \u0FB5 ས ཧ \u0FB7 ཨ \u0F72 \u0F74 \u0F7A \u0F7C]</exemplarCharacters>
 		<exemplarCharacters type="auxiliary">[ཊ ཋ ཌ ཎ ཥ]</exemplarCharacters>
 		<exemplarCharacters type="index" draft="contributed">[ཀ ཁ ག ང ཅ ཆ ཇ ཉ ཏ ཐ ད ན པ ཕ བ མ ཙ ཚ ཛ ཝ ཞ ཟ འ ཡ ར ལ ཤ ས ཧ ཨ]</exemplarCharacters>
+		<exemplarCharacters type="punctuation" draft="unconfirmed">[\: ་ །]</exemplarCharacters>
 	</characters>
 	<delimiters>
 		<quotationStart draft="unconfirmed">&quot;</quotationStart>
@@ -322,17 +323,17 @@
 		</timeZoneNames>
 	</dates>
 	<numbers>
-		<symbols>
+		<symbols numberSystem="latn">
 			<list draft="unconfirmed">;</list>
-			<list draft="unconfirmed" numberSystem="tibt">དང་</list>
 			<percentSign draft="unconfirmed">%</percentSign>
-			<percentSign draft="unconfirmed" numberSystem="tibt">བརྒ་ཆཱ</percentSign>
-			<nativeZeroDigit draft="unconfirmed">0</nativeZeroDigit>
-			<nativeZeroDigit draft="unconfirmed" numberSystem="tibt">༠</nativeZeroDigit>
 			<infinity draft="unconfirmed">∞</infinity>
-			<infinity draft="unconfirmed" numberSystem="tibt">གྲངས་མེད</infinity>
 			<nan draft="unconfirmed">NaN</nan>
-			<nan draft="unconfirmed" numberSystem="tibt">ཨང་མད</nan>
+		</symbols>
+		<symbols numberSystem="tibt">
+			<list draft="unconfirmed">དང་</list>
+			<percentSign draft="unconfirmed">བརྒ་ཆཱ</percentSign>
+			<infinity draft="unconfirmed">གྲངས་མེད</infinity>
+			<nan draft="unconfirmed">ཨང་མད</nan>
 		</symbols>
 		<decimalFormats>
 			<decimalFormatLength>
@@ -365,8 +366,8 @@
 		<currencies>
 			<currency type="BTN">
 				<displayName draft="unconfirmed">དངུལ་ཀྲམ་</displayName>
+				<symbol>Nu.</symbol>
 			</currency>
 		</currencies>
 	</numbers>
 </ldml>
-

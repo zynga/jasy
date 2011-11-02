@@ -2,8 +2,8 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 4599 $"/>
-		<generation date="$Date: 2010-02-05 18:15:28 -0600 (Fri, 05 Feb 2010) $"/>
+		<version number="$Revision: 5956 $"/>
+		<generation date="$Date: 2011-07-04 20:17:14 -0500 (Mon, 04 Jul 2011) $"/>
 		<language type="en"/>
 		<script type="Dsrt"/>
 	</identity>
@@ -190,7 +190,6 @@
 			<script type="Phnx">𐐙𐐬𐑌𐐨𐑇𐐲𐑌</script>
 			<script type="Plrd">𐐑𐐱𐑊𐐲𐑉𐐼 𐐙𐐬𐑌𐐯𐐻𐐮𐐿</script>
 			<script type="Prti">𐐆𐑌𐑅𐐿𐑉𐐮𐐹𐑇𐐲𐑌𐐲𐑊 𐐑𐐱𐑉𐑃𐐨𐐲𐑌</script>
-			<script type="Qaai">𐐆𐑌𐐸𐐯𐑉𐐮𐐻𐐲𐐼</script>
 			<script type="Rjng">𐐡𐐲𐐾𐐰𐑍</script>
 			<script type="Roro">𐐡𐐪𐑍𐑀𐐬𐑉𐐪𐑌𐑀𐐬</script>
 			<script type="Runr">𐐡𐐭𐑌𐐮𐐿</script>
@@ -224,6 +223,7 @@
 			<script type="Xpeo">𐐄𐑊𐐼 𐐑𐐲𐑉𐑈𐐲𐑌</script>
 			<script type="Xsux">𐐝𐐭𐑋𐐯𐑉𐐬-𐐊𐐿𐐩𐐼𐐨𐐲𐑌 𐐗𐐷𐐭𐑌𐐨𐐲𐑁𐐱𐑉𐑋</script>
 			<script type="Yiii">𐐏𐐨</script>
+			<script type="Zinh">𐐆𐑌𐐸𐐯𐑉𐐮𐐻𐐲𐐼</script>
 			<script type="Zmth">𐐣𐐰𐑃𐐲𐑋𐐰𐐻𐐲𐐿𐐲𐑊 𐐤𐐬𐐻𐐩𐑇𐐲𐑌</script>
 			<script type="Zsym">𐐣𐐰𐑃𐐯𐑋𐐰𐐻𐐮𐐿𐐲𐑊 𐑌𐐬𐐻𐐩𐑇𐐲𐑌</script>
 			<script type="Zxxx">𐐊𐑌𐑉𐐮𐐻𐐲𐑌</script>
@@ -295,7 +295,6 @@
 			<territory type="BM">𐐒𐐲𐑉𐑋𐐷𐐭𐐼𐐲</territory>
 			<territory type="BN">𐐒𐑉𐐭𐑌𐐴</territory>
 			<territory type="BO">𐐒𐐬𐑊𐐮𐑂𐐨𐐲</territory>
-			<territory type="BQ">𐐒𐑉𐐮𐐼𐐮𐑇 𐐈𐑌𐐻𐐪𐑉𐐿𐐻𐐮𐐿 𐐓𐐯𐑉𐐲𐐻𐐱𐑉𐐨</territory>
 			<territory type="BR">𐐒𐑉𐐲𐑆𐐮𐑊</territory>
 			<territory type="BS">𐐒𐐲𐐸𐐪𐑋𐐲𐑅</territory>
 			<territory type="BT">𐐒𐐭𐐻𐐪𐑌</territory>
@@ -552,7 +551,7 @@
 	</localeDisplayNames>
 	<characters>
 		<exemplarCharacters>[𐐨 𐐩 𐐪 𐐫 𐐬 𐐭 𐐮 𐐯 𐐰 𐐱 𐐲 𐐳 𐐴 𐐵 𐐶 𐐷 𐐸 𐐹 𐐺 𐐻 𐐼 𐐽 𐐾 𐐿 𐑀 𐑁 𐑂 𐑃 𐑄 𐑅 𐑆 𐑇 𐑈 𐑉 𐑊 𐑋 𐑌 𐑍 𐑎 𐑏]</exemplarCharacters>
-		<exemplarCharacters type="auxiliary">[a b c d e f g h i j k l m n o p q r s t u v w x y z]</exemplarCharacters>
+		<exemplarCharacters type="auxiliary">[]</exemplarCharacters>
 		<exemplarCharacters type="currencySymbol">[a b c d e f g h i j k l m n o p q r s t u v w x y z]</exemplarCharacters>
 		<exemplarCharacters type="index" draft="unconfirmed">[𐐀 𐐁 𐐂 𐐃 𐐄 𐐅 𐐆 𐐇 𐐈 𐐉 𐐊 𐐋 𐐌 𐐍 𐐎 𐐏 𐐐 𐐑 𐐒 𐐓 𐐔 𐐕 𐐖 𐐗 𐐘 𐐙 𐐚 𐐛 𐐜 𐐝 𐐞 𐐟 𐐠 𐐡 𐐢 𐐣 𐐤 𐐥 𐐦 𐐧]</exemplarCharacters>
 	</characters>
@@ -735,13 +734,11 @@
 					</field>
 					<field type="day">
 						<displayName>𐐔𐐩</displayName>
-						<relative type="-3">𐐛𐑉𐐨 𐐼𐐩𐑆 𐐲𐑀𐐬</relative>
 						<relative type="-2">𐐜 𐐼𐐩 𐐺𐐲𐑁𐐬𐑉 𐐷𐐯𐑅𐐻𐐲𐑉𐐼𐐩</relative>
 						<relative type="-1">𐐏𐐯𐑅𐐻𐐲𐑉𐐼𐐩</relative>
 						<relative type="0">𐐓𐐲𐐼𐐩</relative>
 						<relative type="1">𐐓𐐲𐑋𐐱𐑉𐐬</relative>
 						<relative type="2">𐐜 𐐼𐐩 𐐰𐑁𐐻𐐲𐑉 𐐻𐐲𐑋𐐱𐑉𐐬</relative>
-						<relative type="3">𐐛𐑉𐐨 𐐼𐐩𐑆 𐑁𐑉𐐲𐑋 𐑌𐐵</relative>
 					</field>
 					<field type="weekday">
 						<displayName>𐐔𐐩 𐐲𐑂 𐑄 𐐎𐐨𐐿</displayName>
@@ -768,6 +765,7 @@
 			<gmtFormat>𐐘𐐣𐐓 {0}</gmtFormat>
 			<gmtZeroFormat>𐐘𐐣𐐓</gmtZeroFormat>
 			<regionFormat>{0} 𐐓𐐴𐑋</regionFormat>
+			<fallbackRegionFormat draft="contributed">{1} 𐐓𐐴𐑋 ({0})</fallbackRegionFormat>
 			<zone type="Etc/Unknown">
 				<exemplarCity>𐐊𐑌𐑌𐐬𐑌</exemplarCity>
 			</zone>
@@ -870,11 +868,6 @@
 					<standard>𐐊𐑊𐐰𐑅𐐿𐐲 𐐝𐐻𐐰𐑌𐐼𐐲𐑉𐐼 𐐓𐐴𐑋</standard>
 					<daylight>𐐊𐑊𐐰𐑅𐐿𐐲𐐔𐐩𐑊𐐴𐐻 𐐓𐐴𐑋</daylight>
 				</long>
-				<short>
-					<generic>𐐊𐐗𐐓</generic>
-					<standard>𐐊𐐗𐐝𐐓</standard>
-					<daylight>𐐊𐐗𐐔𐐓</daylight>
-				</short>
 			</metazone>
 			<metazone type="Alaska_Hawaii">
 				<long>
@@ -882,11 +875,6 @@
 					<standard>𐐊𐑊𐐰𐑅𐐿𐐲-𐐐𐐲𐐶𐐴𐐨 𐐝𐐻𐐰𐑌𐐼𐐲𐑉𐐼 𐐓𐐴𐑋</standard>
 					<daylight>𐐊𐑊𐐰𐑅𐐿𐐲-𐐐𐐲𐐶𐐴𐐨 𐐔𐐩𐑊𐐴𐐻 𐐓𐐴𐑋</daylight>
 				</long>
-				<short>
-					<generic>𐐊𐐐𐐓</generic>
-					<standard>𐐊𐐐𐐝𐐓</standard>
-					<daylight>𐐊𐐐𐐔𐐓</daylight>
-				</short>
 			</metazone>
 			<metazone type="America_Central">
 				<long>
@@ -894,11 +882,6 @@
 					<standard>𐐝𐐯𐑌𐐻𐑉𐐲𐑊 𐐝𐐻𐐰𐑌𐐼𐐲𐑉𐐼 𐐓𐐴𐑋</standard>
 					<daylight>𐐝𐐯𐑌𐐻𐑉𐐲𐑊 𐐔𐐩𐑊𐐴𐐻 𐐓𐐴𐑋</daylight>
 				</long>
-				<short>
-					<generic>𐐝𐐓</generic>
-					<standard>𐐝𐐝𐐓</standard>
-					<daylight>𐐝𐐔𐐓</daylight>
-				</short>
 			</metazone>
 			<metazone type="America_Eastern">
 				<long>
@@ -906,11 +889,6 @@
 					<standard>𐐀𐑅𐐻𐐲𐑉𐑌 𐐝𐐻𐐰𐑌𐐼𐐲𐑉𐐼 𐐓𐐴𐑋</standard>
 					<daylight>𐐀𐑅𐐻𐐲𐑉𐑌 𐐔𐐩𐑊𐐴𐐻 𐐓𐐴𐑋</daylight>
 				</long>
-				<short>
-					<generic>𐐀𐐓</generic>
-					<standard>𐐀𐐝𐐓</standard>
-					<daylight>𐐀𐐔𐐓</daylight>
-				</short>
 			</metazone>
 			<metazone type="America_Mountain">
 				<long>
@@ -918,11 +896,6 @@
 					<standard>𐐣𐐵𐑌𐐻𐐲𐑌 𐐝𐐻𐐰𐑌𐐼𐐲𐑉𐐼 𐐓𐐴𐑋</standard>
 					<daylight>𐐣𐐵𐑌𐐻𐐲𐑌 𐐔𐐩𐑊𐐴𐐻 𐐓𐐴𐑋</daylight>
 				</long>
-				<short>
-					<generic>𐐣𐐓</generic>
-					<standard>𐐣𐐝𐐓</standard>
-					<daylight>𐐣𐐔𐐓</daylight>
-				</short>
 			</metazone>
 			<metazone type="America_Pacific">
 				<long>
@@ -930,11 +903,6 @@
 					<standard>𐐑𐐲𐑅𐐮𐑁𐐮𐐿 𐐝𐐻𐐰𐑌𐐼𐐲𐑉𐐼 𐐓𐐴𐑋</standard>
 					<daylight>𐐑𐐲𐑅𐐮𐑁𐐮𐐿 𐐔𐐩𐑊𐐴𐐻 𐐓𐐴𐑋</daylight>
 				</long>
-				<short>
-					<generic>𐐑𐐓</generic>
-					<standard>𐐑𐐝𐐓</standard>
-					<daylight>𐐑𐐔𐐓</daylight>
-				</short>
 			</metazone>
 			<metazone type="Atlantic">
 				<long>
@@ -942,11 +910,6 @@
 					<standard>𐐈𐐻𐑊𐐰𐑌𐐻𐐮𐐿 𐐝𐐻𐐰𐑌𐐼𐐲𐑉𐐼 𐐓𐐴𐑋</standard>
 					<daylight>𐐈𐐻𐑊𐐰𐑌𐐻𐐮𐐿 𐐔𐐩𐑊𐐴𐐻 𐐓𐐴𐑋</daylight>
 				</long>
-				<short>
-					<generic>𐐈𐐓</generic>
-					<standard>𐐈𐐝𐐓</standard>
-					<daylight>𐐈𐐔𐐓</daylight>
-				</short>
 			</metazone>
 			<metazone type="Bering">
 				<long>
@@ -954,21 +917,12 @@
 					<standard>𐐒𐐯𐑉𐐮𐑍 𐐝𐐻𐐰𐑌𐐼𐐲𐑉𐐼 𐐓𐐴𐑋</standard>
 					<daylight>𐐒𐐯𐑉𐐮𐑍 𐐔𐐩𐑊𐐴𐐻 𐐓𐐴𐑋</daylight>
 				</long>
-				<short>
-					<generic>𐐒𐐓 (𐐒𐐯𐑉𐐮𐑍 )</generic>
-					<standard>𐐒𐐝𐐓 (𐐒𐐯𐑉𐐮𐑍 )</standard>
-					<daylight>𐐒𐐔𐐓 (𐐒𐐯𐑉𐐮𐑍 )</daylight>
-				</short>
 			</metazone>
 			<metazone type="Hong_Kong">
 				<long>
 					<standard>𐐐𐐱𐑍 𐐗𐐱𐑍 𐐓𐐴𐑋</standard>
 					<daylight>𐐐𐐱𐑍 𐐗𐐱𐑍 𐐝𐐲𐑋𐐲𐑉 𐐓𐐴𐑋</daylight>
 				</long>
-				<short>
-					<standard>𐐐𐐗𐐓</standard>
-					<daylight>𐐐𐐗𐐝𐐓</daylight>
-				</short>
 			</metazone>
 			<metazone type="Newfoundland">
 				<long>
@@ -976,11 +930,6 @@
 					<standard>𐐤𐐭𐑁𐐲𐑌𐐼𐑊𐐲𐑌𐐼 𐐝𐐻𐐰𐑌𐐼𐐲𐑉𐐼 𐐓𐐴𐑋</standard>
 					<daylight>𐐤𐐭𐑁𐐲𐑌𐐼𐑊𐐲𐑌𐐼 𐐔𐐩𐑊𐐴𐐻 𐐓𐐴𐑋</daylight>
 				</long>
-				<short>
-					<generic>𐐤𐐓</generic>
-					<standard>𐐤𐐝𐐓</standard>
-					<daylight>𐐤𐐔𐐓</daylight>
-				</short>
 			</metazone>
 			<metazone type="Yukon">
 				<long>
@@ -988,11 +937,6 @@
 					<standard>𐐏𐐭𐐿𐐪𐑌 𐐝𐐻𐐰𐑌𐐼𐐲𐑉𐐼 𐐓𐐴𐑋</standard>
 					<daylight>𐐏𐐭𐐿𐐪𐑌 𐐔𐐩𐑊𐐴𐐻 𐐓𐐴𐑋</daylight>
 				</long>
-				<short>
-					<generic>𐐏𐐓</generic>
-					<standard>𐐏𐐝𐐓</standard>
-					<daylight>𐐏𐐔𐐓</daylight>
-				</short>
 			</metazone>
 		</timeZoneNames>
 	</dates>

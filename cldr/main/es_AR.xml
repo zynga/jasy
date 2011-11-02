@@ -2,31 +2,14 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 4625 $"/>
-		<generation date="$Date: 2010-02-06 13:07:05 -0600 (Sat, 06 Feb 2010) $"/>
+		<version number="$Revision: 5905 $"/>
+		<generation date="$Date: 2011-06-15 23:14:13 -0500 (Wed, 15 Jun 2011) $"/>
 		<language type="es"/>
 		<territory type="AR"/>
 	</identity>
-	<localeDisplayNames>
-		<variants>
-			<variant type="REVISED" draft="contributed">Ortografía revisada</variant>
-		</variants>
-		<measurementSystemNames>
-			<measurementSystemName type="metric" draft="contributed">métrico</measurementSystemName>
-			<measurementSystemName type="US" draft="contributed">estadounidense</measurementSystemName>
-		</measurementSystemNames>
-	</localeDisplayNames>
 	<dates>
 		<calendars>
 			<calendar type="gregorian">
-				<dayPeriods>
-					<dayPeriodContext type="format">
-						<dayPeriodWidth type="wide">
-							<dayPeriod type="am" draft="contributed">a.m.</dayPeriod>
-							<dayPeriod type="pm" draft="contributed">p.m.</dayPeriod>
-						</dayPeriodWidth>
-					</dayPeriodContext>
-				</dayPeriods>
 				<timeFormats>
 					<timeFormatLength type="full">
 						<timeFormat>
@@ -134,8 +117,30 @@
 				</dateTimeFormats>
 			</calendar>
 		</calendars>
+		<timeZoneNames>
+			<metazone type="Argentina">
+				<short>
+					<generic>ART</generic>
+					<standard>ART</standard>
+					<daylight>ARST</daylight>
+				</short>
+				<commonlyUsed>true</commonlyUsed>
+			</metazone>
+			<metazone type="Argentina_Western">
+				<short>
+					<generic>WART</generic>
+					<standard>WART</standard>
+					<daylight>WARST</daylight>
+				</short>
+				<commonlyUsed>true</commonlyUsed>
+			</metazone>
+		</timeZoneNames>
 	</dates>
 	<numbers>
+		<symbols numberSystem="latn">
+			<decimal>,</decimal>
+			<group>.</group>
+		</symbols>
 		<currencies>
 			<currency type="ARS">
 				<symbol>$</symbol>

@@ -2,8 +2,8 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 4767 $"/>
-		<generation date="$Date: 2010-02-27 20:54:27 -0600 (Sat, 27 Feb 2010) $"/>
+		<version number="$Revision: 5968 $"/>
+		<generation date="$Date: 2011-07-05 15:52:21 -0500 (Tue, 05 Jul 2011) $"/>
 		<language type="kl"/>
 	</identity>
 	<fallback draft="unconfirmed">da en</fallback>
@@ -68,7 +68,7 @@
 			<territory type="151" draft="unconfirmed">Europa Kangilliit</territory>
 			<territory type="154" draft="unconfirmed">Europa Avannarleq</territory>
 			<territory type="155" draft="unconfirmed">Europa Killiit</territory>
-			<territory type="419" draft="unconfirmed">America Latin aamma Karibia</territory>
+			<territory type="419" draft="unconfirmed">America Latin</territory>
 			<territory type="AD" draft="unconfirmed">Andorra</territory>
 			<territory type="AF" draft="unconfirmed">Afghanistan</territory>
 			<territory type="AG" draft="unconfirmed">Antigua aamma Barbuda</territory>
@@ -294,7 +294,6 @@
 		<exemplarCharacters type="auxiliary" draft="unconfirmed">[b c d h x z æ ø å]</exemplarCharacters>
 		<exemplarCharacters type="currencySymbol" draft="unconfirmed">[a b c č d e f g h i j k l ł m n o p q r s t u v w x y z]</exemplarCharacters>
 		<exemplarCharacters type="index" draft="unconfirmed">[A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Æ Ø Å]</exemplarCharacters>
-		<exemplarCharacters alt="proposed-x1001" draft="unconfirmed">[a á â ã e é ê f g i í î ĩ j k l m n o ô p q ĸ r s t u ú û ũ v]</exemplarCharacters>
 	</characters>
 	<delimiters>
 		<quotationStart draft="unconfirmed">»</quotationStart>
@@ -481,13 +480,11 @@
 					</field>
 					<field type="day">
 						<displayName draft="unconfirmed">ulloq</displayName>
-						<relative type="-3" draft="unconfirmed">ippassaanissaani</relative>
 						<relative type="-2" draft="unconfirmed">ippassaani</relative>
 						<relative type="-1" draft="unconfirmed">ippassaq</relative>
 						<relative type="0" draft="unconfirmed">ullumi</relative>
 						<relative type="1" draft="unconfirmed">aqagu</relative>
 						<relative type="2" draft="unconfirmed">aqaguagu</relative>
-						<relative type="3" draft="unconfirmed">aqaguaguani</relative>
 					</field>
 					<field type="weekday">
 						<displayName draft="unconfirmed">sapaatip-akunnera ulloq</displayName>
@@ -512,14 +509,11 @@
 		</calendars>
 	</dates>
 	<numbers>
-		<symbols>
+		<symbols numberSystem="latn">
 			<decimal>,</decimal>
 			<group>.</group>
-			<group alt="proposed-x1001" draft="unconfirmed"> </group>
 			<list draft="unconfirmed">;</list>
 			<percentSign draft="unconfirmed">%</percentSign>
-			<nativeZeroDigit draft="unconfirmed">0</nativeZeroDigit>
-			<patternDigit draft="unconfirmed">#</patternDigit>
 			<plusSign draft="unconfirmed">+</plusSign>
 			<minusSign draft="unconfirmed">−</minusSign>
 			<exponential draft="unconfirmed">×10^</exponential>
@@ -552,7 +546,6 @@
 			<currencyFormatLength>
 				<currencyFormat>
 					<pattern>¤#,##0.00;¤-#,##0.00</pattern>
-					<pattern alt="proposed-x1001" draft="unconfirmed">#,##0.00 ¤</pattern>
 				</currencyFormat>
 			</currencyFormatLength>
 			<unitPattern count="other" draft="unconfirmed">{0} {1}</unitPattern>

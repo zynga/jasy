@@ -2,8 +2,8 @@
 <!DOCTYPE supplementalData SYSTEM "../../common/dtd/ldmlSupplemental.dtd">
 
 <supplementalData>
-	<version number="$Revision: 4124 $"/>
-	<generation date="$Date: 2009-05-05 18:15:57 -0500 (Tue, 05 May 2009) $"/>
+	<version number="$Revision: 5028 $"/>
+	<generation date="$Date: 2010-08-23 13:23:28 -0500 (Mon, 23 Aug 2010) $"/>
 	<characters>
 		<character-fallback>
 			<character value = "©">
@@ -185,6 +185,9 @@
 			<character value = "₵">
 				<substitute>Ȼ</substitute>
 				<substitute>GHS</substitute>
+			</character>
+			<character value = "₹">
+				<substitute>Rs</substitute>
 			</character>
 			<character value = "℞">
 				<substitute>Rx</substitute>

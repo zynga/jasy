@@ -2,8 +2,8 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 4599 $"/>
-		<generation date="$Date: 2010-02-05 18:15:28 -0600 (Fri, 05 Feb 2010) $"/>
+		<version number="$Revision: 5968 $"/>
+		<generation date="$Date: 2011-07-05 15:52:21 -0500 (Tue, 05 Jul 2011) $"/>
 		<language type="nds"/>
 	</identity>
 	<localeDisplayNames>
@@ -610,7 +610,6 @@
 			<script type="Phnx" draft="unconfirmed">Phönieksch</script>
 			<script type="Plrd" draft="unconfirmed">Pollard-Phönieksch</script>
 			<script type="Prti" draft="unconfirmed">Inschriften-Parthsch</script>
-			<script type="Qaai" draft="unconfirmed">Arvt Schriftweert</script>
 			<script type="Rjng" draft="unconfirmed">Rejang</script>
 			<script type="Roro" draft="unconfirmed">Rongorongo</script>
 			<script type="Runr" draft="unconfirmed">Runenschrift</script>
@@ -644,6 +643,7 @@
 			<script type="Xpeo" draft="unconfirmed">Ooldpers’sch</script>
 			<script type="Xsux" draft="unconfirmed">Sumeroakkadsch Kielschrift</script>
 			<script type="Yiii" draft="unconfirmed">Yi</script>
+			<script type="Zinh" draft="unconfirmed">Arvt Schriftweert</script>
 			<script type="Zmth" draft="unconfirmed">Mathemaatsch Teken</script>
 			<script type="Zsym" draft="unconfirmed">Symbolen</script>
 			<script type="Zxxx" draft="unconfirmed">Schriftlose Spraken</script>
@@ -680,7 +680,7 @@
 			<territory type="154" draft="unconfirmed">Noordeuropa</territory>
 			<territory type="155" draft="unconfirmed">Westeuropa</territory>
 			<territory type="172" draft="unconfirmed">Gemeenschop vun Unafhängige Staten</territory>
-			<territory type="419" draft="unconfirmed">Latienamerika un Karibik</territory>
+			<territory type="419" draft="unconfirmed">Latienamerika</territory>
 			<territory type="AD" draft="unconfirmed">Andorra</territory>
 			<territory type="AE" draft="unconfirmed">Vereenigte Araabsche Emiraten</territory>
 			<territory type="AF" draft="unconfirmed">Afghanistan</territory>
@@ -1075,13 +1075,11 @@
 		</timeZoneNames>
 	</dates>
 	<numbers>
-		<symbols>
+		<symbols numberSystem="latn">
 			<decimal draft="unconfirmed">,</decimal>
 			<group draft="unconfirmed">.</group>
 			<list draft="unconfirmed">;</list>
 			<percentSign draft="unconfirmed">%</percentSign>
-			<nativeZeroDigit draft="unconfirmed">0</nativeZeroDigit>
-			<patternDigit draft="unconfirmed">#</patternDigit>
 			<plusSign draft="unconfirmed">+</plusSign>
 			<minusSign draft="unconfirmed">-</minusSign>
 			<exponential draft="unconfirmed">E</exponential>
@@ -1149,4 +1147,3 @@
 		</messages>
 	</posix>
 </ldml>
-

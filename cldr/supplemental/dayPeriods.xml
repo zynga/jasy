@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE supplementalData SYSTEM "../../common/dtd/ldmlSupplemental.dtd">
 <supplementalData>
-	<version number="$Revision: 4467 $" />
-	<generation date="$Date: 2009-12-14 21:19:06 -0600 (Mon, 14 Dec 2009) $" />
+	<version number="$Revision: 5851 $" />
+	<generation date="$Date: 2011-05-06 01:09:30 -0500 (Fri, 06 May 2011) $" />
 	<dayPeriodRuleSet>
 		<dayPeriodRules locales="root">  <!--  default for any locales not listed under other dayPeriods -->
 			<dayPeriodRule type="am" from="0:00" before="12:00" />

@@ -2,11 +2,10 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 4767 $"/>
-		<generation date="$Date: 2010-02-27 20:54:27 -0600 (Sat, 27 Feb 2010) $"/>
+		<version number="$Revision: 5932 $"/>
+		<generation date="$Date: 2011-06-23 20:34:48 -0500 (Thu, 23 Jun 2011) $"/>
 		<language type="ga"/>
 	</identity>
-	<fallback draft="unconfirmed">en_IE</fallback>
 	<localeDisplayNames>
 		<languages>
 			<language type="aa">aa</language>
@@ -43,7 +42,6 @@
 			<language type="eu">Bascais</language>
 			<language type="fa">Peirsis</language>
 			<language type="fi">Fionlainnis</language>
-			<language type="fil">fil</language>
 			<language type="fj">Fidsis</language>
 			<language type="fo">Faróis</language>
 			<language type="fr">Fraincis</language>
@@ -486,21 +484,12 @@
 		</measurementSystemNames>
 	</localeDisplayNames>
 	<characters>
-		<exemplarCharacters>[a á b c d e é f g h i í j k l m n o ó p q r s t u ú v w x y z]</exemplarCharacters>
-		<exemplarCharacters type="auxiliary">[ḃ ċ ḋ ḟ ġ ṁ ṗ ṡ ṫ]</exemplarCharacters>
+		<exemplarCharacters>[a á b c d e é f g h i í l m n o ó p r s t u ú]</exemplarCharacters>
+		<exemplarCharacters type="auxiliary">[ḃ ċ ḋ ḟ ġ j k ṁ ṗ q ṡ ṫ v w x y z]</exemplarCharacters>
 		<exemplarCharacters type="index" draft="unconfirmed">[A B C D E F G H I J K L M N O P Q R S T U V W X Y Z]</exemplarCharacters>
 	</characters>
 	<dates>
 		<calendars>
-			<calendar type="buddhist">
-				<dateFormats>
-					<dateFormatLength type="full">
-						<dateFormat>
-							<pattern draft="unconfirmed">EEEE d MMMM y G</pattern>
-						</dateFormat>
-					</dateFormatLength>
-				</dateFormats>
-			</calendar>
 			<calendar type="gregorian">
 				<months>
 					<monthContext type="format">
@@ -739,7 +728,7 @@
 		</timeZoneNames>
 	</dates>
 	<numbers>
-		<symbols>
+		<symbols numberSystem="latn">
 			<decimal draft="unconfirmed">.</decimal>
 			<group draft="unconfirmed">,</group>
 		</symbols>
