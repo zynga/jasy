@@ -1,12 +1,25 @@
 #!/usr/bin/env python3
 
+import sys
+
+major, minor = sys.version_info[:2]
+
+if major < 3:
+    raise Exception("Jasy requires Python 3")
+
+
 from distutils.core import setup
 
-setup(name='jasy',
-      version='0.1',
+version = "0.7"
+
+setup(
+      name='jasy',
+      version=version,
       author='Sebastian Werner',
       author_email='info@sebastian-werner.net',
-      url='http://github.com/unify/jstools',
-      packages=['jasy'],
-      package_dir = {'': 'lib'}
+      url='http://github.com/wpbasti/jasy',
+      download_url="http://github.com/downloads/wpbasti/jasy/jasy-%s.tar.gz" % version,
+      license="http://www.apache.org/licenses/LICENSE-2.0",
+      description="Jasy is a build system for JavaScript focused web projects.",
+      packages=['jasy']
 )
