@@ -21,6 +21,6 @@ setup(
       download_url="http://github.com/downloads/wpbasti/jasy/jasy-%s.tar.gz" % version,
       license="http://www.apache.org/licenses/LICENSE-2.0",
       description="Jasy is a build system for JavaScript focused web projects.",
-      packages=['jasy'],
+      packages=['jasy','jasy/core','jasy/ext','jasy/optimizer','jasy/parser','jasy/process','jasy/tokenizer'],
       package_dir = {'': 'lib'}
 )
