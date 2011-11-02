@@ -146,7 +146,9 @@ class Parser():
 
 
     def export(self):
-        project = jasy.core.Info.localeProject(self.__locale)
+        # TOOD
+        return
+
         logging.info("Writing result...")
         pstart()
         

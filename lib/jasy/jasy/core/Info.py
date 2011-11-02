@@ -15,7 +15,4 @@ def cldrData(what):
 def localeProject(locale):
     return os.path.join(root(), "data", "jslocale", locale)
     
-def coreProject():
-    return os.path.join(root(), "data", "jscore")
-    
     

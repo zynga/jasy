@@ -28,11 +28,8 @@ class Session():
 
         self.__timestamp = time.time()
         self.__projects = []
-        self.__localeProjects = {}
         self.__fields = {}
         
-        self.addProject(Project(coreProject()))
-    
     
     #
     # Project Managment
@@ -71,28 +68,12 @@ class Session():
             self.__fields[name] = entry
         
         
-    def getProjects(self, permutation=None):
+    def getProjects(self):
         """ 
         Returns all currently known projects.
-        Automatically adds the currently configured locale project.
         """
         
-        # Dynamically add the locale matching CLDR project to the list
-        dyn = []
-        
-        if permutation:
-            locale = permutation.get("locale")
-            if locale != None and locale != "default":
-                if not locale in self.__localeProjects:
-                    localePath = localeProject(locale)
-                    if not os.path.exists(localePath):
-                        storeLocale(locale)
-                
-                    self.__localeProjects[locale] = Project(localePath)
-            
-                dyn.append(self.__localeProjects[locale])
-        
-        return dyn + self.__projects
+        return self.__projects
         
         
     def getMainProject(self):
