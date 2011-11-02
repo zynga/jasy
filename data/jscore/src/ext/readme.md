@@ -1,1 +1,0 @@
-Contains extensions for native objects to improved user friendliness of the JavaScript API. Nothing standardized here.
