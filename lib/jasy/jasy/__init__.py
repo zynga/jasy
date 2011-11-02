@@ -72,12 +72,14 @@ def run():
     # Find and execute build script
     #
     
+    jasyfiles = ["jasyfile", "JasyFile", "Jasyfile", "jasyfile.py", "JasyFile.py", "Jasyfile.py"]
+    
     script = None
     if options.file:
         if os.path.isfile(options.file):
             script = options.file
     else:
-        for name in ["generate", "generate.py", "Generate", "Generate.py"]:
+        for name in jasyfiles:
             if os.path.isfile(name):
                 script = name
 
@@ -102,7 +104,8 @@ def run():
         sys.exit(1)
 
     for name in args:
-        executeTask(name)
+        if not os.path.basename(name) in jasyfiles:
+            executeTask(name)
         
         
 
