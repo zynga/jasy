@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 
 import sys
+from distutils.core import setup
 
 major, minor = sys.version_info[:2]
 
 if major < 3:
     raise Exception("Jasy requires Python 3")
-
-
-from distutils.core import setup
 
 version = "0.7"
 
@@ -36,9 +34,11 @@ setup(
         'jasy.process',
         'jasy.tokenizer'
       ],
+      
       package_dir = {
         '': 'lib'
       },
+      
       package_data = {
         'jasy': [
           'data/cldr/VERSION', 
@@ -47,6 +47,7 @@ setup(
           'data/cldr/supplemental/*.xml'
         ]
       },
+      
       scripts = [
         "bin/jasy", 
         "bin/jscompress", 
@@ -55,6 +56,7 @@ setup(
         "bin/jsoptimize", 
         "bin/jstree"
       ],
+      
       data_files = [
         ("doc", [
           "readme.md", 
