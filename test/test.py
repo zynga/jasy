@@ -217,6 +217,15 @@ class TestCompressor(unittest.TestCase):
 
     def test_new_args_empty(self):
         self.assertEqual(self.process('var obj = new Object();'), 'var obj=new Object;')
+        
+    def test_new_args_empty_dot_call(self):
+        self.assertEqual(self.process('var x = new Date().doSomething();'), 'var x=new Date().doSomething();')
+
+    def test_new_args_empty_dot_call_paren(self):
+        self.assertEqual(self.process('var x = (new Date).doSomething();'), 'var x=(new Date).doSomething();')
+
+    def test_new_dot_call(self):
+        self.assertEqual(self.process('var x = new Date(true).doSomething();'), 'var x=new Date(true).doSomething();')
 
     def test_number_float(self):
         self.assertEqual(self.process('4.3;'), '4.3;')

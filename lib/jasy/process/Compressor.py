@@ -280,6 +280,10 @@ class Compressor:
         # Compress new Object(); => new Object;
         if len(node[1]) > 0:
             result += "(%s)" % self.compress(node[1])
+        else:
+            parent = getattr(node, "parent", None)
+            if parent and parent.type is "dot":
+                result += "()"
             
         return result
 
