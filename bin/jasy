@@ -37,6 +37,11 @@ import os
 import os.path
 import sys
 
+major, minor = sys.version_info[:2]
+
+if major < 3:
+    raise Exception("Jasy requires Python 3")
+
 VERSION = "0.7"
 
 script_dir = sys.path[0]
