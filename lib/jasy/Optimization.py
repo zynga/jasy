@@ -38,7 +38,7 @@ class Optimization:
             BlockReducer.optimize(tree)
 
         if "variables" in enabled:
-            LocalVariables.optimize(tree, stats)
+            LocalVariables.optimize(tree)
 
         if "privates" in enabled:
             CryptPrivates.optimize(tree)
