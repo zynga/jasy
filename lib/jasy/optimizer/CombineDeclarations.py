@@ -6,13 +6,19 @@
 from jasy.parser.Node import Node
 import logging
 
-__all__ = ["optimize"]
+__all__ = ["optimize", "Error"]
 
 
 
 #
 # Public API
 #
+
+class Error(Exception):
+    def __init__(self, line):
+        self.__line = line
+        
+        
 def optimize(node):
     logging.debug(">>> Combining declarations...")
     return __optimize(node)

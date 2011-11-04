@@ -5,3 +5,4 @@
 
 class UserError(Exception):
     pass
+    

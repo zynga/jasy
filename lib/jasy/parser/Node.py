@@ -13,22 +13,15 @@
 import json
 import copy
 
-nodeId = 0
-
 class Node(list):
     def __init__(self, tokenizer=None, type=None, args=[]):
-        # global nodeId 
-        
         list.__init__(self)
         
         self.start = 0
         self.end = 0
+        self.line = None
         self.filename = None
         
-        # Debug
-        # self.id = nodeId
-        # nodeId += 1
-
         if tokenizer:
             token = getattr(tokenizer, "token", None)
             if token:
@@ -51,8 +44,6 @@ class Node(list):
             
         elif type:
             self.type = type
-
-        # print "CREATE: %s" % self.type
 
         for arg in args:
             self.append(arg)

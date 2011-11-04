@@ -4,6 +4,8 @@
 #
 
 import logging, os, random
+import jasy.core.Class
+import jasy.Error
 
 __all__ = ["Combiner"]
 
@@ -24,7 +26,11 @@ class Combiner():
     def getCompressedCode(self, permutation=None, translation=None, optimization=None, format=None):
         """ Combines the compressed result of the stored class list """
 
-        return "".join([classObj.getCompressed(permutation, translation, optimization, format) for classObj in self.__classList])
+        try:
+            return "".join([classObj.getCompressed(permutation, translation, optimization, format) for classObj in self.__classList])
+        except jasy.core.Class.Error as error:
+            raise jasy.Error.UserError("Error during class compression! %s" % error)
+            
 
 
     def getLoaderCode(self, bootCode, relativeRoot, session):

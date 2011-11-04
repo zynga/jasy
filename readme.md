@@ -7,36 +7,51 @@ The main goal of Jasy is to offer an API which could be used by developers to wr
 
 Jasy also offers standalone tools for dealing with single JavaScript files to e.g. compress or format them.
 
-License
--------
+## License
 
 Jasy is licensed under a dual license MIT + Apache V2. See separate license files for details. The parser implementation is under a triple open source license MPL 1.1/GPL 2.0/LGPL 2.1 as these are from the original Spidermonkey code.
 
-Parser
-------
+
+## Installation
+
+
+This will install Jasy into the default system location for Python 3. After installation `jasy` should be in the `PATH`. 
+
+`$ python3 setup.py install`
+
+To update your installation just execute the command again.
+
+### Mac OS - Brew - Python 3.2.x
+
+Scripts are installed to `/usr/local/share/python3`. You need to add it to your `PATH` to make `jasy` easily available. See also: https://github.com/mxcl/homebrew/wiki/Homebrew-and-Python
+
+### Other systems/configurations
+
+If you have information about special hints required on other configurations it would be nice to share them. Thanks!
+
+## Features 
+
+### Parser
 
 - Full JavaScript 1.8 parser based on Narcissus (which itself is based on Spidermonkey)
 - Reworked parser for better child handling (easier to traverse tree compared to original)
 - Full support for JavaScript 1.8 (Generators, Block Scope, Function Expressions, Array Comprehensions, ...)
 - Comment processing (Comments are attached to nodes and are part of the AST)
 
-Project Handling
-----------------
+### Project Handling
 
 - Project Support (Bundling multiple projects)
 - Build scripts are plain Python and can do everything you want to do. No limitations.
 - Import Jasy and define your own tasks (using Python decorator "task") (See demo/generate.py as an example)
 
-Dependency Analysis
--------------------
+### Dependency Analysis
 
 - Dependency Analysis (with support for permutations). 
 - All dependencies are regarded as load-time specific.
 - Automatic and fine-tunable breaking of circular dependencies.
 - Detects all objects which are not declared in the file itself e.g. window, document, my.namespaced.Class, etc.
 
-Dead Code Removal
------------------
+### Dead Code Removal
 
 - Resolves conditions and removes blocks which could not be reached
 - Function part of the permutation support
@@ -45,20 +60,17 @@ Dead Code Removal
 - Resolves boolean, number and string compares
 - Supports AND and OR operators
 
-Permutation Features
---------------------
+### Permutation Features
 
 - Permutation Support (building different results from one code base)
 - Might be used to remove debug blocks or alternative code
 
-Compression Features
---------------------
+### Compression Features
 
 - Comment Removal
 - White Space Removal (even in some quirky places e.g. keywords before strings, etc.)
 
-Optimizer Features
-------------------
+### Optimizer Features
 
 - Renames local variables/functions/exceptions (based on their usage number)
 - Renames file private variables (starting with double underscore by convention)
@@ -71,15 +83,11 @@ Optimizer Features
 - Removes needless else (if previous if-block ends with a return/throw statement)
 - Removes needless parens based on priority analysis on the AST
 
-
-Developer Support
------------------
+### Developer Support
 
 - Generates a so-named "source" version which loads the original class files which is useful during the development phase of an application.
 
-
-Localization Features
----------------------
+### Localization Features
 
 - Unicode CLDR Data Transformation
   - Rebuilds XML files to nicely useable ultra-modular JSON data classes
@@ -94,12 +102,17 @@ Localization Features
   - Optimizes template replacement e.g. via %1 into a string "plus" operation
 
 
-Todo
-----
+## Todo
+
+### Support
+
+- Add Distribute Installation Support: http://packages.python.org/distribute/
+- Add EasyInstall Support
+
+### Features
 
 - Auto Closure Wrapping for string optimizations, keyword optimization, etc.
 - String optimizations
 - API data
 - Code Quality Checks (Lint)
 - Pretty Printer
-- ...
