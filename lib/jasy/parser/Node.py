@@ -51,6 +51,7 @@ class Node(list):
             
         elif type:
             self.type = type
+            self.line = None
 
         # print "CREATE: %s" % self.type
 
