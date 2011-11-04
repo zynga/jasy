@@ -104,6 +104,13 @@ If you have information about special hints required on other configurations it 
 
 ## Todo
 
+### Support
+
+- Add Distribute Installation Support: http://packages.python.org/distribute/
+- Add EasyInstall Support
+
+### Features
+
 - Auto Closure Wrapping for string optimizations, keyword optimization, etc.
 - String optimizations
 - API data
