@@ -12,6 +12,14 @@ import jasy.optimizer.CombineDeclarations as CombineDeclarations
 import jasy.optimizer.UnusedCleaner as UnusedCleaner
 
 
+class OptimizationError(Exception):
+    def __init__(self, msg):
+        self.__msg = msg
+    
+    def __str__(self):
+        return "Error during optimization! %s" % (self.__msg)
+
+
 class Optimization:
     def __init__(self, *args):
         self.__optimizations = set()
@@ -25,23 +33,38 @@ class Optimization:
     def disable(self, identifier):
         self.__optimizations.remove(identifier)
         
-    def apply(self, tree, stats):
+    def apply(self, tree):
         enabled = self.__optimizations
         
         if "unused" in enabled:
-            UnusedCleaner.optimize(tree)
+            try:
+                UnusedCleaner.optimize(tree)
+            except UnusedCleaner.Error as err:
+                raise OptimizationError(err)
 
         if "declarations" in enabled:
-            CombineDeclarations.optimize(tree)
+            try:
+                CombineDeclarations.optimize(tree)
+            except CombineDeclarations.Error as err:
+                raise OptimizationError(err)
 
         if "blocks" in enabled:
-            BlockReducer.optimize(tree)
+            try:
+                BlockReducer.optimize(tree)
+            except BlockReducer.Error as err:
+                raise OptimizationError(err)
 
         if "variables" in enabled:
-            LocalVariables.optimize(tree)
+            try:
+                LocalVariables.optimize(tree)
+            except LocalVariables.Error as err:
+                raise OptimizationError(err)
 
         if "privates" in enabled:
-            CryptPrivates.optimize(tree)
+            try:
+                CryptPrivates.optimize(tree)
+            except CryptPrivates.Error as err:
+                raise OptimizationError(err)
 
     def getKey(self):
         return "+".join(sorted(self.__optimizations))

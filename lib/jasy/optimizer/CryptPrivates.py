@@ -5,13 +5,24 @@
 
 import zlib, string, logging, re
 
-__all__ = ["optimize", "PrivateException"]
+__all__ = ["optimize", "Error"]
 
 
 
 #
 # Public API
 #
+
+
+class Error(Exception):
+    def __init__(self, name, line):
+        self.__name = name
+        self.__line = line
+    
+    def __str__(self):
+        return "Unallowed private field access to %s at line %s!" % (self.__name, self.__line)
+
+
 
 def optimize(node, contextId=""):
     
@@ -31,16 +42,6 @@ def optimize(node, contextId=""):
     
     return modified
     
-
-class PrivateException(Exception):
-    def __init__(self, name, line):
-        self.__name = name
-        self.__line = line
-    
-    def __str__(self):
-        return "Unallowed private field access to %s at line %s!" % (self.__name, self.__line)
-
-
 
 
 #
@@ -88,7 +89,7 @@ def __replace(node, repl):
                 node.value = repl[node.value]
                 modified = True
             else:
-                raise PrivateException(node.value, node.line)
+                raise Error(node.value, node.line)
         
     for child in node:
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]

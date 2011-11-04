@@ -110,21 +110,15 @@ def run():
         
 
 def main():
-    # Check up front for a Python version we do not support.
-    if sys.version_info.major < 3:
-        msg = "Jasy version %s does not run under Python version %s.\n"
-        sys.stderr.write(msg % (VERSION, sys.version.split()[0]))
-        sys.exit(1)
-
     try:
         run()
 
     except UserError as user:
-        sys.stderr.write("%s\n" % user)
+        sys.stderr.write("!!! %s\n" % user)
         sys.exit(1)
         
     except KeyboardInterrupt:
         sys.stderr.write("Build interrupted!\n")
         sys.exit(2)
-
+        
     sys.exit(0)

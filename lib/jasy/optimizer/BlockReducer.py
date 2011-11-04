@@ -8,7 +8,14 @@ from jasy.process.Compressor import compress
 from jasy.parser.Lang import expressionOrder, expressions
 import logging
 
-__all__ = ["optimize"]
+__all__ = ["optimize", "Error"]
+
+
+class Error(Exception):
+    def __init__(self, line):
+        self.__line = line
+    
+
 
 def optimize(node):
     logging.debug(">>> Reducing block complexity...")

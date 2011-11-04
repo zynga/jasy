@@ -6,13 +6,23 @@
 import string, logging
 from jasy.tokenizer.Tokenizer import keywords
 
-__all__ = ["optimize"]
+__all__ = ["optimize", "Error"]
 
 
 
 #
 # Public API
 #
+
+
+class Error(Exception):
+    def __init__(self, name, line):
+        self.__name = name
+        self.__line = line
+    
+    def __str__(self):
+        return "Unallowed private field access to %s at line %s!" % (self.__name, self.__line)
+
 
 def optimize(node):
     """

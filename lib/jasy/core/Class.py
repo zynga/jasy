@@ -12,10 +12,20 @@ from jasy.core.Translation import hasText
 from jasy.parser.Parser import parse
 from jasy.process.Compressor import compress
 from jasy.process.Variables import scan
+from jasy.Optimization import OptimizationError
 
 aliases = {}
 
-__all__ = ["Class"]
+__all__ = ["Class", "Error"]
+
+class Error(Exception):
+    def __init__(self, inst, msg):
+        self.__msg = msg
+        self.__inst = inst
+        
+    def __str__(self):
+        return "Error processing class %s: %s" % (self.__inst, self.__msg)
+
 
 class Class():
     def __init__(self, path, project=None):
@@ -220,7 +230,10 @@ class Class():
                     translation.patch(tree)
 
                 if optimization:
-                    optimization.apply(tree, self.getStats(permutation))
+                    try:
+                        optimization.apply(tree)
+                    except OptimizationError as error:
+                        raise Error(self, "Could not compress class! %s" % error)
                 
             compressed = compress(tree, format)
             self.__cache.store(field, compressed, self.__mtime)
