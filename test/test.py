@@ -273,7 +273,7 @@ class TestCompressor(unittest.TestCase):
         self.assertEqual(self.process('function z() { return [ 1, 2, 3 ]; }'), 'function z(){return[1,2,3]}')
 
     def test_strict(self):
-        self.assertEqual(self.process('function imStrict() { "use strict"; var x = 4+5; }'), 'function imStrict(){"use strict";var x=4+5}')
+        self.assertEqual(self.process('function test() { "use strict"; var x = 4+5; }'), 'function test(){"use strict";var x=4+5}')
 
     def test_string_escape(self):
         self.assertEqual(self.process(r'var x="abc\ndef";'), r'var x="abc\ndef";')
@@ -1045,6 +1045,22 @@ class TestBlockReducer(unittest.TestCase):
             }
             '''),
             'abc||(abc={setup:function(){if(cde)x();else return false}});'
+        )
+
+    def test_strict(self):
+        self.assertEqual(self.process(
+            '''
+            function foo() {
+
+              "use strict";
+
+              doSomething();
+
+            }
+
+            foo();
+            '''),
+            'function foo(){"use strict";doSomething()}foo();'
         )
 
 
