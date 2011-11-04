@@ -12,6 +12,17 @@ License
 
 Jasy is licensed under a dual license MIT + Apache V2. See separate license files for details. The parser implementation is under a triple open source license MPL 1.1/GPL 2.0/LGPL 2.1 as these are from the original Spidermonkey code.
 
+
+Installation
+------------
+
+This will install Jasy into the default system location for Python 3. After installation `jasy` should be in the `PATH`. 
+
+`$ python3 setup.py install`
+
+To update your installation just execute the command again.
+
+
 Parser
 ------
 
