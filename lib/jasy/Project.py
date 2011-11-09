@@ -31,24 +31,24 @@ class Project():
         except IOError as err:
             raise JasyError("Could not initialize project. Cache file could not be initialized! %s" % err)
         
-        manifestPath = os.path.join(path, "jasyproject.json")
-        if not os.path.exists(manifestPath):
-            raise JasyError("Missing jasyproject.json at: %s" % manifestPath)
+        projectConfigPath = os.path.join(path, "jasyproject.json")
+        if not os.path.exists(projectConfigPath):
+            raise JasyError("Missing jasyproject.json at: %s" % projectConfigPath)
         
         try:
-            manifestData = json.load(open(manifestPath))
+            projectData = json.load(open(projectConfigPath))
         except ValueError as err:
-            raise JasyError("Could not parse jasyproject.json at %s: %s" % (manifestPath, err))
+            raise JasyError("Could not parse jasyproject.json at %s: %s" % (projectConfigPath, err))
         
         # Read name from manifest or use the basename of the project's path
-        if "name" in manifestData:
-            self.__name = manifestData["name"]
+        if "name" in projectData:
+            self.__name = projectData["name"]
         else:
             self.__name = os.path.basename(path)
             
         # Detect kind automatically
-        if "kind" in manifestData:
-            self.__kind = manifestData["kind"]
+        if "kind" in projectData:
+            self.__kind = projectData["kind"]
         elif os.path.isdir(os.path.join(self.__path, "source", "class")):
             self.__kind = "full"
         elif os.path.isdir(os.path.join(self.__path, "class")):
@@ -59,20 +59,20 @@ class Project():
             self.__kind = "flat"
                 
         # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
-        if "package" in manifestData:
-            self.__package = manifestData["package"]
+        if "package" in projectData:
+            self.__package = projectData["package"]
         else:
             self.__package = self.__name
         
         # Whether we need to parse files for get their correct name (using @name attributes)
-        if "fuzzy" in manifestData:
-            self.__fuzzy = manifestData["fuzzy"]
+        if "fuzzy" in projectData:
+            self.__fuzzy = projectData["fuzzy"]
         else:
             self.__fuzzy = False
             
         # Read fields (for injecting data into the project and build permuations)
-        if "fields" in manifestData:
-            self.__fields = manifestData["fields"]
+        if "fields" in projectData:
+            self.__fields = projectData["fields"]
         else:
             self.__fields = {}
 
