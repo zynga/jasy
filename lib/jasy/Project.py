@@ -7,36 +7,38 @@ import os, logging, json
 
 from jasy.core.Class import Class
 from jasy.core.Cache import Cache
-        
-class ProjectException(Exception):
-    pass
+from jasy.Error import *
         
 class Project():
     def __init__(self, path):
+        """
+        Constructor call of the project. First param is the path of the project relative to the current working directory.
+        """
+        
         path = os.path.normpath(path)
 
         if not os.path.isdir(path):
-            raise ProjectException("Invalid project path: %s (Absolute: %s)" % (path, os.path.abspath(path)))
+            raise JasyError("Invalid project path: %s (Absolute: %s)" % (path, os.path.abspath(path)))
         
         # Only store and work with full path
         path = os.path.abspath(path)
         
         self.__path = path
-        self.__dirFilter = [".svn",".git",".hg",".bzr"]
+        self.__dirFilter = [".svn", ".git", ".hg", ".bzr"]
 
         try:
             self.__cache = Cache(self.__path)
         except IOError as err:
-            raise ProjectException("Could not initialize project. Cache file could not be initialized! %s" % err)
+            raise JasyError("Could not initialize project. Cache file could not be initialized! %s" % err)
         
         manifestPath = os.path.join(path, "jasyproject.json")
         if not os.path.exists(manifestPath):
-            raise ProjectException("Missing jasyproject.json at: %s" % manifestPath)
+            raise JasyError("Missing jasyproject.json at: %s" % manifestPath)
         
         try:
             manifestData = json.load(open(manifestPath))
         except ValueError as err:
-            raise ProjectException("Could not parse jasyproject.json at %s: %s" % (manifestPath, err))
+            raise JasyError("Could not parse jasyproject.json at %s: %s" % (manifestPath, err))
         
         # Read name from manifest or use the basename of the project's path
         if "name" in manifestData:
@@ -94,7 +96,7 @@ class Project():
             self.__assetPath = ""
             self.__translationPath = None
         else:
-            raise ProjectException("Unsupported kind of project: %s" % self.__kind)
+            raise JasyError("Unsupported kind of project: %s" % self.__kind)
     
     
     def __str__(self):
