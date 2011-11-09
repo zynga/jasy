@@ -15,7 +15,7 @@ class Cache:
     
     def __init__(self, path, clear=False):
         self.__transient = {}
-        self.__file = os.path.join(path, "cache.db")
+        self.__file = os.path.join(path, "jasycache")
         
         try:
             self.__db = shelve.open(self.__file, flag="c")
