@@ -152,7 +152,7 @@ class Parser():
         logging.info("Writing result...")
         pstart()
         
-        writefile(os.path.join(project, "manifest.json"), '{"name":"cldr","kind":"basic"}')
+        writefile(os.path.join(project, "jasyproject.json"), '{"name":"cldr","kind":"basic"}')
         self.__exportRecurser(self.__data, "locale", project)
         pstop()
 

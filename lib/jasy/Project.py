@@ -29,14 +29,14 @@ class Project():
         except IOError as err:
             raise ProjectException("Could not initialize project. Cache file could not be initialized! %s" % err)
         
-        manifestPath = os.path.join(path, "manifest.json")
+        manifestPath = os.path.join(path, "jasyproject.json")
         if not os.path.exists(manifestPath):
-            raise ProjectException("Missing manifest.json at: %s" % manifestPath)
+            raise ProjectException("Missing jasyproject.json at: %s" % manifestPath)
         
         try:
             manifestData = json.load(open(manifestPath))
         except ValueError as err:
-            raise ProjectException("Could not parse manifest.json at %s: %s" % (manifestPath, err))
+            raise ProjectException("Could not parse jasyproject.json at %s: %s" % (manifestPath, err))
         
         # Read name from manifest or use the basename of the project's path
         if "name" in manifestData:
@@ -222,7 +222,8 @@ class Project():
                             dirNames.remove(dirName)
 
                     for fileName in fileNames:
-                        if fileName in ("manifest.json", "generate.py", "cache"):
+                        # Exclude internally managed files
+                        if fileName in ("jasyproject.json", "jasyscript.py", "cache", "cache.db"):
                             continue
                             
                         if fileName[0] == "." or fileName.endswith((".js", ".txt", ".md")):

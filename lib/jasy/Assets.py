@@ -31,6 +31,7 @@ class Assets:
         Priority merge of all assets and filter them by the required ones based 
         on the current class selection.
         """
+        
         merged = {}
         for project in self.__projects:
             assets = project.getAssets()

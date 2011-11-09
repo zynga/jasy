@@ -29,7 +29,7 @@ class Combiner():
         try:
             return "".join([classObj.getCompressed(permutation, translation, optimization, format) for classObj in self.__classList])
         except jasy.core.Class.Error as error:
-            raise jasy.Error.UserError("Error during class compression! %s" % error)
+            raise jasy.Error.JasyError("Error during class compression! %s" % error)
             
 
 
