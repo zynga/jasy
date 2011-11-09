@@ -1,6 +1,7 @@
 import types
 import logging
-import jasy.Error
+
+from jasy.Error import *
 
 
 __tasks__ = {}
@@ -14,7 +15,7 @@ def executeTask(name):
         logging.debug("Executing task: %s" % name)
         __tasks__[name]()
     else:
-        raise jasy.Error.JasyError("No such task: %s" % name)
+        raise JasyError("No such task: %s" % name)
         
 def printTasks():
     for name in __tasks__:

@@ -91,15 +91,19 @@ def run():
     # Execute tasks
     #
     
+    # filter out jasyscript reference, useful when doing ./jasyscript.py from the command line
+    if args and "jasyscript.py" in args[0]:
+        args.pop(0)
+
+    # list all tasks when none is given
     if not args:
         logging.error("No tasks to execute. Please choose from: ")
         printTasks()
         sys.exit(1)
 
+    # all arguments are processed as a list of task to execute in order
     for name in args:
-        # filter out jasyscript reference, useful when doing ./jasyscript.py from the command line
-        if not os.path.basename(name) in jasyscripts:
-            executeTask(name)
+        executeTask(name)
         
         
 
