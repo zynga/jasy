@@ -3,6 +3,9 @@
 import sys, os
 from distutils.core import setup
 
+from distribute_setup import use_setuptools
+use_setuptools()
+
 # Extend PYTHONPATH with local 'lib' folder
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, "lib"))
 sys.path.insert(0, jasyroot)
