@@ -72,7 +72,7 @@ setup(
       
       data_files = [
         ("doc", [
-          "license.txt"
+          "LICENSE.txt"
         ])
       ]
 )
