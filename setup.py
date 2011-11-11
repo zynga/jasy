@@ -31,13 +31,13 @@ setup(
       author_email = 'info@sebastian-werner.net',
       
       url = 'http://github.com/wpbasti/jasy',
-      download_url = "http://pypi.python.org/packages/source/s/jasy/jasy-%s.tar.gz" % jasy.VERSION,
+      download_url = "http://pypi.python.org/packages/source/j/jasy/jasy-%s.tar.gz" % jasy.VERSION,
       
-      license = "http://www.apache.org/licenses/LICENSE-2.0",
+      license = "Apache V2.0",
       
       description = "Web Tooling Framework",
       long_description = open('README.txt').read(),
-
+      
       packages = [
         'jasy',
         'jasy.core',
