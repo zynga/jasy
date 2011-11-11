@@ -35,7 +35,7 @@ setup(
       
       license = "http://www.apache.org/licenses/LICENSE-2.0",
       
-      description = "A build system for JavaScript focused web projects",
+      description = "Web Tooling Framework",
       long_description = open('README.txt').read(),
 
       packages = [
