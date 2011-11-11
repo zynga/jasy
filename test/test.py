@@ -2,8 +2,8 @@
 
 import sys, os, unittest
 
-# Extend PYTHONPATH with 'lib'
-jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, os.pardir))
+# Extend PYTHONPATH with local 'lib' folder
+jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, "lib"))
 sys.path.insert(0, jasyroot)
 
 import jasy.parser.Parser as Parser
