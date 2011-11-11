@@ -5,3 +5,4 @@ Jasy is a powerful Python3-based tooling framework. It makes it easy to manage h
 
 Jasy is licensed under a dual license MIT + Apache V2. See separate license files for details. The parser implementation is under a triple open source license MPL 1.1/GPL 2.0/LGPL 2.1 as these are from the original Spidermonkey code.
 
+Jasy is listed on PyPI as well: http://pypi.python.org/pypi?:action=display&name=jasy
