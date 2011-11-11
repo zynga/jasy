@@ -73,6 +73,10 @@ setup(
       data_files = [
         ("doc", [
           "LICENSE.txt"
+         ]
+        ),
+        ("", [
+          "distribute_setup.py"
         ])
       ]
 )
