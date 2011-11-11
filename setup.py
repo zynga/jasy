@@ -31,11 +31,11 @@ setup(
       author_email = 'info@sebastian-werner.net',
       
       url = 'http://github.com/wpbasti/jasy',
-      download_url = "http://github.com/downloads/wpbasti/jasy/jasy-%s.tar.gz" % jasy.VERSION,
+      download_url = "http://pypi.python.org/packages/source/s/jasy/jasy-%s.tar.gz" % jasy.VERSION,
       
       license = "http://www.apache.org/licenses/LICENSE-2.0",
       
-      description = "Jasy is a build system for JavaScript focused web projects.",
+      description = "A build system for JavaScript focused web projects",
       long_description = open('readme.md').read(),
 
       packages = [
