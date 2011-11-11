@@ -36,7 +36,7 @@ setup(
       license = "http://www.apache.org/licenses/LICENSE-2.0",
       
       description = "A build system for JavaScript focused web projects",
-      long_description = open('readme.md').read(),
+      long_description = open('readme.txt').read(),
 
       packages = [
         'jasy',
@@ -72,8 +72,7 @@ setup(
       
       data_files = [
         ("doc", [
-          "readme.md", 
-          "license.md"
+          "license.txt"
         ])
       ]
 )
