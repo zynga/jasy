@@ -1,8 +1,6 @@
 #recursive-include bin *
-#recursive-include demo *.json *.py *.html *.js
 #recursive-include lib *.py
-#recursive-include share *
-#include license-apache.md
-#include license-mit.md
-#include readme.md
+#include LICENSE.txt
+#include README.txt
+#include distribute_setup.py
 #global-exclude build

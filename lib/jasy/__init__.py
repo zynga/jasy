@@ -15,7 +15,7 @@ from jasy.Format import *
 from jasy.File import *
 from jasy.Task import *
 
-VERSION = 1.0
+VERSION = "0.3"
 
 __all__ = ["main", "VERSION"]
 
@@ -24,7 +24,9 @@ from optparse import OptionParser
 
 
 def run():
-    """ Main routine which should be called on startup """
+    """
+    Main routine which should be called on startup
+    """
 
     #
     # Parse options
@@ -34,7 +36,7 @@ def run():
     parser.add_option("-q", "--quiet", action="store_false", dest="verbose", help="don't print status messages to stdout")
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="print more detailed status messages to stdout")
     parser.add_option("-l", "--log", dest="logfile", help="Write debug messages to given logfile")
-    parser.add_option("-f", "--file", dest="file", help="Use the given build script")
+    parser.add_option("-f", "--file", dest="file", help="Use the given jasy script")
 
     (options, args) = parser.parse_args()
 
@@ -72,24 +74,15 @@ def run():
     # Find and execute build script
     #
     
-    jasyfiles = ["jasyfile", "JasyFile", "Jasyfile", "jasyfile.py", "JasyFile.py", "Jasyfile.py"]
-    
-    script = None
     if options.file:
-        if os.path.isfile(options.file):
-            script = options.file
+        scriptname = options.file
     else:
-        for name in jasyfiles:
-            if os.path.isfile(name):
-                script = name
+        scriptname = "jasyscript.py"
+        
+    if not os.path.isfile(scriptname):
+        raise JasyError("Did not found '%s'!" % scriptname)
 
-    if script is None:
-        if options.file:
-            raise UserError("No generate file '%s' found!" % options.file)
-        else:
-            raise UserError("No generate file found!")
-
-    buildfile = open(script, "r")
+    buildfile = open(scriptname, "r")
     retval = exec(buildfile.read(), globals())
 
 
@@ -98,23 +91,32 @@ def run():
     # Execute tasks
     #
     
+    # filter out jasyscript reference, useful when doing ./jasyscript.py from the command line
+    if args and "jasyscript.py" in args[0]:
+        args.pop(0)
+
+    # list all tasks when none is given
     if not args:
         logging.error("No tasks to execute. Please choose from: ")
         printTasks()
         sys.exit(1)
 
+    # all arguments are processed as a list of task to execute in order
     for name in args:
-        if not os.path.basename(name) in jasyfiles:
-            executeTask(name)
+        executeTask(name)
         
         
 
 def main():
+    """
+    Main routine of Jasy
+    """
+    
     try:
         run()
 
-    except UserError as user:
-        sys.stderr.write("!!! %s\n" % user)
+    except JasyError as error:
+        sys.stderr.write("!!! %s\n" % error)
         sys.exit(1)
         
     except KeyboardInterrupt:

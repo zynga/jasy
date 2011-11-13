@@ -3,6 +3,12 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-class UserError(Exception):
+__all__ = ["JasyError"]
+
+class JasyError(Exception):
+    """
+    Standard Jasy error class raised whenever something happens which the system understands (somehow excepected)
+    """
+    
     pass
     

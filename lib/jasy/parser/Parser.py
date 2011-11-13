@@ -18,7 +18,6 @@ from jasy.parser.VanillaBuilder import VanillaBuilder
 
 __all__ = [ "parse", "parseExpression" ]
 
-
 def parseExpression(source, fileId=None, line=1, builder=None):
     if builder == None:
         builder = VanillaBuilder()
