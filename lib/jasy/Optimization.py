@@ -9,6 +9,8 @@ import jasy.optimizer.LocalVariables as LocalVariables
 import jasy.optimizer.CombineDeclarations as CombineDeclarations
 
 
+__all__ = ["Error", "Optimization"]
+
 
 class Error(Exception):
     """
@@ -69,6 +71,7 @@ class Optimization:
 
     def getKey(self):
         return "+".join(sorted(self.__optimizations))
+        
         
     # Map Python built-ins
     __repr__ = getKey

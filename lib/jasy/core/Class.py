@@ -5,17 +5,20 @@
 
 import os, logging, copy, hashlib
 
-from jasy.cleaner.DeadCode import cleanup
-from jasy.cleaner.Unused import cleanup
+import jasy.core.Variables
+
+import jasy.cleaner.DeadCode
+import jasy.cleaner.Unused
+
+import jasy.Optimization
 
 from jasy.core.MetaData import MetaData
 from jasy.core.Permutation import getKeys
 from jasy.core.Translation import hasText
+
 from jasy.parser.Parser import parse
 from jasy.process.Compressor import compress
-from jasy.core.Variables import scan
 
-import jasy.Optimization
 
 aliases = {}
 
@@ -72,12 +75,10 @@ class Class():
         """Returns the class name of the class based on the file name (default) or on the meta data (fuzzy)."""
         return self.__name
         
-    def __str__(self):
-        return self.__name
-
-    def __repr__(self):
-        return self.__name
-
+    # Map Python built-ins
+    __repr__ = getName
+    __str__ = getName
+        
     def getPath(self):
         """Returns the exact position of the class file in the file system."""
         return self.__path
@@ -116,10 +117,15 @@ class Class():
         # Apply permutation
         if permutation:
             permutation.patch(tree)
-            cleanup(tree)
 
-        # Index variables
-        scan(tree)
+        # Remove dead code
+        jasy.cleaner.DeadCode.cleanup(tree)
+
+        # Scan for variable usage
+        jasy.core.Variables.scan(tree)
+        
+        # Remove unused variables/functions
+        jasy.cleaner.Unused.cleanup(tree)
         
         self.__cache.store(field, tree, self.__mtime, True)
         return tree
