@@ -7,8 +7,9 @@ import shelve, time, logging, os, os.path, sys, pickle, dbm
 
 class Cache:
     """ 
-    A cache class based on shelve feature of Python. 
-    Supports transient only in-memory storage, too.
+    A cache class based on shelve feature of Python. Supports transient in-memory 
+    storage, too. Uses memory storage for caching requests to DB as well for 
+    improved performance.
     """
     
     __db = None
@@ -19,6 +20,7 @@ class Cache:
         
         try:
             self.__db = shelve.open(self.__file, flag="c")
+            
         except dbm.error as error:
             errno = None
             try:
@@ -27,16 +29,22 @@ class Cache:
                 pass
                 
             if errno is 35:
-                raise IOError("Cache file is locked by another process!")
+                raise IOError("Cache file is locked by another process! Maybe there is still another open Session/Project?")
+                
             elif "db type could not be determined" in str(error):
                 logging.error("Could not detect cache file format!")
                 logging.warn("Recreating cache database...")
                 self.clear()
+                
             else:
                 raise error
     
     
     def clear(self):
+        """
+        Clears the cache file through re-creation of the file
+        """
+        
         if self.__db != None:
             logging.debug("Closing cache file %s..." % self.__file)
             
@@ -50,9 +58,8 @@ class Cache:
     def read(self, key, timestamp=None):
         """ 
         Reads the given value from cache.
-         
-        Optional timestamp value checks wether the value was stored 
-        after the given time to be valid.
+        Optionally support to check wether the value was stored after the given 
+        time to be valid (useful for comparing with file modification times).
         """
         
         if key in self.__transient:
@@ -78,7 +85,6 @@ class Cache:
     def store(self, key, value, timestamp=None, transient=False):
         """
         Stores the given value.
-        
         Default timestamp goes to the current time. Can be modified
         to the time of an other files modification date etc.
         """
@@ -99,11 +105,14 @@ class Cache:
         
     def sync(self):
         """ Syncs the internal storage database """
+        
         self.__db.sync() 
       
       
     def close(self):
         """ Closes the internal storage database """
-        self.__db.close()         
+        
+        self.__db.close()  
+        self.__db = None       
         
       

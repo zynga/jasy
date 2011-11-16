@@ -3,15 +3,66 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
+"""
+This module is used to detect dead code branches and remove them. 
+This is escecially useful after injecting values from the outside
+which might lead to simple truish equations which can be easily
+resolved. 
+
+This module is directly used by Class after Permutations have been
+applied (code branches) but can be used more widely, too.
+
+This acts somewhat like the optimizers you find under "optimizer",
+but is dependency relevant (Permutations might remove whole blocks 
+of alternative code branches). It makes no sense to optimize this
+just before compilation. It must be done pretty early during the
+processing of classes.
+
+The module currently support the following statements:
+
+* if
+* hook (?:)
+* switch
+
+and can detect good code based on:
+
+* true
+* false
+* equal: ==
+* strict equal: ===
+* not equal: !=
+* strict not equal: !==
+* not: !
+* and: &&
+* or: ||
+
+It supports the types "string" and "number" during comparisions. It
+uses a simple equality operator in Python which behaves like strict
+equal in JavaScript. This also means that number 42 is not equal to
+string "42" during the dead code analysis.
+
+It can figure out combined expressions as well like:
+
+* 4 == 4 && !false
+
+"""
+
 import logging
 
 def cleanup(node):
+    """
+    Reprocesses JavaScript to remove dead paths 
+    """
+    
     logging.debug(">>> Removing dead code branches...")
     return __cleanup(node)
 
 
 def __cleanup(node):
-    """ Reprocesses JavaScript to remove dead paths """
+    """
+    Reprocesses JavaScript to remove dead paths 
+    """
+    
     optimized = False
     
     # Process from inside to outside
@@ -87,6 +138,11 @@ def __cleanup(node):
 #
 
 def __checkCondition(node):
+    """
+    Checks a comparison for equality. Returns None when
+    both, truely and falsy could not be deteted.
+    """
+    
     if node.type == "false":
         return False
     elif node.type == "true":
@@ -120,6 +176,10 @@ def __checkCondition(node):
 
 
 def __invertResult(result):
+    """
+    Used to support the NOT operator.
+    """
+    
     if type(result) == bool:
         return not result
         
@@ -127,15 +187,20 @@ def __invertResult(result):
 
 
 def __compareNodes(a, b):
+    """
+    This method compares two nodes from the tree regarding equality.
+    It supports boolean, string and number type compares
+    """
+    
     if a.type == b.type:
-        if a.type in ("string","number"):
+        if a.type in ("string", "number"):
             return a.value == b.value
         elif a.type == "true":
             return True
         elif b.type == "false":
             return False    
             
-    elif a.type in ("true","false") and b.type in ("true","false"):
+    elif a.type in ("true", "false") and b.type in ("true", "false"):
         return False
 
     return None
