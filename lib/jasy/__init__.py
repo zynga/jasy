@@ -108,7 +108,7 @@ def __main():
         scriptname = "jasyscript.py"
         
     if not os.path.isfile(scriptname):
-        raise JasyError("Did not found jasy script with task definitions (%s)!" % scriptname)
+        raise JasyError("Cannot not found any Jasy script with task definitions (%s)!" % scriptname)
 
     buildfile = open(scriptname, "r")
     retval = exec(buildfile.read(), globals())
