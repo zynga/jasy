@@ -9,7 +9,8 @@ class Cache:
     """ 
     A cache class based on shelve feature of Python. Supports transient in-memory 
     storage, too. Uses memory storage for caching requests to DB as well for 
-    improved performance.
+    improved performance. Uses keys for identification of entries like a normal
+    hash table / dictionary.
     """
     
     __db = None

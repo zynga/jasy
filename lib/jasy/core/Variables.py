@@ -1,60 +1,29 @@
 #
-# JavaScript Tools - Scanner for variables
+# Jasy - Scanner for variable usage
 # Copyright 2010-2011 Sebastian Werner
 #
 
 import logging
 from jasy.process.Compressor import compress
+from jasy.core.Stats import Stats
 
 
 __all__ = ["scan"]
 
-def scan(node):
-    return __scanScope(node)
+
+#
+# Public API
+#
+
+def scan(tree):
+    """
+    Scans the given tree and attaches Stats (core/Stats.py) instances to every scope (aka function).
+    This data is being stored independently from the real tree so that if you modifiy the tree the
+    data is not automatically updated. This means that every time you modify the tree heavily,
+    it might make sense to re-execute this method to bring it in sync to the current tree structure.
+    """
     
-class Stats():
-    __slots__ = ["name", "params", "declared", "accessed", "modified", "shared", "unused", "packages"]
-    
-    def __iter__(self):
-        for field in self.__slots__:
-            yield field
-
-    def __getitem__(self, key):
-        if key == "name":
-            return self.name
-        elif key == "params":
-            return self.params
-        elif key == "declared":
-            return self.declared
-        elif key == "accessed":
-            return self.accessed
-        elif key == "modified":
-            return self.modified
-        elif key == "shared":
-            return self.shared
-        elif key == "unused":
-            return self.unused
-        elif key == "packages":
-            return self.packages
-
-        raise KeyError("Unknown key: %s" % key)
-
-    def __init__(self):
-        self.name = None
-        self.params = set()
-        self.declared = set()
-        self.accessed = {}
-        self.modified = set()
-        self.shared = {}
-        self.unused = set()
-        self.packages = {}
-        
-    def increment(self, name, by=1):
-        """ Small helper so simplify adding variables to "accessed" dict """
-        if not name in self.accessed:
-            self.accessed[name] = by
-        else:
-            self.accessed[name] += by
+    return __scanScope(tree)
 
 
 
@@ -63,7 +32,9 @@ class Stats():
 #
 
 def __scanNode(node, stats):
-    """ Scans nodes recursively and collects all variables which are declared and accessed. """
+    """
+    Scans nodes recursively and collects all variables which are declared and accessed.
+    """
     
     if node.type == "function":
         if node.functionForm == "declared_form":
@@ -116,7 +87,7 @@ def __scanNode(node, stats):
 
                 # Support for package-like object access
                 if node.parent.type == "dot":
-                    package = combinePackage(node)
+                    package = __combinePackage(node)
                     if package in stats.packages:
                         stats.packages[package] += 1
                     else:
@@ -147,8 +118,11 @@ def __scanNode(node, stats):
                 __scanNode(child, stats)
 
 
-def combinePackage(node):
-    """ Combines a package variable (e.g. foo.bar.baz) into one string """
+
+def __combinePackage(node):
+    """
+    Combines a package variable (e.g. foo.bar.baz) into one string
+    """
 
     result = [node.value]
     parent = node.parent
@@ -159,8 +133,11 @@ def combinePackage(node):
     return ".".join(result)
     
     
+    
 def __scanScope(node):
-    """ Scans a scope and collects statistics on variable declaration and usage """
+    """ 
+    Scans a scope and collects statistics on variable declaration and usage 
+    """
     
     # Initialize statistics object for this scope
     stats = Stats()
@@ -203,7 +180,9 @@ def __scanScope(node):
     
     
 def __addParams(node, stats):
-    """ Adds all param names from outer function to the definition list """
+    """
+    Adds all param names from outer function to the definition list
+    """
 
     rel = getattr(node, "rel", None)
     if rel == "body" and node.parent.type == "function":
@@ -215,4 +194,4 @@ def __addParams(node, stats):
         if paramList:
             for paramIdentifier in paramList:
                 stats.params.add(paramIdentifier.value)
-    
+

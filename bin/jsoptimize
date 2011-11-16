@@ -16,7 +16,7 @@ from jasy.optimizer import CryptPrivates
 from jasy.optimizer import BlockReducer
 from jasy.optimizer import UnusedCleaner
 
-from jasy.process.Variables import scan
+from jasy.core.Variables import scan
 from jasy.process.Compressor import compress
 
 

@@ -11,7 +11,7 @@ from jasy.core.Permutation import getKeys
 from jasy.core.Translation import hasText
 from jasy.parser.Parser import parse
 from jasy.process.Compressor import compress
-from jasy.process.Variables import scan
+from jasy.core.Variables import scan
 from jasy.Optimization import OptimizationError
 
 aliases = {}
@@ -58,28 +58,48 @@ class Class():
                 
     
     def getProject(self):
+        """Returns the project which the class belongs to"""
         return self.__project
 
+    def getId(self):
+        """Returns a unique identify of the class. Typically as it is stored inside the project."""
+        return self.__id
+
     def getName(self):
+        """Returns the class name of the class based on the file name (default) or on the meta data (fuzzy)."""
         return self.__name
         
-    def getId(self):
-        return self.__id
-        
+    def __str__(self):
+        return self.__name
+
+    def __repr__(self):
+        return self.__name
+
     def getPath(self):
+        """Returns the exact position of the class file in the file system."""
         return self.__path
         
     def getLocalPath(self):
+        """Returns the relative path inside the project (or the full path when no project is given)."""
         return self.__localPath
         
     def getModificationTime(self):
+        """Returns last modification time of the class"""
         return self.__mtime
 
     def getText(self):
+        """Reads the file (as UTF-8) and returns the text"""
         return open(self.__path, mode="r", encoding="utf-8").read()
 
 
     def getTree(self, permutation=None):
+        """
+        Returns the tree (of nodes from the parser) of the class. This parses the class,
+        creates the tree, applies and optional permutation, scans for variables usage 
+        and puts the tree into the cache before returning it. The cache works with the
+        permutation, so every permutated tree is cached separately.
+        """
+        
         permutation = self.filterPermutation(permutation)
         
         field = "tree[%s]-%s" % (self.__id, permutation)
@@ -105,7 +125,10 @@ class Class():
     def getDependencies(self, permutation=None, classes=None):
         """ 
         Returns a set of dependencies seen through the given list of known 
-        classes (ignoring all unknown items in original set) 
+        classes (ignoring all unknown items in original set). This method
+        makes use of the meta data (see core/MetaData.py) and the statistics data 
+        (see getStats() in this class) which uses the data of the variable
+        scanner in (core/Variables.py).
         """
         
         permutation = self.filterPermutation(permutation)
@@ -153,6 +176,9 @@ class Class():
         
         
     def getStats(self, permutation=None):
+        """
+        """
+        
         permutation = self.filterPermutation(permutation)
         
         field = "stats[%s]-%s" % (self.__id, permutation)
@@ -241,10 +267,4 @@ class Class():
         return compressed
             
             
-    def __str__(self):
-        return self.__name
-
-    def __repr__(self):
-        return self.__name
-        
         

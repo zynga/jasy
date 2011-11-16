@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
 from jasy.parser.Parser import parse
-from jasy.process.Variables import scan
+from jasy.core.Variables import scan
 
 if __name__ == "__main__":
     for fname in sys.argv[1:]:
