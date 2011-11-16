@@ -1,7 +1,7 @@
 import types
 import logging
 
-from jasy.Error import *
+from jasy.core.Error import *
 
 
 __tasks__ = {}

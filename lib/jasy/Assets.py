@@ -7,7 +7,7 @@ import logging, re, json, os, fnmatch
 from os.path import basename, dirname
 from jasy.core.Profiler import *
 from jasy.core.ImageInfo import ImgInfo
-from jasy.File import *
+from jasy.core.File import *
 from jasy.Project import Project
 
 __all__ = ["Assets"]

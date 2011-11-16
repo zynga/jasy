@@ -3,7 +3,7 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-from jasy.Error import *
+from jasy.core.Error import *
 from jasy.Session import *
 from jasy.Project import *
 from jasy.Resolver import *
@@ -12,8 +12,8 @@ from jasy.Combiner import *
 from jasy.Assets import * 
 from jasy.Optimization import *
 from jasy.Format import *
-from jasy.File import *
-from jasy.Task import *
+from jasy.core.File import *
+from jasy.core.Task import *
 
 VERSION = "0.3.1-beta"
 

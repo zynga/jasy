@@ -7,7 +7,7 @@ import os, logging, json
 
 from jasy.core.Class import Class
 from jasy.core.Cache import Cache
-from jasy.Error import *
+from jasy.core.Error import *
         
 class Project():
     def __init__(self, path):
