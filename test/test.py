@@ -8,8 +8,10 @@ sys.path.insert(0, jasyroot)
 
 import jasy.parser.Parser as Parser
 
+import jasy.core.Permutation as Permutation
+import jasy.core.Variables as Variables
+
 import jasy.process.Compressor as Compressor
-import jasy.process.Variables as Variables
 
 import jasy.cleaner.DeadCode as DeadCode
 import jasy.cleaner.Unused as Unused
@@ -19,7 +21,6 @@ import jasy.optimizer.BlockReducer as BlockReducer
 import jasy.optimizer.CombineDeclarations as CombineDeclarations
 import jasy.optimizer.CryptPrivates as CryptPrivates
 
-import jasy.core.Permutation as Permutation
 
 
 class TestParser(unittest.TestCase):
@@ -1203,7 +1204,7 @@ class TestRemoveUnused(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
-        Unused.optimize(node)
+        Unused.cleanup(node)
         return Compressor.compress(node)        
 
     def test_var_single(self):
@@ -1542,7 +1543,7 @@ class TestRenamePrivates(unittest.TestCase):
         )
         
     def test_remote(self):
-        self.assertRaises(CryptPrivates.PrivateException, self.process, 
+        self.assertRaises(CryptPrivates.Error, self.process, 
             '''
             alert(RemoteObj.__x);
             ''')

@@ -5,7 +5,9 @@
 
 import os, logging, copy, hashlib
 
-from jasy.core.DeadCode import cleanup
+from jasy.cleaner.DeadCode import cleanup
+from jasy.cleaner.Unused import cleanup
+
 from jasy.core.MetaData import MetaData
 from jasy.core.Permutation import getKeys
 from jasy.core.Translation import hasText

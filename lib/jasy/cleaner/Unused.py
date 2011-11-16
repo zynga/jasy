@@ -5,15 +5,14 @@
 
 from jasy.parser.Node import Node
 import logging
-import jasy.process.Variables as Variables
+import jasy.core.Variables as Variables
 
-__all__ = ["optimize", "Error"]
+__all__ = ["cleanup", "Error"]
 
 
 #
 # Public API
 #
-
 
 class Error(Exception):
     def __init__(self, name, line):
@@ -24,24 +23,28 @@ class Error(Exception):
         return "Unallowed private field access to %s at line %s!" % (self.__name, self.__line)
 
 
-def optimize(node):
+
+def cleanup(node):
+    """
+    """
+    
     if not hasattr(node, "stats"):
         Variables.scan(node)
 
-    # Re optimize until nothing to remove is found
+    # Re cleanup until nothing to remove is found
     x = 0
-    optimized = False
+    cleaned = False
     
     while True:
         x = x + 1
         logging.debug("Removing unused variables [%s]..." % x)
-        if __optimize(node):
+        if __cleanup(node):
             Variables.scan(node)
-            optimized = True
+            cleaned = True
         else:
             break
         
-    return optimized
+    return cleaned
 
 
 
@@ -49,24 +52,24 @@ def optimize(node):
 # Implementation
 #
 
-def __optimize(node):
+def __cleanup(node):
     """ The scanner part which looks for scopes with unused variables/params """
     
-    optimized = False
+    cleaned = False
     
     for child in list(node):
-        if child != None and __optimize(child):
-            optimized = True
+        if child != None and __cleanup(child):
+            cleaned = True
 
     if node.type == "script" and node.stats.unused and hasattr(node, "parent"):
-        if __clean(node, node.stats.unused):
-            optimized = True
+        if __recurser(node, node.stats.unused):
+            cleaned = True
 
-    return optimized
+    return cleaned
             
             
             
-def __clean(node, unused):
+def __recurser(node, unused):
     """ 
     The cleanup part which always processes one scope and cleans up params and
     variable definitions which are unused
@@ -79,7 +82,7 @@ def __clean(node, unused):
         for child in node:
             # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
             if child != None:
-                if __clean(child, unused):
+                if __recurser(child, unused):
                     retval = True
                     
 
