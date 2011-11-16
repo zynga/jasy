@@ -1,15 +1,13 @@
 #
-# Jasy - JavaScript Tooling Framework
+# Jasy - Web Tooling Framework
 # Copyright 2010-2011 Sebastian Werner
 #
-
-import logging
 
 import jasy.optimizer.CryptPrivates as CryptPrivates
 import jasy.optimizer.BlockReducer as BlockReducer
 import jasy.optimizer.LocalVariables as LocalVariables
 import jasy.optimizer.CombineDeclarations as CombineDeclarations
-import jasy.optimizer.UnusedCleaner as UnusedCleaner
+
 
 
 class OptimizationError(Exception):
@@ -18,6 +16,7 @@ class OptimizationError(Exception):
     
     def __str__(self):
         return "Error during optimization! %s" % (self.__msg)
+
 
 
 class Optimization:
@@ -36,12 +35,6 @@ class Optimization:
     def apply(self, tree):
         enabled = self.__optimizations
         
-        if "unused" in enabled:
-            try:
-                UnusedCleaner.optimize(tree)
-            except UnusedCleaner.Error as err:
-                raise OptimizationError(err)
-
         if "declarations" in enabled:
             try:
                 CombineDeclarations.optimize(tree)

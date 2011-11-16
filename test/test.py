@@ -7,15 +7,16 @@ jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir
 sys.path.insert(0, jasyroot)
 
 import jasy.parser.Parser as Parser
+
 import jasy.process.Compressor as Compressor
-
 import jasy.process.Variables as Variables
+
+import jasy.cleaner.DeadCode as DeadCode
+import jasy.cleaner.Unused as Unused
+
 import jasy.optimizer.LocalVariables as LocalVariables
-
 import jasy.optimizer.BlockReducer as BlockReducer
-
 import jasy.optimizer.CombineDeclarations as CombineDeclarations
-import jasy.optimizer.UnusedCleaner as UnusedCleaner
 import jasy.optimizer.CryptPrivates as CryptPrivates
 
 import jasy.core.Permutation as Permutation
@@ -1202,7 +1203,7 @@ class TestRemoveUnused(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
-        UnusedCleaner.optimize(node)
+        Unused.optimize(node)
         return Compressor.compress(node)        
 
     def test_var_single(self):

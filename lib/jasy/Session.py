@@ -1,5 +1,5 @@
 #
-# Jasy - JavaScript Tooling Framework
+# Jasy - Web Tooling Framework
 # Copyright 2010-2011 Sebastian Werner
 #
 

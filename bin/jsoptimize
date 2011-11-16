@@ -8,13 +8,14 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 from jasy.parser.Parser import parse
 
 from jasy.core import Permutation
-from jasy.core import DeadCode
+
+from jasy.cleaner import DeadCode
+from jasy.cleaner import Unused
 
 from jasy.optimizer import CombineDeclarations
 from jasy.optimizer import LocalVariables
 from jasy.optimizer import CryptPrivates
 from jasy.optimizer import BlockReducer
-from jasy.optimizer import UnusedCleaner
 
 from jasy.core.Variables import scan
 from jasy.process.Compressor import compress
@@ -36,7 +37,8 @@ if __name__ == "__main__":
             Permutation.Permutation(values).patch(tree)
 
         DeadCode.cleanup(tree)
-        UnusedCleaner.optimize(tree)
+        Unused.optimize(tree)
+        
         CombineDeclarations.optimize(tree)
         BlockReducer.optimize(tree)
         LocalVariables.optimize(tree)
