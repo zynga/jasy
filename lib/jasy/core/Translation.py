@@ -4,8 +4,9 @@
 #
 
 import logging, re, copy, json
+import polib
+
 from jasy.parser.Node import Node
-from jasy.ext import polib
 
 __all__ = ["TranslationError", "Translation", "hasText"]
 
