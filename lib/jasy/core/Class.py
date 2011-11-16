@@ -96,7 +96,7 @@ class Class():
         return open(self.__path, mode="r", encoding="utf-8").read()
 
 
-    def getTree(self, permutation=None):
+    def getTree(self, permutation=None, cleanup=True):
         """
         Returns the tree (of nodes from the parser) of the class. This parses the class,
         creates the tree, applies and optional permutation, scans for variables usage 
@@ -106,7 +106,7 @@ class Class():
         
         permutation = self.filterPermutation(permutation)
         
-        field = "tree[%s]-%s" % (self.__id, permutation)
+        field = "tree[%s]-%s-%s" % (self.__id, permutation, cleanup)
         tree = self.__cache.read(field, self.__mtime)
         if tree is not None:
             return tree
@@ -119,13 +119,15 @@ class Class():
             permutation.patch(tree)
 
         # Remove dead code
-        jasy.cleaner.DeadCode.cleanup(tree)
+        if cleanup:
+            jasy.cleaner.DeadCode.cleanup(tree)
 
         # Scan for variable usage
         jasy.core.Variables.scan(tree)
         
         # Remove unused variables/functions
-        jasy.cleaner.Unused.cleanup(tree)
+        if cleanup:
+            jasy.cleaner.Unused.cleanup(tree)
         
         self.__cache.store(field, tree, self.__mtime, True)
         return tree
