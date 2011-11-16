@@ -3,7 +3,6 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-import logging
 from jasy.process.Compressor import compress
 from jasy.core.Stats import Stats
 

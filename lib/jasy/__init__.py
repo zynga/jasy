@@ -15,7 +15,7 @@ from jasy.Format import *
 from jasy.File import *
 from jasy.Task import *
 
-VERSION = "0.3"
+VERSION = "0.3.1-beta"
 
 __all__ = ["main", "VERSION"]
 

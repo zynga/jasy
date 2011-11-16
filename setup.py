@@ -40,6 +40,7 @@ setup(
       
       packages = [
         'jasy',
+        'jasy.cleaner',
         'jasy.core',
         'jasy.ext',
         'jasy.optimizer',

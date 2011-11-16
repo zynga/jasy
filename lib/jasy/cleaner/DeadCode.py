@@ -47,6 +47,8 @@ It can figure out combined expressions as well like:
 
 """
 
+__all__ = ["cleanup"]
+
 import logging
 
 def cleanup(node):
