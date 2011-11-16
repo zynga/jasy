@@ -3,7 +3,15 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
+import sys, logging, os
+from optparse import OptionParser
+
+# Import some core methods and classes
 from jasy.core.Error import *
+from jasy.core.File import *
+from jasy.core.Task import *
+
+# Import top-level feature classes
 from jasy.Session import *
 from jasy.Project import *
 from jasy.Resolver import *
@@ -12,20 +20,38 @@ from jasy.Combiner import *
 from jasy.Assets import * 
 from jasy.Optimization import *
 from jasy.Format import *
-from jasy.core.File import *
-from jasy.core.Task import *
 
+# Current version. Used by setuptools.
 VERSION = "0.3.1-beta"
 
+# Export only main routine
 __all__ = ["main", "VERSION"]
 
-import sys, logging, os
-from optparse import OptionParser
 
 
-def run():
+def main():
     """
-    Main routine which should be called on startup
+    Main routine of Jasy. This method is called by the "jasy" script.
+    """
+
+    try:
+        __main()
+
+    except JasyError as error:
+        sys.stderr.write("!!! %s\n" % error)
+        sys.exit(1)
+
+    except KeyboardInterrupt:
+        sys.stderr.write("Build interrupted!\n")
+        sys.exit(2)
+
+    sys.exit(0)
+
+
+
+def __main():
+    """
+    Internal main routine. Parses command line arguments, configures logging and execute all given tasks in order
     """
 
     #
@@ -74,13 +100,15 @@ def run():
     # Find and execute build script
     #
     
+    logging.info("Jasy %s" % VERSION)
+
     if options.file:
         scriptname = options.file
     else:
         scriptname = "jasyscript.py"
         
     if not os.path.isfile(scriptname):
-        raise JasyError("Did not found '%s'!" % scriptname)
+        raise JasyError("Did not found jasy script with task definitions (%s)!" % scriptname)
 
     buildfile = open(scriptname, "r")
     retval = exec(buildfile.read(), globals())
@@ -105,22 +133,3 @@ def run():
     for name in args:
         executeTask(name)
         
-        
-
-def main():
-    """
-    Main routine of Jasy
-    """
-    
-    try:
-        run()
-
-    except JasyError as error:
-        sys.stderr.write("!!! %s\n" % error)
-        sys.exit(1)
-        
-    except KeyboardInterrupt:
-        sys.stderr.write("Build interrupted!\n")
-        sys.exit(2)
-        
-    sys.exit(0)
