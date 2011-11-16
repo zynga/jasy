@@ -39,13 +39,12 @@ setup(
       long_description = open('README.txt').read(),
       
       packages = [
+        'polib',
         'jasy',
         'jasy.cleaner',
         'jasy.core',
-        'jasy.ext',
         'jasy.optimizer',
         'jasy.parser',
-        'jasy.process',
         'jasy.tokenizer'
       ],
       

@@ -3,7 +3,7 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-from jasy.process.Compressor import compress
+from jasy.core.Compressor import compress
 from jasy.core.Stats import Stats
 
 

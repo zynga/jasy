@@ -11,7 +11,7 @@ import jasy.parser.Parser as Parser
 import jasy.core.Permutation as Permutation
 import jasy.core.Variables as Variables
 
-import jasy.process.Compressor as Compressor
+import jasy.core.Compressor as Compressor
 
 import jasy.cleaner.DeadCode as DeadCode
 import jasy.cleaner.Unused as Unused

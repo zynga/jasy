@@ -17,7 +17,7 @@ from jasy.core.Permutation import getKeys
 from jasy.core.Translation import hasText
 
 from jasy.parser.Parser import parse
-from jasy.process.Compressor import compress
+from jasy.core.Compressor import compress
 
 
 aliases = {}
