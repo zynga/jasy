@@ -10,7 +10,11 @@ import jasy.optimizer.CombineDeclarations as CombineDeclarations
 
 
 
-class OptimizationError(Exception):
+class Error(Exception):
+    """
+    Error object which is raised whenever an optimization could not be applied correctly.
+    """
+    
     def __init__(self, msg):
         self.__msg = msg
     
@@ -20,6 +24,10 @@ class OptimizationError(Exception):
 
 
 class Optimization:
+    """
+    Configures an optimization object which can be used to compress classes afterwards.
+    """
+    
     def __init__(self, *args):
         self.__optimizations = set()
         
@@ -39,25 +47,25 @@ class Optimization:
             try:
                 CombineDeclarations.optimize(tree)
             except CombineDeclarations.Error as err:
-                raise OptimizationError(err)
+                raise Error(err)
 
         if "blocks" in enabled:
             try:
                 BlockReducer.optimize(tree)
             except BlockReducer.Error as err:
-                raise OptimizationError(err)
+                raise Error(err)
 
         if "variables" in enabled:
             try:
                 LocalVariables.optimize(tree)
             except LocalVariables.Error as err:
-                raise OptimizationError(err)
+                raise Error(err)
 
         if "privates" in enabled:
             try:
                 CryptPrivates.optimize(tree)
             except CryptPrivates.Error as err:
-                raise OptimizationError(err)
+                raise Error(err)
 
     def getKey(self):
         return "+".join(sorted(self.__optimizations))

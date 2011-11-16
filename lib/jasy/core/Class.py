@@ -14,7 +14,8 @@ from jasy.core.Translation import hasText
 from jasy.parser.Parser import parse
 from jasy.process.Compressor import compress
 from jasy.core.Variables import scan
-from jasy.Optimization import OptimizationError
+
+import jasy.Optimization
 
 aliases = {}
 
@@ -260,7 +261,7 @@ class Class():
                 if optimization:
                     try:
                         optimization.apply(tree)
-                    except OptimizationError as error:
+                    except jasy.Optimization.Error as error:
                         raise Error(self, "Could not compress class! %s" % error)
                 
             compressed = compress(tree, format)
