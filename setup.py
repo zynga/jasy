@@ -43,10 +43,12 @@ setup(
         'jasy',
         'jasy.cleaner',
         'jasy.core',
+        'jasy.i18n',
         'jasy.optimizer',
         'jasy.output',
         'jasy.parser',
         'jasy.tokenizer'
+        'jasy.util'
       ],
       
       package_dir = {
