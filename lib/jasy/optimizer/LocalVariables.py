@@ -65,11 +65,11 @@ def __patch(node, blocked=None, enable=False, translate=None):
     # GENERATE TRANSLATION TABLE
     #
     if enable:
-        stats = getattr(node, "stats", None)
+        scope = getattr(node, "scope", None)
         
-        if stats:
-            declared = stats.declared
-            params = stats.params
+        if scope:
+            declared = scope.declared
+            params = scope.params
             
             if declared or params:
                 usedRepl = set()
@@ -80,7 +80,7 @@ def __patch(node, blocked=None, enable=False, translate=None):
                     # copy only the interesting ones from the shared set
                     newTranslate = {}
             
-                    for name in stats.shared:
+                    for name in scope.shared:
                         if name in translate:
                             newTranslate[name] = translate[name]
                             usedRepl.add(translate[name])
@@ -96,7 +96,7 @@ def __patch(node, blocked=None, enable=False, translate=None):
                 if declared:
                     names.update(declared)
                 
-                namesSorted = list(reversed(sorted(names, key=lambda x: stats.accessed[x] if x in stats.accessed else 0)))
+                namesSorted = list(reversed(sorted(names, key=lambda x: scope.accessed[x] if x in scope.accessed else 0)))
 
                 # Extend translation map by new replacements for locally 
                 # declared variables. Automatically ignores keywords. Only
