@@ -41,6 +41,7 @@ setup(
       packages = [
         'polib',
         'jasy',
+        'jasy.asset',
         'jasy.cleaner',
         'jasy.core',
         'jasy.i18n',

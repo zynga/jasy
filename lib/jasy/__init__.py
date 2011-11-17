@@ -11,7 +11,7 @@ from jasy.core.Error import *
 from jasy.core.Task import *
 from jasy.core.Session import *
 from jasy.core.Project import *
-from jasy.core.Asset import * 
+from jasy.asset.Asset import * 
 
 from jasy.js.Resolver import *
 from jasy.js.Sorter import *
@@ -23,7 +23,7 @@ from jasy.output.Formatting import *
 from jasy.util.File import *
 
 # Current version. Used by setuptools.
-VERSION = "0.3.1-beta"
+VERSION = "0.4-beta"
 
 # Export only main routine
 __all__ = ["main", "VERSION"]

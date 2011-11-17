@@ -6,7 +6,7 @@
 import logging, re, json, os, fnmatch
 from os.path import basename, dirname
 from jasy.util.Profiler import *
-from jasy.util.ImageInfo import ImgInfo
+from jasy.asset.ImageInfo import ImgInfo
 from jasy.util.File import *
 from jasy.core.Project import Project
 
