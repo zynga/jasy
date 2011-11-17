@@ -137,7 +137,7 @@ class Class():
         Returns a set of dependencies seen through the given list of known 
         classes (ignoring all unknown items in original set). This method
         makes use of the meta data (see core/MetaData.py) and the variable data 
-        (see parser/ScopeData.py).
+        (see parse/ScopeData.py).
         """
         
         permutation = self.filterPermutation(permutation)
