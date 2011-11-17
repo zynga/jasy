@@ -4,7 +4,7 @@
 #
 
 from jasy.parser.Node import Node
-from jasy.core.Compressor import compress
+from jasy.output.Compressor import compress
 from jasy.parser.Lang import expressionOrder, expressions
 import logging
 

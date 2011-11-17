@@ -10,7 +10,6 @@ import jasy.optimizer.CombineDeclarations as CombineDeclarations
 import jasy.optimizer.ClosureWrapper as ClosureWrapper
 
 
-
 __all__ = ["Error", "Optimization"]
 
 
@@ -30,21 +29,31 @@ class Error(Exception):
 class Optimization:
     """
     Configures an optimization object which can be used to compress classes afterwards.
+    The optimization set is frozen after initialization which also generates the unique
+    key based on the given optimizations.
     """
+    
+    __allowed = ("wrap", "declarations", "blocks", "variables", "privates")
     
     def __init__(self, *args):
         self.__optimizations = set()
         
         for identifier in args:
-            self.enable(identifier)
+            if not identifier in self.__allowed:
+                logging.warn("Unsupported optimization: %s", identifier)
+                
+            self.__optimizations.add(identifier)
+            
+        self.__key = "+".join(sorted(self.__optimizations))
         
-    def enable(self, identifier):
-        self.__optimizations.add(identifier)
-        
-    def disable(self, identifier):
-        self.__optimizations.remove(identifier)
-        
+
     def apply(self, tree):
+        """
+        Applies the configured optimizations to the given node tree. Modifies the tree in-place
+        to be sure to have a deep copy if you need the original one. It raises an error instance
+        whenever any optimization could not be applied to the given tree.
+        """
+        
         enabled = self.__optimizations
         
         if "wrap" in enabled:
@@ -79,7 +88,11 @@ class Optimization:
                 
                 
     def getKey(self):
-        return "+".join(sorted(self.__optimizations))
+        """
+        Returns a unique key to identify this optimization set
+        """
+        
+        return self.__key
         
         
     # Map Python built-ins

@@ -3,7 +3,7 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-from jasy.core.Compressor import compress
+from jasy.output.Compressor import compress
 from jasy.parser.ScopeData import ScopeData
 
 

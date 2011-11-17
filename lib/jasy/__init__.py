@@ -16,10 +16,10 @@ from jasy.Session import *
 from jasy.Project import *
 from jasy.Resolver import *
 from jasy.Sorter import *
-from jasy.Combiner import *
+from jasy.output.Combiner import *
 from jasy.Assets import * 
-from jasy.Optimization import *
-from jasy.Format import *
+from jasy.output.Optimization import *
+from jasy.output.Formatting import *
 
 # Current version. Used by setuptools.
 VERSION = "0.3.1-beta"

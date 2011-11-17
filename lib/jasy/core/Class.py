@@ -11,12 +11,12 @@ import jasy.parser.ScopeScanner as ScopeScanner
 import jasy.cleaner.DeadCode
 import jasy.cleaner.Unused
 
-import jasy.Optimization
+import jasy.output.Optimization
 
 from jasy.core.MetaData import MetaData
 from jasy.core.Permutation import getKeys
 from jasy.core.Translation import hasText
-from jasy.core.Compressor import compress
+from jasy.output.Compressor import compress
 
 
 aliases = {}
@@ -270,7 +270,7 @@ class Class():
                 if optimization:
                     try:
                         optimization.apply(tree)
-                    except jasy.Optimization.Error as error:
+                    except jasy.output.Optimization.Error as error:
                         raise Error(self, "Could not compress class! %s" % error)
                 
             compressed = compress(tree, format)

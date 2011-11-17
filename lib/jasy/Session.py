@@ -12,8 +12,8 @@ from jasy.core.LocaleData import *
 from jasy.Project import Project
 from jasy.core.File import *
 from jasy.Resolver import Resolver
-from jasy.Optimization import Optimization
-from jasy.Combiner import Combiner
+from jasy.output.Optimization import Optimization
+from jasy.output.Combiner import Combiner
 from jasy.Sorter import Sorter
 
 

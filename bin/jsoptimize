@@ -9,7 +9,7 @@ from jasy.parser.Parser import parse
 from jasy.parser.ScopeScanner import scan
 
 from jasy.core.Permutation import Permutation
-from jasy.core.Compressor import compress
+from jasy.output.Compressor import compress
 
 from jasy.cleaner import DeadCode
 from jasy.cleaner import Unused

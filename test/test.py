@@ -10,7 +10,7 @@ import jasy.parser.Parser as Parser
 import jasy.parser.ScopeScanner as ScopeScanner
 
 import jasy.core.Permutation as Permutation
-import jasy.core.Compressor as Compressor
+import jasy.output.Compressor as Compressor
 
 import jasy.cleaner.DeadCode as DeadCode
 import jasy.cleaner.Unused as Unused
