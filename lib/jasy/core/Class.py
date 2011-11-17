@@ -144,6 +144,7 @@ class Class():
         
         meta = self.getMetaData(permutation)
         scope = self.getScopeData(permutation)
+        
         result = set()
         
         # Manually defined names/classes

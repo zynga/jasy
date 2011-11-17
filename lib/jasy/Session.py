@@ -6,7 +6,6 @@
 import logging, itertools, time, atexit, json
 from jasy.core.Permutation import Permutation
 from jasy.core.Translation import Translation
-from jasy.core.Info import *
 from jasy.core.Profiler import *
 from jasy.core.LocaleData import *
 

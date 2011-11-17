@@ -4,32 +4,39 @@
 #
 
 import logging, os, random
-import jasy.core.Class
-import jasy.core.Error
+
+from jasy.core.Class import Error as ClassError
+from jasy.core.Error import JasyError
 
 __all__ = ["Combiner"]
 
 
 class Combiner():
-    """ Combines the code/path of a list of classes into one string """
+    """ 
+    Combines the code/path of a list of classes into one string 
+    """
     
     def __init__(self, classList):
         self.__classList = classList
         
     
     def getCombinedCode(self):
-        """ Combines the unmodified content of the stored class list """
+        """
+        Combines the unmodified content of the stored class list
+        """
 
         return "".join([classObj.getText() for classObj in self.__classList])
     
     
     def getCompressedCode(self, permutation=None, translation=None, optimization=None, format=None):
-        """ Combines the compressed result of the stored class list """
+        """
+        Combines the compressed result of the stored class list
+        """
 
         try:
             return "".join([classObj.getCompressed(permutation, translation, optimization, format) for classObj in self.__classList])
-        except jasy.core.Class.Error as error:
-            raise jasy.core.Error.JasyError("Error during class compression! %s" % error)
+        except ClassError as error:
+            raise JasyError("Error during class compression! %s" % error)
             
 
 
