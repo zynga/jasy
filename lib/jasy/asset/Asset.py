@@ -5,15 +5,16 @@
 
 import logging, re, json, os, fnmatch
 from os.path import basename, dirname
+
 from jasy.util.Profiler import *
 from jasy.asset.ImageInfo import ImgInfo
 from jasy.util.File import *
 from jasy.core.Project import Project
 
-__all__ = ["Assets"]
+__all__ = ["Asset"]
 
 
-class Assets:
+class Asset:
     def __init__(self, session, classes, permutation=None):
         self.__session = session
         self.__projects = session.getProjects()

@@ -11,6 +11,7 @@ from jasy.core.Error import *
 from jasy.core.Task import *
 from jasy.core.Session import *
 from jasy.core.Project import *
+
 from jasy.asset.Asset import * 
 
 from jasy.js.Resolver import *
