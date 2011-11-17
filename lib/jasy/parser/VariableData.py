@@ -3,11 +3,16 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-__all__ = ["Stats"]
+__all__ = ["VariableData"]
 
-class Stats():
+class VariableData():
     """
-    Used by core/Variables.py to store the resulting statistics data efficiently.
+    Used by core/Variables.py to store the resulting statistics data efficiently. Contains information about:
+    
+    * Declared Variables (declared)
+    * Modified Variables (modified)
+    * Shared
+    * Unused Variables (unused)
     """
 
     __slots__ = ["name", "params", "declared", "accessed", "modified", "shared", "unused", "packages"]

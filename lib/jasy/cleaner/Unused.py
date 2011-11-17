@@ -4,8 +4,8 @@
 #
 
 from jasy.parser.Node import Node
+import jasy.parser.VariableScanner as VariableScanner
 import logging
-import jasy.core.Variables as Variables
 
 __all__ = ["cleanup", "Error"]
 
@@ -28,8 +28,8 @@ def cleanup(node):
     """
     """
     
-    if not hasattr(node, "stats"):
-        Variables.scan(node)
+    if not hasattr(node, "variables"):
+        VariableScanner.scan(node)
 
     # Re cleanup until nothing to remove is found
     x = 0
@@ -39,7 +39,7 @@ def cleanup(node):
         x = x + 1
         logging.debug("Removing unused variables [%s]..." % x)
         if __cleanup(node):
-            Variables.scan(node)
+            VariableScanner.scan(node)
             cleaned = True
         else:
             break

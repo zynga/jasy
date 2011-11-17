@@ -8,26 +8,26 @@ logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
 from jasy.parser.Parser import parse
-from jasy.core.Variables import scan
+from jasy.parser.VariableScanner import scan
 
 def jsdeps(source, filename=None):
     root = parse(source, filename)
-    stats = scan(root)
+    variables = scan(root)
     
-    if stats.modified:
+    if variables.modified:
         print("Exported Variables:")
-        for name in sorted(stats.modified):
+        for name in sorted(variables.modified):
             print(" - %s" % name)
 
-    if stats.shared:
+    if variables.shared:
         print("Accessed Globals:")
-        for name in sorted(stats.shared):
-            print(" - %s (%sx)" % (name, stats.shared[name]))
+        for name in sorted(variables.shared):
+            print(" - %s (%sx)" % (name, variables.shared[name]))
 
-    if stats.packages:
+    if variables.packages:
         print("Accessed Packages:")
-        for package in sorted(stats.packages):
-            print(" - %s (%sx)" % (package, stats.packages[package]))
+        for package in sorted(variables.packages):
+            print(" - %s (%sx)" % (package, variables.packages[package]))
 
 
 if __name__ == "__main__":

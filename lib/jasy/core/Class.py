@@ -5,7 +5,8 @@
 
 import os, logging, copy, hashlib
 
-import jasy.core.Variables
+import jasy.parser.Parser as Parser
+import jasy.parser.VariableScanner as VariableScanner
 
 import jasy.cleaner.DeadCode
 import jasy.cleaner.Unused
@@ -15,8 +16,6 @@ import jasy.Optimization
 from jasy.core.MetaData import MetaData
 from jasy.core.Permutation import getKeys
 from jasy.core.Translation import hasText
-
-from jasy.parser.Parser import parse
 from jasy.core.Compressor import compress
 
 
@@ -112,7 +111,7 @@ class Class():
             return tree
             
         # Parse tree
-        tree = parse(self.getText(), self.__id)
+        tree = Parser.parse(self.getText(), self.__id)
 
         # Apply permutation
         if permutation:
@@ -123,7 +122,7 @@ class Class():
             jasy.cleaner.DeadCode.cleanup(tree)
 
         # Scan for variable usage
-        jasy.core.Variables.scan(tree)
+        VariableScanner.scan(tree)
         
         # Remove unused variables/functions
         if cleanup:
@@ -137,15 +136,14 @@ class Class():
         """ 
         Returns a set of dependencies seen through the given list of known 
         classes (ignoring all unknown items in original set). This method
-        makes use of the meta data (see core/MetaData.py) and the statistics data 
-        (see getStats() in this class) which uses the data of the variable
-        scanner in (core/Variables.py).
+        makes use of the meta data (see core/MetaData.py) and the variable data 
+        (see core/VariableData.py).
         """
         
         permutation = self.filterPermutation(permutation)
         
         meta = self.getMeta(permutation)
-        stats = self.getStats(permutation)
+        variables = self.getVariables(permutation)
         result = set()
         
         # Manually defined names/classes
@@ -154,12 +152,12 @@ class Class():
                 result.add(classes[name])
         
         # Globally modified names (mostly relevant when working without namespaces)
-        for name in stats.shared:
+        for name in variables.shared:
             if name != self.__id and name in classes:
                 result.add(classes[name])
         
         # Add classes from detected package access
-        for package in stats.packages:
+        for package in variables.packages:
             if package in aliases:
                 className = aliases[package]
                 if className in classes:
@@ -186,19 +184,21 @@ class Class():
         return result        
         
         
-    def getStats(self, permutation=None):
+    def getVariables(self, permutation=None):
         """
+        Returns the top level variables object which contains information about the
+        global variable and package usage.
         """
         
         permutation = self.filterPermutation(permutation)
         
-        field = "stats[%s]-%s" % (self.__id, permutation)
-        stats = self.__cache.read(field, self.__mtime)
-        if stats == None:
-            stats = self.getTree(permutation).stats
-            self.__cache.store(field, stats, self.__mtime)
+        field = "variables[%s]-%s" % (self.__id, permutation)
+        variables = self.__cache.read(field, self.__mtime)
+        if variables == None:
+            variables = self.getTree(permutation).variables
+            self.__cache.store(field, variables, self.__mtime)
         
-        return stats
+        return variables
         
         
     def getMeta(self, permutation=None):

@@ -6,8 +6,10 @@ import sys, os, logging
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
 from jasy.parser.Parser import parse
+from jasy.parser.VariableScanner import scan
 
-from jasy.core import Permutation
+from jasy.core.Permutation import Permutation
+from jasy.core.Compressor import compress
 
 from jasy.cleaner import DeadCode
 from jasy.cleaner import Unused
@@ -17,8 +19,6 @@ from jasy.optimizer import LocalVariables
 from jasy.optimizer import CryptPrivates
 from jasy.optimizer import BlockReducer
 
-from jasy.core.Variables import scan
-from jasy.core.Compressor import compress
 
 
 if __name__ == "__main__":
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         tree = parse(text, fname)
     
         if values:
-            Permutation.Permutation(values).patch(tree)
+            Permutation(values).patch(tree)
 
         DeadCode.cleanup(tree)
         Unused.optimize(tree)

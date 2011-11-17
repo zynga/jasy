@@ -10,11 +10,6 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 from jasy.parser.Parser import parse
 from jasy.core.Compressor import compress
 
-
-def jscompress(source, filename=None):
-    return compress(parse(source, filename))
-
-
 if __name__ == "__main__":
     for fname in sys.argv[1:]:
-        print(jscompress(open(fname, encoding="utf-8").read(), fname))
+        print(compress(parse(open(fname, encoding="utf-8").read(), fname), fname))
