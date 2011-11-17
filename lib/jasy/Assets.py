@@ -44,7 +44,7 @@ class Assets:
         # Merge asset hints from all classes and remove duplicates
         hints = set()
         for classObj in self.__classes:
-            hints.update(classObj.getMeta(self.__permutation).assets)
+            hints.update(classObj.getMetaData(self.__permutation).assets)
         
         # Compile filter expressions
         matcher = "^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints])

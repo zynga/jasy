@@ -53,7 +53,7 @@ class Class():
         
         # This is by far slower and not the default but helps in specific project structures
         if project is None or project.isFuzzy():
-            self.__name = self.getMeta().name
+            self.__name = self.getMetaData().name
             if self.__name is None:
                 raise Exception("Could not figure out fuzzy class name of: %s" % path)
         else:
@@ -142,8 +142,8 @@ class Class():
         
         permutation = self.filterPermutation(permutation)
         
-        meta = self.getMeta(permutation)
-        variables = self.getVariables(permutation)
+        meta = self.getMetaData(permutation)
+        scope = self.getScopeData(permutation)
         result = set()
         
         # Manually defined names/classes
@@ -152,12 +152,12 @@ class Class():
                 result.add(classes[name])
         
         # Globally modified names (mostly relevant when working without namespaces)
-        for name in variables.shared:
+        for name in scope.shared:
             if name != self.__id and name in classes:
                 result.add(classes[name])
         
         # Add classes from detected package access
-        for package in variables.packages:
+        for package in scope.packages:
             if package in aliases:
                 className = aliases[package]
                 if className in classes:
@@ -184,24 +184,24 @@ class Class():
         return result        
         
         
-    def getVariables(self, permutation=None):
+    def getScopeData(self, permutation=None):
         """
-        Returns the top level variables object which contains information about the
-        global variable and package usage.
+        Returns the top level scope object which contains information about the
+        global variable and package usage/influence.
         """
         
         permutation = self.filterPermutation(permutation)
         
-        field = "variables[%s]-%s" % (self.__id, permutation)
-        variables = self.__cache.read(field, self.__mtime)
-        if variables == None:
-            variables = self.getTree(permutation).variables
-            self.__cache.store(field, variables, self.__mtime)
+        field = "scope[%s]-%s" % (self.__id, permutation)
+        scope = self.__cache.read(field, self.__mtime)
+        if scope == None:
+            scope = self.getTree(permutation).scope
+            self.__cache.store(field, scope, self.__mtime)
         
-        return variables
+        return scope
         
         
-    def getMeta(self, permutation=None):
+    def getMetaData(self, permutation=None):
         permutation = self.filterPermutation(permutation)
         
         field = "meta[%s]-%s" % (self.__id, permutation)
