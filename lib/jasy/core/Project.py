@@ -5,7 +5,7 @@
 
 import os, logging, json
 
-from jasy.core.Class import Class
+from jasy.js.Class import Class
 from jasy.core.Cache import Cache
 from jasy.core.Error import *
         

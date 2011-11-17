@@ -9,7 +9,7 @@ sys.path.insert(0, jasyroot)
 import jasy.parser.Parser as Parser
 import jasy.parser.ScopeScanner as ScopeScanner
 
-import jasy.core.Permutation as Permutation
+import jasy.js.Permutation as Permutation
 import jasy.output.Compressor as Compressor
 
 import jasy.cleaner.DeadCode as DeadCode

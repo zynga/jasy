@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 from jasy.parser.Parser import parse
 from jasy.parser.ScopeScanner import scan
 
-from jasy.core.Permutation import Permutation
+from jasy.js.Permutation import Permutation
 from jasy.output.Compressor import compress
 
 from jasy.cleaner import DeadCode

@@ -8,7 +8,7 @@ from os.path import basename, dirname
 from jasy.util.Profiler import *
 from jasy.util.ImageInfo import ImgInfo
 from jasy.util.File import *
-from jasy.Project import Project
+from jasy.core.Project import Project
 
 __all__ = ["Assets"]
 

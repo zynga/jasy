@@ -4,17 +4,17 @@
 #
 
 import logging, itertools, time, atexit, json
-from jasy.core.Permutation import Permutation
+from jasy.js.Permutation import Permutation
 from jasy.i18n.Translation import Translation
 from jasy.util.Profiler import *
 from jasy.i18n.LocaleData import *
 
-from jasy.Project import Project
+from jasy.core.Project import Project
 from jasy.util.File import *
-from jasy.Resolver import Resolver
+from jasy.js.Resolver import Resolver
 from jasy.output.Optimization import Optimization
 from jasy.output.Combiner import Combiner
-from jasy.Sorter import Sorter
+from jasy.js.Sorter import Sorter
 
 
 def toJSON(obj, sort_keys=False):

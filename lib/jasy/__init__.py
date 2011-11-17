@@ -8,18 +8,19 @@ from optparse import OptionParser
 
 # Import some core methods and classes
 from jasy.core.Error import *
-from jasy.util.File import *
 from jasy.core.Task import *
+from jasy.core.Session import *
+from jasy.core.Project import *
+from jasy.core.Asset import * 
 
-# Import top-level feature classes
-from jasy.Session import *
-from jasy.Project import *
-from jasy.Resolver import *
-from jasy.Sorter import *
+from jasy.js.Resolver import *
+from jasy.js.Sorter import *
+
 from jasy.output.Combiner import *
-from jasy.Assets import * 
 from jasy.output.Optimization import *
 from jasy.output.Formatting import *
+
+from jasy.util.File import *
 
 # Current version. Used by setuptools.
 VERSION = "0.3.1-beta"

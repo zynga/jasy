@@ -5,7 +5,7 @@
 
 import logging, os, random
 
-from jasy.core.Class import Error as ClassError
+from jasy.js.Class import Error as ClassError
 from jasy.core.Error import JasyError
 
 __all__ = ["Combiner"]

@@ -13,8 +13,8 @@ import jasy.cleaner.Unused
 
 import jasy.output.Optimization
 
-from jasy.core.MetaData import MetaData
-from jasy.core.Permutation import getKeys
+from jasy.js.MetaData import MetaData
+from jasy.js.Permutation import getKeys
 from jasy.i18n.Translation import hasText
 from jasy.output.Compressor import compress
 

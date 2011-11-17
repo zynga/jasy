@@ -44,6 +44,7 @@ setup(
         'jasy.cleaner',
         'jasy.core',
         'jasy.i18n',
+        'jasy.js',
         'jasy.optimizer',
         'jasy.output',
         'jasy.parser',
