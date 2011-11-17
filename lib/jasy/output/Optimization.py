@@ -3,6 +3,8 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
+import logging
+
 import jasy.optimizer.CryptPrivates as CryptPrivates
 import jasy.optimizer.BlockReducer as BlockReducer
 import jasy.optimizer.LocalVariables as LocalVariables
@@ -46,6 +48,14 @@ class Optimization:
             
         self.__key = "+".join(sorted(self.__optimizations))
         
+
+    def has(self, key):
+        """
+        Whether the given optimization is enabled.
+        """
+        
+        return key in self.__optimizations
+
 
     def apply(self, tree):
         """

@@ -28,6 +28,14 @@ class Formatting:
         self.__key = "+".join(sorted(self.__formatting))
         
         
+    def has(self, key):
+        """
+        Whether the given formatting is enabled.
+        """
+
+        return key in self.__formatting
+        
+        
     def getKey(self):
         """
         Returns a unique key to identify this formatting set
