@@ -15,7 +15,7 @@ import jasy.output.Optimization
 
 from jasy.core.MetaData import MetaData
 from jasy.core.Permutation import getKeys
-from jasy.core.Translation import hasText
+from jasy.i18n.Translation import hasText
 from jasy.output.Compressor import compress
 
 
