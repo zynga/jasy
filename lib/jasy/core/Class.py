@@ -6,7 +6,7 @@
 import os, logging, copy, hashlib
 
 import jasy.parser.Parser as Parser
-import jasy.parser.VariableScanner as VariableScanner
+import jasy.parser.ScopeScanner as ScopeScanner
 
 import jasy.cleaner.DeadCode
 import jasy.cleaner.Unused
@@ -122,7 +122,7 @@ class Class():
             jasy.cleaner.DeadCode.cleanup(tree)
 
         # Scan for variable usage
-        VariableScanner.scan(tree)
+        ScopeScanner.scan(tree)
         
         # Remove unused variables/functions
         if cleanup:
@@ -137,7 +137,7 @@ class Class():
         Returns a set of dependencies seen through the given list of known 
         classes (ignoring all unknown items in original set). This method
         makes use of the meta data (see core/MetaData.py) and the variable data 
-        (see core/VariableData.py).
+        (see parser/ScopeData.py).
         """
         
         permutation = self.filterPermutation(permutation)

@@ -7,7 +7,7 @@ jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir
 sys.path.insert(0, jasyroot)
 
 import jasy.parser.Parser as Parser
-import jasy.parser.VariableScanner as VariableScanner
+import jasy.parser.ScopeScanner as ScopeScanner
 
 import jasy.core.Permutation as Permutation
 import jasy.core.Compressor as Compressor
@@ -318,7 +318,7 @@ class TestLocalVariables(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
-        VariableScanner.scan(node)
+        ScopeScanner.scan(node)
         LocalVariables.optimize(node)
         return Compressor.compress(node)
 
@@ -1070,7 +1070,7 @@ class TestCombineDeclarations(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
-        VariableScanner.scan(node)
+        ScopeScanner.scan(node)
         CombineDeclarations.optimize(node)
         return Compressor.compress(node)
 

@@ -4,7 +4,7 @@
 #
 
 from jasy.parser.Node import Node
-import jasy.parser.VariableScanner as VariableScanner
+import jasy.parser.ScopeScanner as ScopeScanner
 import logging
 
 __all__ = ["cleanup", "Error"]
@@ -29,7 +29,7 @@ def cleanup(node):
     """
     
     if not hasattr(node, "variables"):
-        VariableScanner.scan(node)
+        ScopeScanner.scan(node)
 
     # Re cleanup until nothing to remove is found
     x = 0
@@ -39,7 +39,7 @@ def cleanup(node):
         x = x + 1
         logging.debug("Removing unused variables [%s]..." % x)
         if __cleanup(node):
-            VariableScanner.scan(node)
+            ScopeScanner.scan(node)
             cleaned = True
         else:
             break
@@ -61,8 +61,8 @@ def __cleanup(node):
         if child != None and __cleanup(child):
             cleaned = True
 
-    if node.type == "script" and node.stats.unused and hasattr(node, "parent"):
-        if __recurser(node, node.stats.unused):
+    if node.type == "script" and node.scope.unused and hasattr(node, "parent"):
+        if __recurser(node, node.scope.unused):
             cleaned = True
 
     return cleaned

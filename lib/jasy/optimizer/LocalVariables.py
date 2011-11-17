@@ -31,8 +31,8 @@ def optimize(node):
     
     logging.debug(">>> Renaming local variables...")
     
-    blocked = set(node.stats.shared.keys())
-    blocked.update(node.stats.modified)
+    blocked = set(node.scope.shared.keys())
+    blocked.update(node.scope.modified)
     
     __patch(node, blocked)
 

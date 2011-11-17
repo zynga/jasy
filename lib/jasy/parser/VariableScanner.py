@@ -4,7 +4,7 @@
 #
 
 from jasy.core.Compressor import compress
-from jasy.parser.VariableData import VariableData
+from jasy.parser.ScopeData import ScopeData
 
 
 __all__ = ["scan"]
@@ -16,7 +16,7 @@ __all__ = ["scan"]
 
 def scan(tree):
     """
-    Scans the given tree and attaches variable data instances (core/VariableData.py) to every scope (aka function).
+    Scans the given tree and attaches variable data instances (core/ScopeData.py) to every scope (aka function).
     This data is being stored independently from the real tree so that if you modifiy the tree the
     data is not automatically updated. This means that every time you modify the tree heavily,
     it might make sense to re-execute this method to bring it in sync to the current tree structure.
@@ -139,7 +139,7 @@ def __scanScope(node):
     """
     
     # Initialize statistics object for this scope
-    data = VariableData()
+    data = ScopeData()
     node.variables = data
     
     # Add params to declaration list

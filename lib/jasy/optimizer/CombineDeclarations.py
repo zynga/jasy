@@ -88,7 +88,7 @@ def __combineSiblings(node):
 def __combineVarStatements(node):
     """Top level method called to optimize a script node"""
     
-    if len(node.stats.declared) == 0:
+    if len(node.scope.declared) == 0:
         return
     
     firstVar = __findFirstVarStatement(node)
