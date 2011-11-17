@@ -6,11 +6,11 @@
 import logging, itertools, time, atexit, json
 from jasy.core.Permutation import Permutation
 from jasy.core.Translation import Translation
-from jasy.core.Profiler import *
+from jasy.util.Profiler import *
 from jasy.core.LocaleData import *
 
 from jasy.Project import Project
-from jasy.core.File import *
+from jasy.util.File import *
 from jasy.Resolver import Resolver
 from jasy.output.Optimization import Optimization
 from jasy.output.Combiner import Combiner

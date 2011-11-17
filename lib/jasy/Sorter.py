@@ -4,7 +4,7 @@
 #
 
 import logging, time
-from jasy.core.Profiler import *
+from jasy.util.Profiler import *
 
 
 __all__ = ["Sorter"]

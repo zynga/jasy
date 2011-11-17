@@ -8,7 +8,7 @@ from optparse import OptionParser
 
 # Import some core methods and classes
 from jasy.core.Error import *
-from jasy.core.File import *
+from jasy.util.File import *
 from jasy.core.Task import *
 
 # Import top-level feature classes
