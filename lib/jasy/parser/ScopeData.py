@@ -1,5 +1,5 @@
 #
-# Jasy - Storage for statistics data
+# Jasy - Web Tooling Framework
 # Copyright 2010-2011 Sebastian Werner
 #
 

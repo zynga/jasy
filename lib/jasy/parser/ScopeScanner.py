@@ -1,5 +1,5 @@
 #
-# Jasy - Scanner for variable usage
+# Jasy - Web Tooling Framework
 # Copyright 2010-2011 Sebastian Werner
 #
 

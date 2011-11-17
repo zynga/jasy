@@ -6,7 +6,7 @@
 import sys, logging, os
 from optparse import OptionParser
 
-# Import some core methods and classes
+# Import environment for JasyScript developers
 from jasy.core.Error import *
 from jasy.core.Task import *
 from jasy.core.Session import *
@@ -23,7 +23,7 @@ from jasy.output.Formatting import *
 
 from jasy.util.File import *
 
-# Current version. Used by setuptools.
+# Current version. Used by setuptools
 VERSION = "0.4-beta"
 
 # Export only main routine
