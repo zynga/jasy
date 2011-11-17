@@ -4,7 +4,7 @@
 #
 
 import logging, binascii, zlib, json
-from jasy.tokenizer.Tokenizer import Tokenizer
+from jasy.tokenize.Tokenizer import Tokenizer
 from jasy.parser.Parser import parseExpression
 
 __all__ = ["Permutation", "getKeys"]

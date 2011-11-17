@@ -8,8 +8,8 @@ import os, logging, copy, hashlib
 import jasy.parser.Parser as Parser
 import jasy.parser.ScopeScanner as ScopeScanner
 
-import jasy.cleaner.DeadCode
-import jasy.cleaner.Unused
+import jasy.clean.DeadCode
+import jasy.clean.Unused
 
 import jasy.output.Optimization
 
@@ -119,14 +119,14 @@ class Class():
 
         # Remove dead code
         if cleanup:
-            jasy.cleaner.DeadCode.cleanup(tree)
+            jasy.clean.DeadCode.cleanup(tree)
 
         # Scan for variable usage
         ScopeScanner.scan(tree)
         
         # Remove unused variables/functions
         if cleanup:
-            jasy.cleaner.Unused.cleanup(tree)
+            jasy.clean.Unused.cleanup(tree)
         
         self.__cache.store(field, tree, self.__mtime, True)
         return tree

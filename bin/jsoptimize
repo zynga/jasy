@@ -11,13 +11,13 @@ from jasy.parser.ScopeScanner import scan
 from jasy.js.Permutation import Permutation
 from jasy.output.Compressor import compress
 
-from jasy.cleaner import DeadCode
-from jasy.cleaner import Unused
+from jasy.clean import DeadCode
+from jasy.clean import Unused
 
-from jasy.optimizer import CombineDeclarations
-from jasy.optimizer import LocalVariables
-from jasy.optimizer import CryptPrivates
-from jasy.optimizer import BlockReducer
+from jasy.optimize import CombineDeclarations
+from jasy.optimize import LocalVariables
+from jasy.optimize import CryptPrivates
+from jasy.optimize import BlockReducer
 
 
 

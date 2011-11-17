@@ -5,11 +5,11 @@
 
 import logging
 
-import jasy.optimizer.CryptPrivates as CryptPrivates
-import jasy.optimizer.BlockReducer as BlockReducer
-import jasy.optimizer.LocalVariables as LocalVariables
-import jasy.optimizer.CombineDeclarations as CombineDeclarations
-import jasy.optimizer.ClosureWrapper as ClosureWrapper
+import jasy.optimize.CryptPrivates as CryptPrivates
+import jasy.optimize.BlockReducer as BlockReducer
+import jasy.optimize.LocalVariables as LocalVariables
+import jasy.optimize.CombineDeclarations as CombineDeclarations
+import jasy.optimize.ClosureWrapper as ClosureWrapper
 
 
 __all__ = ["Error", "Optimization"]

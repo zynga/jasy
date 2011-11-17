@@ -4,7 +4,7 @@
 #
 
 import string, logging
-from jasy.tokenizer.Tokenizer import keywords
+from jasy.tokenize.Tokenizer import keywords
 
 __all__ = ["optimize", "Error"]
 

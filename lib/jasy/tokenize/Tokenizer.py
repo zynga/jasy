@@ -12,8 +12,8 @@
 
 import re
 from copy import copy
-from jasy.tokenizer.Lang import keywords
-from jasy.tokenizer.Comment import Comment, CommentException
+from jasy.tokenize.Lang import keywords
+from jasy.tokenize.Comment import Comment, CommentException
 
 __all__ = [ "Tokenizer" ]
 
