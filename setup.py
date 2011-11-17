@@ -42,14 +42,14 @@ setup(
         'polib',
         'jasy',
         'jasy.asset',
-        'jasy.clean',
+        'jasy.js.clean',
         'jasy.core',
         'jasy.i18n',
         'jasy.js',
-        'jasy.optimize',
-        'jasy.output',
-        'jasy.parser',
-        'jasy.tokenize'
+        'jasy.js.optimize',
+        'jasy.js.output',
+        'jasy.js.parse',
+        'jasy.js.tokenize'
         'jasy.util'
       ],
       

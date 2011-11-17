@@ -3,9 +3,9 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-from jasy.parser.Node import Node
-from jasy.output.Compressor import compress
-from jasy.parser.Lang import expressionOrder, expressions
+from jasy.js.parse.Node import Node
+from jasy.js.output.Compressor import compress
+from jasy.js.parse.Lang import expressionOrder, expressions
 import logging
 
 __all__ = ["optimize", "Error"]

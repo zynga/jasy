@@ -3,8 +3,8 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-from jasy.output.Compressor import compress
-from jasy.parser.ScopeData import ScopeData
+from jasy.js.output.Compressor import compress
+from jasy.js.parse.ScopeData import ScopeData
 
 
 __all__ = ["scan"]

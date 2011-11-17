@@ -4,8 +4,8 @@
 #
 
 import re, sys, json
-from jasy.tokenize.Lang import keywords
-from jasy.parser.Lang import expressions, futureReserved
+from jasy.js.tokenize.Lang import keywords
+from jasy.js.parse.Lang import expressions, futureReserved
 
 all = [ "compress" ]
 

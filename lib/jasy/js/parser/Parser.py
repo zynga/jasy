@@ -10,11 +10,11 @@
 #   - Sebastian Werner <info@sebastian-werner.net> (Python Port) (2010)
 #
 
-from jasy.tokenize.Tokenizer import Token
-from jasy.tokenize.Tokenizer import Tokenizer
-from jasy.tokenize.Lang import keywords
-from jasy.parser.Node import Node
-from jasy.parser.VanillaBuilder import VanillaBuilder
+from jasy.js.tokenize.Tokenizer import Token
+from jasy.js.tokenize.Tokenizer import Tokenizer
+from jasy.js.tokenize.Lang import keywords
+from jasy.js.parse.Node import Node
+from jasy.js.parse.VanillaBuilder import VanillaBuilder
 
 __all__ = [ "parse", "parseExpression" ]
 

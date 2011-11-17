@@ -5,18 +5,18 @@
 
 import os, logging, copy, hashlib
 
-import jasy.parser.Parser as Parser
-import jasy.parser.ScopeScanner as ScopeScanner
+import jasy.js.parse.Parser as Parser
+import jasy.js.parse.ScopeScanner as ScopeScanner
 
-import jasy.clean.DeadCode
-import jasy.clean.Unused
+import jasy.js.clean.DeadCode
+import jasy.js.clean.Unused
 
-import jasy.output.Optimization
+import jasy.js.output.Optimization
 
 from jasy.js.MetaData import MetaData
 from jasy.js.Permutation import getKeys
 from jasy.i18n.Translation import hasText
-from jasy.output.Compressor import compress
+from jasy.js.output.Compressor import compress
 
 
 aliases = {}
@@ -119,14 +119,14 @@ class Class():
 
         # Remove dead code
         if cleanup:
-            jasy.clean.DeadCode.cleanup(tree)
+            jasy.js.clean.DeadCode.cleanup(tree)
 
         # Scan for variable usage
         ScopeScanner.scan(tree)
         
         # Remove unused variables/functions
         if cleanup:
-            jasy.clean.Unused.cleanup(tree)
+            jasy.js.clean.Unused.cleanup(tree)
         
         self.__cache.store(field, tree, self.__mtime, True)
         return tree
@@ -270,7 +270,7 @@ class Class():
                 if optimization:
                     try:
                         optimization.apply(tree)
-                    except jasy.output.Optimization.Error as error:
+                    except jasy.js.output.Optimization.Error as error:
                         raise Error(self, "Could not compress class! %s" % error)
                 
             compressed = compress(tree, format)

@@ -4,8 +4,8 @@
 #
 
 import logging, binascii, zlib, json
-from jasy.tokenize.Tokenizer import Tokenizer
-from jasy.parser.Parser import parseExpression
+from jasy.js.tokenize.Tokenizer import Tokenizer
+from jasy.js.parse.Parser import parseExpression
 
 __all__ = ["Permutation", "getKeys"]
 

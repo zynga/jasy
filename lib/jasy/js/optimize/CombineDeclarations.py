@@ -3,7 +3,7 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-from jasy.parser.Node import Node
+from jasy.js.parse.Node import Node
 import logging
 
 __all__ = ["optimize", "Error"]

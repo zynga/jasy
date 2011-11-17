@@ -6,19 +6,19 @@ import sys, os, unittest
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, "lib"))
 sys.path.insert(0, jasyroot)
 
-import jasy.parser.Parser as Parser
-import jasy.parser.ScopeScanner as ScopeScanner
+import jasy.js.parse.Parser as Parser
+import jasy.js.parse.ScopeScanner as ScopeScanner
 
 import jasy.js.Permutation as Permutation
-import jasy.output.Compressor as Compressor
+import jasy.js.output.Compressor as Compressor
 
-import jasy.clean.DeadCode as DeadCode
-import jasy.clean.Unused as Unused
+import jasy.js.clean.DeadCode as DeadCode
+import jasy.js.clean.Unused as Unused
 
-import jasy.optimize.LocalVariables as LocalVariables
-import jasy.optimize.BlockReducer as BlockReducer
-import jasy.optimize.CombineDeclarations as CombineDeclarations
-import jasy.optimize.CryptPrivates as CryptPrivates
+import jasy.js.optimize.LocalVariables as LocalVariables
+import jasy.js.optimize.BlockReducer as BlockReducer
+import jasy.js.optimize.CombineDeclarations as CombineDeclarations
+import jasy.js.optimize.CryptPrivates as CryptPrivates
 
 
 

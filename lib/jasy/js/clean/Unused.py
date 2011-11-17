@@ -3,8 +3,8 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-from jasy.parser.Node import Node
-import jasy.parser.ScopeScanner as ScopeScanner
+from jasy.js.parse.Node import Node
+import jasy.js.parse.ScopeScanner as ScopeScanner
 import logging
 
 __all__ = ["cleanup", "Error"]

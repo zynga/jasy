@@ -10,7 +10,7 @@
 #   - Sebastian Werner <info@sebastian-werner.net> (Python Port) (2010)
 #
 
-from jasy.parser.Node import Node
+from jasy.js.parse.Node import Node
 
 class VanillaBuilder:
     """The vanilla AST builder."""
