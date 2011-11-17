@@ -7,6 +7,8 @@ import jasy.optimizer.CryptPrivates as CryptPrivates
 import jasy.optimizer.BlockReducer as BlockReducer
 import jasy.optimizer.LocalVariables as LocalVariables
 import jasy.optimizer.CombineDeclarations as CombineDeclarations
+import jasy.optimizer.ClosureWrapper as ClosureWrapper
+
 
 
 __all__ = ["Error", "Optimization"]
@@ -45,6 +47,12 @@ class Optimization:
     def apply(self, tree):
         enabled = self.__optimizations
         
+        if "wrap" in enabled:
+            try:
+                ClosureWrapper.optimize(tree)
+            except CryptPrivates.Error as err:
+                raise Error(err)
+            
         if "declarations" in enabled:
             try:
                 CombineDeclarations.optimize(tree)
@@ -68,7 +76,8 @@ class Optimization:
                 CryptPrivates.optimize(tree)
             except CryptPrivates.Error as err:
                 raise Error(err)
-
+                
+                
     def getKey(self):
         return "+".join(sorted(self.__optimizations))
         

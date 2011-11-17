@@ -40,3 +40,7 @@ GLOBALS = [
     "undefined"
 ]
 
+
+def optimize(node):
+    # TODO
+    pass
