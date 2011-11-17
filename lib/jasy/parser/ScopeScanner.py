@@ -140,7 +140,7 @@ def __scanScope(node):
     
     # Initialize statistics object for this scope
     data = ScopeData()
-    node.variables = data
+    node.scope = data
     
     # Add params to declaration list
     __addParams(node, data)

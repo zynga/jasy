@@ -190,9 +190,9 @@ class Node(list):
         attrs = (" " + " ".join(attrsCollection)) if len(attrsCollection) > 0 else ""
         
         comments = getattr(self, "comments", None)
-        stats = getattr(self, "stats", None)
+        scope = getattr(self, "scope", None)
         
-        if len(self) == 0 and len(relatedChildren) == 0 and (not comments or len(comments) == 0) and not stats:
+        if len(self) == 0 and len(relatedChildren) == 0 and (not comments or len(comments) == 0) and not scope:
             result = "%s<%s%s/>%s" % (lead, self.type, attrs, lineBreak)
 
         else:
@@ -202,9 +202,9 @@ class Node(list):
                 for comment in comments:
                     result += '%s<comment context="%s" variant="%s">%s</comment>%s' % (innerLead, comment.context, comment.variant, comment.text, lineBreak)
                     
-            if stats:
-                for statKey in stats:
-                    statValue = stats[statKey]
+            if scope:
+                for statKey in scope:
+                    statValue = scope[statKey]
                     if statValue != None and len(statValue) > 0:
                         if type(statValue) is set:
                             statValue = ",".join(statValue)
@@ -267,9 +267,9 @@ class Node(list):
         for name in dir(self):
             if not name in ("parent", "target") and name[0] != "_":
                 value = getattr(self, name)
-                if name == "stats" or type(value) in (bool, int, float, str):
+                if name == "scope" or type(value) in (bool, int, float, str):
                     setattr(result, name, value)
-                elif name == "stats" or type(value) in (list, set):
+                elif name == "scope" or type(value) in (list, set):
                     setattr(result, name, copy.deepcopy(value, memo))
             
         # Note: "target" attribute is ignored because if recursion error
