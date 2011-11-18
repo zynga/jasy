@@ -19,8 +19,44 @@ class Combiner():
     
     def __init__(self, classList):
         self.__classList = classList
-        
     
+    
+    
+    def compressBase(self, session, optimization=None, formatting=None):
+        """
+        Writes a so-called loader script to the given location. This script contains
+        data about possible permutations based on current session values. It returns
+        the classes which are included by the script so you can exclude it from the 
+        real build files.
+        """
+        
+        # This permutation injects data in the core classes
+        #
+        # - fields => core.Env
+        # - assets => core.Asset
+        # - translations => core.Translate
+        permutation = Permutation({
+          "fields" : session.exportFields()
+        })
+        
+        # Build resolver
+        resolver = Resolver(session.getProjects(), permutation)
+        
+        # Include environment data inject field configuration
+        resolver.addClassName("core.Env")
+
+        # Include loader class
+        resolver.addClassName("core.io.Queue")
+        
+        # Sort resulting class list
+        classes = Sorter(resolver, permutation).getSortedClasses()
+        compressedCode = Combiner(classes).getCompressedCode(permutation, None, optimization, formatting)
+        writefile(fileName, compressedCode)
+        
+        return resolver.getIncludedClasses()
+
+
+
     def combineCode(self):
         """
         Combines the unmodified content of the stored class list

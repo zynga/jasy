@@ -4,17 +4,23 @@
 #
 
 import logging, itertools, time, atexit, json
-from jasy.js.Permutation import Permutation
+
 from jasy.i18n.Translation import Translation
-from jasy.util.Profiler import *
 from jasy.i18n.LocaleData import *
 
 from jasy.core.Project import Project
+
+from jasy.util.Profiler import *
 from jasy.util.File import *
+
+from jasy.js.Permutation import Permutation
 from jasy.js.Resolver import Resolver
+from jasy.js.Sorter import Sorter
 from jasy.js.output.Optimization import Optimization
 from jasy.js.output.Combiner import Combiner
-from jasy.js.Sorter import Sorter
+
+
+__all__ = ["Session"]
 
 
 def toJSON(obj, sort_keys=False):
@@ -22,28 +28,65 @@ def toJSON(obj, sort_keys=False):
     
 
 class Session():
+    #
+    # Core
+    #
+
     def __init__(self):
         atexit.register(self.close)
 
         self.__timestamp = time.time()
         self.__projects = []
         self.__fields = {}
-        
+    
+    
+    def clearCache(self):
+        """
+        Clears all caches of known projects
+        """
+
+        for project in self.getProjects():
+            project.clearCache()
+
+    def close(self):
+        """
+        Closes the session and stores cache to the harddrive.
+        """
+
+        logging.info("Closing session...")
+        for project in self.getProjects():
+            project.close()
+    
+    
+    def getClassByName(self, className):
+        """
+        Queries all currently known projects for the given class and returns the class object
+        """
+
+        for project in self.__projects:
+            classes = project.getClasses()
+            if className in classes:
+                return classes[className]
+    
+    
+    
     
     #
     # Project Managment
     #
         
-    def addProject(self, project, main=False):
-        """ Adds the given project to the list of known projects """
+    def addProject(self, project):
+        """
+        Adds the given project to the list of known projects. Projects should be added in order of
+        their priority. This adds the field configuration of each project to the session fields.
+        Fields must not conflict between different projects (same name).
+        
+        Parameters:
+        - project: Instance of Project to append to the list
+        """
         
         self.__projects.append(project)
         
-        # That's the project from where all paths are computed
-        if main:
-            logging.info("Main project is: %s" % project.getName())
-            self.__mainProject = project
-
         # Import project defined fields which might be configured using "activateField()"
         fields = project.getFields()
         for name in fields:
@@ -61,7 +104,7 @@ class Session():
                     
             if "detect" in entry:
                 detect = entry["detect"]
-                if not self.getClass(detect):
+                if not self.getClassByName(detect):
                     raise Exception("Field '%s' uses unknown detection class %s." % (name, detect))
                 
             self.__fields[name] = entry
@@ -80,51 +123,25 @@ class Session():
         The main project is basically the project with the currently running build script
         """
         
-        return self.__mainProject
+        return self.__projects[-1]
         
         
     def getRelativePath(self, project):
-        """ Returns the relative path of any project to the main project """
-        mainProject = self.__mainProject
+        """
+        Returns the relative path of any project to the main project
+        """
         
-        mainPath = mainProject.getPath()
+        mainPath = self.__projects[-1].getPath()
         projectPath = project.getPath()
         
         return os.path.relpath(projectPath, mainPath)
-        
-        
-        
-    def getClass(self, className):
-        """
-        Queries all currently known projects for the given class and returns the class object
-        """
-        for project in self.__projects:
-            classes = project.getClasses()
-            if className in classes:
-                return classes[className]
-        
-
     
-    #
-    # Core
-    #
-        
-    def clearCache(self, permutation=None):
-        """ Clears all caches of known projects """
-        
-        for project in self.getProjects():
-            project.clearCache()
-
-    def close(self):
-        """ Closes the session and stores cache to the harddrive. """
-        
-        logging.info("Closing session...")
-        for project in self.getProjects():
-            project.close()
+    
     
     
     #
-    # Permutation Support
+    # Support for fields
+    # Fields allow to inject data from the build into the running application
     #
     
     def setField(self, name, value):
@@ -149,8 +166,8 @@ class Session():
         # Delete detection if configured by the project
         if "detect" in entry:
             del entry["detect"]
-        
-        
+    
+    
     def permutateField(self, name, values=None, detect=None, default=None):
         """
         Adds the given key/value pair to the session for permutation usage.
@@ -211,7 +228,6 @@ class Session():
                 raise Exception("Could not permutate field: %s! Unknown detect class %s." % detect)
                 
             entry["detect"] = detect
-            
         
         
     def getPermutations(self):
@@ -231,7 +247,7 @@ class Session():
         return permutations
 
 
-    def __exportFields(self):
+    def exportFields(self):
         """
         Converts data from values to a compact data structure for being used to 
         compute a checksum in JavaScript.
@@ -292,31 +308,6 @@ class Session():
             export.append("[%s]" % ",".join(content))
             
         return "[%s]" % ",".join(export)
-
-    
-    
-    def writeLoader(self, fileName, optimization=None, formatting=None):
-        """
-        Writes a so-called loader script to the given location. This script contains
-        data about possible permutations based on current session values. It returns
-        the classes which are included by the script so you can exclude it from the 
-        real build files.
-        """
-        
-        permutation = Permutation({
-          "fields" : self.__exportFields()
-        })
-        
-        resolver = Resolver(self.getProjects(), permutation)
-        resolver.addClassName("core.Env")
-        resolver.addClassName("core.io.Queue")
-        resolver.addClassName("core.io.Script")
-        resolver.addClassName("core.io.StyleSheet")
-        classes = Sorter(resolver, permutation).getSortedClasses()
-        compressedCode = Combiner(classes).getCompressedCode(permutation, None, optimization, formatting)
-        writefile(fileName, compressedCode)
-        
-        return resolver.getIncludedClasses()
     
     
     
