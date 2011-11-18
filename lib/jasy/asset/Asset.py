@@ -205,14 +205,12 @@ class Asset:
                     
                 return json.JSONEncoder.default(self, obj)
 
-        code = json.dumps({
+        return json.dumps({
             "files" : self.__files,
             "images" : self.__images,
             "sprites" : self.__sprites,
             "roots" : roots
         }, separators=(',',':'), cls=ProjectEncoder)
-        
-        return "this.$$assets=%s;\n" % code        
 
 
 

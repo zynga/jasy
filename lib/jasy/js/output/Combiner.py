@@ -25,16 +25,13 @@ def storeKernel(fileName, session, asset=None, translation=None, optimization=No
     Returns the list of included classes.
     """
     
-    # Export current field configuration
-    field = session.exportFields()
-    
     # This permutation injects data in the core classes
     #
-    # - fields => core.Env
-    # - assets => core.Asset
-    # - translations => core.Translate
+    # - field => core.Env
+    # - asset => core.Asset
+    # - translation => core.Locale
     permutation = Permutation({
-        "field" : field,
+        "field" : session.exportFields(),
         "asset" : asset,
         "translation" : translation
     })
