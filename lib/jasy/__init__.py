@@ -24,7 +24,7 @@ from jasy.js.output.Formatting import *
 from jasy.util.File import *
 
 # Current version. Used by setuptools
-VERSION = "0.4-beta"
+VERSION = "0.4"
 
 # Export only main routine
 __all__ = ["main", "VERSION"]
