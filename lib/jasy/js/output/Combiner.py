@@ -25,14 +25,6 @@ def storeKernel(fileName, session, asset=None, translation=None, optimization=No
     Returns the list of included classes.
     """
     
-    # Build resolver
-    resolver = Resolver(session.getProjects())
-    
-    # Include classes for value injection
-    resolver.addClassName("core.Env")
-    resolver.addClassName("core.Asset")
-    resolver.addClassName("core.Locale")
-
     # This permutation injects data in the core classes
     #
     # - field => core.Env
@@ -43,6 +35,15 @@ def storeKernel(fileName, session, asset=None, translation=None, optimization=No
         "asset" : asset,
         "translation" : translation
     })
+    
+    # Build resolver
+    # We need the permutation here because the field configuration might rely on detection classes
+    resolver = Resolver(session.getProjects(), permutation)
+    
+    # Include classes for value injection
+    resolver.addClassName("core.Env")
+    resolver.addClassName("core.Asset")
+    resolver.addClassName("core.Locale")
 
     # Include IO classes
     resolver.addClassName("core.io.Queue")
