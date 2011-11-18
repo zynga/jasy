@@ -14,10 +14,6 @@ from jasy.util.Profiler import *
 from jasy.util.File import *
 
 from jasy.js.Permutation import Permutation
-from jasy.js.Resolver import Resolver
-from jasy.js.Sorter import Sorter
-from jasy.js.output.Optimization import Optimization
-from jasy.js.output.Combiner import Combiner
 
 
 __all__ = ["Session"]

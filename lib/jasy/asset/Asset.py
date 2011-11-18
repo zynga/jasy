@@ -233,7 +233,7 @@ class Asset:
             srcFile = assets[name]["path"]
             dstFile = os.path.join(dest, name.replace("/", os.sep))
             
-            if updatefile(srcFile, dstFile):
+            if updateFile(srcFile, dstFile):
                 counter += 1
         
         logging.info("Updated %s/%s files" % (counter, len(assets)))
