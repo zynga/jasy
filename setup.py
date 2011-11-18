@@ -49,7 +49,7 @@ setup(
         'jasy.js.optimize',
         'jasy.js.output',
         'jasy.js.parse',
-        'jasy.js.tokenize'
+        'jasy.js.tokenize',
         'jasy.util'
       ],
       

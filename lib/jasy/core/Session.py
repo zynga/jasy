@@ -49,9 +49,12 @@ class Session():
         Closes the session and stores cache to the harddrive.
         """
 
-        logging.info("Closing session...")
-        for project in self.getProjects():
-            project.close()
+        if self.__projects:
+            logging.info("Closing session...")
+            for project in self.getProjects():
+                project.close()
+            
+            self.__projects = None
     
     
     def getClassByName(self, className):
