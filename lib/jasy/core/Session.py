@@ -306,7 +306,10 @@ class Session():
                 
             export.append("[%s]" % ",".join(content))
             
-        return "[%s]" % ",".join(export)
+        if export:
+            return "[%s]" % ",".join(export)
+        else:
+            return "null"
     
     
     
