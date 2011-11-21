@@ -65,7 +65,7 @@ def __main():
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="print more detailed status messages to stdout")
     parser.add_option("-l", "--log", dest="logfile", help="Write debug messages to given logfile")
     parser.add_option("-f", "--file", dest="file", help="Use the given jasy script")
-    parser.add_option("-V", "--version", ction="store_true", dest="showVersion", help="Use the given jasy script")
+    parser.add_option("-V", "--version", action="store_true", dest="showVersion", help="Use the given jasy script")
     
     (options, args) = parser.parse_args()
 
