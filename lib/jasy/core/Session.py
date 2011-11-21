@@ -309,7 +309,7 @@ class Session():
         if export:
             return "[%s]" % ",".join(export)
         else:
-            return "null"
+            return None
     
     
     
