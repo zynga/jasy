@@ -16,7 +16,7 @@ class Formatting:
     key based on the given formatting options.
     """
     
-    __allowed = ("wrap", "declarations", "blocks", "variables", "privates")
+    __allowed = ("comma", "semicolon")
     
     
     def __init__(self, *args):

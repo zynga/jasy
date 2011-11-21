@@ -120,8 +120,8 @@ def storeSourceLoader(fileName, classes, session, bootCode="", relativeRoot="sou
         
         # This is the location from the root, given by the user, where the HTML file is stored.
         # In typical Jasy projects this is "source" e.g. the file is named "source/index.html".
-        fromWebFolder = os.path.relpath(fromMainProjectRoot, relativeRoot).replace(os.sep, '/')
-
+        fromWebFolder = prefixUrl + os.path.relpath(fromMainProjectRoot, relativeRoot).replace(os.sep, '/')
+        
         # Now add this file to our list of files to load
         files.append('"%s"' % fromWebFolder)
 
