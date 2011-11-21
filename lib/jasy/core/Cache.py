@@ -107,14 +107,14 @@ class Cache:
     def sync(self):
         """ Syncs the internal storage database """
         
-        if self.__db:
+        if self.__db is not None:
             self.__db.sync() 
       
       
     def close(self):
         """ Closes the internal storage database """
         
-        if self.__db:
+        if self.__db is not None:
             self.__db.close()  
             self.__db = None       
         
