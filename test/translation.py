@@ -57,8 +57,7 @@ class TestTranslation(unittest.TestCase):
     def test_vars1(self):
         self.assertEqual(self.process(
             '''
-            function wrapper()
-            {
+            function wrapper() {
                 alert(tr("Hello %1!", "Peter"))
             }
             '''),
@@ -68,8 +67,7 @@ class TestTranslation(unittest.TestCase):
     def test_vars2(self):
         self.assertEqual(self.process(
             '''
-            function wrapper()
-            {
+            function wrapper() {
                 alert(tr("Hello %1! %1!", "Peter"))
             }
             '''),
@@ -79,8 +77,7 @@ class TestTranslation(unittest.TestCase):
     def test_vars3(self):
         self.assertEqual(self.process(
             '''
-            function wrapper()
-            {
+            function wrapper() {
                 alert(tr("Hello %1!", this.getGreetingName()))
             }
             '''),
@@ -90,8 +87,7 @@ class TestTranslation(unittest.TestCase):
     def test_vars4(self):
         self.assertEqual(self.process(
             '''
-            function wrapper()
-            {
+            function wrapper() {
                 alert(tr("Hello %1! %1!", this.getGreetingName()))
             }
             '''),
@@ -101,8 +97,7 @@ class TestTranslation(unittest.TestCase):
     def test_trc1(self):
         self.assertEqual(self.process(
             '''
-            function wrapper()
-            {
+            function wrapper() {
                 alert(trc("Chat (noum)", "Chat"));
             }
             '''),
@@ -112,8 +107,7 @@ class TestTranslation(unittest.TestCase):
     def test_trc2(self):
         self.assertEqual(self.process(
             '''
-            function wrapper()
-            {
+            function wrapper() {
                 alert(trc("Chat (noum) %1", "Chat %1", "Online"));
             }
             '''),
@@ -123,8 +117,7 @@ class TestTranslation(unittest.TestCase):
     def test_trc3(self):
         self.assertEqual(self.process(
             '''
-            function wrapper()
-            {
+            function wrapper() {
                 alert(trc("Chat (noum) %1", "Chat %1", this.getChatStatus()));
             }
             '''),
@@ -135,8 +128,7 @@ class TestTranslation(unittest.TestCase):
     def test_trn1(self):
         self.assertEqual(self.process(
             '''
-            function wrapper()
-            {
+            function wrapper() {
                 alert(trn("You have got a new mail", "You have got new mails", newMails));
             }
             '''),
