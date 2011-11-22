@@ -7,7 +7,6 @@ jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir
 sys.path.insert(0, jasyroot)
 
 import jasy.js.parse.Parser as Parser
-import jasy.js.parse.ScopeScanner as ScopeScanner
 import jasy.js.output.Compressor as Compressor
 import jasy.js.optimize.CryptPrivates as CryptPrivates
 
