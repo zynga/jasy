@@ -24,7 +24,10 @@ class TestTranslation(unittest.TestCase):
             "Thank you for the flowers": "Danke für die Blumen",
             
             "Hello %1!": "Hallo: %1!",
-            "Hello %1! %1!": "Hallo: %1! %1!"
+            "Hello %1! %1!": "Hallo: %1! %1!",
+            
+            "Chat (noum)": "Unterhaltung",
+            "Chat (noum) %1": "Unterhaltung %1"
             
         })
         
@@ -91,18 +94,42 @@ class TestTranslation(unittest.TestCase):
             'function wrapper(){alert("Hallo: "+this.getGreetingName()+"! "+this.getGreetingName()+"!")}'
         )        
  
-    def xtest_trc(self):
+    def test_trc1(self):
         self.assertEqual(self.process(
             '''
             function wrapper()
             {
                 alert(trc("Chat (noum)", "Chat"));
+            }
+            '''),
+            'function wrapper(){alert("Unterhaltung")}'
+        )
+        
+    def test_trc2(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper()
+            {
                 alert(trc("Chat (noum) %1", "Chat %1", "Online"));
+            }
+            '''),
+            'function wrapper(){alert("Unterhaltung "+("Online"))}'
+        )
+        
+    def test_trc3(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper()
+            {
                 alert(trc("Chat (noum) %1", "Chat %1", this.getChatStatus()));
             }
             '''),
-            ''
+            'function wrapper(){alert("Unterhaltung "+this.getChatStatus())}'
         )
+        
+        
+        
+        
 
 
     def xtest_trn(self):
