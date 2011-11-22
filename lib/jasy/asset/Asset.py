@@ -15,9 +15,24 @@ __all__ = ["Asset"]
 
 
 class Asset:
+    """
+    Manages assets aka images, styles and other files required for a web application.
+    
+    Supports filtering assets based on a given class list (with optional permutation) to
+    only include and copy assets which are needed by the current implementation. This is 
+    especially useful when only parts of dependend projects are actually used.
+    
+    Merges assets with the same name from different projects. But normally each project
+    creates it's own sandbox namespace so this has not often any effect at all.
+    
+    Supports images and automatically detect their size and image format. Both informations
+    are added to the exported data later on.
+    
+    Supports images sprites when it finds a 'sprites.json' in any folder.
+    """
+    
     def __init__(self, session, classes, permutation=None):
         self.__session = session
-        self.__projects = session.getProjects()
         self.__classes = classes
         self.__permutation = permutation
         
@@ -34,7 +49,7 @@ class Asset:
         """
         
         merged = {}
-        for project in self.__projects:
+        for project in self.__session.getProjects():
             assets = project.getAssets()
             for name in assets:
                 merged[name] = { 
@@ -192,7 +207,7 @@ class Asset:
         Exports the internal data into a JSON structure
         """
         
-        projects = self.__projects
+        projects = self.__session.getProjects()
         
         class ProjectEncoder(json.JSONEncoder):
             __projectIds = { 
@@ -214,14 +229,19 @@ class Asset:
 
 
 
-    def publishFiles(self, dest):
+    def exportBuild(self, buildFolder="build", assetFolder="asset", urlPrefix=""):
         """
-        Publishes the selected files to the given root directory. This merges files from different projects 
-        to one folder. Ideal for preparing the final deployment.
+        Publishes the selected files to the given 'buildFolder/assetFolder'. This merges files from 
+        different projects to this one folder. This is ideal for preparing the final deployment.
+        
+        Parameters:
+        - buildFolder: Where the HTML root is based on the project's root
+        - assetFolder: Where the assets should copied to inside the build folder (relative to the build folder).
+        - urlPrefix: A URL which should be mapped to the project's root folder
         """
 
         assets = self.__assets
-        projects = self.__projects
+        projects = self.__session.getProjects()
 
         logging.info("Publishing files...")
         pstart()
@@ -229,7 +249,7 @@ class Asset:
         counter = 0
         for name in assets:
             srcFile = assets[name]["path"]
-            dstFile = os.path.join(dest, name.replace("/", os.sep))
+            dstFile = os.path.join(buildFolder, assetFolder, name.replace("/", os.sep))
             
             if updateFile(srcFile, dstFile):
                 counter += 1
@@ -237,25 +257,30 @@ class Asset:
         logging.info("Updated %s/%s files" % (counter, len(assets)))
         pstop()
         
-        
-        
-    def exportMerged(self, folder):
-        projects = self.__projects
         roots = []
         for project in projects:
-            roots.append("%s/%s" % (folder, project.getName()))
+            if urlPrefix:
+                roots.append("%s/%s" % (urlPrefix, buildFolder.replace(os.sep, '/'), assetFolder.replace(os.sep, '/'), project.getName()))
+            else:
+                roots.append("%s/%s" % (assetFolder.replace(os.sep, '/'), project.getName()))
             
-        return self.__exportHelper(roots)
+        return self.__exportHelper(roots)        
         
         
-        
-    def exportOriginal(self, relativeRoot="source", urlPrefix=""):
+
+    def exportSource(self, sourceFolder="source", urlPrefix=""):
         """ 
-        Exports asset data for the source version using assets from their original paths
+        Exports asset data for the source version using assets from their original paths.
+        
+        Parameters:
+        - sourceFolder: Where the HTML root is based on the project's root.
+        - urlPrefix: Useful when a CDN should be used. Maps the project's root to a URL.
+            As URLs are always absolute it makes sense to reset 'sourceFolder' to an empty
+            string so that the URLs do not contain useless ".." parent directory segments.
         """
         
-        projects = self.__projects
-        webPath = os.path.join(self.__session.getMainProject().getPath(), relativeRoot)
+        projects = self.__session.getProjects()
+        webPath = os.path.join(self.__session.getMainProject().getPath(), sourceFolder)
         roots = []
         for project in projects:
             roots.append(urlPrefix + os.path.relpath(project.getAssetPath(), webPath).replace(os.sep, '/'))
