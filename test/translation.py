@@ -27,7 +27,11 @@ class TestTranslation(unittest.TestCase):
             "Hello %1! %1!": "Hallo: %1! %1!",
             
             "Chat (noum)": "Unterhaltung",
-            "Chat (noum) %1": "Unterhaltung %1"
+            "Chat (noum) %1": "Unterhaltung %1",
+            
+            "You have got a new mail": "Du hast eine neue E-Mail",
+            "You have got new mails": "Du hast neue E-Mails",
+            "You have got %1 new mails": "Du hast %1 neue E-Mail erhalten"
             
         })
         
@@ -128,21 +132,26 @@ class TestTranslation(unittest.TestCase):
         )
         
         
-        
-        
-
-
-    def xtest_trn(self):
+    def test_trn1(self):
         self.assertEqual(self.process(
             '''
             function wrapper()
             {
-                var newMails = 5;
                 alert(trn("You have got a new mail", "You have got new mails", newMails));
+            }
+            '''),
+            'function wrapper(){alert((newMails<=1?"Du hast eine neue E-Mail":"Du hast neue E-Mails"))}'
+        )
+
+    def test_trn2(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper()
+            {
                 alert(trn("You have got a new mail", "You have got %1 new mails", newMails, newMails));
             }
             '''),
-            ''
+            'function wrapper(){alert((newMails<=1?"Du hast eine neue E-Mail":"Du hast "+newMails+" neue E-Mail erhalten"))}'
         )
 
 
