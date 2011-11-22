@@ -15,7 +15,7 @@ from jasy.js.Sorter import Sorter
 from jasy.js.output.Optimization import Optimization
 
 
-def storeKernel(fileName, session, assets=None, translations=None, optimization=None, formatting=None):
+def storeKernel(fileName, session, assets=None, translations=None, optimization=None, formatting=None, debug=False):
     """
     Writes a so-called kernel script to the given location. This script contains
     data about possible permutations based on current session values. It optionally
@@ -35,12 +35,13 @@ def storeKernel(fileName, session, assets=None, translations=None, optimization=
     # This exports all field values from the session
     fields = session.exportFields()
     
-    # This permutation injects data in the core classes
+    # This permutation injects data in the core classes and configures debugging as given by parameter
     #
     # - fields => core.Env
     # - assets => core.Asset
     # - translations => core.Locale
     permutation = Permutation({
+        "debug" : debug,
         "fields" : fields,
         "assets" : assets,
         "translations" : translations

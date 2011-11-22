@@ -260,27 +260,30 @@ class Asset:
         roots = []
         for project in projects:
             if urlPrefix:
-                roots.append("%s/%s" % (urlPrefix, buildFolder.replace(os.sep, '/'), assetFolder.replace(os.sep, '/'), project.getName()))
+                localPath = os.path.join(buildFolder, assetFolder, project.getName())
+                roots.append("%s%s" % (urlPrefix, localPath.replace(os.sep, "/")))
             else:
-                roots.append("%s/%s" % (assetFolder.replace(os.sep, '/'), project.getName()))
+                localPath = os.path.join(assetFolder, project.getName())
+                roots.append("%s/%s" % localPath.replace(os.sep, "/"))
+
             
         return self.__exportHelper(roots)        
         
         
 
-    def exportSource(self, sourceFolder="source", urlPrefix=""):
+    def exportSource(self, urlBase="source", urlPrefix=""):
         """ 
         Exports asset data for the source version using assets from their original paths.
         
         Parameters:
-        - sourceFolder: Where the HTML root is based on the project's root.
+        - urlBase: Where the HTML root is based on the project's root.
         - urlPrefix: Useful when a CDN should be used. Maps the project's root to a URL.
-            As URLs are always absolute it makes sense to reset 'sourceFolder' to an empty
+            As URLs are always absolute it makes sense to reset 'urlBase' to an empty
             string so that the URLs do not contain useless ".." parent directory segments.
         """
         
         projects = self.__session.getProjects()
-        webPath = os.path.join(self.__session.getMainProject().getPath(), sourceFolder)
+        webPath = os.path.join(self.__session.getMainProject().getPath(), urlBase)
         roots = []
         for project in projects:
             roots.append(urlPrefix + os.path.relpath(project.getAssetPath(), webPath).replace(os.sep, '/'))
