@@ -155,7 +155,7 @@ class TestTranslation(unittest.TestCase):
         )
 
 
-    def xtest_marktr(self):
+    def test_marktr(self):
         self.assertEqual(self.process(
             '''
             function wrapper()
@@ -173,7 +173,7 @@ class TestTranslation(unittest.TestCase):
                 }
             }
             '''),
-            ''
+            'function wrapper(){;;;var objs=["Dog","Cat","Bird"];for(var i=0,l=objs.length;i<l;i++){alert(tr(objs[i]))}}'
         )
 
 

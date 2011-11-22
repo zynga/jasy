@@ -11,9 +11,6 @@ from jasy.js.parse.Node import Node
 __all__ = ["TranslationError", "Translation", "hasText"]
 
 
-methods = ("tr", "trc", "trn")
-
-
 def hasText(node):
     if node.type == "call":
         funcName = None
@@ -23,7 +20,7 @@ def hasText(node):
         elif node[0].type == "dot" and node[0][1].type == "identifier":
             funcName = node[0][1].value
         
-        if funcName in methods:
+        if funcName in ("tr", "trc", "trn"):
             return True
             
     # Process children
@@ -162,6 +159,13 @@ class Translation:
     
     
     def __recurser(self, node):
+
+        # Process children
+        for child in list(node):
+            if child != None:
+                self.__recurser(child)
+                        
+        
         if node.type == "call":
             funcName = None
             
@@ -170,20 +174,25 @@ class Translation:
             elif node[0].type == "dot" and node[0][1].type == "identifier":
                 funcName = node[0][1].value
             
-            if funcName in methods:
+            if funcName in ("tr", "trc", "trn", "marktr"):
                 params = node[1]
                 table = self.__table
+                
+                # Remove marktr() calls
+                if funcName == "marktr":
+                    node.parent.remove(node)
 
                 # Verify param types
-                if params[0].type != "string":
-                    logging.warn("Expecting translation string to be type string: %s at line %s" % (params[0].type, params[0].line))
+                elif params[0].type is not "string":
+                    # maybe something marktr() relevant being used, in this case we need to keep the call and inline the data
+                    pass
                     
-                if (funcName == "trn" or funcName == "trc") and params[1].type != "string":
+                # Error handling
+                elif (funcName == "trn" or funcName == "trc") and params[1].type != "string":
                     logging.warn("Expecting translation string to be type string: %s at line %s" % (params[1].type, params[1].line))
 
-
                 # Signature tr(msg, arg1, arg2, ...)
-                if funcName == "tr":
+                elif funcName == "tr":
                     key = params[0].value
                     if key in table:
                         params[0].value = table[key]
@@ -240,9 +249,4 @@ class Translation:
                     node.parent.replace(node, hook)
 
 
-
-        # Process children
-        for child in node:
-            if child != None:
-                self.__recurser(child)
                 
