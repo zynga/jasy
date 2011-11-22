@@ -243,6 +243,8 @@ class Session():
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
         permutations = [Permutation(combi) for combi in combinations]
 
+        logging.info("Detected %s possible permutations", len(permutations))
+
         return permutations
 
 

@@ -40,14 +40,13 @@ class Sorter:
         """ Returns the sorted class list (caches result) """
 
         if not self.__sortedClasses:
+            logging.info("Sorting classes...")
+
             pstart()
-            logging.info("Computing load dependencies...")
             classNames = self.__names
             for className in classNames:
                 self.__getLoadDeps(classNames[className])
-            pstop()
 
-            logging.info("Sorting classes...")
             result = []
             requiredClasses = self.__resolver.getRequiredClasses()
             for classObj in requiredClasses:

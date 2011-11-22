@@ -118,7 +118,7 @@ class Permutation:
 
         return ";".join(result)
         
-            
+        
     def has(self, key):
         """ Whether the permutation holds a value for the given key """
         

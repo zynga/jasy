@@ -102,6 +102,8 @@ def storeCompressed(fileName, classes, bootCode="", permutation=None, translatio
     - optimization: Optimization to apply before compression (variable shortening, ...) (See Optimization.py)
     - formatting: Formatting to use during compression (See Formatting.py)
     """
+    
+    logging.info("Compressing %s classes...", len(classes))
 
     try:
         result = "".join([classObj.getCompressed(permutation, translation, optimization, formatting) for classObj in classes])
@@ -131,6 +133,8 @@ def storeSourceLoader(fileName, classes, session, bootCode="", relativeRoot="sou
     - prefixUrl: Useful when the project files are stored on another domain (CDN). Puts the given 
         URL prefix in front of all URLs to load. Typically relativeRoot is an empty string in this case.
     """
+    
+    logging.info("Building source loader (%s classes)...", len(classes))
 
     files = []
     for classObj in classes:

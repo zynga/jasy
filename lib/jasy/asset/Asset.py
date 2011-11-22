@@ -72,7 +72,7 @@ class Asset:
             name: merged[name] for name in merged if expr.match(name) 
         }
         
-        logging.info("Selected classes make use of %s assets" % len(self.__assets))        
+        logging.debug("Selected classes make use of %s assets" % len(self.__assets))        
 
 
 
@@ -264,7 +264,7 @@ class Asset:
                 roots.append("%s%s" % (urlPrefix, localPath.replace(os.sep, "/")))
             else:
                 localPath = os.path.join(assetFolder, project.getName())
-                roots.append("%s/%s" % localPath.replace(os.sep, "/"))
+                roots.append("%s" % localPath.replace(os.sep, "/"))
 
             
         return self.__exportHelper(roots)        
