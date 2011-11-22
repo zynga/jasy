@@ -264,7 +264,7 @@ class Asset:
                 roots.append("%s%s" % (urlPrefix, localPath.replace(os.sep, "/")))
             else:
                 localPath = os.path.join(assetFolder, project.getName())
-                roots.append("%s" % localPath.replace(os.sep, "/"))
+                roots.append(localPath.replace(os.sep, "/"))
 
             
         return self.__exportHelper(roots)        
