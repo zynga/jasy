@@ -12,30 +12,38 @@ from jasy.js.Class import Error as ClassError
 from jasy.js.Permutation import Permutation
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
+from jasy.js.output.Optimization import Optimization
 
 
-
-def storeKernel(fileName, session, asset=None, translation=None, optimization=None, formatting=None):
+def storeKernel(fileName, session, assets=None, translations=None, optimization=None, formatting=None):
     """
     Writes a so-called kernel script to the given location. This script contains
-    data about possible permutations based on current session values. It returns
-    the classes which are included by the script so you can exclude it from the 
-    real build files.
+    data about possible permutations based on current session values. It optionally
+    might include asset data (useful when boot phase requires some assets) and 
+    localization data (if only one locale is built).
     
-    Returns the list of included classes.
+    Optimization of the script is auto-enabled when no other information is given.
+    
+    This method returns the classes which are included by the script so you can 
+    exclude it from the real other generated output files.
     """
     
-    field = session.exportFields()
+    # Auto optimize kernel with basic compression features
+    if optimization is None:
+        optimization = Optimization("variables", "declarations", "blocks")
+    
+    # This exports all field values from the session
+    fields = session.exportFields()
     
     # This permutation injects data in the core classes
     #
-    # - field => core.Env
-    # - asset => core.Asset
-    # - translation => core.Locale
+    # - fields => core.Env
+    # - assets => core.Asset
+    # - translations => core.Locale
     permutation = Permutation({
-        "field" : field,
-        "asset" : asset,
-        "translation" : translation
+        "fields" : fields,
+        "assets" : assets,
+        "translations" : translations
     })
     
     # Build resolver
@@ -43,13 +51,13 @@ def storeKernel(fileName, session, asset=None, translation=None, optimization=No
     resolver = Resolver(session.getProjects(), permutation)
     
     # Include classes for value injection
-    if field:
+    if field is not None:
         resolver.addClassName("core.Env")
     
-    if asset:
+    if asset is not None:
         resolver.addClassName("core.Asset")
         
-    if translation:
+    if translation is not None:
         resolver.addClassName("core.Locale")
 
     # Include IO classes
@@ -103,7 +111,7 @@ def storeCompressed(fileName, classes, bootCode=None, permutation=None, translat
 
 
 
-def storeSourceLoader(fileName, classes, session, bootCode="", relativeRoot="source", prefixUrl=""):
+def storeSourceLoader(fileName, classes, session, bootCode="", relativeRoot="source", urlPrefix=""):
     """
     Generates a source loader which is basically a file which loads the original JavaScript files.
     This is super useful during development of a project as it supports pretty fast workflows
@@ -127,7 +135,7 @@ def storeSourceLoader(fileName, classes, session, bootCode="", relativeRoot="sou
         
         # This is the location from the root, given by the user, where the HTML file is stored.
         # In typical Jasy projects this is "source" e.g. the file is named "source/index.html".
-        fromWebFolder = prefixUrl + os.path.relpath(fromMainProjectRoot, relativeRoot).replace(os.sep, '/')
+        fromWebFolder = urlPrefix + os.path.relpath(fromMainProjectRoot, relativeRoot).replace(os.sep, '/')
         
         # Now add this file to our list of files to load
         files.append('"%s"' % fromWebFolder)

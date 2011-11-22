@@ -249,7 +249,7 @@ class Asset:
         
         
         
-    def exportOriginal(self, relativeRoot):
+    def exportOriginal(self, relativeRoot="source", urlPrefix=""):
         """ 
         Exports asset data for the source version using assets from their original paths
         """
@@ -258,7 +258,7 @@ class Asset:
         webPath = os.path.join(self.__session.getMainProject().getPath(), relativeRoot)
         roots = []
         for project in projects:
-            roots.append(os.path.relpath(project.getAssetPath(), webPath).replace(os.sep, '/'))
+            roots.append(urlPrefix + os.path.relpath(project.getAssetPath(), webPath).replace(os.sep, '/'))
 
         return self.__exportHelper(roots)
 
