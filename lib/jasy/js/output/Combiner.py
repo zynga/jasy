@@ -51,13 +51,13 @@ def storeKernel(fileName, session, assets=None, translations=None, optimization=
     resolver = Resolver(session.getProjects(), permutation)
     
     # Include classes for value injection
-    if field is not None:
+    if fields is not None:
         resolver.addClassName("core.Env")
     
-    if asset is not None:
+    if assets is not None:
         resolver.addClassName("core.Asset")
         
-    if translation is not None:
+    if translations is not None:
         resolver.addClassName("core.Locale")
 
     # Include IO classes
