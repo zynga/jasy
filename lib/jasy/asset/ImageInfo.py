@@ -5,6 +5,10 @@
 
 import struct, logging
 
+"""
+Contains image format detection classes. Once the format is detect it supports image size detection, too.
+"""
+
 class ImgFile(object):
     def __init__(self, filename):
         try:
