@@ -89,11 +89,14 @@ def storeCombined(fileName, classes, bootCode=None):
 
 
 
-def storeCompressed(fileName, classes, bootCode=None, permutation=None, translation=None, optimization=None, formatting=None):
+def storeCompressed(fileName, classes, bootCode="", permutation=None, translation=None, optimization=None, formatting=None):
     """
     Combines the compressed result of the stored class list
     
     Parameters:
+    - fileName: Filename to write to
+    - classes: Classes to include in the compressed file in correct order
+    - bootCode: Code to execute once all the classes are loaded
     - permutation: Permutation to apply to the classes before compression (for alternative code variants) (See Permutation.py)
     - translation: Translation to apply to the classes before compression (inlining of translation)
     - optimization: Optimization to apply before compression (variable shortening, ...) (See Optimization.py)
@@ -119,6 +122,8 @@ def storeSourceLoader(fileName, classes, session, bootCode="", relativeRoot="sou
     where most often a simple reload in the browser is enough to get the newest sources.
     
     Parameters:
+    - fileName: Filename to write to
+    - classes: Classes to include in the compressed file in correct order
     - session: Session object, required to figure out relative project paths to each other.
     - bootCode: Code to run after all defined classes have been loaded.
     - relativeRoot: Path from the project's root to the HTML file which is loaded in the browser. 
