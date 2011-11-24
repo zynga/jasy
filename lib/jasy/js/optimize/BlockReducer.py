@@ -4,8 +4,9 @@
 #
 
 from jasy.js.parse.Node import Node
-from jasy.js.output.Compressor import compress
+from jasy.js.output.Compressor import Compressor
 from jasy.js.parse.Lang import expressionOrder, expressions
+
 import logging
 
 __all__ = ["optimize", "Error"]
@@ -14,21 +15,20 @@ __all__ = ["optimize", "Error"]
 class Error(Exception):
     def __init__(self, line):
         self.__line = line
-    
 
 
 def optimize(node):
     logging.debug(">>> Reducing block complexity...")
-    return __optimize(node)
+    return __optimize(node, Compressor())
 
 
-def __optimize(node):
+def __optimize(node, compressor):
     # Process from inside to outside
     # on a copy of the node to prevent it from forgetting children when structure is modified
     for child in list(node):
         # None children are allowed sometimes e.g. during array_init like [1,2,,,7,8]
         if child != None:
-            __optimize(child)
+            __optimize(child, compressor)
     
     
     # Cleans up empty semicolon statements (or pseudo-empty)
@@ -77,7 +77,7 @@ def __optimize(node):
             else:
                 result = None
             
-            if result is not None and len(str(result)) < len(compress(node)):
+            if result is not None and len(str(result)) < len(compressor.compress(node)):
                 logging.debug("Precompute numeric %s operation at line: %s" % (operator, node.line))
                 firstNumber.value = result
                 node.parent.replace(node, firstNumber)
@@ -173,7 +173,7 @@ def __optimize(node):
         
         # Optimize remaining if or if-else constructs
         if elsePart:
-            mergeParts(node, thenPart, elsePart, condition)
+            mergeParts(node, thenPart, elsePart, condition, compressor)
         elif thenPart.type == "semicolon":
             compactIf(node, thenPart, condition)
 
@@ -241,7 +241,7 @@ def endsWithReturnOrThrow(node):
     
     
     
-def mergeParts(node, thenPart, elsePart, condition):
+def mergeParts(node, thenPart, elsePart, condition, compressor):
     """
     Merges if statement with a elsePart using a hook. Supports two different ways of doing
     this: using a hook expression outside, or using a hook expression inside an assignment.
@@ -256,7 +256,7 @@ def mergeParts(node, thenPart, elsePart, condition):
         thenExpression = getattr(thenPart, "expression", None)
         elseExpression = getattr(elsePart, "expression", None)
         if thenExpression and elseExpression:
-            replacement = combineAssignments(condition, thenExpression, elseExpression) or combineExpressions(condition, thenExpression, elseExpression)
+            replacement = combineAssignments(condition, thenExpression, elseExpression, compressor) or combineExpressions(condition, thenExpression, elseExpression)
             if replacement:
                 node.parent.replace(node, replacement)    
 
@@ -476,7 +476,7 @@ def containsIf(node):
     return False    
 
 
-def combineAssignments(condition, thenExpression, elseExpression):
+def combineAssignments(condition, thenExpression, elseExpression, compressor):
     """ 
     Combines then and else expression to one assignment when they both assign 
     to the same target node and using the same operator. 
@@ -485,7 +485,7 @@ def combineAssignments(condition, thenExpression, elseExpression):
     if thenExpression.type == "assign" and elseExpression.type == "assign":
         operator = getattr(thenExpression, "assignOp", None)
         if operator == getattr(elseExpression, "assignOp", None):
-            if compress(thenExpression[0]) == compress(elseExpression[0]):
+            if compressor.compress(thenExpression[0]) == compressor.compress(elseExpression[0]):
                 hook = createHook(condition, thenExpression[1], elseExpression[1])
                 fixParens(condition)
                 fixParens(hook.thenPart)

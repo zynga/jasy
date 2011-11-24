@@ -2,14 +2,14 @@
 
 import sys, os, logging
 
+logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
+
 # Extend PYTHONPATH with 'lib'
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
 from jasy.js.parse.Parser import parse
-from jasy.js.parse.ScopeScanner import scan
 
 from jasy.js.Permutation import Permutation
-from jasy.js.output.Compressor import compress
 
 from jasy.js.clean import DeadCode
 from jasy.js.clean import Unused
@@ -19,29 +19,20 @@ from jasy.js.optimize import LocalVariables
 from jasy.js.optimize import CryptPrivates
 from jasy.js.optimize import BlockReducer
 
+from jasy.js.output.Compressor import Compressor
 
 
 if __name__ == "__main__":
-    # TODO: get from args
-    level = logging.DEBUG
-    values = None
-    
-    # Run
-    logging.getLogger().setLevel(level)
-
     for fname in sys.argv[1:]:
         text = open(fname, encoding="utf-8").read()
         tree = parse(text, fname)
     
-        if values:
-            Permutation(values).patch(tree)
-
         DeadCode.cleanup(tree)
-        Unused.optimize(tree)
+        Unused.cleanup(tree)
         
         CombineDeclarations.optimize(tree)
         BlockReducer.optimize(tree)
         LocalVariables.optimize(tree)
         CryptPrivates.optimize(tree)
     
-        print(compress(tree))
+        print(Compressor().compress(tree))

@@ -8,8 +8,11 @@ logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
 sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), os.pardir, "lib")))
 
 from jasy.js.parse.Parser import parse
-from jasy.js.output.Compressor import compress
+from jasy.js.output.Compressor import Compressor
 
 if __name__ == "__main__":
     for fname in sys.argv[1:]:
-        print(compress(parse(open(fname, encoding="utf-8").read(), fname), fname))
+        text = open(fname, encoding="utf-8").read()
+        tree = parse(text, fname)
+        
+        print(Compressor().compress(tree))

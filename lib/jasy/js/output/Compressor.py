@@ -7,17 +7,7 @@ import re, sys, json
 from jasy.js.tokenize.Lang import keywords
 from jasy.js.parse.Lang import expressions, futureReserved
 
-all = [ "compress" ]
-
-
-#
-# Public
-#
-
-def compress(node, format=False):
-    obj = Compressor(format=format)
-    return obj.compress(node)
-
+all = [ "Compressor" ]
 
 
 #

@@ -16,7 +16,7 @@ import jasy.js.output.Optimization
 from jasy.js.MetaData import MetaData
 from jasy.js.Permutation import getKeys
 from jasy.i18n.Translation import hasText
-from jasy.js.output.Compressor import compress
+from jasy.js.output.Compressor import Compressor
 
 
 aliases = {}
@@ -273,7 +273,7 @@ class Class():
                     except jasy.js.output.Optimization.Error as error:
                         raise Error(self, "Could not compress class! %s" % error)
                 
-            compressed = compress(tree, format)
+            compressed = Compressor(format).compress(tree)
             self.__cache.store(field, compressed, self.__mtime)
             
         return compressed
