@@ -42,25 +42,12 @@ major, minor = sys.version_info[:2]
 if major < 3:
     raise Exception("Jasy requires Python 3")
 
-VERSION = "0.7"
-
 script_dir = sys.path[0]
 
 if script_dir in sys.path:
     sys.path.remove(script_dir)
 
 libs = []
-
-local_version = 'jasy-local-' + VERSION
-local = 'jasy-local'
-if script_dir:
-    local_version = os.path.join(script_dir, local_version)
-    local = os.path.join(script_dir, local)
-libs.append(os.path.abspath(local_version))
-libs.append(os.path.abspath(local))
-
-jasy_version = 'jasy-%s' % VERSION
-
 prefs = []
 
 if sys.platform == 'win32':
@@ -144,8 +131,6 @@ else:
         else:
             prefs.append(d.location)
 
-# Look first for 'jasy-VERSION' in all of our preference libs
-libs.extend([os.path.join(x, jasy_version) for x in prefs])
 libs.extend(prefs)
 
 sys.path = libs + sys.path

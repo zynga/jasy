@@ -24,10 +24,10 @@ from jasy.js.output.Formatting import *
 from jasy.util.File import *
 
 # Current version. Used by setuptools
-VERSION = "0.4.4"
+__version__ = "0.4.5"
 
 # Export only main routine
-__all__ = ["main", "VERSION"]
+__all__ = ["main", "__version__"]
 
 
 
@@ -103,7 +103,7 @@ def __main():
     # Find and execute build script
     #
     
-    logging.info("Jasy %s" % VERSION)
+    logging.info("Jasy %s" % __version__)
     
     if options.showVersion:
         return

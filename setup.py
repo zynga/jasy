@@ -25,13 +25,13 @@ import jasy
 
 setup(
       name = 'jasy',
-      version = jasy.VERSION,
+      version = jasy.__version__,
       
       author = 'Sebastian Werner',
       author_email = 'info@sebastian-werner.net',
       
       url = 'http://github.com/wpbasti/jasy',
-      download_url = "http://pypi.python.org/packages/source/j/jasy/jasy-%s.tar.gz" % jasy.VERSION,
+      download_url = "http://pypi.python.org/packages/source/j/jasy/jasy-%s.tar.gz" % jasy.__version__,
       
       license = "Apache V2.0",
       
