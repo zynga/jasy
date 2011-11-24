@@ -69,7 +69,7 @@ class Project():
         else:
             self.__fields = {}            
             
-            
+
         # Try to figure out folder structure automatically
         if os.path.isdir(os.path.join(self.__path, "source", "class")):
             self.__classPath = os.path.join("source", "class")
@@ -88,11 +88,11 @@ class Project():
             self.__assetPath = ""
             self.__translationPath = ""
 
-
         logging.info("Initialized project %s" % self.__name)
 
 
     __dirFilter = [".svn", ".git", ".hg", ".bzr"]
+    __internalFiles = ("jasyproject.json", "jasyscript.py", "jasycache", "jasycache.db"),
 
 
     def __str__(self):
@@ -128,11 +128,18 @@ class Project():
         
         
     def getFields(self):
-        """ Return the project defined fields which may be configured by the build script """
+        """
+        Return the project defined fields which may be configured by the build script
+        """
+        
         return self.__fields
         
         
     def getClassByName(self, className):
+        """
+        Finds a class by its name.
+        """
+        
         try:
             return self.getClasses()[className]
         except KeyError:
@@ -140,23 +147,31 @@ class Project():
         
     
     def getClassPath(self, relative=False):
-        """ Returns the full path to the JavaScript classes """
+        """
+        Returns the full path to the JavaScript classes
+        """
 
         if self.__classPath is None:
             return None
 
         return self.__classPath if relative else os.path.join(self.__path, self.__classPath)
 
+
     def getAssetPath(self, relative=False):
-        """ Returns the full path to the assets (images, stylesheets, etc.) """
+        """
+        Returns the full path to the assets
+        """
 
         if self.__assetPath is None:
             return None
 
         return self.__assetPath if relative else os.path.join(self.__path, self.__assetPath)
 
+
     def getTranslationPath(self, relative=False):
-        """ Returns the full path to the translation files (gettext *.po files) """
+        """
+        Returns the full path to the translation files
+        """
         
         if self.__translationPath is None:
             return None
@@ -165,7 +180,9 @@ class Project():
 
 
     def getClasses(self):
-        """ Returns all project JavaScript classes """
+        """ 
+        Returns all project JavaScript classes. Requires all files to have a "js" extension.
+        """
         
         if self.__classPath is None:
             return None
@@ -184,7 +201,10 @@ class Project():
                             dirNames.remove(dirName)
 
                     for fileName in fileNames:
-                        if fileName.endswith(".js") and fileName[0] != ".":
+                        if fileName[0] == ".":
+                            continue
+                        
+                        if fileName.endswith(".js"):
                             classObj = Class(os.path.join(dirPath, fileName), self)
                             className = classObj.getName()
                             
@@ -199,7 +219,11 @@ class Project():
 
 
     def getAssets(self):
-        """ Returns all project asssets (images, stylesheets, etc.) """
+        """ 
+        Returns all project asssets (images, stylesheets, static data, etc.). Does not filter
+        for specific extensions but ignores files starting with a dot or files used internally
+        by Jasy like cache files or project configuration.
+        """
         
         if self.__assetPath is None:
             return None
@@ -220,13 +244,13 @@ class Project():
                             dirNames.remove(dirName)
 
                     for fileName in fileNames:
-                        # Exclude internally managed files
-                        if fileName in ("jasyproject.json", "jasyscript.py", "cache", "cache.db"):
+                        if fileName[0] == ".":
                             continue
                             
-                        if fileName[0] == "." or fileName.endswith((".js", ".txt", ".md")):
+                        # Exclude internally managed files
+                        if fileName in self.__internalFiles:
                             continue
-
+                            
                         filePath = os.path.join(dirPath, fileName)
                         relPath = filePath[assetPathLen:]
                         
@@ -245,7 +269,10 @@ class Project():
 
 
     def getTranslations(self):
-        """ Returns all translation files (gettext *.po files)"""
+        """ 
+        Returns all translation files. Currently supports only gettext style PO files
+        with a "po" extension.
+        """
         
         if self.__translationPath is None:
             return None
