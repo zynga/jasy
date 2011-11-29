@@ -38,6 +38,26 @@ setup(
       description = "Web Tooling Framework",
       long_description = open('README.txt').read(),
       
+      # Via: http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      classifiers = [
+        
+        'Development Status :: 3 - Alpha',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
+        'Topic :: Documentation',
+        'Topic :: Software Development :: Build Tools',
+        'Topic :: Software Development :: Compilers',
+        'Topic :: Software Development :: Code Generators',
+        'Topic :: Software Development :: Internationalization',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Topic :: Software Development :: Localization',
+        'Topic :: Software Development :: Testing'
+      
+      ],
+      
       packages = [
         'polib',
         'jasy',
