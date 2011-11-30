@@ -15,17 +15,10 @@ __all__ = ["Permutation", "getKeys"]
 # core.Env.select(key, map)
 __dotcalls = ("core.Env.isSet", "core.Env.getValue", "core.Env.select")
 
-# hasjs specific: has(key)
-__globalcalls = ("has")
-
 def testNode(node):
     # Assemble dot operators
     if node.type == "dot" and node.parent.type == "call" and assembleDot(node) in __dotcalls:
         return "dotcall"
-
-    # Global function calls
-    elif node.type == "call" and node[0].type == "identifier" and node[0].value in __globalcalls:
-        return "globalcall"
 
 
 def assembleDot(node, result=None):
@@ -47,12 +40,8 @@ def getKeys(node, keys=None):
     if keys is None:
         keys = set()
 
-    result = testNode(node)
-    if result:
-        if result == "dotcall":
-            keys.add(node.parent[1][0].value)
-        elif result == "globalcall":
-            keys.add(node[1][0].value)
+    if testNode(node):
+        keys.add(node.parent[1][0].value)
     
     # Process children
     for child in reversed(node):
@@ -194,9 +183,8 @@ class Permutation:
         """ Replaces all occourences with incoming values """
 
         modified = False
-        result = testNode(node)
         
-        if result == "dotcall":
+        if testNode(node):
             assembled = assembleDot(node)
             
             # Permutation.getValue(key)
@@ -264,19 +252,6 @@ class Permutation:
                         if not modified and fallbackNode is not None:
                             callNode.parent.replace(callNode, fallbackNode)
                             modified = True
-                            
-            
-        elif result == "globalcall":
-            params = node[1]
-
-            # has.js requires that there is exactly one param with a string value
-            if len(params) == 1 and params[0].type == "string":
-                replacement = self.getJSValue(params[0].value)
-
-                # Only boolean replacements allowed
-                if replacement in ("true", "false"):
-                    replacementNode = parseExpression(replacement)
-                    node.parent.replace(node, replacementNode)
 
 
         # Process children

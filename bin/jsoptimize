@@ -27,6 +27,12 @@ if __name__ == "__main__":
         text = open(fname, encoding="utf-8").read()
         tree = parse(text, fname)
     
+        permutation = Permutation({
+            "debug": False
+        })
+        
+        permutation.patch(tree)
+
         DeadCode.cleanup(tree)
         Unused.cleanup(tree)
         
