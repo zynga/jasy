@@ -9,11 +9,11 @@ from jasy.i18n.Translation import Translation
 from jasy.i18n.LocaleData import *
 
 from jasy.core.Project import Project
+from jasy.core.Permutation import Permutation
 
 from jasy.util.Profiler import *
 from jasy.util.File import *
 
-from jasy.js.Permutation import Permutation
 
 
 __all__ = ["Session"]

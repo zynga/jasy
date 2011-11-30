@@ -6,10 +6,11 @@
 import logging, os, random
 
 from jasy.core.Error import JasyError
+from jasy.core.Permutation import Permutation
+
 from jasy.util.File import *
 
 from jasy.js.Class import Error as ClassError
-from jasy.js.Permutation import Permutation
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
 from jasy.js.output.Optimization import Optimization

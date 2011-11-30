@@ -28,7 +28,8 @@ if __name__ == "__main__":
         tree = parse(text, fname)
     
         permutation = Permutation({
-            "debug": False
+            "debug": False,
+            "engine": "webkit"
         })
         
         permutation.patch(tree)

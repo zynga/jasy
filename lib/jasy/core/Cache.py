@@ -52,7 +52,7 @@ class Cache:
             self.__db.close()
             self.__db = None
 
-        logging.info("Clearing cache file %s..." % self.__file)
+        logging.debug("Clearing cache file %s..." % self.__file)
         self.__db = shelve.open(self.__file, flag="n")
         
         

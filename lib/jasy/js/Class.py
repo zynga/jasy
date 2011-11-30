@@ -10,18 +10,42 @@ import jasy.js.parse.ScopeScanner as ScopeScanner
 
 import jasy.js.clean.DeadCode
 import jasy.js.clean.Unused
+import jasy.js.clean.Permutate
 
 import jasy.js.output.Optimization
 
 from jasy.js.MetaData import MetaData
-from jasy.js.Permutation import getKeys
-from jasy.i18n.Translation import hasText
 from jasy.js.output.Compressor import Compressor
+
+from jasy.js.util import *
+
+from jasy.i18n.Translation import hasText
+
 
 
 aliases = {}
 
 __all__ = ["Class", "Error"]
+
+
+def collectPermutationKeys(node, keys=None):
+    
+    if keys is None:
+        keys = set()
+    
+    # Always the first parameter
+    # Supported calls: core.Env.isSet(key, expected?), core.Env.getValue(key), core.Env.select(key, map)
+    calls = ("core.Env.isSet", "core.Env.getValue", "core.Env.select")
+    if node.type == "dot" and node.parent.type == "call" and assembleDot(node) in calls:
+        keys.add(node.parent[1][0].value)
+
+    # Process children
+    for child in reversed(node):
+        if child != None:
+            collectPermutationKeys(child, keys)
+            
+    return keys
+
 
 class Error(Exception):
     def __init__(self, inst, msg):
@@ -115,7 +139,7 @@ class Class():
 
         # Apply permutation
         if permutation:
-            permutation.patch(tree)
+            jasy.js.clean.Permutate.patch(tree, permutation)
 
         # Remove dead code
         if cleanup:
@@ -195,7 +219,7 @@ class Class():
         
         field = "scope[%s]-%s" % (self.__id, permutation)
         scope = self.__cache.read(field, self.__mtime)
-        if scope == None:
+        if scope is None:
             scope = self.getTree(permutation).scope
             self.__cache.store(field, scope, self.__mtime)
         
@@ -207,7 +231,7 @@ class Class():
         
         field = "meta[%s]-%s" % (self.__id, permutation)
         meta = self.__cache.read(field, self.__mtime)
-        if meta == None:
+        if meta is None:
             meta = MetaData(self.getTree(permutation))
             self.__cache.store(field, meta, self.__mtime)
             
@@ -216,18 +240,18 @@ class Class():
         
     def getPermutationKeys(self):
         field = "permutations[%s]" % (self.__id)
-        result = self.__cache.read(field, self.__mtime)
-        if result is None:
-            result = getKeys(self.getTree())
-            self.__cache.store(field, result, self.__mtime)
+        keys = self.__cache.read(field, self.__mtime)
+        if keys is None:
+            keys = collectPermutationKeys(self.getTree())
+            self.__cache.store(field, keys, self.__mtime)
         
-        return result
+        return keys
 
 
     def usesTranslation(self):
         field = "translation[%s]" % (self.__id)
         result = self.__cache.read(field, self.__mtime)
-        if result == None:
+        if result is None:
             result = hasText(self.getTree())
             self.__cache.store(field, result, self.__mtime)
         
