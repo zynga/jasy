@@ -266,7 +266,6 @@ class Asset:
                 localPath = os.path.join(assetFolder, project.getName())
                 roots.append(localPath.replace(os.sep, "/"))
 
-            
         return self.__exportHelper(roots)        
         
         
