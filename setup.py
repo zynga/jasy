@@ -70,6 +70,7 @@ setup(
         'jasy.js.output',
         'jasy.js.parse',
         'jasy.js.tokenize',
+        'jasy.js.util',
         'jasy.util'
       ],
       

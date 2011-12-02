@@ -57,10 +57,10 @@ def storeKernel(fileName, session, assets=None, translations=None, optimization=
         resolver.addClassName("core.Env")
     
     if assets is not None:
-        resolver.addClassName("core.Asset")
+        resolver.addClassName("core.io.Asset")
         
     if translations is not None:
-        resolver.addClassName("core.Locale")
+        resolver.addClassName("core.locale.Translate")
 
     # Include IO classes
     resolver.addClassName("core.io.Queue")
