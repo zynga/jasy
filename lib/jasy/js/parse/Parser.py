@@ -1,13 +1,13 @@
 #
 # Jasy - Web Tooling Framework
-# Copyright 2010-2011 Sebastian Werner
+# Copyright 2010-2012 Sebastian Werner
 #
 
 #
 # License: MPL 1.1/GPL 2.0/LGPL 2.1
 # Authors: 
 #   - Brendan Eich <brendan@mozilla.org> (Original JavaScript) (2004-2010)
-#   - Sebastian Werner <info@sebastian-werner.net> (Python Port) (2010)
+#   - Sebastian Werner <info@sebastian-werner.net> (Python Port) (2010-2012)
 #
 
 from jasy.js.tokenize.Tokenizer import Token
