@@ -23,7 +23,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed.comments, list), True)
         self.assertEqual(len(parsed.comments), 1)
 
-        self.assertEqual(parsed.comments[0].context, "block")
         self.assertEqual(parsed.comments[0].variant, "single")
         self.assertEqual(parsed.comments[0].text, "Single Comment")        
         
@@ -38,7 +37,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed.comments, list), True)
         self.assertEqual(len(parsed.comments), 1)
         
-        self.assertEqual(parsed.comments[0].context, "block")
         self.assertEqual(parsed.comments[0].variant, "single")
         self.assertEqual(parsed.comments[0].text, "Single Comment")
         
@@ -56,7 +54,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 1)
         
-        self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "single")
         self.assertEqual(parsed[0].comments[0].text, "Single Comment")
         
@@ -75,11 +72,9 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 2)
 
-        self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "single")
         self.assertEqual(parsed[0].comments[0].text, "Single1 Comment")
 
-        self.assertEqual(parsed[0].comments[1].context, "section")
         self.assertEqual(parsed[0].comments[1].variant, "single")
         self.assertEqual(parsed[0].comments[1].text, "Single2 Comment")
         
@@ -97,7 +92,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 1)
 
-        self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "multi")
         self.assertEqual(parsed[0].comments[0].text, "Multi Comment")        
         
@@ -110,7 +104,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed.comments, list), True)
         self.assertEqual(len(parsed.comments), 1)
 
-        self.assertEqual(parsed.comments[0].context, "block")
         self.assertEqual(parsed.comments[0].variant, "multi")
         self.assertEqual(parsed.comments[0].text, "Multi Comment")        
         
@@ -125,7 +118,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed.comments, list), True)
         self.assertEqual(len(parsed.comments), 1)
 
-        self.assertEqual(parsed.comments[0].context, "block")
         self.assertEqual(parsed.comments[0].variant, "multi")
         self.assertEqual(parsed.comments[0].text, "Multi Comment")        
         
@@ -144,16 +136,14 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 2)
 
-        self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "multi")
         self.assertEqual(parsed[0].comments[0].text, "Multi Comment1")
         
-        self.assertEqual(parsed[0].comments[1].context, "section")
         self.assertEqual(parsed[0].comments[1].variant, "multi")
         self.assertEqual(parsed[0].comments[1].text, "Multi Comment2")
         
         
-    def test_multiline(self):
+    def test_multi_multiline(self):
 
         parsed = self.process('''
 
@@ -168,7 +158,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 1)
 
-        self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "multi")
         self.assertEqual(parsed[0].comments[0].text, " Multi\n   Comment\n   Test ")
     
@@ -186,9 +175,37 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 1)
 
-        self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
+        
+        
+        
+    def test_doc_unbound(self):
+
+        parsed = self.process('''
+        /** Doc Comment */
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        self.assertEqual(parsed.comments[0].variant, "doc")
+        self.assertEqual(parsed.comments[0].text, "Doc Comment")
+        
+        
+    def test_doc_unbound_nobreak(self):
+
+        parsed = self.process('''/** Doc Comment */''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        self.assertEqual(parsed.comments[0].variant, "doc")
+        self.assertEqual(parsed.comments[0].text, "Doc Comment")        
+
+
 
 
     def test_doc_multiline(self):
@@ -206,7 +223,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 1)
 
-        self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].text, "\n * Doc Comment\n ")
         
@@ -228,7 +244,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 1)
 
-        self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].text, "\n * Doc Comment Line 1\n * Doc Comment Line 2\n * Doc Comment Line 3\n ")        
         
@@ -249,7 +264,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 1)
 
-        self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].text, "\nDoc Comment\n")
 
@@ -271,7 +285,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 1)
 
-        self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].text, "\nDoc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3\n")
 
