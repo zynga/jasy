@@ -153,6 +153,71 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].text, "\n * Doc Comment\n ")
+        
+
+    def test_doc_multiline_three(self):
+
+        parsed = self.process('''
+
+        /**
+         * Doc Comment Line 1
+         * Doc Comment Line 2
+         * Doc Comment Line 3
+         */
+        docCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].context, "section")
+        self.assertEqual(parsed[0].comments[0].variant, "doc")
+        self.assertEqual(parsed[0].comments[0].text, "\n * Doc Comment Line 1\n * Doc Comment Line 2\n * Doc Comment Line 3\n ")        
+        
+        
+        
+    def test_doc_multiline_clean(self):
+
+        parsed = self.process('''
+
+        /**
+        Doc Comment
+        */
+        docCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].context, "section")
+        self.assertEqual(parsed[0].comments[0].variant, "doc")
+        self.assertEqual(parsed[0].comments[0].text, "\nDoc Comment\n")
+
+
+    def test_doc_multiline_clean_three(self):
+
+        parsed = self.process('''
+
+        /**
+        Doc Comment Line 1
+        Doc Comment Line 2
+        Doc Comment Line 3
+        */
+        docCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].context, "section")
+        self.assertEqual(parsed[0].comments[0].variant, "doc")
+        self.assertEqual(parsed[0].comments[0].text, "\nDoc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3\n")
 
     
     
