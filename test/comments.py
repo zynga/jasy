@@ -134,6 +134,26 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
 
+
+    def test_doc_multiline(self):
+
+        parsed = self.process('''
+
+        /**
+         * Doc Comment
+         */
+        docCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].context, "section")
+        self.assertEqual(parsed[0].comments[0].variant, "doc")
+        self.assertEqual(parsed[0].comments[0].text, "\n * Doc Comment\n ")
+
     
     
     def xtest_class_decl(self):
