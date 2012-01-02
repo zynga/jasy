@@ -11,7 +11,7 @@ class TestComments(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
-        print(node)
+        #print(node)
         return node
         
     
@@ -71,7 +71,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "multi")
-        self.assertEqual(parsed[0].comments[0].text, " Multi Comment ")        
+        self.assertEqual(parsed[0].comments[0].text, "Multi Comment")        
         
         
     def test_multiTwo(self):
@@ -90,14 +90,51 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].context, "section")
         self.assertEqual(parsed[0].comments[0].variant, "multi")
-        self.assertEqual(parsed[0].comments[0].text, " Multi Comment1 ")
+        self.assertEqual(parsed[0].comments[0].text, "Multi Comment1")
         
         self.assertEqual(parsed[0].comments[1].context, "section")
         self.assertEqual(parsed[0].comments[1].variant, "multi")
-        self.assertEqual(parsed[0].comments[1].text, " Multi Comment2 ")
+        self.assertEqual(parsed[0].comments[1].text, "Multi Comment2")
         
         
-        
+    def test_multiline(self):
+
+        parsed = self.process('''
+
+        /* Multi
+           Comment
+           Test */
+        multiCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].context, "section")
+        self.assertEqual(parsed[0].comments[0].variant, "multi")
+        self.assertEqual(parsed[0].comments[0].text, " Multi\n   Comment\n   Test ")
+    
+
+    def test_doc(self):
+
+        parsed = self.process('''
+
+        /** Doc Comment */
+        docCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].context, "section")
+        self.assertEqual(parsed[0].comments[0].variant, "doc")
+        self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
+
+    
     
     def xtest_class_decl(self):
         self.process('''

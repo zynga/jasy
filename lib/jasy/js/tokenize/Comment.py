@@ -16,21 +16,37 @@ class Comment():
         self.variant = variant
         self.context = context
         self.tags = None
-        
+
+        # Convert
         if variant == "single":
-            text = text[2:].strip()
+            # "// hello" => " hello"
+            text = text[2:]
             
         elif variant == "multi":
-            text = self.__outdent(text, indent, lineNo)
-            if text.startswith("/**"):
-                variant = "doc"
-                text = self.__processDoc(text, lineNo)
+            # "/* hello */" => " hello "
+            text = text[2:-2]
+        
+            # Detect doc strings, remove remaining star symbol
+            # "* hello" => " hello "
+            if text[0] == "*":
+                self.variant = "doc"
+                text = text[1:]
 
-                # Docs first and last line is removed, we need to add the missing line here
-                text = self.__extractTags(text, lineNo+1)
-                
-            else:
-                text = text[2:-2]
+        # Outdent indention
+        if "\n" in text:
+            text = self.__outdent(text, indent, lineNo)
+        else:
+            # Strip white space from single line comments
+            # " hello " => "hello"
+            text = text.strip()
+
+        # Extract docs
+        if self.variant == "doc":
+            pass
+            #text = self.__processDoc(text, lineNo)
+
+            # Docs first and last line is removed, we need to add the missing line here
+            #text = self.__extractTags(text, lineNo+1)
 
         self.text = text
         
@@ -41,18 +57,16 @@ class Comment():
 
     def __outdent(self, text, indent, lineNo):
         # outdent multi line comment text
-        if "\n" in text and indent != "":
-            result = []
-            text = indent + text
-            for pos, line in enumerate(text.split("\n")):
-                if line.startswith(indent):
-                    result.append(line[len(indent):])
-                else:
-                    raise CommentException("Invalid indention in comment", lineNo)
-                    
-            text = "\n".join(result)        
         
-        return text            
+        result = []
+        text = indent + text
+        for pos, line in enumerate(text.split("\n")):
+            if line.startswith(indent):
+                result.append(line[len(indent):])
+            else:
+                raise CommentException("Invalid indention in comment", lineNo)
+                
+        return "\n".join(result)
         
         
     def __processDoc(self, text, startLineNo):
