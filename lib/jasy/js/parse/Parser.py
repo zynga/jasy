@@ -44,6 +44,9 @@ def parse(source, fileId=None, line=1, builder=None):
     # store fileId on top-level node
     node.fileId = tokenizer.fileId
     
+    # add missing comments e.g. empty file with only a comment etc.
+    builder.COMMENTS_add(node, None, tokenizer.getComments())
+    
     if not tokenizer.done():
         raise SyntaxError("Unexpected end of file", tokenizer)
 
