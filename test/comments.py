@@ -19,7 +19,6 @@ class TestComments(unittest.TestCase):
     def test_single_unbound_nobreak(self):
 
         parsed = self.process('''// Single Comment''')
-        print(parsed)
 
         self.assertEqual(parsed.type, "script")
         self.assertEqual(isinstance(parsed.comments, list), True)
@@ -29,8 +28,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed.comments[0].variant, "single")
         self.assertEqual(parsed.comments[0].text, "Single Comment")        
         
-        
-class TestComments2(unittest.TestCase):        
         
     def test_single_unbound(self):
 
