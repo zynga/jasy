@@ -15,7 +15,6 @@ class TestComments(unittest.TestCase):
         return node
         
         
-        
     def test_single_unbound_nobreak(self):
 
         parsed = self.process('''// Single Comment''')
@@ -62,7 +61,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].text, "Single Comment")
         
         
-    def test_singleTwo(self):
+    def test_single_two(self):
 
         parsed = self.process('''
 
@@ -103,7 +102,35 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].text, "Multi Comment")        
         
         
-    def test_multiTwo(self):
+    def test_multi_unbound_nobreak(self):
+
+        parsed = self.process('''/* Multi Comment */''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        self.assertEqual(parsed.comments[0].context, "block")
+        self.assertEqual(parsed.comments[0].variant, "multi")
+        self.assertEqual(parsed.comments[0].text, "Multi Comment")        
+        
+        
+    def test_multi_unbound(self):
+
+        parsed = self.process('''
+        /* Multi Comment */
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        self.assertEqual(parsed.comments[0].context, "block")
+        self.assertEqual(parsed.comments[0].variant, "multi")
+        self.assertEqual(parsed.comments[0].text, "Multi Comment")        
+        
+        
+    def test_multi_two(self):
 
         parsed = self.process('''
 
