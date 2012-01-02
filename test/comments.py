@@ -14,6 +14,23 @@ class TestComments(unittest.TestCase):
         #print(node)
         return node
         
+        
+    def test_single_unbound(self):
+
+        parsed = self.process('''
+
+        // Single Comment
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].context, "section")
+        self.assertEqual(parsed[0].comments[0].variant, "single")
+        self.assertEqual(parsed[0].comments[0].text, "Single Comment")        
+        
     
     def test_single(self):
         
