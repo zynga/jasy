@@ -158,6 +158,9 @@ class Tokenizer(object):
         """Eats comments and whitespace."""
         input = self.source
         startLine = self.line
+
+        # Whether this is the first called as happen on start parsing a file (eat leading comments/white space)
+        startOfFile = self.cursor is 0
         
         indent = ""
         
@@ -183,11 +186,13 @@ class Tokenizer(object):
                 text = "/*"
                 inline = startLine == self.line and startLine > 1
                 commentStartLine = self.line
-                if startLine == self.line:
+                if startLine == self.line and not startOfFile:
                     mode = "inline"
                 elif (self.line-1) > startLine:
+                    # distance before this comment means it is a comment block for a whole section (multiple lines of code)
                     mode = "section"
                 else:
+                    # comment for maybe multiple following lines of code, but not that important (no visual white space divider)
                     mode = "block"
                     
                 while (True):
@@ -218,11 +223,13 @@ class Tokenizer(object):
             elif ch == "/" and next == "/":
                 self.cursor += 1
                 text = "//"
-                if startLine == self.line:
+                if startLine == self.line and not startOfFile:
                     mode = "inline"
                 elif (self.line-1) > startLine:
+                    # distance before this comment means it is a comment block for a whole section (multiple lines of code)
                     mode = "section"
                 else:
+                    # comment for maybe multiple following lines of code, but not that important (no visual white space divider)
                     mode = "block"
                     
                 while (True):
@@ -505,8 +512,10 @@ class Tokenizer(object):
 
 
     def get(self, scanOperand=False):
-        """ It consumes input *only* if there is no lookahead."""
-        """ Dispatch to the appropriate lexing function depending on the input."""
+        """ 
+        It consumes input *only* if there is no lookahead.
+        Dispatches to the appropriate lexing function depending on the input.
+        """
         while self.lookahead:
             self.lookahead -= 1
             self.tokenIndex = (self.tokenIndex + 1) & 3
