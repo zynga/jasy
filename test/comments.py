@@ -224,7 +224,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "\n * Doc Comment\n ")
+        self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
         
 
     def test_doc_multiline_three(self):
@@ -245,7 +245,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "\n * Doc Comment Line 1\n * Doc Comment Line 2\n * Doc Comment Line 3\n ")        
+        self.assertEqual(parsed[0].comments[0].text, "Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3")
         
         
         
@@ -265,7 +265,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "\nDoc Comment\n")
+        self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
 
 
     def test_doc_multiline_clean_three(self):
@@ -286,7 +286,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "\nDoc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3\n")
+        self.assertEqual(parsed[0].comments[0].text, "Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3")
 
     
     
