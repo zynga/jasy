@@ -82,7 +82,7 @@ class TestComments(unittest.TestCase):
         
     def test_single_context_inline(self):
 
-        parsed = self.process('''singleCommentCmd(); // Single After Comment''')
+        parsed = self.process('''singleCommentCmd(); // Single Inline Comment''')
 
         self.assertEqual(parsed[0].type, "semicolon")
         self.assertEqual(isinstance(parsed[0].comments, list), True)
@@ -90,7 +90,53 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].variant, "single")
         self.assertEqual(parsed[0].comments[0].context, "inline")
-        self.assertEqual(parsed[0].comments[0].text, "Single After Comment")        
+        
+        
+    def test_single_context_block_before(self):
+
+        parsed = self.process('''
+        singleCommentCmd(); 
+        // Single Block Comment
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "single")
+        self.assertEqual(parsed[0].comments[0].context, "block")   
+        
+        
+    def test_single_context_block_after(self):
+
+        parsed = self.process('''
+        // Single Block Comment
+        singleCommentCmd(); 
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "single")
+        self.assertEqual(parsed[0].comments[0].context, "block")
+        
+        
+    def test_single_context_section(self):
+
+        parsed = self.process('''
+        
+        // Single Section Comment
+        singleCommentCmd(); 
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "single")
+        self.assertEqual(parsed[0].comments[0].context, "section")
+        
         
         
     def test_multi(self):
@@ -174,6 +220,67 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].variant, "multi")
         self.assertEqual(parsed[0].comments[0].text, " Multi\n   Comment\n   Test ")
+    
+    
+    
+    
+    def test_multi_context_inline(self):
+
+        parsed = self.process('''multiCommentCmd(); /* Multi Inline Comment */''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "multi")
+        self.assertEqual(parsed[0].comments[0].context, "inline")
+
+
+    def test_multi_context_block_before(self):
+
+        parsed = self.process('''
+        multiCommentCmd(); 
+        /* Multi Block Comment */
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "multi")
+        self.assertEqual(parsed[0].comments[0].context, "block")   
+
+
+    def test_multi_context_block_after(self):
+
+        parsed = self.process('''
+        /* Multi Block Comment */
+        multiCommentCmd(); 
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "multi")
+        self.assertEqual(parsed[0].comments[0].context, "block")
+
+
+    def test_multi_context_section(self):
+
+        parsed = self.process('''
+
+        /* Multi Section Comment */
+        multiCommentCmd(); 
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "multi")
+        self.assertEqual(parsed[0].comments[0].context, "section")    
+    
     
 
     def test_doc(self):
