@@ -4,36 +4,44 @@
 #
 
 class CommentException(Exception):
-    def __init__(self, message, lineNo=0, tag=None):
-        if tag:
-            Exception.__init__(self, "Comment error in tag %s: %s (line: %s)" % (tag, message, lineNo+1))
-        else:
-            Exception.__init__(self, "Comment error: %s (line: %s)" % (message, lineNo+1))
+    def __init__(self, message, lineNo=0):
+        Exception.__init__(self, "Comment error: %s (line: %s)" % (message, lineNo+1))
             
 
 class Comment():
-    def __init__(self, text, variant, context, lineNo=0, indent=""):
-        self.variant = variant
+    context = None
+    tags = None
+    
+    def __init__(self, text, context=None, lineNo=0, indent=""):
+        # Store context (relation to code)
         self.context = context
-        self.tags = None
 
         # Convert
-        if variant == "single":
+        if text.startswith("//"):
             # "// hello" => " hello"
             text = text[2:]
+            self.variant = "single"
             
-        elif variant == "multi":
+        elif text.startswith("/**"):
+            # "/** hello */" => " hello "
+            text = text[3:-2]
+            self.variant = "doc"
+
+        elif text.startswith("/*!"):
+            # "/*! hello */" => " hello "
+            text = text[3:-2]
+            self.variant = "protected"
+            
+        elif text.startswith("/*"):
             # "/* hello */" => " hello "
             text = text[2:-2]
-        
-            # Detect doc strings, remove remaining star symbol
-            # "* hello" => " hello "
-            if text[0] == "*":
-                self.variant = "doc"
-                text = text[1:]
+            self.variant = "multi"
+            
+        else:
+            raise CommentException("Invalid comment text: %s" % text, lineNo)
 
-        # Outdent indention
         if "\n" in text:
+            # Outdent indention
             text = self.__outdent(text, indent, lineNo)
         else:
             # Strip white space from single line comments
@@ -56,7 +64,9 @@ class Comment():
         
 
     def __outdent(self, text, indent, lineNo):
-        # outdent multi line comment text
+        """
+        Outdent multi line comment text
+        """
         
         result = []
         text = indent + text
@@ -172,7 +182,7 @@ class Comment():
                     elif tagIdentifier in self.isList:
                         result[tagIdentifier].append(tagData)
                     else:
-                        raise CommentException("Duplicated tag found", startLineNo+lineNo, tagIdentifier)
+                        raise CommentException("Duplicated tag found %s" % tagIdentifier, startLineNo+lineNo)
 
                 else:
                     if tagIdentifier in self.hasName:
@@ -257,16 +267,16 @@ class Comment():
                     tagName += char
                  
         if tagIdentifier == "param" and not tagName:
-            raise CommentException("Parameter tag is missing name!", lineNo, tagIdentifier)
+            raise CommentException("Parameter tag %s is missing name!" % tagIdentifier, lineNo)
 
         if tagType:
             # Cut out leading "{" and trailing "}"
             if tagType[0] != "{" or tagType[-1] != "}":
-                raise CommentException("Invalid type was used!", lineNo, tagIdentifier)
+                raise CommentException("Invalid type was used!", lineNo)
             tagType = tagType[1:-1]
             
         elif tagIdentifier in ["param", "return", "type", "enum", "implements"]:
-            raise CommentException("Type information is missing in tag!", lineNo, tagIdentifier)
+            raise CommentException("Type information is missing in tag!", lineNo)
 
         # Build return value
         tagData = None

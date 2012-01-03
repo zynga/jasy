@@ -210,7 +210,7 @@ class Tokenizer(object):
                     text += ch
                     
                 try:
-                    self.comments.append(Comment(text, "multi", mode, commentStartLine, indent))
+                    self.comments.append(Comment(text, mode, commentStartLine, indent))
                 except CommentException as commentError:
                     logging.error("Ignoring comment in %s: %s", self.fileId, commentError)
                     
@@ -240,7 +240,7 @@ class Tokenizer(object):
                     text += ch
                     
                 try:
-                    self.comments.append(Comment(text, "single", mode, self.line-1))
+                    self.comments.append(Comment(text, mode, self.line-1))
                 except CommentException:
                     logging.error("Ignoring comment in %s: %s", self.fileId, commentError)
 
