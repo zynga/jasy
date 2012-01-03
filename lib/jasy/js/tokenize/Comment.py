@@ -72,8 +72,8 @@ class Comment():
         text = indent + text
         for pos, line in enumerate(text.split("\n")):
             if line.startswith(indent):
-                # Ignore empty lines
-                if line.strip(" \n\t") != "":
+                # Ignore empty lines (incl. special \xA0)
+                if line.strip(" \n\t\xA0") != "":
                     result.append(line[len(indent):])
             else:
                 raise CommentException("Invalid indention in comment", lineNo)

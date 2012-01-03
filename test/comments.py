@@ -79,6 +79,24 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[1].text, "Single2 Comment")
         
         
+        
+    def test_single_context_inline(self):
+
+        parsed = self.process('''
+
+        singleCommentCmd(); // Single After Comment
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "single")
+        self.assertEqual(parsed[0].comments[0].context, "inline")
+        self.assertEqual(parsed[0].comments[0].text, "Single After Comment")        
+        
+        
     def test_multi(self):
 
         parsed = self.process('''
@@ -288,6 +306,14 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].text, "Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3")
 
+
+    
+
+
+
+
+    def test_doc_jsdoc_params(self):
+        pass
     
     
     def xtest_class_decl(self):
