@@ -234,6 +234,21 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].variant, "multi")
         self.assertEqual(parsed[0].comments[0].context, "inline")
+        
+        
+    def test_multi_context_inline_multiline(self):
+
+        parsed = self.process('''
+        multiCommentCmd(); /* 
+          Multi Inline Comment 
+        */''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "multi")
+        self.assertEqual(parsed[0].comments[0].context, "inline")        
 
 
     def test_multi_context_block_before(self):

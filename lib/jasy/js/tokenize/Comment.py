@@ -3,6 +3,8 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
+import logging
+
 class CommentException(Exception):
     def __init__(self, message, lineNo=0):
         Exception.__init__(self, "Comment error: %s (line: %s)" % (message, lineNo+1))
@@ -76,7 +78,8 @@ class Comment():
                 if line.strip(" \n\t\xA0") != "":
                     result.append(line[len(indent):])
             else:
-                raise CommentException("Invalid indention in comment", lineNo)
+                logging.error("Invalid indention in comment at line %s", lineNo+pos)
+                return text
                 
         return "\n".join(result)
         
