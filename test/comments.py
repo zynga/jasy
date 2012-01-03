@@ -82,11 +82,7 @@ class TestComments(unittest.TestCase):
         
     def test_single_context_inline(self):
 
-        parsed = self.process('''
-
-        singleCommentCmd(); // Single After Comment
-
-        ''')
+        parsed = self.process('''singleCommentCmd(); // Single After Comment''')
 
         self.assertEqual(parsed[0].type, "semicolon")
         self.assertEqual(isinstance(parsed[0].comments, list), True)
