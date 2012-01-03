@@ -471,19 +471,50 @@ class TestComments(unittest.TestCase):
     # DOC COMMENTS :: TAGS
     #
 
-    def test_doc_jsdoc_tags(self):
+    def test_doc_tags(self):
         
         parsed = self.process('''
         
+        /**
+         * Hello World
+         *
+         * #deprecated #public #use(future) #use(current)
+         */
+        
         ''')
         
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        self.assertEqual(parsed.comments[0].variant, "doc")
+        self.assertEqual(parsed.comments[0].text, "Hello World")
+        
+        
+    
+    def test_doc_tags_clean(self):
+
+        parsed = self.process('''
+
+        /**
+         * #deprecated #public #use(future) #use(current)
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        self.assertEqual(parsed.comments[0].variant, "doc")
+        self.assertEqual(parsed.comments[0].text, "")        
         
         
     #
     # DOC COMMENTS :: LINKS
     #
 
-    def test_doc_jsdoc_links(self):
+    def test_doc_links(self):
 
         parsed = self.process('''
 
@@ -494,6 +525,22 @@ class TestComments(unittest.TestCase):
     #
     # DOC COMMENTS :: PARAMS
     #
+    
+
+    def test_doc_params_jsdoc(self):
+        
+        parsed = self.process('''
+        
+        /**
+         * Sets the position of the object
+         *
+         * @param {Number} x The left position
+         * @param {Number} y The top position
+         */
+        
+        ''')
+        
+        #print(parsed)
     
     
     
