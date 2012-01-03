@@ -45,7 +45,13 @@ def parse(source, fileId=None, line=1, builder=None):
     node.fileId = tokenizer.fileId
     
     # add missing comments e.g. empty file with only a comment etc.
-    builder.COMMENTS_add(node, None, tokenizer.getComments())
+    # if there is something non-attached by an inner node it is attached to
+    # the top level node, which is not correct, but might be better than
+    # just ignoring the comment after all.
+    if len(node) > 0:
+        builder.COMMENTS_add(node[-1], None, tokenizer.getComments())
+    else:
+        builder.COMMENTS_add(node, None, tokenizer.getComments())
     
     if not tokenizer.done():
         raise SyntaxError("Unexpected end of file", tokenizer)
@@ -527,7 +533,7 @@ def Statement(tokenizer, staticContext):
 
     elif tokenType == "newline" or tokenType == "semicolon":
         node = builder.SEMICOLON_build(tokenizer)
-        
+
         builder.SEMICOLON_setExpression(node, None)
         builder.SEMICOLON_finish(tokenizer)
         
