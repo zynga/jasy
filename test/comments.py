@@ -15,31 +15,11 @@ class TestComments(unittest.TestCase):
         return node
         
         
-    def test_single_unbound_nobreak(self):
+        
 
-        parsed = self.process('''// Single Comment''')
-
-        self.assertEqual(parsed.type, "script")
-        self.assertEqual(isinstance(parsed.comments, list), True)
-        self.assertEqual(len(parsed.comments), 1)
-
-        self.assertEqual(parsed.comments[0].variant, "single")
-        self.assertEqual(parsed.comments[0].text, "Single Comment")        
-        
-        
-    def test_single_unbound(self):
-
-        parsed = self.process('''
-        // Single Comment
-        ''')
-        
-        self.assertEqual(parsed.type, "script")
-        self.assertEqual(isinstance(parsed.comments, list), True)
-        self.assertEqual(len(parsed.comments), 1)
-        
-        self.assertEqual(parsed.comments[0].variant, "single")
-        self.assertEqual(parsed.comments[0].text, "Single Comment")
-        
+    #
+    # SINGLE COMMENTS
+    #        
     
     def test_single(self):
         
@@ -57,6 +37,32 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].variant, "single")
         self.assertEqual(parsed[0].comments[0].text, "Single Comment")
         
+
+    def test_single_unbound(self):
+
+        parsed = self.process('''
+        // Single Comment
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        self.assertEqual(parsed.comments[0].variant, "single")
+        self.assertEqual(parsed.comments[0].text, "Single Comment")        
+
+
+    def test_single_unbound_nobreak(self):
+
+        parsed = self.process('''// Single Comment''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        self.assertEqual(parsed.comments[0].variant, "single")
+        self.assertEqual(parsed.comments[0].text, "Single Comment")        
+
         
     def test_single_two(self):
 
@@ -79,6 +85,10 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[1].text, "Single2 Comment")
         
         
+        
+    #
+    # SINGLE COMMENTS :: CONTEXT
+    #
         
     def test_single_context_inline(self):
 
@@ -139,6 +149,10 @@ class TestComments(unittest.TestCase):
         
         
         
+    #
+    # MULTI COMMENTS
+    #
+        
     def test_multi(self):
 
         parsed = self.process('''
@@ -156,9 +170,11 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].text, "Multi Comment")        
         
         
-    def test_multi_unbound_nobreak(self):
+    def test_multi_unbound(self):
 
-        parsed = self.process('''/* Multi Comment */''')
+        parsed = self.process('''
+        /* Multi Comment */
+        ''')
 
         self.assertEqual(parsed.type, "script")
         self.assertEqual(isinstance(parsed.comments, list), True)
@@ -168,11 +184,9 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed.comments[0].text, "Multi Comment")        
         
         
-    def test_multi_unbound(self):
+    def test_multi_unbound_nobreak(self):
 
-        parsed = self.process('''
-        /* Multi Comment */
-        ''')
+        parsed = self.process('''/* Multi Comment */''')
 
         self.assertEqual(parsed.type, "script")
         self.assertEqual(isinstance(parsed.comments, list), True)
@@ -223,7 +237,10 @@ class TestComments(unittest.TestCase):
     
     
     
-    
+    #
+    # MULTI COMMENTS :: CONTEXT
+    #
+            
     def test_multi_context_inline(self):
 
         parsed = self.process('''multiCommentCmd(); /* Multi Inline Comment */''')
@@ -298,6 +315,33 @@ class TestComments(unittest.TestCase):
     
     
 
+
+    #
+    # PROTECTED COMMENTS
+    #
+
+    def test_protected(self):
+
+        parsed = self.process('''
+
+        /*! Protected Comment */
+        protectedCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "protected")
+        self.assertEqual(parsed[0].comments[0].text, "Protected Comment")    
+
+
+
+    #
+    # DOC COMMENTS
+    #
+    
     def test_doc(self):
 
         parsed = self.process('''
@@ -313,7 +357,6 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
-        
         
         
     def test_doc_unbound(self):
@@ -340,8 +383,6 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed.comments[0].variant, "doc")
         self.assertEqual(parsed.comments[0].text, "Doc Comment")        
-
-
 
 
     def test_doc_multiline(self):
@@ -426,12 +467,46 @@ class TestComments(unittest.TestCase):
 
 
     
+    #
+    # DOC COMMENTS :: TAGS
+    #
+
+    def test_doc_jsdoc_tags(self):
+        
+        parsed = self.process('''
+        
+        ''')
+        
+        
+        
+    #
+    # DOC COMMENTS :: LINKS
+    #
+
+    def test_doc_jsdoc_links(self):
+
+        parsed = self.process('''
+
+        ''')
 
 
 
+    #
+    # DOC COMMENTS :: PARAMS
+    #
+    
+    
+    
+    #
+    # DOC COMMENTS :: MARKDOWN
+    #
+    
+    
 
-    def test_doc_jsdoc_params(self):
-        pass
+    #
+    # DOC COMMENTS :: HTML
+    #
+
     
     
     def xtest_class_decl(self):
