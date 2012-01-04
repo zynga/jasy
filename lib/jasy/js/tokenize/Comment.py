@@ -13,6 +13,9 @@ class CommentException(Exception):
 class Comment():
     context = None
     tags = None
+    params = None
+    throws = None
+    returns = None
     
     tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
     
@@ -124,6 +127,13 @@ class Comment():
 
         text = self.__extractTags(text)
         text = self.__extractJsdoc(text)
+        
+        print("PARAMS:")
+        print(self.params)
+        print("RETURNS:")
+        print(self.returns)
+        print("THROWS:")
+        print(self.throws)
 
         return text            
             
@@ -156,39 +166,77 @@ class Comment():
     def __extractJsdoc(self, text):
         """
         Extract classic JSDoc style items
-        - @param name {Type} comment
-        - @param {Type} name comment
-        - @return {Type} comment
-        
         """
-        
+
+        # Supports 
+        # - @tagname comment
         parseTags = re.compile(r"^@([a-zA-Z]+)")
-        parseParams = re.compile(r"^@(param)(\s+\{([a-zA-Z0-9_\|\[\]]+)\})?(\s+\[?(([a-zA-Z0-9]+)(=([\S+]))?)\]?)")
-        parseReturnThrow = re.compile(r"^@(returns|throws)(\s+\{([a-zA-Z0-9_\|\[\]]+)\})?")
+        
+        # Supports:
+        # - @param name {Type} description
+        # - @param name {Type?} description
+        # - @param name {Type?defaultValue} description
+        parseParams1 = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_\|\[\]]+)(\s*(\?)\s*(\S+))?\}")
+
+        # Supports:
+        # - @param name description
+        # - @param {Type} name description 
+        # - @param {Type} [optionalName=defaultValue] description
+        # - @param {Type} [optionalName] description
+        parseParams2 = re.compile(r"^@(param)(\s+\{([a-zA-Z0-9_\|\[\]]+)\})?(\s+(\[?)(([a-zA-Z0-9]+)(=([\S+]))?)\]?)")
+        
+        # Supports:
+        # - @return {Type} comment
+        parseReturnThrow = re.compile(r"^@(returns|throws|return|throw)(\s+\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
         
         # Some tags form JSDoc could be converted easily: http://code.google.com/p/jsdoc-toolkit/wiki/TagReference
         # The tags: "deprecated", "since" and "version" might have small description blocks
         # The tags: "param", "returns" and "throws" support type info too
-        translate = ('@constant ', '@constructor ', '@deprecated ', '@field ', '@function ', '@param ', '@private ', '@property ', '@public ', '@returns ', '@static ', '@since ', '@throws ', '@type ', '@version ')
+        translate = ('@constant ', '@constructor ', '@deprecated ', '@field ', '@function ', '@param ', '@private ', '@property ', '@public ', '@return ', '@returns ', '@static ', '@since ', '@throw ', '@throws ', '@type ', '@version ')
 
 
         active = False
         description = ""
         name = ""
+        type = ""
 
         
         def store():
-            if name == "param"
+            
+            if name == "param":
+                
+                if self.params is None:
+                    self.params = {}
+                
                 self.params[paramName] = {
                     "optional": paramOptional,
                     "type" : paramType,
-                    "default" : paramDefault
+                    "default" : paramDefault,
+                    "description" : description
+                }
+                
+            elif name == "return" or name == "returns":
+                
+                self.returns = {
+                    "type" : returnThrowType,
+                    "decription" : description
                 }
             
-            TODOOOOO :)
+            elif name == "throw" or name == "throws":
+            
+                self.throws = {
+                    "type" : returnThrowType,
+                    "decription" : description
+                }
                 
-            pass
-        
+            else:
+                
+                if self.tags is None:
+                    self.tags = {}
+                
+                self.tags[name] = True
+                
+                
         
         for line in text.split("\n"):
             if line.startswith(translate):
@@ -201,41 +249,63 @@ class Comment():
                     name = matched.group(1)
                     
                     if name == "param":
-                        matched = parseParams.match(line)
+                        matched = parseParams1.match(line)
+                        if matched:
+                            
+                            paramName = matched.group(2)
+                            paramType = matched.group(3)
+                            paramOptional = matched.group(5) is not None
+                            paramDefault = matched.group(6)
 
-                        # Ignore parse error
-                        if not matched:
-                            continue
+                            # Remove matched content from line
+                            line = parseParams1.sub("", line)
+
+                        else:
+                            matched = parseParams2.match(line)
+                            
+                            if matched:
+                                
+                                paramType = matched.group(3)
+                                paramOptional = matched.group(5) is not None
+                                paramName = matched.group(7)
+                                paramDefault = matched.group(9)
+
+                                # Remove matched content from line
+                                line = parseParams2.sub("", line)
+                                
+                            
+                            else:
+                                # Ignore parse error
+                                logging.error("Failed to parse line: %s", line)
+                                continue
+
                         
-                        paramType = matched.group(2)
-                        paramOptional = matched.group(3).endswith("]")
-                        paramName = matched.group(5)
-                        paramDefault = matched.group(7)
-                        
-                        # Remove matched content from line
-                        line = parseParams.sub("", line)
-                        
-                    elif name == "returns" or name == "throws":
+                    elif name in ("throw", "throws", "return", "returns"):
                         matched = parseReturnThrow.match(line)
 
                         # Ignore parse error
                         if not matched:
+                            logging.error("Failed to parse line: %s", line)
                             continue
                         
-                        returnsType = matched.group(2)
+                        returnThrowType = matched.group(3)
                         
                         # Remove matched content from line
                         line = parseReturnThrow.sub("", line)
+                  
                         
                     # Build new description
-                    description = line
+                    description = line.strip()
                         
                     # Mark as active (for capturing next lines, if needed)
                     active = True
+                    
 
             elif active:
                 # Append to previous line
-                description += "\n%s" % line
+                if description:
+                    description += " "
+                description += line.strip()
                 
         store()
         
