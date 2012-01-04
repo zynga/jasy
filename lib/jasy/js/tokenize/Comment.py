@@ -143,8 +143,8 @@ class Comment():
         
         def collectReturn(match):
             self.returns = {
-                "type" : match.group(1),
-                "description" : ""
+                "type" : self.__compactTypeDecl(match.group(1)),
+                "description" : None
             }
             
             return ""
@@ -184,6 +184,11 @@ class Comment():
         text = tagMatcher.sub(collectTags, text)
 
         return text
+        
+        
+    
+    def __compactTypeDecl(self, decl):
+        return "|".join(re.compile("\s*\|\s*").split(decl)).strip()
         
         
         
@@ -233,11 +238,9 @@ class Comment():
             else:
                 storeType = returnThrowType
                 
-            # remove spacing around type divider
-            if storeType is not None:
-                storeType = "|".join(re.compile("\s*\|\s*").split(storeType)).strip()
-            
-            
+            if storeType:
+                storeType = self.__compactTypeDecl(storeType)
+                
             if name == "param":
                 
                 if self.params is None:

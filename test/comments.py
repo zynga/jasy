@@ -488,6 +488,27 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.text, "Returns the sum of x and y.")
+        
+        
+    def test_doc_return_twotypes(self):
+
+        parsed = self.process('''
+
+        /**
+         * {Number | String} Returns the sum of x and y.
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, "Returns the sum of x and y.")
+        self.assertEqual(comment.returns["type"], "Number|String")
     
     
     
