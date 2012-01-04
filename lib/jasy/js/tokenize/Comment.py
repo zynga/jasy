@@ -191,12 +191,8 @@ class Comment():
         # - @return {Type} comment
         parseReturnThrow = re.compile(r"^@(returns|throws|return|throw)(\s+\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
         
-        # Some tags form JSDoc could be converted easily: http://code.google.com/p/jsdoc-toolkit/wiki/TagReference
-        # The tags: "deprecated", "since" and "version" might have small description blocks
-        # The tags: "param", "returns" and "throws" support type info too
-        translate = ('@constant ', '@constructor ', '@deprecated ', '@field ', '@function ', 
-          '@param ', '@private ', '@property ', '@public ', '@return ', '@returns ', '@static ', 
-          '@since ', '@throw ', '@throws ', '@type ', '@version ')
+        # Translate basic param, throw and return tags from JSDOC: http://code.google.com/p/jsdoc-toolkit/wiki/TagReference
+        supportedTags = ('@param ', '@return ', '@returns ', '@throw ', '@throws ')
 
 
         active = False
@@ -222,31 +218,23 @@ class Comment():
                 
                 self.returns = {
                     "type" : returnThrowType,
-                    "decription" : description
+                    "description" : description
                 }
             
             elif name == "throw" or name == "throws":
             
                 self.throws = {
                     "type" : returnThrowType,
-                    "decription" : description
+                    "description" : description
                 }
-                
-            elif name:
-                
-                if self.tags is None:
-                    self.tags = {}
-                
-                self.tags[name] = True
-                
                 
                 
         
         for line in text.split("\n"):
             
-            if line.startswith(translate):
+            if line.startswith(supportedTags):
                 
-                # Save previous
+                # Save previous attribute (aka jsdoc tag)
                 store()
                 name = ""
                 
@@ -289,7 +277,7 @@ class Comment():
 
                     
                     # Match throws/returns with optional type definition
-                    elif name in ("throw", "throws", "return", "returns"):
+                    else:
                         matched = parseReturnThrow.match(line)
 
                         # Ignore parse error
@@ -303,10 +291,6 @@ class Comment():
                         line = parseReturnThrow.sub("", line)
                   
                   
-                    else:
-                        print("OTHER: %s" % name)
-                  
-                        
                     # Build new description
                     description = line.strip()
                         
