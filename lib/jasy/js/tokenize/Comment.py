@@ -127,6 +127,7 @@ class Comment():
 
         text = self.__extractTags(text)
         text = self.__extractJsdoc(text)
+        text = self.__processTypes(text)
         
         return text            
             
@@ -328,3 +329,12 @@ class Comment():
         store()
         
         return "\n".join(remainingText).strip("\n ")
+        
+        
+        
+    def __processTypes(self, text):
+        
+        
+        return text
+        
+        

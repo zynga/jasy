@@ -493,6 +493,8 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.text, "Hello World")
         
         
+        
+        
     
     def test_doc_tags_clean(self):
 
@@ -513,7 +515,8 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.text, "")        
     
-        
+    
+    
     #
     # DOC COMMENTS :: LINKS
     #
@@ -525,6 +528,8 @@ class TestComments(unittest.TestCase):
         /**
          * Link to cool {z.core.Style} class. Looks at this method {core.io.Asset#toUri} to translate local
          * asset IDs to something usable in the browser.
+         *
+         * You can either use {String | Number | Boolean} types as primitive data types.
          */
 
         ''')
@@ -534,6 +539,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed.comments), 1)
 
         comment = parsed.comments[0]
+        
         
 
 
