@@ -198,6 +198,7 @@ class Comment():
         active = False
         description = ""
         name = ""
+        remainingText = []
 
         
         def store():
@@ -273,6 +274,7 @@ class Comment():
                             else:
                                 # Ignore parse error
                                 logging.error("Failed to parse line: %s", line)
+                                name = ""
                                 continue
 
                     
@@ -283,6 +285,7 @@ class Comment():
                         # Ignore parse error
                         if not matched:
                             logging.error("Failed to parse line: %s", line)
+                            name = ""
                             continue
                         
                         returnThrowType = matched.group(3)
@@ -291,12 +294,18 @@ class Comment():
                         line = parseReturnThrow.sub("", line)
                   
                   
-                    # Build new description
+                    # Build new description from tag filtered line content
                     description = line.strip()
                         
                     # Mark as active (for capturing next lines, if needed)
                     active = True
                     
+
+            elif line.startswith("@"):
+
+                # Unsupported tag leads to deactivation
+                logging.debug("Do not support tag line: %s" % line)
+                active = False
 
             elif active:
                 
@@ -306,8 +315,12 @@ class Comment():
                     
                 description += line.strip()
                 
+            else:
+                
+                remainingText.append(line)
+                
                 
         # Store last entry
         store()
         
-        return text
+        return "\n".join(remainingText).strip("\n ")
