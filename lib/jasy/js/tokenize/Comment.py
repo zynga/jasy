@@ -138,6 +138,18 @@ class Comment():
             
             
     def __extractReturn(self, text):
+
+        returnMatcher = re.compile(r"^\{([a-zA-Z0-9_ \|\[\]]+)\}")
+        
+        def collectReturn(match):
+            self.returns = {
+                "type" : match.group(1),
+                "description" : ""
+            }
+            
+            return ""
+            
+        text = returnMatcher.sub(collectReturn, text)
         
         return text
 

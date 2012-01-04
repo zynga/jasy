@@ -466,6 +466,30 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].text, "Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3")
 
 
+    #
+    # DOC COMMENTS :: RETURN
+    #
+
+    def test_doc_return(self):
+
+        parsed = self.process('''
+
+        /**
+         * {Number} Returns the sum of x and y.
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, "Returns the sum of x and y.")
+    
+    
     
     #
     # DOC COMMENTS :: TAGS
