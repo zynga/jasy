@@ -128,15 +128,6 @@ class Comment():
         text = self.__extractTags(text)
         text = self.__extractJsdoc(text)
         
-        print("PARAMS:")
-        print(self.params)
-        print("RETURNS:")
-        print(self.returns)
-        print("THROWS:")
-        print(self.throws)
-        print("TAGS:")
-        print(self.tags)
-
         return text            
             
             
@@ -167,7 +158,7 @@ class Comment():
         
     def __extractJsdoc(self, text):
         """
-        Extract classic JSDoc style items
+        Extract classic JSDoc style items with support for both JSDoc like params and qooxdoo like params
         """
 
         # Supports 
