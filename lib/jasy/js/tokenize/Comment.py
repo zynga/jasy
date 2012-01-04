@@ -17,8 +17,6 @@ class Comment():
     throws = None
     returns = None
     
-    tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
-    
     
     def __init__(self, text, context=None, lineNo=0, indent=""):
         # Store context (relation to code)
@@ -125,18 +123,32 @@ class Comment():
             
     def __processDoc(self, text, startLineNo):
 
-        text = self.__extractTags(text)
         text = self.__extractJsdoc(text)
+        text = self.__extractReturn(text)
+        text = self.__extractTags(text)
+
+        text = self.__processParams(text)
         text = self.__processTypes(text)
         
         return text            
             
             
+            
+    def __extractReturn(self, text):
+        
+        return text
+
+
+        
+        
+        
     def __extractTags(self, text):
         """
         Extract all tags inside the give doc comment. These are replaced from 
         the text and collected inside the "tags" key as a dict.
         """
+        
+        tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
         
         def collectTags(match):
              if not self.tags:
@@ -154,7 +166,10 @@ class Comment():
 
              return ""
 
-        return self.tagMatcher.sub(collectTags, text)
+        text = tagMatcher.sub(collectTags, text)
+        text = text.strip("\n\t ")
+
+        return text
         
         
     def __extractJsdoc(self, text):
@@ -329,6 +344,12 @@ class Comment():
         store()
         
         return "\n".join(remainingText).strip("\n ")
+        
+        
+        
+    def __processParams(self, text):
+
+        return text
         
         
         
