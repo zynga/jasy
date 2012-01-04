@@ -192,13 +192,14 @@ class Comment():
         # Some tags form JSDoc could be converted easily: http://code.google.com/p/jsdoc-toolkit/wiki/TagReference
         # The tags: "deprecated", "since" and "version" might have small description blocks
         # The tags: "param", "returns" and "throws" support type info too
-        translate = ('@constant ', '@constructor ', '@deprecated ', '@field ', '@function ', '@param ', '@private ', '@property ', '@public ', '@return ', '@returns ', '@static ', '@since ', '@throw ', '@throws ', '@type ', '@version ')
+        translate = ('@constant ', '@constructor ', '@deprecated ', '@field ', '@function ', 
+          '@param ', '@private ', '@property ', '@public ', '@return ', '@returns ', '@static ', 
+          '@since ', '@throw ', '@throws ', '@type ', '@version ')
 
 
         active = False
         description = ""
         name = ""
-        type = ""
 
         
         def store():
