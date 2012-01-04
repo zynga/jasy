@@ -126,6 +126,9 @@ class Comment():
         text = self.__extractJsdoc(text)
         text = self.__extractReturn(text)
         text = self.__extractTags(text)
+        
+        # Collapse new empty lines at start/end
+        text = text.strip("\n\t ")
 
         text = self.__processParams(text)
         text = self.__processTypes(text)
@@ -167,9 +170,9 @@ class Comment():
              return ""
 
         text = tagMatcher.sub(collectTags, text)
-        text = text.strip("\n\t ")
 
         return text
+        
         
         
     def __extractJsdoc(self, text):
