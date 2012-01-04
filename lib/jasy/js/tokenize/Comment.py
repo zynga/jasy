@@ -136,10 +136,18 @@ class Comment():
         return text            
             
             
-            
-    def __extractReturn(self, text):
 
-        returnMatcher = re.compile(r"^\{([a-zA-Z0-9_ \|\[\]]+)\}")
+    def __compactTypeDecl(self, decl):
+        return "|".join(re.compile("\s*\|\s*").split(decl)).strip()
+
+
+
+    def __extractReturn(self, text):
+        """
+        Extracts leading type defintion to use it as a return value
+        """
+
+        returnMatcher = re.compile(r"^\s*\{([a-zA-Z0-9_ \|\[\]]+)\}")
         
         def collectReturn(match):
             self.returns = {
@@ -152,8 +160,6 @@ class Comment():
         text = returnMatcher.sub(collectReturn, text)
         
         return text
-
-
         
         
         
@@ -184,11 +190,6 @@ class Comment():
         text = tagMatcher.sub(collectTags, text)
 
         return text
-        
-        
-    
-    def __compactTypeDecl(self, decl):
-        return "|".join(re.compile("\s*\|\s*").split(decl)).strip()
         
         
         
