@@ -299,6 +299,7 @@ class Comment():
                     
 
             elif active:
+                
                 # Append to previous line
                 if description:
                     description += " "
