@@ -368,7 +368,32 @@ class Comment():
         
     def __processParams(self, text):
 
-        return text
+        paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \|\[\]]+)((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
+        
+        def collectParams(match):
+            paramName = match.group(1)
+            paramType = match.group(3)
+            paramOptional = match.group(4) is not None
+            paramDefault = match.group(5)
+            
+            if self.params is None:
+                self.params = {}
+            
+            self.params[paramName] = {
+                "optional": paramOptional,
+                "type" : paramType, 
+                "default" : paramDefault,
+                "description" : ""
+            }
+            
+            print(match.groups())
+            
+            if paramOptional:
+                return '<code class="param optional">%s</code>' % paramName
+            else:
+                return '<code class="param">%s</code>' % paramName
+            
+        return paramMatcher.sub(collectParams, text)
         
         
         
