@@ -487,8 +487,10 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed.comments, list), True)
         self.assertEqual(len(parsed.comments), 1)
 
-        self.assertEqual(parsed.comments[0].variant, "doc")
-        self.assertEqual(parsed.comments[0].text, "Hello World")
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, "Hello World")
         
         
     
@@ -506,9 +508,11 @@ class TestComments(unittest.TestCase):
         self.assertEqual(isinstance(parsed.comments, list), True)
         self.assertEqual(len(parsed.comments), 1)
 
-        self.assertEqual(parsed.comments[0].variant, "doc")
-        self.assertEqual(parsed.comments[0].text, "")        
-        
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, "")        
+    
         
     #
     # DOC COMMENTS :: LINKS
@@ -535,12 +539,35 @@ class TestComments(unittest.TestCase):
          * Sets the position of the object
          *
          * @param {Number} x The left position
-         * @param {Number} y The top position
+         * @param {Number} y 
+         * @param foo Additional data
          */
         
         ''')
         
-        #print(parsed)
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, "Sets the position of the object")
+        
+        self.assertEqual(len(comment.params), 3)
+        
+        self.assertEqual(type(comment.params["x"]), dict)
+        self.assertEqual(type(comment.params["y"]), dict)
+        self.assertEqual(type(comment.params["foo"]), dict)
+        
+        self.assertEqual(comment.params["x"]["type"], "Number")
+        self.assertEqual(comment.params["y"]["type"], "Number")
+        self.assertEqual(comment.params["foo"]["type"], None)
+
+        self.assertEqual(comment.params["x"]["description"], "The left position")
+        self.assertEqual(comment.params["y"]["description"], "")
+        self.assertEqual(comment.params["foo"]["description"], "Additional data")
+
     
     
     
