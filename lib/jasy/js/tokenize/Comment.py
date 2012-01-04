@@ -134,6 +134,8 @@ class Comment():
         print(self.returns)
         print("THROWS:")
         print(self.throws)
+        print("TAGS:")
+        print(self.tags)
 
         return text            
             
@@ -230,7 +232,7 @@ class Comment():
                     "decription" : description
                 }
                 
-            else:
+            elif name:
                 
                 if self.tags is None:
                     self.tags = {}
@@ -238,17 +240,22 @@ class Comment():
                 self.tags[name] = True
                 
                 
+                
         
         for line in text.split("\n"):
+            
             if line.startswith(translate):
+                
                 # Save previous
                 store()
+                name = ""
                 
-                # Parse line
+                # Parse current line
                 matched = parseTags.match(line)
                 if matched:
                     name = matched.group(1)
                     
+                    # Match against two possible param formats
                     if name == "param":
                         matched = parseParams1.match(line)
                         if matched:
@@ -280,7 +287,8 @@ class Comment():
                                 logging.error("Failed to parse line: %s", line)
                                 continue
 
-                        
+                    
+                    # Match throws/returns with optional type definition
                     elif name in ("throw", "throws", "return", "returns"):
                         matched = parseReturnThrow.match(line)
 
@@ -294,6 +302,10 @@ class Comment():
                         # Remove matched content from line
                         line = parseReturnThrow.sub("", line)
                   
+                  
+                    else:
+                        print("OTHER: %s" % name)
+                  
                         
                     # Build new description
                     description = line.strip()
@@ -306,8 +318,11 @@ class Comment():
                 # Append to previous line
                 if description:
                     description += " "
+                    
                 description += line.strip()
                 
+                
+        # Store last entry
         store()
         
         return text
