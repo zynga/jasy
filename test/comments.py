@@ -521,13 +521,25 @@ class TestComments(unittest.TestCase):
     def test_doc_links(self):
 
         parsed = self.process('''
+        
+        /**
+         * Link to cool {z.core.Style} class. Looks at this method {core.io.Asset#toUri} to translate local
+         * asset IDs to something usable in the browser.
+         */
 
         ''')
+        
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+        
 
 
 
     #
-    # DOC COMMENTS :: PARAMS
+    # DOC COMMENTS :: PARAMS :: JSDOC
     #
     
 
@@ -539,8 +551,9 @@ class TestComments(unittest.TestCase):
          * Sets the position of the object
          *
          * @param {Number} x The left position
-         * @param {Number} y 
+         * @param {Number|String} y 
          * @param foo Additional data
+         * @param {Boolean} [force=false] Whether to force rendering
          */
         
         ''')
@@ -554,21 +567,190 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.text, "Sets the position of the object")
         
-        self.assertEqual(len(comment.params), 3)
+        self.assertEqual(len(comment.params), 4)
         
         self.assertEqual(type(comment.params["x"]), dict)
         self.assertEqual(type(comment.params["y"]), dict)
         self.assertEqual(type(comment.params["foo"]), dict)
+        self.assertEqual(type(comment.params["force"]), dict)
         
         self.assertEqual(comment.params["x"]["type"], "Number")
-        self.assertEqual(comment.params["y"]["type"], "Number")
+        self.assertEqual(comment.params["y"]["type"], "Number|String")
         self.assertEqual(comment.params["foo"]["type"], None)
+        self.assertEqual(comment.params["force"]["type"], "Boolean")
+
+        self.assertEqual(comment.params["x"]["optional"], False)
+        self.assertEqual(comment.params["y"]["optional"], False)
+        self.assertEqual(comment.params["foo"]["optional"], False)
+        self.assertEqual(comment.params["force"]["optional"], True)
+
+        self.assertEqual(comment.params["x"]["default"], None)
+        self.assertEqual(comment.params["y"]["default"], None)
+        self.assertEqual(comment.params["foo"]["default"], None)
+        self.assertEqual(comment.params["force"]["default"], "false")
 
         self.assertEqual(comment.params["x"]["description"], "The left position")
         self.assertEqual(comment.params["y"]["description"], "")
         self.assertEqual(comment.params["foo"]["description"], "Additional data")
+        self.assertEqual(comment.params["force"]["description"], "Whether to force rendering")
+        
+        
+    def test_doc_params_jsdoc_spacey(self):
 
-    
+        parsed = self.process('''
+
+        /**
+         * Sets the position of the object
+         *
+         * @param {Number} x The left position
+         * @param {Number | String} y 
+         * @param foo Additional data
+         * @param {Boolean} [force = false] Whether to force rendering
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, "Sets the position of the object")
+
+        self.assertEqual(len(comment.params), 4)
+
+        self.assertEqual(type(comment.params["x"]), dict)
+        self.assertEqual(type(comment.params["y"]), dict)
+        self.assertEqual(type(comment.params["foo"]), dict)
+        self.assertEqual(type(comment.params["force"]), dict)
+
+        self.assertEqual(comment.params["x"]["type"], "Number")
+        self.assertEqual(comment.params["y"]["type"], "Number|String")
+        self.assertEqual(comment.params["foo"]["type"], None)
+        self.assertEqual(comment.params["force"]["type"], "Boolean")
+
+        self.assertEqual(comment.params["x"]["optional"], False)
+        self.assertEqual(comment.params["y"]["optional"], False)
+        self.assertEqual(comment.params["foo"]["optional"], False)
+        self.assertEqual(comment.params["force"]["optional"], True)
+
+        self.assertEqual(comment.params["x"]["default"], None)
+        self.assertEqual(comment.params["y"]["default"], None)
+        self.assertEqual(comment.params["foo"]["default"], None)
+        self.assertEqual(comment.params["force"]["default"], "false")
+
+        self.assertEqual(comment.params["x"]["description"], "The left position")
+        self.assertEqual(comment.params["y"]["description"], "")
+        self.assertEqual(comment.params["foo"]["description"], "Additional data")
+        self.assertEqual(comment.params["force"]["description"], "Whether to force rendering")        
+
+
+    def test_doc_params_jsdoc_qooxdoo(self):
+
+        parsed = self.process('''
+
+        /**
+         * Sets the position of the object
+         *
+         * @param x {Number} The left position
+         * @param y {Number|String}
+         * @param animate {Boolean?} Flag to enable animation
+         * @param force {Boolean?false} Whether to force rendering
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, "Sets the position of the object")
+
+        self.assertEqual(len(comment.params), 4)
+
+        self.assertEqual(type(comment.params["x"]), dict)
+        self.assertEqual(type(comment.params["y"]), dict)
+        self.assertEqual(type(comment.params["animate"]), dict)
+        self.assertEqual(type(comment.params["force"]), dict)
+
+        self.assertEqual(comment.params["x"]["type"], "Number")
+        self.assertEqual(comment.params["y"]["type"], "Number|String")
+        self.assertEqual(comment.params["animate"]["type"], "Boolean")
+        self.assertEqual(comment.params["force"]["type"], "Boolean")
+
+        self.assertEqual(comment.params["x"]["optional"], False)
+        self.assertEqual(comment.params["y"]["optional"], False)
+        self.assertEqual(comment.params["animate"]["optional"], True)
+        self.assertEqual(comment.params["force"]["optional"], True)
+
+        self.assertEqual(comment.params["x"]["default"], None)
+        self.assertEqual(comment.params["y"]["default"], None)
+        self.assertEqual(comment.params["animate"]["default"], None)
+        self.assertEqual(comment.params["force"]["default"], "false")
+
+        self.assertEqual(comment.params["x"]["description"], "The left position")
+        self.assertEqual(comment.params["y"]["description"], "")
+        self.assertEqual(comment.params["animate"]["description"], "Flag to enable animation")
+        self.assertEqual(comment.params["force"]["description"], "Whether to force rendering")
+
+
+    def test_doc_params_jsdoc_qooxdoo_spacey(self):
+
+        parsed = self.process('''
+
+        /**
+         * Sets the position of the object
+         *
+         * @param x {Number} The left position
+         * @param y {Number | String}
+         * @param animate {Boolean?} Flag to enable animation
+         * @param force {Boolean ? false} Whether to force rendering
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, "Sets the position of the object")
+
+        self.assertEqual(len(comment.params), 4)
+
+        self.assertEqual(type(comment.params["x"]), dict)
+        self.assertEqual(type(comment.params["y"]), dict)
+        self.assertEqual(type(comment.params["animate"]), dict)
+        self.assertEqual(type(comment.params["force"]), dict)
+
+        self.assertEqual(comment.params["x"]["type"], "Number")
+        self.assertEqual(comment.params["y"]["type"], "Number|String")
+        self.assertEqual(comment.params["animate"]["type"], "Boolean")
+        self.assertEqual(comment.params["force"]["type"], "Boolean")
+
+        self.assertEqual(comment.params["x"]["optional"], False)
+        self.assertEqual(comment.params["y"]["optional"], False)
+        self.assertEqual(comment.params["animate"]["optional"], True)
+        self.assertEqual(comment.params["force"]["optional"], True)
+
+        self.assertEqual(comment.params["x"]["default"], None)
+        self.assertEqual(comment.params["y"]["default"], None)
+        self.assertEqual(comment.params["animate"]["default"], None)
+        self.assertEqual(comment.params["force"]["default"], "false")
+
+        self.assertEqual(comment.params["x"]["description"], "The left position")
+        self.assertEqual(comment.params["y"]["description"], "")
+        self.assertEqual(comment.params["animate"]["description"], "Flag to enable animation")
+        self.assertEqual(comment.params["force"]["description"], "Whether to force rendering")
+
+
     
     
     #

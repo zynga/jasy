@@ -169,14 +169,14 @@ class Comment():
         # - @param name {Type} description
         # - @param name {Type?} description
         # - @param name {Type?defaultValue} description
-        parseParams1 = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_\|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+))?\}")
+        parseParams1 = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_ \|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+)?)?\}")
 
         # Supports:
         # - @param name description
         # - @param {Type} name description 
         # - @param {Type} [optionalName=defaultValue] description
         # - @param {Type} [optionalName] description
-        parseParams2 = re.compile(r"^@(param)(\s+\{([a-zA-Z0-9_\|\[\]]+)\})?(\s+(\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
+        parseParams2 = re.compile(r"^@(param)(\s+\{([a-zA-Z0-9_ \|\[\]]+)\})?(\s+(\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
         
         # Supports:
         # - @return {Type} comment
@@ -186,13 +186,26 @@ class Comment():
         supportedTags = ('@param ', '@return ', '@returns ', '@throw ', '@throws ')
 
 
-        active = False
+        addToDescription = False
         description = ""
         name = ""
         remainingText = []
 
         
         def store():
+            
+            if not name:
+                return
+            
+            if name == "param":
+                storeType = paramType
+            else:
+                storeType = returnThrowType
+                
+            # remove spacing around type divider
+            if storeType is not None:
+                storeType = "|".join(re.compile("\s*\|\s*").split(storeType)).strip()
+            
             
             if name == "param":
                 
@@ -201,7 +214,7 @@ class Comment():
                 
                 self.params[paramName] = {
                     "optional": paramOptional,
-                    "type" : paramType,
+                    "type" : storeType, 
                     "default" : paramDefault,
                     "description" : description
                 }
@@ -209,14 +222,14 @@ class Comment():
             elif name == "return" or name == "returns":
                 
                 self.returns = {
-                    "type" : returnThrowType,
+                    "type" : storeType,
                     "description" : description
                 }
             
             elif name == "throw" or name == "throws":
             
                 self.throws = {
-                    "type" : returnThrowType,
+                    "type" : storeType,
                     "description" : description
                 }
                 
@@ -288,17 +301,17 @@ class Comment():
                     # Build new description from tag filtered line content
                     description = line.strip()
                         
-                    # Mark as active (for capturing next lines, if needed)
-                    active = True
+                    # Mark as active for adding description text (for capturing next lines, if needed)
+                    addToDescription = True
                     
 
             elif line.startswith("@"):
 
                 # Unsupported tag leads to deactivation
                 logging.debug("Do not support tag line: %s" % line)
-                active = False
+                addToDescription = False
 
-            elif active:
+            elif addToDescription:
                 
                 # Append to previous line
                 if description:
