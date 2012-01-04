@@ -169,14 +169,14 @@ class Comment():
         # - @param name {Type} description
         # - @param name {Type?} description
         # - @param name {Type?defaultValue} description
-        parseParams1 = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_\|\[\]]+)(\s*(\?)\s*(\S+))?\}")
+        parseParams1 = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_\|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+))?\}")
 
         # Supports:
         # - @param name description
         # - @param {Type} name description 
         # - @param {Type} [optionalName=defaultValue] description
         # - @param {Type} [optionalName] description
-        parseParams2 = re.compile(r"^@(param)(\s+\{([a-zA-Z0-9_\|\[\]]+)\})?(\s+(\[?)(([a-zA-Z0-9]+)(=([\S+]))?)\]?)")
+        parseParams2 = re.compile(r"^@(param)(\s+\{([a-zA-Z0-9_\|\[\]]+)\})?(\s+(\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
         
         # Supports:
         # - @return {Type} comment
@@ -254,10 +254,10 @@ class Comment():
                             if matched:
                                 
                                 paramType = matched.group(3)
-                                paramOptional = matched.group(5) is not None
+                                paramOptional = matched.group(5) is not ""
                                 paramName = matched.group(7)
                                 paramDefault = matched.group(9)
-
+                                
                                 # Remove matched content from line
                                 line = parseParams2.sub("", line)
                                 
