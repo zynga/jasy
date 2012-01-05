@@ -65,6 +65,21 @@ class Comment():
     # - @throw {Type}
     jsdocThrow = re.compile(r"^@(throw?)\s+(\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
     
+    # Supports:
+    # - @deprecated
+    # - @private
+    # - @public
+    # - @static
+    jsDocFlags = re.compile(r"^@(deprecated|private|public|static)")
+    
+    # Supports:
+    # - @name Name
+    # - @namespace Namespace
+    # - @requires Name
+    # - @since Version
+    # - @version Version
+    jsDocFlags = re.compile(r"^@(name|namespace|requires|since|version)\s+(\S+)")
+    
     
     
     def __init__(self, text, context=None, lineNo=0, indent=""):
