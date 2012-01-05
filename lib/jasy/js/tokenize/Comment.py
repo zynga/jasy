@@ -88,26 +88,26 @@ class Comment():
     def __init__(self, text, context=None, lineNo=0, indent=""):
         # Store context (relation to code)
         self.context = context
-
+        
         # Convert
         if text.startswith("//"):
-            # "// hello" => " hello"
-            text = text[2:]
+            # "// hello" => "   hello"
+            text = "  " + text[2:]
             self.variant = "single"
             
         elif text.startswith("/**"):
-            # "/** hello */" => " hello "
-            text = text[3:-2]
+            # "/** hello */" => "    hello "
+            text = "   " + text[3:-2]
             self.variant = "doc"
 
         elif text.startswith("/*!"):
-            # "/*! hello */" => " hello "
-            text = text[3:-2]
+            # "/*! hello */" => "    hello "
+            text = "   " + text[3:-2]
             self.variant = "protected"
             
         elif text.startswith("/*"):
-            # "/* hello */" => " hello "
-            text = text[2:-2]
+            # "/* hello */" => "   hello "
+            text = "  " + text[2:-2]
             self.variant = "multi"
             
         else:
@@ -141,7 +141,7 @@ class Comment():
         """
         
         lines = []
-        for lineNo, line in enumerate(text.strip("\n").split("\n")):
+        for lineNo, line in enumerate((indent+text).split("\n")):
             if line.startswith(indent):
                 lines.append(line[len(indent):])
             else:
