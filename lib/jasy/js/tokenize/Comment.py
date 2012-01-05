@@ -23,7 +23,7 @@ except:
     def markdown2html(markdownStr):
         return markdown.markdown(markdownStr)
 
-    logging.info("Using Python Markdown implementation")
+    logging.info("Using Python Markdown implementation.")
 
 
 
