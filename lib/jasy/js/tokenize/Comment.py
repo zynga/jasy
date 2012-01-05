@@ -314,11 +314,6 @@ class Comment():
                         else:
                             self.throws = self.__compactTypeDecl(matched.group(3))
                             
-                        
-            elif line.startswith("@"):
-                logging.debug("Do not support tag line: %s" % line)
-                filterLine = True
-
             elif line.strip() == "" and filterLine:
                 filterLine = False
             
