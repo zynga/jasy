@@ -382,17 +382,16 @@ class Comment():
             if self.params is None:
                 self.params = {}
             
-            self.params[paramName] = {
-                "optional": paramOptional,
-                "type" : paramType, 
-                "default" : paramDefault,
-                "description" : ""
-            }
+            # Add new entries and overwrite if a type is defined in this entry
+            if not paramName in self.params or paramType is not None:
+                self.params[paramName] = {
+                    "type" : paramType, 
+                    "optional": paramOptional,
+                    "default" : paramDefault,
+                    "description" : ""
+                }
             
-            if paramOptional:
-                return '<code class="param optional">%s</code>' % paramName
-            else:
-                return '<code class="param">%s</code>' % paramName
+            return '<code class="param">%s</code>' % paramName
             
         return paramMatcher.sub(collectParams, text)
         

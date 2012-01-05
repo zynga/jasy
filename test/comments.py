@@ -622,7 +622,8 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
     
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, 'Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>. The optional <code class="param optional">cache</code> controls whether caching should be enabled.\nAlso see <code class="param optional">extra</code> which is normally pretty useless')
+        self.assertEqual(comment.text, 'Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>. The optional <code class="param">cache</code> controls whether caching should be enabled.\nAlso see <code class="param">extra</code> which is normally pretty useless')
+        
         self.assertEqual(type(comment.params), dict)
 
         self.assertEqual(type(comment.params["x"]), dict)
@@ -648,7 +649,7 @@ class TestComments(unittest.TestCase):
         
         
         
-    def test_doc_params(self):
+    def test_doc_params_lazytypes(self):
 
         parsed = self.process('''
 
@@ -672,7 +673,8 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, 'Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.\n\nParameters:\n\n- <code class="param">x</code>\n- <code class="param">y</code>\n- <code class="param optional">cache</code>\n- <code class="param optional">extra</code>')
+        self.assertEqual(comment.text, 'Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.\n\nParameters:\n\n- <code class="param">x</code>\n- <code class="param">y</code>\n- <code class="param">cache</code>\n- <code class="param">extra</code>')
+        
         self.assertEqual(type(comment.params), dict)
 
         self.assertEqual(type(comment.params["x"]), dict)
@@ -693,8 +695,89 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.params["x"]["default"], None)
         self.assertEqual(comment.params["y"]["default"], None)
         self.assertEqual(comment.params["cache"]["default"], "false")
-        self.assertEqual(comment.params["extra"]["default"], None)        
-    
+        self.assertEqual(comment.params["extra"]["default"], None)
+        
+        
+        
+    def test_doc_params_firstloose(self):
+
+        parsed = self.process('''
+
+        /**
+         * {Boolean} Returns whether @x {String ? 13} is bigger than @y.
+         *
+         * Parameters:
+         *
+         * - @x {Number}
+         * - @y {Number}
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, 'Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.\n\nParameters:\n\n- <code class="param">x</code>\n- <code class="param">y</code>')
+
+        self.assertEqual(type(comment.params), dict)
+
+        self.assertEqual(type(comment.params["x"]), dict)
+        self.assertEqual(type(comment.params["y"]), dict)
+
+        self.assertEqual(comment.params["x"]["type"], "Number")
+        self.assertEqual(comment.params["y"]["type"], "Number")
+
+        self.assertEqual(comment.params["x"]["optional"], False)
+        self.assertEqual(comment.params["y"]["optional"], False)
+
+        self.assertEqual(comment.params["x"]["default"], None)
+        self.assertEqual(comment.params["y"]["default"], None)
+        
+        
+    def test_doc_params_firstwin(self):
+
+        parsed = self.process('''
+
+        /**
+         * {Boolean} Returns whether @x {Number ? 13} is bigger than @y.
+         *
+         * Parameters:
+         *
+         * - @x
+         * - @y {Number}
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, 'Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.\n\nParameters:\n\n- <code class="param">x</code>\n- <code class="param">y</code>')
+
+        self.assertEqual(type(comment.params), dict)
+
+        self.assertEqual(type(comment.params["x"]), dict)
+        self.assertEqual(type(comment.params["y"]), dict)
+
+        self.assertEqual(comment.params["x"]["type"], "Number")
+        self.assertEqual(comment.params["y"]["type"], "Number")
+
+        self.assertEqual(comment.params["x"]["optional"], True)
+        self.assertEqual(comment.params["y"]["optional"], False)
+
+        self.assertEqual(comment.params["x"]["default"], "13")
+        self.assertEqual(comment.params["y"]["default"], None)
+        
+        
+        
 
 
     #
