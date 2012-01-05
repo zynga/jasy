@@ -220,7 +220,9 @@ class Comment():
         
     def __extractJsdoc(self, text):
         """
-        Extract classic JSDoc style items with support for both JSDoc like params and qooxdoo like params
+        Extract classic JSDoc style items with support for both JSDoc like params and qooxdoo like params.
+        
+        See also: http://code.google.com/p/jsdoc-toolkit/wiki/TagReference
         """
 
         # Supports 
@@ -244,9 +246,6 @@ class Comment():
         # - @return {Type} comment
         parseReturnThrow = re.compile(r"^@(returns|throws|return|throw)(\s+\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
         
-        # Translate basic param, throw and return tags from JSDOC: http://code.google.com/p/jsdoc-toolkit/wiki/TagReference
-        supportedTags = ('@param ', '@return ', '@returns ', '@throw ', '@throws ')
-
 
         filterLine = False
         remainingText = []
@@ -254,69 +253,66 @@ class Comment():
         
         for line in text.split("\n"):
             
-            if line.startswith(supportedTags):
+            matched = parseTags.match(line)
+            if matched:
+                name = matched.group(1)
+                filterLine = True
                 
-                # Parse current line
-                matched = parseTags.match(line)
-                if matched:
-                    name = matched.group(1)
-                    filterLine = True
-                    
-                    # Match against two possible param formats
-                    if name == "param":
-                        matched = parseParams1.match(line)
+                # Match against two possible param formats
+                if name == "param":
+                    matched = parseParams1.match(line)
+                    if matched:
+                        
+                        paramName = matched.group(2)
+                        paramType = matched.group(3)
+                        paramOptional = matched.group(5) is not None
+                        paramDefault = matched.group(6)
+
+                    else:
+                        matched = parseParams2.match(line)
+                        
                         if matched:
                             
-                            paramName = matched.group(2)
                             paramType = matched.group(3)
-                            paramOptional = matched.group(5) is not None
-                            paramDefault = matched.group(6)
-
-                        else:
-                            matched = parseParams2.match(line)
+                            paramOptional = matched.group(5) is not ""
+                            paramName = matched.group(7)
+                            paramDefault = matched.group(9)
                             
-                            if matched:
-                                
-                                paramType = matched.group(3)
-                                paramOptional = matched.group(5) is not ""
-                                paramName = matched.group(7)
-                                paramDefault = matched.group(9)
-                                
-                            else:
-                                # Ignore parse error
-                                logging.error("Failed to parse line: %s", line)
-                                name = ""
-                                continue
-                                
-                        # Store param
-                        if self.params is None:
-                            self.params = {}
-
-                        self.params[paramName] = {
-                            "optional": paramOptional,
-                            "type" : self.__compactTypeDecl(paramType), 
-                            "default" : paramDefault
-                        }
-
-                    
-                    # Match throws/returns with optional type definition
-                    else:
-                        matched = parseReturnThrow.match(line)
-
-                        # Ignore parse error
-                        if not matched:
+                        else:
+                            # Ignore parse error
                             logging.error("Failed to parse line: %s", line)
                             name = ""
                             continue
-                        
-                        if name == "return" or name == "returns":
-                            self.returns = self.__compactTypeDecl(matched.group(3))
-                        else:
-                            self.throws = self.__compactTypeDecl(matched.group(3))
                             
+                    # Store param
+                    if self.params is None:
+                        self.params = {}
+
+                    self.params[paramName] = {
+                        "optional": paramOptional,
+                        "type" : self.__compactTypeDecl(paramType), 
+                        "default" : paramDefault
+                    }
+
+                
+                # Match throws/returns with optional type definition
+                else:
+                    matched = parseReturnThrow.match(line)
+
+                    # Ignore parse error
+                    if not matched:
+                        logging.error("Failed to parse line: %s", line)
+                        name = ""
+                        continue
+                    
+                    if name == "return" or name == "returns":
+                        self.returns = self.__compactTypeDecl(matched.group(3))
+                    else:
+                        self.throws = self.__compactTypeDecl(matched.group(3))
+                        
             elif line.strip() == "" and filterLine:
                 filterLine = False
-            
+        
             elif not filterLine:
                 remainingText.append(line)
                 
