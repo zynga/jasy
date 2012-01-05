@@ -40,6 +40,33 @@ class Comment():
     returns = None
     
     
+    # Supports:
+    # - @tagname comment
+    jsdocTags = re.compile(r"^@(param|return|throw)")
+    
+    # Supports:
+    # - @param name {Type}
+    # - @param name {Type?}
+    # - @param name {Type?defaultValue}
+    jsdocParamTypeA = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_ \|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+)?)?\}")
+
+    # Supports:
+    # - @param name
+    # - @param {Type} name 
+    # - @param {Type} [optionalName=defaultValue]
+    # - @param {Type} [optionalName]
+    jsdocParamTypeB = re.compile(r"^@(param)(\s+\{([a-zA-Z0-9_ \|\[\]]+)\})?(\s+(\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
+    
+    # Supports:
+    # - @return {Type}
+    jsdocReturn = re.compile(r"^@(returns|return)(\s+\{([a-zA-Z0-9_\.\|\[\]]+)\})?")    
+
+    # Supports:
+    # - @throw {Type}
+    jsdocThrow = re.compile(r"^@(throws|throw)(\s+\{([a-zA-Z0-9_\.\|\[\]]+)\})?")    
+    
+    
+    
     def __init__(self, text, context=None, lineNo=0, indent=""):
         # Store context (relation to code)
         self.context = context
@@ -225,26 +252,7 @@ class Comment():
         See also: http://code.google.com/p/jsdoc-toolkit/wiki/TagReference
         """
 
-        # Supports 
-        # - @tagname comment
-        parseTags = re.compile(r"^@([a-zA-Z]+)")
-        
-        # Supports:
-        # - @param name {Type}
-        # - @param name {Type?}
-        # - @param name {Type?defaultValue}
-        parseParams1 = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_ \|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+)?)?\}")
 
-        # Supports:
-        # - @param name
-        # - @param {Type} name 
-        # - @param {Type} [optionalName=defaultValue]
-        # - @param {Type} [optionalName]
-        parseParams2 = re.compile(r"^@(param)(\s+\{([a-zA-Z0-9_ \|\[\]]+)\})?(\s+(\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
-        
-        # Supports:
-        # - @return {Type} comment
-        parseReturnThrow = re.compile(r"^@(returns|throws|return|throw)(\s+\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
         
 
         filterLine = False
@@ -253,64 +261,63 @@ class Comment():
         
         for line in text.split("\n"):
             
-            matched = parseTags.match(line)
+            matched = self.jsdocParamTypeA.match(line)
             if matched:
-                name = matched.group(1)
+                
+                paramName = matched.group(2)
+                paramType = matched.group(3)
+                paramOptional = matched.group(5) is not None
+                paramDefault = matched.group(6)
+
+                if self.params is None:
+                    self.params = {}
+
+                self.params[paramName] = {
+                    "optional": paramOptional,
+                    "type" : self.__compactTypeDecl(paramType), 
+                    "default" : paramDefault
+                }
+
                 filterLine = True
+                continue
+
+
+            matched = self.jsdocParamTypeB.match(line)
+            if matched:
                 
-                # Match against two possible param formats
-                if name == "param":
-                    matched = parseParams1.match(line)
-                    if matched:
-                        
-                        paramName = matched.group(2)
-                        paramType = matched.group(3)
-                        paramOptional = matched.group(5) is not None
-                        paramDefault = matched.group(6)
+                paramType = matched.group(3)
+                paramOptional = matched.group(5) is not ""
+                paramName = matched.group(7)
+                paramDefault = matched.group(9)
+            
+                if self.params is None:
+                    self.params = {}
 
-                    else:
-                        matched = parseParams2.match(line)
-                        
-                        if matched:
-                            
-                            paramType = matched.group(3)
-                            paramOptional = matched.group(5) is not ""
-                            paramName = matched.group(7)
-                            paramDefault = matched.group(9)
-                            
-                        else:
-                            # Ignore parse error
-                            logging.error("Failed to parse line: %s", line)
-                            name = ""
-                            continue
-                            
-                    # Store param
-                    if self.params is None:
-                        self.params = {}
-
-                    self.params[paramName] = {
-                        "optional": paramOptional,
-                        "type" : self.__compactTypeDecl(paramType), 
-                        "default" : paramDefault
-                    }
-
+                self.params[paramName] = {
+                    "optional": paramOptional,
+                    "type" : self.__compactTypeDecl(paramType), 
+                    "default" : paramDefault
+                }
+            
+                filterLine = True
+                continue
                 
-                # Match throws/returns with optional type definition
-                else:
-                    matched = parseReturnThrow.match(line)
-
-                    # Ignore parse error
-                    if not matched:
-                        logging.error("Failed to parse line: %s", line)
-                        name = ""
-                        continue
-                    
-                    if name == "return" or name == "returns":
-                        self.returns = self.__compactTypeDecl(matched.group(3))
-                    else:
-                        self.throws = self.__compactTypeDecl(matched.group(3))
-                        
-            elif line.strip() == "" and filterLine:
+            
+            matched = self.jsdocReturn.match(line)
+            if matched:
+                self.returns = self.__compactTypeDecl(matched.group(3))
+                filterLine = True
+                continue
+            
+            matched = self.jsdocThrow.match(line)
+            if matched:
+                self.throws = self.__compactTypeDecl(matched.group(3))
+                filterLine = True
+                continue
+            
+            
+            # Collect remaining lines
+            if filterLine and line.strip() == "":
                 filterLine = False
         
             elif not filterLine:
