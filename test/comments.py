@@ -363,7 +363,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed.comments), 1)
 
         self.assertEqual(parsed.comments[0].variant, "protected")
-        self.assertEqual(parsed.comments[0].text, "Protected Comment")
+        self.assertEqual(parsed.comments[0].text, "jQuery JavaScript Library v@VERSION\nhttp://jquery.com/\n\nCopyright 2011, John Resig\nDual licensed under the MIT or GPL Version 2 licenses.\nhttp://jquery.org/license\n\nIncludes Sizzle.js\nhttp://sizzlejs.com/\nCopyright 2011, The Dojo Foundation\nReleased under the MIT, BSD, and GPL Licenses.\n\nDate: @DATE\n")
 
 
 

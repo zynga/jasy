@@ -145,10 +145,10 @@ class Comment():
             if line.startswith(indent):
                 lines.append(line[len(indent):])
             else:
-                logging.error("Invalid indention in comment at line %s", startLineNo+lineNo)
+                logging.error("Could not outdent comment at line %s", startLineNo+lineNo)
                 return text
-                
-                
+        
+        
         # Find first line with real content
         outdentString = ""
         for lineNo, line in enumerate(lines):
@@ -177,7 +177,7 @@ class Comment():
                     lines[lineNo] = ""
                 else:
                     if not line.startswith(outdentString):
-                        raise CommentException("Invalid indention in documentation string.", startLineNo+lineNo)
+                        logging.error("Invalid indention in doc string at line %s", startLineNo+lineNo)
                     else:
                         lines[lineNo] = line[outdentStringLen:]
 
