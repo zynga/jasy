@@ -830,11 +830,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.params["foo"]["default"], None)
         self.assertEqual(comment.params["force"]["default"], "false")
 
-        self.assertEqual(comment.params["x"]["description"], "The left position")
-        self.assertEqual(comment.params["y"]["description"], "")
-        self.assertEqual(comment.params["foo"]["description"], "Additional data")
-        self.assertEqual(comment.params["force"]["description"], "Whether to force rendering")
-        
         
     def test_doc_params_jsdoc_spacey(self):
 
@@ -881,11 +876,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.params["y"]["default"], None)
         self.assertEqual(comment.params["foo"]["default"], None)
         self.assertEqual(comment.params["force"]["default"], "false")
-
-        self.assertEqual(comment.params["x"]["description"], "The left position")
-        self.assertEqual(comment.params["y"]["description"], "")
-        self.assertEqual(comment.params["foo"]["description"], "Additional data")
-        self.assertEqual(comment.params["force"]["description"], "Whether to force rendering")        
 
 
     def test_doc_params_jsdoc_qooxdoo(self):
@@ -934,10 +924,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.params["animate"]["default"], None)
         self.assertEqual(comment.params["force"]["default"], "false")
 
-        self.assertEqual(comment.params["x"]["description"], "The left position")
-        self.assertEqual(comment.params["y"]["description"], "")
-        self.assertEqual(comment.params["animate"]["description"], "Flag to enable animation")
-        self.assertEqual(comment.params["force"]["description"], "Whether to force rendering")
 
 
     def test_doc_params_jsdoc_qooxdoo_spacey(self):
@@ -986,10 +972,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.params["animate"]["default"], None)
         self.assertEqual(comment.params["force"]["default"], "false")
 
-        self.assertEqual(comment.params["x"]["description"], "The left position")
-        self.assertEqual(comment.params["y"]["description"], "")
-        self.assertEqual(comment.params["animate"]["description"], "Flag to enable animation")
-        self.assertEqual(comment.params["force"]["description"], "Whether to force rendering")
 
 
     

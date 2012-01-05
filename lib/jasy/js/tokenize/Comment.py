@@ -160,6 +160,10 @@ class Comment():
             
 
     def __compactTypeDecl(self, decl):
+        
+        if decl is None:
+            return decl
+        
         return "|".join(re.compile("\s*\|\s*").split(decl)).strip()
 
 
@@ -173,8 +177,7 @@ class Comment():
         
         def collectReturn(match):
             self.returns = {
-                "type" : self.__compactTypeDecl(match.group(1)),
-                "description" : None
+                "type" : self.__compactTypeDecl(match.group(1))
             }
             
             return ""
@@ -225,16 +228,16 @@ class Comment():
         parseTags = re.compile(r"^@([a-zA-Z]+)")
         
         # Supports:
-        # - @param name {Type} description
-        # - @param name {Type?} description
-        # - @param name {Type?defaultValue} description
+        # - @param name {Type}
+        # - @param name {Type?}
+        # - @param name {Type?defaultValue}
         parseParams1 = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_ \|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+)?)?\}")
 
         # Supports:
-        # - @param name description
-        # - @param {Type} name description 
-        # - @param {Type} [optionalName=defaultValue] description
-        # - @param {Type} [optionalName] description
+        # - @param name
+        # - @param {Type} name 
+        # - @param {Type} [optionalName=defaultValue]
+        # - @param {Type} [optionalName]
         parseParams2 = re.compile(r"^@(param)(\s+\{([a-zA-Z0-9_ \|\[\]]+)\})?(\s+(\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
         
         # Supports:
@@ -245,65 +248,19 @@ class Comment():
         supportedTags = ('@param ', '@return ', '@returns ', '@throw ', '@throws ')
 
 
-        addToDescription = False
-        description = ""
-        name = ""
+        filterLine = False
         remainingText = []
 
-        
-        def store():
-            
-            if not name:
-                return
-            
-            if name == "param":
-                storeType = paramType
-            else:
-                storeType = returnThrowType
-                
-            if storeType:
-                storeType = self.__compactTypeDecl(storeType)
-                
-            if name == "param":
-                
-                if self.params is None:
-                    self.params = {}
-                
-                self.params[paramName] = {
-                    "optional": paramOptional,
-                    "type" : storeType, 
-                    "default" : paramDefault,
-                    "description" : description
-                }
-                
-            elif name == "return" or name == "returns":
-                
-                self.returns = {
-                    "type" : storeType,
-                    "description" : description
-                }
-            
-            elif name == "throw" or name == "throws":
-            
-                self.throws = {
-                    "type" : storeType,
-                    "description" : description
-                }
-                
-                
         
         for line in text.split("\n"):
             
             if line.startswith(supportedTags):
                 
-                # Save previous attribute (aka jsdoc tag)
-                store()
-                name = ""
-                
                 # Parse current line
                 matched = parseTags.match(line)
                 if matched:
                     name = matched.group(1)
+                    filterLine = True
                     
                     # Match against two possible param formats
                     if name == "param":
@@ -315,9 +272,6 @@ class Comment():
                             paramOptional = matched.group(5) is not None
                             paramDefault = matched.group(6)
 
-                            # Remove matched content from line
-                            line = parseParams1.sub("", line)
-
                         else:
                             matched = parseParams2.match(line)
                             
@@ -328,15 +282,21 @@ class Comment():
                                 paramName = matched.group(7)
                                 paramDefault = matched.group(9)
                                 
-                                # Remove matched content from line
-                                line = parseParams2.sub("", line)
-                                
-                            
                             else:
                                 # Ignore parse error
                                 logging.error("Failed to parse line: %s", line)
                                 name = ""
                                 continue
+                                
+                        # Store param
+                        if self.params is None:
+                            self.params = {}
+
+                        self.params[paramName] = {
+                            "optional": paramOptional,
+                            "type" : self.__compactTypeDecl(paramType), 
+                            "default" : paramDefault
+                        }
 
                     
                     # Match throws/returns with optional type definition
@@ -349,41 +309,23 @@ class Comment():
                             name = ""
                             continue
                         
-                        returnThrowType = matched.group(3)
+                        if name == "return" or name == "returns":
+                            self.returns = self.__compactTypeDecl(matched.group(3))
+                        else:
+                            self.throws = self.__compactTypeDecl(matched.group(3))
+                            
                         
-                        # Remove matched content from line
-                        line = parseReturnThrow.sub("", line)
-                  
-                  
-                    # Build new description from tag filtered line content
-                    description = line.strip()
-                        
-                    # Mark as active for adding description text (for capturing next lines, if needed)
-                    addToDescription = True
-                    
-
             elif line.startswith("@"):
-
-                # Unsupported tag leads to deactivation
                 logging.debug("Do not support tag line: %s" % line)
-                addToDescription = False
+                filterLine = True
 
-            elif addToDescription:
-                
-                # Append to previous line
-                if description:
-                    description += " "
-                    
-                description += line.strip()
-                
-            else:
-                
+            elif line.strip() == "" and filterLine:
+                filterLine = False
+            
+            elif not filterLine:
                 remainingText.append(line)
                 
                 
-        # Store last entry
-        store()
-        
         return "\n".join(remainingText).strip("\n ")
         
         
@@ -409,8 +351,7 @@ class Comment():
                 self.params[paramName] = {
                     "type" : paramType, 
                     "optional": paramOptional,
-                    "default" : paramDefault,
-                    "description" : ""
+                    "default" : paramDefault
                 }
             
             return '<code class="param">%s</code>' % paramName
