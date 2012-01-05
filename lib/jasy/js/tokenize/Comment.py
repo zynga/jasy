@@ -275,6 +275,8 @@ class Comment():
         """
         Extract classic JSDoc style items with support for both JSDoc like params and qooxdoo like params.
         
+        Supports reading of flag and data like JSDoc tags and stores them into new style tags.
+        
         See also: http://code.google.com/p/jsdoc-toolkit/wiki/TagReference
         """
 

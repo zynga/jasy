@@ -974,6 +974,97 @@ class TestComments(unittest.TestCase):
 
 
 
+    #
+    # DOC COMMENTS :: PARAMS :: JSDOC COMPAT
+    #
+
+    def test_doc_tags_jsdoc(self):
+
+        parsed = self.process('''
+
+        /**
+         * Sets the position of the object
+         *
+         * @param x {Number} The left position
+         * @public
+         * @deprecated
+         *
+         * Some other text
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, "Sets the position of the object\n\nSome other text")
+        self.assertEqual(type(comment.tags), dict)
+        self.assertEqual(comment.tags["public"], True)
+        self.assertEqual(comment.tags["deprecated"], True)
+
+
+    def test_doc_tags_jsdoc_description(self):
+
+        parsed = self.process('''
+
+        /**
+         * Sets the position of the object
+         *
+         * @param x {Number} The left position
+         * @public method
+         * @deprecated This text is removed
+         *
+         * Some other text
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, "Sets the position of the object\n\nSome other text")
+        self.assertEqual(type(comment.tags), dict)
+        self.assertEqual(comment.tags["public"], True)
+        self.assertEqual(comment.tags["deprecated"], True)
+
+
+    def test_doc_tags_jsdoc_datatags(self):
+
+        parsed = self.process('''
+
+        /**
+         * Sets the position of the object
+         *
+         * @param x {Number} The left position
+         * @version 1.2
+         * @deprecated This text is removed
+         * @since 0.3
+         *
+         * Some other text
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.text, "Sets the position of the object\n\nSome other text")
+        self.assertEqual(type(comment.tags), dict)
+        self.assertEqual(comment.tags["deprecated"], True)
+        self.assertEqual(comment.tags["version"], "1.2")
+        self.assertEqual(comment.tags["since"], "0.3")
     
     
     #
