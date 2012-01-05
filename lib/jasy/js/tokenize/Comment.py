@@ -9,21 +9,20 @@ import logging, re
 try:
     import misaka
 
-    htmlRenderer = misaka.HtmlRenderer()
-    markdown = misaka.Markdown(htmlRenderer)
+    misakaExt = misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS
     
     def markdown2html(markdownStr):
-        return markdown.render(markdownStr)
+        return misaka.html(markdownStr, misakaExt)
 
     logging.info("Using high performance C-based Markdown implementation")
     
-except:
+except ImportError as ex:
     import markdown
     
     def markdown2html(markdownStr):
         return markdown.markdown(markdownStr)
 
-    logging.info("Using Python Markdown implementation.")
+    logging.info("Using Python Markdown implementation. %s" % ex)
 
 
 
@@ -207,6 +206,9 @@ class Comment():
 
         text = self.__processParams(text)
         text = self.__processTypes(text)
+        
+        # Apply markdown convertion
+        text = markdown2html(text)
         
         return text            
             
