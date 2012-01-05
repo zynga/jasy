@@ -10,6 +10,7 @@ try:
     import misaka
 
     misakaExt = misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS
+    misakaRender = misaka.HTML_SKIP_STYLE | misaka.HTML_SMARTYPANTS
     
     def markdown2html(markdownStr):
         return misaka.html(markdownStr, misakaExt)
@@ -209,6 +210,9 @@ class Comment():
         
         # Apply markdown convertion
         text = markdown2html(text)
+        
+        if text == None:
+            text = ""
         
         return text            
             

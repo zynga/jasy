@@ -355,7 +355,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
+        self.assertEqual(parsed[0].comments[0].text, "<p>Doc Comment</p>\n")
         
         
     def test_doc_unbound(self):
@@ -369,7 +369,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed.comments), 1)
 
         self.assertEqual(parsed.comments[0].variant, "doc")
-        self.assertEqual(parsed.comments[0].text, "Doc Comment")
+        self.assertEqual(parsed.comments[0].text, "<p>Doc Comment</p>\n")
         
         
     def test_doc_unbound_nobreak(self):
@@ -381,7 +381,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed.comments), 1)
 
         self.assertEqual(parsed.comments[0].variant, "doc")
-        self.assertEqual(parsed.comments[0].text, "Doc Comment")        
+        self.assertEqual(parsed.comments[0].text, "<p>Doc Comment</p>\n")
 
 
     def test_doc_multiline(self):
@@ -400,7 +400,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
+        self.assertEqual(parsed[0].comments[0].text, "<p>Doc Comment</p>\n")
         
 
     def test_doc_multiline_three(self):
@@ -421,7 +421,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3")
+        self.assertEqual(parsed[0].comments[0].text, "<p>Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3</p>\n")
         
         
         
@@ -441,7 +441,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
+        self.assertEqual(parsed[0].comments[0].text, "<p>Doc Comment</p>\n")
 
 
     def test_doc_multiline_clean_three(self):
@@ -462,7 +462,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3")
+        self.assertEqual(parsed[0].comments[0].text, "<p>Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3</p>\n")
 
 
     #
@@ -486,7 +486,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "Returns the sum of x and y.")
+        self.assertEqual(comment.text, "<p>Returns the sum of x and y.</p>\n")
         
         
     def test_doc_return_twotypes(self):
@@ -506,7 +506,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "Returns the sum of x and y.")
+        self.assertEqual(comment.text, "<p>Returns the sum of x and y.</p>\n")
         self.assertEqual(comment.returns["type"], "Number|String")
     
     
@@ -534,7 +534,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "Hello World")
+        self.assertEqual(comment.text, "<p>Hello World</p>\n")
         
         self.assertEqual(comment.tags["deprecated"], True)
         self.assertEqual(comment.tags["public"], True)
@@ -562,7 +562,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "")        
+        self.assertEqual(comment.text, "")
     
         self.assertEqual(comment.tags["deprecated"], True)
         self.assertEqual(comment.tags["public"], True)
@@ -595,7 +595,8 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed.comments), 1)
 
         comment = parsed.comments[0]
-    
+        
+        # TODO
     
     
     
@@ -621,7 +622,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
     
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, 'Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>. The optional <code class="param">cache</code> controls whether caching should be enabled.\nAlso see <code class="param">extra</code> which is normally pretty useless')
+        self.assertEqual(comment.text, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>. The optional <code class="param">cache</code> controls whether caching should be enabled.\nAlso see <code class="param">extra</code> which is normally pretty useless</p>\n')
         
         self.assertEqual(type(comment.params), dict)
 
@@ -670,7 +671,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, 'Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.\n\nParameters:\n\n- <code class="param">x</code>\n- <code class="param">y</code>\n- <code class="param">cache</code>\n- <code class="param">extra</code>')
+        self.assertEqual(comment.text, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.</p>\n\n<p>Parameters:</p>\n\n<ul>\n<li><code class="param">x</code></li>\n<li><code class="param">y</code></li>\n<li><code class="param">cache</code></li>\n<li><code class="param">extra</code></li>\n</ul>\n')
         
         self.assertEqual(type(comment.params), dict)
 
@@ -718,7 +719,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, 'Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.\n\nParameters:\n\n- <code class="param">x</code>\n- <code class="param">y</code>')
+        self.assertEqual(comment.text, '''<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.</p>\n\n<p>Parameters:</p>\n\n<ul>\n<li><code class="param">x</code></li>\n<li><code class="param">y</code></li>\n</ul>\n''')
 
         self.assertEqual(type(comment.params), dict)
 
@@ -757,7 +758,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, 'Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.\n\nParameters:\n\n- <code class="param">x</code>\n- <code class="param">y</code>')
+        self.assertEqual(comment.text, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.</p>\n\n<p>Parameters:</p>\n\n<ul>\n<li><code class="param">x</code></li>\n<li><code class="param">y</code></li>\n</ul>\n')
 
         self.assertEqual(type(comment.params), dict)
 
@@ -804,7 +805,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "Sets the position of the object")
+        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n")
         
         self.assertEqual(len(comment.params), 4)
         
@@ -851,7 +852,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "Sets the position of the object")
+        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n")
 
         self.assertEqual(len(comment.params), 4)
 
@@ -898,7 +899,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "Sets the position of the object")
+        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n")
 
         self.assertEqual(len(comment.params), 4)
 
@@ -946,7 +947,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "Sets the position of the object")
+        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n")
 
         self.assertEqual(len(comment.params), 4)
 
@@ -999,7 +1000,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "Sets the position of the object\n\nSome other text")
+        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
         self.assertEqual(type(comment.tags), dict)
         self.assertEqual(comment.tags["public"], True)
         self.assertEqual(comment.tags["deprecated"], True)
@@ -1028,7 +1029,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "Sets the position of the object\n\nSome other text")
+        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
         self.assertEqual(type(comment.tags), dict)
         self.assertEqual(comment.tags["public"], True)
         self.assertEqual(comment.tags["deprecated"], True)
@@ -1058,7 +1059,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "Sets the position of the object\n\nSome other text")
+        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
         self.assertEqual(type(comment.tags), dict)
         self.assertEqual(comment.tags["deprecated"], True)
         self.assertEqual(comment.tags["version"], "1.2")
