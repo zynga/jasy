@@ -198,10 +198,11 @@ class Comment():
         text = self.__processTypes(text)
         
         # Apply markdown convertion
-        text = markdown2html(text)
+        if text != "":
+            text = markdown2html(text)
         
-        if text == None:
-            text = ""
+            if text == None:
+                text = ""
         
         return text            
             
