@@ -374,7 +374,10 @@ class Comment():
             paramName = match.group(1)
             paramType = match.group(3)
             paramOptional = match.group(4) is not None
-            paramDefault = match.group(5)
+            paramDefault = match.group(6)
+            
+            if paramType:
+                paramType = self.__compactTypeDecl(paramType)
             
             if self.params is None:
                 self.params = {}
