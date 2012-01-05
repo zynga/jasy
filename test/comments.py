@@ -12,9 +12,7 @@ class TestComments(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
-        #print(node)
         return node
-        
         
         
 
