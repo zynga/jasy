@@ -22,7 +22,7 @@ except ImportError as ex:
     def markdown2html(markdownStr):
         return markdown.markdown(markdownStr)
 
-    logging.info("Using Python Markdown implementation. %s" % ex)
+    logging.info("Using Python Markdown implementation.")
 
 
 
