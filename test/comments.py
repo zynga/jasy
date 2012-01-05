@@ -6,6 +6,7 @@ sys.path.insert(0, jasyroot)
 
 import jasy.js.parse.Parser as Parser
 
+
         
 class TestComments(unittest.TestCase):
 
@@ -645,8 +646,6 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.params["y"]["default"], None)
         self.assertEqual(comment.params["cache"]["default"], "false")
         self.assertEqual(comment.params["extra"]["default"], None)
-        
-        
         
         
     def test_doc_params_lazytypes(self):

@@ -5,6 +5,28 @@
 
 import logging, re
 
+# Try two alternative implementations
+try:
+    import misaka
+
+    htmlRenderer = misaka.HtmlRenderer()
+    markdown = misaka.Markdown(htmlRenderer)
+    
+    def markdown2html(markdownStr):
+        return markdown.render(markdownStr)
+
+    logging.info("Using high performance C-based Markdown implementation")
+    
+except:
+    import markdown
+    
+    def markdown2html(markdownStr):
+        return markdown.markdown(markdownStr)
+
+    logging.info("Using Python Markdown implementation")
+
+
+
 class CommentException(Exception):
     def __init__(self, message, lineNo=0):
         Exception.__init__(self, "Comment error: %s (line: %s)" % (message, lineNo+1))
