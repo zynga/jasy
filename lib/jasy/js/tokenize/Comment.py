@@ -143,12 +143,11 @@ class Comment():
         lines = []
         for lineNo, line in enumerate((indent+text).split("\n")):
             if line.startswith(indent):
-                lines.append(line[len(indent):])
+                lines.append(line[len(indent):].rstrip())
             else:
                 logging.error("Could not outdent comment at line %s", startLineNo+lineNo)
                 return text
-        
-        
+                
         # Find first line with real content
         outdentString = ""
         for lineNo, line in enumerate(lines):
@@ -181,7 +180,8 @@ class Comment():
                     else:
                         lines[lineNo] = line[outdentStringLen:]
 
-        return "\n".join(lines)
+        # Merge final lines and remove leading and trailing new lines
+        return "\n".join(lines).strip("\n")
 
             
             
