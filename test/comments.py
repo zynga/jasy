@@ -336,6 +336,36 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].text, "Protected Comment")    
 
 
+    def test_protected_jquery(self):
+
+        parsed = self.process('''
+
+        /*!
+         * jQuery JavaScript Library v@VERSION
+         * http://jquery.com/
+         *
+         * Copyright 2011, John Resig
+         * Dual licensed under the MIT or GPL Version 2 licenses.
+         * http://jquery.org/license
+         *
+         * Includes Sizzle.js
+         * http://sizzlejs.com/
+         * Copyright 2011, The Dojo Foundation
+         * Released under the MIT, BSD, and GPL Licenses.
+         *
+         * Date: @DATE
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        self.assertEqual(parsed.comments[0].variant, "protected")
+        self.assertEqual(parsed.comments[0].text, "Protected Comment")
+
+
 
     #
     # DOC COMMENTS

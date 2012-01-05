@@ -81,6 +81,9 @@ class Comment():
     jsdocData = re.compile(r"^@(name|namespace|requires|since|version)\s+(\S+)")
     
     
+    docIndentReg = re.compile(r"^(\s*\*\s*)(\S*)")
+    
+    
     
     def __init__(self, text, context=None, lineNo=0, indent=""):
         # Store context (relation to code)
@@ -114,9 +117,6 @@ class Comment():
             # Outdent indention
             text = self.__outdent(text, indent, lineNo)
             
-            if self.variant == "doc":
-                text = self.__docOutdent(text, lineNo)
-
         else:
             # Strip white space from single line comments
             # " hello " => "hello"
@@ -135,65 +135,54 @@ class Comment():
         
 
 
-    def __outdent(self, text, indent, lineNo):
+    def __outdent(self, text, indent, startLineNo):
         """
         Outdent multi line comment text and filtering empty lines
         """
         
-        result = []
-        text = indent + text
-        for pos, line in enumerate(text.split("\n")):
+        lines = []
+        for lineNo, line in enumerate(text.strip("\n").split("\n")):
             if line.startswith(indent):
-                # Ignore empty lines (incl. special \xA0)
-                if line.strip(" \n\t\xA0") != "":
-                    result.append(line[len(indent):])
+                lines.append(line[len(indent):])
             else:
-                logging.error("Invalid indention in comment at line %s", lineNo+pos)
+                logging.error("Invalid indention in comment at line %s", startLineNo+lineNo)
                 return text
                 
-        return "\n".join(result)
-        
-        
-        
-    def __docOutdent(self, text, startLineNo):
-        splitted = text.split("\n")
-
+                
         # Find first line with real content
-        lineNo = 0
-        while lineNo < len(splitted):
-            first = splitted[lineNo]
-            if first != "" and first.strip() == "":
-                break
-            else:
-                lineNo += 1
-        
-        # Use this line is the master line which defines the indent of the following lines
-        indent = ""
-        for char in first:
-            if char == " ":
-                indent += char
-            elif char == "*":
-                if "*" in indent:
+        outdentString = ""
+        for lineNo, line in enumerate(lines):
+            if line != "" and line.strip() != "":
+                matchedDocIndent = self.docIndentReg.match(line)
+                
+                if not matchedDocIndent:
+                    # As soon as we find a non doc indent like line we stop
                     break
+                    
+                elif matchedDocIndent.group(2) != "":
+                    # otherwise we look for content behind the indent to get the 
+                    # correct real indent (with spaces)
+                    outdentString = matchedDocIndent.group(1)
+                    break
+                
+            lineNo += 1
+
+        # Process outdenting to all lines
+        if outdentString != "":
+            lineNo = 0
+            outdentStringLen = len(outdentString)
+
+            for lineNo, line in enumerate(lines):
+                if len(line) <= outdentStringLen:
+                    lines[lineNo] = ""
                 else:
-                    indent += char
-            else:
-                break
-        
-        # Cut out indent from all following lines
-        indentLength = len(indent)
-        result = []
-        for lineNo, line in enumerate(splitted):
-            if len(line) <= indentLength:
-                line = ""
-            elif not line.startswith(indent):
-                raise CommentException("Invalid indention in documentation string.", startLineNo+lineNo)
-            
-            result.append(line[indentLength:])
-        
-        # build new text
-        return "\n".join(result)
-            
+                    if not line.startswith(outdentString):
+                        raise CommentException("Invalid indention in documentation string.", startLineNo+lineNo)
+                    else:
+                        lines[lineNo] = line[outdentStringLen:]
+
+        return "\n".join(lines)
+
             
             
     def __processDoc(self, text, startLineNo):
