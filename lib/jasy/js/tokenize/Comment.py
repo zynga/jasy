@@ -48,22 +48,22 @@ class Comment():
     # - @param name {Type}
     # - @param name {Type?}
     # - @param name {Type?defaultValue}
-    jsdocParamTypeA = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_ \|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+)?)?\}")
+    jsdocParamA = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_ \|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+)?)?\}")
 
     # Supports:
     # - @param name
     # - @param {Type} name 
     # - @param {Type} [optionalName=defaultValue]
     # - @param {Type} [optionalName]
-    jsdocParamTypeB = re.compile(r"^@(param)(\s+\{([a-zA-Z0-9_ \|\[\]]+)\})?(\s+(\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
+    jsdocParamB = re.compile(r"^@(param)\s+(\{([a-zA-Z0-9_ \|\[\]]+)\}\s+)?((\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
     
     # Supports:
     # - @return {Type}
-    jsdocReturn = re.compile(r"^@(returns|return)(\s+\{([a-zA-Z0-9_\.\|\[\]]+)\})?")    
+    jsdocReturn = re.compile(r"^@(returns?)\s+(\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
 
     # Supports:
     # - @throw {Type}
-    jsdocThrow = re.compile(r"^@(throws|throw)(\s+\{([a-zA-Z0-9_\.\|\[\]]+)\})?")    
+    jsdocThrow = re.compile(r"^@(throw?)\s+(\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
     
     
     
@@ -261,7 +261,7 @@ class Comment():
         
         for line in text.split("\n"):
             
-            matched = self.jsdocParamTypeA.match(line)
+            matched = self.jsdocParamA.match(line)
             if matched:
                 
                 paramName = matched.group(2)
@@ -282,7 +282,7 @@ class Comment():
                 continue
 
 
-            matched = self.jsdocParamTypeB.match(line)
+            matched = self.jsdocParamB.match(line)
             if matched:
                 
                 paramType = matched.group(3)
