@@ -537,9 +537,14 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.text, "Hello World")
         
+        self.assertEqual(comment.tags["deprecated"], True)
+        self.assertEqual(comment.tags["public"], True)
+        self.assertEqual(type(comment.tags["use"]), set)
+        self.assertEqual("future" in comment.tags["use"], True)
+        self.assertEqual("current" in comment.tags["use"], True)
+        self.assertEqual("xxx" in comment.tags["use"], False)
         
-        
-        
+    
     
     def test_doc_tags_clean(self):
 
@@ -560,6 +565,13 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.text, "")        
     
+        self.assertEqual(comment.tags["deprecated"], True)
+        self.assertEqual(comment.tags["public"], True)
+        self.assertEqual(type(comment.tags["use"]), set)
+        self.assertEqual("future" in comment.tags["use"], True)
+        self.assertEqual("current" in comment.tags["use"], True)
+        self.assertEqual("xxx" in comment.tags["use"], False)
+
     
     
     #

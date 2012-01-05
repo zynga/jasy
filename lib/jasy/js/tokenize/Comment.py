@@ -386,8 +386,6 @@ class Comment():
                 "description" : ""
             }
             
-            print(match.groups())
-            
             if paramOptional:
                 return '<code class="param optional">%s</code>' % paramName
             else:
