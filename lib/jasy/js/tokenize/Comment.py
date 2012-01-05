@@ -70,7 +70,7 @@ class Comment():
     # - @private
     # - @public
     # - @static
-    jsDocFlags = re.compile(r"^@(deprecated|private|public|static)")
+    jsdocFlags = re.compile(r"^@(deprecated|private|public|static)")
     
     # Supports:
     # - @name Name
@@ -78,7 +78,7 @@ class Comment():
     # - @requires Name
     # - @since Version
     # - @version Version
-    jsDocFlags = re.compile(r"^@(name|namespace|requires|since|version)\s+(\S+)")
+    jsdocData = re.compile(r"^@(name|namespace|requires|since|version)\s+(\S+)")
     
     
     
@@ -129,9 +129,11 @@ class Comment():
         self.text = text
         
     
+    
     def getTags(self):
         return self.tags
         
+
 
     def __outdent(self, text, indent, lineNo):
         """
@@ -152,11 +154,20 @@ class Comment():
         return "\n".join(result)
         
         
+        
     def __docOutdent(self, text, startLineNo):
         splitted = text.split("\n")
-        first = splitted[0]
+
+        # Find first line with real content
+        lineNo = 0
+        while lineNo < len(splitted):
+            first = splitted[lineNo]
+            if first != "" and first.strip() == "":
+                break
+            else:
+                lineNo += 1
         
-        # first line is the master line which defines the indent of the following lines
+        # Use this line is the master line which defines the indent of the following lines
         indent = ""
         for char in first:
             if char == " ":
@@ -169,7 +180,7 @@ class Comment():
             else:
                 break
         
-        # cut out indent from all following lines
+        # Cut out indent from all following lines
         indentLength = len(indent)
         result = []
         for lineNo, line in enumerate(splitted):
@@ -267,13 +278,9 @@ class Comment():
         See also: http://code.google.com/p/jsdoc-toolkit/wiki/TagReference
         """
 
-
-        
-
         filterLine = False
         remainingText = []
 
-        
         for line in text.split("\n"):
             
             matched = self.jsdocParamA.match(line)
@@ -329,7 +336,22 @@ class Comment():
                 self.throws = self.__compactTypeDecl(matched.group(3))
                 filterLine = True
                 continue
+                
+            matched = self.jsdocFlags.match(line)
+            if matched:
+                if self.tags is None:
+                    self.tags = {}
+
+                self.tags[matched.group(1)] = True
+                continue
             
+            matched = self.jsdocData.match(line)
+            if matched:
+                if self.tags is None:
+                    self.tags = {}
+
+                self.tags[matched.group(1)] = matched.group(2)
+                continue
             
             # Collect remaining lines
             if filterLine and line.strip() == "":
