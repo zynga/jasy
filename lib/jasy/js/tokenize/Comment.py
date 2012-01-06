@@ -9,7 +9,7 @@ import logging, re
 try:
     import misaka
 
-    misakaExt = misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS
+    misakaExt = misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS | misaka.EXT_FENCED_CODE
     misakaRender = misaka.HTML_SKIP_STYLE | misaka.HTML_SMARTYPANTS
     
     def markdown2html(markdownStr):

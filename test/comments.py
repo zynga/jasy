@@ -1213,7 +1213,29 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].text, '<p>Some code example:</p>\n\n<div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isEnabled</span><span class="p">())</span> <span class="p">{</span>\n  <span class="nx">self</span><span class="p">.</span><span class="nx">callCommand</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;</span><span class="nx">reload</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;,</span> <span class="kc">true</span><span class="p">);</span>\n<span class="p">}</span>\n</pre></div>\n\n')
 
 
+    def test_doc_markdown_code_html(self):
 
+        parsed = self.process('''
+
+        /**
+         * HTML example:
+         *
+         * ```html
+         * <title>My Title</title>
+         * <link rel="stylesheet" type="text/css" src="style.css"/>
+         * <script type="text/javascript">alert("Loaded");</script>
+         * ```
+         */
+        docCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "doc")
+        self.assertEqual(parsed[0].comments[0].text, '<p>HTML example:</p>\n\n<div class="highlight"><pre><span class="nt">&lt;title&gt;</span>My Title<span class="nt">&lt;/title&gt;</span>\n<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&amp;quot;stylesheet&amp;quot;</span> <span class="na">type=</span><span class="s">&amp;quot;text/css&amp;quot;</span> <span class="na">src=</span><span class="s">&amp;quot;style.css&amp;quot;/</span><span class="nt">&gt;</span>\n<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&amp;quot;text/javascript&amp;quot;</span><span class="nt">&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;</span><span class="nx">Loaded</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;);</span><span class="nt">&lt;/script&gt;</span>\n</pre></div>\n\n')
 
 
 
