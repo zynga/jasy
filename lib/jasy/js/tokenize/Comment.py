@@ -41,10 +41,6 @@ class Comment():
     
     
     # Supports:
-    # - @tagname comment
-    jsdocTags = re.compile(r"^@(param|return|throw)")
-    
-    # Supports:
     # - @param name {Type}
     # - @param name {Type?}
     # - @param name {Type?defaultValue}
@@ -63,7 +59,7 @@ class Comment():
 
     # Supports:
     # - @throw {Type}
-    jsdocThrow = re.compile(r"^@(throw?)\s+(\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
+    jsdocThrow = re.compile(r"^@(throws?)\s+(\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
     
     # Supports:
     # - @deprecated
