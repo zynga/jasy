@@ -357,7 +357,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].text, "Protected Comment")    
 
 
-    def test_protected(self):
+    def test_protected_newline(self):
 
         parsed = self.process('''
 
@@ -1139,6 +1139,50 @@ class TestComments(unittest.TestCase):
     #
     # DOC COMMENTS :: MARKDOWN
     #
+    
+    def test_doc_markdown_formatting(self):
+
+        parsed = self.process('''
+
+        /**
+         * This is some **important** text about *Jasy*.
+         */
+        docCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "doc")
+        self.assertEqual(parsed[0].comments[0].text, "<p>This is some <strong>important</strong> text about <em>Jasy</em>.</p>\n")    
+    
+    
+    def test_doc_markdown_smartypants(self):
+
+        parsed = self.process('''
+
+        /**
+         * Text formatting with 'quotes' is pretty nice, too...
+         *
+         * It possible to use "different styles" here -- to improve clarity.
+         *
+         * Still it keeps code like `this.foo()` intact.
+         *
+         * It's also capable of detecting these things: "Joe's Restaurant".
+         */
+        docCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "doc")
+        self.assertEqual(parsed[0].comments[0].text, "<p>Text formatting with &lsquo;quotes&rsquo; is pretty nice, too&hellip;</p>\n\n<p>It possible to use &ldquo;different styles&rdquo; here &ndash; to improve clarity.</p>\n\n<p>Still it keeps code like <code>this.foo()</code> intact.</p>\n\n<p>It&rsquo;s also capable of detecting these things: &ldquo;Joe&rsquo;s Restaurant&rdquo;.</p>\n")
+    
     
     
 

@@ -13,7 +13,7 @@ try:
     misakaRender = misaka.HTML_SKIP_STYLE | misaka.HTML_SMARTYPANTS
     
     def markdown2html(markdownStr):
-        return misaka.html(markdownStr, misakaExt)
+        return misaka.html(markdownStr, misakaExt, misakaRender)
 
     logging.info("Using high performance C-based Markdown implementation")
     
