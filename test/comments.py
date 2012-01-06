@@ -233,6 +233,27 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].variant, "multi")
         self.assertEqual(parsed[0].comments[0].text, "   Multi\n   Comment\n   Test")
+        
+        
+    def test_multi_multiline_otherbreaks(self):
+
+        parsed = self.process('''
+
+        /*
+          Multi
+          Comment
+          Test 
+        */
+        multiCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "multi")
+        self.assertEqual(parsed[0].comments[0].text, "  Multi\n  Comment\n  Test")
     
     
     
