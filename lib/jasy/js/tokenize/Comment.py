@@ -85,6 +85,12 @@ class Comment():
     # Defined return types or data types
     returns = None
     
+    # Collected text of the comment (without the extracted doc relevant data)
+    text = None
+    
+    # Text of the comment converted to HTML (only for doc comment)
+    html = None
+    
     
     # Supports:
     # - @param name {Type}
@@ -167,8 +173,21 @@ class Comment():
         # Extract docs
         if self.variant == "doc":
             text = self.__processDoc(text, lineNo)
+            html = text
+            
+            # Apply markdown convertion
+            if html != "":
+                html = markdown2html(html)
 
+                if html == None:
+                    html = ""
+                else:
+                    html = code2highlight(html)
+        
+            self.html = html
+        
         self.text = text
+        
         
     
     
@@ -238,15 +257,6 @@ class Comment():
 
         text = self.__processParams(text)
         text = self.__processTypes(text)
-        
-        # Apply markdown convertion
-        if text != "":
-            text = markdown2html(text)
-        
-            if text == None:
-                text = ""
-            else:
-                text = code2highlight(text)
         
         return text            
             

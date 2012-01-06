@@ -425,7 +425,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "<p>Doc Comment</p>\n")
+        self.assertEqual(parsed[0].comments[0].html, "<p>Doc Comment</p>\n")
         
         
     def test_doc_unbound(self):
@@ -439,7 +439,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed.comments), 1)
 
         self.assertEqual(parsed.comments[0].variant, "doc")
-        self.assertEqual(parsed.comments[0].text, "<p>Doc Comment</p>\n")
+        self.assertEqual(parsed.comments[0].html, "<p>Doc Comment</p>\n")
         
         
     def test_doc_unbound_nobreak(self):
@@ -451,7 +451,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed.comments), 1)
 
         self.assertEqual(parsed.comments[0].variant, "doc")
-        self.assertEqual(parsed.comments[0].text, "<p>Doc Comment</p>\n")
+        self.assertEqual(parsed.comments[0].html, "<p>Doc Comment</p>\n")
 
 
     def test_doc_multiline(self):
@@ -470,7 +470,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "<p>Doc Comment</p>\n")
+        self.assertEqual(parsed[0].comments[0].html, "<p>Doc Comment</p>\n")
         
 
     def test_doc_multiline_three(self):
@@ -491,7 +491,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "<p>Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3</p>\n")
+        self.assertEqual(parsed[0].comments[0].html, "<p>Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3</p>\n")
         
         
         
@@ -511,7 +511,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "<p>Doc Comment</p>\n")
+        self.assertEqual(parsed[0].comments[0].html, "<p>Doc Comment</p>\n")
 
 
     def test_doc_multiline_clean_three(self):
@@ -532,7 +532,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "<p>Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3</p>\n")
+        self.assertEqual(parsed[0].comments[0].html, "<p>Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3</p>\n")
 
 
     #
@@ -556,7 +556,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "<p>Returns the sum of x and y.</p>\n")
+        self.assertEqual(comment.html, "<p>Returns the sum of x and y.</p>\n")
         
         
     def test_doc_return_twotypes(self):
@@ -576,7 +576,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "<p>Returns the sum of x and y.</p>\n")
+        self.assertEqual(comment.html, "<p>Returns the sum of x and y.</p>\n")
         self.assertEqual(comment.returns["type"], "Number|String")
     
     
@@ -604,7 +604,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "<p>Hello World</p>\n")
+        self.assertEqual(comment.html, "<p>Hello World</p>\n")
         
         self.assertEqual(comment.tags["deprecated"], True)
         self.assertEqual(comment.tags["public"], True)
@@ -692,7 +692,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
     
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>. The optional <code class="param">cache</code> controls whether caching should be enabled.\nAlso see <code class="param">extra</code> which is normally pretty useless</p>\n')
+        self.assertEqual(comment.html, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>. The optional <code class="param">cache</code> controls whether caching should be enabled.\nAlso see <code class="param">extra</code> which is normally pretty useless</p>\n')
         
         self.assertEqual(type(comment.params), dict)
 
@@ -741,7 +741,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.</p>\n\n<p>Parameters:</p>\n\n<ul>\n<li><code class="param">x</code></li>\n<li><code class="param">y</code></li>\n<li><code class="param">cache</code></li>\n<li><code class="param">extra</code></li>\n</ul>\n')
+        self.assertEqual(comment.html, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.</p>\n\n<p>Parameters:</p>\n\n<ul>\n<li><code class="param">x</code></li>\n<li><code class="param">y</code></li>\n<li><code class="param">cache</code></li>\n<li><code class="param">extra</code></li>\n</ul>\n')
         
         self.assertEqual(type(comment.params), dict)
 
@@ -789,7 +789,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, '''<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.</p>\n\n<p>Parameters:</p>\n\n<ul>\n<li><code class="param">x</code></li>\n<li><code class="param">y</code></li>\n</ul>\n''')
+        self.assertEqual(comment.html, '''<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.</p>\n\n<p>Parameters:</p>\n\n<ul>\n<li><code class="param">x</code></li>\n<li><code class="param">y</code></li>\n</ul>\n''')
 
         self.assertEqual(type(comment.params), dict)
 
@@ -828,7 +828,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.</p>\n\n<p>Parameters:</p>\n\n<ul>\n<li><code class="param">x</code></li>\n<li><code class="param">y</code></li>\n</ul>\n')
+        self.assertEqual(comment.html, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.</p>\n\n<p>Parameters:</p>\n\n<ul>\n<li><code class="param">x</code></li>\n<li><code class="param">y</code></li>\n</ul>\n')
 
         self.assertEqual(type(comment.params), dict)
 
@@ -875,7 +875,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n")
+        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n")
         
         self.assertEqual(len(comment.params), 4)
         
@@ -922,7 +922,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n")
+        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n")
 
         self.assertEqual(len(comment.params), 4)
 
@@ -969,7 +969,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n")
+        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n")
 
         self.assertEqual(len(comment.params), 4)
 
@@ -1017,7 +1017,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n")
+        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n")
 
         self.assertEqual(len(comment.params), 4)
 
@@ -1070,7 +1070,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
+        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
         self.assertEqual(type(comment.tags), dict)
         self.assertEqual(comment.tags["public"], True)
         self.assertEqual(comment.tags["deprecated"], True)
@@ -1099,7 +1099,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
+        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
         self.assertEqual(type(comment.tags), dict)
         self.assertEqual(comment.tags["public"], True)
         self.assertEqual(comment.tags["deprecated"], True)
@@ -1129,7 +1129,7 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
 
         self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.text, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
+        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
         self.assertEqual(type(comment.tags), dict)
         self.assertEqual(comment.tags["deprecated"], True)
         self.assertEqual(comment.tags["version"], "1.2")
@@ -1156,7 +1156,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "<p>This is some <strong>important</strong> text about <em>Jasy</em>.</p>\n")    
+        self.assertEqual(parsed[0].comments[0].html, "<p>This is some <strong>important</strong> text about <em>Jasy</em>.</p>\n")    
     
     
     def test_doc_markdown_smartypants(self):
@@ -1181,7 +1181,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, "<p>Text formatting with &lsquo;quotes&rsquo; is pretty nice, too&hellip;</p>\n\n<p>It possible to use &ldquo;different styles&rdquo; here &ndash; to improve clarity.</p>\n\n<p>Still it keeps code like <code>this.foo()</code> intact.</p>\n\n<p>It&rsquo;s also capable of detecting these things: &ldquo;Joe&rsquo;s Restaurant&rdquo;.</p>\n")
+        self.assertEqual(parsed[0].comments[0].html, "<p>Text formatting with &lsquo;quotes&rsquo; is pretty nice, too&hellip;</p>\n\n<p>It possible to use &ldquo;different styles&rdquo; here &ndash; to improve clarity.</p>\n\n<p>Still it keeps code like <code>this.foo()</code> intact.</p>\n\n<p>It&rsquo;s also capable of detecting these things: &ldquo;Joe&rsquo;s Restaurant&rdquo;.</p>\n")
     
     
     
@@ -1210,7 +1210,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, '<p>Some code example:</p>\n\n<div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isEnabled</span><span class="p">())</span> <span class="p">{</span>\n  <span class="nx">self</span><span class="p">.</span><span class="nx">callCommand</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;</span><span class="nx">reload</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;,</span> <span class="kc">true</span><span class="p">);</span>\n<span class="p">}</span>\n</pre></div>\n\n')
+        self.assertEqual(parsed[0].comments[0].html, '<p>Some code example:</p>\n\n<div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isEnabled</span><span class="p">())</span> <span class="p">{</span>\n  <span class="nx">self</span><span class="p">.</span><span class="nx">callCommand</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;</span><span class="nx">reload</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;,</span> <span class="kc">true</span><span class="p">);</span>\n<span class="p">}</span>\n</pre></div>\n\n')
 
 
     def test_doc_markdown_code_html(self):
@@ -1235,7 +1235,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].text, '<h2>HTML example:</h2>\n\n<div class="highlight"><pre><span class="nt">&lt;title&gt;</span>My Title<span class="nt">&lt;/title&gt;</span>\n<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&amp;quot;stylesheet&amp;quot;</span> <span class="na">type=</span><span class="s">&amp;quot;text/css&amp;quot;</span> <span class="na">src=</span><span class="s">&amp;quot;style.css&amp;quot;/</span><span class="nt">&gt;</span>\n<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&amp;quot;text/javascript&amp;quot;</span><span class="nt">&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;</span><span class="nx">Loaded</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;);</span><span class="nt">&lt;/script&gt;</span>\n</pre></div>\n\n')
+        self.assertEqual(parsed[0].comments[0].html, '<h2>HTML example:</h2>\n\n<div class="highlight"><pre><span class="nt">&lt;title&gt;</span>My Title<span class="nt">&lt;/title&gt;</span>\n<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&amp;quot;stylesheet&amp;quot;</span> <span class="na">type=</span><span class="s">&amp;quot;text/css&amp;quot;</span> <span class="na">src=</span><span class="s">&amp;quot;style.css&amp;quot;/</span><span class="nt">&gt;</span>\n<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&amp;quot;text/javascript&amp;quot;</span><span class="nt">&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;</span><span class="nx">Loaded</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;);</span><span class="nt">&lt;/script&gt;</span>\n</pre></div>\n\n')
 
 
 
