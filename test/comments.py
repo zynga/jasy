@@ -357,6 +357,25 @@ class TestComments(unittest.TestCase):
         self.assertEqual(parsed[0].comments[0].text, "Protected Comment")    
 
 
+    def test_protected(self):
+
+        parsed = self.process('''
+
+        /*! 
+        Protected Comment 
+        */
+        protectedCommentCmd();
+
+        ''')
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "protected")
+        self.assertEqual(parsed[0].comments[0].text, "Protected Comment")
+            
+
     def test_protected_jquery(self):
 
         parsed = self.process('''
