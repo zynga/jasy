@@ -1205,8 +1205,6 @@ class TestComments(unittest.TestCase):
 
         ''')
         
-        self.maxDiff = 1000000
-
         self.assertEqual(parsed[0].type, "semicolon")
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 1)
