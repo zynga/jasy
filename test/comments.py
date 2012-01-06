@@ -1187,13 +1187,39 @@ class TestComments(unittest.TestCase):
     
 
     #
-    # DOC COMMENTS :: HTML
+    # DOC COMMENTS :: CODE
     #
 
-    
+    def test_doc_markdown_code(self):
 
+        parsed = self.process('''
+
+        /**
+         * Some code example:
+         *
+         *     if (this.isEnabled()) {
+         *       self.callCommand("reload", true);
+         *     }
+         */
+        docCommentCmd();
+
+        ''')
         
-        
+        self.maxDiff = 1000000
+
+        self.assertEqual(parsed[0].type, "semicolon")
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+
+        self.assertEqual(parsed[0].comments[0].variant, "doc")
+        self.assertEqual(parsed[0].comments[0].text, '<p>Some code example:</p>\n\n<div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isEnabled</span><span class="p">())</span> <span class="p">{</span>\n  <span class="nx">self</span><span class="p">.</span><span class="nx">callCommand</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;</span><span class="nx">reload</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;,</span> <span class="kc">true</span><span class="p">);</span>\n<span class="p">}</span>\n</pre></div>\n\n')
+
+
+
+
+
+
+
 if __name__ == '__main__':
     tests = unittest.TestLoader().loadTestsFromTestCase(TestComments)
     unittest.TextTestRunner(verbosity=1).run(tests)        

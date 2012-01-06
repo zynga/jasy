@@ -3,7 +3,7 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-import logging, re, pygments
+import logging, re
 
 # Try two alternative implementations
 try:
@@ -26,6 +26,42 @@ except ImportError as ex:
     logging.info("Using Python Markdown implementation.")
 
 
+try:
+    # http://misaka.61924.nl/#toc_3
+    
+    from pygments import highlight
+    from pygments.formatters import HtmlFormatter
+    from pygments.lexers import get_lexer_by_name
+
+    codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
+
+    def code2highlight(html):
+        def _unescape_html(html):
+            html = html.replace('&lt;', '<')
+            html = html.replace('&gt;', '>')
+            html = html.replace('&amp;', '&')
+            return html.replace('"', '"')
+        
+        def _highlight_match(match):
+            language, classname, code = match.groups()
+            
+            # default to Javascript
+            if (language or classname) is None:
+                language = "javascript"
+                
+            return highlight(_unescape_html(code), get_lexer_by_name(language or classname or "javascript"), HtmlFormatter())
+            
+        return codeblock.sub(_highlight_match, html)
+        
+
+except ImportError as ex:
+    
+    def code2highlight(html):
+        return html
+    
+    logging.info("Syntax highlighting is disabled because Pygments is missing.")
+    
+
 
 class CommentException(Exception):
     def __init__(self, message, lineNo=0):
@@ -33,10 +69,20 @@ class CommentException(Exception):
             
 
 class Comment():
+    
+    # Relation to code
     context = None
+    
+    # Dictionary of tags
     tags = None
+    
+    # Dictionary of params
     params = None
+
+    # Defined exceptions which are thrown
     throws = None
+    
+    # Defined return types or data types
     returns = None
     
     
@@ -76,7 +122,7 @@ class Comment():
     # - @version Version
     jsdocData = re.compile(r"^@(name|namespace|requires|since|version)\s+(\S+)")
     
-    
+    # Used to measure the doc indent size (with leading stars in front of content)
     docIndentReg = re.compile(r"^(\s*\*\s*)(\S*)")
     
     
@@ -199,6 +245,8 @@ class Comment():
         
             if text == None:
                 text = ""
+            else:
+                text = code2highlight(text)
         
         return text            
             
