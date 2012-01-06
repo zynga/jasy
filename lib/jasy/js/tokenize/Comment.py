@@ -3,7 +3,7 @@
 # Copyright 2010-2011 Sebastian Werner
 #
 
-import logging, re
+import logging, re, pygments
 
 # Try two alternative implementations
 try:
