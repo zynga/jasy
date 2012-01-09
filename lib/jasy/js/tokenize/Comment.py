@@ -67,14 +67,14 @@ except ImportError as ex:
 # - @param name {Type}
 # - @param name {Type?}
 # - @param name {Type?defaultValue}
-jsdocParamA = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_ \|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+)?)?\}")
+jsdocParamA = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_ \.\|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+)?)?\}")
 
 # Supports:
 # - @param name
 # - @param {Type} name 
 # - @param {Type} [optionalName=defaultValue]
 # - @param {Type} [optionalName]
-jsdocParamB = re.compile(r"^@(param)\s+(\{([a-zA-Z0-9_ \|\[\]]+)\}\s+)?((\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
+jsdocParamB = re.compile(r"^@(param)\s+(\{([a-zA-Z0-9_ \.\|\[\]]+)\}\s+)?((\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
 
 # Supports:
 # - @return {Type}
@@ -103,7 +103,7 @@ jsdocData = re.compile(r"^@(name|namespace|requires|since|version)\s+(\S+)")
 docIndentReg = re.compile(r"^(\s*\*\s*)(\S*)")
 
 # Matches param declarations in own dialect
-paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \|\[\]]+)((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
+paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+)((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
 
 # Matches links in own dialect
 linkMatcher = re.compile(r"\{([a-zA-Z0-9_#\.]+)\}")

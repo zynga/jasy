@@ -730,6 +730,50 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.params["extra"]["default"], None)
         
         
+    def test_doc_params_namespaced(self):
+
+        parsed = self.process('''
+
+        /**
+         * {Boolean} Returns whether @x {core.Number} is bigger than @y {core.Number}. The optional @cache {core.Boolean?false} controls whether caching should be enabled.
+         * Also see @extra {core.String | core.Array ?} which is normally pretty useless
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.html, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>. The optional <code class="param">cache</code> controls whether caching should be enabled.\nAlso see <code class="param">extra</code> which is normally pretty useless</p>\n')
+        self.assertEqual(comment.text, 'Returns whether x is bigger than y. The optional cache controls whether caching should be enabled.\nAlso see extra which is normally pretty useless')
+
+        self.assertEqual(type(comment.params), dict)
+
+        self.assertEqual(type(comment.params["x"]), dict)
+        self.assertEqual(type(comment.params["y"]), dict)
+        self.assertEqual(type(comment.params["cache"]), dict)
+        self.assertEqual(type(comment.params["extra"]), dict)
+
+        self.assertEqual(comment.params["x"]["type"], ["core.Number"])
+        self.assertEqual(comment.params["y"]["type"], ["core.Number"])
+        self.assertEqual(comment.params["cache"]["type"], ["core.Boolean"])
+        self.assertEqual(comment.params["extra"]["type"], ["core.String", "core.Array"])
+
+        self.assertEqual(comment.params["x"]["optional"], False)
+        self.assertEqual(comment.params["y"]["optional"], False)
+        self.assertEqual(comment.params["cache"]["optional"], True)
+        self.assertEqual(comment.params["extra"]["optional"], True)
+
+        self.assertEqual(comment.params["x"]["default"], None)
+        self.assertEqual(comment.params["y"]["default"], None)
+        self.assertEqual(comment.params["cache"]["default"], "false")
+        self.assertEqual(comment.params["extra"]["default"], None)        
+        
+        
     def test_doc_params_lazytypes(self):
 
         parsed = self.process('''
