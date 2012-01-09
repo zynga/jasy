@@ -139,6 +139,8 @@ class Comment():
     
     typeListSplit = re.compile("\s*\|\s*")
     
+    stripMarkup = re.compile(r"<.*?>")
+    
     
     def __init__(self, text, context=None, lineNo=0, indent=""):
         # Store context (relation to code)
@@ -192,6 +194,10 @@ class Comment():
                     html = code2highlight(html)
         
             self.html = html
+            
+            # Post process text to not contain any markup
+            if "<" in text:
+                text = self.stripMarkup.sub("", text)
         
         self.text = text
         
