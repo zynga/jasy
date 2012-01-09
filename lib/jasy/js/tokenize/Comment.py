@@ -63,12 +63,6 @@ except ImportError as ex:
     
 
 
-class CommentException(Exception):
-    def __init__(self, message, lineNo=0):
-        Exception.__init__(self, "Comment error: %s (line: %s)" % (message, lineNo+1))
-            
-            
-            
 # Supports:
 # - @param name {Type}
 # - @param name {Type?}
@@ -120,6 +114,16 @@ typeListSplit = re.compile("\s*\|\s*")
 # Used to remove markup sequences after doc processing of comment text
 stripMarkup = re.compile(r"<.*?>")
 
+
+
+
+class CommentException(Exception):
+    """
+    Thrown when errors during comment processing are detected.
+    """
+
+    def __init__(self, message, lineNo=0):
+        Exception.__init__(self, "Comment error: %s (line: %s)" % (message, lineNo+1))
 
 
 
