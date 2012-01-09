@@ -67,8 +67,70 @@ class CommentException(Exception):
     def __init__(self, message, lineNo=0):
         Exception.__init__(self, "Comment error: %s (line: %s)" % (message, lineNo+1))
             
+            
+            
+# Supports:
+# - @param name {Type}
+# - @param name {Type?}
+# - @param name {Type?defaultValue}
+jsdocParamA = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_ \|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+)?)?\}")
+
+# Supports:
+# - @param name
+# - @param {Type} name 
+# - @param {Type} [optionalName=defaultValue]
+# - @param {Type} [optionalName]
+jsdocParamB = re.compile(r"^@(param)\s+(\{([a-zA-Z0-9_ \|\[\]]+)\}\s+)?((\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
+
+# Supports:
+# - @return {Type}
+jsdocReturn = re.compile(r"^@(returns?)\s+(\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
+
+# Supports:
+# - @throw {Type}
+jsdocThrow = re.compile(r"^@(throws?)\s+(\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
+
+# Supports:
+# - @deprecated
+# - @private
+# - @public
+# - @static
+jsdocFlags = re.compile(r"^@(deprecated|private|public|static)")
+
+# Supports:
+# - @name Name
+# - @namespace Namespace
+# - @requires Name
+# - @since Version
+# - @version Version
+jsdocData = re.compile(r"^@(name|namespace|requires|since|version)\s+(\S+)")
+
+# Used to measure the doc indent size (with leading stars in front of content)
+docIndentReg = re.compile(r"^(\s*\*\s*)(\S*)")
+
+# Matches param declarations in own dialect
+paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \|\[\]]+)((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
+
+# Matches links in own dialect
+linkMatcher = re.compile(r"\{([a-zA-Z0-9_#\.]+)\}")
+
+# Used to split type lists as supported by throw, return and params
+typeListSplit = re.compile("\s*\|\s*")
+
+# Used to remove markup sequences after doc processing of comment text
+stripMarkup = re.compile(r"<.*?>")
+
+
+
+
 
 class Comment():
+    """
+    Comment class is attached to parsed nodes and used to store all comment related information.
+    
+    The class supports a variety of legacy formats like JSDoc, but comes with a new Markdown and TomDoc
+    inspired dialect to make developers life easier and work less repeative.
+    """
     
     # Relation to code
     context = None
@@ -90,56 +152,6 @@ class Comment():
     
     # Text of the comment converted to HTML (only for doc comment)
     html = None
-    
-    
-    # Supports:
-    # - @param name {Type}
-    # - @param name {Type?}
-    # - @param name {Type?defaultValue}
-    jsdocParamA = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_ \|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+)?)?\}")
-
-    # Supports:
-    # - @param name
-    # - @param {Type} name 
-    # - @param {Type} [optionalName=defaultValue]
-    # - @param {Type} [optionalName]
-    jsdocParamB = re.compile(r"^@(param)\s+(\{([a-zA-Z0-9_ \|\[\]]+)\}\s+)?((\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
-    
-    # Supports:
-    # - @return {Type}
-    jsdocReturn = re.compile(r"^@(returns?)\s+(\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
-
-    # Supports:
-    # - @throw {Type}
-    jsdocThrow = re.compile(r"^@(throws?)\s+(\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
-    
-    # Supports:
-    # - @deprecated
-    # - @private
-    # - @public
-    # - @static
-    jsdocFlags = re.compile(r"^@(deprecated|private|public|static)")
-    
-    # Supports:
-    # - @name Name
-    # - @namespace Namespace
-    # - @requires Name
-    # - @since Version
-    # - @version Version
-    jsdocData = re.compile(r"^@(name|namespace|requires|since|version)\s+(\S+)")
-    
-    # Used to measure the doc indent size (with leading stars in front of content)
-    docIndentReg = re.compile(r"^(\s*\*\s*)(\S*)")
-    
-    
-    paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \|\[\]]+)((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
-    
-    
-    linkMatcher = re.compile(r"\{([a-zA-Z0-9_#\.]+)\}")
-    
-    typeListSplit = re.compile("\s*\|\s*")
-    
-    stripMarkup = re.compile(r"<.*?>")
     
     
     def __init__(self, text, context=None, lineNo=0, indent=""):
@@ -197,10 +209,9 @@ class Comment():
             
             # Post process text to not contain any markup
             if "<" in text:
-                text = self.stripMarkup.sub("", text)
+                text = stripMarkup.sub("", text)
         
         self.text = text
-        
         
     
     
@@ -226,7 +237,7 @@ class Comment():
         outdentString = ""
         for lineNo, line in enumerate(lines):
             if line != "" and line.strip() != "":
-                matchedDocIndent = self.docIndentReg.match(line)
+                matchedDocIndent = docIndentReg.match(line)
                 
                 if not matchedDocIndent:
                     # As soon as we find a non doc indent like line we stop
@@ -280,7 +291,7 @@ class Comment():
         if decl is None:
             return decl
         
-        return self.typeListSplit.split(decl.strip())
+        return typeListSplit.split(decl.strip())
 
 
 
@@ -348,7 +359,7 @@ class Comment():
 
         for line in text.split("\n"):
             
-            matched = self.jsdocParamA.match(line)
+            matched = jsdocParamA.match(line)
             if matched:
                 
                 paramName = matched.group(2)
@@ -369,7 +380,7 @@ class Comment():
                 continue
 
 
-            matched = self.jsdocParamB.match(line)
+            matched = jsdocParamB.match(line)
             if matched:
                 
                 paramTypes = matched.group(3)
@@ -390,19 +401,19 @@ class Comment():
                 continue
                 
             
-            matched = self.jsdocReturn.match(line)
+            matched = jsdocReturn.match(line)
             if matched:
                 self.returns = self.__splitTypeList(matched.group(3))
                 filterLine = True
                 continue
             
-            matched = self.jsdocThrow.match(line)
+            matched = jsdocThrow.match(line)
             if matched:
                 self.throws = self.__splitTypeList(matched.group(3))
                 filterLine = True
                 continue
                 
-            matched = self.jsdocFlags.match(line)
+            matched = jsdocFlags.match(line)
             if matched:
                 if self.tags is None:
                     self.tags = {}
@@ -410,7 +421,7 @@ class Comment():
                 self.tags[matched.group(1)] = True
                 continue
             
-            matched = self.jsdocData.match(line)
+            matched = jsdocData.match(line)
             if matched:
                 if self.tags is None:
                     self.tags = {}
@@ -454,7 +465,7 @@ class Comment():
             
             return '<code class="param">%s</code>' % paramName
             
-        return self.paramMatcher.sub(collectParams, text)
+        return paramMatcher.sub(collectParams, text)
         
         
         
@@ -464,10 +475,7 @@ class Comment():
             link = match.group(1).strip()
             return '<a href="#%s"><code>%s</code></a>' % (link.replace("#", ":"), link)
             
-        return self.linkMatcher.sub(formatTypes, text)
-        
-        
-        
+        return linkMatcher.sub(formatTypes, text)
         
         
         

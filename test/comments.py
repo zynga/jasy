@@ -913,6 +913,54 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.params["y"]["default"], None)
         self.assertEqual(comment.params["foo"]["default"], None)
         self.assertEqual(comment.params["force"]["default"], "false")
+        
+        
+        
+    def test_doc_params_jsdoc_namespaced(self):
+
+        parsed = self.process('''
+
+        /**
+         * Sets the position of the object
+         *
+         * @param {core.Number} x The left position
+         * @param {core.Number|core.String} y 
+         * @param foo Additional data
+         * @param {core.Boolean} [force=false] Whether to force rendering
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n")
+
+        self.assertEqual(len(comment.params), 4)
+
+        self.assertEqual(type(comment.params["x"]), dict)
+        self.assertEqual(type(comment.params["y"]), dict)
+        self.assertEqual(type(comment.params["foo"]), dict)
+        self.assertEqual(type(comment.params["force"]), dict)
+
+        self.assertEqual(comment.params["x"]["type"], ["core.Number"])
+        self.assertEqual(comment.params["y"]["type"], ["core.Number", "core.String"])
+        self.assertEqual(comment.params["foo"]["type"], None)
+        self.assertEqual(comment.params["force"]["type"], ["core.Boolean"])
+
+        self.assertEqual(comment.params["x"]["optional"], False)
+        self.assertEqual(comment.params["y"]["optional"], False)
+        self.assertEqual(comment.params["foo"]["optional"], False)
+        self.assertEqual(comment.params["force"]["optional"], True)
+
+        self.assertEqual(comment.params["x"]["default"], None)
+        self.assertEqual(comment.params["y"]["default"], None)
+        self.assertEqual(comment.params["foo"]["default"], None)
+        self.assertEqual(comment.params["force"]["default"], "false")        
 
         
     def test_doc_params_jsdoc_spacey(self):
