@@ -517,6 +517,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].html, "<p>Doc Comment</p>\n")
+        self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
 
 
     def test_doc_multiline_clean_three(self):
@@ -538,6 +539,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].html, "<p>Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3</p>\n")
+        self.assertEqual(parsed[0].comments[0].text, "Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3")
 
 
     #
@@ -562,6 +564,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.html, "<p>Returns the sum of x and y.</p>\n")
+        self.assertEqual(comment.text, "Returns the sum of x and y.")
         
         
     def test_doc_return_twotypes(self):
@@ -582,6 +585,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.html, "<p>Returns the sum of x and y.</p>\n")
+        self.assertEqual(comment.text, "Returns the sum of x and y.")
         self.assertEqual(comment.returns["type"], ["Number", "String"])
     
     
@@ -701,6 +705,7 @@ class TestComments(unittest.TestCase):
     
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.html, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>. The optional <code class="param">cache</code> controls whether caching should be enabled.\nAlso see <code class="param">extra</code> which is normally pretty useless</p>\n')
+        self.assertEqual(comment.text, 'Returns whether x is bigger than y. The optional cache controls whether caching should be enabled.\nAlso see extra which is normally pretty useless')
         
         self.assertEqual(type(comment.params), dict)
 
