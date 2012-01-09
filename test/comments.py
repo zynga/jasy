@@ -426,6 +426,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].html, "<p>Doc Comment</p>\n")
+        self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
         
         
     def test_doc_unbound(self):
@@ -440,6 +441,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed.comments[0].variant, "doc")
         self.assertEqual(parsed.comments[0].html, "<p>Doc Comment</p>\n")
+        self.assertEqual(parsed.comments[0].text, "Doc Comment")
         
         
     def test_doc_unbound_nobreak(self):
@@ -452,6 +454,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed.comments[0].variant, "doc")
         self.assertEqual(parsed.comments[0].html, "<p>Doc Comment</p>\n")
+        self.assertEqual(parsed.comments[0].text, "Doc Comment")
 
 
     def test_doc_multiline(self):
@@ -471,6 +474,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].html, "<p>Doc Comment</p>\n")
+        self.assertEqual(parsed[0].comments[0].text, "Doc Comment")
         
 
     def test_doc_multiline_three(self):
@@ -492,6 +496,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].html, "<p>Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3</p>\n")
+        self.assertEqual(parsed[0].comments[0].text, "Doc Comment Line 1\nDoc Comment Line 2\nDoc Comment Line 3")
         
         
         
@@ -605,6 +610,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.html, "<p>Hello World</p>\n")
+        self.assertEqual(comment.text, "Hello World")
         
         self.assertEqual(comment.tags["deprecated"], True)
         self.assertEqual(comment.tags["public"], True)
@@ -667,6 +673,8 @@ class TestComments(unittest.TestCase):
         comment = parsed.comments[0]
         
         self.assertEqual(comment.html, '<p>Link to cool <a href="#z.core.Style"><code>z.core.Style</code></a> class. Looks at this method <a href="#core.io.Asset:toUri"><code>core.io.Asset#toUri</code></a> to translate local\nasset IDs to something usable in the browser.</p>\n\n<p>You can either use <a href="#String"><code>String</code></a> or <a href="#Map"><code>Map</code></a> types as primitive data types.</p>\n')
+        
+        self.assertEqual(comment.text, 'Link to cool z.core.Style class. Looks at this method core.io.Asset#toUri to translate local\nasset IDs to something usable in the browser.\n\nYou can either use String or Map types as primitive data types.')
     
     
     
