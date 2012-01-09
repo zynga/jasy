@@ -132,6 +132,13 @@ class Comment():
     docIndentReg = re.compile(r"^(\s*\*\s*)(\S*)")
     
     
+    paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \|\[\]]+)((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
+    
+    
+    linkMatcher = re.compile(r"\{([a-zA-Z0-9_#\.]+)\}")
+    
+    typeListSplit = re.compile("\s*\|\s*")
+    
     
     def __init__(self, text, context=None, lineNo=0, indent=""):
         # Store context (relation to code)
@@ -262,12 +269,12 @@ class Comment():
             
             
 
-    def __compactTypeDecl(self, decl):
+    def __splitTypeList(self, decl):
         
         if decl is None:
             return decl
         
-        return "|".join(re.compile("\s*\|\s*").split(decl)).strip()
+        return self.typeListSplit.split(decl.strip())
 
 
 
@@ -280,7 +287,7 @@ class Comment():
         
         def collectReturn(match):
             self.returns = {
-                "type" : self.__compactTypeDecl(match.group(1))
+                "type" : self.__splitTypeList(match.group(1))
             }
             
             return ""
@@ -339,7 +346,7 @@ class Comment():
             if matched:
                 
                 paramName = matched.group(2)
-                paramType = matched.group(3)
+                paramTypes = matched.group(3)
                 paramOptional = matched.group(5) is not None
                 paramDefault = matched.group(6)
 
@@ -348,7 +355,7 @@ class Comment():
 
                 self.params[paramName] = {
                     "optional": paramOptional,
-                    "type" : self.__compactTypeDecl(paramType), 
+                    "type" : self.__splitTypeList(paramTypes), 
                     "default" : paramDefault
                 }
 
@@ -359,7 +366,7 @@ class Comment():
             matched = self.jsdocParamB.match(line)
             if matched:
                 
-                paramType = matched.group(3)
+                paramTypes = matched.group(3)
                 paramOptional = matched.group(5) is not ""
                 paramName = matched.group(7)
                 paramDefault = matched.group(9)
@@ -369,7 +376,7 @@ class Comment():
 
                 self.params[paramName] = {
                     "optional": paramOptional,
-                    "type" : self.__compactTypeDecl(paramType), 
+                    "type" : self.__splitTypeList(paramTypes), 
                     "default" : paramDefault
                 }
             
@@ -379,13 +386,13 @@ class Comment():
             
             matched = self.jsdocReturn.match(line)
             if matched:
-                self.returns = self.__compactTypeDecl(matched.group(3))
+                self.returns = self.__splitTypeList(matched.group(3))
                 filterLine = True
                 continue
             
             matched = self.jsdocThrow.match(line)
             if matched:
-                self.throws = self.__compactTypeDecl(matched.group(3))
+                self.throws = self.__splitTypeList(matched.group(3))
                 filterLine = True
                 continue
                 
@@ -418,38 +425,44 @@ class Comment():
         
         
     def __processParams(self, text):
-
-        paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \|\[\]]+)((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
         
         def collectParams(match):
             paramName = match.group(1)
-            paramType = match.group(3)
+            paramTypes = match.group(3)
             paramOptional = match.group(4) is not None
             paramDefault = match.group(6)
             
-            if paramType:
-                paramType = self.__compactTypeDecl(paramType)
+            if paramTypes:
+                paramTypes = self.__splitTypeList(paramTypes)
             
             if self.params is None:
                 self.params = {}
             
             # Add new entries and overwrite if a type is defined in this entry
-            if not paramName in self.params or paramType is not None:
+            if not paramName in self.params or paramTypes is not None:
                 self.params[paramName] = {
-                    "type" : paramType, 
+                    "type" : paramTypes, 
                     "optional": paramOptional,
                     "default" : paramDefault
                 }
             
             return '<code class="param">%s</code>' % paramName
             
-        return paramMatcher.sub(collectParams, text)
+        return self.paramMatcher.sub(collectParams, text)
         
         
         
     def __processTypes(self, text):
         
+        def formatTypes(match):
+            link = match.group(1).strip()
+            return '<a href="#%s"><code>%s</code></a>' % (link.replace("#", ":"), link)
+            
+        return self.linkMatcher.sub(formatTypes, text)
         
-        return text
+        
+        
+        
+        
         
         

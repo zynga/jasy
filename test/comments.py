@@ -577,7 +577,7 @@ class TestComments(unittest.TestCase):
 
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.html, "<p>Returns the sum of x and y.</p>\n")
-        self.assertEqual(comment.returns["type"], "Number|String")
+        self.assertEqual(comment.returns["type"], ["Number", "String"])
     
     
     
@@ -655,7 +655,7 @@ class TestComments(unittest.TestCase):
          * Link to cool {z.core.Style} class. Looks at this method {core.io.Asset#toUri} to translate local
          * asset IDs to something usable in the browser.
          *
-         * You can either use {String | Number | Boolean} types as primitive data types.
+         * You can either use {String} or {Map} types as primitive data types.
          */
 
         ''')
@@ -666,7 +666,7 @@ class TestComments(unittest.TestCase):
 
         comment = parsed.comments[0]
         
-        # TODO
+        self.assertEqual(comment.html, '<p>Link to cool <a href="#z.core.Style"><code>z.core.Style</code></a> class. Looks at this method <a href="#core.io.Asset:toUri"><code>core.io.Asset#toUri</code></a> to translate local\nasset IDs to something usable in the browser.</p>\n\n<p>You can either use <a href="#String"><code>String</code></a> or <a href="#Map"><code>Map</code></a> types as primitive data types.</p>\n')
     
     
     
@@ -701,10 +701,10 @@ class TestComments(unittest.TestCase):
         self.assertEqual(type(comment.params["cache"]), dict)
         self.assertEqual(type(comment.params["extra"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], "Number")
-        self.assertEqual(comment.params["y"]["type"], "Number")
-        self.assertEqual(comment.params["cache"]["type"], "Boolean")
-        self.assertEqual(comment.params["extra"]["type"], "String|Array")
+        self.assertEqual(comment.params["x"]["type"], ["Number"])
+        self.assertEqual(comment.params["y"]["type"], ["Number"])
+        self.assertEqual(comment.params["cache"]["type"], ["Boolean"])
+        self.assertEqual(comment.params["extra"]["type"], ["String", "Array"])
 
         self.assertEqual(comment.params["x"]["optional"], False)
         self.assertEqual(comment.params["y"]["optional"], False)
@@ -750,10 +750,10 @@ class TestComments(unittest.TestCase):
         self.assertEqual(type(comment.params["cache"]), dict)
         self.assertEqual(type(comment.params["extra"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], "Number")
-        self.assertEqual(comment.params["y"]["type"], "Number")
-        self.assertEqual(comment.params["cache"]["type"], "Boolean")
-        self.assertEqual(comment.params["extra"]["type"], "String|Array")
+        self.assertEqual(comment.params["x"]["type"], ["Number"])
+        self.assertEqual(comment.params["y"]["type"], ["Number"])
+        self.assertEqual(comment.params["cache"]["type"], ["Boolean"])
+        self.assertEqual(comment.params["extra"]["type"], ["String", "Array"])
 
         self.assertEqual(comment.params["x"]["optional"], False)
         self.assertEqual(comment.params["y"]["optional"], False)
@@ -796,8 +796,8 @@ class TestComments(unittest.TestCase):
         self.assertEqual(type(comment.params["x"]), dict)
         self.assertEqual(type(comment.params["y"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], "Number")
-        self.assertEqual(comment.params["y"]["type"], "Number")
+        self.assertEqual(comment.params["x"]["type"], ["Number"])
+        self.assertEqual(comment.params["y"]["type"], ["Number"])
 
         self.assertEqual(comment.params["x"]["optional"], False)
         self.assertEqual(comment.params["y"]["optional"], False)
@@ -835,8 +835,8 @@ class TestComments(unittest.TestCase):
         self.assertEqual(type(comment.params["x"]), dict)
         self.assertEqual(type(comment.params["y"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], "Number")
-        self.assertEqual(comment.params["y"]["type"], "Number")
+        self.assertEqual(comment.params["x"]["type"], ["Number"])
+        self.assertEqual(comment.params["y"]["type"], ["Number"])
 
         self.assertEqual(comment.params["x"]["optional"], True)
         self.assertEqual(comment.params["y"]["optional"], False)
@@ -884,10 +884,10 @@ class TestComments(unittest.TestCase):
         self.assertEqual(type(comment.params["foo"]), dict)
         self.assertEqual(type(comment.params["force"]), dict)
         
-        self.assertEqual(comment.params["x"]["type"], "Number")
-        self.assertEqual(comment.params["y"]["type"], "Number|String")
+        self.assertEqual(comment.params["x"]["type"], ["Number"])
+        self.assertEqual(comment.params["y"]["type"], ["Number", "String"])
         self.assertEqual(comment.params["foo"]["type"], None)
-        self.assertEqual(comment.params["force"]["type"], "Boolean")
+        self.assertEqual(comment.params["force"]["type"], ["Boolean"])
 
         self.assertEqual(comment.params["x"]["optional"], False)
         self.assertEqual(comment.params["y"]["optional"], False)
@@ -931,10 +931,10 @@ class TestComments(unittest.TestCase):
         self.assertEqual(type(comment.params["foo"]), dict)
         self.assertEqual(type(comment.params["force"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], "Number")
-        self.assertEqual(comment.params["y"]["type"], "Number|String")
+        self.assertEqual(comment.params["x"]["type"], ["Number"])
+        self.assertEqual(comment.params["y"]["type"], ["Number", "String"])
         self.assertEqual(comment.params["foo"]["type"], None)
-        self.assertEqual(comment.params["force"]["type"], "Boolean")
+        self.assertEqual(comment.params["force"]["type"], ["Boolean"])
 
         self.assertEqual(comment.params["x"]["optional"], False)
         self.assertEqual(comment.params["y"]["optional"], False)
@@ -978,10 +978,10 @@ class TestComments(unittest.TestCase):
         self.assertEqual(type(comment.params["animate"]), dict)
         self.assertEqual(type(comment.params["force"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], "Number")
-        self.assertEqual(comment.params["y"]["type"], "Number|String")
-        self.assertEqual(comment.params["animate"]["type"], "Boolean")
-        self.assertEqual(comment.params["force"]["type"], "Boolean")
+        self.assertEqual(comment.params["x"]["type"], ["Number"])
+        self.assertEqual(comment.params["y"]["type"], ["Number", "String"])
+        self.assertEqual(comment.params["animate"]["type"], ["Boolean"])
+        self.assertEqual(comment.params["force"]["type"], ["Boolean"])
 
         self.assertEqual(comment.params["x"]["optional"], False)
         self.assertEqual(comment.params["y"]["optional"], False)
@@ -1026,10 +1026,10 @@ class TestComments(unittest.TestCase):
         self.assertEqual(type(comment.params["animate"]), dict)
         self.assertEqual(type(comment.params["force"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], "Number")
-        self.assertEqual(comment.params["y"]["type"], "Number|String")
-        self.assertEqual(comment.params["animate"]["type"], "Boolean")
-        self.assertEqual(comment.params["force"]["type"], "Boolean")
+        self.assertEqual(comment.params["x"]["type"], ["Number"])
+        self.assertEqual(comment.params["y"]["type"], ["Number", "String"])
+        self.assertEqual(comment.params["animate"]["type"], ["Boolean"])
+        self.assertEqual(comment.params["force"]["type"], ["Boolean"])
 
         self.assertEqual(comment.params["x"]["optional"], False)
         self.assertEqual(comment.params["y"]["optional"], False)
