@@ -756,6 +756,8 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.html, '<p>Returns whether <code class="param">x</code> is bigger than <code class="param">y</code>.</p>\n\n<p>Parameters:</p>\n\n<ul>\n<li><code class="param">x</code></li>\n<li><code class="param">y</code></li>\n<li><code class="param">cache</code></li>\n<li><code class="param">extra</code></li>\n</ul>\n')
         
+        self.assertEqual(comment.text, 'Returns whether x is bigger than y.\n\nParameters:\n\n- x\n- y\n- cache\n- extra')
+        
         self.assertEqual(type(comment.params), dict)
 
         self.assertEqual(type(comment.params["x"]), dict)
