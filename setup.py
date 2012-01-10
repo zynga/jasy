@@ -58,13 +58,19 @@ setup(
       
       ],
       
+      install_requires=[
+          'polib==0.7',
+          'misaka',
+          'pygments'
+      ],      
+      
       packages = [
-        'polib',
         'jasy',
         'jasy.asset',
         'jasy.core',
         'jasy.i18n',
         'jasy.js',
+        'jasy.js.api',
         'jasy.js.clean',
         'jasy.js.optimize',
         'jasy.js.output',
