@@ -21,9 +21,9 @@ def printTasks():
     for name in __tasks__:
         obj = __tasks__[name]
         if obj.desc:
-            logging.info("%s: %s" % (name, obj.desc))
+            logging.info("- %s: %s" % (name, obj.desc))
         else:
-            logging.info("%s" % name)
+            logging.info("- %s" % name)
 
 
 
