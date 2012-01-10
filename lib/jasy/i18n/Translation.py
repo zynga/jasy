@@ -4,7 +4,11 @@
 #
 
 import logging, re, copy, json
-import polib
+
+try:
+    import polib
+except ImportError:
+    raise TranslationError("Please install polib from http://pypi.python.org/pypi/polib (also available via easy_install, pip, etc.)")
 
 from jasy.js.parse.Node import Node
 

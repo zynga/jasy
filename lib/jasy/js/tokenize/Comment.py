@@ -18,12 +18,24 @@ try:
     logging.info("Using high performance C-based Markdown implementation")
     
 except ImportError as ex:
-    import markdown
     
-    def markdown2html(markdownStr):
-        return markdown.markdown(markdownStr)
+    try:
+    
+        import markdown
+    
+        def markdown2html(markdownStr):
+            return markdown.markdown(markdownStr)
 
-    logging.info("Using Python Markdown implementation.")
+        logging.info("Using Python Markdown implementation.")
+        
+    except:
+        
+        def markdown2html(markdownStr):
+            return markdownStr
+
+        logging.error("Missing Markdown implementation. Please install Misaka (preferred) or Python-Markdown.")
+
+
 
 
 try:
