@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-python3 setup.py sdist --formats zip,gztar,bztar upload
+python3 setup.py sdist --formats zip upload
