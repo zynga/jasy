@@ -34,6 +34,7 @@ setup(
       download_url = "http://pypi.python.org/packages/source/j/jasy/jasy-%s.tar.gz" % jasy.__version__,
       
       license = "Apache V2.0",
+      platforms = 'any',
       
       description = "Web Tooling Framework",
       long_description = open('README.txt').read(),
