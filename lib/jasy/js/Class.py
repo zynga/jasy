@@ -14,6 +14,7 @@ import jasy.js.clean.Permutate
 
 import jasy.js.output.Optimization
 
+from jasy.js.api.Data import ApiData
 from jasy.js.MetaData import MetaData
 from jasy.js.output.Compressor import Compressor
 
@@ -224,6 +225,16 @@ class Class():
             self.__cache.store(field, scope, self.__mtime)
         
         return scope
+        
+        
+    def getApi(self):
+        field = "api[%s]" % self.__id
+        apidata = self.__cache.read(field, self.__mtime)
+        if apidata is None:
+            apidata = jasy.js.api.Data(self.getTree(), self.__id)
+            self.__cache.store(field, apidata, self.__mtime)
+
+        return apidata
         
         
     def getMetaData(self, permutation=None):
