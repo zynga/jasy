@@ -30,17 +30,59 @@ def findCall(node, methodName):
     return query(node, matcher)
     
     
-def getParameter(call, index=0):
+def getParameterFromCall(call, index=0):
     if call.type != "call":
         raise Exception("Invalid call node: %s" % node)
 
     return call[1][index]
 
 
+def getParamNamesFromFunction(func):
+    return [identifier.value for identifier in func.params]
+    
+    
 
-def addMember(name, value, collection):
-    logging.info("Member: %s" % name)
-    pass
+
+
+def addMember(name, value, comment, collection, fileId):
+    valueType = value.type
+    
+    logging.info("Member: %s (%s) at line %s", name, valueType, value.line)
+    
+    if valueType == "function":
+        funcParams = getParamNamesFromFunction(value)
+        params = {}
+
+        if comment:
+            for paramName in funcParams:
+                if paramName in comment.params:
+                    params[paramName] = comment.params[paramName]
+                else:
+                    params[paramName] = None
+                    logging.warn('Missing documentation for parameter "%s" at line %s in file %s', paramName, value.line, fileId)
+        else:
+            params = {paramName: None for paramName in funcParams}
+        
+        collection[name] = {
+            "type" : "function",
+            "params" : params,
+            "doc" : comment.html
+        }
+        
+    else:
+        raise ApiException("Unsupported member type %s at line: %s", valueType, value.line)
+
+    
+    
+    
+def getDocComment(node, fileId):
+    comments = getattr(node, "comments", None)
+    for comment in comments:
+        if comment.variant == "doc":
+            return comment
+            
+    logging.warn("Missing documentation at line %s in file %s", node.line, fileId)
+    return None
 
 
 class ApiException():
@@ -51,7 +93,7 @@ class ApiData():
     
     def __init__(self, tree, fileId):
         
-        logging.info("Initializing API Data: %s" % fileId)
+        logging.info("Generate API Data: %s" % fileId)
         
         constructor = {}
         statics = {}
@@ -61,7 +103,7 @@ class ApiData():
         
         coreClass = findCall(tree, "core.Class")
         if coreClass:
-            configMap = getParameter(coreClass, 1)
+            configMap = getParameterFromCall(coreClass, 1)
             if configMap:
                 for propertyInit in configMap:
                     
@@ -83,7 +125,15 @@ class ApiData():
                             raise ApiException("Invalid structure in member section of core.Class declaration in: %s" % fileId)
                         
                         for memberEntry in configSectionValue:
-                            addMember(memberEntry[0].value, memberEntry[1], members)
+                            addMember(memberEntry[0].value, memberEntry[1], getDocComment(memberEntry, fileId), members, fileId)
+                        
+                        print("Members")
+                        print(members)
+                        
+                        
+                        
+                        
+                        
                         
                         
                         
