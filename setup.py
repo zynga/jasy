@@ -13,8 +13,8 @@ if major < 3:
 
 # Load distutils and switch to distribute afterwards
 from distutils.core import setup
-#from distribute_setup import use_setuptools
-#use_setuptools()
+from distribute_setup import use_setuptools
+use_setuptools()
 
 # Extend PYTHONPATH with local 'lib' folder
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, "lib"))
@@ -109,6 +109,7 @@ setup(
          ]
         ),
         ("", [
+          "requirements.txt",
           "distribute_setup.py"
         ])
       ]
