@@ -74,6 +74,8 @@ from jasy.asset.Asset import *
 from jasy.js.Resolver import *
 from jasy.js.Sorter import *
 
+from jasy.js.api.Writer import *
+
 from jasy.js.output.Combiner import *
 from jasy.js.output.Optimization import *
 from jasy.js.output.Formatting import *
