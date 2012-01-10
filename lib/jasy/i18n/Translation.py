@@ -7,8 +7,9 @@ import logging, re, copy, json
 
 try:
     import polib
+    hasPoLib = True
 except ImportError:
-    raise TranslationError("Please install polib from http://pypi.python.org/pypi/polib (also available via easy_install, pip, etc.)")
+    hasPoLib = False
 
 from jasy.js.parse.Node import Node
 
@@ -54,14 +55,15 @@ class Translation:
         if files:
             logging.debug("Load %s translation files..." % len(files))
             for path in files:
-                pofile = polib.pofile(path)
-                # print("Process: %s" % path)
-                for entry in pofile:
-                    if not entry.msgid in self.__table:
-                        if entry.msgstr != "":
-                            self.__table[entry.msgid] = entry.msgstr
-                        elif entry.msgstr_plural:
-                            self.__table[entry.msgid] = entry.msgstr_plural
+                if hasPoLib:
+                    pofile = polib.pofile(path)
+                    # print("Process: %s" % path)
+                    for entry in pofile:
+                        if not entry.msgid in self.__table:
+                            if entry.msgstr != "":
+                                self.__table[entry.msgid] = entry.msgstr
+                            elif entry.msgstr_plural:
+                                self.__table[entry.msgid] = entry.msgstr_plural
                         
         logging.debug("Translation of %s entries ready" % len(self.__table))
         

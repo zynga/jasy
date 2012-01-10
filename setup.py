@@ -13,8 +13,8 @@ if major < 3:
 
 # Load distutils and switch to distribute afterwards
 from distutils.core import setup
-from distribute_setup import use_setuptools
-use_setuptools()
+#from distribute_setup import use_setuptools
+#use_setuptools()
 
 # Extend PYTHONPATH with local 'lib' folder
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, "lib"))
@@ -33,7 +33,7 @@ setup(
       url = 'http://github.com/wpbasti/jasy',
       download_url = "http://pypi.python.org/packages/source/j/jasy/jasy-%s.tar.gz" % jasy.__version__,
       
-      license = "Apache V2.0",
+      license = "Apache v2.0",
       platforms = 'any',
       
       description = "Web Tooling Framework",

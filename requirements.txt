@@ -1,0 +1,4 @@
+distribute>=0.6.24
+misaka>=0.4.2
+polib==0.7.0
+
