@@ -5,6 +5,7 @@
 
 from jasy.js.util import *
 import logging
+import json
 
 def query(node, matcher):
     if matcher(node):
@@ -66,18 +67,24 @@ class ApiData():
         logging.info("Generate API Data: %s" % fileId)
         
 
+
+        coreModule = findCall(tree, "core.Module")
+        if coreModule:
+            self.setMain("core.Module", coreModule.parent)
+            
+            staticsMap = getParameterFromCall(coreModule, 1)
+            if staticsMap:
+                self.statics = {}
+                for staticsEntry in staticsMap:
+                    self.addEntry(staticsEntry[0].value, staticsEntry[1], self.getDocComment(staticsEntry), self.statics)
+
+                    
+
         
         coreClass = findCall(tree, "core.Class")
         if coreClass:
-            self.main = {
-                "type" : "core.Class"
-            }
             
-            # Find comment node on call parent (semicolon node)
-            callComment = self.getDocComment(coreClass.parent)
-
-            self.main["doc"] = callComment.html
-            
+            self.setMain("core.Class", coreClass.parent)
             
             configMap = getParameterFromCall(coreClass, 1)
             if configMap:
@@ -106,29 +113,45 @@ class ApiData():
                             self.addEntry(memberEntry[0].value, memberEntry[1], self.getDocComment(memberEntry), self.members)
                         
 
+        from pprint import pprint 
+
         print("==== Main ======================")
-        print(self.main)
+        pprint(self.main)
 
         print("==== Constructor ======================")
-        print(self.constructor)
+        pprint(self.constructor)
 
         print("==== Statics ======================")
-        print(self.statics)
+        pprint(self.statics)
                         
         print("==== Properties ======================")
-        print(self.properties)
+        pprint(self.properties)
 
         print("==== Events ======================")
-        print(self.events)
+        pprint(self.events)
 
         print("==== Members ======================")
-        print(self.members)
+        pprint(self.members)
                         
                      
                      
     def warn(self, message, line):
         logging.warn("%s at line %s in %s" % (message, line, self.fileId))
         
+
+
+
+    def setMain(self, mainType, mainNode):
+        
+        self.main = {
+            "type" : mainType,
+            "line" : mainNode.line
+        }
+        
+        # Find comment node on call parent (semicolon node)
+        callComment = self.getDocComment(mainNode)
+        if callComment:
+            self.main["doc"] = callComment.html        
 
 
 
@@ -153,9 +176,11 @@ class ApiData():
 
             collection[name] = {
                 "type" : "function",
-                "params" : params,
-                "doc" : comment.html
+                "params" : params
             }
+            
+            if comment:
+                collection[name]["doc"] = comment.html
 
         else:
             self.warn("Unsupported entry type %s" % valueType, value.line)
