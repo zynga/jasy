@@ -5,7 +5,6 @@
 
 from jasy.js.util import *
 import logging
-import json
 
 def query(node, matcher):
     if matcher(node):
@@ -64,6 +63,8 @@ class ApiData():
     
     def __init__(self, tree, fileId):
         
+        self.fileId = fileId
+        
         logging.info("Generate API Data: %s" % fileId)
         
 
@@ -103,12 +104,7 @@ class ApiData():
                         pass
                     
                     elif sectionName == "members":
-                        
                         self.members = {}
-                        
-                        if sectionValue.type != "object_init":
-                            raise ApiException("Invalid structure in member section of core.Class declaration in: %s" % fileId)
-                        
                         for memberEntry in sectionValue:
                             self.addEntry(memberEntry[0].value, memberEntry[1], self.getDocComment(memberEntry), self.members)
                         
@@ -165,12 +161,20 @@ class ApiData():
             params = {}
 
             if comment:
-                for paramName in funcParams:
-                    if paramName in comment.params:
-                        params[paramName] = comment.params[paramName]
-                    else:
+                
+                if funcParams and not comment.params:
+                    self.warn("Documentation for parameters of function %s are missing" % name, value.line)
+                    for paramName in funcParams:
                         params[paramName] = None
-                        self.warn('Missing documentation for parameter "%s"' % paramName, value.line)
+                    
+                else:
+                    for paramName in funcParams:
+                        if paramName in comment.params:
+                            params[paramName] = comment.params[paramName]
+                        else:
+                            params[paramName] = None
+                            self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), value.line)
+                            
             else:
                 params = {paramName: None for paramName in funcParams}
 
