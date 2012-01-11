@@ -77,13 +77,13 @@ class ApiData():
         #
         coreModule = findCall(tree, "core.Module")
         if coreModule:
-            self.setMain("core.Module", coreModule.parent)
+            self.setRoot("core.Module", coreModule.parent)
             
             staticsMap = getParameterFromCall(coreModule, 1)
             if staticsMap:
                 self.statics = {}
                 for staticsEntry in staticsMap:
-                    self.addEntry(staticsEntry[0].value, staticsEntry[1], self.getDocComment(staticsEntry), self.statics)
+                    self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
 
 
         #
@@ -92,7 +92,7 @@ class ApiData():
         coreClass = findCall(tree, "core.Class")
         if coreClass:
             
-            self.setMain("core.Class", coreClass.parent)
+            self.setRoot("core.Class", coreClass.parent)
             
             configMap = getParameterFromCall(coreClass, 1)
             if configMap:
@@ -113,7 +113,7 @@ class ApiData():
                     elif sectionName == "members":
                         self.members = {}
                         for memberEntry in sectionValue:
-                            self.addEntry(memberEntry[0].value, memberEntry[1], self.getDocComment(memberEntry), self.members)
+                            self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
 
 
 
@@ -149,30 +149,37 @@ class ApiData():
 
 
 
-    def setMain(self, mainType, mainNode):
-        
-        self.main = {
-            "type" : mainType,
-            "line" : mainNode.line
-        }
+    def setRoot(self, mainType, mainNode):
         
         # Find comment node on call parent (semicolon node)
-        callComment = self.getDocComment(mainNode)
+        callComment = self.getDocComment(mainNode, "root node")
         if callComment:
-            self.main["doc"] = callComment.html        
+            doc = callComment.html
+        else:
+            doc = None
+            
+        self.main = {
+            "type" : mainType,
+            "line" : mainNode.line,
+            "doc" : doc
+        }
 
 
 
-    def addEntry(self, name, value, comment, collection):
+
+    def addEntry(self, name, value, definiton, collection):
         valueType = value.type
 
-        logging.info("Member: %s (%s) at line %s", name, valueType, value.line)
+        # logging.info("Member: %s (%s) at line %s", name, valueType, value.line)
 
         if valueType == "function":
             funcParams = getParamNamesFromFunction(value)
-            params = {}
 
+            comment = self.getDocComment(definiton, "function %s" % name)
             if comment:
+                doc = comment.html
+                params = {}
+                returns = {}
                 
                 if funcParams:
                     if not comment.params:
@@ -189,29 +196,33 @@ class ApiData():
                                 self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), value.line)
                             
             else:
+                doc = None
                 params = {paramName: None for paramName in funcParams}
+                returns = None
 
             collection[name] = {
                 "type" : "function",
-                "params" : params
+                "params" : params,
+                "returns" : returns,
+                "doc" : doc
             }
             
-            if comment:
-                collection[name]["doc"] = comment.html
-
         else:
             self.warn("Unsupported entry type %s" % valueType, value.line)
 
 
 
-    def getDocComment(self, node):
+    def getDocComment(self, node, msg):
         comments = getattr(node, "comments", None)
         if comments:
             for comment in comments:
                 if comment.variant == "doc":
+                    if not comment.text:
+                        self.warn("Missing documentation text (%s)" % msg, node.line)
+                        
                     return comment
 
-        self.warn("Missing documentation", node.line)
+        self.warn("Missing documentation (%s)" % msg, node.line)
         return None
         
         
