@@ -44,45 +44,7 @@ def getParamNamesFromFunction(func):
 
 
 
-def addMember(name, value, comment, collection, fileId):
-    valueType = value.type
-    
-    logging.info("Member: %s (%s) at line %s", name, valueType, value.line)
-    
-    if valueType == "function":
-        funcParams = getParamNamesFromFunction(value)
-        params = {}
 
-        if comment:
-            for paramName in funcParams:
-                if paramName in comment.params:
-                    params[paramName] = comment.params[paramName]
-                else:
-                    params[paramName] = None
-                    logging.warn('Missing documentation for parameter "%s" at line %s in file %s', paramName, value.line, fileId)
-        else:
-            params = {paramName: None for paramName in funcParams}
-        
-        collection[name] = {
-            "type" : "function",
-            "params" : params,
-            "doc" : comment.html
-        }
-        
-    else:
-        raise ApiException("Unsupported member type %s at line: %s", valueType, value.line)
-
-    
-    
-    
-def getDocComment(node, fileId):
-    comments = getattr(node, "comments", None)
-    for comment in comments:
-        if comment.variant == "doc":
-            return comment
-            
-    logging.warn("Missing documentation at line %s in file %s", node.line, fileId)
-    return None
 
 
 class ApiException():
@@ -91,51 +53,122 @@ class ApiException():
 
 class ApiData():
     
+    main = None
+    constructor = None
+    statics = None
+    properties = None
+    events = None
+    members = None
+    
+    
     def __init__(self, tree, fileId):
         
         logging.info("Generate API Data: %s" % fileId)
         
-        constructor = {}
-        statics = {}
-        members = {}
-        properties = {}
-        events = {}
+
         
         coreClass = findCall(tree, "core.Class")
         if coreClass:
+            self.main = {
+                "type" : "core.Class"
+            }
+            
+            # Find comment node on call parent (semicolon node)
+            callComment = self.getDocComment(coreClass.parent)
+
+            self.main["doc"] = callComment.html
+            
+            
             configMap = getParameterFromCall(coreClass, 1)
             if configMap:
                 for propertyInit in configMap:
                     
-                    configSectionName = propertyInit[0].value
-                    configSectionValue = propertyInit[1]
+                    sectionName = propertyInit[0].value
+                    sectionValue = propertyInit[1]
                     
-                    if configSectionName == "construct":
+                    if sectionName == "construct":
                         pass
 
-                    elif configSectionName == "events":
+                    elif sectionName == "events":
                         pass
 
-                    elif configSectionName == "properties":
+                    elif sectionName == "properties":
                         pass
                     
-                    elif configSectionName == "members":
+                    elif sectionName == "members":
                         
-                        if configSectionValue.type != "object_init":
+                        self.members = {}
+                        
+                        if sectionValue.type != "object_init":
                             raise ApiException("Invalid structure in member section of core.Class declaration in: %s" % fileId)
                         
-                        for memberEntry in configSectionValue:
-                            addMember(memberEntry[0].value, memberEntry[1], getDocComment(memberEntry, fileId), members, fileId)
+                        for memberEntry in sectionValue:
+                            self.addEntry(memberEntry[0].value, memberEntry[1], self.getDocComment(memberEntry), self.members)
                         
-                        print("Members")
-                        print(members)
+
+        print("==== Main ======================")
+        print(self.main)
+
+        print("==== Constructor ======================")
+        print(self.constructor)
+
+        print("==== Statics ======================")
+        print(self.statics)
                         
+        print("==== Properties ======================")
+        print(self.properties)
+
+        print("==== Events ======================")
+        print(self.events)
+
+        print("==== Members ======================")
+        print(self.members)
                         
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
+                     
+                     
+    def warn(self, message, line):
+        logging.warn("%s at line %s in %s" % (message, line, self.fileId))
+        
+
+
+
+    def addEntry(self, name, value, comment, collection):
+        valueType = value.type
+
+        logging.info("Member: %s (%s) at line %s", name, valueType, value.line)
+
+        if valueType == "function":
+            funcParams = getParamNamesFromFunction(value)
+            params = {}
+
+            if comment:
+                for paramName in funcParams:
+                    if paramName in comment.params:
+                        params[paramName] = comment.params[paramName]
+                    else:
+                        params[paramName] = None
+                        self.warn('Missing documentation for parameter "%s"' % paramName, value.line)
+            else:
+                params = {paramName: None for paramName in funcParams}
+
+            collection[name] = {
+                "type" : "function",
+                "params" : params,
+                "doc" : comment.html
+            }
+
+        else:
+            self.warn("Unsupported entry type %s" % valueType, value.line)
+
+
+
+
+    def getDocComment(self, node):
+        comments = getattr(node, "comments", None)
+        if comments:
+            for comment in comments:
+                if comment.variant == "doc":
+                    return comment
+
+        self.warn("Missing documentation", node.line)
+        return None                        
