@@ -65,10 +65,12 @@ class ApiData():
         
         self.fileId = fileId
         
-        logging.info("Generate API Data: %s" % fileId)
-        
+        logging.info("Generate API Data: %s" % self.fileId)
 
 
+        #
+        # core.Module
+        #
         coreModule = findCall(tree, "core.Module")
         if coreModule:
             self.setMain("core.Module", coreModule.parent)
@@ -79,9 +81,10 @@ class ApiData():
                 for staticsEntry in staticsMap:
                     self.addEntry(staticsEntry[0].value, staticsEntry[1], self.getDocComment(staticsEntry), self.statics)
 
-                    
 
-        
+        #
+        # core.Class
+        #
         coreClass = findCall(tree, "core.Class")
         if coreClass:
             
@@ -107,8 +110,13 @@ class ApiData():
                         self.members = {}
                         for memberEntry in sectionValue:
                             self.addEntry(memberEntry[0].value, memberEntry[1], self.getDocComment(memberEntry), self.members)
-                        
 
+
+
+
+        #
+        # Debug
+        #
         from pprint import pprint 
 
         print("==== Main ======================")
@@ -128,12 +136,12 @@ class ApiData():
 
         print("==== Members ======================")
         pprint(self.members)
-                        
-                     
-                     
+
+
+
+
     def warn(self, message, line):
         logging.warn("%s at line %s in %s" % (message, line, self.fileId))
-        
 
 
 
@@ -191,7 +199,6 @@ class ApiData():
 
 
 
-
     def getDocComment(self, node):
         comments = getattr(node, "comments", None)
         if comments:
@@ -200,4 +207,9 @@ class ApiData():
                     return comment
 
         self.warn("Missing documentation", node.line)
-        return None                        
+        return None
+        
+        
+        
+        
+        
