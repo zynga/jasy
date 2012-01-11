@@ -151,17 +151,12 @@ class ApiData():
 
     def setRoot(self, mainType, mainNode):
         
-        # Find comment node on call parent (semicolon node)
         callComment = self.getDocComment(mainNode, "root node")
-        if callComment:
-            doc = callComment.html
-        else:
-            doc = None
-            
+
         self.main = {
             "type" : mainType,
             "line" : mainNode.line,
-            "doc" : doc
+            "doc" : callComment.html if callComment else None
         }
 
 
