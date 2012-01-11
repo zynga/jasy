@@ -162,48 +162,57 @@ class ApiData():
 
 
 
-    def addEntry(self, name, value, definiton, collection):
-        valueType = value.type
+    def addEntry(self, name, value, definiton, collection, valueType=None):
 
-        # logging.info("Member: %s (%s) at line %s", name, valueType, value.line)
+        # If value type is not enforced we figure it out automatically
+        if valueType is None:
+            valueType = value.type
 
+        # Create entry in collection map
+        entry = collection[name] = {
+            "type" : valueType
+        }
+
+        # Add function types
         if valueType == "function":
             funcParams = getParamNamesFromFunction(value)
-
+            if funcParams:
+                entry["params"] = {paramName: None for paramName in funcParams}
+            
+            # Use comment for enrich existing data
             comment = self.getDocComment(definiton, "function %s" % name)
             if comment:
-                doc = comment.html
-                params = {}
-                returns = {}
+                if comment.html:
+                    entry["doc"] = comment.html
+
+                if comment.returns:
+                    entry["returns"] = comment.returns
                 
                 if funcParams:
                     if not comment.params:
                         self.warn("Documentation for parameters of function %s are missing" % name, value.line)
-                        for paramName in funcParams:
-                            params[paramName] = None
-                    
                     else:
                         for paramName in funcParams:
                             if paramName in comment.params:
-                                params[paramName] = comment.params[paramName]
+                                entry["params"][paramName] = comment.params[paramName]
                             else:
-                                params[paramName] = None
                                 self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), value.line)
-                            
-            else:
-                doc = None
-                params = {paramName: None for paramName in funcParams}
-                returns = None
 
-            collection[name] = {
-                "type" : "function",
-                "params" : params,
-                "returns" : returns,
-                "doc" : doc
-            }
+                                
+        # Add call types
+        elif valueType == "call":
             
+            # Calls default to typeof function when comment does not explicitely say otherwise (via static type hint)
+            
+            comment = self.getDocComment(definiton, "call %s" % name)
+            
+            
+            
+        # Add others
         else:
-            self.warn("Unsupported entry type %s" % valueType, value.line)
+            
+            comment = self.getDocComment(definiton, "misc %s" % name)
+            self.warn("Unsupported entry type %s in %s" % (valueType, name), value.line)
 
 
 
