@@ -38,7 +38,11 @@ def getParameterFromCall(call, index=0):
 
 
 def getParamNamesFromFunction(func):
-    return [identifier.value for identifier in func.params]
+    params = getattr(func, "params", None)
+    if params:
+        return [identifier.value for identifier in params]
+    else:
+        return None
     
     
 
@@ -170,18 +174,19 @@ class ApiData():
 
             if comment:
                 
-                if funcParams and not comment.params:
-                    self.warn("Documentation for parameters of function %s are missing" % name, value.line)
-                    for paramName in funcParams:
-                        params[paramName] = None
-                    
-                else:
-                    for paramName in funcParams:
-                        if paramName in comment.params:
-                            params[paramName] = comment.params[paramName]
-                        else:
+                if funcParams:
+                    if not comment.params:
+                        self.warn("Documentation for parameters of function %s are missing" % name, value.line)
+                        for paramName in funcParams:
                             params[paramName] = None
-                            self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), value.line)
+                    
+                    else:
+                        for paramName in funcParams:
+                            if paramName in comment.params:
+                                params[paramName] = comment.params[paramName]
+                            else:
+                                params[paramName] = None
+                                self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), value.line)
                             
             else:
                 params = {paramName: None for paramName in funcParams}
