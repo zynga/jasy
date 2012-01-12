@@ -181,11 +181,35 @@ class ApiData():
         # We could figure out the real class automatically - at least that's the case quite often
         "new": "Object",
         
-        # Bitwise operations produce numbers as result
+        # Comparisons
+        "eq" : "Boolean",
+        "ne" : "Boolean",
+        "strict_eq" : "Boolean",
+        "strict_ne" : "Boolean",
+        "lt" : "Boolean",
+        "le" : "Boolean",
+        "gt" : "Boolean",
+        "ge" : "Boolean",
+        "in" : "Boolean",
+        "instanceof" : "Boolean",
+        
+        # Numbers
+        "lsh": "Number",
+        "rsh": "Number",
+        "ursh": "Number",
+        "plus": "Number",
+        "minus": "Number",
+        "mul": "Number",
+        "div": "Number",
+        "mod": "Number",
         "bitwise_and": "Number",
         "bitwise_xor": "Number",
         "bitwise_or": "Number",
         "bitwise_not": "Number",
+        "increment": "Number",
+        "decrement": "Number",
+        "unary_minus": "Number",
+        "unary_plus": "Number",
         
         # This is not 100% correct, but I don't like to introduce a BooleanLike type.
         # If the author likes something different he is still able to override it via API docs
@@ -195,6 +219,7 @@ class ApiData():
         # These are not real types, we try to figure out the real value behind automatically
         "call": "Call",
         "hook": "Hook",
+        "assign": "Assign"
     }
 
 

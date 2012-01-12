@@ -101,6 +101,126 @@ class TestApi(unittest.TestCase):
         self.assertEqual(data.members["func"]["returns"], ["Number"])
         
         
+    def test_literal(self):
+        
+        data = self.process("""
+        
+        core.Class("foo.Bar", 
+        {
+          members: {
+            map: {foo:1,bar:2},
+            array: [1,2,3],
+            reg: /[a-z]/g
+          }
+        });
+        
+        """)
+        
+        self.assertIsInstance(data.members, dict)
+        self.assertIn("map", data.members)
+        self.assertIn("array", data.members)
+        self.assertIn("reg", data.members)
+        self.assertEqual(data.members["map"]["type"], "Map")
+        self.assertEqual(data.members["array"]["type"], "Array")
+        self.assertEqual(data.members["reg"]["type"], "RegExp")
+        
+        
+    def test_number(self):
+        
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+            bitwise: 1 ^ 2,
+            plus: 3 + 4,
+            shif: 4 >> 3,
+            mod: 15 / 4,
+            unary: -3,
+            increment: i++
+          }
+        });
+
+        """)        
+        
+        self.assertIsInstance(data.members, dict)
+        self.assertIn("bitwise", data.members)
+        self.assertIn("plus", data.members)
+        self.assertIn("shif", data.members)
+        self.assertIn("mod", data.members)
+        self.assertIn("unary", data.members)
+        self.assertIn("increment", data.members)
+        self.assertEqual(data.members["bitwise"]["type"], "Number")
+        self.assertEqual(data.members["plus"]["type"], "Number")
+        self.assertEqual(data.members["shif"]["type"], "Number")
+        self.assertEqual(data.members["mod"]["type"], "Number")
+        self.assertEqual(data.members["unary"]["type"], "Number")
+        self.assertEqual(data.members["increment"]["type"], "Number")
+        
+        
+    def test_boolean(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+            trueish: 2 == 2,
+            falsy: 4 != 4,
+            and: window.location && window.document,
+            or: document.createElement || document.createDocumentFragment,
+            not: !!document.createElement,
+            bigger: 3 > 5,
+            is: foo instanceof bar
+          }
+        });
+
+        """)        
+        
+        self.assertIsInstance(data.members, dict)
+        self.assertIn("trueish", data.members)
+        self.assertIn("falsy", data.members)
+        self.assertIn("and", data.members)
+        self.assertIn("or", data.members)
+        self.assertIn("not", data.members)
+        self.assertIn("bigger", data.members)
+        self.assertIn("is", data.members)
+        self.assertEqual(data.members["trueish"]["type"], "Boolean")
+        self.assertEqual(data.members["falsy"]["type"], "Boolean")
+        self.assertEqual(data.members["and"]["type"], "Boolean")
+        self.assertEqual(data.members["or"]["type"], "Boolean")
+        self.assertEqual(data.members["not"]["type"], "Boolean")
+        self.assertEqual(data.members["bigger"]["type"], "Boolean")
+        self.assertEqual(data.members["is"]["type"], "Boolean")
+        
+        
+        
+    def xtest_specials(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+            formatter: new foo.DateFormatter,
+            voi: void,
+            nul: null,
+            del: delete obj.x,
+          }
+        });
+
+        """)        
+
+        self.assertIsInstance(data.members, dict)
+        self.assertIn("bitwise", data.members)
+        self.assertIn("plus", data.members)
+        self.assertIn("shif", data.members)
+        self.assertIn("mod", data.members)
+        self.assertEqual(data.members["bitwise"]["type"], "Number")
+        self.assertEqual(data.members["plus"]["type"], "Number")
+        self.assertEqual(data.members["shif"]["type"], "Number")
+        self.assertEqual(data.members["mod"]["type"], "Number")    
+        
 
 if __name__ == '__main__':
     tests = unittest.TestLoader().loadTestsFromTestCase(TestApi)
