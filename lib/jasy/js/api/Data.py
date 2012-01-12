@@ -173,7 +173,6 @@ class ApiData():
         "lsh": "Number",
         "rsh": "Number",
         "ursh": "Number",
-        "plus": "Number",
         "minus": "Number",
         "mul": "Number",
         "div": "Number",
@@ -192,10 +191,18 @@ class ApiData():
         "and": "Boolean",
         "or": "Boolean",
         
+        # Operators/Built-ins
+        "void": "void",
+        "null": "null",
+        "typeof": "String",
+        "delete": "Boolean",
+        
         # These are not real types, we try to figure out the real value behind automatically
         "call": "Call",
         "hook": "Hook",
-        "assign": "Assign"
+        "assign": "Assign",
+        "plus": "Plus"
+        
     }
 
 

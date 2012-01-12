@@ -117,9 +117,6 @@ class TestApi(unittest.TestCase):
         """)
         
         self.assertIsInstance(data.members, dict)
-        self.assertIn("map", data.members)
-        self.assertIn("array", data.members)
-        self.assertIn("reg", data.members)
         self.assertEqual(data.members["map"]["type"], "Map")
         self.assertEqual(data.members["array"]["type"], "Array")
         self.assertEqual(data.members["reg"]["type"], "RegExp")
@@ -133,7 +130,6 @@ class TestApi(unittest.TestCase):
         {
           members: {
             bitwise: 1 ^ 2,
-            plus: 3 + 4,
             shif: 4 >> 3,
             mod: 15 / 4,
             unary: -3,
@@ -144,14 +140,7 @@ class TestApi(unittest.TestCase):
         """)        
         
         self.assertIsInstance(data.members, dict)
-        self.assertIn("bitwise", data.members)
-        self.assertIn("plus", data.members)
-        self.assertIn("shif", data.members)
-        self.assertIn("mod", data.members)
-        self.assertIn("unary", data.members)
-        self.assertIn("increment", data.members)
         self.assertEqual(data.members["bitwise"]["type"], "Number")
-        self.assertEqual(data.members["plus"]["type"], "Number")
         self.assertEqual(data.members["shif"]["type"], "Number")
         self.assertEqual(data.members["mod"]["type"], "Number")
         self.assertEqual(data.members["unary"]["type"], "Number")
@@ -178,13 +167,6 @@ class TestApi(unittest.TestCase):
         """)        
         
         self.assertIsInstance(data.members, dict)
-        self.assertIn("trueish", data.members)
-        self.assertIn("falsy", data.members)
-        self.assertIn("and", data.members)
-        self.assertIn("or", data.members)
-        self.assertIn("not", data.members)
-        self.assertIn("bigger", data.members)
-        self.assertIn("is", data.members)
         self.assertEqual(data.members["trueish"]["type"], "Boolean")
         self.assertEqual(data.members["falsy"]["type"], "Boolean")
         self.assertEqual(data.members["and"]["type"], "Boolean")
@@ -195,31 +177,36 @@ class TestApi(unittest.TestCase):
         
         
         
-    def xtest_specials(self):
+    def test_specials(self):
 
         data = self.process("""
 
         core.Class("foo.Bar", 
         {
           members: {
+            plus: 3 + 4,
+            plusstr: 3 + "world",
+            now: +new Date,
             formatter: new foo.DateFormatter,
-            voi: void,
+            voi: void 3,
             nul: null,
-            del: delete obj.x,
+            type: typeof 3,
+            del: delete obj.x
           }
         });
 
         """)        
 
         self.assertIsInstance(data.members, dict)
-        self.assertIn("bitwise", data.members)
-        self.assertIn("plus", data.members)
-        self.assertIn("shif", data.members)
-        self.assertIn("mod", data.members)
-        self.assertEqual(data.members["bitwise"]["type"], "Number")
         self.assertEqual(data.members["plus"]["type"], "Number")
-        self.assertEqual(data.members["shif"]["type"], "Number")
-        self.assertEqual(data.members["mod"]["type"], "Number")    
+        self.assertEqual(data.members["plusstr"]["type"], "String")
+        self.assertEqual(data.members["now"]["type"], "Number")
+        self.assertEqual(data.members["formatter"]["type"], "Object"),
+        self.assertEqual(data.members["voi"]["type"], "undefined"),
+        self.assertEqual(data.members["nul"]["type"], "null"),
+        self.assertEqual(data.members["type"]["type"], "String"),
+        self.assertEqual(data.members["del"]["type"], "Boolean"),
+        
         
 
 if __name__ == '__main__':
