@@ -111,8 +111,24 @@ jsdocFlags = re.compile(r"^@(deprecated|private|public|static)")
 # - @version Version
 jsdocData = re.compile(r"^@(name|namespace|requires|since|version)\s+(\S+)")
 
+
+
 # Used to measure the doc indent size (with leading stars in front of content)
 docIndentReg = re.compile(r"^(\s*\*\s*)(\S*)")
+
+# Used to split type lists as supported by throw, return and params
+typeListSplit = re.compile("\s*\|\s*")
+
+# Used to remove markup sequences after doc processing of comment text
+stripMarkup = re.compile(r"<.*?>")
+
+
+
+# Matches return blocks in comments
+returnMatcher = re.compile(r"^\s*\{([a-zA-Z0-9_ \|\[\]]+)\}")
+
+# Matches tags
+tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
 
 # Matches param declarations in own dialect
 paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+)((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
@@ -120,11 +136,7 @@ paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+)((\s*\?
 # Matches links in own dialect
 linkMatcher = re.compile(r"\{([a-zA-Z0-9_#\.]+)\}")
 
-# Used to split type lists as supported by throw, return and params
-typeListSplit = re.compile("\s*\|\s*")
 
-# Used to remove markup sequences after doc processing of comment text
-stripMarkup = re.compile(r"<.*?>")
 
 
 
@@ -316,8 +328,6 @@ class Comment():
         Extracts leading type defintion to use it as a return value
         """
 
-        returnMatcher = re.compile(r"^\s*\{([a-zA-Z0-9_ \|\[\]]+)\}")
-        
         def collectReturn(match):
             self.returns = {
                 "type" : self.__splitTypeList(match.group(1))
@@ -336,8 +346,6 @@ class Comment():
         Extract all tags inside the give doc comment. These are replaced from 
         the text and collected inside the "tags" key as a dict.
         """
-        
-        tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
         
         def collectTags(match):
              if not self.tags:
