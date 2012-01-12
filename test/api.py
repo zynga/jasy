@@ -209,11 +209,11 @@ class TestApi(unittest.TestCase):
         self.assertEqual(data.members["custom"]["type"], "Object")
         self.assertEqual(data.members["formatter"]["type"], "foo.DateFormatter"),
         self.assertEqual(data.members["date"]["type"], "Date"),
-        self.assertEqual(data.members["number"]["type"], "Number"),
-        self.assertEqual(data.members["voi"]["type"], "undefined"),
-        self.assertEqual(data.members["nul"]["type"], "null"),
-        self.assertEqual(data.members["type"]["type"], "String"),
-        self.assertEqual(data.members["del"]["type"], "Boolean"),
+        self.assertEqual(data.members["number"]["type"], "Number")
+        self.assertEqual(data.members["voi"]["type"], "undefined")
+        self.assertEqual(data.members["nul"]["type"], "null")
+        self.assertEqual(data.members["type"]["type"], "String")
+        self.assertEqual(data.members["del"]["type"], "Boolean")
         
         
 
