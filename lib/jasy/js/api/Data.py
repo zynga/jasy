@@ -58,8 +58,21 @@ def detectPlusType(plusNode):
         return "Number"
 
 
+def detectObjectType(objectNode):
+    
+    construct = objectNode[0]
+    
+    # Only support built-in top level constructs
+    if construct.type == "identifier" and construct.value in ("Array", "Boolean", "Date", "Function", "Number", "Object", "String", "RegExp"):
+        return construct.value
+        
+    # And namespaced custom classes
+    elif construct.type == "dot":
+        assembled = assembleDot(construct)
+        if assembled:
+            return assembled
 
-
+    return "Object"
 
 
 class ApiException():
@@ -149,6 +162,7 @@ class ApiData():
 
 
     nodeTypeToDocType = {
+    
         # Primitives
         "string": "String",
         "number": "Number",
@@ -164,6 +178,7 @@ class ApiData():
 
         # We could figure out the real class automatically - at least that's the case quite often
         "new": "Object",
+        "new_with_args": "Object",
         
         # Comparisons
         "eq" : "Boolean",
@@ -297,6 +312,9 @@ class ApiData():
             
             if valueType == "Plus":
                 entry["type"] = detectPlusType(valueNode)
+                
+            elif valueType == "Object":
+                entry["type"] = detectObjectType(valueNode)
             
             
             comment = self.getDocComment(definition, valueType + " %s" % name)

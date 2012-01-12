@@ -188,7 +188,10 @@ class TestApi(unittest.TestCase):
             plusstr: 3 + "world",
             plusstr2: 3 + "world" + 4,
             now: +new Date,
+            custom: new Global,
             formatter: new foo.DateFormatter,
+            date: new Date,
+            number: new Number(3),
             voi: void 3,
             nul: null,
             type: typeof 3,
@@ -203,7 +206,10 @@ class TestApi(unittest.TestCase):
         self.assertEqual(data.members["plusstr"]["type"], "String")
         self.assertEqual(data.members["plusstr2"]["type"], "String")
         self.assertEqual(data.members["now"]["type"], "Number")
-        self.assertEqual(data.members["formatter"]["type"], "Object"),
+        self.assertEqual(data.members["custom"]["type"], "Object")
+        self.assertEqual(data.members["formatter"]["type"], "foo.DateFormatter"),
+        self.assertEqual(data.members["date"]["type"], "Date"),
+        self.assertEqual(data.members["number"]["type"], "Number"),
         self.assertEqual(data.members["voi"]["type"], "undefined"),
         self.assertEqual(data.members["nul"]["type"], "null"),
         self.assertEqual(data.members["type"]["type"], "String"),
