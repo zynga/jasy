@@ -172,11 +172,11 @@ class Comment():
     # Dictionary of params
     params = None
 
-    # Defined exceptions which are thrown
-    throws = None
-    
-    # Defined return types or data types
+    # List of return types
     returns = None
+    
+    # Static type
+    stype = None
     
     # Collected text of the comment (without the extracted doc relevant data)
     text = None
@@ -304,14 +304,15 @@ class Comment():
     def __processDoc(self, text, startLineNo):
 
         text = self.__extractJsdoc(text)
-        text = self.__extractReturn(text)
+        text = self.__extractStaticType(text)
+        text = self.__extractReturns(text)
         text = self.__extractTags(text)
         
         # Collapse new empty lines at start/end
         text = text.strip("\n\t ")
 
         text = self.__processParams(text)
-        text = self.__processTypes(text)
+        text = self.__processLinks(text)
         
         return text            
             
@@ -326,21 +327,29 @@ class Comment():
 
 
 
-    def __extractReturn(self, text):
+    def __extractReturns(self, text):
         """
-        Extracts leading type defintion to use it as a return value
+        Extracts leading return defintion (when type is function)
         """
 
         def collectReturn(match):
-            self.returns = {
-                "type" : self.__splitTypeList(match.group(1))
-            }
-            
+            self.returns = self.__splitTypeList(match.group(1))
             return ""
             
-        text = returnMatcher.sub(collectReturn, text)
+        return returnMatcher.sub(collectReturn, text)
         
-        return text
+        
+        
+    def __extractStaticType(self, text):
+        """
+        Extracts leading type defintion (when value is a static type)
+        """
+
+        def collectType(match):
+            self.stype = match.group(1).strip()
+            return ""
+
+        return typeMatcher.sub(collectType, text)
         
         
         
@@ -366,9 +375,7 @@ class Comment():
 
              return ""
 
-        text = tagMatcher.sub(collectTags, text)
-
-        return text
+        return tagMatcher.sub(collectTags, text)
         
         
         
@@ -434,12 +441,6 @@ class Comment():
                 filterLine = True
                 continue
             
-            matched = jsdocThrow.match(line)
-            if matched:
-                self.throws = self.__splitTypeList(matched.group(3))
-                filterLine = True
-                continue
-                
             matched = jsdocFlags.match(line)
             if matched:
                 if self.tags is None:
@@ -496,7 +497,7 @@ class Comment():
         
         
         
-    def __processTypes(self, text):
+    def __processLinks(self, text):
         
         def formatTypes(match):
             link = match.group(1).strip()

@@ -161,26 +161,63 @@ class ApiData():
 
 
 
+    nodeTypeToDocType = {
+        # Primitives
+        "string": "String",
+        "number": "Number",
+        "not": "Boolean",
+        "true": "Boolean",
+        "false": "Boolean",
 
-    def addEntry(self, name, value, definiton, collection, valueType=None):
+        # Literals
+        "function": "Function",
+        "regexp": "RegExp",
+        "object_init": "Map",
+        "array_init": "Array",
 
-        # If value type is not enforced we figure it out automatically
-        if valueType is None:
-            valueType = value.type
+        # We could figure out the real class automatically - at least that's the case quite often
+        "new": "Object",
+        
+        # Bitwise operations produce numbers as result
+        "bitwise_and": "Number",
+        "bitwise_xor": "Number",
+        "bitwise_or": "Number",
+        "bitwise_not": "Number",
+        
+        # This is not 100% correct, but I don't like to introduce a BooleanLike type.
+        # If the author likes something different he is still able to override it via API docs
+        "and": "Boolean",
+        "or": "Boolean",
+        
+        # These are not real types, we try to figure out the real value behind automatically
+        "call": "Call",
+        "hook": "Hook",
+    }
 
-        # Create entry in collection map
-        entry = collection[name] = {
-            "type" : valueType
-        }
+
+    def addEntry(self, name, valueNode, definition, collection):
+
+        if name in collection:
+            entry = collection[name]
+            valueType = entry["type"]
+        else:
+            if not valueNode.type in self.nodeTypeToDocType:
+                self.warn("Unsupported node value type: %s" % valueNode.type, valueNode.line)
+            
+            valueType = self.nodeTypeToDocType[valueNode.type]
+            entry = collection[name] = {
+                "type" : valueType
+            }
+            
 
         # Add function types
-        if valueType == "function":
-            funcParams = getParamNamesFromFunction(value)
+        if valueType == "Function":
+            funcParams = getParamNamesFromFunction(valueNode)
             if funcParams:
                 entry["params"] = {paramName: None for paramName in funcParams}
             
             # Use comment for enrich existing data
-            comment = self.getDocComment(definiton, "function %s" % name)
+            comment = self.getDocComment(definition, "Function %s" % name)
             if comment:
                 if comment.html:
                     entry["doc"] = comment.html
@@ -190,50 +227,77 @@ class ApiData():
                 
                 if funcParams:
                     if not comment.params:
-                        self.warn("Documentation for parameters of function %s are missing" % name, value.line)
+                        self.warn("Documentation for parameters of function %s are missing" % name, valueNode.line)
                     else:
                         for paramName in funcParams:
                             if paramName in comment.params:
                                 entry["params"][paramName] = comment.params[paramName]
                             else:
-                                self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), value.line)
+                                self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
 
                                 
-        # Add call types
-        elif valueType == "call":
+        # Add call/hook types
+        elif valueType in ("Call", "Hook"):
+            
+            # TODO: Look for return values, left values in hooks first???
             
             # Calls default to typeof function when comment does not explicitely say otherwise (via static type hint)
             
-            comment = self.getDocComment(definiton, "call %s" % name, True)
+            comment = self.getDocComment(definition)
+            
+            if not comment:
+                def commentMatcher(node):
+                    return self.getDocComment(node)
+                
+                realDefinition = query(valueNode, commentMatcher)
+                if realDefinition:
+                    definition = realDefinition
+                    
+                comment = self.getDocComment(definition, "Call %s" % name)
+            
             if comment:
+
+                # Static Type
+                if comment.stype:
+                    entry["type"] = "StaticType"
+                    self.addEntry(name, valueNode, definition, collection)
                 
-                print(comment.returns)
-                
-                #- support {=Type} für statische typen
-                #- support comment node aus content bereich
+                # Function Type
+                elif comment.returns or comment.params:
+                    entry["type"] = "Function"
+                    self.addEntry(name, valueNode, definition, collection)
+
+                # Uncommented
+                else:
+                    entry["doc"] = comment.html
+                    self.warn("Missing documentation comment for unspecified function call result in %s" % name, definition.line)
             
-            
-            
-            
+        
         # Add others
         else:
             
-            comment = self.getDocComment(definiton, "misc %s" % name)
-            self.warn("Unsupported entry type %s in %s" % (valueType, name), value.line)
+            comment = self.getDocComment(definition, valueType + " %s" % name)
+            if comment:
+                
+                if comment.stype:
+                    entry["type"] = comment.stype
+                    
+                if comment.html:
+                    entry["doc"] = comment.html
+            
 
 
-
-    def getDocComment(self, node, msg, optional=False):
+    def getDocComment(self, node, msg=None):
         comments = getattr(node, "comments", None)
         if comments:
             for comment in comments:
                 if comment.variant == "doc":
-                    if not comment.text and not optional:
+                    if not comment.text and msg:
                         self.warn("Missing documentation text (%s)" % msg, node.line)
                         
                     return comment
 
-        if not optional:
+        if msg:
             self.warn("Missing documentation (%s)" % msg, node.line)
             
         return None
