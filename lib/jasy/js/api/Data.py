@@ -72,7 +72,7 @@ class ApiData():
         
         self.fileId = fileId
         
-        logging.info("Generate API Data: %s" % self.fileId)
+        # logging.info("Generate API Data: %s" % self.fileId)
 
 
         #
