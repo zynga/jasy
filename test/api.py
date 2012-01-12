@@ -216,6 +216,51 @@ class TestApi(unittest.TestCase):
         self.assertEqual(data.members["del"]["type"], "Boolean")
         
         
+    def test_dynamic(self):
+        
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+
+            calledFunc: (function() {
+     
+              /**
+               * Returns the sum of @a {Integer} and @b {Integer}
+               */
+              return function(a, b) {
+                return a+b;
+              };
+    
+            })(),
+        
+            calledString: (function() {
+
+              return "private";
+
+            })(),
+        
+            calledMap: (function() {
+            
+              return {
+                foo: 1, 
+                bar: 2
+              };
+            
+            })(),
+
+            hook: isSomething() ? function(a) {} : function(a) {}
+        
+          }
+          
+        });
+
+        """)
+        
+        TODO
+        
+        
 
 if __name__ == '__main__':
     tests = unittest.TestLoader().loadTestsFromTestCase(TestApi)
