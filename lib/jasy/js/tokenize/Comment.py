@@ -117,7 +117,7 @@ jsdocData = re.compile(r"^@(name|namespace|requires|since|version)\s+(\S+)")
 docIndentReg = re.compile(r"^(\s*\*\s*)(\S*)")
 
 # Used to split type lists as supported by throw, return and params
-typeListSplit = re.compile("\s*\|\s*")
+listSplit = re.compile("\s*\|\s*")
 
 # Used to remove markup sequences after doc processing of comment text
 stripMarkup = re.compile(r"<.*?>")
@@ -125,7 +125,10 @@ stripMarkup = re.compile(r"<.*?>")
 
 
 # Matches return blocks in comments
-returnMatcher = re.compile(r"^\s*\{([a-zA-Z0-9_ \|\[\]]+)\}")
+returnMatcher = re.compile(r"^\s*\{([a-zA-Z0-9_ \.\|\[\]]+)\}")
+
+# Matches type definitions in comments
+typeMatcher = re.compile(r"^\s*\{=([a-zA-Z0-9_ \.]+)\}")
 
 # Matches tags
 tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
@@ -319,7 +322,7 @@ class Comment():
         if decl is None:
             return decl
         
-        return typeListSplit.split(decl.strip())
+        return listSplit.split(decl.strip())
 
 
 

@@ -204,7 +204,14 @@ class ApiData():
             
             # Calls default to typeof function when comment does not explicitely say otherwise (via static type hint)
             
-            comment = self.getDocComment(definiton, "call %s" % name)
+            comment = self.getDocComment(definiton, "call %s" % name, True)
+            if comment:
+                
+                print(comment.returns)
+                
+                #- support {=Type} für statische typen
+                #- support comment node aus content bereich
+            
             
             
             
@@ -216,17 +223,19 @@ class ApiData():
 
 
 
-    def getDocComment(self, node, msg):
+    def getDocComment(self, node, msg, optional=False):
         comments = getattr(node, "comments", None)
         if comments:
             for comment in comments:
                 if comment.variant == "doc":
-                    if not comment.text:
+                    if not comment.text and not optional:
                         self.warn("Missing documentation text (%s)" % msg, node.line)
                         
                     return comment
 
-        self.warn("Missing documentation (%s)" % msg, node.line)
+        if not optional:
+            self.warn("Missing documentation (%s)" % msg, node.line)
+            
         return None
         
         
