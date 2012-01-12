@@ -47,7 +47,15 @@ def getParamNamesFromFunction(func):
     else:
         return None
     
+
+def detectPlusType(plusNode):
     
+    if plusNode[0].type == "string" or plusNode[1].type == "string":
+        return "String"
+    elif plusNode[0].type == "plus" and detectPlusType(plusNode[0]) == "String":
+        return "String"
+    else:
+        return "Number"
 
 
 
@@ -192,7 +200,7 @@ class ApiData():
         "or": "Boolean",
         
         # Operators/Built-ins
-        "void": "void",
+        "void": "undefined",
         "null": "null",
         "typeof": "String",
         "delete": "Boolean",
@@ -282,10 +290,14 @@ class ApiData():
                 else:
                     entry["doc"] = comment.html
                     self.warn("Missing documentation comment for unspecified function call result in %s" % name, definition.line)
-            
+        
         
         # Add others
         else:
+            
+            if valueType == "Plus":
+                entry["type"] = detectPlusType(valueNode)
+            
             
             comment = self.getDocComment(definition, valueType + " %s" % name)
             if comment:

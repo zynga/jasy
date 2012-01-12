@@ -186,6 +186,7 @@ class TestApi(unittest.TestCase):
           members: {
             plus: 3 + 4,
             plusstr: 3 + "world",
+            plusstr2: 3 + "world" + 4,
             now: +new Date,
             formatter: new foo.DateFormatter,
             voi: void 3,
@@ -200,6 +201,7 @@ class TestApi(unittest.TestCase):
         self.assertIsInstance(data.members, dict)
         self.assertEqual(data.members["plus"]["type"], "Number")
         self.assertEqual(data.members["plusstr"]["type"], "String")
+        self.assertEqual(data.members["plusstr2"]["type"], "String")
         self.assertEqual(data.members["now"]["type"], "Number")
         self.assertEqual(data.members["formatter"]["type"], "Object"),
         self.assertEqual(data.members["voi"]["type"], "undefined"),
