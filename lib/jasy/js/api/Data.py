@@ -121,30 +121,6 @@ class ApiData():
 
 
 
-        #
-        # Debug
-        #
-        from pprint import pprint 
-
-        print("==== Main ======================")
-        pprint(self.main)
-
-        print("==== Constructor ======================")
-        pprint(self.constructor)
-
-        print("==== Statics ======================")
-        pprint(self.statics)
-                        
-        print("==== Properties ======================")
-        pprint(self.properties)
-
-        print("==== Events ======================")
-        pprint(self.events)
-
-        print("==== Members ======================")
-        pprint(self.members)
-
-
 
 
     def warn(self, message, line):
