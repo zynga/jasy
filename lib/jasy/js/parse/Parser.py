@@ -1123,8 +1123,10 @@ def AssignExpression(tokenizer, staticContext):
     if tokenizer.match("yield", True):
         return returnOrYield(tokenizer, staticContext)
 
+    comments = tokenizer.getComments()
     node = builder.ASSIGN_build(tokenizer)
     lhs = ConditionalExpression(tokenizer, staticContext)
+    builder.COMMENTS_add(lhs, None, comments)
 
     if not tokenizer.match("assign"):
         builder.ASSIGN_finish(node)
