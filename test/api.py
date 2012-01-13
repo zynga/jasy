@@ -351,8 +351,9 @@ class TestApi(unittest.TestCase):
 
             hook: isSomething() ? function(a) {} : function(a) {},
             
-            hookNull: isEmpty() ? null : function(a) {}
+            hookNull: isEmpty() ? null : function(a) {},
             
+            hookMissingType: doTest() ? /** Width to apply */ 14 : 16
 
           }
 

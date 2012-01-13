@@ -99,7 +99,7 @@ class ApiData():
 
 
     def addEntry(self, name, valueNode, commentNode, collection):
-
+        
         #
         # Use already existing type or get type from node info
         #
@@ -126,19 +126,21 @@ class ApiData():
                     if comment.stype:
                         entry["type"] = comment.stype
                         self.addEntry(name, valueNode, commentNode, collection)
+                        return
                 
                     else:
                     
                         # Maybe type function: We need to ignore returns etc. which are often
                         # the parent of the comment.
-                        valueNode = findFunction(commentNode)
-                        if valueNode:
+                        funcValueNode = findFunction(commentNode)
+                        if funcValueNode:
                         
                             # Switch to function type for re-analysis
                             entry["type"] = "Function"
-                            self.addEntry(name, valueNode, commentNode, collection)
+                            self.addEntry(name, funcValueNode, commentNode, collection)
+                            return
                         
-            elif entry["type"] == "Call":
+            if entry["type"] == "Call":
                 
                 # We try to analyze what the first return node returns
                 returnNode = findReturn(valueNode)
@@ -148,19 +150,19 @@ class ApiData():
                     self.addEntry(name, returnValue, returnValue, collection)
                     
             elif entry["type"] == "Hook":
-                
-                firstEntry = valueNode[1]
-                firstType = nodeTypeToDocType[firstEntry.type]
-                if not firstType in ("void", "null"):
-                    entry["type"] = firstType
-                    self.addEntry(name, firstEntry, firstEntry, collection)
+
+                thenEntry = valueNode[1]
+                thenType = nodeTypeToDocType[thenEntry.type]
+                if not thenType in ("void", "null"):
+                    entry["type"] = thenType
+                    self.addEntry(name, thenEntry, thenEntry, collection)
 
                 # Try second item for better data then null/void
                 else:
-                    secondEntry = valueNode[2]
-                    secondType = nodeTypeToDocType[secondEntry.type]
-                    entry["type"] = secondType
-                    self.addEntry(name, secondEntry, secondEntry, collection)
+                    elseEntry = valueNode[2]
+                    elseType = nodeTypeToDocType[elseEntry.type]
+                    entry["type"] = elseType
+                    self.addEntry(name, elseEntry, elseEntry, collection)
                 
             return
 
