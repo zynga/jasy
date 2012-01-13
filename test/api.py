@@ -378,6 +378,9 @@ class TestApi(unittest.TestCase):
         self.assertEqual(data.members["hookNull"]["type"], "Function")
         self.assertIsInstance(data.members["hookNull"]["params"], dict)
         self.assertIsInstance(data.members["hookNull"]["params"]["a"], dict)        
+
+        self.assertEqual(data.members["hookMissingType"]["type"], "Number")
+        self.assertEqual(data.members["hookMissingType"]["doc"], "<p>Width to apply</p>\n")
         
         
 
