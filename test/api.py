@@ -234,7 +234,7 @@ class TestApi(unittest.TestCase):
               };
     
             })(),
-        
+            
             string: (function() {
 
               /** {=String} Private data */
@@ -275,6 +275,44 @@ class TestApi(unittest.TestCase):
         self.assertIsInstance(data.members["hook"]["params"], dict)
         self.assertEqual(data.members["hook"]["params"]["a"]["type"], ["voodoo.Hoo"])
         
+        
+    def test_dynamic_cascaded(self):
+        
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+
+            func: (function() {
+
+              var ret = function() {
+              
+                /**
+                 * Returns the sum of @a {Integer} and @b {Integer}
+                 */
+                return function(a, b) {
+                  return a+b;
+                };
+              
+              }
+              
+              return ret;
+    
+            })(),
+
+          }
+          
+        });
+
+        """)
+        
+        self.assertIsInstance(data.members, dict)
+        
+        self.assertEqual(data.members["func"]["type"], "Function")
+        self.assertIsInstance(data.members["func"]["params"], dict)
+        self.assertEqual(data.members["func"]["params"]["a"]["type"], ["Integer"])
+        self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])
         
         
 
