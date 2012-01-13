@@ -237,12 +237,14 @@ class TestApi(unittest.TestCase):
         
             string: (function() {
 
+              /** {=String} Private data */
               return "private";
 
             })(),
         
             map: (function() {
             
+              /** {=Map} Returns a map with `x` and `y`. */
               return {
                 foo: 1, 
                 bar: 2
@@ -250,6 +252,7 @@ class TestApi(unittest.TestCase):
             
             })(),
 
+            /** A function for doing things with @a */
             hook: isSomething() ? function(a) {} : function(a) {}
         
           }
@@ -262,6 +265,8 @@ class TestApi(unittest.TestCase):
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertEqual(data.members["string"]["type"], "String")
         self.assertEqual(data.members["map"]["type"], "Map")
+        self.assertEqual(data.members["hook"]["type"], "Function")
+        self.assertIsInstance(data.members["hook"]["params"], dict)
         
         
         

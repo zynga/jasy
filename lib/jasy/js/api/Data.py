@@ -9,70 +9,7 @@ import logging
 __all__ = ["ApiData", "ApiException"]
 
 
-def query(node, matcher):
-    if matcher(node):
-        return node
-    
-    for child in node:
-        result = query(child, matcher)
-        if result is not None:
-            return result
 
-    return None
-
-
-def findCall(node, methodName):
-    def matcher(node):
-        if node.type == "call":
-            
-            if "." in methodName and node[0].type == "dot" and assembleDot(node[0]) == methodName:
-                return node
-            elif node[0].type == "identifier" and node[0].value == methodName:
-                return node
-    
-    return query(node, matcher)
-    
-    
-def getParameterFromCall(call, index=0):
-    if call.type != "call":
-        raise Exception("Invalid call node: %s" % node)
-
-    return call[1][index]
-
-
-def getParamNamesFromFunction(func):
-    params = getattr(func, "params", None)
-    if params:
-        return [identifier.value for identifier in params]
-    else:
-        return None
-    
-
-def detectPlusType(plusNode):
-    
-    if plusNode[0].type == "string" or plusNode[1].type == "string":
-        return "String"
-    elif plusNode[0].type == "plus" and detectPlusType(plusNode[0]) == "String":
-        return "String"
-    else:
-        return "Number"
-
-
-def detectObjectType(objectNode):
-    
-    construct = objectNode[0]
-    
-    # Only support built-in top level constructs
-    if construct.type == "identifier" and construct.value in ("Array", "Boolean", "Date", "Function", "Number", "Object", "String", "RegExp"):
-        return construct.value
-        
-    # And namespaced custom classes
-    elif construct.type == "dot":
-        assembled = assembleDot(construct)
-        if assembled:
-            return assembled
-
-    return "Object"
 
 
 class ApiException():
@@ -161,104 +98,94 @@ class ApiData():
 
 
 
-    nodeTypeToDocType = {
-    
-        # Primitives
-        "string": "String",
-        "number": "Number",
-        "not": "Boolean",
-        "true": "Boolean",
-        "false": "Boolean",
+    def addEntry(self, name, valueNode, commentNode, collection):
 
-        # Literals
-        "function": "Function",
-        "regexp": "RegExp",
-        "object_init": "Map",
-        "array_init": "Array",
-
-        # We could figure out the real class automatically - at least that's the case quite often
-        "new": "Object",
-        "new_with_args": "Object",
-        
-        # Comparisons
-        "eq" : "Boolean",
-        "ne" : "Boolean",
-        "strict_eq" : "Boolean",
-        "strict_ne" : "Boolean",
-        "lt" : "Boolean",
-        "le" : "Boolean",
-        "gt" : "Boolean",
-        "ge" : "Boolean",
-        "in" : "Boolean",
-        "instanceof" : "Boolean",
-        
-        # Numbers
-        "lsh": "Number",
-        "rsh": "Number",
-        "ursh": "Number",
-        "minus": "Number",
-        "mul": "Number",
-        "div": "Number",
-        "mod": "Number",
-        "bitwise_and": "Number",
-        "bitwise_xor": "Number",
-        "bitwise_or": "Number",
-        "bitwise_not": "Number",
-        "increment": "Number",
-        "decrement": "Number",
-        "unary_minus": "Number",
-        "unary_plus": "Number",
-        
-        # This is not 100% correct, but I don't like to introduce a BooleanLike type.
-        # If the author likes something different he is still able to override it via API docs
-        "and": "Boolean",
-        "or": "Boolean",
-        
-        # Operators/Built-ins
-        "void": "undefined",
-        "null": "null",
-        "typeof": "String",
-        "delete": "Boolean",
-        
-        # These are not real types, we try to figure out the real value behind automatically
-        "call": "Call",
-        "hook": "Hook",
-        "assign": "Assign",
-        "plus": "Plus"
-        
-    }
-
-
-    def addEntry(self, name, valueNode, definition, collection):
-
+        #
+        # Use already existing type or get type from node info
+        #
         if name in collection:
             entry = collection[name]
-            valueType = entry["type"]
         else:
-            if not valueNode.type in self.nodeTypeToDocType:
-                self.warn("Unsupported node value type: %s" % valueNode.type, valueNode.line)
-            
-            valueType = self.nodeTypeToDocType[valueNode.type]
             entry = collection[name] = {
-                "type" : valueType
+                "type" : nodeTypeToDocType[valueNode.type]
             }
             
 
-        # Add function types
-        if valueType == "Function":
+        #
+        # Processes special types:
+        #
+        # - Plus: Whether a string or number is created
+        # - Object: Figures out the class instance which is created
+        # - Call/Hooks: Might have real doc comment inside the structure. We can also deep 
+        #     analyse them to figure out the real type via return statement checks or hook analysis
+        #
+        if entry["type"] == "Plus":
+            entry["type"] = detectPlusType(valueNode)
+        
+        elif entry["type"] == "Object":
+            entry["type"] = detectObjectType(valueNode)
+                
+        elif entry["type"] in ("Call", "Hook"):
+            
+            # TODO: Look for return values, left values in hooks first???
+            
+            commentNode = findCommentNode(commentNode)
+            comment = self.getDocComment(commentNode, "Call %s" % name)
+            
+            if comment:
+
+                # Static type definition
+                if comment.stype:
+                    entry["type"] = comment.stype
+                    self.addEntry(name, valueNode, commentNode, collection)
+                
+                else:
+                    
+                    # Maybe type function: We need to ignore returns etc. which are often
+                    # the parent of the comment.
+                    valueNode = findFunction(commentNode)
+                    if valueNode:
+                        
+                        # Switch to function type for re-analysis
+                        entry["type"] = "Function"
+                        self.addEntry(name, valueNode, commentNode, collection)
+                        
+            else:
+                print("TODO: Auto deep type analysis")
+
+            return
+        
+
+        
+        
+        #
+        # Read data from comment and add documentation
+        #
+        comment = self.getDocComment(commentNode, "%s %s" % (entry["type"], name))
+        if comment:
+            
+            if comment.stype:
+                entry["type"] = comment.stype
+                
+            if comment.html:
+                entry["doc"] = comment.html
+            
+            
+        #
+        # Add additional data for function types (params, returns)
+        #
+        if entry["type"] == "Function":
             funcParams = getParamNamesFromFunction(valueNode)
             if funcParams:
                 entry["params"] = {paramName: None for paramName in funcParams}
-            
-            # Use comment for enrich existing data
-            comment = self.getDocComment(definition, "Function %s" % name)
-            if comment:
-                if comment.html:
-                    entry["doc"] = comment.html
 
+            # TODO: Automatic return analysis?
+
+            # Use comment for enrich existing data
+            if comment:
                 if comment.returns:
                     entry["returns"] = comment.returns
-                
+
                 if funcParams:
                     if not comment.params:
                         self.warn("Documentation for parameters of function %s are missing" % name, valueNode.line)
@@ -268,64 +195,9 @@ class ApiData():
                                 entry["params"][paramName] = comment.params[paramName]
                             else:
                                 self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
-
-                                
-        # Add call/hook types
-        elif valueType in ("Call", "Hook"):
-            
-            # TODO: Look for return values, left values in hooks first???
-            
-            # Calls default to typeof function when comment does not explicitely say otherwise (via static type hint)
-            
-            comment = self.getDocComment(definition)
-            
-            if not comment:
-                def commentMatcher(node):
-                    return self.getDocComment(node)
-                
-                realDefinition = query(valueNode, commentMatcher)
-                if realDefinition:
-                    definition = realDefinition
                     
-                comment = self.getDocComment(definition, "Call %s" % name)
-            
-            if comment:
 
-                # Static Type
-                if comment.stype:
-                    entry["type"] = "StaticType"
-                    self.addEntry(name, valueNode, definition, collection)
-                
-                # Function Type
-                elif comment.returns or comment.params:
-                    entry["type"] = "Function"
-                    self.addEntry(name, valueNode, definition, collection)
-
-                # Uncommented
-                else:
-                    entry["doc"] = comment.html
-                    self.warn("Missing documentation comment for unspecified function call result in %s" % name, definition.line)
-        
-        
-        # Add others
-        else:
-            
-            if valueType == "Plus":
-                entry["type"] = detectPlusType(valueNode)
-                
-            elif valueType == "Object":
-                entry["type"] = detectObjectType(valueNode)
-            
-            
-            comment = self.getDocComment(definition, valueType + " %s" % name)
-            if comment:
-                
-                if comment.stype:
-                    entry["type"] = comment.stype
                     
-                if comment.html:
-                    entry["doc"] = comment.html
-            
 
 
     def getDocComment(self, node, msg=None):
