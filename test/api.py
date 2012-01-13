@@ -224,7 +224,7 @@ class TestApi(unittest.TestCase):
         {
           members: {
 
-            calledFunc: (function() {
+            func: (function() {
      
               /**
                * Returns the sum of @a {Integer} and @b {Integer}
@@ -235,13 +235,13 @@ class TestApi(unittest.TestCase):
     
             })(),
         
-            calledString: (function() {
+            string: (function() {
 
               return "private";
 
             })(),
         
-            calledMap: (function() {
+            map: (function() {
             
               return {
                 foo: 1, 
@@ -258,7 +258,11 @@ class TestApi(unittest.TestCase):
 
         """)
         
-        TODO
+        self.assertIsInstance(data.members, dict)
+        self.assertEqual(data.members["func"]["type"], "Function")
+        self.assertEqual(data.members["string"]["type"], "String")
+        self.assertEqual(data.members["map"]["type"], "Map")
+        
         
         
 
