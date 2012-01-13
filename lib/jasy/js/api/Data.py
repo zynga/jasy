@@ -169,8 +169,8 @@ class ApiData():
                 
             if comment.html:
                 entry["doc"] = comment.html
-            
-            
+        
+        
         #
         # Add additional data for function types (params, returns)
         #
@@ -195,7 +195,8 @@ class ApiData():
                                 entry["params"][paramName] = comment.params[paramName]
                             else:
                                 self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
-                    
+            
+        print(entry)
 
                     
 

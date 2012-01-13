@@ -244,7 +244,7 @@ class TestApi(unittest.TestCase):
         
             map: (function() {
             
-              /** {=Map} Returns a map with `x` and `y`. */
+              /** {=Map} A map with `x` and `y`. */
               return {
                 foo: 1, 
                 bar: 2
@@ -252,7 +252,7 @@ class TestApi(unittest.TestCase):
             
             })(),
 
-            /** A function for doing things with @a */
+            /** A function for doing things with @a {voodoo.Hoo} */
             hook: isSomething() ? function(a) {} : function(a) {}
         
           }
@@ -262,11 +262,18 @@ class TestApi(unittest.TestCase):
         """)
         
         self.assertIsInstance(data.members, dict)
+        
         self.assertEqual(data.members["func"]["type"], "Function")
+        self.assertIsInstance(data.members["func"]["params"], dict)
+        self.assertEqual(data.members["func"]["params"]["a"]["type"], ["Integer"])
+        self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])
+        
         self.assertEqual(data.members["string"]["type"], "String")
         self.assertEqual(data.members["map"]["type"], "Map")
+        
         self.assertEqual(data.members["hook"]["type"], "Function")
         self.assertIsInstance(data.members["hook"]["params"], dict)
+        self.assertEqual(data.members["hook"]["params"]["a"]["type"], ["voodoo.Hoo"])
         
         
         
