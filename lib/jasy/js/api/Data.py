@@ -196,8 +196,6 @@ class ApiData():
                             else:
                                 self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
             
-        print(entry)
-
                     
 
 
