@@ -252,8 +252,10 @@ class TestApi(unittest.TestCase):
             
             })(),
 
-            /** A function for doing things with @a {voodoo.Hoo} */
-            hook: isSomething() ? function(a) {} : function(a) {}
+            hook: isSomething() ? 
+              /** A function for doing things with @a {voodoo.Hoo} */
+              function(a) {} : 
+              function(a) {}
         
           }
           
@@ -326,9 +328,6 @@ class TestApi(unittest.TestCase):
 
             func: (function() {
 
-              /**
-               * Returns the sum of @a {Integer} and @b {Integer}
-               */
               return function(a, b) {
                 return a+b;
               };
@@ -337,14 +336,12 @@ class TestApi(unittest.TestCase):
 
             string: (function() {
 
-              /** {=String} Private data */
               return "private";
 
             })(),
 
             map: (function() {
 
-              /** {=Map} A map with `x` and `y`. */
               return {
                 foo: 1, 
                 bar: 2
@@ -352,8 +349,10 @@ class TestApi(unittest.TestCase):
 
             })(),
 
-            /** A function for doing things with @a {voodoo.Hoo} */
-            hook: isSomething() ? function(a) {} : function(a) {}
+            hook: isSomething() ? function(a) {} : function(a) {},
+            
+            hookNull: isEmpty() ? null : function(a) {}
+            
 
           }
 
@@ -365,15 +364,19 @@ class TestApi(unittest.TestCase):
 
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertIsInstance(data.members["func"]["params"], dict)
-        self.assertEqual(data.members["func"]["params"]["a"]["type"], ["Integer"])
-        self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])
+        self.assertIsInstance(data.members["func"]["params"]["a"], dict)
+        self.assertIsInstance(data.members["func"]["params"]["b"], dict)
 
         self.assertEqual(data.members["string"]["type"], "String")
         self.assertEqual(data.members["map"]["type"], "Map")
 
         self.assertEqual(data.members["hook"]["type"], "Function")
         self.assertIsInstance(data.members["hook"]["params"], dict)
-        self.assertEqual(data.members["hook"]["params"]["a"]["type"], ["voodoo.Hoo"])        
+        self.assertIsInstance(data.members["hook"]["params"]["a"], dict)        
+
+        self.assertEqual(data.members["hookNull"]["type"], "Function")
+        self.assertIsInstance(data.members["hookNull"]["params"], dict)
+        self.assertIsInstance(data.members["hookNull"]["params"]["a"], dict)        
         
         
 

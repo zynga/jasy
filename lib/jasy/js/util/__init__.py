@@ -83,14 +83,30 @@ def findCommentNode(node):
                     return True
 
     return query(node, matcher)
-    
 
-def query(node, matcher):
+
+def findReturn(node):
+    def matcher(node):
+        return node.type == "return"
+        
+    return query(node, matcher, True)
+
+
+def query(node, matcher, deep=True, inner=False):
+    # - node: any node
+    # - matcher: function which should return a truish value when node matches
+    # - scope: whether inner scopes should be scanned, too
+    # - inner: used internally to differentiate between current and inner nodes
+    
+    # Don't do in closure functions
+    if inner and not deep and node.type == "function":
+        return None
+    
     if matcher(node):
         return node
     
     for child in node:
-        result = query(child, matcher)
+        result = query(child, matcher, deep, True)
         if result is not None:
             return result
 

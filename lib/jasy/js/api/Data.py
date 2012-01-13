@@ -110,52 +110,74 @@ class ApiData():
                 "type" : nodeTypeToDocType[valueNode.type]
             }
             
+            
+        # 
+        # Complex structured types are processed in two steps
+        #
+        if entry["type"] in ("Call", "Hook"):
+            
+            commentNode = findCommentNode(commentNode)
+            if commentNode:
+
+                comment = self.getDocComment(commentNode, "Call %s" % name)
+                if comment:
+
+                    # Static type definition
+                    if comment.stype:
+                        entry["type"] = comment.stype
+                        self.addEntry(name, valueNode, commentNode, collection)
+                
+                    else:
+                    
+                        # Maybe type function: We need to ignore returns etc. which are often
+                        # the parent of the comment.
+                        valueNode = findFunction(commentNode)
+                        if valueNode:
+                        
+                            # Switch to function type for re-analysis
+                            entry["type"] = "Function"
+                            self.addEntry(name, valueNode, commentNode, collection)
+                        
+            elif entry["type"] == "Call":
+                
+                # We try to analyze what the first return node returns
+                returnNode = findReturn(valueNode)
+                if returnNode and len(returnNode) > 0:
+                    returnValue = returnNode[0]
+                    entry["type"] = nodeTypeToDocType[returnValue.type]
+                    self.addEntry(name, returnValue, returnValue, collection)
+                    
+            elif entry["type"] == "Hook":
+                
+                firstEntry = valueNode[1]
+                firstType = nodeTypeToDocType[firstEntry.type]
+                if not firstType in ("void", "null"):
+                    entry["type"] = firstType
+                    self.addEntry(name, firstEntry, firstEntry, collection)
+
+                # Try second item for better data then null/void
+                else:
+                    secondEntry = valueNode[2]
+                    secondType = nodeTypeToDocType[secondEntry.type]
+                    entry["type"] = secondType
+                    self.addEntry(name, secondEntry, secondEntry, collection)
+                
+            return
+
+
 
         #
         # Processes special types:
         #
         # - Plus: Whether a string or number is created
         # - Object: Figures out the class instance which is created
-        # - Call/Hooks: Might have real doc comment inside the structure. We can also deep 
-        #     analyse them to figure out the real type via return statement checks or hook analysis
         #
         if entry["type"] == "Plus":
             entry["type"] = detectPlusType(valueNode)
         
         elif entry["type"] == "Object":
             entry["type"] = detectObjectType(valueNode)
-                
-        elif entry["type"] in ("Call", "Hook"):
-            
-            # TODO: Look for return values, left values in hooks first???
-            
-            commentNode = findCommentNode(commentNode)
-            comment = self.getDocComment(commentNode, "Call %s" % name)
-            
-            if comment:
-
-                # Static type definition
-                if comment.stype:
-                    entry["type"] = comment.stype
-                    self.addEntry(name, valueNode, commentNode, collection)
-                
-                else:
-                    
-                    # Maybe type function: We need to ignore returns etc. which are often
-                    # the parent of the comment.
-                    valueNode = findFunction(commentNode)
-                    if valueNode:
-                        
-                        # Switch to function type for re-analysis
-                        entry["type"] = "Function"
-                        self.addEntry(name, valueNode, commentNode, collection)
-                        
-            else:
-                print("TODO: Auto deep type analysis")
-
-            return
         
-
         
         
         #
@@ -175,10 +197,14 @@ class ApiData():
         # Add additional data for function types (params, returns)
         #
         if entry["type"] == "Function":
+            
+            # Add basic param data
             funcParams = getParamNamesFromFunction(valueNode)
             if funcParams:
-                entry["params"] = {paramName: None for paramName in funcParams}
-
+                entry["params"] = {}
+                for paramName in funcParams:
+                    entry["params"][paramName] = {}
+                
             # TODO: Automatic return analysis?
 
             # Use comment for enrich existing data
@@ -196,7 +222,6 @@ class ApiData():
                             else:
                                 self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
             
-                    
 
 
     def getDocComment(self, node, msg=None):
