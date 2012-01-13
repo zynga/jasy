@@ -37,7 +37,7 @@ class TestApi(unittest.TestCase):
           members: {
             pi: 3.14,
             str: "hello world",
-            bool: true,
+            bool: true
           }
         });
         
@@ -353,7 +353,11 @@ class TestApi(unittest.TestCase):
             
             hookNull: isEmpty() ? null : function(a) {},
             
-            hookMissingType: doTest() ? /** Width to apply */ 14 : 16
+            hookMissingType: doTest() ? /** Width to apply */ 14 : 16,
+            
+            hookCascade: first ? second ? 1 : 2 : 3,
+
+            hookCascadeDeep: first ? second ? 1 : 2 : third ? 3 : 4
 
           }
 
@@ -381,6 +385,9 @@ class TestApi(unittest.TestCase):
 
         self.assertEqual(data.members["hookMissingType"]["type"], "Number")
         self.assertEqual(data.members["hookMissingType"]["doc"], "<p>Width to apply</p>\n")
+
+        self.assertEqual(data.members["hookCascade"]["type"], "Number")
+        self.assertEqual(data.members["hookCascadeDeep"]["type"], "Number")
         
         
 
