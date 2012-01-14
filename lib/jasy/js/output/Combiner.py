@@ -152,7 +152,7 @@ def storeSourceLoader(fileName, classes, session, bootCode="", relativeRoot="sou
         files.append('"%s"' % fromWebFolder)
 
     loader = ",".join(files)
-    boot = "function(){%s}" % bootCode if bootCode else ""
+    boot = "function(){%s}" % bootCode if bootCode else "null"
     result = 'core.io.Queue.load([%s], %s, null, true)' % (loader, boot)
 
     writeFile(fileName, result)
