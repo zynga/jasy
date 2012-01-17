@@ -14,7 +14,7 @@ import jasy.js.output.Compressor as Compressor
 
 
 
-class TestInjectValue(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     def process(self, code, contextId=""):
         node = Parser.parse(code)
@@ -173,6 +173,6 @@ class TestInjectValue(unittest.TestCase):
     
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestInjectValue)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)
     

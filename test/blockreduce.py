@@ -13,7 +13,7 @@ import jasy.js.optimize.BlockReducer as BlockReducer
 
 
 
-class TestBlockReducer(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
@@ -503,6 +503,6 @@ class TestBlockReducer(unittest.TestCase):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestBlockReducer)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)    
 

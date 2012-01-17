@@ -12,7 +12,7 @@ import jasy.js.output.Compressor as Compressor
 import jasy.i18n.Translation as Translation
 
 
-class TestTranslation(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
@@ -173,7 +173,7 @@ class TestTranslation(unittest.TestCase):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestTranslation)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)
 
 

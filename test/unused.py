@@ -13,7 +13,7 @@ import jasy.js.clean.Unused as Unused
 
 
         
-class TestRemoveUnused(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
@@ -311,6 +311,6 @@ class TestRemoveUnused(unittest.TestCase):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestRemoveUnused)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)
 

@@ -12,7 +12,7 @@ import jasy.js.optimize.CryptPrivates as CryptPrivates
 
 
 
-class TestRenamePrivates(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     def process(self, code, contextId=""):
         node = Parser.parse(code)
@@ -136,7 +136,7 @@ class TestRenamePrivates(unittest.TestCase):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestRenamePrivates)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)
 
 

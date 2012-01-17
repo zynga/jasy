@@ -12,7 +12,7 @@ import jasy.js.output.Compressor as Compressor
 import jasy.js.optimize.CombineDeclarations as CombineDeclarations
 
 
-class TestCombineDeclarations(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
@@ -146,6 +146,6 @@ class TestCombineDeclarations(unittest.TestCase):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestCombineDeclarations)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)
 

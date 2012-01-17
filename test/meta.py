@@ -10,7 +10,7 @@ import jasy.js.parse.Parser as Parser
 from jasy.js.MetaData import MetaData
 
         
-class TestMeta(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     def process(self, code):
         tree = Parser.parse(code)
@@ -42,5 +42,5 @@ class TestMeta(unittest.TestCase):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestMeta)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)

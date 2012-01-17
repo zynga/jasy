@@ -13,7 +13,7 @@ import jasy.js.optimize.LocalVariables as LocalVariables
 
 
 
-class TestLocalVariables(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
@@ -278,5 +278,5 @@ class TestLocalVariables(unittest.TestCase):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestLocalVariables)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)

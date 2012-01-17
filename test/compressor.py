@@ -10,7 +10,7 @@ import jasy.js.parse.Parser as Parser
 import jasy.js.output.Compressor as Compressor
 
 
-class TestCompressor(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     def process(self, code):
         return Compressor.compress(Parser.parse(code))
@@ -293,6 +293,6 @@ class TestCompressor(unittest.TestCase):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestCompressor)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)
 

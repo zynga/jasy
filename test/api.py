@@ -11,7 +11,7 @@ import jasy.js.parse.Parser as Parser
 import jasy.js.api.Data as Data
 
 
-class TestApi(unittest.TestCase):
+class Tests(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
@@ -396,7 +396,7 @@ class TestApi(unittest.TestCase):
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestApi)
+    suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)        
 
     
