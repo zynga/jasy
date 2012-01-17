@@ -10,11 +10,6 @@ if major < 3:
 # Load distutils and switch to distribute afterwards
 from distutils.core import setup
 
-# Extend PYTHONPATH with local 'lib' folder
-#jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir))
-#print("ROOT: %s" % jasyroot)
-#sys.path.insert(0, jasyroot)
-
 # Import Jasy for version info etc.
 import jasy
 
