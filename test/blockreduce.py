@@ -18,7 +18,7 @@ class Tests(unittest.TestCase):
     def process(self, code):
         node = Parser.parse(code)
         BlockReducer.optimize(node)
-        return Compressor.compress(node)
+        return Compressor.Compressor().compress(node)
 
     def test_combine_mixed(self):
         self.assertEqual(self.process('var str = 4 + 3 + "x"'), 'var str="7x";')

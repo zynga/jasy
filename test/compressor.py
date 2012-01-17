@@ -13,7 +13,7 @@ import jasy.js.output.Compressor as Compressor
 class Tests(unittest.TestCase):
 
     def process(self, code):
-        return Compressor.compress(Parser.parse(code))
+        return Compressor.Compressor().compress(Parser.parse(code))
         
     def test_and(self):
         self.assertEqual(self.process('x && y'), 'x&&y;')

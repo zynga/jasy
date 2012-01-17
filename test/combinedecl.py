@@ -18,7 +18,7 @@ class Tests(unittest.TestCase):
         node = Parser.parse(code)
         ScopeScanner.scan(node)
         CombineDeclarations.optimize(node)
-        return Compressor.compress(node)
+        return Compressor.Compressor().compress(node)
 
 
     def test_combine_basic(self):

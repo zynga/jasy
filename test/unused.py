@@ -18,7 +18,7 @@ class Tests(unittest.TestCase):
     def process(self, code):
         node = Parser.parse(code)
         Unused.cleanup(node)
-        return Compressor.compress(node)        
+        return Compressor.Compressor().compress(node)        
 
     def test_var_single(self):
         """ y is unused. Removed whole var block. """

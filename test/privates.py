@@ -17,7 +17,7 @@ class Tests(unittest.TestCase):
     def process(self, code, contextId=""):
         node = Parser.parse(code)
         CryptPrivates.optimize(node, contextId)
-        return Compressor.compress(node)        
+        return Compressor.Compressor().compress(node)        
 
     def test_assign(self):
         self.assertEqual(self.process(

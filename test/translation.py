@@ -37,7 +37,7 @@ class Tests(unittest.TestCase):
         
         translation.patch(node)
         
-        return Compressor.compress(node)        
+        return Compressor.Compressor().compress(node)        
 
 
     def test_basic(self):

@@ -26,7 +26,7 @@ class Tests(unittest.TestCase):
             'fullversion': 3.11
         })
         permutation.patch(node)
-        return Compressor.compress(node)    
+        return Compressor.Compressor().compress(node)    
     
     
     def test_get(self):
