@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, os, unittest
+import sys, os, unittest, logging
 
 # Extend PYTHONPATH with local 'lib' folder
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, "lib"))
@@ -145,5 +145,7 @@ class TestCombineDeclarations(unittest.TestCase):
         
 
 if __name__ == '__main__':
-    declarationTests = unittest.TestLoader().loadTestsFromTestCase(TestCombineDeclarations)
-    unittest.TextTestRunner(verbosity=1).run(declarationTests)
+    logging.getLogger().setLevel(logging.ERROR)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestCombineDeclarations)
+    unittest.TextTestRunner(verbosity=2).run(suite)
+

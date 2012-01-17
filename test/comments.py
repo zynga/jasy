@@ -1,4 +1,6 @@
-import sys, os, unittest
+#!/usr/bin/env python3
+
+import sys, os, unittest, logging
 
 # Extend PYTHONPATH with local 'lib' folder
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, "lib"))
@@ -1349,6 +1351,7 @@ class TestComments(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    tests = unittest.TestLoader().loadTestsFromTestCase(TestComments)
-    unittest.TextTestRunner(verbosity=1).run(tests)        
+    logging.getLogger().setLevel(logging.ERROR)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestComments)
+    unittest.TextTestRunner(verbosity=2).run(suite)      
     

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys, os, unittest, logging
 
 # Extend PYTHONPATH with local 'lib' folder

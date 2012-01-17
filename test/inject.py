@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
-import sys, os, unittest
+import sys, os, unittest, logging
 
 # Extend PYTHONPATH with local 'lib' folder
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, "lib"))
 sys.path.insert(0, jasyroot)
 
+import jasy.core.Permutation as Permutation
+
 import jasy.js.parse.Parser as Parser
 import jasy.js.parse.ScopeScanner as ScopeScanner
-import jasy.js.Permutation as Permutation
 import jasy.js.output.Compressor as Compressor
 
 
@@ -168,78 +169,10 @@ class TestInjectValue(unittest.TestCase):
             'var prefix="Webkit";'
         )             
 
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )
 
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )
-        
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )             
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )
-        
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )             
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )
-
-    def test_(self):
-        self.assertEqual(self.process(
-            '''
-            '''),
-            ''
-        )                                    
-        
-
+    
 if __name__ == '__main__':
-
-    injectTests = unittest.TestLoader().loadTestsFromTestCase(TestInjectValue)
-    unittest.TextTestRunner(verbosity=1).run(injectTests)    
+    logging.getLogger().setLevel(logging.ERROR)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestInjectValue)
+    unittest.TextTestRunner(verbosity=2).run(suite)
+    
