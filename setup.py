@@ -7,14 +7,8 @@ major, minor = sys.version_info[:2]
 if major < 3:
     raise Exception("Jasy requires Python 3")
 
-# Use the best available install method
-# The future will be distutils2 and will replace distutils/setuptools/distribute
-# See also: http://stackoverflow.com/questions/6344076/differences-between-distribute-distutils-and-setuptools
-
 # Load distutils and switch to distribute afterwards
 from distutils.core import setup
-from distribute_setup import use_setuptools
-use_setuptools()
 
 # Extend PYTHONPATH with local 'lib' folder
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, "lib"))
@@ -31,7 +25,7 @@ setup(
       author_email = 'info@sebastian-werner.net',
       
       url = 'http://github.com/wpbasti/jasy',
-      download_url = "http://pypi.python.org/packages/source/j/jasy/jasy-%s.tar.gz" % jasy.__version__,
+      download_url = "http://pypi.python.org/packages/source/j/jasy/jasy-%s.zip" % jasy.__version__,
       
       license = "Apache v2.0",
       platforms = 'any',
@@ -59,12 +53,6 @@ setup(
       
       ],
       
-      install_requires=[
-          'polib==0.7',
-          'misaka',
-          'pygments'
-      ],      
-      
       packages = [
         'jasy',
         'jasy.asset',
@@ -80,10 +68,6 @@ setup(
         'jasy.js.util',
         'jasy.util'
       ],
-      
-      package_dir = {
-        '': 'lib'
-      },
       
       package_data = {
         'jasy': [
@@ -105,12 +89,13 @@ setup(
       
       data_files = [
         ("doc", [
-          "LICENSE.txt"
+          "LICENSE.txt",
+          "README.txt"
          ]
         ),
         ("", [
           "requirements.txt",
-          "distribute_setup.py"
+          "test.py"
         ])
       ]
 )
