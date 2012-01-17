@@ -11,7 +11,7 @@ import jasy.core.Permutation as Permutation
 import jasy.js.parse.Parser as Parser
 import jasy.js.parse.ScopeScanner as ScopeScanner
 import jasy.js.output.Compressor as Compressor
-
+import jasy.js.clean.Permutate as Permutate
 
 
 class Tests(unittest.TestCase):
@@ -25,7 +25,7 @@ class Tests(unittest.TestCase):
             'version': 3,
             'fullversion': 3.11
         })
-        permutation.patch(node)
+        Permutate.patch(node, permutation)
         return Compressor.Compressor().compress(node)    
     
     
