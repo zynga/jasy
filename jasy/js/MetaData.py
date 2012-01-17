@@ -40,13 +40,13 @@ class MetaData:
                     if "name" in commentTags:
                         self.name = list(commentTags["name"])[0]
                     if "require" in commentTags:
-                        self.requires.update(set(commentTags["require"]))
+                        self.requires.update(commentTags["require"])
                     if "optional" in commentTags:
-                        self.optionals.update(set(commentTags["optional"]))
+                        self.optionals.update(commentTags["optional"])
                     if "break" in commentTags:
-                        self.breaks.update(set(commentTags["break"]))
+                        self.breaks.update(commentTags["break"])
                     if "asset" in commentTags:
-                        self.assets.update(set(commentTags["asset"]))
+                        self.assets.update(commentTags["asset"])
 
         # Process children
         for child in node:
