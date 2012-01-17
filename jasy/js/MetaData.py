@@ -31,11 +31,7 @@ class MetaData:
         """ The internal inspection routine """
     
         # Parse comments
-        try:
-            comments = node.comments
-        except AttributeError:
-            comments = None
-    
+        comments = getattr(node, "comments", None)
         if comments:
             for comment in comments:
                 commentTags = comment.getTags()
