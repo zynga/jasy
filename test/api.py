@@ -1,13 +1,14 @@
-import sys, os, unittest
+import sys, os, unittest, logging
 
 # Extend PYTHONPATH with local 'lib' folder
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, "lib"))
 sys.path.insert(0, jasyroot)
 
+
 import jasy.js.parse.Parser as Parser
 import jasy.js.api.Data as Data
 
-        
+
 class TestApi(unittest.TestCase):
 
     def process(self, code):
@@ -392,7 +393,8 @@ class TestApi(unittest.TestCase):
         
 
 if __name__ == '__main__':
-    tests = unittest.TestLoader().loadTestsFromTestCase(TestApi)
-    unittest.TextTestRunner(verbosity=1).run(tests)        
+    logging.getLogger().setLevel(logging.ERROR)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestApi)
+    unittest.TextTestRunner(verbosity=2).run(suite)        
 
     
