@@ -5,7 +5,7 @@
 
 class MetaData:
     """ 
-    Data structure to hold all dependency information 
+    Data structure to hold all meta information 
 
     Hint: Must be a clean data class without links to other 
     systems for optiomal cachability using Pickle

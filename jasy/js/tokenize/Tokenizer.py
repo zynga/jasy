@@ -214,6 +214,10 @@ class Tokenizer(object):
                         
                     text += ch
                     
+                
+                # Filter escaping on slash-star combinations in comment text
+                text = text.replace("*\/", "*/")
+                
                 try:
                     self.comments.append(Comment(text, mode, commentStartLine, indent))
                 except CommentException as commentError:
