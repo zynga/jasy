@@ -1,6 +1,5 @@
 *.pyc
-*.db
-dist
 .DS_Store
+dist
 build
 MANIFEST

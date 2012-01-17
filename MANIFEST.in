@@ -1,6 +1,7 @@
 #recursive-include bin *
-#recursive-include lib *.py
+#recursive-include jasy *.py
+#recursive-include test *.py
 #include LICENSE.txt
 #include README.txt
-#include distribute_setup.py
+#include test.py
 #global-exclude build
