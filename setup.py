@@ -79,8 +79,15 @@ setup(
         ]
       },
       
+      install_requires=[
+          'polib',
+          'misaka',
+          'pygments'
+      ],      
+      
       scripts = [
         "bin/jasy", 
+        "bin/jsapi", 
         "bin/jscompress", 
         "bin/jsdeps", 
         "bin/jsmeta", 
