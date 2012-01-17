@@ -5,7 +5,10 @@
 
 class MetaData:
     """ 
-    Data structure to hold all meta information 
+    Data structure to hold all meta information. 
+    
+    A instance of this class is typically created by processing all 
+    meta data relevant tags of all doc comments in the given node structure.
 
     Hint: Must be a clean data class without links to other 
     systems for optiomal cachability using Pickle
