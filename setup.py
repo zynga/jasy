@@ -102,7 +102,6 @@ setup(
          ]
         ),
         ("", [
-          "requirements.txt",
           "test.py"
         ])
       ]
