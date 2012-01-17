@@ -9,61 +9,6 @@ __version__ = "0.5-alpha3"
 # Export only main routine
 __all__ = ["main", "__version__"]
 
-import sys, logging, os
-from optparse import OptionParser
-
-
-
-#
-# Parse options
-#
-
-parser = OptionParser()
-parser.add_option("-q", "--quiet", action="store_false", dest="verbose", help="don't print status messages to stdout")
-parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="print more detailed status messages to stdout")
-parser.add_option("-l", "--log", dest="logfile", help="Write debug messages to given logfile")
-parser.add_option("-f", "--file", dest="file", help="Use the given jasy script")
-parser.add_option("-V", "--version", action="store_true", dest="showVersion", help="Use the given jasy script")
-
-(options, args) = parser.parse_args()
-
-
-
-#
-# Configure logging
-# 
-
-# Configure log level for root logger first (enable debug level when either logfile or console verbosity is activated)
-loglevel = logging.INFO
-if options.logfile or options.verbose is True:
-    loglevel = logging.DEBUG
-
-# Basic configuration of console logging
-logging.basicConfig(level=loglevel, format="%(message)s")
-
-# Configure console handler to correct level
-if options.verbose is True:
-    logging.getLogger().handlers[0].setLevel(logging.DEBUG)
-elif options.verbose is False:
-    logging.getLogger().handlers[0].setLevel(logging.WARN)
-else:
-    logging.getLogger().handlers[0].setLevel(logging.INFO)
-
-# Enable writing to logfile with debug level
-if options.logfile:
-    logfileHandler = logging.FileHandler(options.logfile)
-    logfileHandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
-    logfileHandler.setLevel(logging.DEBUG)
-    logging.getLogger().addHandler(logfileHandler) 
-
-logging.info("Jasy %s" % __version__)
-
-
-
-#
-# Import environment for JasyScript developers
-#
-
 from jasy.core.Error import *
 from jasy.core.Task import *
 from jasy.core.Session import *
@@ -83,13 +28,12 @@ from jasy.js.output.Formatting import *
 from jasy.util.File import *
 
 
-
-
-
-def main():
+def main(options=None):
     """
     Main routine of Jasy. This method is called by the "jasy" script.
     """
+
+    logging.info("Jasy %s" % __version__)
 
     try:
         #
