@@ -565,6 +565,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.html, "<p>Returns the sum of x and y.</p>\n")
         self.assertEqual(comment.text, "Returns the sum of x and y.")
+        self.assertEqual(comment.returns, ["Number"])
         
         
     def test_doc_return_twotypes(self):
@@ -586,7 +587,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.html, "<p>Returns the sum of x and y.</p>\n")
         self.assertEqual(comment.text, "Returns the sum of x and y.")
-        self.assertEqual(comment.returns["type"], ["Number", "String"])
+        self.assertEqual(comment.returns, ["Number", "String"])
     
     
     
