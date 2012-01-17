@@ -39,7 +39,7 @@ class MetaData:
                 if commentTags:
 
                     if "name" in commentTags:
-                        self.name = commentTags["name"]
+                        self.name = list(commentTags["name"])[0]
                     if "require" in commentTags:
                         self.requires.update(set(commentTags["require"]))
                     if "optional" in commentTags:

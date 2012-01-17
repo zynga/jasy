@@ -41,6 +41,31 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(meta.breaks), 0)
         self.assertEqual(len(meta.assets), 0)
         
+        
+    def test_name(self):
+
+        meta = self.process('''
+
+        /**
+         * Hello World
+         *
+         * #name(my.main.Class)
+         */
+
+        ''')
+
+        self.assertIsInstance(meta, MetaData)
+        self.assertEqual(meta.name, "my.main.Class")
+        self.assertIsInstance(meta.requires, set)
+        self.assertIsInstance(meta.optionals, set)
+        self.assertIsInstance(meta.breaks, set)
+        self.assertIsInstance(meta.assets, set)
+        self.assertEqual(len(meta.requires), 0)
+        self.assertEqual(len(meta.optionals), 0)
+        self.assertEqual(len(meta.breaks), 0)
+        self.assertEqual(len(meta.assets), 0)
+        
+        
     def test_classes(self):
 
         meta = self.process('''
@@ -113,7 +138,31 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(meta, MetaData)
         
         # Test unescaping
-        self.assertEqual(meta.assets, set(["icons/*/home.png"]))        
+        self.assertEqual(meta.assets, set(["icons/*/home.png"]))
+        
+        
+    
+    def test_structured(self):
+
+        meta = self.process('''
+
+        (function(global) {
+        
+          global.my.Class = function() {
+          
+            /**
+             * #asset(projectx/some/local/url.png)
+             */
+            var uri = core.io.Asset.toUri("projectx/some/local/url.png");
+            
+          };
+        
+        })(this);
+
+        ''')
+
+        self.assertIsInstance(meta, MetaData)
+        self.assertEqual(meta.assets, set(["projectx/some/local/url.png"]))        
 
 
 
