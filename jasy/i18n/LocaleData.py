@@ -1,6 +1,6 @@
 #
 # Jasy - Web Tooling Framework
-# Copyright 2010-2011 Sebastian Werner
+# Copyright 2010-2012 Sebastian Werner
 #
 
 import logging, os, json, re, xml.etree.ElementTree

@@ -1,6 +1,6 @@
 #
 # Jasy - Web Tooling Framework
-# Copyright 2010-2011 Sebastian Werner
+# Copyright 2010-2012 Sebastian Werner
 #
 
 class MetaData:
@@ -15,6 +15,7 @@ class MetaData:
     
     def __init__(self, tree):
         self.name = None
+        
         self.requires = set()
         self.optionals = set()
         self.breaks = set()
