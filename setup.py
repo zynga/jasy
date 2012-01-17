@@ -27,7 +27,7 @@ setup(
       platforms = 'any',
       
       description = "Web Tooling Framework",
-      long_description = open('README.txt').read(),
+      long_description = open('readme.md').read(),
       
       # Via: http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers = [
@@ -92,8 +92,8 @@ setup(
       
       data_files = [
         ("doc", [
-          "LICENSE.txt",
-          "README.txt"
+          "license.md",
+          "readme.md"
          ]
         ),
         ("", [
