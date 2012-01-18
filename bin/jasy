@@ -33,195 +33,101 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-import os
-import os.path
 import sys
 
 major, minor = sys.version_info[:2]
-
 if major < 3:
     raise Exception("Jasy requires Python 3")
 
 script_dir = sys.path[0]
-
 if script_dir in sys.path:
     sys.path.remove(script_dir)
 
-libs = []
-prefs = []
+# Import standard library stuff
+import sys, logging, unittest, os.path
+from optparse import OptionParser
 
-if sys.platform == 'win32':
-    # sys.prefix is (likely) C:\Python*;
-    # check only C:\Python*.
-    prefs.append(sys.prefix)
-    prefs.append(os.path.join(sys.prefix, 'Lib', 'site-packages'))
+# Include local Jasy into Python library path
+if os.path.basename(script_dir) == "bin":
+    root_dir = os.path.dirname(script_dir)
+    if os.path.exists(os.path.join(root_dir, "jasy")):
+        sys.path.insert(0, root_dir)
+
+# Configure Option Parser
+parser = OptionParser()
+parser.add_option("-q", "--quiet", action="store_false", dest="verbose", help="don't print status messages to stdout")
+parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="print more detailed status messages to stdout")
+parser.add_option("-l", "--log", dest="logfile", help="Write debug messages to given logfile")
+parser.add_option("-f", "--file", dest="file", help="Use the given jasy script")
+parser.add_option("-V", "--version", action="store_true", dest="showVersion", help="Use the given jasy script")
+
+(options, args) = parser.parse_args()
+
+# Configure log level for root logger first (enable debug level when either logfile or console verbosity is activated)
+loglevel = logging.INFO
+if options.logfile or options.verbose is True:
+    loglevel = logging.DEBUG
+
+# Basic configuration of console logging
+logging.basicConfig(level=loglevel, format="%(message)s")
+
+# Configure console handler to correct level
+if options.verbose is True:
+    logging.getLogger().handlers[0].setLevel(logging.DEBUG)
+elif options.verbose is False:
+    logging.getLogger().handlers[0].setLevel(logging.WARN)
 else:
-    # On other (POSIX) platforms, things are more complicated due to
-    # the variety of path names and library locations.  Try to be smart
-    # about it.
-    if script_dir == 'bin':
-        # script_dir is `pwd`/bin;
-        # check `pwd`/lib/jasy*.
-        prefs.append(os.getcwd())
-    else:
-        if script_dir == '.' or script_dir == '':
-            script_dir = os.getcwd()
-        head, tail = os.path.split(script_dir)
-        if tail == "bin":
-            # script_dir is /foo/bin;
-            # check /foo/lib/jasy*.
-            prefs.append(head)
+    logging.getLogger().handlers[0].setLevel(logging.INFO)
 
-    head, tail = os.path.split(sys.prefix)
-    if tail == "usr":
-        # sys.prefix is /foo/usr;
-        # check /foo/usr/lib/jasy* first,
-        # then /foo/usr/local/lib/jasy*.
-        prefs.append(sys.prefix)
-        prefs.append(os.path.join(sys.prefix, "local"))
-    elif tail == "local":
-        h, t = os.path.split(head)
-        if t == "usr":
-            # sys.prefix is /foo/usr/local;
-            # check /foo/usr/local/lib/jasy* first,
-            # then /foo/usr/lib/jasy*.
-            prefs.append(sys.prefix)
-            prefs.append(head)
-        else:
-            # sys.prefix is /foo/local;
-            # check only /foo/local/lib/jasy*.
-            prefs.append(sys.prefix)
-    else:
-        # sys.prefix is /foo (ends in neither /usr or /local);
-        # check only /foo/lib/jasy*.
-        prefs.append(sys.prefix)
+# Enable writing to logfile with debug level
+if options.logfile:
+    logfileHandler = logging.FileHandler(options.logfile)
+    logfileHandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
+    logfileHandler.setLevel(logging.DEBUG)
+    logging.getLogger().addHandler(logfileHandler)        
 
-    temp = [os.path.join(x, 'lib') for x in prefs]
-    temp.extend([os.path.join(x,
-           'lib',
-           'python' + sys.version[:3],
-           'site-packages') for x in prefs])
-    prefs = temp
+# Include the Jasy public API
+import jasy
 
-    # Add the parent directory of the current python's library to the
-    # preferences.  On SuSE-91/AMD64, for example, this is /usr/lib64,
-    # not /usr/lib.
-    try:
-        libpath = os.__file__
-    except AttributeError:
-        pass
-    else:
-        # Split /usr/libfoo/python*/os.py to /usr/libfoo/python*.
-        libpath, tail = os.path.split(libpath)
-        # Split /usr/libfoo/python* to /usr/libfoo
-        libpath, tail = os.path.split(libpath)
-        # Check /usr/libfoo/jasy*.
-        prefs.append(libpath)
+logging.info("Jasy %s [%s]" % (jasy.__version__, os.path.dirname(os.path.abspath(jasy.__file__))))
 
-    try:
-        import pkg_resources
-    except ImportError:
-        pass
-    else:
-        # when running from an egg add the egg's directory 
-        try:
-            d = pkg_resources.get_distribution('jasy')
-        except pkg_resources.DistributionNotFound:
-            pass
-        else:
-            prefs.append(d.location)
+# Find Jasy Script
+if options.file:
+    scriptname = options.file
+else:
+    scriptname = "jasyscript.py"
 
-libs.extend(prefs)
+if not os.path.isfile(scriptname) and not options.showVersion:
+    sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % scriptname)
+    sys.exit(1)
 
-sys.path = libs + sys.path
+try:
+    # Execute build script
+    buildfile = open(scriptname, "r")
+    retval = exec(buildfile.read(), globals())
 
-if __name__ == "__main__":
+    # filter out jasyscript reference, useful when doing ./jasyscript.py from the command line
+    if args and "jasyscript.py" in args[0]:
+        args.pop(0)
 
-    import sys, logging, os, unittest
-    from optparse import OptionParser
+    # list all tasks when none is given
+    if not args:
+        logging.error("No tasks to execute. Please choose from: ")
+        printTasks()
+        sys.exit(1)
 
-
-    #
-    # Parse options
-    #
-
-    parser = OptionParser()
-    parser.add_option("-q", "--quiet", action="store_false", dest="verbose", help="don't print status messages to stdout")
-    parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="print more detailed status messages to stdout")
-    parser.add_option("-l", "--log", dest="logfile", help="Write debug messages to given logfile")
-    parser.add_option("-f", "--file", dest="file", help="Use the given jasy script")
-    parser.add_option("-V", "--version", action="store_true", dest="showVersion", help="Use the given jasy script")
-
-    (options, args) = parser.parse_args()
-
-    # Configure log level for root logger first (enable debug level when either logfile or console verbosity is activated)
-    loglevel = logging.INFO
-    if options.logfile or options.verbose is True:
-        loglevel = logging.DEBUG
-
-    # Basic configuration of console logging
-    logging.basicConfig(level=loglevel, format="%(message)s")
-
-    # Configure console handler to correct level
-    if options.verbose is True:
-        logging.getLogger().handlers[0].setLevel(logging.DEBUG)
-    elif options.verbose is False:
-        logging.getLogger().handlers[0].setLevel(logging.WARN)
-    else:
-        logging.getLogger().handlers[0].setLevel(logging.INFO)
-
-    # Enable writing to logfile with debug level
-    if options.logfile:
-        logfileHandler = logging.FileHandler(options.logfile)
-        logfileHandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
-        logfileHandler.setLevel(logging.DEBUG)
-        logging.getLogger().addHandler(logfileHandler)        
+    # all arguments are processed as a list of task to execute in order
+    for name in args:
+        executeTask(name)
     
-    # Include the Jasy public API
-    import jasy
 
-    logging.info("Jasy %s" % jasy.__version__)
+except JasyError as error:
+    sys.stderr.write("%s\n" % error)
+    sys.exit(1)
 
-    # Find Jasy Script
-    if options.file:
-        scriptname = options.file
-    else:
-        scriptname = "jasyscript.py"
+except KeyboardInterrupt:
+    sys.stderr.write("Build interrupted!\n")
+    sys.exit(2)
 
-    if not os.path.isfile(scriptname):
-
-        if not options.showVersion:
-            raise Exception("Cannot find any Jasy script with task definitions (%s)!" % scriptname)
-
-    else:
-        
-        try:
-            # Execute build script
-            buildfile = open(scriptname, "r")
-            retval = exec(buildfile.read(), globals())
-
-            # filter out jasyscript reference, useful when doing ./jasyscript.py from the command line
-            if args and "jasyscript.py" in args[0]:
-                args.pop(0)
-
-            # list all tasks when none is given
-            if not args:
-                logging.error("No tasks to execute. Please choose from: ")
-                printTasks()
-                sys.exit(1)
-
-            # all arguments are processed as a list of task to execute in order
-            for name in args:
-                executeTask(name)
-            
-
-        except JasyError as error:
-            sys.stderr.write("%s\n" % error)
-            sys.exit(1)
-
-        except KeyboardInterrupt:
-            sys.stderr.write("Build interrupted!\n")
-            sys.exit(2)
-
-    sys.exit(0)
+sys.exit(0)
 
