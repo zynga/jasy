@@ -5,7 +5,7 @@
 # Copyright 2010-2012 Sebastian Werner
 #
 
-import logging, unittest
+import logging, unittest, pkg_resources
 
 loader = unittest.TestLoader()
 res = loader.discover("jasy/test", pattern='*.py')
