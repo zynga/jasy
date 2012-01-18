@@ -15,7 +15,7 @@ try:
     def markdown2html(markdownStr):
         return misaka.html(markdownStr, misakaExt, misakaRender)
 
-    logging.info("Using high performance C-based Markdown implementation")
+    logging.debug("Using high performance C-based Markdown implementation")
     
 except ImportError as ex:
     
@@ -26,7 +26,7 @@ except ImportError as ex:
         def markdown2html(markdownStr):
             return markdown.markdown(markdownStr)
 
-        logging.info("Using Python Markdown implementation.")
+        logging.debug("Using Python Markdown implementation.")
         
     except:
         
@@ -71,7 +71,7 @@ except ImportError as ex:
     def code2highlight(html):
         return html
     
-    logging.info("Syntax highlighting is disabled because Pygments is missing.")
+    logging.error("Syntax highlighting is disabled because Pygments is missing.")
     
 
 
