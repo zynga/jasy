@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Sebastian Werner
+#
+
 import sys, os
 
 major, minor = sys.version_info[:2]
