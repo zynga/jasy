@@ -57,6 +57,26 @@ if options.logfile:
 
 # Include the Jasy public API
 import jasy
+
+from jasy.core.Error import *
+from jasy.core.Task import *
+from jasy.core.Session import *
+from jasy.core.Project import *
+
+from jasy.asset.Asset import * 
+
+from jasy.js.Resolver import *
+from jasy.js.Sorter import *
+
+from jasy.js.api.Writer import *
+
+from jasy.js.output.Combiner import *
+from jasy.js.output.Optimization import *
+from jasy.js.output.Formatting import *
+
+from jasy.util.File import *
+
+# Print out some info
 logging.info("Jasy %s" % jasy.__version__)
 logging.debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
 
