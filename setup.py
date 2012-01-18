@@ -98,9 +98,6 @@ setup(
           "license.md",
           "readme.md"
          ]
-        ),
-        ("", [
-          "test.py"
-        ])
+        )
       ]
 )
