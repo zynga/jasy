@@ -67,6 +67,7 @@ setup(
         'jasy.js.parse',
         'jasy.js.tokenize',
         'jasy.js.util',
+        'jasy.test',
         'jasy.util'
       ],
       
