@@ -20,10 +20,13 @@ if os.path.exists(os.path.join(basedir, "jasy")):
 
 import logging, unittest, pkg_resources, jasy
 
+test_dir = os.path.normpath(os.path.join(os.path.dirname(jasy.__file__), "test"))
+
 print("Running Unit Tests for Jasy %s" % jasy.__version__)
+print("From: %s" % test_dir)
 
 loader = unittest.TestLoader()
-res = loader.discover(os.path.join(jasy.__path__, "jasy/test"), pattern='*.py')
+res = loader.discover(test_dir, pattern='*.py')
 
 logging.getLogger().setLevel(logging.ERROR)
 
