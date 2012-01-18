@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Sebastian Werner
+#
+
+# Import standard library stuff
+import sys, os.path, pkg_resources
+
+# Version check
+if sys.version_info[0] < 3:
+    sys.stderr.write("Jasy requires Python 3!\n")
+    sys.exit(1)
+
+# Include local Jasy into Python library path
+if os.path.basename(sys.path[0]) == "bin":
+    root_dir = os.path.dirname(sys.path[0])
+    if os.path.exists(os.path.join(root_dir, "jasy")):
+        sys.path.insert(0, root_dir)
+
+import logging, unittest, pkg_resources
+
+loader = unittest.TestLoader()
+res = loader.discover("jasy/test", pattern='*.py')
+
+logging.getLogger().setLevel(logging.ERROR)
+
+unittest.TextTestRunner(verbosity=1).run(res)

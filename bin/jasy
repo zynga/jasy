@@ -9,8 +9,9 @@
 import sys, os.path, pkg_resources
 
 # Version check
-if sys.version_info.major < 3:
-    raise Exception("Jasy requires Python 3")
+if sys.version_info[0] < 3:
+    sys.stderr.write("Jasy requires Python 3!\n")
+    sys.exit(1)
 
 # Include local Jasy into Python library path
 if os.path.basename(sys.path[0]) == "bin":

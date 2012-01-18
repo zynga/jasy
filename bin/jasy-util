@@ -9,8 +9,9 @@
 import sys, os.path, pkg_resources
 
 # Version check
-if sys.version_info.major < 3:
-    raise Exception("Jasy requires Python 3")
+if sys.version_info[0] < 3:
+    sys.stderr.write("Jasy requires Python 3!\n")
+    sys.exit(1)
 
 # Include local Jasy into Python library path
 if os.path.basename(sys.path[0]) == "bin":
@@ -18,13 +19,15 @@ if os.path.basename(sys.path[0]) == "bin":
     if os.path.exists(os.path.join(root_dir, "jasy")):
         sys.path.insert(0, root_dir)
         
-if len(sys.argv) == 0:
+if len(sys.argv) == 1:
     sys.stderr.write("Missing job name\n")
+    sys.exit(1)
     
 supported = set(("api", "compress", "deps", "meta", "optimize", "tree"))
 job = sys.argv[1]
 if not job in supported:
     sys.stderr.write("Invalid job %s\n" % job)
+    sys.exit(1)
 
 import jasy
 
