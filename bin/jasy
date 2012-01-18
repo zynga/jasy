@@ -5,27 +5,22 @@
 # Copyright 2010-2012 Sebastian Werner
 #
 
-import sys
+# Import standard library stuff
+import sys, logging, os.path, pkg_resources
 
-major, minor = sys.version_info[:2]
-if major < 3:
+# Version check
+if sys.version_info.major < 3:
     raise Exception("Jasy requires Python 3")
 
-script_dir = sys.path[0]
-if script_dir in sys.path:
-    sys.path.remove(script_dir)
-
-# Import standard library stuff
-import sys, logging, unittest, os.path
-from optparse import OptionParser
-
 # Include local Jasy into Python library path
-if os.path.basename(script_dir) == "bin":
-    root_dir = os.path.dirname(script_dir)
+if os.path.basename(sys.path[0]) == "bin":
+    root_dir = os.path.dirname(sys.path[0])
     if os.path.exists(os.path.join(root_dir, "jasy")):
         sys.path.insert(0, root_dir)
 
 # Configure Option Parser
+from optparse import OptionParser
+
 parser = OptionParser()
 parser.add_option("-q", "--quiet", action="store_false", dest="verbose", help="don't print status messages to stdout")
 parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="print more detailed status messages to stdout")
@@ -60,8 +55,8 @@ if options.logfile:
 
 # Include the Jasy public API
 import jasy
-
-logging.info("Jasy %s [%s]" % (jasy.__version__, os.path.dirname(os.path.abspath(jasy.__file__))))
+logging.info("Jasy %s" % jasy.__version__)
+logging.debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
 
 # Find Jasy Script
 if options.file:
