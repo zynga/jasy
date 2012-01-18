@@ -177,10 +177,12 @@ if __name__ == "__main__":
         logfileHandler.setLevel(logging.DEBUG)
         logging.getLogger().addHandler(logfileHandler)        
     
+    # Include the Jasy public API
     import jasy
 
     logging.info("Jasy %s" % jasy.__version__)
 
+    # Find Jasy Script
     if options.file:
         scriptname = options.file
     else:
