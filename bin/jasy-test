@@ -23,7 +23,7 @@ import logging, unittest, pkg_resources, jasy
 print("Running Unit Tests for Jasy %s" % jasy.__version__)
 
 loader = unittest.TestLoader()
-res = loader.discover(os.path.join(basedir, "jasy/test"), pattern='*.py')
+res = loader.discover(os.path.join(jasy.__path__, "jasy/test"), pattern='*.py')
 
 logging.getLogger().setLevel(logging.ERROR)
 
