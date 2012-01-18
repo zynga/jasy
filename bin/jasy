@@ -137,7 +137,7 @@ sys.path = libs + sys.path
 
 if __name__ == "__main__":
 
-    import sys, logging, os
+    import sys, logging, os, unittest
     from optparse import OptionParser
 
 
@@ -153,7 +153,6 @@ if __name__ == "__main__":
     parser.add_option("-V", "--version", action="store_true", dest="showVersion", help="Use the given jasy script")
 
     (options, args) = parser.parse_args()
-
 
     # Configure log level for root logger first (enable debug level when either logfile or console verbosity is activated)
     loglevel = logging.INFO
@@ -176,8 +175,51 @@ if __name__ == "__main__":
         logfileHandler = logging.FileHandler(options.logfile)
         logfileHandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
         logfileHandler.setLevel(logging.DEBUG)
-        logging.getLogger().addHandler(logfileHandler) 
-
-    # Run Jasy
+        logging.getLogger().addHandler(logfileHandler)        
+    
     import jasy
-    jasy.main(options)
+
+    logging.info("Jasy %s" % jasy.__version__)
+
+    if options.file:
+        scriptname = options.file
+    else:
+        scriptname = "jasyscript.py"
+
+    if not os.path.isfile(scriptname):
+
+        if not options.showVersion:
+            raise Exception("Cannot find any Jasy script with task definitions (%s)!" % scriptname)
+
+    else:
+        
+        try:
+            # Execute build script
+            buildfile = open(scriptname, "r")
+            retval = exec(buildfile.read(), globals())
+
+            # filter out jasyscript reference, useful when doing ./jasyscript.py from the command line
+            if args and "jasyscript.py" in args[0]:
+                args.pop(0)
+
+            # list all tasks when none is given
+            if not args:
+                logging.error("No tasks to execute. Please choose from: ")
+                printTasks()
+                sys.exit(1)
+
+            # all arguments are processed as a list of task to execute in order
+            for name in args:
+                executeTask(name)
+            
+
+        except JasyError as error:
+            sys.stderr.write("%s\n" % error)
+            sys.exit(1)
+
+        except KeyboardInterrupt:
+            sys.stderr.write("Build interrupted!\n")
+            sys.exit(2)
+
+    sys.exit(0)
+
