@@ -88,8 +88,9 @@ setup(
       
       scripts = [
         "bin/jasy", 
-        "bin/jasy.bat", 
-        "bin/jasytil"
+        "bin/jasy-test", 
+        "bin/jasy-util",
+        "bin/jasy.bat"
       ],
       
       data_files = [
