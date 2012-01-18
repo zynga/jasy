@@ -6,7 +6,7 @@
 #
 
 # Import standard library stuff
-import sys, logging, os.path, pkg_resources
+import sys, os.path, pkg_resources
 
 # Version check
 if sys.version_info.major < 3:
@@ -31,6 +31,8 @@ parser.add_option("-V", "--version", action="store_true", dest="showVersion", he
 (options, args) = parser.parse_args()
 
 # Configure log level for root logger first (enable debug level when either logfile or console verbosity is activated)
+import logging
+
 loglevel = logging.INFO
 if options.logfile or options.verbose is True:
     loglevel = logging.DEBUG
