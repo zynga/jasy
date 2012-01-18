@@ -165,6 +165,18 @@ class ApiData():
                     self.addEntry(name, elseEntry, elseEntry, collection)
                 
             return
+            
+            
+        
+        if entry["type"] == "Identifier":
+            
+            assignments, values = findAssignments(valueNode.value, valueNode)
+            
+            # Find first relevant assignment with comment! Otherwise just first one.
+            
+            print("RESULT: %s" % len(assignments))
+            
+            return
 
 
 

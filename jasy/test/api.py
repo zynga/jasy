@@ -393,6 +393,35 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["hookCascadeDeep"]["type"], "Number")
         
         
+        
+    def test_closure(self):
+
+        data = self.process("""
+
+        var method = function(a, b) {
+          return a+b;
+        };
+
+        core.Class("foo.Bar", {
+
+          members: {
+
+            func: method
+
+          }
+
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+
+        self.assertEqual(data.members["func"]["type"], "Function")
+        self.assertIsInstance(data.members["func"]["params"], dict)
+        self.assertEqual(data.members["func"]["params"]["a"]["type"], ["Integer"])
+        self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])        
+        
+        
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)

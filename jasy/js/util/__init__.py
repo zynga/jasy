@@ -55,6 +55,7 @@ nodeTypeToDocType = {
     # Operators/Built-ins
     "void": "undefined",
     "null": "null",
+    "identifier" : "Identifier",
     "typeof": "String",
     "delete": "Boolean",
     
@@ -65,6 +66,46 @@ nodeTypeToDocType = {
     "plus": "Plus"
     
 }
+
+
+def findAssignments(name, node):
+
+    # Looking for all script blocks
+    scripts = []
+    parent = node
+    while parent:
+        if parent.type == "script":
+            scope = getattr(parent, "scope", None)
+            if scope and name in scope.modified:
+                scripts.append(parent)
+            
+        parent = getattr(parent, "parent", None)
+        
+    def assignMatcher(node):
+        if node.type == "assign" and node[0].type == "identifier" and node[0].value == name:
+            return True
+        
+        if node.type == "declaration" and node.name == name and getattr(node, "initializer", None):
+            return True
+            
+        return False
+    
+    # Query all relevant script nodes
+    assignments = []
+    for script in scripts:
+        queryResult = queryAll(script, assignMatcher, False)
+        assignments.extend(queryResult)
+    
+    # Collect assigned values
+    values = []
+    for assignment in assignments:
+        if assignment.type == "assign":
+            values.append(assignment[1])
+        else:
+            values.append(assignment.initializer)
+            
+    return assignments, values
+
 
 
 def findFunction(node):
@@ -90,6 +131,26 @@ def findReturn(node):
         return node.type == "return"
         
     return query(node, matcher, True)
+
+
+
+def queryAll(node, matcher, deep=True, inner=False, result=None):
+    
+    if result == None:
+        result = []
+
+    # Don't do in closure functions
+    if inner and not deep and node.type == "function":
+        return None
+
+    if matcher(node):
+        result.append(node)
+
+    for child in node:
+        queryAll(child, matcher, deep, True, result)
+
+    return result
+        
 
 
 def query(node, matcher, deep=True, inner=False):
