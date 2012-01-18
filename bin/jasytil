@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Sebastian Werner
+#
+
+# Import standard library stuff
+import sys, os.path, pkg_resources
+
+# Version check
+if sys.version_info.major < 3:
+    raise Exception("Jasy requires Python 3")
+
+# Include local Jasy into Python library path
+if os.path.basename(sys.path[0]) == "bin":
+    root_dir = os.path.dirname(sys.path[0])
+    if os.path.exists(os.path.join(root_dir, "jasy")):
+        sys.path.insert(0, root_dir)
+        
+if len(sys.argv) == 0:
+    sys.stderr.write("Missing job name\n")
+    
+supported = set(("api", "compress", "deps", "meta", "optimize", "tree"))
+job = sys.argv[1]
+if not job in supported:
+    sys.stderr.write("Invalid job %s\n" % job)
+
+import jasy
+
+from jasy.js.parse.Parser import parse
+from jasy.js.parse.ScopeScanner import scan
+from jasy.js.api.Data import ApiData
+from jasy.js.output.Compressor import Compressor
+
+for fname in sys.argv[2:]:
+    text = open(fname, encoding="utf-8").read()
+    root = parse(text, fname)
+    variables = scan(root)
+    
+    print(">>> File: %s" % fname)
+    
+    if job == "api":
+        apidata = ApiData(root, fname)
+        
+    elif job == "compress":
+        print(Compressor().compress(tree))
+        
+    elif job == "deps":
+        if variables.modified:
+            print("Exported Variables:")
+            for name in sorted(variables.modified):
+                print(" - %s" % name)
+
+        if variables.shared:
+            print("Accessed Globals:")
+            for name in sorted(variables.shared):
+                print(" - %s (%sx)" % (name, variables.shared[name]))
+
+        if variables.packages:
+            print("Accessed Packages:")
+            for package in sorted(variables.packages):
+                print(" - %s (%sx)" % (package, variables.packages[package]))        
+        
+    elif job == "meta":
+        source = open(fname, encoding="utf-8").read()
+        root = parse(source, fname)
+        meta = MetaData(root)
+
+        print("Name: %s" % meta.name)
+        print("Requires: %s" % meta.requires)
+        print("Optionals: %s" % meta.optionals)
+        print("Breaks: %s" % meta.breaks)
+        print("Assets: %s" % meta.assets)        
+        
+    elif job == "optimize":
+        permutation = Permutation({
+            "debug": False
+        })
+        
+        permutation.patch(tree)
+
+        DeadCode.cleanup(tree)
+        Unused.cleanup(tree)
+        
+        CombineDeclarations.optimize(tree)
+        BlockReducer.optimize(tree)
+        LocalVariables.optimize(tree)
+        CryptPrivates.optimize(tree)
+    
+        print(Compressor().compress(tree))
+        
+    elif job == "tree":
+        print(root.toXml())
+    
+
