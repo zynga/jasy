@@ -18,7 +18,9 @@ basedir = os.path.join(os.path.dirname(sys.argv[0]), os.pardir)
 if os.path.exists(os.path.join(basedir, "jasy")):
     sys.path.insert(0, basedir)
 
-import logging, unittest, pkg_resources
+import logging, unittest, pkg_resources, jasy
+
+print("Running Unit Tests for Jasy %s" % jasy.__version__)
 
 loader = unittest.TestLoader()
 res = loader.discover(os.path.join(basedir, "jasy/test"), pattern='*.py')
