@@ -4,7 +4,7 @@
 #
 
 # Current version. Used by setuptools
-__version__ = "0.5-alpha4"
+__version__ = "0.5-alpha5"
 
 # Export only main routine
 __all__ = ["__version__"]
