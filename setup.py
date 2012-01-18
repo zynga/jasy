@@ -88,12 +88,8 @@ setup(
       
       scripts = [
         "bin/jasy", 
-        "bin/jsapi", 
-        "bin/jscompress", 
-        "bin/jsdeps", 
-        "bin/jsmeta", 
-        "bin/jsoptimize", 
-        "bin/jstree"
+        "bin/jasy.bat", 
+        "bin/jasytil"
       ],
       
       data_files = [
