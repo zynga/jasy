@@ -5,7 +5,7 @@
 # Copyright 2010-2012 Sebastian Werner
 #
 
-import sys, os
+import sys, os, pkg_resources
 
 major, minor = sys.version_info[:2]
 
