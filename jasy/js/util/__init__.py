@@ -89,6 +89,9 @@ def findAssignments(name, node):
         if node.type == "declaration" and node.name == name and getattr(node, "initializer", None):
             return True
             
+        if node.type == "function" and node.functionForm == "declared_form" and node.name == name:
+            return True
+            
         return False
     
     # Query all relevant script nodes
@@ -100,7 +103,9 @@ def findAssignments(name, node):
     # Collect assigned values
     values = []
     for assignment in assignments:
-        if assignment.type == "assign":
+        if assignment.type == "function":
+            values.append(assignment)
+        elif assignment.type == "assign":
             values.append(assignment[1])
         else:
             values.append(assignment.initializer)
@@ -146,12 +151,17 @@ def findReturn(node):
 
 
 def queryAll(node, matcher, deep=True, inner=False, result=None):
+    # - node: any node
+    # - matcher: function which should return a truish value when node matches
+    # - deep: whether inner scopes should be scanned, too
+    # - inner: used internally to differentiate between current and inner nodes
+    # - result: can be used to extend an existing list, otherwise a new list is created and returned
     
     if result == None:
         result = []
 
     # Don't do in closure functions
-    if inner and not deep and node.type == "function":
+    if inner and node.type == "script" and not deep:
         return None
 
     if matcher(node):
@@ -167,11 +177,11 @@ def queryAll(node, matcher, deep=True, inner=False, result=None):
 def query(node, matcher, deep=True, inner=False):
     # - node: any node
     # - matcher: function which should return a truish value when node matches
-    # - scope: whether inner scopes should be scanned, too
+    # - deep: whether inner scopes should be scanned, too
     # - inner: used internally to differentiate between current and inner nodes
     
     # Don't do in closure functions
-    if inner and not deep and node.type == "function":
+    if inner and node.type == "script" and not deep:
         return None
     
     if matcher(node):

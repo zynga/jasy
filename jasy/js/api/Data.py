@@ -123,7 +123,7 @@ class ApiData():
         # 
         # Complex structured types are processed in two steps
         #
-        if entry["type"] in ("Call", "Hook"):
+        if entry["type"] == "Call" or entry["type"] == "Hook":
             
             commentNode = findCommentNode(commentNode)
             if commentNode:
@@ -176,11 +176,12 @@ class ApiData():
             return
             
             
-        
+        #
+        # Try to resolve identifiers
+        #
         if entry["type"] == "Identifier":
             
             assignNodes, assignValues = findAssignments(valueNode.value, valueNode)
-            
             if assignNodes:
             
                 assignCommentNode = None
@@ -200,9 +201,9 @@ class ApiData():
                 assignType = assignValues[0].type
                 
                 entry["type"] = nodeTypeToDocType[assignType]
-                self.addEntry(name, assignValues[0], assignCommentNode, collection)
+                self.addEntry(name, assignValues[0], assignCommentNode or assignValues[0], collection)
             
-            return
+                return
 
 
 
