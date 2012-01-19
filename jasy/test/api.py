@@ -477,6 +477,29 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["stat"]["type"], "Number")
         
         
+    def test_closure_static_sum(self):
+
+        data = self.process("""
+
+        var sum = "hello" + 1.23;
+
+        core.Class("foo.Bar", {
+
+          members: {
+
+            stat: sum
+
+          }
+
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+
+        self.assertEqual(data.members["stat"]["type"], "String")            
+        
+        
     def test_closure_static_later(self):
 
         data = self.process("""
@@ -622,6 +645,44 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertIsInstance(data.members["func"]["params"], dict)
         self.assertEqual(data.members["func"]["params"]["url"]["type"], ["String"])
+        
+        
+    def test_closure_call(self):
+
+        data = self.process("""
+
+        var variant = function() {
+        
+          /**
+           * Requests the given @url {String} from the server
+           */
+          var corsRequest = function(url) {
+          };
+
+          var xhrRequest = function(url) {
+          };            
+            
+          return browser.isCool() ? corsRequest : xhrRequest;
+        
+        };
+
+        core.Class("foo.Bar", {
+
+          members: {
+
+            func: variant()
+
+          }
+
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+
+        self.assertEqual(data.members["func"]["type"], "Function")
+        self.assertIsInstance(data.members["func"]["params"], dict)
+        self.assertEqual(data.members["func"]["params"]["url"]["type"], ["String"])        
 
         
 

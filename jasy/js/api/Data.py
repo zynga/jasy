@@ -151,12 +151,21 @@ class ApiData():
                         
             if entry["type"] == "Call":
                 
-                # We try to analyze what the first return node returns
-                returnNode = findReturn(valueNode)
-                if returnNode and len(returnNode) > 0:
-                    returnValue = returnNode[0]
-                    entry["type"] = nodeTypeToDocType[returnValue.type]
-                    self.addEntry(name, returnValue, returnValue, collection)
+                if valueNode[0].type == "function":
+                    callFunction = valueNode[0]
+                
+                elif valueNode[0].type == "identifier":
+                    assignNodes, assignValues = findAssignments(valueNode[0].value, valueNode[0])
+                    if assignNodes:
+                        callFunction = assignValues[0]
+                
+                if callFunction:
+                    # We try to analyze what the first return node returns
+                    returnNode = findReturn(callFunction)
+                    if returnNode and len(returnNode) > 0:
+                        returnValue = returnNode[0]
+                        entry["type"] = nodeTypeToDocType[returnValue.type]
+                        self.addEntry(name, returnValue, returnValue, collection)
                     
             elif entry["type"] == "Hook":
 
@@ -201,6 +210,8 @@ class ApiData():
                 assignType = assignValues[0].type
                 
                 entry["type"] = nodeTypeToDocType[assignType]
+                
+                # Prefer comment from assignment, not from value if available
                 self.addEntry(name, assignValues[0], assignCommentNode or assignValues[0], collection)
             
                 return
