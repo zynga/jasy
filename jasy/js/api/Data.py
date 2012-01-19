@@ -142,7 +142,7 @@ class ApiData():
             commentNode = findCommentNode(commentNode)
             if commentNode:
 
-                comment = self.getDocComment(commentNode, "Call %s" % name)
+                comment = self.getDocComment(commentNode, "Call/Hook %s" % name)
                 if comment:
 
                     # Static type definition
@@ -249,7 +249,7 @@ class ApiData():
         #
         # Read data from comment and add documentation
         #
-        comment = self.getDocComment(commentNode, "%s %s" % (entry["type"], name))
+        comment = self.getDocComment(commentNode, "%s %s" % (entry["type"], name), requiresDocumentation(name))
         if comment:
             
             if comment.stype:
@@ -257,6 +257,11 @@ class ApiData():
                 
             if comment.html:
                 entry["doc"] = comment.html
+        
+        elif requiresDocumentation(name):
+            
+            entry["errornous"] = True
+        
         
         
         #
@@ -270,8 +275,12 @@ class ApiData():
                 entry["params"] = {}
                 for paramName in funcParams:
                     entry["params"][paramName] = {}
-                
+            
+            
+            
             # TODO: Automatic return analysis?
+
+
 
             # Use comment for enrich existing data
             if comment:
@@ -290,17 +299,17 @@ class ApiData():
             
 
 
-    def getDocComment(self, node, msg=None):
+    def getDocComment(self, node, msg=None, required=True):
         comments = getattr(node, "comments", None)
         if comments:
             for comment in comments:
                 if comment.variant == "doc":
-                    if not comment.text and msg:
+                    if not comment.text and msg and required:
                         self.warn("Missing documentation text (%s)" % msg, node.line)
                         
                     return comment
 
-        if msg:
+        if msg and required:
             self.warn("Missing documentation (%s)" % msg, node.line)
             
         return None
