@@ -131,6 +131,7 @@ class ApiData():
         #
         entry["line"] = valueNode.line
         entry["length"] = getNumberOfLines(valueNode)
+        entry["visibility"] = getVisibility(name)
         
         
         # 

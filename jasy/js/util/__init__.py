@@ -69,6 +69,19 @@ nodeTypeToDocType = {
 }
 
 
+def getVisibility(name):
+    if name.startswith("__"):
+        return "private"
+    elif name.startswith("_"):
+        return "internal"
+    else:
+        return "public"
+
+
+def requiresDocumentation(name):
+    return not name.startswith("_")
+
+
 def getNumberOfLines(node):
     start = node.line
     end = node.line
