@@ -127,7 +127,7 @@ class ApiData():
         
         
         #
-        # Store line number
+        # Store generic data like line number and visibility
         #
         entry["line"] = valueNode.line
         entry["length"] = getNumberOfLines(valueNode)
