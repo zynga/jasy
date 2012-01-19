@@ -6,14 +6,8 @@
 from jasy.js.util import *
 import logging, json, msgpack
 
-__all__ = ["ApiData", "ApiException"]
+__all__ = ["ApiData"]
 
-
-
-
-
-class ApiException():
-    pass
 
 
 class ApiData():
