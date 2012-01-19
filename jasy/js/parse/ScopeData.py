@@ -41,6 +41,19 @@ class ScopeData():
 
         raise KeyError("Unknown key: %s" % key)
 
+    def export(self):
+        return {
+            "name": self.name,
+            "params": self.params,
+            "declared": self.declared,
+            "accessed": self.accessed,
+            "modified": self.modified,
+            "shared": self.shared,
+            "unused": self.unused,
+            "packages": self.packages
+        }
+
+
     def __init__(self):
         self.name = None
         self.params = set()

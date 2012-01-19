@@ -30,7 +30,7 @@ class ApiData():
         #
         coreModule = findCall(tree, "core.Module")
         if coreModule:
-            self.setRoot("core.Module", coreModule.parent)
+            self.setMain("core.Module", coreModule.parent)
             
             staticsMap = getParameterFromCall(coreModule, 1)
             if staticsMap:
@@ -40,12 +40,19 @@ class ApiData():
 
 
         #
+        # core.Interface
+        #
+
+        # TODO
+
+
+        #
         # core.Class
         #
         coreClass = findCall(tree, "core.Class")
         if coreClass:
             
-            self.setRoot("core.Class", coreClass.parent)
+            self.setMain("core.Class", coreClass.parent)
             
             configMap = getParameterFromCall(coreClass, 1)
             if configMap:
@@ -67,6 +74,20 @@ class ApiData():
                         self.members = {}
                         for memberEntry in sectionValue:
                             self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
+
+
+        #
+        # Export relevant usage data from scope scanner
+        #
+        self.main["uses"] = {}
+        self.main["uses"].update(tree.scope.shared)
+        self.main["uses"].update(tree.scope.packages)
+        
+        #
+        # Add length information from root node, instead of inner node
+        #
+        self.main["length"] = getNumberOfLines(tree)
+        
 
 
     def export(self):
@@ -97,7 +118,7 @@ class ApiData():
 
 
 
-    def setRoot(self, mainType, mainNode):
+    def setMain(self, mainType, mainNode):
         
         callComment = self.getDocComment(mainNode, "root node")
 
