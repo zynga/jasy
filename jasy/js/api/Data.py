@@ -130,6 +130,7 @@ class ApiData():
         # Store line number
         #
         entry["line"] = valueNode.line
+        entry["length"] = getNumberOfLines(valueNode)
         
         
         # 
