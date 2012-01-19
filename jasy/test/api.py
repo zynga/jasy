@@ -682,9 +682,69 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertIsInstance(data.members["func"]["params"], dict)
+        self.assertEqual(data.members["func"]["params"]["url"]["type"], ["String"])
+        
+        
+    
+    def test_closure_call_alter(self):
+
+        data = self.process("""
+
+        var variant = (function() {
+
+          /**
+           * Requests the given @url {String} from the server
+           */
+          var corsRequest = function(url) {
+          };
+
+          var xhrRequest = function(url) {
+          };            
+
+          return browser.isCool() ? corsRequest : xhrRequest;
+
+        })();
+
+        core.Class("foo.Bar", {
+
+          members: {
+
+            func: variant
+
+          }
+
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+
+        self.assertEqual(data.members["func"]["type"], "Function")
+        self.assertIsInstance(data.members["func"]["params"], dict)
         self.assertEqual(data.members["func"]["params"]["url"]["type"], ["String"])        
 
-        
+
+
+    def test_closure_reference(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+
+          members: {
+
+            func: foo.bar.baz.boo
+
+          }
+
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+
+        self.assertEqual(data.members["func"]["type"], "foo.bar.baz.boo")
+
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)

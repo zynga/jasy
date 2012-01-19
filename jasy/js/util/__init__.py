@@ -234,7 +234,10 @@ def detectPlusType(plusNode):
 
 def detectObjectType(objectNode):
     
-    construct = objectNode[0]
+    if objectNode.type in ("new", "new_with_args"):
+        construct = objectNode[0]
+    else:
+        construct = objectNode
     
     # Only support built-in top level constructs
     if construct.type == "identifier" and construct.value in ("Array", "Boolean", "Date", "Function", "Number", "Object", "String", "RegExp"):

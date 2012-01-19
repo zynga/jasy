@@ -118,7 +118,7 @@ class ApiData():
             entry = collection[name] = {
                 "type" : nodeTypeToDocType[valueNode.type]
             }
-            
+        
             
         # 
         # Complex structured types are processed in two steps
