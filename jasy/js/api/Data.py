@@ -4,7 +4,7 @@
 #
 
 from jasy.js.util import *
-import logging, json
+import logging, json, msgpack
 
 __all__ = ["ApiData", "ApiException"]
 
@@ -77,17 +77,23 @@ class ApiData():
                             self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
 
 
-
-    def toJson(self):
-        
-        return json.dumps({
+    def export(self):
+        return {
           "main": self.main,
           "constructor": self.constructor,
           "statics": self.statics,
           "properties": self.properties,
           "events": self.events,
           "members": self.members
-        })
+        }        
+
+
+    def toJSON(self):
+        return json.dumps(self.export())
+        
+        
+    def toMsgpack(self):
+        return msgpack.packb(self.export())
 
 
     def warn(self, message, line):

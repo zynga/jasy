@@ -44,7 +44,9 @@ for fname in sys.argv[2:]:
     
     if job == "api":
         apidata = ApiData(root, fname)
-        print(apidata.toJson())
+        print(apidata.toJSON())
+        print("JSON Size: %s" % len(apidata.toJSON()))
+        print("MessagePack Size: %s" % len(apidata.toMsgpack()))
         
     elif job == "compress":
         print(Compressor().compress(tree))
