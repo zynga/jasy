@@ -4,7 +4,7 @@
 #
 
 from jasy.js.util import *
-import logging
+import logging, json
 
 __all__ = ["ApiData", "ApiException"]
 
@@ -78,7 +78,16 @@ class ApiData():
 
 
 
-
+    def toJson(self):
+        
+        return json.dumps({
+          "main": self.main,
+          "constructor": self.constructor,
+          "statics": self.statics,
+          "properties": self.properties,
+          "events": self.events,
+          "members": self.members
+        })
 
 
     def warn(self, message, line):
@@ -170,11 +179,28 @@ class ApiData():
         
         if entry["type"] == "Identifier":
             
-            assignments, values = findAssignments(valueNode.value, valueNode)
+            assignNodes, assignValues = findAssignments(valueNode.value, valueNode)
             
-            # Find first relevant assignment with comment! Otherwise just first one.
+            if assignNodes:
             
-            print("RESULT: %s" % len(assignments))
+                assignCommentNode = None
+            
+                # Find first relevant assignment with comment! Otherwise just first one.
+                for assign in assignNodes:
+                
+                    # The parent is the relevant doc comment container
+                    # It's either a "var" (declaration) or "semicolon" (assignment)
+                    if getDocComment(assign):
+                        assignCommentNode = assign
+                        break
+                    elif getDocComment(assign.parent):
+                        assignCommentNode = assign.parent
+                        break
+                
+                assignType = assignValues[0].type
+                
+                entry["type"] = nodeTypeToDocType[assignValues[0].type]
+                self.addEntry(name, assignValues[0], assignCommentNode, collection)
             
             return
 

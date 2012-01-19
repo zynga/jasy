@@ -55,7 +55,6 @@ nodeTypeToDocType = {
     # Operators/Built-ins
     "void": "undefined",
     "null": "null",
-    "identifier" : "Identifier",
     "typeof": "String",
     "delete": "Boolean",
     
@@ -63,7 +62,9 @@ nodeTypeToDocType = {
     "call": "Call",
     "hook": "Hook",
     "assign": "Assign",
-    "plus": "Plus"
+    "plus": "Plus",
+    "identifier" : "Identifier",
+    "dot": "Object"
     
 }
 
@@ -124,6 +125,16 @@ def findCommentNode(node):
                     return True
 
     return query(node, matcher)
+    
+    
+def getDocComment(node):
+    comments = getattr(node, "comments", None)
+    if comments:
+        for comment in comments:
+            if comment.variant == "doc":
+                return comment
+                
+    return None
 
 
 def findReturn(node):
