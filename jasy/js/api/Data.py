@@ -199,7 +199,7 @@ class ApiData():
                 
                 assignType = assignValues[0].type
                 
-                entry["type"] = nodeTypeToDocType[assignValues[0].type]
+                entry["type"] = nodeTypeToDocType[assignType]
                 self.addEntry(name, assignValues[0], assignCommentNode, collection)
             
             return

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, os, unittest, logging
+import sys, os, unittest, logging, pkg_resources
 
 # Extend PYTHONPATH with local 'lib' folder
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, os.pardir))
@@ -8,6 +8,7 @@ sys.path.insert(0, jasyroot)
 
 
 import jasy.js.parse.Parser as Parser
+import jasy.js.parse.ScopeScanner as ScopeScanner
 import jasy.js.api.Data as Data
 
 
@@ -15,6 +16,7 @@ class Tests(unittest.TestCase):
 
     def process(self, code):
         node = Parser.parse(code)
+        ScopeScanner.scan(node)
         data = Data.ApiData(node, "test")
         
         return data
@@ -398,7 +400,7 @@ class Tests(unittest.TestCase):
 
         data = self.process("""
 
-        /** Returns the sum of @a and @b */
+        /** Returns the sum of @a {Integer} and @b {Integer} */
         var method = function(a, b) {
           return a+b;
         };
