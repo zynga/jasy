@@ -125,7 +125,13 @@ class ApiData():
                 "type" : nodeTypeToDocType[valueNode.type]
             }
         
-            
+        
+        #
+        # Store line number
+        #
+        entry["line"] = valueNode.line
+        
+        
         # 
         # Complex structured types are processed in two steps
         #
