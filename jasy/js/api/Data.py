@@ -83,10 +83,6 @@ class ApiData():
         self.main["uses"].update(tree.scope.shared)
         self.main["uses"].update(tree.scope.packages)
         
-        #
-        # Add length information from root node, instead of inner node
-        #
-        self.main["length"] = getNumberOfLines(tree)
         
 
 
@@ -147,7 +143,6 @@ class ApiData():
         # Store generic data like line number and visibility
         #
         entry["line"] = valueNode.line
-        entry["length"] = getNumberOfLines(valueNode)
         entry["visibility"] = getVisibility(name)
         
         

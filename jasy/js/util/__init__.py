@@ -82,22 +82,6 @@ def requiresDocumentation(name):
     return not name.startswith("_")
 
 
-def getNumberOfLines(node):
-    start = node.line
-    end = node.line
-    
-    def counter(node):
-        nonlocal end
-        
-        if node.line > end:
-            end = node.line
-    
-    query(node, counter)
-    
-    return end - start + 1
-
-
-
 def findAssignments(name, node):
 
     # Looking for all script blocks
