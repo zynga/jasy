@@ -157,20 +157,27 @@ class ApiData():
             entry["fire"] = compressor.compress(pfire)
 
         # Produce nice output for init value
-        init = getKeyValue(valueNode, "init")
-        if init is not None:
-            if init.type in ("number", "string", "false", "true", "regexp"):
-                entry["init"] = compressor.compress(init)
+        pinit = getKeyValue(valueNode, "init")
+        if pinit is not None:
+            if pinit.type in ("number", "string", "false", "true", "regexp"):
+                entry["init"] = compressor.compress(pinit)
             else:
                 entry["init"] = "xxx"
+        else:
+            entry["init"] = "null"
         
-        # Handle nullable, default value is true
-        nullable = getKeyValue(valueNode, "nullable")
-        entry["nullable"] = not (nullable and nullable.type == "false")
+        # Handle nullable, default value is true when an init value is there. Otherwise false.
+        pnullable = getKeyValue(valueNode, "nullable")
+        if pnullable:
+            entry["nullable"] = pnullable.type == "true"
+        elif pinit is not None and pinit.type != "null":
+            entry["nullable"] = False
+        else:
+            entry["nullable"] = True
 
         # Just store whether an apply routine was defined
-        apply = getKeyValue(valueNode, "apply")
-        entry["apply"] = apply and apply.type == "function"
+        papply = getKeyValue(valueNode, "apply")
+        entry["apply"] = papply and papply.type == "function"
         
         # Multi Properties
         pthemeable = getKeyValue(valueNode, "themeable")
