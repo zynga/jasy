@@ -74,6 +74,37 @@ class Tests(unittest.TestCase):
         
         
         
+    def test_visibility(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+        
+            members: {
+            
+                publicFunction: function() {
+                
+                },
+                
+                _internalFunction: function() {
+                
+                },
+                
+                __privateFunction: function() {
+                
+                }
+            
+            }
+        
+        });
+
+        """)
+
+        self.assertIsInstance(data, Data.ApiData)
+        
+        self.assertEqual(data.members["publicFunction"]["visibility"], "public")
+        self.assertEqual(data.members["_internalFunction"]["visibility"], "internal")
+        self.assertEqual(data.members["__privateFunction"]["visibility"], "private")
         
         
         
