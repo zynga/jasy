@@ -62,7 +62,7 @@ class Tests(unittest.TestCase):
 
         self.assertIsInstance(data, Data.ApiData)
         
-        print(data.main.line)
+        self.assertEqual(data.main["line"], 6)
         
         
     def test_basic(self):
