@@ -406,7 +406,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])
         
         
-        
     def test_dynamic_auto(self):
 
         data = self.process("""
@@ -479,7 +478,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["hookCascadeDeep"]["type"], "Number")
         
         
-        
     def test_closure(self):
 
         data = self.process("""
@@ -507,7 +505,7 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data.members["func"]["params"], dict)
         self.assertEqual(data.members["func"]["params"]["a"]["type"], ["Integer"])
         self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])
-        
+
 
     def test_closure_namedfunc(self):
 
@@ -694,7 +692,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])
         
         
-        
     def test_closure_hook(self):
 
         data = self.process("""
@@ -768,7 +765,6 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data.members["func"]["params"], dict)
         self.assertEqual(data.members["func"]["params"]["url"]["type"], ["String"])
         
-        
     
     def test_closure_call_alter(self):
 
@@ -808,8 +804,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["func"]["params"]["url"]["type"], ["String"])        
 
 
-
-    def test_closure_reference(self):
+    def test_reference(self):
 
         data = self.process("""
 
@@ -817,7 +812,8 @@ class Tests(unittest.TestCase):
 
           members: {
 
-            func: foo.bar.baz.boo
+            func: foo.bar.baz.Boo,
+            inst: new foo.bar.baz.Boo
 
           }
 
@@ -827,7 +823,8 @@ class Tests(unittest.TestCase):
 
         self.assertIsInstance(data.members, dict)
 
-        self.assertEqual(data.members["func"]["type"], "foo.bar.baz.boo")
+        self.assertEqual(data.members["func"]["type"], "foo.bar.baz.Boo")
+        self.assertEqual(data.members["inst"]["type"], "foo.bar.baz.Boo")
 
 
 if __name__ == '__main__':
