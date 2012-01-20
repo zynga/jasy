@@ -46,69 +46,8 @@ class Tests(unittest.TestCase):
         self.assertIn("core", data.main["uses"])
         self.assertIn("core.Class", data.main["uses"])
         
-
-    def test_lines(self):
         
-        data = self.process("""
-        
-        /**
-         * Class comment
-         */
-        core.Class("foo.Bar", {
-        
-            members: {
-            
-                method1: function() {
-                
-                }
-            
-            }
-        
-        });
-        """)
-
-        self.assertIsInstance(data, Data.ApiData)
-        
-        self.assertEqual(data.main["line"], 6)
-        self.assertEqual(data.members["method1"]["line"], 10)
-        
-        
-        
-    def test_visibility(self):
-
-        data = self.process("""
-
-        core.Class("foo.Bar", {
-        
-            members: {
-            
-                publicFunction: function() {
-                
-                },
-                
-                _internalFunction: function() {
-                
-                },
-                
-                __privateFunction: function() {
-                
-                }
-            
-            }
-        
-        });
-
-        """)
-
-        self.assertIsInstance(data, Data.ApiData)
-        
-        self.assertEqual(data.members["publicFunction"]["visibility"], "public")
-        self.assertEqual(data.members["_internalFunction"]["visibility"], "internal")
-        self.assertEqual(data.members["__privateFunction"]["visibility"], "private")
-        
-        
-        
-    def test_basic(self):
+    def test_core_class(self):
 
         data = self.process("""
 
@@ -143,8 +82,67 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["bool"]["type"], "Boolean")
         
         
+    def test_lines(self):
+
+        data = self.process("""
+
+        /**
+         * Class comment
+         */
+        core.Class("foo.Bar", {
+
+            members: {
+
+                method1: function() {
+
+                }
+
+            }
+
+        });
+        """)
+
+        self.assertIsInstance(data, Data.ApiData)
+
+        self.assertEqual(data.main["line"], 6)
+        self.assertEqual(data.members["method1"]["line"], 10)
+
+
+
+    def test_visibility(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+
+            members: {
+
+                publicFunction: function() {
+
+                },
+
+                _internalFunction: function() {
+
+                },
+
+                __privateFunction: function() {
+
+                }
+
+            }
+
+        });
+
+        """)
+
+        self.assertIsInstance(data, Data.ApiData)
+
+        self.assertEqual(data.members["publicFunction"]["visibility"], "public")
+        self.assertEqual(data.members["_internalFunction"]["visibility"], "internal")
+        self.assertEqual(data.members["__privateFunction"]["visibility"], "private")        
         
-    def test_override(self):
+        
+    def test_custom_type(self):
 
         data = self.process("""
 
