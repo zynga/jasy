@@ -133,7 +133,7 @@ class ApiData():
 
     def setMain(self, mainType, mainNode):
         
-        callComment = self.getDocComment(mainNode, "root node")
+        callComment = self.getDocComment(mainNode, "Main")
 
         self.main = {
             "type" : mainType,
@@ -163,7 +163,7 @@ class ApiData():
                 self.addEvent(name, values[0], commentNode, collection)
                 return
         
-        comment = self.getDocComment(commentNode, "Event %s" % name)
+        comment = self.getDocComment(commentNode, "Event '%s'" % name)
         if comment:
             
             # Prefer type but fall back to returns (if the developer has made an error here)
