@@ -825,6 +825,30 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(data.members["func"]["type"], "foo.bar.baz.Boo")
         self.assertEqual(data.members["inst"]["type"], "foo.bar.baz.Boo")
+        
+        
+        
+    def test_events(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+
+          events: {
+
+            click: core.event.type.Mouse,
+            keypress: core.event.type.Key
+
+          }
+
+        });
+
+        """)
+
+        self.assertIsInstance(data.events, dict)
+
+        self.assertEqual(data.events["click"]["type"], "core.event.type.Mouse")
+        self.assertEqual(data.events["keypress"]["type"], "core.event.type.Key")
 
 
 if __name__ == '__main__':

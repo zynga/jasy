@@ -65,7 +65,9 @@ class ApiData():
                         pass
 
                     elif sectionName == "events":
-                        pass
+                        self.events = {}
+                        for eventEntry in sectionValue:
+                            self.addEvent(eventEntry[0].value, eventEntry[1], eventEntry, self.events)
 
                     elif sectionName == "properties":
                         pass
@@ -84,8 +86,7 @@ class ApiData():
         self.main["uses"].update(tree.scope.packages)
         
         
-
-
+        
     def export(self):
         return {
           "main": self.main,
@@ -113,6 +114,22 @@ class ApiData():
         logging.warn("%s at line %s in %s" % (message, line, self.fileId))
 
 
+    def getDocComment(self, node, msg=None, required=True):
+        comments = getattr(node, "comments", None)
+        if comments:
+            for comment in comments:
+                if comment.variant == "doc":
+                    if not comment.text and msg and required:
+                        self.warn("Missing documentation text (%s)" % msg, node.line)
+
+                    return comment
+
+        if msg and required:
+            self.warn("Missing documentation (%s)" % msg, node.line)
+
+        return None
+
+
 
     def setMain(self, mainType, mainNode):
         
@@ -123,6 +140,22 @@ class ApiData():
             "line" : mainNode.line,
             "doc" : callComment.html if callComment else None
         }
+
+
+
+    def addEvent(self, name, valueNode, commentNode, collection):
+        entry = collection[name] = {}
+        
+        if valueNode.type == "dot":
+            entry["type"] = assembleDot(valueNode)
+        elif valueNode.type == "identifier":
+            entry["type"] = valueNode.value
+        
+        comment = self.getDocComment(commentNode, "Event %s" % name)
+        if comment:
+            pass
+
+
 
 
 
@@ -311,20 +344,7 @@ class ApiData():
             
 
 
-    def getDocComment(self, node, msg=None, required=True):
-        comments = getattr(node, "comments", None)
-        if comments:
-            for comment in comments:
-                if comment.variant == "doc":
-                    if not comment.text and msg and required:
-                        self.warn("Missing documentation text (%s)" % msg, node.line)
-                        
-                    return comment
 
-        if msg and required:
-            self.warn("Missing documentation (%s)" % msg, node.line)
-            
-        return None
         
         
         
