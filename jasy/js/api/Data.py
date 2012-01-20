@@ -5,15 +5,18 @@
 
 from jasy.js.util import *
 import logging, json, msgpack
+from jasy.js.output.Compressor import Compressor
+
+# Shared instance
+compressor = Compressor()
 
 __all__ = ["ApiData"]
 
 class ApiData():
     
 
-    
     __slots__ = ["main", "constructor", "statics", "properties", "events", "members", "id", "uses"]
-    
+
     
     def __init__(self, tree, id):
         
@@ -63,7 +66,9 @@ class ApiData():
                         self.addConstructor(sectionValue, propertyInit)
 
                     elif sectionName == "properties":
-                        pass
+                        self.properties = {}
+                        for propertyEntry in sectionValue:
+                            self.addProperty(propertyEntry[0].value, propertyEntry[1], propertyEntry, self.properties)
                     
                     elif sectionName == "events":
                         self.events = {}
@@ -136,6 +141,45 @@ class ApiData():
             "doc" : callComment.html if callComment else None
         }
 
+
+    def addProperty(self, name, valueNode, commentNode, collection):
+        
+        entry = collection[name] = {}
+        comment = self.getDocComment(valueNode, "Property '%s'" % name)
+        
+        # Copy over value
+        ptype = getKeyValue(valueNode, "type")
+        if ptype and ptype.type == "string":
+            entry["type"] = compressor.compress(ptype)
+            
+        pfire = getKeyValue(valueNode, "fire")
+        if pfire and pfire.type == "string":
+            entry["fire"] = compressor.compress(pfire)
+
+        # Produce nice output for init value
+        init = getKeyValue(valueNode, "init")
+        if init is not None:
+            if init.type in ("number", "string", "false", "true"):
+                entry["init"] = compressor.compress(init)
+            else:
+                entry["init"] = "xxx"
+        
+        # Handle nullable, default value is true
+        nullable = getKeyValue(valueNode, "nullable")
+        entry["nullable"] = not (nullable and nullable.type == "false")
+
+        # Just store whether an apply routine was defined
+        apply = getKeyValue(valueNode, "apply")
+        entry["apply"] = apply and apply.type == "function"
+        
+        # Multi Properties
+        pthemeable = getKeyValue(valueNode, "themeable")
+        entry["themeable"] = pthemeable and pthemeable.value == "true"
+
+        pinheritable = getKeyValue(valueNode, "inheritable")
+        entry["inheritable"] = pinheritable and pinheritable.value == "true"
+        
+        
 
 
     def addConstructor(self, valueNode, commentNode):

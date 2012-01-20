@@ -82,6 +82,12 @@ def requiresDocumentation(name):
     return not name.startswith("_")
 
 
+def getKeyValue(dict, key):
+    for propertyInit in dict:
+        if propertyInit[0].value == key:
+            return propertyInit[1]
+
+
 def findAssignments(name, node):
 
     # Looking for all script blocks

@@ -84,6 +84,65 @@ class Tests(unittest.TestCase):
         
         
         
+    def test_properties(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+
+            properties: {
+            
+                width: {
+                    type: "Number",
+                    init: 100,
+                    fire: "changeWidth",
+                    apply: function() {
+                        this.scheduleForRendering("size");
+                    }
+                },
+
+                height: {
+                    type: "Number",
+                    init: 200,
+                    fire: "changeHeight",
+                    apply: function() {
+                        this.scheduleForRendering("size");
+                    }
+                },
+                
+                enabled: {
+                    type: "Boolean",
+                    init: true,
+                    nullable: false
+                },
+                
+                color: {
+                    type: "Color",
+                    nullable: true,
+                    apply: function(value) {
+                        this.__domElement.style.color = value;
+                    }
+                }
+            
+            }
+
+        });
+
+        """)
+
+        self.assertIsInstance(data, Data.ApiData)
+        self.assertIsInstance(data.properties, dict)
+        self.assertIsInstance(data.properties["width"], dict)
+        self.assertIsInstance(data.properties["height"], dict)
+        self.assertIsInstance(data.properties["enabled"], dict)
+        self.assertEqual(data.properties["width"]["init"], "100")
+        self.assertEqual(data.properties["height"]["init"], "200")
+        self.assertEqual(data.properties["enabled"]["init"], "true")
+        self.assertEqual(data.properties["width"]["fire"], '"changeWidth"')
+        self.assertEqual(data.properties["height"]["fire"], '"changeHeight"')
+        
+        
+        
     def test_primitives(self):
         
         data = self.process("""
