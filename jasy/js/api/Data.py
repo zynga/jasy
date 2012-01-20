@@ -92,27 +92,6 @@ class ApiData():
                 ret[name] = getattr(self, name)
                 
         return ret
-        
-        ret = {}
-        if self.main:
-            ret["main"] = self.main
-
-        if self.constructor:
-            ret["constructor"] = self.constructor
-
-        if hasattr(self, "statics"):
-            ret["statics"] = self.statics
-            
-        return ret
-        
-        return {
-          "main": self.main,
-          "constructor": self.constructor,
-          "statics": self.statics,
-          "properties": self.properties,
-          "events": self.events,
-          "members": self.members
-        }        
 
 
     def toJSON(self, format=False):
