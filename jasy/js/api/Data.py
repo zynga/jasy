@@ -335,11 +335,10 @@ class ApiData():
                 for paramName in funcParams:
                     entry["params"][paramName] = {}
             
-            
-            
-            # TODO: Automatic return analysis?
-
-
+            # Detect return type automatically
+            returnNode = findReturn(valueNode)
+            if returnNode and len(returnNode) > 0:
+                entry["returns"] = [nodeTypeToDocType[returnNode[0].type]]
 
             # Use comment for enrich existing data
             if comment:

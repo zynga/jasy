@@ -189,6 +189,27 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["func"]["returns"], ["Number"])
         
         
+    def test_function_return(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+            answer: function() {
+                return 42;
+            }
+          }
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+        self.assertIn("answer", data.members)
+        self.assertEqual(data.members["answer"]["type"], "Function")
+        self.assertEqual(data.members["answer"]["returns"], ["Number"])        
+        
+        
     def test_literal(self):
         
         data = self.process("""
