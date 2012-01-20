@@ -47,6 +47,24 @@ class Tests(unittest.TestCase):
         self.assertIn("core.Class", data.main["uses"])
         
         
+    def test_line(self):
+        
+        data = self.process("""
+        
+        /**
+         * Class comment
+         */
+        core.Class("foo.Bar", {
+        
+        
+        });
+        """)
+
+        self.assertIsInstance(data, Data.ApiData)
+        
+        print(data.main.line)
+        
+        
     def test_basic(self):
 
         data = self.process("""
