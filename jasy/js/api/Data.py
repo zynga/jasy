@@ -159,7 +159,7 @@ class ApiData():
         # Produce nice output for init value
         init = getKeyValue(valueNode, "init")
         if init is not None:
-            if init.type in ("number", "string", "false", "true"):
+            if init.type in ("number", "string", "false", "true", "regexp"):
                 entry["init"] = compressor.compress(init)
             else:
                 entry["init"] = "xxx"
