@@ -108,7 +108,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["method1"]["line"], 10)
 
 
-
     def test_visibility(self):
 
         data = self.process("""
@@ -265,7 +264,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["is"]["type"], "Boolean")
         
         
-        
     def test_specials(self):
 
         data = self.process("""
@@ -284,7 +282,8 @@ class Tests(unittest.TestCase):
             voi: void 3,
             nul: null,
             type: typeof 3,
-            del: delete obj.x
+            del: delete obj.x,
+            id: someidentifier
           }
         });
 
@@ -303,6 +302,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["nul"]["type"], "null")
         self.assertEqual(data.members["type"]["type"], "String")
         self.assertEqual(data.members["del"]["type"], "Boolean")
+        self.assertEqual(data.members["id"]["type"], "Identifier")
         
         
     def test_dynamic(self):
