@@ -60,17 +60,16 @@ class ApiData():
                     sectionValue = propertyInit[1]
                     
                     if sectionName == "construct":
-                        self.constructor = {}
-                        pass
+                        self.addConstructor(sectionValue, propertyInit)
 
+                    elif sectionName == "properties":
+                        pass
+                    
                     elif sectionName == "events":
                         self.events = {}
                         for eventEntry in sectionValue:
                             self.addEvent(eventEntry[0].value, eventEntry[1], eventEntry, self.events)
 
-                    elif sectionName == "properties":
-                        pass
-                    
                     elif sectionName == "members":
                         self.members = {}
                         for memberEntry in sectionValue:
@@ -137,6 +136,29 @@ class ApiData():
             "line" : mainNode.line,
             "doc" : callComment.html if callComment else None
         }
+
+
+
+    def addConstructor(self, valueNode, commentNode):
+        entry = self.constructor = {}
+        
+        funcParams = getParamNamesFromFunction(valueNode)
+        if funcParams:
+            entry["params"] = {}
+            for paramName in funcParams:
+                entry["params"][paramName] = {}
+            
+            # Use comment for enrich existing data
+            comment = self.getDocComment(commentNode, "Constructor")
+            if comment:
+                if not comment.params:
+                    self.warn("Documentation for parameters of function %s are missing" % name, valueNode.line)
+                else:
+                    for paramName in funcParams:
+                        if paramName in comment.params:
+                            entry["params"][paramName] = comment.params[paramName]
+                        else:
+                            self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
 
 
 

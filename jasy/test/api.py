@@ -80,9 +80,9 @@ class Tests(unittest.TestCase):
 
         self.assertIsInstance(data, Data.ApiData)
         self.assertIsInstance(data.constructor, dict)
-        
-        
-        
+        self.assertIsInstance(data.constructor["params"], dict)
+        self.assertIsInstance(data.constructor["params"]["config"], dict)
+        self.assertEqual(data.constructor["params"]["config"]["type"], ["Map"])
         
         
         
