@@ -12,15 +12,15 @@ class ApiData():
     
 
     
-    __slots__ = ["main", "constructor", "statics", "properties", "events", "members", "fileId"]
+    __slots__ = ["main", "constructor", "statics", "properties", "events", "members", "id", "uses"]
     
     
-    def __init__(self, tree, fileId):
+    def __init__(self, tree, id):
         
-        self.fileId = fileId
+        self.id = id
         self.main = {}
 
-        # logging.info("Generate API Data: %s" % self.fileId)
+        # logging.info("Generate API Data: %s" % self.id)
 
 
         #
@@ -79,12 +79,32 @@ class ApiData():
         #
         # Export relevant usage data from scope scanner
         #
-        self.main["uses"] = {}
-        self.main["uses"].update(tree.scope.shared)
-        self.main["uses"].update(tree.scope.packages)
+        self.uses = {}
+        self.uses.update(tree.scope.shared)
+        self.uses.update(tree.scope.packages)
         
         
     def export(self):
+        
+        ret = {}
+        for name in self.__slots__:
+            if hasattr(self, name):
+                ret[name] = getattr(self, name)
+                
+        return ret
+        
+        ret = {}
+        if self.main:
+            ret["main"] = self.main
+
+        if self.constructor:
+            ret["constructor"] = self.constructor
+
+        if hasattr(self, "statics"):
+            ret["statics"] = self.statics
+            
+        return ret
+        
         return {
           "main": self.main,
           "constructor": self.constructor,
@@ -107,7 +127,7 @@ class ApiData():
         
         
     def warn(self, message, line):
-        logging.warn("%s at line %s in %s" % (message, line, self.fileId))
+        logging.warn("%s at line %s in %s" % (message, line, self.id))
 
 
     def getDocComment(self, node, msg=None, required=True):

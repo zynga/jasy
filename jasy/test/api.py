@@ -40,11 +40,11 @@ class Tests(unittest.TestCase):
 
         self.assertIsInstance(data, Data.ApiData)
         
-        self.assertIn("Image", data.main["uses"])
-        self.assertIn("document", data.main["uses"])
-        self.assertIn("document.body.appendChild", data.main["uses"])
-        self.assertIn("core", data.main["uses"])
-        self.assertIn("core.Class", data.main["uses"])
+        self.assertIn("Image", data.uses)
+        self.assertIn("document", data.uses)
+        self.assertIn("document.body.appendChild", data.uses)
+        self.assertIn("core", data.uses)
+        self.assertIn("core.Class", data.uses)
         
         
     def test_core_class(self):
@@ -70,9 +70,7 @@ class Tests(unittest.TestCase):
              */
             construct: function(config) {
             
-            
             }
-        
         
         });
 
