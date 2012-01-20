@@ -321,10 +321,6 @@ class ApiData():
             if comment.html:
                 entry["doc"] = comment.html
         
-        elif requiresDocumentation(name):
-            
-            entry["errornous"] = True
-        
         
         
         #
