@@ -849,6 +849,65 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(data.events["click"]["type"], "core.event.type.Mouse")
         self.assertEqual(data.events["keypress"]["type"], "core.event.type.Key")
+        
+    
+    def test_events_reference(self):
+
+        data = self.process("""
+
+        var mouseEvent = core.event.type.Mouse;
+        var keyEvent = core.event.type.Key;
+
+        core.Class("foo.Bar", {
+
+          events: {
+
+            click: mouseEvent,
+            keypress: keyEvent
+
+          }
+
+        });
+
+        """)
+
+        self.assertIsInstance(data.events, dict)
+
+        self.assertEqual(data.events["click"]["type"], "core.event.type.Mouse")
+        self.assertEqual(data.events["keypress"]["type"], "core.event.type.Key")        
+        
+        
+
+    def test_events_doc(self):
+
+        data = self.process("""
+        
+        var mouseEvent = core.event.type.Mouse;
+        var keyEvent = core.event.type.Key;
+
+        core.Class("foo.Bar", {
+
+          events: {
+
+            /** {=MouseEvent} Fired when the user clicks */
+            click: mouseEvent,
+
+            /** {=KeyEvent} Fired when the user presses a key */
+            keypress: keyEvent
+
+          }
+
+        });
+
+        """)
+
+        self.assertIsInstance(data.events, dict)
+
+        self.assertEqual(data.events["click"]["type"], "MouseEvent")
+        self.assertEqual(data.events["keypress"]["type"], "KeyEvent")
+        self.assertEqual(data.events["click"]["doc"], "<p>Fired when the user clicks</p>\n")
+        self.assertEqual(data.events["keypress"]["doc"], "<p>Fired when the user presses a key</p>\n")
+        
 
 
 if __name__ == '__main__':

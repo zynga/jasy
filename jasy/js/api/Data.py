@@ -150,12 +150,30 @@ class ApiData():
             entry["type"] = assembleDot(valueNode)
         elif valueNode.type == "identifier":
             entry["type"] = valueNode.value
+            
+            # Try to resolve identifier with local variable assignment
+            assignments, values = findAssignments(valueNode.value, valueNode)
+            if assignments:
+                
+                # We prefer the same comment node as before as in these 
+                # szenarios a reference might be used for different event types
+                if not findCommentNode(commentNode):
+                    commentNode = assignments[0]
+
+                self.addEvent(name, values[0], commentNode, collection)
+                return
         
         comment = self.getDocComment(commentNode, "Event %s" % name)
         if comment:
-            pass
+            
+            # Prefer type but fall back to returns (if the developer has made an error here)
+            if comment.stype:
+                entry["type"] = comment.stype
+            elif comment.returns:
+                entry["type"] = comment.returns[0]
 
-
+            if comment.html:
+                entry["doc"] = comment.html
 
 
 

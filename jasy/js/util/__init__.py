@@ -124,7 +124,17 @@ def findAssignments(name, node):
             values.append(assignment.initializer)
             
     return assignments, values
-
+    
+    
+def getBestAssignment(assignments, values):
+    for assignment, value in enumerate(assignments):
+        comment1 = getDocComment(assignment)
+        comment2 = getDocComment(value)
+        
+        if comment1 or comment2:
+            return assignment, value
+        
+    return assignments[0], values[0]
 
 
 def findFunction(node):
