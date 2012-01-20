@@ -205,7 +205,7 @@ class ApiData():
             commentNode = findCommentNode(commentNode)
             if commentNode:
 
-                comment = self.getDocComment(commentNode, "Call/Hook %s" % name)
+                comment = self.getDocComment(commentNode, "Call/Hook '%s'" % name)
                 if comment:
 
                     # Static type definition
@@ -312,7 +312,7 @@ class ApiData():
         #
         # Read data from comment and add documentation
         #
-        comment = self.getDocComment(commentNode, "%s %s" % (entry["type"], name), requiresDocumentation(name))
+        comment = self.getDocComment(commentNode, "Member/Static %s (%s)" % (name, entry["type"]), requiresDocumentation(name))
         if comment:
             
             if comment.stype:
