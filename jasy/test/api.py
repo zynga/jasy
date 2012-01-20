@@ -46,8 +46,8 @@ class Tests(unittest.TestCase):
         self.assertIn("core", data.main["uses"])
         self.assertIn("core.Class", data.main["uses"])
         
-        
-    def test_line(self):
+
+    def test_lines(self):
         
         data = self.process("""
         
@@ -56,6 +56,13 @@ class Tests(unittest.TestCase):
          */
         core.Class("foo.Bar", {
         
+            members: {
+            
+                method1: function() {
+                
+                }
+            
+            }
         
         });
         """)
@@ -63,6 +70,11 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data, Data.ApiData)
         
         self.assertEqual(data.main["line"], 6)
+        self.assertEqual(data.members["method1"]["line"], 10)
+        
+        
+        
+        
         
         
     def test_basic(self):
