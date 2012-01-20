@@ -10,18 +10,16 @@ __all__ = ["ApiData"]
 
 class ApiData():
     
-    main = None
-    constructor = None
-    statics = None
-    properties = None
-    events = None
-    members = None
+
+    
+    __slots__ = ["main", "constructor", "statics", "properties", "events", "members", "fileId"]
     
     
     def __init__(self, tree, fileId):
         
         self.fileId = fileId
-        
+        self.main = {}
+
         # logging.info("Generate API Data: %s" % self.fileId)
 
 
@@ -62,6 +60,7 @@ class ApiData():
                     sectionValue = propertyInit[1]
                     
                     if sectionName == "construct":
+                        self.constructor = {}
                         pass
 
                     elif sectionName == "events":
@@ -86,7 +85,6 @@ class ApiData():
         self.main["uses"].update(tree.scope.packages)
         
         
-        
     def export(self):
         return {
           "main": self.main,
@@ -109,7 +107,6 @@ class ApiData():
         return msgpack.packb(self.export())
         
         
-
     def warn(self, message, line):
         logging.warn("%s at line %s in %s" % (message, line, self.fileId))
 
@@ -354,12 +351,5 @@ class ApiData():
                                 entry["params"][paramName] = comment.params[paramName]
                             else:
                                 self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
-            
 
 
-
-        
-        
-        
-        
-        

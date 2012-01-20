@@ -57,7 +57,35 @@ class Tests(unittest.TestCase):
 
         self.assertIsInstance(data, Data.ApiData)
         
-                
+        
+        
+    def test_construct(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+        
+            /**
+             * Creates an instance of foo.Bar using the @config {Map} data given 
+             */
+            construct: function(config) {
+            
+            
+            }
+        
+        
+        });
+
+        """)
+
+        self.assertIsInstance(data, Data.ApiData)
+        self.assertIsInstance(data.constructor, dict)
+        
+        
+        
+        
+        
+        
     def test_primitives(self):
         
         data = self.process("""
