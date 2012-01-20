@@ -21,6 +21,31 @@ class Tests(unittest.TestCase):
         
         return data
         
+    
+    def test_uses(self):
+        
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+        
+            main: function() {
+                
+                document.body.appendChild(new Image());
+            
+            }
+        
+        });
+
+        """)
+
+        self.assertIsInstance(data, Data.ApiData)
+        
+        self.assertIn("Image", data.main["uses"])
+        self.assertIn("document", data.main["uses"])
+        self.assertIn("document.body.appendChild", data.main["uses"])
+        self.assertIn("core", data.main["uses"])
+        self.assertIn("core.Class", data.main["uses"])
+        
         
     def test_basic(self):
 
