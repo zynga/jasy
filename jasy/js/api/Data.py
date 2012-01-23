@@ -163,8 +163,6 @@ class ApiData():
                 entry["init"] = compressor.compress(pinit)
             else:
                 entry["init"] = "xxx"
-        else:
-            entry["init"] = "null"
         
         # Handle nullable, default value is true when an init value is there. Otherwise false.
         pnullable = getKeyValue(valueNode, "nullable")
