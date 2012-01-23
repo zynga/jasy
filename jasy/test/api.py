@@ -230,6 +230,18 @@ class Tests(unittest.TestCase):
                 
                 map: {
                     init: {}
+                },
+                
+                nully: {
+                    init: null
+                },
+                
+                add: {
+                    init: 3+4
+                },
+                
+                ref: {
+                    init: my.custom.Formatter
                 }
 
             }
@@ -246,6 +258,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.properties["timestamp"]["init"], "Number")
         self.assertEqual(data.properties["arr"]["init"], "Array")
         self.assertEqual(data.properties["map"]["init"], "Map")
+        self.assertEqual(data.properties["nully"]["init"], "null")
+        self.assertEqual(data.properties["add"]["init"], "Number")
+        self.assertEqual(data.properties["ref"]["init"], "my.custom.Formatter")
+        
+        
+        
         
         
     def test_properties_multi(self):

@@ -181,13 +181,13 @@ def findReturn(node):
 def valueToString(node):
     if node.type in ("number", "string", "false", "true", "regexp", "null"):
         return compressor.compress(node)
-    elif node.type in ("new", "new_with_args") and node[0].type in ("dot", "identifier"):
-        if node[0].type == "dot":
-            return assembleDot(node[0]) or "Object"
-        else:
-            return node[0].value
     elif node.type in nodeTypeToDocType:
-        return nodeTypeToDocType[node.type]
+        if node.type == "plus":
+            return detectPlusType(node)
+        elif node.type in ("new", "new_with_args", "dot"):
+            return detectObjectType(node)
+        else:
+            return nodeTypeToDocType[node.type]
     else:
         return "Other"
 
@@ -266,7 +266,6 @@ def getParamNamesFromFunction(func):
     
 
 def detectPlusType(plusNode):
-    
     if plusNode[0].type == "string" or plusNode[1].type == "string":
         return "String"
     elif plusNode[0].type == "plus" and detectPlusType(plusNode[0]) == "String":
