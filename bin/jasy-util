@@ -47,7 +47,7 @@ for fname in sys.argv[2:]:
         print(apidata.toJSON(True))
         
     elif job == "compress":
-        print(Compressor().compress(tree))
+        print(Compressor().compress(root))
         
     elif job == "deps":
         if variables.modified:
@@ -77,21 +77,15 @@ for fname in sys.argv[2:]:
         print("Assets: %s" % meta.assets)        
         
     elif job == "optimize":
-        permutation = Permutation({
-            "debug": False
-        })
+        DeadCode.cleanup(root)
+        Unused.cleanup(root)
         
-        permutation.patch(tree)
-
-        DeadCode.cleanup(tree)
-        Unused.cleanup(tree)
-        
-        CombineDeclarations.optimize(tree)
-        BlockReducer.optimize(tree)
-        LocalVariables.optimize(tree)
-        CryptPrivates.optimize(tree)
+        CombineDeclarations.optimize(root)
+        BlockReducer.optimize(root)
+        LocalVariables.optimize(root)
+        CryptPrivates.optimize(root)
     
-        print(Compressor().compress(tree))
+        print(Compressor().compress(root))
         
     elif job == "tree":
         print(root.toXml())
