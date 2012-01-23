@@ -1,4 +1,14 @@
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Sebastian Werner
+#
 
+from jasy.js.output.Compressor import Compressor
+
+# Shared instance
+compressor = Compressor()
+
+# Basic user friendly node type to human type
 nodeTypeToDocType = {
 
     # Primitives
@@ -165,6 +175,21 @@ def findReturn(node):
         return node.type == "return"
         
     return query(node, matcher, True)
+    
+    
+    
+def valueToString(node):
+    if node.type in ("number", "string", "false", "true", "regexp", "null"):
+        return compressor.compress(node)
+    elif node.type in ("new", "new_with_args") and node[0].type in ("dot", "identifier"):
+        if node[0].type == "dot":
+            return assembleDot(node[0]) or "Object"
+        else:
+            return node[0].value
+    elif node.type in nodeTypeToDocType:
+        return nodeTypeToDocType[node.type]
+    else:
+        return "Other"
 
 
 

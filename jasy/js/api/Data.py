@@ -158,11 +158,8 @@ class ApiData():
 
         # Produce nice output for init value
         pinit = getKeyValue(valueNode, "init")
-        if pinit is not None:
-            if pinit.type in ("number", "string", "false", "true", "regexp"):
-                entry["init"] = compressor.compress(pinit)
-            else:
-                entry["init"] = "xxx"
+        if pinit:
+            entry["init"] = valueToString(pinit)
         
         # Handle nullable, default value is true when an init value is there. Otherwise false.
         pnullable = getKeyValue(valueNode, "nullable")

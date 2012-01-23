@@ -191,6 +191,63 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.properties["nothing"]["nullable"], True)
         
         
+
+    def test_properties_init(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+
+            properties: {
+
+                str: {
+                    init: "hello"
+                },
+                
+                bool: {
+                    init: true
+                },
+                
+                num: {
+                    init: 3.14
+                },
+                
+                reg: {
+                    init: /[a-z]/
+                },
+                
+                date: {
+                    init: new Date
+                },
+                
+                timestamp: {
+                    init: +new Date
+                },
+                
+                arr: {
+                    init: [1,2,3]
+                },
+                
+                map: {
+                    init: {}
+                }
+
+            }
+
+        });
+
+        """) 
+
+        self.assertEqual(data.properties["str"]["init"], '"hello"')
+        self.assertEqual(data.properties["bool"]["init"], "true")
+        self.assertEqual(data.properties["num"]["init"], "3.14")
+        self.assertEqual(data.properties["reg"]["init"], "/[a-z]/")
+        self.assertEqual(data.properties["date"]["init"], "Date")
+        self.assertEqual(data.properties["timestamp"]["init"], "Number")
+        self.assertEqual(data.properties["arr"]["init"], "Array")
+        self.assertEqual(data.properties["map"]["init"], "Map")
+        
+        
     def test_properties_multi(self):
 
         data = self.process("""
