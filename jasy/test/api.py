@@ -145,6 +145,10 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.properties["height"]["nullable"], False)
         self.assertEqual(data.properties["enabled"]["nullable"], False)
         self.assertEqual(data.properties["color"]["nullable"], True)
+        self.assertEqual(data.properties["width"]["apply"], True)
+        self.assertEqual(data.properties["height"]["apply"], True)
+        self.assertEqual(data.properties["enabled"]["apply"], False)
+        self.assertEqual(data.properties["color"]["apply"], True)
         
         
         

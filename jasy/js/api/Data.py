@@ -177,7 +177,7 @@ class ApiData():
 
         # Just store whether an apply routine was defined
         papply = getKeyValue(valueNode, "apply")
-        entry["apply"] = papply and papply.type == "function"
+        entry["apply"] = True if papply and papply.type == "function" else False
         
         # Multi Properties
         pthemeable = getKeyValue(valueNode, "themeable")
