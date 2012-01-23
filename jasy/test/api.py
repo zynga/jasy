@@ -147,7 +147,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.properties["color"]["nullable"], True)
         self.assertEqual(data.properties["width"]["apply"], True)
         self.assertEqual(data.properties["height"]["apply"], True)
-        self.assertEqual(data.properties["enabled"]["apply"], False)
         self.assertEqual(data.properties["color"]["apply"], True)
         
         
@@ -190,6 +189,41 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.properties["init"]["nullable"], False)
         self.assertEqual(data.properties["nullInit"]["nullable"], True)
         self.assertEqual(data.properties["nothing"]["nullable"], True)
+        
+        
+    def test_properties_multi(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+
+            properties: {
+
+                color: {
+                    inheritable: true,
+                    themeable: true
+                },
+
+                spacing: {
+                    themeable: true
+                },
+
+                cursor: {
+                    inheritable: true
+                }
+
+            }
+
+        });
+
+        """) 
+
+        self.assertEqual(data.properties["color"]["inheritable"], True)
+        self.assertEqual(data.properties["color"]["themeable"], True)
+        # self.assertEqual(data.properties["spacing"]["inheritable"], False)
+        self.assertEqual(data.properties["spacing"]["themeable"], True)
+        self.assertEqual(data.properties["cursor"]["inheritable"], True)
+        # self.assertEqual(data.properties["cursor"]["themeable"], False)
         
         
         
