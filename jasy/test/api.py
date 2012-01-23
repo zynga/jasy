@@ -151,6 +151,47 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.properties["color"]["apply"], True)
         
         
+    def test_properties_nullable(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+
+            properties: {
+
+                nullable: {
+                    nullable: true
+                },
+                
+                not: {
+                    nullable: false
+                },
+                
+                init: {
+                    init: 3
+                },
+                
+                nullInit: {
+                    init: null
+                },
+                
+                nothing: {
+                    
+                }
+
+            }
+
+        });
+
+        """) 
+        
+        self.assertEqual(data.properties["nullable"]["nullable"], True)
+        self.assertEqual(data.properties["not"]["nullable"], False)
+        self.assertEqual(data.properties["init"]["nullable"], False)
+        self.assertEqual(data.properties["nullInit"]["nullable"], True)
+        self.assertEqual(data.properties["nothing"]["nullable"], True)
+        
+        
         
     def test_primitives(self):
         
