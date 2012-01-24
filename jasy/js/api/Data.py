@@ -263,6 +263,9 @@ class ApiData():
         entry["line"] = valueNode.line
         entry["visibility"] = getVisibility(name)
         
+        if name.upper() == name:
+            entry["constant"] = True
+        
         
         # 
         # Complex structured types are processed in two steps

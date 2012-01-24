@@ -365,8 +365,32 @@ class Tests(unittest.TestCase):
         self.assertNotIn("value", data.members["add"])
         self.assertNotIn("value", data.members["ref"])
         self.assertNotIn("value", data.members["func"])
-                
         
+        
+        
+    def test_kinds(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+            PI: 3.14,
+            LONGER_CONST: "def",
+            functionName: function() {},
+            variable: "hello",
+          }
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+        self.assertTrue(data.members["PI"]["constant"])
+        self.assertTrue(data.members["LONGER_CONST"]["constant"])
+        self.assertNotIn("constant", data.members["functionName"])
+        self.assertNotIn("constant", data.members["variable"])
+    
+    
     def test_lines(self):
 
         data = self.process("""
