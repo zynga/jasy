@@ -1268,6 +1268,39 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.events["click"]["doc"], "<p>Fired when the user clicks</p>\n")
         self.assertEqual(data.events["keypress"]["doc"], "<p>Fired when the user presses a key</p>\n")
         
+        
+        
+    def test_tags(self):
+
+        data = self.process("""
+
+        var mouseEvent = core.event.type.Mouse;
+        var keyEvent = core.event.type.Key;
+
+        core.Class("foo.Bar", {
+
+          members: {
+          
+            /** #final #public */
+            setWidth: function(width) {
+
+              // do stuff
+            
+              this._applyWidth(width);
+
+            },
+            
+            _applyWidth: function() {
+            
+            }
+          }
+
+        });
+
+        """)
+
+        self.assertIn("final", data.members["setWidth"]["tags"])
+        self.assertIn("public", data.members["setWidth"]["tags"])
 
 
 if __name__ == '__main__':

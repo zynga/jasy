@@ -409,7 +409,6 @@ class ApiData():
                 entry["tags"] = comment.tags
         
         
-        
         #
         # Add additional data for function types (params, returns)
         #
