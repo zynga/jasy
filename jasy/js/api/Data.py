@@ -45,6 +45,8 @@ class ApiData():
                 for staticsEntry in staticsMap:
                     self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
 
+            return
+
 
         #
         # core.Interface
@@ -77,6 +79,9 @@ class ApiData():
                             
                     else:
                         logging.warn("Invalid section in %s (core.Interface): %s", sectionName) 
+                        
+            return
+                        
 
 
         #
@@ -113,6 +118,8 @@ class ApiData():
 
                     else:
                         logging.warn("Invalid section in %s (core.Interface): %s", sectionName) 
+
+            return
 
 
 
