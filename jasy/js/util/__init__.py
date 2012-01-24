@@ -177,6 +177,9 @@ def findReturn(node):
     return query(node, matcher, True)
     
     
+def getArrayNodeValues(node):
+    return [valueToString(entry) for entry in node]
+    
     
 def valueToString(node):
     if node.type in ("number", "string", "false", "true", "regexp", "null"):

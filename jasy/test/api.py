@@ -138,7 +138,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.properties["width"]["init"], "100")
         self.assertEqual(data.properties["height"]["init"], "200")
         self.assertEqual(data.properties["enabled"]["init"], "true")
-        # self.assertEqual(data.properties["color"]["init"], "null")
+        self.assertNotIn("init", data.properties["color"])
         self.assertEqual(data.properties["width"]["fire"], '"changeWidth"')
         self.assertEqual(data.properties["height"]["fire"], '"changeHeight"')
         self.assertEqual(data.properties["width"]["nullable"], False)
@@ -189,6 +189,36 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.properties["init"]["nullable"], False)
         self.assertEqual(data.properties["nullInit"]["nullable"], True)
         self.assertEqual(data.properties["nothing"]["nullable"], True)
+        
+        
+        
+    def test_properties_groups(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+
+            properties: {
+
+                size: {
+                    group: ["width", "height"]
+                },
+
+                padding: {
+                    group: ["paddingTop", "paddingRight", "paddingBottom", "paddingLeft"],
+                    shorthand: true
+                }
+                
+            }
+
+        });
+
+        """) 
+
+        self.assertEqual(data.properties["size"]["group"], ["width", "height"])
+        self.assertNotIn("shorthand", data.properties["size"])
+        self.assertEqual(data.properties["padding"]["group"], ["paddingTop", "paddingRight", "paddingBottom", "paddingLeft"])
+        self.assertTrue(data.properties["padding"]["shorthand"])
         
         
 
@@ -295,10 +325,10 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(data.properties["color"]["inheritable"], True)
         self.assertEqual(data.properties["color"]["themeable"], True)
-        # self.assertEqual(data.properties["spacing"]["inheritable"], False)
+        self.assertNotIn("inheritable", data.properties["spacing"])
         self.assertEqual(data.properties["spacing"]["themeable"], True)
         self.assertEqual(data.properties["cursor"]["inheritable"], True)
-        # self.assertEqual(data.properties["cursor"]["themeable"], False)
+        self.assertNotIn("themeable", data.properties["cursor"])
         
         
         

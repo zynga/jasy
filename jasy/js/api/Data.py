@@ -184,6 +184,13 @@ class ApiData():
         if pinheritable and pinheritable.type == "true":
             entry["inheritable"] = True
         
+        pgroup = getKeyValue(valueNode, "group")
+        if pgroup and len(pgroup) > 0:
+            entry["group"] = [child.value for child in pgroup]
+            
+            pshorthand = getKeyValue(valueNode, "shorthand")
+            if pshorthand and pshorthand.type == "true":
+                entry["shorthand"] = True
         
 
 
@@ -397,6 +404,9 @@ class ApiData():
                 
             if comment.html:
                 entry["doc"] = comment.html
+                
+            if comment.tags:
+                entry["tags"] = comment.tags
         
         
         
