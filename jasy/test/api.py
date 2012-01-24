@@ -1301,6 +1301,75 @@ class Tests(unittest.TestCase):
 
         self.assertIn("final", data.members["setWidth"]["tags"])
         self.assertIn("public", data.members["setWidth"]["tags"])
+        
+        
+        
+    def test_interface(self):
+
+        data = self.process("""
+
+        var mouseEvent = core.event.type.Mouse;
+        var keyEvent = core.event.type.Key;
+
+        core.Interface("foo.LayoutObject", {
+
+          events: {
+          
+            changeWidth: foo.PropertyEvent,
+            changeHeight: foo.PropertyEvent
+
+          },
+          
+          properties: {
+          
+            enabled: {
+              type: "Boolean"
+            }
+          
+          },
+
+          members: {
+          
+            setWidth: function(width) {
+              
+            },
+            
+            getWidth: function() {
+            
+            },
+            
+            setHeight: function(height) {
+            
+            },
+            
+            getHeight: function() {
+            
+            }
+
+          }
+
+        });
+
+        """)
+
+        self.assertIn("getWidth", data.members)
+        self.assertIn("getHeight", data.members)
+        self.assertIn("setWidth", data.members)
+        self.assertIn("setHeight", data.members)
+
+        self.assertIn("width", data.members["setWidth"]["params"])
+        self.assertIn("height", data.members["setHeight"]["params"])
+    
+        self.assertIn("changeWidth", data.events)
+        self.assertIn("changeHeight", data.events)
+        
+        self.assertEqual(data.events["changeWidth"]["type"], "foo.PropertyEvent")
+        self.assertEqual(data.events["changeHeight"]["type"], "foo.PropertyEvent")
+    
+        self.assertIn("enabled", data.properties)
+        print(data.properties["enabled"])
+        self.assertEqual(data.properties["enabled"]["type"], "Boolean")
+    
 
 
 if __name__ == '__main__':
