@@ -184,11 +184,11 @@ class ApiData():
         # Copy over value
         ptype = getKeyValue(valueNode, "type")
         if ptype and ptype.type == "string":
-            entry["type"] = compressor.compress(ptype)
+            entry["type"] = ptype.value
             
         pfire = getKeyValue(valueNode, "fire")
         if pfire and pfire.type == "string":
-            entry["fire"] = compressor.compress(pfire)
+            entry["fire"] = pfire.value
 
         # Produce nice output for init value
         pinit = getKeyValue(valueNode, "init")

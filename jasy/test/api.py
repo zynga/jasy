@@ -139,8 +139,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.properties["height"]["init"], "200")
         self.assertEqual(data.properties["enabled"]["init"], "true")
         self.assertNotIn("init", data.properties["color"])
-        self.assertEqual(data.properties["width"]["fire"], '"changeWidth"')
-        self.assertEqual(data.properties["height"]["fire"], '"changeHeight"')
+        self.assertEqual(data.properties["width"]["fire"], "changeWidth")
+        self.assertEqual(data.properties["height"]["fire"], "changeHeight")
         self.assertEqual(data.properties["width"]["nullable"], False)
         self.assertEqual(data.properties["height"]["nullable"], False)
         self.assertEqual(data.properties["enabled"]["nullable"], False)
@@ -1367,7 +1367,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.events["changeHeight"]["type"], "foo.PropertyEvent")
     
         self.assertIn("enabled", data.properties)
-        print(data.properties["enabled"])
         self.assertEqual(data.properties["enabled"]["type"], "Boolean")
     
 
