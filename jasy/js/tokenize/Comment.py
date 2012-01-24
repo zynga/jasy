@@ -176,7 +176,7 @@ class Comment():
     returns = None
     
     # Static type
-    stype = None
+    type = None
     
     # Collected text of the comment (without the extracted doc relevant data)
     text = None
@@ -346,7 +346,7 @@ class Comment():
         """
 
         def collectType(match):
-            self.stype = match.group(1).strip()
+            self.type = match.group(1).strip()
             return ""
 
         return typeMatcher.sub(collectType, text)

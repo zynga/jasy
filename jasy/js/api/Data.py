@@ -241,8 +241,8 @@ class ApiData():
         if comment:
             
             # Prefer type but fall back to returns (if the developer has made an error here)
-            if comment.stype:
-                entry["type"] = comment.stype
+            if comment.type:
+                entry["type"] = comment.type
             elif comment.returns:
                 entry["type"] = comment.returns[0]
 
@@ -286,8 +286,8 @@ class ApiData():
                 if comment:
 
                     # Static type definition
-                    if comment.stype:
-                        entry["type"] = comment.stype
+                    if comment.type:
+                        entry["type"] = comment.type
                         self.addEntry(name, valueNode, commentNode, collection)
                         return
                 
@@ -399,8 +399,8 @@ class ApiData():
         comment = self.getDocComment(commentNode, "Member/Static %s (%s)" % (name, entry["type"]), requiresDocumentation(name))
         if comment:
             
-            if comment.stype:
-                entry["type"] = comment.stype
+            if comment.type:
+                entry["type"] = comment.type
                 
             if comment.html:
                 entry["doc"] = comment.html
