@@ -294,8 +294,6 @@ class Tests(unittest.TestCase):
         
         
         
-        
-        
     def test_properties_multi(self):
 
         data = self.process("""
@@ -329,6 +327,35 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.properties["spacing"]["themeable"], True)
         self.assertEqual(data.properties["cursor"]["inheritable"], True)
         self.assertNotIn("themeable", data.properties["cursor"])
+        
+        
+        
+    def test_include(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+          include: [foo.MEvents, foo.MColor]
+
+        });
+
+        """) 
+
+        self.assertEqual(data.include, ["foo.MEvents", "foo.MColor"])
+        
+        
+    def test_implement(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", {
+          implement: [foo.ILayoutObject, foo.IThemeable]
+
+        });
+
+        """) 
+
+        self.assertEqual(data.implement, ["foo.ILayoutObject", "foo.IThemeable"])        
         
         
         
