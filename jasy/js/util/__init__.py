@@ -80,6 +80,10 @@ nodeTypeToDocType = {
 
 
 def getVisibility(name):
+    """
+    Returns the visibility of the given name by convention
+    """
+    
     if name.startswith("__"):
         return "private"
     elif name.startswith("_"):
@@ -89,16 +93,27 @@ def getVisibility(name):
 
 
 def requiresDocumentation(name):
+    """ 
+    Whether the given name suggests that documentation is required
+    """
+    
     return not name.startswith("_")
 
 
 def getKeyValue(dict, key):
+    """
+    Returns the value node of the given key inside the given object initializer.
+    """
+    
     for propertyInit in dict:
         if propertyInit[0].value == key:
             return propertyInit[1]
 
 
 def findAssignments(name, node):
+    """
+    Returns a list of assignments which might have impact on the value used in the given node.
+    """
 
     # Looking for all script blocks
     scripts = []
@@ -143,13 +158,18 @@ def findAssignments(name, node):
 
 
 def findFunction(node):
-    def matcher(node):
-        return node.type == "function"
+    """
+    Returns the first function inside the given node
+    """
     
-    return query(node, matcher)
+    return query(node, lambda node: node.type == "function")
 
 
 def findCommentNode(node):
+    """
+    Finds the first doc comment node inside the given node
+    """
+    
     def matcher(node):
         comments = getattr(node, "comments", None)
         if comments:
@@ -161,6 +181,10 @@ def findCommentNode(node):
     
     
 def getDocComment(node):
+    """
+    Returns the first doc comment of the given node.
+    """
+    
     comments = getattr(node, "comments", None)
     if comments:
         for comment in comments:
@@ -171,17 +195,19 @@ def getDocComment(node):
 
 
 def findReturn(node):
-    def matcher(node):
-        return node.type == "return"
-        
-    return query(node, matcher, True)
+    """
+    Finds the first return inside the given node
+    """
     
+    return query(node, lambda node: node.type == "return", True)
     
-def getArrayNodeValues(node):
-    return [valueToString(entry) for entry in node]
     
     
 def valueToString(node):
+    """
+    Converts the value of the given node into something human friendly
+    """
+    
     if node.type in ("number", "string", "false", "true", "regexp", "null"):
         return compressor.compress(node)
     elif node.type in nodeTypeToDocType:
@@ -197,11 +223,16 @@ def valueToString(node):
 
 
 def queryAll(node, matcher, deep=True, inner=False, result=None):
-    # - node: any node
-    # - matcher: function which should return a truish value when node matches
-    # - deep: whether inner scopes should be scanned, too
-    # - inner: used internally to differentiate between current and inner nodes
-    # - result: can be used to extend an existing list, otherwise a new list is created and returned
+    """
+    Recurses the tree starting with the given node and returns a list of nodes 
+    matched by the given matcher method
+    
+    - node: any node
+    - matcher: function which should return a truish value when node matches
+    - deep: whether inner scopes should be scanned, too
+    - inner: used internally to differentiate between current and inner nodes
+    - result: can be used to extend an existing list, otherwise a new list is created and returned
+    """
     
     if result == None:
         result = []
@@ -221,10 +252,15 @@ def queryAll(node, matcher, deep=True, inner=False, result=None):
 
 
 def query(node, matcher, deep=True, inner=False):
-    # - node: any node
-    # - matcher: function which should return a truish value when node matches
-    # - deep: whether inner scopes should be scanned, too
-    # - inner: used internally to differentiate between current and inner nodes
+    """
+    Recurses the tree starting with the given node and returns the first node
+    which is matched by the given matcher method.
+    
+    - node: any node
+    - matcher: function which should return a truish value when node matches
+    - deep: whether inner scopes should be scanned, too
+    - inner: used internally to differentiate between current and inner nodes
+    """
     
     # Don't do in closure functions
     if inner and node.type == "script" and not deep:
@@ -242,6 +278,11 @@ def query(node, matcher, deep=True, inner=False):
 
 
 def findCall(node, methodName):
+    """
+    Recurses the tree starting with the given node and returns the first node
+    which calls the given method name (supports namespaces, too)
+    """
+    
     def matcher(node):
         if node.type == "call":
             
@@ -254,13 +295,18 @@ def findCall(node, methodName):
     
     
 def getParameterFromCall(call, index=0):
-    if call.type != "call":
-        raise Exception("Invalid call node: %s" % node)
-
+    """
+    Returns a parameter node by index on the call node
+    """
+    
     return call[1][index]
 
 
 def getParamNamesFromFunction(func):
+    """
+    Returns a human readable list of parameter names (sorted by their order in the given function)
+    """
+    
     params = getattr(func, "params", None)
     if params:
         return [identifier.value for identifier in params]
@@ -269,6 +315,10 @@ def getParamNamesFromFunction(func):
     
 
 def detectPlusType(plusNode):
+    """
+    Analyses the given "plus" node and tries to figure out if a "string" or "number" result is produced.
+    """
+    
     if plusNode[0].type == "string" or plusNode[1].type == "string":
         return "String"
     elif plusNode[0].type == "plus" and detectPlusType(plusNode[0]) == "String":
@@ -278,6 +328,9 @@ def detectPlusType(plusNode):
 
 
 def detectObjectType(objectNode):
+    """
+    Returns a human readable type information of the given node
+    """
     
     if objectNode.type in ("new", "new_with_args"):
         construct = objectNode[0]
@@ -298,6 +351,10 @@ def detectObjectType(objectNode):
     
     
 def assembleDot(node, result=None):
+    """
+    Joins a dot node (cascaded supported, too) into a single string like "foo.bar.Baz"
+    """
+    
     if result == None:
         result = []
 
@@ -310,3 +367,4 @@ def assembleDot(node, result=None):
             return None
 
     return ".".join(result)
+    
