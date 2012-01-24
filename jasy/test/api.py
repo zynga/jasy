@@ -326,6 +326,47 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["bool"]["type"], "Boolean")
         
         
+    def test_values(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+            str: "hello",
+            bool: true,
+            num: 3.14,
+            reg: /[a-z]/,
+            date: new Date,
+            timestamp: +new Date,
+            arr: [1,2,3],
+            map: {},
+            nully: null,
+            add: 3+4,
+            ref: my.custom.Formatter,
+            func: function() {}
+          }
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+        self.assertEqual(data.members["str"]["value"], '"hello"')
+        self.assertEqual(data.members["bool"]["value"], "true")
+        self.assertEqual(data.members["num"]["value"], "3.14")
+        self.assertEqual(data.members["reg"]["value"], "/[a-z]/")
+        
+        # Type has enough information in these cases
+        self.assertNotIn("value", data.members["date"])
+        self.assertNotIn("value", data.members["timestamp"])
+        self.assertNotIn("value", data.members["arr"])
+        self.assertNotIn("value", data.members["map"])
+        self.assertNotIn("value", data.members["nully"])
+        self.assertNotIn("value", data.members["add"])
+        self.assertNotIn("value", data.members["ref"])
+        self.assertNotIn("value", data.members["func"])
+                
+        
     def test_lines(self):
 
         data = self.process("""

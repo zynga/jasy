@@ -375,6 +375,13 @@ class ApiData():
             entry["type"] = detectObjectType(valueNode)
         
         
+        #
+        # Add human readable value
+        #
+        valueNodeHumanValue = valueToString(valueNode)
+        if valueNodeHumanValue != entry["type"]:
+            entry["value"] = valueNodeHumanValue
+        
         
         #
         # Read data from comment and add documentation
