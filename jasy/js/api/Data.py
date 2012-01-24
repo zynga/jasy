@@ -23,9 +23,6 @@ class ApiData():
         self.id = id
         self.main = {}
 
-        # logging.info("Generate API Data: %s" % self.id)
-
-
         #
         # core.Module
         #
@@ -43,8 +40,34 @@ class ApiData():
         #
         # core.Interface
         #
+        coreInterface = findCall(tree, "core.Interface")
+        if coreInterface:
+            self.setMain("core.Interface", coreInterface.parent)
+            
+            configMap = getParameterFromCall(coreInterface, 1)
+            if configMap:
+                for propertyInit in configMap:
+                    
+                    sectionName = propertyInit[0].value
+                    sectionValue = propertyInit[1]
+                    
+                    if sectionName == "properties":
+                        self.properties = {}
+                        for propertyEntry in sectionValue:
+                            self.addProperty(propertyEntry[0].value, propertyEntry[1], propertyEntry, self.properties)
+                    
+                    elif sectionName == "events":
+                        self.events = {}
+                        for eventEntry in sectionValue:
+                            self.addEvent(eventEntry[0].value, eventEntry[1], eventEntry, self.events)
 
-        # TODO
+                    elif sectionName == "members":
+                        self.members = {}
+                        for memberEntry in sectionValue:
+                            self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
+                            
+                    else:
+                        logging.warn("Invalid section in %s (core.Interface): %s", sectionName) 
 
 
         #
@@ -52,7 +75,6 @@ class ApiData():
         #
         coreClass = findCall(tree, "core.Class")
         if coreClass:
-            
             self.setMain("core.Class", coreClass.parent)
             
             configMap = getParameterFromCall(coreClass, 1)
@@ -79,6 +101,10 @@ class ApiData():
                         self.members = {}
                         for memberEntry in sectionValue:
                             self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
+
+                    else:
+                        logging.warn("Invalid section in %s (core.Interface): %s", sectionName) 
+
 
 
         #
