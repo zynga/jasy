@@ -22,6 +22,15 @@ class ApiData():
         
         self.id = id
         self.main = {}
+        
+        
+        #
+        # Export relevant usage data from scope scanner
+        #
+        self.uses = {}
+        self.uses.update(tree.scope.shared)
+        self.uses.update(tree.scope.packages)
+
 
         #
         # core.Module
@@ -107,14 +116,6 @@ class ApiData():
 
 
 
-        #
-        # Export relevant usage data from scope scanner
-        #
-        self.uses = {}
-        self.uses.update(tree.scope.shared)
-        self.uses.update(tree.scope.packages)
-        
-        
     def export(self):
         
         ret = {}
