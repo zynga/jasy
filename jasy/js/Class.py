@@ -136,7 +136,7 @@ class Class():
             return tree
             
         # Parse tree
-        tree = Parser.parse(self.getText(), self.__id)
+        tree = Parser.parse(self.getText(), self.__name)
 
         # Apply permutation
         if permutation:
