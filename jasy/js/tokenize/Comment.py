@@ -134,7 +134,7 @@ typeMatcher = re.compile(r"^\s*\{=([a-zA-Z0-9_ \.]+)\}")
 tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
 
 # Matches param declarations in own dialect
-paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+)((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
+paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+?)(\s*\.{3}\s*)?((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
 
 # Matches links in own dialect
 linkMatcher = re.compile(r"\{([a-zA-Z0-9_#\.]+)\}")
@@ -474,8 +474,9 @@ class Comment():
         def collectParams(match):
             paramName = match.group(1)
             paramTypes = match.group(3)
-            paramOptional = match.group(4) is not None
-            paramDefault = match.group(6)
+            paramDynamic = match.group(4) is not None
+            paramOptional = match.group(5) is not None
+            paramDefault = match.group(7)
             
             if paramTypes:
                 paramTypes = self.__splitTypeList(paramTypes)
@@ -487,6 +488,7 @@ class Comment():
             if not paramName in self.params or paramTypes is not None:
                 self.params[paramName] = {
                     "type" : paramTypes, 
+                    "dynamic": paramDynamic,
                     "optional": paramOptional,
                     "default" : paramDefault
                 }

@@ -733,6 +733,115 @@ class Tests(unittest.TestCase):
         self.assertEqual(comment.params["extra"]["default"], None)
         
         
+        
+    def test_doc_params_dynamic(self):
+
+        parsed = self.process('''
+
+        /**
+         * {Number} Returns the sum of all given @number {Number...} parameters.
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+
+        self.assertEqual(type(comment.params), dict)
+        self.assertEqual(type(comment.params["number"]), dict)
+        self.assertEqual(comment.params["number"]["type"], ["Number"])
+        self.assertEqual(comment.params["number"]["optional"], False)
+        self.assertEqual(comment.params["number"]["dynamic"], True)
+        self.assertEqual(comment.params["number"]["default"], None)
+        
+        
+        
+    def test_doc_params_dynamic_default(self):
+
+        parsed = self.process('''
+
+        /**
+         * {Number} Returns the sum of all given @number {Number...?0} parameters.
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+
+        self.assertEqual(type(comment.params), dict)
+        self.assertEqual(type(comment.params["number"]), dict)
+        self.assertEqual(comment.params["number"]["type"], ["Number"])
+        self.assertEqual(comment.params["number"]["optional"], True)
+        self.assertEqual(comment.params["number"]["dynamic"], True)
+        self.assertEqual(comment.params["number"]["default"], "0")
+        
+        
+        
+    def test_doc_params_dynamic_multi(self):
+
+        parsed = self.process('''
+
+        /**
+         * {Number} Returns the sum of all given @number {Number|Integer...} parameters.
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+
+        self.assertEqual(type(comment.params), dict)
+        self.assertEqual(type(comment.params["number"]), dict)
+        self.assertEqual(comment.params["number"]["type"], ["Number", "Integer"])
+        self.assertEqual(comment.params["number"]["optional"], False)
+        self.assertEqual(comment.params["number"]["dynamic"], True)
+        self.assertEqual(comment.params["number"]["default"], None)
+        
+        
+        
+    def test_doc_params_dynamic_multi_spacey(self):
+
+        parsed = self.process('''
+
+        /**
+         * {Number} Returns the sum of all given @number {Number | Integer ... } parameters.
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+
+        self.assertEqual(type(comment.params), dict)
+        self.assertEqual(type(comment.params["number"]), dict)
+        self.assertEqual(comment.params["number"]["type"], ["Number", "Integer"])
+        self.assertEqual(comment.params["number"]["optional"], False)
+        self.assertEqual(comment.params["number"]["dynamic"], True)
+        self.assertEqual(comment.params["number"]["default"], None)        
+        
+        
+        
     def test_doc_params_namespaced(self):
 
         parsed = self.process('''

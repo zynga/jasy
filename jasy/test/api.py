@@ -60,6 +60,56 @@ class Tests(unittest.TestCase):
         
         
         
+    def test_params(self):
+
+        data = self.process("""
+
+        core.Module("foo.Bar", {
+        
+          /** Returns sum of @first {Integer} and @second {Integer} and multiplies with @varargs {Integer...} */
+          method: function(first, second, varargs) {
+            
+          }
+        
+        });
+
+        """)
+
+        self.assertIsInstance(data, Data.ApiData)
+        self.assertEqual(data.main["type"], "core.Module")
+        self.assertEqual(data.statics["method"]["params"]["first"]["type"], ["Integer"])
+        self.assertEqual(data.statics["method"]["params"]["second"]["type"], ["Integer"])
+        self.assertEqual(data.statics["method"]["params"]["varargs"]["type"], ["Integer"])
+        self.assertEqual(data.statics["method"]["params"]["varargs"]["optional"], False)
+        self.assertEqual(data.statics["method"]["params"]["varargs"]["dynamic"], True)
+        
+        
+        
+    def test_params_optional(self):
+
+        data = self.process("""
+
+        core.Module("foo.Bar", {
+
+          /** Returns sum of @first {Integer} and @second {Integer} and multiplies with @varargs {Integer...?} */
+          method: function(first, second, varargs) {
+
+          }
+
+        });
+
+        """)
+
+        self.assertIsInstance(data, Data.ApiData)
+        self.assertEqual(data.main["type"], "core.Module")
+        self.assertEqual(data.statics["method"]["params"]["first"]["type"], ["Integer"])
+        self.assertEqual(data.statics["method"]["params"]["second"]["type"], ["Integer"])
+        self.assertEqual(data.statics["method"]["params"]["varargs"]["type"], ["Integer"])
+        self.assertEqual(data.statics["method"]["params"]["varargs"]["optional"], True)
+        self.assertEqual(data.statics["method"]["params"]["varargs"]["dynamic"], True)
+        
+        
+        
     def test_core_class(self):
 
         data = self.process("""
