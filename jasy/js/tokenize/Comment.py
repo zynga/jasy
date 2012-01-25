@@ -148,9 +148,12 @@ class Comment():
     html = None
     
     
-    def __init__(self, text, context=None, lineNo=0, indent=""):
+    def __init__(self, text, context=None, lineNo=0, indent="", fileId=None):
         # Store context (relation to code)
         self.context = context
+        
+        # Store fileId
+        self.fileId = fileId
         
         # Convert
         if text.startswith("//"):
@@ -224,7 +227,7 @@ class Comment():
             if line.startswith(indent):
                 lines.append(line[len(indent):].rstrip())
             else:
-                logging.error("Could not outdent comment at line %s", startLineNo+lineNo)
+                logging.error("Could not outdent comment at line %s in %s", startLineNo+lineNo, self.fileId)
                 return text
                 
         # Find first line with real content
@@ -255,7 +258,7 @@ class Comment():
                     lines[lineNo] = ""
                 else:
                     if not line.startswith(outdentString):
-                        logging.error("Invalid indention in doc string at line %s", startLineNo+lineNo)
+                        logging.error("Invalid indention in doc string at line %s in %s", startLineNo+lineNo, self.fileId)
                     else:
                         lines[lineNo] = line[outdentStringLen:]
 

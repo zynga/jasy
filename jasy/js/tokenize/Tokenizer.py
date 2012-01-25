@@ -219,7 +219,7 @@ class Tokenizer(object):
                 text = text.replace("*\/", "*/")
                 
                 try:
-                    self.comments.append(Comment(text, mode, commentStartLine, indent))
+                    self.comments.append(Comment(text, mode, commentStartLine, indent, self.fileId))
                 except CommentException as commentError:
                     logging.error("Ignoring comment in %s: %s", self.fileId, commentError)
                     
@@ -251,7 +251,7 @@ class Tokenizer(object):
                     text += ch
                     
                 try:
-                    self.comments.append(Comment(text, mode, self.line-1))
+                    self.comments.append(Comment(text, mode, self.line-1, "", self.fileId))
                 except CommentException:
                     logging.error("Ignoring comment in %s: %s", self.fileId, commentError)
 

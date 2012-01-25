@@ -160,12 +160,12 @@ class ApiData():
             for comment in comments:
                 if comment.variant == "doc":
                     if not comment.text and msg and required:
-                        self.warn("Missing documentation text (%s)" % msg, node.line)
+                        self.warn("Missing documentation text for %s" % msg, node.line)
 
                     return comment
 
         if msg and required:
-            self.warn("Missing documentation (%s)" % msg, node.line)
+            self.warn("Missing documentation for %s" % msg, node.line)
 
         return None
 
@@ -438,7 +438,7 @@ class ApiData():
         #
         # Read data from comment and add documentation
         #
-        comment = self.getDocComment(commentNode, "Member/Static %s (%s)" % (name, entry["type"]), requiresDocumentation(name))
+        comment = self.getDocComment(commentNode, "member/static %s (%s)" % (name, entry["type"]), requiresDocumentation(name))
         if comment:
             
             if comment.type:
@@ -477,7 +477,7 @@ class ApiData():
 
                 if funcParams:
                     if not comment.params:
-                        self.warn("Documentation for parameters of function %s are missing" % name, valueNode.line)
+                        self.warn("Missing documentation for parameters of function %s" % name, valueNode.line)
                     else:
                         for paramName in funcParams:
                             if paramName in comment.params:
