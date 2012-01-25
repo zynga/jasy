@@ -83,8 +83,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.statics["method"]["params"]["first"]["position"], 0)
         self.assertEqual(data.statics["method"]["params"]["second"]["position"], 1)
         self.assertEqual(data.statics["method"]["params"]["varargs"]["position"], 2)
-        self.assertEqual(data.statics["method"]["params"]["varargs"]["optional"], False)
-        self.assertEqual(data.statics["method"]["params"]["varargs"]["dynamic"], True)
+        self.assertNotIn("optional", data.statics["method"]["params"]["varargs"])
+        self.assertTrue(data.statics["method"]["params"]["varargs"]["dynamic"])
         
         
         
@@ -108,8 +108,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.statics["method"]["params"]["first"]["type"], ["Integer"])
         self.assertEqual(data.statics["method"]["params"]["second"]["type"], ["Integer"])
         self.assertEqual(data.statics["method"]["params"]["varargs"]["type"], ["Integer"])
-        self.assertEqual(data.statics["method"]["params"]["varargs"]["optional"], True)
-        self.assertEqual(data.statics["method"]["params"]["varargs"]["dynamic"], True)
+        self.assertTrue(data.statics["method"]["params"]["varargs"]["optional"])
+        self.assertTrue(data.statics["method"]["params"]["varargs"]["dynamic"])
         
         
         

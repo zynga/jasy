@@ -486,12 +486,19 @@ class Comment():
             
             # Add new entries and overwrite if a type is defined in this entry
             if not paramName in self.params or paramTypes is not None:
-                self.params[paramName] = {
-                    "type" : paramTypes, 
-                    "dynamic": paramDynamic,
-                    "optional": paramOptional,
-                    "default" : paramDefault
-                }
+                paramEntry = self.params[paramName] = {}
+                
+                if paramTypes is not None:
+                    paramEntry["type"] = paramTypes
+                
+                if paramDynamic:
+                    paramEntry["dynamic"] = paramDynamic
+                    
+                if paramOptional:
+                    paramEntry["optional"] = paramOptional
+                    
+                if paramDefault is not None:
+                    paramEntry["optional"] = paramDefault
             
             return '<code class="param">%s</code>' % paramName
             
