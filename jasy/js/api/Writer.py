@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Sebastian Werner
 #
 
-import logging
+import logging, json, msgpack
 from jasy.util.File import *
 
 __all__ = ["ApiWriter"]
@@ -13,7 +13,6 @@ class ApiWriter():
     def __init__(self, session):
         self.session = session
 
-        
     def write(self, distFolder, format="json"):
         logging.info("Writing API data to: %s" % distFolder)
         
@@ -21,18 +20,33 @@ class ApiWriter():
             logging.warn("Invalid output format: %s. Falling back to json." % format)
             format = "json"
          
-        makeDir(distFolder)
-    
+        def encode(content):
+            if format == "json":
+                return json.dumps(content, sort_keys=True, indent=2)
+            elif format == "msgpack":
+                return "%s" % msgpack.packb(content)
+                
+        index = {}
+        
         for project in self.session.getProjects():
             classes = project.getClasses()
             
             for className in classes:
-                apidata = classes[className].getApi()
                 
-                if format == "json":
-                    content = apidata.toJSON(True)
-                elif format == "msgpack":
-                    content = apidata.toMsgpack()
+                current = index
+                for split in className.split("."):
+                    if not split in current:
+                        current[split] = {}
+
+                    current = current[split]
                     
-                writeFile("%s.%s" % (os.path.join(distFolder, className), format), content)
+                apidata = classes[className].getApi()
+
+                if "type" in apidata.main:
+                    current["type"] = apidata.main["type"]
+                else:
+                    current["type"] = "Other"
                 
+                writeFile(os.path.join(distFolder, "%s.%s" % (className, format)), encode(apidata.export()))
+                
+        writeFile(os.path.join(distFolder, "index.%s" % format), encode(index))

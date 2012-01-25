@@ -3,8 +3,9 @@
 # Copyright 2010-2012 Sebastian Werner
 #
 
+import logging
+
 from jasy.js.util import *
-import logging, json, msgpack
 from jasy.js.output.Compressor import Compressor
 
 # Shared instance
@@ -139,17 +140,6 @@ class ApiData():
         return ret
 
 
-    def toJSON(self, format=False):
-        if format:
-            return json.dumps(self.export(), sort_keys=True, indent=2)
-        else:
-            return json.dumps(self.export())
-        
-        
-    def toMsgpack(self):
-        return msgpack.packb(self.export())
-        
-        
     def warn(self, message, line):
         logging.warn("%s at line %s in %s" % (message, line, self.id))
 
