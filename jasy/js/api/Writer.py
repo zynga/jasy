@@ -30,7 +30,7 @@ class ApiWriter():
                 apidata = classes[className].getApi()
                 
                 if format == "json":
-                    content = apidata.toJSON()
+                    content = apidata.toJSON(True)
                 elif format == "msgpack":
                     content = apidata.toMsgpack()
                     
