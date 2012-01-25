@@ -67,6 +67,7 @@ nodeTypeToDocType = {
     "null": "null",
     "typeof": "String",
     "delete": "Boolean",
+    "this": "This",
     
     # These are not real types, we try to figure out the real value behind automatically
     "call": "Call",
@@ -74,8 +75,8 @@ nodeTypeToDocType = {
     "assign": "Assign",
     "plus": "Plus",
     "identifier" : "Identifier",
-    "dot": "Object"
-    
+    "dot": "Object",
+    "index": "var"
 }
 
 
