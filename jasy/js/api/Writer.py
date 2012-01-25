@@ -4,6 +4,7 @@
 #
 
 import logging
+from jasy.util.File import *
 
 __all__ = ["ApiWriter"]
 
@@ -13,9 +14,14 @@ class ApiWriter():
         self.session = session
 
         
-    def write(self, distFolder):
+    def write(self, distFolder, format="json"):
         logging.info("Writing API data to: %s" % distFolder)
         
+        if not format in ("json", "msgpack"):
+            logging.warn("Invalid output format: %s. Falling back to json." % format)
+            format = "json"
+         
+        makeDir(distFolder)
     
         for project in self.session.getProjects():
             classes = project.getClasses()
@@ -23,6 +29,11 @@ class ApiWriter():
             for className in classes:
                 print("Generating API data for %s..." % className)
                 apidata = classes[className].getApi()
-                print(apidata)
                 
+                if format == "json":
+                    content = apidata.toJSON()
+                elif format == "msgpack":
+                    content = apidata.toMsgpack()
+                    
+                writeFile("%s.%s" % (os.path.join(distFolder, className), format), content)
                 
