@@ -47,6 +47,19 @@ class Tests(unittest.TestCase):
         self.assertIn("core.Class", data.uses)
         
         
+    def test_core_module(self):
+
+        data = self.process("""
+
+        core.Module("foo.Bar", {});
+
+        """)
+
+        self.assertIsInstance(data, Data.ApiData)
+        self.assertEqual(data.main["type"], "core.Module")
+        
+        
+        
     def test_core_class(self):
 
         data = self.process("""
@@ -56,6 +69,7 @@ class Tests(unittest.TestCase):
         """)
 
         self.assertIsInstance(data, Data.ApiData)
+        self.assertEqual(data.main["type"], "core.Class")
         
         
         
@@ -1378,6 +1392,8 @@ class Tests(unittest.TestCase):
         });
 
         """)
+        
+        self.assertEqual(data.main["type"], "core.Interface")
 
         self.assertIn("getWidth", data.members)
         self.assertIn("getHeight", data.members)
