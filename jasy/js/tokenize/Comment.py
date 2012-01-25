@@ -75,42 +75,6 @@ except ImportError as ex:
     
 
 
-# Supports:
-# - @param name {Type}
-# - @param name {Type?}
-# - @param name {Type?defaultValue}
-jsdocParamA = re.compile(r"^@(param)\s+([a-zA-Z0-9]+)\s+\{([a-zA-Z0-9_ \.\|\[\]]+)(\s*(\?)\s*([a-zA-Z0-9 \.\"\'_-]+)?)?\}")
-
-# Supports:
-# - @param name
-# - @param {Type} name 
-# - @param {Type} [optionalName=defaultValue]
-# - @param {Type} [optionalName]
-jsdocParamB = re.compile(r"^@(param)\s+(\{([a-zA-Z0-9_ \.\|\[\]]+)\}\s+)?((\[?)(([a-zA-Z0-9]+)(\s*=\s*([a-zA-Z0-9 \.\"\'_-]+))?)\]?)")
-
-# Supports:
-# - @return {Type}
-jsdocReturn = re.compile(r"^@(returns?)\s+(\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
-
-# Supports:
-# - @throw {Type}
-jsdocThrow = re.compile(r"^@(throws?)\s+(\{([a-zA-Z0-9_\.\|\[\]]+)\})?")
-
-# Supports:
-# - @deprecated
-# - @private
-# - @public
-# - @static
-jsdocFlags = re.compile(r"^@(deprecated|private|public|static)")
-
-# Supports:
-# - @name Name
-# - @namespace Namespace
-# - @requires Name
-# - @since Version
-# - @version Version
-jsdocData = re.compile(r"^@(name|namespace|requires|since|version)\s+(\S+)")
-
 
 
 # Used to measure the doc indent size (with leading stars in front of content)
@@ -159,8 +123,7 @@ class Comment():
     """
     Comment class is attached to parsed nodes and used to store all comment related information.
     
-    The class supports a variety of legacy formats like JSDoc, but comes with a new Markdown and TomDoc
-    inspired dialect to make developers life easier and work less repeative.
+    The class supports a new Markdown and TomDoc inspired dialect to make developers life easier and work less repeative.
     """
     
     # Relation to code
@@ -303,7 +266,6 @@ class Comment():
             
     def __processDoc(self, text, startLineNo):
 
-        text = self.__extractJsdoc(text)
         text = self.__extractStaticType(text)
         text = self.__extractReturns(text)
         text = self.__extractTags(text)
@@ -379,96 +341,6 @@ class Comment():
         
         
         
-    def __extractJsdoc(self, text):
-        """
-        Extract classic JSDoc style items with support for both JSDoc like params and qooxdoo like params.
-        
-        Supports reading of flag and data like JSDoc tags and stores them into new style tags.
-        
-        See also: http://code.google.com/p/jsdoc-toolkit/wiki/TagReference
-        """
-
-        filterLine = False
-        remainingText = []
-
-        for line in text.split("\n"):
-            
-            matched = jsdocParamA.match(line)
-            if matched:
-                
-                paramName = matched.group(2)
-                paramTypes = matched.group(3)
-                paramOptional = matched.group(5) is not None
-                paramDefault = matched.group(6)
-
-                if self.params is None:
-                    self.params = {}
-
-                self.params[paramName] = {
-                    "optional": paramOptional,
-                    "type" : self.__splitTypeList(paramTypes), 
-                    "default" : paramDefault
-                }
-
-                filterLine = True
-                continue
-
-
-            matched = jsdocParamB.match(line)
-            if matched:
-                
-                paramTypes = matched.group(3)
-                paramOptional = matched.group(5) is not ""
-                paramName = matched.group(7)
-                paramDefault = matched.group(9)
-            
-                if self.params is None:
-                    self.params = {}
-
-                self.params[paramName] = {
-                    "optional": paramOptional,
-                    "type" : self.__splitTypeList(paramTypes), 
-                    "default" : paramDefault
-                }
-            
-                filterLine = True
-                continue
-                
-            
-            matched = jsdocReturn.match(line)
-            if matched:
-                self.returns = self.__splitTypeList(matched.group(3))
-                filterLine = True
-                continue
-            
-            matched = jsdocFlags.match(line)
-            if matched:
-                if self.tags is None:
-                    self.tags = {}
-
-                self.tags[matched.group(1)] = True
-                continue
-            
-            matched = jsdocData.match(line)
-            if matched:
-                if self.tags is None:
-                    self.tags = {}
-
-                self.tags[matched.group(1)] = matched.group(2)
-                continue
-            
-            # Collect remaining lines
-            if filterLine and line.strip() == "":
-                filterLine = False
-        
-            elif not filterLine:
-                remainingText.append(line)
-                
-                
-        return "\n".join(remainingText).strip("\n ")
-        
-        
-        
     def __processParams(self, text):
         
         def collectParams(match):
@@ -498,7 +370,7 @@ class Comment():
                     paramEntry["optional"] = paramOptional
                     
                 if paramDefault is not None:
-                    paramEntry["optional"] = paramDefault
+                    paramEntry["default"] = paramDefault
             
             return '<code class="param">%s</code>' % paramName
             

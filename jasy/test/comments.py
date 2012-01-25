@@ -722,15 +722,15 @@ class Tests(unittest.TestCase):
         self.assertEqual(comment.params["cache"]["type"], ["Boolean"])
         self.assertEqual(comment.params["extra"]["type"], ["String", "Array"])
 
-        self.assertEqual(comment.params["x"]["optional"], False)
-        self.assertEqual(comment.params["y"]["optional"], False)
-        self.assertEqual(comment.params["cache"]["optional"], True)
-        self.assertEqual(comment.params["extra"]["optional"], True)
+        self.assertNotIn("optional", comment.params["x"])
+        self.assertNotIn("optional", comment.params["y"])
+        self.assertIn("optional", comment.params["cache"])
+        self.assertIn("optional", comment.params["extra"])
 
-        self.assertEqual(comment.params["x"]["default"], None)
-        self.assertEqual(comment.params["y"]["default"], None)
+        self.assertNotIn("default", comment.params["x"])
+        self.assertNotIn("default", comment.params["y"])
         self.assertEqual(comment.params["cache"]["default"], "false")
-        self.assertEqual(comment.params["extra"]["default"], None)
+        self.assertNotIn("default", comment.params["extra"])
         
         
         
@@ -755,9 +755,9 @@ class Tests(unittest.TestCase):
         self.assertEqual(type(comment.params), dict)
         self.assertEqual(type(comment.params["number"]), dict)
         self.assertEqual(comment.params["number"]["type"], ["Number"])
-        self.assertEqual(comment.params["number"]["optional"], False)
-        self.assertEqual(comment.params["number"]["dynamic"], True)
-        self.assertEqual(comment.params["number"]["default"], None)
+        self.assertNotIn("optional", comment.params["number"])
+        self.assertTrue(comment.params["number"]["dynamic"])
+        self.assertNotIn("default", comment.params["number"])
         
         
         
@@ -782,8 +782,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(type(comment.params), dict)
         self.assertEqual(type(comment.params["number"]), dict)
         self.assertEqual(comment.params["number"]["type"], ["Number"])
-        self.assertEqual(comment.params["number"]["optional"], True)
-        self.assertEqual(comment.params["number"]["dynamic"], True)
+        self.assertTrue(comment.params["number"]["optional"])
+        self.assertTrue(comment.params["number"]["dynamic"])
         self.assertEqual(comment.params["number"]["default"], "0")
         
         
@@ -809,9 +809,9 @@ class Tests(unittest.TestCase):
         self.assertEqual(type(comment.params), dict)
         self.assertEqual(type(comment.params["number"]), dict)
         self.assertEqual(comment.params["number"]["type"], ["Number", "Integer"])
-        self.assertEqual(comment.params["number"]["optional"], False)
-        self.assertEqual(comment.params["number"]["dynamic"], True)
-        self.assertEqual(comment.params["number"]["default"], None)
+        self.assertNotIn("optional", comment.params["number"])
+        self.assertTrue(comment.params["number"]["dynamic"])
+        self.assertNotIn("default", comment.params["number"])
         
         
         
@@ -836,9 +836,9 @@ class Tests(unittest.TestCase):
         self.assertEqual(type(comment.params), dict)
         self.assertEqual(type(comment.params["number"]), dict)
         self.assertEqual(comment.params["number"]["type"], ["Number", "Integer"])
-        self.assertEqual(comment.params["number"]["optional"], False)
-        self.assertEqual(comment.params["number"]["dynamic"], True)
-        self.assertEqual(comment.params["number"]["default"], None)        
+        self.assertNotIn("optional", comment.params["number"])
+        self.assertTrue(comment.params["number"]["dynamic"])
+        self.assertNotIn("default", comment.params["number"])       
         
         
         
@@ -875,15 +875,15 @@ class Tests(unittest.TestCase):
         self.assertEqual(comment.params["cache"]["type"], ["core.Boolean"])
         self.assertEqual(comment.params["extra"]["type"], ["core.String", "core.Array"])
 
-        self.assertEqual(comment.params["x"]["optional"], False)
-        self.assertEqual(comment.params["y"]["optional"], False)
+        self.assertNotIn("optional", comment.params["x"])
+        self.assertNotIn("optional", comment.params["y"])
         self.assertEqual(comment.params["cache"]["optional"], True)
         self.assertEqual(comment.params["extra"]["optional"], True)
 
-        self.assertEqual(comment.params["x"]["default"], None)
-        self.assertEqual(comment.params["y"]["default"], None)
+        self.assertNotIn("default", comment.params["x"])
+        self.assertNotIn("default", comment.params["y"])
         self.assertEqual(comment.params["cache"]["default"], "false")
-        self.assertEqual(comment.params["extra"]["default"], None)        
+        self.assertNotIn("default", comment.params["extra"])        
         
         
     def test_doc_params_lazytypes(self):
@@ -926,15 +926,15 @@ class Tests(unittest.TestCase):
         self.assertEqual(comment.params["cache"]["type"], ["Boolean"])
         self.assertEqual(comment.params["extra"]["type"], ["String", "Array"])
 
-        self.assertEqual(comment.params["x"]["optional"], False)
-        self.assertEqual(comment.params["y"]["optional"], False)
+        self.assertNotIn("optional", comment.params["x"])
+        self.assertNotIn("optional", comment.params["y"])
         self.assertEqual(comment.params["cache"]["optional"], True)
         self.assertEqual(comment.params["extra"]["optional"], True)
 
-        self.assertEqual(comment.params["x"]["default"], None)
-        self.assertEqual(comment.params["y"]["default"], None)
+        self.assertNotIn("default", comment.params["x"])
+        self.assertNotIn("default", comment.params["y"])
         self.assertEqual(comment.params["cache"]["default"], "false")
-        self.assertEqual(comment.params["extra"]["default"], None)
+        self.assertNotIn("default", comment.params["extra"])
         
         
         
@@ -970,11 +970,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(comment.params["x"]["type"], ["Number"])
         self.assertEqual(comment.params["y"]["type"], ["Number"])
 
-        self.assertEqual(comment.params["x"]["optional"], False)
-        self.assertEqual(comment.params["y"]["optional"], False)
+        self.assertNotIn("optional", comment.params["x"])
+        self.assertNotIn("optional", comment.params["y"])
 
-        self.assertEqual(comment.params["x"]["default"], None)
-        self.assertEqual(comment.params["y"]["default"], None)
+        self.assertNotIn("default", comment.params["x"])
+        self.assertNotIn("default", comment.params["y"])
         
         
     def test_doc_params_firstwin(self):
@@ -1009,350 +1009,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(comment.params["x"]["type"], ["Number"])
         self.assertEqual(comment.params["y"]["type"], ["Number"])
 
-        self.assertEqual(comment.params["x"]["optional"], True)
-        self.assertEqual(comment.params["y"]["optional"], False)
+        self.assertTrue(comment.params["x"]["optional"])
+        self.assertNotIn("optional", comment.params["y"])
 
         self.assertEqual(comment.params["x"]["default"], "13")
-        self.assertEqual(comment.params["y"]["default"], None)
+        self.assertNotIn("default", comment.params["y"])
         
-        
-        
-
-
-    #
-    # DOC COMMENTS :: PARAMS :: JSDOC COMPAT
-    #
-    
-
-    def test_doc_params_jsdoc(self):
-        
-        parsed = self.process('''
-        
-        /**
-         * Sets the position of the object
-         *
-         * @param {Number} x The left position
-         * @param {Number|String} y 
-         * @param foo Additional data
-         * @param {Boolean} [force=false] Whether to force rendering
-         */
-        
-        ''')
-        
-        self.assertEqual(parsed.type, "script")
-        self.assertEqual(isinstance(parsed.comments, list), True)
-        self.assertEqual(len(parsed.comments), 1)
-
-        comment = parsed.comments[0]
-
-        self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n")
-        
-        self.assertEqual(len(comment.params), 4)
-        
-        self.assertEqual(type(comment.params["x"]), dict)
-        self.assertEqual(type(comment.params["y"]), dict)
-        self.assertEqual(type(comment.params["foo"]), dict)
-        self.assertEqual(type(comment.params["force"]), dict)
-        
-        self.assertEqual(comment.params["x"]["type"], ["Number"])
-        self.assertEqual(comment.params["y"]["type"], ["Number", "String"])
-        self.assertEqual(comment.params["foo"]["type"], None)
-        self.assertEqual(comment.params["force"]["type"], ["Boolean"])
-
-        self.assertEqual(comment.params["x"]["optional"], False)
-        self.assertEqual(comment.params["y"]["optional"], False)
-        self.assertEqual(comment.params["foo"]["optional"], False)
-        self.assertEqual(comment.params["force"]["optional"], True)
-
-        self.assertEqual(comment.params["x"]["default"], None)
-        self.assertEqual(comment.params["y"]["default"], None)
-        self.assertEqual(comment.params["foo"]["default"], None)
-        self.assertEqual(comment.params["force"]["default"], "false")
-        
-        
-        
-    def test_doc_params_jsdoc_namespaced(self):
-
-        parsed = self.process('''
-
-        /**
-         * Sets the position of the object
-         *
-         * @param {core.Number} x The left position
-         * @param {core.Number|core.String} y 
-         * @param foo Additional data
-         * @param {core.Boolean} [force=false] Whether to force rendering
-         */
-
-        ''')
-
-        self.assertEqual(parsed.type, "script")
-        self.assertEqual(isinstance(parsed.comments, list), True)
-        self.assertEqual(len(parsed.comments), 1)
-
-        comment = parsed.comments[0]
-
-        self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n")
-
-        self.assertEqual(len(comment.params), 4)
-
-        self.assertEqual(type(comment.params["x"]), dict)
-        self.assertEqual(type(comment.params["y"]), dict)
-        self.assertEqual(type(comment.params["foo"]), dict)
-        self.assertEqual(type(comment.params["force"]), dict)
-
-        self.assertEqual(comment.params["x"]["type"], ["core.Number"])
-        self.assertEqual(comment.params["y"]["type"], ["core.Number", "core.String"])
-        self.assertEqual(comment.params["foo"]["type"], None)
-        self.assertEqual(comment.params["force"]["type"], ["core.Boolean"])
-
-        self.assertEqual(comment.params["x"]["optional"], False)
-        self.assertEqual(comment.params["y"]["optional"], False)
-        self.assertEqual(comment.params["foo"]["optional"], False)
-        self.assertEqual(comment.params["force"]["optional"], True)
-
-        self.assertEqual(comment.params["x"]["default"], None)
-        self.assertEqual(comment.params["y"]["default"], None)
-        self.assertEqual(comment.params["foo"]["default"], None)
-        self.assertEqual(comment.params["force"]["default"], "false")        
-
-        
-    def test_doc_params_jsdoc_spacey(self):
-
-        parsed = self.process('''
-
-        /**
-         * Sets the position of the object
-         *
-         * @param {Number} x The left position
-         * @param {Number | String} y 
-         * @param foo Additional data
-         * @param {Boolean} [force = false] Whether to force rendering
-         */
-
-        ''')
-
-        self.assertEqual(parsed.type, "script")
-        self.assertEqual(isinstance(parsed.comments, list), True)
-        self.assertEqual(len(parsed.comments), 1)
-
-        comment = parsed.comments[0]
-
-        self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n")
-
-        self.assertEqual(len(comment.params), 4)
-
-        self.assertEqual(type(comment.params["x"]), dict)
-        self.assertEqual(type(comment.params["y"]), dict)
-        self.assertEqual(type(comment.params["foo"]), dict)
-        self.assertEqual(type(comment.params["force"]), dict)
-
-        self.assertEqual(comment.params["x"]["type"], ["Number"])
-        self.assertEqual(comment.params["y"]["type"], ["Number", "String"])
-        self.assertEqual(comment.params["foo"]["type"], None)
-        self.assertEqual(comment.params["force"]["type"], ["Boolean"])
-
-        self.assertEqual(comment.params["x"]["optional"], False)
-        self.assertEqual(comment.params["y"]["optional"], False)
-        self.assertEqual(comment.params["foo"]["optional"], False)
-        self.assertEqual(comment.params["force"]["optional"], True)
-
-        self.assertEqual(comment.params["x"]["default"], None)
-        self.assertEqual(comment.params["y"]["default"], None)
-        self.assertEqual(comment.params["foo"]["default"], None)
-        self.assertEqual(comment.params["force"]["default"], "false")
-
-
-    def test_doc_params_jsdoc_qooxdoo(self):
-
-        parsed = self.process('''
-
-        /**
-         * Sets the position of the object
-         *
-         * @param x {Number} The left position
-         * @param y {Number|String}
-         * @param animate {Boolean?} Flag to enable animation
-         * @param force {Boolean?false} Whether to force rendering
-         */
-
-        ''')
-
-        self.assertEqual(parsed.type, "script")
-        self.assertEqual(isinstance(parsed.comments, list), True)
-        self.assertEqual(len(parsed.comments), 1)
-
-        comment = parsed.comments[0]
-
-        self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n")
-
-        self.assertEqual(len(comment.params), 4)
-
-        self.assertEqual(type(comment.params["x"]), dict)
-        self.assertEqual(type(comment.params["y"]), dict)
-        self.assertEqual(type(comment.params["animate"]), dict)
-        self.assertEqual(type(comment.params["force"]), dict)
-
-        self.assertEqual(comment.params["x"]["type"], ["Number"])
-        self.assertEqual(comment.params["y"]["type"], ["Number", "String"])
-        self.assertEqual(comment.params["animate"]["type"], ["Boolean"])
-        self.assertEqual(comment.params["force"]["type"], ["Boolean"])
-
-        self.assertEqual(comment.params["x"]["optional"], False)
-        self.assertEqual(comment.params["y"]["optional"], False)
-        self.assertEqual(comment.params["animate"]["optional"], True)
-        self.assertEqual(comment.params["force"]["optional"], True)
-
-        self.assertEqual(comment.params["x"]["default"], None)
-        self.assertEqual(comment.params["y"]["default"], None)
-        self.assertEqual(comment.params["animate"]["default"], None)
-        self.assertEqual(comment.params["force"]["default"], "false")
-
-
-
-    def test_doc_params_jsdoc_qooxdoo_spacey(self):
-
-        parsed = self.process('''
-
-        /**
-         * Sets the position of the object
-         *
-         * @param x {Number} The left position
-         * @param y {Number | String}
-         * @param animate {Boolean?} Flag to enable animation
-         * @param force {Boolean ? false} Whether to force rendering
-         */
-
-        ''')
-
-        self.assertEqual(parsed.type, "script")
-        self.assertEqual(isinstance(parsed.comments, list), True)
-        self.assertEqual(len(parsed.comments), 1)
-
-        comment = parsed.comments[0]
-
-        self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n")
-
-        self.assertEqual(len(comment.params), 4)
-
-        self.assertEqual(type(comment.params["x"]), dict)
-        self.assertEqual(type(comment.params["y"]), dict)
-        self.assertEqual(type(comment.params["animate"]), dict)
-        self.assertEqual(type(comment.params["force"]), dict)
-
-        self.assertEqual(comment.params["x"]["type"], ["Number"])
-        self.assertEqual(comment.params["y"]["type"], ["Number", "String"])
-        self.assertEqual(comment.params["animate"]["type"], ["Boolean"])
-        self.assertEqual(comment.params["force"]["type"], ["Boolean"])
-
-        self.assertEqual(comment.params["x"]["optional"], False)
-        self.assertEqual(comment.params["y"]["optional"], False)
-        self.assertEqual(comment.params["animate"]["optional"], True)
-        self.assertEqual(comment.params["force"]["optional"], True)
-
-        self.assertEqual(comment.params["x"]["default"], None)
-        self.assertEqual(comment.params["y"]["default"], None)
-        self.assertEqual(comment.params["animate"]["default"], None)
-        self.assertEqual(comment.params["force"]["default"], "false")
-
-
-
-    #
-    # DOC COMMENTS :: PARAMS :: JSDOC COMPAT
-    #
-
-    def test_doc_tags_jsdoc(self):
-
-        parsed = self.process('''
-
-        /**
-         * Sets the position of the object
-         *
-         * @param x {Number} The left position
-         * @public
-         * @deprecated
-         *
-         * Some other text
-         */
-
-        ''')
-
-        self.assertEqual(parsed.type, "script")
-        self.assertEqual(isinstance(parsed.comments, list), True)
-        self.assertEqual(len(parsed.comments), 1)
-
-        comment = parsed.comments[0]
-
-        self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
-        self.assertEqual(type(comment.tags), dict)
-        self.assertEqual(comment.tags["public"], True)
-        self.assertEqual(comment.tags["deprecated"], True)
-
-
-    def test_doc_tags_jsdoc_description(self):
-
-        parsed = self.process('''
-
-        /**
-         * Sets the position of the object
-         *
-         * @param x {Number} The left position
-         * @public method
-         * @deprecated This text is removed
-         *
-         * Some other text
-         */
-
-        ''')
-
-        self.assertEqual(parsed.type, "script")
-        self.assertEqual(isinstance(parsed.comments, list), True)
-        self.assertEqual(len(parsed.comments), 1)
-
-        comment = parsed.comments[0]
-
-        self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
-        self.assertEqual(type(comment.tags), dict)
-        self.assertEqual(comment.tags["public"], True)
-        self.assertEqual(comment.tags["deprecated"], True)
-
-
-    def test_doc_tags_jsdoc_datatags(self):
-
-        parsed = self.process('''
-
-        /**
-         * Sets the position of the object
-         *
-         * @param x {Number} The left position
-         * @version 1.2
-         * @deprecated This text is removed
-         * @since 0.3
-         *
-         * Some other text
-         */
-
-        ''')
-
-        self.assertEqual(parsed.type, "script")
-        self.assertEqual(isinstance(parsed.comments, list), True)
-        self.assertEqual(len(parsed.comments), 1)
-
-        comment = parsed.comments[0]
-
-        self.assertEqual(comment.variant, "doc")
-        self.assertEqual(comment.html, "<p>Sets the position of the object</p>\n\n<p>Some other text</p>\n")
-        self.assertEqual(type(comment.tags), dict)
-        self.assertEqual(comment.tags["deprecated"], True)
-        self.assertEqual(comment.tags["version"], "1.2")
-        self.assertEqual(comment.tags["since"], "0.3")
     
     
     #
