@@ -17,4 +17,12 @@ class ApiWriter():
         logging.info("Writing API data to: %s" % distFolder)
         
     
-    
+        for project in self.session.getProjects():
+            classes = project.getClasses()
+            
+            for className in classes:
+                print("Generating API data for %s..." % className)
+                apidata = classes[className].getApi()
+                print(apidata)
+                
+                

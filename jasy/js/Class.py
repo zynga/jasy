@@ -231,7 +231,7 @@ class Class():
         field = "api[%s]" % self.__id
         apidata = self.__cache.read(field, self.__mtime)
         if apidata is None:
-            apidata = jasy.js.api.Data(self.getTree(), self.__id)
+            apidata = ApiData(self.getTree(), self.__name)
             self.__cache.store(field, apidata, self.__mtime)
 
         return apidata

@@ -345,6 +345,8 @@ class ApiData():
                         
             if entry["type"] == "Call":
                 
+                callFunction = None
+                
                 if valueNode[0].type == "function":
                     callFunction = valueNode[0]
                 
