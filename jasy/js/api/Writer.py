@@ -27,7 +27,6 @@ class ApiWriter():
             classes = project.getClasses()
             
             for className in classes:
-                print("Generating API data for %s..." % className)
                 apidata = classes[className].getApi()
                 
                 if format == "json":
