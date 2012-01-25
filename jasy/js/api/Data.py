@@ -458,8 +458,10 @@ class ApiData():
             funcParams = getParamNamesFromFunction(valueNode)
             if funcParams:
                 entry["params"] = {}
-                for paramName in funcParams:
-                    entry["params"][paramName] = {}
+                for paramPos, paramName in enumerate(funcParams):
+                    entry["params"][paramName] = {
+                        "position" : paramPos
+                    }
             
             # Detect return type automatically
             returnNode = findReturn(valueNode)
@@ -477,7 +479,7 @@ class ApiData():
                     else:
                         for paramName in funcParams:
                             if paramName in comment.params:
-                                entry["params"][paramName] = comment.params[paramName]
+                                entry["params"][paramName].update(comment.params[paramName])
                             else:
                                 self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
 
