@@ -128,6 +128,28 @@ class ApiData():
 
             return
 
+        
+        #
+        # Object.declareNamespace
+        #
+        declareNamespace = findCall(tree, "Object.declareNamespace")
+        if declareNamespace:
+            assigned = getParameterFromCall(declareNamespace, 1)
+            
+            if assigned.type == "function":
+                self.setMain("Object.declareNamespace", declareNamespace.parent.parent)
+                self.addConstructor(assigned, declareNamespace.parent)
+            else:
+                self.setMain("Object.declareNamespace", declareNamespace.parent)
+            
+            return
+        
+        
+        #
+        # Unsupported
+        #
+        logging.warn("Unsupported declaration type in %s" % id)
+        
 
 
     def export(self):
@@ -224,8 +246,11 @@ class ApiData():
         
 
 
-    def addConstructor(self, valueNode, commentNode):
+    def addConstructor(self, valueNode, commentNode=None):
         entry = self.constructor = {}
+        
+        if commentNode is None:
+            commentNode = valueNode
         
         funcParams = getParamNamesFromFunction(valueNode)
         if funcParams:
@@ -237,13 +262,13 @@ class ApiData():
             comment = self.getDocComment(commentNode, "Constructor")
             if comment:
                 if not comment.params:
-                    self.warn("Documentation for parameters of function %s are missing" % name, valueNode.line)
+                    self.warn("Documentation for parameters of constructor are missing", valueNode.line)
                 else:
                     for paramName in funcParams:
                         if paramName in comment.params:
                             entry["params"][paramName] = comment.params[paramName]
                         else:
-                            self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
+                            self.warn("Missing documentation for parameter %s in constructor" % paramName, valueNode.line)
 
 
 
