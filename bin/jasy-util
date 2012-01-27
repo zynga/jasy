@@ -34,6 +34,8 @@ from jasy.js.parse.Parser import parse
 from jasy.js.parse.ScopeScanner import scan
 from jasy.js.api.Data import ApiData
 from jasy.js.output.Compressor import Compressor
+from jasy.js.output.Optimization import Optimization
+
 
 for fname in sys.argv[2:]:
     text = open(fname, encoding="utf-8").read()
@@ -66,8 +68,6 @@ for fname in sys.argv[2:]:
                 print(" - %s (%sx)" % (package, variables.packages[package]))        
         
     elif job == "meta":
-        source = open(fname, encoding="utf-8").read()
-        root = parse(source, fname)
         meta = MetaData(root)
 
         print("Name: %s" % meta.name)
@@ -77,14 +77,7 @@ for fname in sys.argv[2:]:
         print("Assets: %s" % meta.assets)        
         
     elif job == "optimize":
-        DeadCode.cleanup(root)
-        Unused.cleanup(root)
-        
-        CombineDeclarations.optimize(root)
-        BlockReducer.optimize(root)
-        LocalVariables.optimize(root)
-        CryptPrivates.optimize(root)
-    
+        Optimization("declarations", "blocks", "variables", "privates").apply(root)
         print(Compressor().compress(root))
         
     elif job == "tree":
