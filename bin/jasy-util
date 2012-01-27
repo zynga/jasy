@@ -28,7 +28,7 @@ if not job in supported:
     sys.stderr.write("Invalid job %s\n" % job)
     sys.exit(1)
 
-import jasy
+import jasy, json
 
 from jasy.js.parse.Parser import parse
 from jasy.js.parse.ScopeScanner import scan
@@ -46,7 +46,7 @@ for fname in sys.argv[2:]:
     
     if job == "api":
         apidata = ApiData(root, fname)
-        print(apidata.toJSON(True))
+        print(json.dumps(apidata.export(), sort_keys=True, indent=2))
         
     elif job == "compress":
         print(Compressor().compress(root))

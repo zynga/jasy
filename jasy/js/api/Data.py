@@ -138,15 +138,14 @@ class ApiData():
             assigned = getParameterFromCall(declareNamespace, 1)
             
             if assigned.type == "function":
-                self.setMain("Object.declareNamespace", declareNamespace.parent.parent, target.value)
+                self.setMain("Object.declareNamespace", tree, target.value)
                 self.addConstructor(assigned, declareNamespace.parent)
             else:
                 self.setMain("Object.declareNamespace", declareNamespace.parent, target.value)
             
             # no return - support multiple statements
-            
-            
-            
+        
+        
         #
         # Object.addStatics
         #
@@ -165,8 +164,8 @@ class ApiData():
                     self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
                 
                 # no return - support multiple statements
-                
-                
+        
+        
         #
         # Object.addMembers
         #
@@ -185,12 +184,14 @@ class ApiData():
                     self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                    
                 
                 # no return - support multiple statements
-            
         
         
         #
         # Unsupported
         #
+        if declareNamespace or addStatics or addMembers:
+            return
+        
         logging.warn("Unsupported declaration type in %s" % id)
         
 
@@ -227,6 +228,8 @@ class ApiData():
 
 
     def setMain(self, mainType, mainNode, exportName):
+        
+        print("MAIN: %s" % mainNode)
         
         callComment = self.getDocComment(mainNode, "Main")
 
@@ -295,12 +298,19 @@ class ApiData():
         
         if commentNode is None:
             commentNode = valueNode
+            
+        # Root doc comment is optional for constructors
+        comment = getDocComment(commentNode)
+        if comment and comment.html:
+            entry["doc"] = comment.html
         
         funcParams = getParamNamesFromFunction(valueNode)
         if funcParams:
             entry["params"] = {}
-            for paramName in funcParams:
-                entry["params"][paramName] = {}
+            for paramPos, paramName in enumerate(funcParams):
+                entry["params"][paramName] = {
+                    "position" : paramPos
+                }
             
             # Use comment for enrich existing data
             comment = self.getDocComment(commentNode, "Constructor")
@@ -310,7 +320,7 @@ class ApiData():
                 else:
                     for paramName in funcParams:
                         if paramName in comment.params:
-                            entry["params"][paramName] = comment.params[paramName]
+                            entry["params"][paramName].update(comment.params[paramName])
                         else:
                             self.warn("Missing documentation for parameter %s in constructor" % paramName, valueNode.line)
 
