@@ -38,7 +38,7 @@ class ApiData():
         #
         coreModule = findCall(tree, "core.Module")
         if coreModule:
-            self.setMain("core.Module", coreModule.parent)
+            self.setMain("core.Module", coreModule.parent, id)
             
             staticsMap = getParameterFromCall(coreModule, 1)
             if staticsMap:
@@ -54,7 +54,7 @@ class ApiData():
         #
         coreInterface = findCall(tree, "core.Interface")
         if coreInterface:
-            self.setMain("core.Interface", coreInterface.parent)
+            self.setMain("core.Interface", coreInterface.parent, id)
             
             configMap = getParameterFromCall(coreInterface, 1)
             if configMap:
@@ -90,7 +90,7 @@ class ApiData():
         #
         coreClass = findCall(tree, "core.Class")
         if coreClass:
-            self.setMain("core.Class", coreClass.parent)
+            self.setMain("core.Class", coreClass.parent, id)
             
             configMap = getParameterFromCall(coreClass, 1)
             if configMap:
@@ -134,15 +134,58 @@ class ApiData():
         #
         declareNamespace = findCall(tree, "Object.declareNamespace")
         if declareNamespace:
+            target = getParameterFromCall(declareNamespace, 0)
             assigned = getParameterFromCall(declareNamespace, 1)
             
             if assigned.type == "function":
-                self.setMain("Object.declareNamespace", declareNamespace.parent.parent)
+                self.setMain("Object.declareNamespace", declareNamespace.parent.parent, target.value)
                 self.addConstructor(assigned, declareNamespace.parent)
             else:
-                self.setMain("Object.declareNamespace", declareNamespace.parent)
+                self.setMain("Object.declareNamespace", declareNamespace.parent, target.value)
             
-            return
+            # no return - support multiple statements
+            
+            
+            
+        #
+        # Object.addStatics
+        #
+        addStatics = findCall(tree, "Object.addStatics")
+        if addStatics:
+            target = getParameterFromCall(addStatics, 0)
+            staticsMap = getParameterFromCall(addStatics, 1)
+            
+            if target.type == "string" and staticsMap.type == "object_init":
+                
+                if not self.main:
+                    self.setMain("Object.addStatics", addStatics.parent, target.value)
+                
+                self.statics = {}
+                for staticsEntry in staticsMap:
+                    self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
+                
+                # no return - support multiple statements
+                
+                
+        #
+        # Object.addMembers
+        #
+        addMembers = findCall(tree, "Object.addMembers")
+        if addMembers:
+            target = getParameterFromCall(addMembers, 0)
+            membersMap = getParameterFromCall(addMembers, 1)
+
+            if target.type == "string" and membersMap.type == "object_init":
+                
+                if not self.main:
+                    self.setMain("Object.addMembers", addMembers.parent, target.value)
+
+                self.members = {}
+                for membersEntry in membersMap:
+                    self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                    
+                
+                # no return - support multiple statements
+            
         
         
         #
@@ -183,12 +226,13 @@ class ApiData():
 
 
 
-    def setMain(self, mainType, mainNode):
+    def setMain(self, mainType, mainNode, exportName):
         
         callComment = self.getDocComment(mainNode, "Main")
 
         self.main = {
             "type" : mainType,
+            "name" : exportName,
             "line" : mainNode.line,
             "doc" : callComment.html if callComment else None
         }
