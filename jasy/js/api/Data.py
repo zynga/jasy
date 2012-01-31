@@ -187,12 +187,29 @@ class ApiData():
         
         
         #
-        # Unsupported
+        # Other
         #
         if declareNamespace or addStatics or addMembers:
             return
         
-        logging.warn("Unsupported declaration type in %s" % id)
+        
+        rootCommentNode = findCommentNode(tree)
+        if rootCommentNode:
+            rootComment = getDocComment(rootCommentNode)
+            rootTags = getattr(rootComment, "tags", None)
+            mainName = None
+
+            if rootTags and "custom" in rootTags:
+                if type(rootComment.tags["custom"]) is set:
+                    mainName = list(rootComment.tags["custom"])[0]
+                else:
+                    mainName = None
+                    
+                self.setMain("Other", rootCommentNode, mainName)
+                
+            else:
+                self.setMain("Unsupported", rootCommentNode, mainName)
+                logging.warn("Unsupported declaration type in %s. You might want to define a #custom(one) using documentation tags." % id)
         
 
 
