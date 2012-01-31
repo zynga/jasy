@@ -185,14 +185,19 @@ class ApiData():
                 
                 # no return - support multiple statements
         
-        
+
+
         #
-        # Other
+        # Succeeded?
         #
         if declareNamespace or addStatics or addMembers:
             return
-        
-        
+
+
+
+        #
+        # Other
+        #
         rootCommentNode = findCommentNode(tree)
         if rootCommentNode:
             rootComment = getDocComment(rootCommentNode)
