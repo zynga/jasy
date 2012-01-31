@@ -229,8 +229,6 @@ class ApiData():
 
     def setMain(self, mainType, mainNode, exportName):
         
-        print("MAIN: %s" % mainNode)
-        
         callComment = self.getDocComment(mainNode, "Main")
 
         self.main = {
