@@ -41,6 +41,11 @@ class MetaData:
                         self.name = list(commentTags["name"])[0]
                     if "require" in commentTags:
                         self.requires.update(commentTags["require"])
+                    if "load" in commentTags:
+                        # load is a special combination shorthand for requires + breaks
+                        # This means load it but don't require it being loaded first
+                        self.requires.update(commentTags["load"])
+                        self.breaks.update(commentTags["load"])
                     if "optional" in commentTags:
                         self.optionals.update(commentTags["optional"])
                     if "break" in commentTags:
