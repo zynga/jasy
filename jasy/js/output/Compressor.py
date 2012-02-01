@@ -9,6 +9,9 @@ from jasy.js.parse.Lang import expressions, futureReserved
 
 all = [ "Compressor" ]
 
+high_unicode = re.compile(r"\\u[0-9A-Fa-f]{4}")
+ascii_encoder = json.JSONEncoder(ensure_ascii=True)
+unicode_encoder = json.JSONEncoder(ensure_ascii=False)
 
 #
 # Class
@@ -210,13 +213,12 @@ class Compressor:
         return "[%s %s]" % (self.compress(node.expression), self.compress(node.tail))    
 
     def type_string(self, node):
-        
         # Omit writing real high unicode character which are not supported well by browsers
-        ascii = json.JSONEncoder(ensure_ascii=True).encode(node.value)
-        if re.compile(r"\\u[0-9A-Fa-f]{4}").search(ascii):
+        ascii = ascii_encoder.encode(node.value)
+        if high_unicode.search(ascii):
             return ascii
         else:
-            return json.JSONEncoder(ensure_ascii=False).encode(node.value)
+            return unicode_encoder.encode(node.value)
 
     def type_number(self, node):
         value = node.value
