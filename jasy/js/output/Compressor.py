@@ -210,7 +210,13 @@ class Compressor:
         return "[%s %s]" % (self.compress(node.expression), self.compress(node.tail))    
 
     def type_string(self, node):
-        return json.JSONEncoder(ensure_ascii=False).encode(node.value)
+        
+        # Omit writing real high unicode character which are not supported well by browsers
+        ascii = json.JSONEncoder(ensure_ascii=True).encode(node.value)
+        if re.compile(r"\\u[0-9A-Fa-f]{4}").search(ascii):
+            return ascii
+        else:
+            return json.JSONEncoder(ensure_ascii=False).encode(node.value)
 
     def type_number(self, node):
         value = node.value
