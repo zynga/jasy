@@ -283,16 +283,26 @@ def findCall(node, methodName):
     Recurses the tree starting with the given node and returns the first node
     which calls the given method name (supports namespaces, too)
     """
+
+    if type(methodName) is str:
+        methodName = set([methodName])
     
     def matcher(node):
-        if node.type == "call":
-            
-            if "." in methodName and node[0].type == "dot" and assembleDot(node[0]) == methodName:
-                return node
-            elif node[0].type == "identifier" and node[0].value == methodName:
-                return node
+        call = getCallName(node)
+        if call and call in methodName:
+            return call
     
     return query(node, matcher)
+    
+    
+def getCallName(node):
+    if node.type == "call":
+        if node[0].type == "dot":
+            return assembleDot(node[0]) 
+        elif node[0].type == "identifier":
+            return node[0].value
+    
+    return None
     
     
 def getParameterFromCall(call, index=0):

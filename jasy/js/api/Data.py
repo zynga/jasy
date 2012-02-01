@@ -33,118 +33,109 @@ class ApiData():
         self.uses.update(tree.scope.packages)
 
 
-        #
-        # core.Module
-        #
-        coreModule = findCall(tree, "core.Module")
-        if coreModule:
-            self.setMain("core.Module", coreModule.parent, id)
+        callNode = findCall(tree, ("core.Module", "core.Interface", "core.Class", "Object.declareNamespace"))
+        if callNode:
+            callName = getCallName(callNode)
+
+            #
+            # core.Module
+            #
+            if callName == "core.Module":
+                self.setMain(callName, callNode.parent, id)
             
-            staticsMap = getParameterFromCall(coreModule, 1)
-            if staticsMap:
-                self.statics = {}
-                for staticsEntry in staticsMap:
-                    self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
-
-            return
+                staticsMap = getParameterFromCall(callNode, 1)
+                if staticsMap:
+                    self.statics = {}
+                    for staticsEntry in staticsMap:
+                        self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
 
 
-        #
-        # core.Interface
-        #
-        coreInterface = findCall(tree, "core.Interface")
-        if coreInterface:
-            self.setMain("core.Interface", coreInterface.parent, id)
-            
-            configMap = getParameterFromCall(coreInterface, 1)
-            if configMap:
-                for propertyInit in configMap:
-                    
-                    sectionName = propertyInit[0].value
-                    sectionValue = propertyInit[1]
-                    
-                    if sectionName == "properties":
-                        self.properties = {}
-                        for propertyEntry in sectionValue:
-                            self.addProperty(propertyEntry[0].value, propertyEntry[1], propertyEntry, self.properties)
-                    
-                    elif sectionName == "events":
-                        self.events = {}
-                        for eventEntry in sectionValue:
-                            self.addEvent(eventEntry[0].value, eventEntry[1], eventEntry, self.events)
-
-                    elif sectionName == "members":
-                        self.members = {}
-                        for memberEntry in sectionValue:
-                            self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
-                            
-                    else:
-                        logging.warn("Invalid section in %s (core.Interface): %s", sectionName) 
-                        
-            return
-                        
-
-
-        #
-        # core.Class
-        #
-        coreClass = findCall(tree, "core.Class")
-        if coreClass:
-            self.setMain("core.Class", coreClass.parent, id)
-            
-            configMap = getParameterFromCall(coreClass, 1)
-            if configMap:
-                for propertyInit in configMap:
-                    
-                    sectionName = propertyInit[0].value
-                    sectionValue = propertyInit[1]
-                    
-                    if sectionName == "construct":
-                        self.addConstructor(sectionValue, propertyInit)
-
-                    elif sectionName == "properties":
-                        self.properties = {}
-                        for propertyEntry in sectionValue:
-                            self.addProperty(propertyEntry[0].value, propertyEntry[1], propertyEntry, self.properties)
-                    
-                    elif sectionName == "events":
-                        self.events = {}
-                        for eventEntry in sectionValue:
-                            self.addEvent(eventEntry[0].value, eventEntry[1], eventEntry, self.events)
-
-                    elif sectionName == "members":
-                        self.members = {}
-                        for memberEntry in sectionValue:
-                            self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
-                            
-                    elif sectionName == "include":
-                        self.include = [valueToString(entry) for entry in sectionValue]
-
-                    elif sectionName == "implement":
-                        self.implement = [valueToString(entry) for entry in sectionValue]
-
-                    else:
-                        logging.warn("Invalid section in %s (core.Interface): %s", sectionName) 
-
-            return
-
+            #
+            # core.Interface
+            #
+            elif callName == "core.Interface":
+                self.setMain(callName, callNode.parent, id)
         
-        #
-        # Object.declareNamespace
-        #
-        declareNamespace = findCall(tree, "Object.declareNamespace")
-        if declareNamespace:
-            target = getParameterFromCall(declareNamespace, 0)
-            assigned = getParameterFromCall(declareNamespace, 1)
+                configMap = getParameterFromCall(callNode, 1)
+                if configMap:
+                    for propertyInit in configMap:
+                
+                        sectionName = propertyInit[0].value
+                        sectionValue = propertyInit[1]
+                
+                        if sectionName == "properties":
+                            self.properties = {}
+                            for propertyEntry in sectionValue:
+                                self.addProperty(propertyEntry[0].value, propertyEntry[1], propertyEntry, self.properties)
+                
+                        elif sectionName == "events":
+                            self.events = {}
+                            for eventEntry in sectionValue:
+                                self.addEvent(eventEntry[0].value, eventEntry[1], eventEntry, self.events)
+
+                        elif sectionName == "members":
+                            self.members = {}
+                            for memberEntry in sectionValue:
+                                self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
+                        
+                        else:
+                            logging.warn("Invalid section in %s (core.Interface): %s", sectionName) 
+
+
+            #
+            # core.Class
+            #
+            elif callName == "core.Class":
+                self.setMain(callName, callNode.parent, id)
             
-            if assigned.type == "function":
-                # Use declareNamespace call for constructor, find first doc comment for main documentation
-                self.setMain("Object.declareNamespace", findCommentNode(tree), target.value)
-                self.addConstructor(assigned, declareNamespace.parent)
-            else:
-                self.setMain("Object.declareNamespace", declareNamespace.parent, target.value)
+                configMap = getParameterFromCall(callNode, 1)
+                if configMap:
+                    for propertyInit in configMap:
+                    
+                        sectionName = propertyInit[0].value
+                        sectionValue = propertyInit[1]
+                    
+                        if sectionName == "construct":
+                            self.addConstructor(sectionValue, propertyInit)
+
+                        elif sectionName == "properties":
+                            self.properties = {}
+                            for propertyEntry in sectionValue:
+                                self.addProperty(propertyEntry[0].value, propertyEntry[1], propertyEntry, self.properties)
+                    
+                        elif sectionName == "events":
+                            self.events = {}
+                            for eventEntry in sectionValue:
+                                self.addEvent(eventEntry[0].value, eventEntry[1], eventEntry, self.events)
+
+                        elif sectionName == "members":
+                            self.members = {}
+                            for memberEntry in sectionValue:
+                                self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
+                            
+                        elif sectionName == "include":
+                            self.include = [valueToString(entry) for entry in sectionValue]
+
+                        elif sectionName == "implement":
+                            self.implement = [valueToString(entry) for entry in sectionValue]
+
+                        else:
+                            logging.warn("Invalid section in %s (core.Interface): %s", sectionName) 
+
+
+            #
+            # Object.declareNamespace
+            #
+            elif callName == "Object.declareNamespace":
+                target = getParameterFromCall(callNode, 0)
+                assigned = getParameterFromCall(callNode, 1)
             
-            # no return - support multiple statements
+                if assigned.type == "function":
+                    # Use callNode call for constructor, find first doc comment for main documentation
+                    self.setMain("Object.declareNamespace", findCommentNode(tree), target.value)
+                    self.addConstructor(assigned, callNode.parent)
+                else:
+                    self.setMain("Object.declareNamespace", callNode.parent, target.value)
         
         
         #
@@ -163,8 +154,6 @@ class ApiData():
                 self.statics = {}
                 for staticsEntry in staticsMap:
                     self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
-                
-                # no return - support multiple statements
         
         
         #
@@ -183,39 +172,29 @@ class ApiData():
                 self.members = {}
                 for membersEntry in membersMap:
                     self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                    
-                
-                # no return - support multiple statements
         
-
-
-        #
-        # Succeeded?
-        #
-        if declareNamespace or addStatics or addMembers:
-            return
-
-
 
         #
         # Other
         #
-        rootCommentNode = findCommentNode(tree)
-        if rootCommentNode:
-            rootComment = getDocComment(rootCommentNode)
-            rootTags = getattr(rootComment, "tags", None)
-            mainName = None
+        if not (callNode or addStatics or addMembers):
+            rootCommentNode = findCommentNode(tree)
+            if rootCommentNode:
+                rootComment = getDocComment(rootCommentNode)
+                rootTags = getattr(rootComment, "tags", None)
+                mainName = None
 
-            if rootTags and "custom" in rootTags:
-                if type(rootComment.tags["custom"]) is set:
-                    mainName = list(rootComment.tags["custom"])[0]
-                else:
-                    mainName = None
+                if rootTags and "custom" in rootTags:
+                    if type(rootComment.tags["custom"]) is set:
+                        mainName = list(rootComment.tags["custom"])[0]
+                    else:
+                        mainName = None
                     
-                self.setMain("Other", rootCommentNode, mainName)
+                    self.setMain("Other", rootCommentNode, mainName)
                 
-            else:
-                self.setMain("Unsupported", rootCommentNode, mainName)
-                logging.warn("Unsupported declaration type in %s. You might want to define a #custom(one) using documentation tags." % id)
+                else:
+                    self.setMain("Unsupported", rootCommentNode, mainName)
+                    logging.warn("Unsupported declaration type in %s. You might want to define a #custom(one) using documentation tags." % id)
         
 
 
