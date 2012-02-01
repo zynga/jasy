@@ -138,7 +138,8 @@ class ApiData():
             assigned = getParameterFromCall(declareNamespace, 1)
             
             if assigned.type == "function":
-                self.setMain("Object.declareNamespace", tree, target.value)
+                # Use declareNamespace call for constructor, find first doc comment for main documentation
+                self.setMain("Object.declareNamespace", findCommentNode(tree), target.value)
                 self.addConstructor(assigned, declareNamespace.parent)
             else:
                 self.setMain("Object.declareNamespace", declareNamespace.parent, target.value)
