@@ -10,11 +10,9 @@ from jasy.util.Profiler import *
 __all__ = ["Sorter"]
 
 
-class CircularDependencyBreaker(Exception):
-    def __init__(self, classObj):
-        self.breakAt = classObj
-        Exception.__init__(self, "Circular dependency to: %s" % classObj)
-
+class CircularDependency(Exception):
+    pass
+    
 
 class Sorter:
     def __init__(self, resolver, permutation=None):
@@ -41,7 +39,7 @@ class Sorter:
 
         if not self.__sortedClasses:
             logging.info("Sorting classes...")
-
+            
             pstart()
             classNames = self.__names
             for className in classNames:
@@ -115,8 +113,7 @@ class Sorter:
         if classObj in stack:
             stack.append(classObj)
             msg = " >> ".join([x.getName() for x in stack[stack.index(classObj):]])
-            logging.debug("Circular Dependency: %s" % msg)
-            raise CircularDependencyBreaker(classObj)
+            raise CircularDependency("Circular Dependency: %s" % msg)
     
         stack.append(classObj)
 
@@ -150,15 +147,7 @@ class Sorter:
                 result.add(depObj)
         
             else:
-                try:
-                    current = self.__getLoadDepsRecurser(depObj, stack[:])
-                except CircularDependencyBreaker as circularError:
-                    if circularError.breakAt == classObj:
-                        logging.debug("Auto Break: %s |> %s" % (classObj, depObj))
-                        circular.add(depObj)
-                        continue  
-                    else:
-                        raise circularError
+                current = self.__getLoadDepsRecurser(depObj, stack[:])
         
                 result.update(current)
                 result.add(depObj)
