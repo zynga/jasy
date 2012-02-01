@@ -44,8 +44,14 @@ class ApiWriter():
 
                 if "type" in apidata.main:
                     current["type"] = apidata.main["type"]
+                    
+                    if apidata.main["name"] != className:
+                        current["name"] = apidata.main["name"]
+                        
                 else:
-                    current["type"] = "Other"
+                    current["type"] = "None"
+                    
+                    
                 
                 writeFile(os.path.join(distFolder, "%s.%s" % (className, format)), encode(apidata.export()))
                 
