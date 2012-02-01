@@ -50,4 +50,5 @@ class MetaData:
 
         # Process children
         for child in node:
-            self.__inspect(child)
+            if child is not None:
+                self.__inspect(child)
