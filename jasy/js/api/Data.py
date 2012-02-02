@@ -16,7 +16,7 @@ __all__ = ["ApiData"]
 class ApiData():
     
 
-    __slots__ = ["main", "constructor", "statics", "properties", "events", "members", "id", "uses", "include", "implement"]
+    __slots__ = ["main", "constructor", "statics", "properties", "events", "members", "id", "uses", "include", "implement", "includedBy", "implementedBy"]
 
     
     def __init__(self, tree, id):

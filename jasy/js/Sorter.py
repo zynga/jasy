@@ -30,8 +30,6 @@ class Sorter:
         self.__loadDeps = {}
         self.__circularDeps = {}
         self.__sortedClasses = []
-        
-        self.__lastWait = -1
 
 
     def getSortedClasses(self):
@@ -56,10 +54,8 @@ class Sorter:
             pstop()
 
         return self.__sortedClasses
-        
-        
-        
-        
+
+
     def __addSorted(self, classObj, result, postponed=False):
         """ Adds a single class and its dependencies to the sorted result list """
 
