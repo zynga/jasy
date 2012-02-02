@@ -17,6 +17,39 @@ def mergeDict(dest, origin):
             dest[key] = origin[dest]
 
 
+def mergeMixin(className, mixinName, classApi, mixinApi):
+    print("Merging: %s into %s" % (mixinName, className))
+
+    mixinMembers = getattr(mixinApi, "members", None)
+    if mixinMembers:
+        classMembers = getattr(classApi, "members", {})
+        for name in mixinMembers:
+
+            # Overridden Check
+            if name in classMembers:
+                
+                # If it was included, just store another origin
+                if "origin" in classMembers[name]:
+                    classMembers[name]["origin"].append(mixinName)
+                
+                # Otherwise add it to the overridden list
+                else:
+                    if not "overridden" in classMembers[name]:
+                        classMembers[name]["overridden"] = []
+
+                    classMembers[name]["overridden"].append(mixinName)
+
+            # Remember where classes are included from
+            else:
+                classMembers[name] = {}
+                classMembers[name].update(mixinMembers[name])
+                if not "origin" in classMembers[name]:
+                    classMembers[name]["origin"] = []
+
+                classMembers[name]["origin"].append(mixinName)
+
+
+
 def connectInterface(className, interfaceName, classApi, interfaceApi):
     logging.debug("Connecting: %s with %s", className, interfaceName)
     
@@ -139,7 +172,7 @@ class ApiWriter():
         # Collecting Original Data
         #
         
-        logging.info("- Collecting Data...")
+        logging.info("- Collecting Classes...")
         apiData = {}
         
         for project in self.session.getProjects():
@@ -164,24 +197,28 @@ class ApiWriter():
 
             classIncludes = getattr(classApi, "include", None)
             if classIncludes:
-                for includeClassName in classIncludes:
-                    mergeMixin(classApi, getApi(includeClassName))
+                for mixinName in classIncludes:
+                    mergeMixin(className, mixinName, classApi, getApi(mixinName))
 
             mergedClasses.add(className)
 
             return classApi
-            
-
-        def mergeMixin(dest, mixin):
-            print("Merging: %s into %s" % (mixin.main["name"], dest.main["name"]))
-            
-
-
 
 
 
         #
-        # Connection API Data
+        # Including Mixins
+        #
+        
+        logging.info("- Resolving Mixins...")
+        
+        for className in apiData:
+            apiData[className] = getApi(className)
+
+
+
+        #
+        # Connection Interfaces
         #
         
         logging.info("- Connecting Interfaces...")
