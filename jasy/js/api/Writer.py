@@ -63,9 +63,16 @@ class ApiWriter():
 
         mergedClasses = set()
 
-        def mergeApi(dest, mixin):
+        def mergeMixin(dest, mixin):
             print("Merging: %s into %s" % (mixin.main["name"], dest.main["name"]))
 
+
+
+        def connectInterface(dest, interface):
+            print("Connecting: %s with %s" % (interface.main["name"], dest.main["name"]))
+            
+            
+            
 
         def getApi(className):
             classApi = apiData[className]
@@ -76,7 +83,7 @@ class ApiWriter():
             classIncludes = getattr(classApi, "include", None)
             if classIncludes:
                 for includeClassName in classIncludes:
-                    mergeApi(classApi, getApi(includeClassName))
+                    mergeMixin(classApi, getApi(includeClassName))
 
             mergedClasses.add(className)
 
@@ -100,10 +107,14 @@ class ApiWriter():
                 if classImplements:
                     
                     for interfaceName in classImplements:
-                        if not hasattr(apiData[interfaceName], "implementedBy"):
-                            apiData[interfaceName].implementedBy = []
+                        interfaceApi = apiData[interfaceName]
+                        implementedBy = getattr(interfaceApi, "implementedBy", None)
+                        if not implementedBy:
+                            implementedBy = interfaceApi.implementedBy = []
                             
-                        apiData[interfaceName].implementedBy.append(className)
+                        implementedBy.append(className)
+                        
+                        connectInterface(classApi, interfaceApi)
         
         
         
