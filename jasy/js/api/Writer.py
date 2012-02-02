@@ -20,33 +20,34 @@ def mergeDict(dest, origin):
 def mergeMixin(className, mixinName, classApi, mixinApi):
     print("Merging: %s into %s" % (mixinName, className))
 
-    mixinMembers = getattr(mixinApi, "members", None)
-    if mixinMembers:
-        classMembers = getattr(classApi, "members", {})
-        for name in mixinMembers:
+    for section in ("members", "properties", "events"):
+        mixinMembers = getattr(mixinApi, section, None)
+        if mixinMembers:
+            classMembers = getattr(classApi, section, {})
+            for name in mixinMembers:
 
-            # Overridden Check
-            if name in classMembers:
+                # Overridden Check
+                if name in classMembers:
                 
-                # If it was included, just store another origin
-                if "origin" in classMembers[name]:
-                    classMembers[name]["origin"].append(mixinName)
+                    # If it was included, just store another origin
+                    if "origin" in classMembers[name]:
+                        classMembers[name]["origin"].append(mixinName)
                 
-                # Otherwise add it to the overridden list
+                    # Otherwise add it to the overridden list
+                    else:
+                        if not "overridden" in classMembers[name]:
+                            classMembers[name]["overridden"] = []
+
+                        classMembers[name]["overridden"].append(mixinName)
+
+                # Remember where classes are included from
                 else:
-                    if not "overridden" in classMembers[name]:
-                        classMembers[name]["overridden"] = []
+                    classMembers[name] = {}
+                    classMembers[name].update(mixinMembers[name])
+                    if not "origin" in classMembers[name]:
+                        classMembers[name]["origin"] = []
 
-                    classMembers[name]["overridden"].append(mixinName)
-
-            # Remember where classes are included from
-            else:
-                classMembers[name] = {}
-                classMembers[name].update(mixinMembers[name])
-                if not "origin" in classMembers[name]:
-                    classMembers[name]["origin"] = []
-
-                classMembers[name]["origin"].append(mixinName)
+                    classMembers[name]["origin"].append(mixinName)
 
 
 
