@@ -8,6 +8,99 @@ from jasy.util.File import *
 
 __all__ = ["ApiWriter"]
 
+
+def mergeDict(dest, origin):
+    """ Like update() but only never overwrites"""
+    
+    for key in origin:
+        if not key in dest:
+            dest[key] = origin[dest]
+
+
+def connectInterface(className, interfaceName, classApi, interfaceApi):
+    logging.debug("Connecting: %s with %s", className, interfaceName)
+    
+    #
+    # Properties
+    #
+    interfaceProperties = getattr(interfaceApi, "properties", None)
+    if interfaceProperties:
+        classProperties = getattr(classApi, "properties", {})
+        for name in interfaceProperties:
+            if not name in classProperties:
+                logging.warn("Class %s is missing implementation for property %s of interface %s!", className, name, interfaceName)
+            else:
+                # Add reference to interface
+                classEvents[name]["interface"] = interfaceName
+
+                # Copy over documentation
+                if not "doc" in classProperties[name] and "doc" in interfaceProperties[name]:
+                    classProperties[name]["doc"] = interfaceProperties[name]["doc"]
+
+    #
+    # Events
+    #
+    interfaceEvents = getattr(interfaceApi, "events", None)
+    if interfaceEvents:
+        classEvents = getattr(classApi, "events", {})
+        for name in interfaceEvents:
+            if not name in classEvents:
+                logging.warn("Class %s is missing implementation for event %s of interface %s!", className, name, interfaceName)
+            else:
+                # Add reference to interface
+                classEvents[name]["interface"] = interfaceName
+                
+                # Copy user event type and documentation from interface
+                for key in ("doc", "type"):
+                    if not key in classEvents[name] and key in interfaceEvents[name]:
+                        classEvents[name][key] = interfaceEvents[name][key]
+
+    #
+    # Members
+    #
+    interfaceMembers = getattr(interfaceApi, "members", None)
+    if interfaceMembers:
+        classMembers = getattr(classApi, "members", {})
+        for name in interfaceMembers:
+            if not name in classMembers:
+                logging.warn("Class %s is missing implementation for member %s of interface %s!", className, name, interfaceName)
+    
+            else:
+                interfaceEntry = interfaceMembers[name]
+                classEntry = classMembers[name]
+                
+                # Add reference to interface
+                classEntry["interface"] = interfaceName
+                
+                # Copy over doc from interface
+                if not "doc" in classEntry and "doc" in interfaceEntry:
+                    classEntry["doc"] = interfaceEntry["doc"]
+
+                # Priorize return value from interface (it's part of the interface feature set to enforce this)
+                if "returns" in interfaceEntry:
+                    classEntry["returns"] = interfaceEntry["returns"]
+
+                # Update tags with data from interface
+                if "tags" in interfaceEntry:
+                    if not "tags" in classEntry:
+                        classEntry["tags"] = {}
+                    
+                    mergeDict(classEntry["tags"], interfaceEntry["tags"])
+
+                # Copy over params from interface
+                if "params" in interfaceEntry:
+                    # Fix completely missing parameters
+                    if not "params" in classEntry:
+                        classEntry["params"] = {}
+                        
+                    for paramName in interfaceEntry["params"]:
+                        # Prefer data from interface
+                        if not paramName in classEntry["params"]:
+                            classEntry["params"][paramName] = {}
+                            
+                        classEntry["params"][paramName].update(interfaceEntry["params"][paramName])
+
+
 class ApiWriter():
     
     def __init__(self, session):
@@ -63,17 +156,6 @@ class ApiWriter():
 
         mergedClasses = set()
 
-        def mergeMixin(dest, mixin):
-            print("Merging: %s into %s" % (mixin.main["name"], dest.main["name"]))
-
-
-
-        def connectInterface(dest, interface):
-            print("Connecting: %s with %s" % (interface.main["name"], dest.main["name"]))
-            
-            
-            
-
         def getApi(className):
             classApi = apiData[className]
 
@@ -88,6 +170,13 @@ class ApiWriter():
             mergedClasses.add(className)
 
             return classApi
+            
+
+        def mergeMixin(dest, mixin):
+            print("Merging: %s into %s" % (mixin.main["name"], dest.main["name"]))
+            
+
+
 
 
 
@@ -114,7 +203,7 @@ class ApiWriter():
                             
                         implementedBy.append(className)
                         
-                        connectInterface(classApi, interfaceApi)
+                        connectInterface(className, interfaceName, classApi, interfaceApi)
         
         
         
