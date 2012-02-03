@@ -89,7 +89,7 @@ class Permutation:
             #else:
             #    checksum = "b%s" % hex(checksum)[2:]
             
-            checksum = hashlib.sha1(self.__key.encode("ascii"))
+            checksum = hashlib.sha1(self.__key.encode("ascii")).hexdigest()
             
             self.__checksum = checksum        
         
