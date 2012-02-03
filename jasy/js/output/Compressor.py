@@ -9,7 +9,7 @@ from jasy.js.parse.Lang import expressions, futureReserved
 
 all = [ "Compressor" ]
 
-high_unicode = re.compile(r"\\u[0-9A-Fa-f]{4}")
+high_unicode = re.compile(r"\\u[2-9a-fA-F]{2}[0-9A-Fa-f]{2}")
 ascii_encoder = json.JSONEncoder(ensure_ascii=True)
 unicode_encoder = json.JSONEncoder(ensure_ascii=False)
 
