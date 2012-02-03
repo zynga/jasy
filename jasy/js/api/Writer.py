@@ -18,7 +18,7 @@ def mergeDict(dest, origin):
 
 
 def mergeMixin(className, mixinName, classApi, mixinApi):
-    print("Merging: %s into %s" % (mixinName, className))
+    logging.debug("Merging: %s into %s", mixinName, className)
 
     for section in ("members", "properties", "events"):
         mixinMembers = getattr(mixinApi, section, None)
