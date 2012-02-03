@@ -61,7 +61,7 @@ try:
             if (language or classname) is None:
                 language = "javascript"
                 
-            return highlight(_unescape_html(code), get_lexer_by_name(language or classname or "javascript"), HtmlFormatter())
+            return highlight(_unescape_html(code), get_lexer_by_name(language or classname or "javascript"), HtmlFormatter(linenos="table"))
             
         return codeblock.sub(_highlight_match, html)
         
