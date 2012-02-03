@@ -282,6 +282,10 @@ class Tests(unittest.TestCase):
     def test_unicode(self):
         # Should be allowed in UTF-8 documents
         self.assertEqual(self.process(r'var x = "\u00A9 Netscape Communications";'), r'var x="© Netscape Communications";')
+        
+        # High Unicode is encoded as ASCII
+        ret = self.process(r'"[\t\n\u000b\f\r \u00a0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029\ufeff]"')
+        self.assertEqual(ret, r'"[\t\n\u000b\f\r \u00a0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029\ufeff]";')
 
     def test_while_comma_condition(self):
         self.assertEqual(self.process('while (x=1, x<3){ x++; }'), 'while(x=1,x<3){x++}')            
