@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Sebastian Werner
 #
 
-import logging, binascii, zlib
+import logging, hashlib
 
 __all__ = ["Permutation", "getPermutation"]
 
@@ -81,13 +81,15 @@ class Permutation:
             # Python 3 returns the unsigned value for better compliance with the standard.
             # http://bugs.python.org/issue1202
             # checksum = binascii.crc32(self.__key.encode("ascii"))
-            checksum = zlib.adler32(self.__key.encode("ascii"))
-            checksum = checksum - ((checksum & 0x80000000) <<1)
+            # checksum = zlib.adler32(self.__key.encode("ascii"))
+            # checksum = checksum - ((checksum & 0x80000000) <<1)
         
-            if checksum < 0:
-                checksum = "a%s" % hex(abs(checksum))[2:]
-            else:
-                checksum = "b%s" % hex(checksum)[2:]
+            #if checksum < 0:
+            #    checksum = "a%s" % hex(abs(checksum))[2:]
+            #else:
+            #    checksum = "b%s" % hex(checksum)[2:]
+            
+            checksum = hashlib.sha1(self.__key.encode("ascii"))
             
             self.__checksum = checksum        
         
