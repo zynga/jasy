@@ -195,6 +195,9 @@ class ApiData():
                 else:
                     self.setMain("Unsupported", rootCommentNode, mainName)
                     logging.warn("Unsupported declaration type in %s. You might want to define a #custom(one) using documentation tags." % id)
+                    
+            else:
+                self.setMain("Unsupported", tree, None)
         
 
 
