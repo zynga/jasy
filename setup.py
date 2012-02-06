@@ -81,8 +81,8 @@ setup(
       },
       
       install_requires=[
-          'polib',
-          'misaka',
+          'polib=0.7.0',
+          'misaka=0.4.2',
           'pygments',
           'msgpack-python'
       ],      
