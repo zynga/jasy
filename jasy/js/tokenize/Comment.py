@@ -18,7 +18,7 @@ try:
     logging.debug("Using high performance C-based Markdown implementation")
     
 except ImportError as ex:
-    
+     
     try:
     
         import markdown

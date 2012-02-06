@@ -81,10 +81,11 @@ setup(
       },
       
       install_requires=[
-          'polib=0.7.0',
-          'misaka=0.4.2',
+          'polib==0.7.0',
+          'misaka==0.4.2',
           'pygments',
-          'msgpack-python'
+          'msgpack-python',
+          'Markdown'
       ],      
       
       scripts = [
