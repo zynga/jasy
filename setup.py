@@ -18,6 +18,25 @@ from distutils.core import setup
 # Import Jasy for version info etc.
 import jasy
 
+if sys.platform == "win32":
+    try:
+        import misaka
+    except ImportError:
+        print("Please install Misaka using a binary distribution first!")
+
+    try:
+        import msgpack
+    except ImportError:
+        print("Please install Msgpack-Python using a binary distribution first!")
+        
+    requires = [ 'pygments', 'polib' ]
+    scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util", "bin/jasy.bat" ]
+    
+else:
+    requires = [ 'pygments', 'polib', 'cython', 'misaka', 'msgpack-python' ]
+    scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util" ]
+
+
 setup(
       name = 'jasy',
       version = jasy.__version__,
@@ -80,20 +99,9 @@ setup(
         ]
       },
       
-      install_requires=[
-          'polib',
-          'misaka',
-          'pygments',
-          'msgpack-python',
-          'Markdown'
-      ],      
+      install_requires=requires,      
       
-      scripts = [
-        "bin/jasy", 
-        "bin/jasy-test", 
-        "bin/jasy-util",
-        "bin/jasy.bat"
-      ],
+      scripts = scripts,
       
       data_files = [
         ("doc", [
