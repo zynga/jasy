@@ -34,7 +34,7 @@ if sys.platform == "win32":
     requires = [ 'pygments', 'polib' ]
     
 else:
-    try
+    try:
         import cython
     except ImportError:
         print("Please install Cython first!")
