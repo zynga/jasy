@@ -23,15 +23,23 @@ if sys.platform == "win32":
         import misaka
     except ImportError:
         print("Please install Misaka using a binary distribution first!")
+        sys.exit(1)
 
     try:
         import msgpack
     except ImportError:
         print("Please install Msgpack-Python using a binary distribution first!")
+        sys.exit(1)
         
     requires = [ 'pygments', 'polib' ]
     
 else:
+    try
+        import cython
+    except ImportError:
+        print("Please install Cython first!")
+        sys.exit(1)
+
     requires = [ 'pygments', 'polib', 'cython', 'misaka', 'msgpack-python' ]
 
 
@@ -97,7 +105,7 @@ setup(
         ]
       },
       
-      install_requires=requires,      
+      install_requires=requires,
       
       scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util", "bin/jasy.bat" ],
       
