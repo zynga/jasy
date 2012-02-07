@@ -30,11 +30,9 @@ if sys.platform == "win32":
         print("Please install Msgpack-Python using a binary distribution first!")
         
     requires = [ 'pygments', 'polib' ]
-    scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util", "bin/jasy.bat" ]
     
 else:
     requires = [ 'pygments', 'polib', 'cython', 'misaka', 'msgpack-python' ]
-    scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util" ]
 
 
 setup(
@@ -101,7 +99,7 @@ setup(
       
       install_requires=requires,      
       
-      scripts = scripts,
+      scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util", "bin/jasy.bat" ],
       
       data_files = [
         ("doc", [
