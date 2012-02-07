@@ -19,7 +19,9 @@ from distutils.core import setup
 # Import Jasy for version info etc.
 import jasy
 
-if "install" in sys.argv:
+requires = [ 'pygments', 'polib', 'cython', 'misaka', 'msgpack-python' ]
+
+if not "sdist" in sys.argv:
     if sys.platform == "win32":
         try:
             import misaka
@@ -42,7 +44,6 @@ if "install" in sys.argv:
             print("Please install Cython first!")
             sys.exit(1)
 
-        requires = [ 'pygments', 'polib', 'cython', 'misaka', 'msgpack-python' ]
 
 
 setup(
