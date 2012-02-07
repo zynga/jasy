@@ -19,29 +19,30 @@ from distutils.core import setup
 # Import Jasy for version info etc.
 import jasy
 
-if sys.platform == "win32":
-    try:
-        import misaka
-    except ImportError:
-        print("Please install Misaka using a binary distribution first!")
-        sys.exit(1)
+if "install" in sys.argv:
+    if sys.platform == "win32":
+        try:
+            import misaka
+        except ImportError:
+            print("Please install Misaka using a binary distribution first!")
+            sys.exit(1)
 
-    try:
-        import msgpack
-    except ImportError:
-        print("Please install Msgpack-Python using a binary distribution first!")
-        sys.exit(1)
+        try:
+            import msgpack
+        except ImportError:
+            print("Please install Msgpack-Python using a binary distribution first!")
+            sys.exit(1)
         
-    requires = [ 'pygments', 'polib' ]
+        requires = [ 'pygments', 'polib' ]
     
-else:
-    try:
-        import cython
-    except ImportError:
-        print("Please install Cython first!")
-        sys.exit(1)
+    else:
+        try:
+            import cython
+        except ImportError:
+            print("Please install Cython first!")
+            sys.exit(1)
 
-    requires = [ 'pygments', 'polib', 'cython', 'misaka', 'msgpack-python' ]
+        requires = [ 'pygments', 'polib', 'cython', 'misaka', 'msgpack-python' ]
 
 
 setup(
