@@ -19,7 +19,7 @@ from distutils.core import setup
 # Import Jasy for version info etc.
 import jasy
 
-requires = [ 'pygments', 'polib', 'cython', 'misaka', 'msgpack-python' ]
+requires = [ 'pygments', 'polib', 'misaka', 'msgpack-python' ]
 
 if not "sdist" in sys.argv:
     if sys.platform == "win32":
