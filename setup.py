@@ -10,7 +10,8 @@ import sys, os, pkg_resources
 major, minor = sys.version_info[:2]
 
 if major < 3:
-    raise Exception("Jasy requires Python 3")
+    print("Jasy requires Python 3")
+    sys.exit(1)
 
 # Load distutils and switch to distribute afterwards
 from distutils.core import setup
