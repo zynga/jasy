@@ -465,6 +465,9 @@ class Tests(unittest.TestCase):
             'function x(){return somemethod()&&othermethod()!=null}'
         )
         
+    def test_parens_numberoper(self):
+        self.assertEqual(self.process('''(23).pad(2);'''), '(23).pad(2);')
+        
     def test_single_command_if_block(self):
         self.assertEqual(self.process(
             '''
