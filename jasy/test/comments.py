@@ -1111,8 +1111,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(isinstance(parsed[0].comments, list), True)
         self.assertEqual(len(parsed[0].comments), 1)
 
-        print(parsed[0].comments[0].html)
-
         self.assertEqual(parsed[0].comments[0].variant, "doc")
         self.assertEqual(parsed[0].comments[0].html, '<p>Some code example:</p>\n\n<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span class="nx">self</span><span class="p">.</span><span class="nx">callCommand</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;</span><span class="nx">reload</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;,</span> <span class="kc">true</span><span class="p">);</span>\n</pre></div>\n</td></tr></table>\n')    
         
