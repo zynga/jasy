@@ -146,6 +146,7 @@ def __optimize(node, compressor):
                 repl = Node(None, "not")
                 node.replace(condition, repl)
                 repl.append(condition)
+                fixParens(condition)
                 condition = repl
             
             node.replace(thenPart, elsePart)
@@ -334,7 +335,7 @@ def fixParens(node):
     if parent.type in expressions:
         prio = expressionOrder[node.type]
         parentPrio = expressionOrder[node.parent.type]
-
+        
         needsParens = prio < parentPrio
         if needsParens:
             logging.debug("Adding parens around %s node at line: %s" % (node.type, node.line))

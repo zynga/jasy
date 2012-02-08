@@ -326,7 +326,24 @@ class Tests(unittest.TestCase):
             }
             '''),
             'function wrapper(){if(!something)while(x);}'
-        )        
+        )      
+        
+    def test_if_empty_else_two(self):
+        self.assertEqual(self.process(
+            '''
+            function wrapper()
+            {
+              if(something && otherthing)
+              {
+              }
+              else
+              {
+                while(x); 
+              }
+            }
+            '''),
+            'function wrapper(){if(!(something&&otherthing))while(x);}'
+        )          
 
     def test_ifoptimize_assign_late(self):
         self.assertEqual(self.process(
