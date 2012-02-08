@@ -176,7 +176,7 @@ class Class():
         for name in meta.requires:
             if name != self.__id and name in classes:
                 result.add(classes[name])
-        
+
         # Globally modified names (mostly relevant when working without namespaces)
         for name in scope.shared:
             if name != self.__id and name in classes:
@@ -206,8 +206,13 @@ class Class():
                         break
                     
                     package = package[0:pos]
+                    
+        # Manually excluded names/classes
+        for name in meta.optionals:
+            if name != self.__id and name in classes:
+                result.remove(classes[name])
         
-        return result        
+        return result
         
         
     def getScopeData(self, permutation=None):
