@@ -296,7 +296,7 @@ def cleanParens(node):
         # Parameters don't need to be wrapped in parans
         node.parenthesized = False
         
-    elif node.type in ("new","string","number","boolean") and parent.type == "dot":
+    elif node.type in ("new", "string", "number", "boolean") and parent.type == "dot":
         # Constructs like (new foo.bar.Object).doSomething()
         # "new" is defined with higher priority than "dot" but in
         # this case it does not work without parens. Interestingly
