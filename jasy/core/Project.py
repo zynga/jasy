@@ -244,7 +244,7 @@ class Project():
                             dirNames.remove(dirName)
 
                     for fileName in fileNames:
-                        if fileName[0] == ".":
+                        if fileName[0] == "." or (fileName.endswith(".js") and self.__assetPath == self.__classPath):
                             continue
                             
                         # Exclude internally managed files
