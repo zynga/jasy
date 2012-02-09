@@ -259,12 +259,13 @@ class Asset:
         
         roots = []
         for project in projects:
+            projectPackage = project.getPackage()
+            assetBasePath = os.path.join(assetFolder, projectPackage) if projectPackage else assetFolder
+            
             if urlPrefix:
-                localPath = os.path.join(buildFolder, assetFolder, project.getName())
-                roots.append("%s%s" % (urlPrefix, localPath.replace(os.sep, "/")))
+                roots.append("%s%s" % (urlPrefix, os.path.join(buildFolder, assetBasePath).replace(os.sep, "/")))
             else:
-                localPath = os.path.join(assetFolder, project.getName())
-                roots.append(localPath.replace(os.sep, "/"))
+                roots.append(assetBasePath.replace(os.sep, "/"))
 
         return self.__exportHelper(roots)        
         
