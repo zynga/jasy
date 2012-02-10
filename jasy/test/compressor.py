@@ -243,6 +243,9 @@ class Tests(unittest.TestCase):
     def test_regexp(self):
         self.assertEqual(self.process('var x = /[a-z]/g.exec(foo);'), 'var x=/[a-z]/g.exec(foo);')
 
+    def test_regexp_in_array(self):
+        self.assertEqual(self.process('var x = [/[a-z]/];'), 'var x=[/[a-z]/];')
+
     def test_return(self):
         self.assertEqual(self.process('function y() { return 1; }'), 'function y(){return 1}')
 

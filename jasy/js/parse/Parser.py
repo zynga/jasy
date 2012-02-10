@@ -1435,7 +1435,7 @@ def PrimaryExpression(tokenizer, staticContext):
     elif tokenType == "left_bracket":
         node = builder.ARRAYINIT_build(tokenizer)
         while True:
-            tokenType = tokenizer.peek()
+            tokenType = tokenizer.peek(True)
             if tokenType == "right_bracket":
                 break
         
