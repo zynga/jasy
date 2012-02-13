@@ -36,6 +36,8 @@ from jasy.js.api.Data import ApiData
 from jasy.js.output.Compressor import Compressor
 from jasy.js.output.Optimization import Optimization
 
+import jasy.js.clean.DeadCode
+import jasy.js.clean.Unused
 
 for fname in sys.argv[2:]:
     text = open(fname, encoding="utf-8").read()
@@ -77,6 +79,10 @@ for fname in sys.argv[2:]:
         print("Assets: %s" % meta.assets)        
         
     elif job == "optimize":
+        jasy.js.clean.DeadCode.cleanup(root)
+        variables = scan(root)
+        jasy.js.clean.Unused.cleanup(root)
+        
         Optimization("declarations", "blocks", "variables", "privates").apply(root)
         print(Compressor().compress(root))
         
