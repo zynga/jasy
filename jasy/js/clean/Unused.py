@@ -37,7 +37,7 @@ def cleanup(node):
     
     while True:
         x = x + 1
-        logging.debug("Removing unused variables [%s]..." % x)
+        logging.debug("Removing unused variables [Iteration: %s]..." % x)
         if __cleanup(node):
             ScopeScanner.scan(node)
             cleaned = True
@@ -138,17 +138,32 @@ def __recurser(node, unused):
                     elif len(node) == 1:
                         semicolon = Node(init.tokenizer, "semicolon")
                         semicolon.append(init, "expression")
+
+                        # Protect non-expressions with parens
+                        if init.type in ("array_init", "object_init"):
+                            init.parenthesized = True
+                        
                         node.parent.replace(node, semicolon)
                         retval = True
 
                     # If we are the last declaration, move it out of node and append after var block
-                    elif node[-1] == decl:
+                    elif node[-1] == decl or node[0] == decl:
+                        isFirst = node[0] == decl
+                        
                         node.remove(decl)
                         nodePos = node.parent.index(node)
                         semicolon = Node(init.tokenizer, "semicolon")
                         semicolon.append(init, "expression")
-                        
-                        node.parent.insert(nodePos + 1, semicolon)
+
+                        # Protect non-expressions with parens
+                        if init.type in ("array_init", "object_init"):
+                            init.parenthesized = True
+
+                        if isFirst:
+                            node.parent.insert(nodePos, semicolon)
+                        else:
+                            node.parent.insert(nodePos + 1, semicolon)
+                            
                         retval = True
                         
                     else:

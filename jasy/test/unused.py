@@ -72,7 +72,7 @@ class Tests(unittest.TestCase):
         )
         
     def test_object(self):
-        """ Complex objects could not be removed. """
+        """ Non expressions must be protected with parens. """
         
         self.assertEqual(self.process(
         '''
@@ -83,7 +83,40 @@ class Tests(unittest.TestCase):
         };
         '''
         ), 
-        'function abc(){var a={x:1}};')
+        'function abc(){({x:1})};')
+        
+    def test_object_multi(self):
+        """ Non expressions must be protected with parens. """
+
+        self.assertEqual(self.process(
+        '''
+        function abc() {
+           var obj1 = {
+               x:1
+           }, obj2 = {
+               x:2
+           };
+        };
+        '''
+        ), 
+        'function abc(){({x:1});({x:2})};')        
+
+    def test_object_multi_others(self):
+        """ Non expressions must be protected with parens. """
+
+        self.assertEqual(self.process(
+        '''
+        function abc() {
+           var obj1 = {
+               x:1
+           }, str = "hello", obj2 = {
+               x:2
+           }, nr = 3.14;
+           return str;
+        };
+        '''
+        ), 
+        'function abc(){({x:1});var str="hello";({x:2});return str};')
 
     def test_var_dep_blocks(self):
         """ y contains operation so could not be removed and x is still in use. """
