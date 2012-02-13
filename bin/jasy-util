@@ -6,7 +6,7 @@
 #
 
 # Import standard library stuff
-import sys, os.path, pkg_resources, json
+import sys, os.path, pkg_resources, json, logging
 
 # Version check
 if sys.version_info[0] < 3:
@@ -28,6 +28,8 @@ if not job in supported:
     sys.stderr.write("Invalid job %s\n" % job)
     sys.exit(1)
 
+logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+
 import jasy, json
 
 from jasy.js.parse.Parser import parse
@@ -35,7 +37,9 @@ from jasy.js.parse.ScopeScanner import scan
 from jasy.js.api.Data import ApiData
 from jasy.js.output.Compressor import Compressor
 from jasy.js.output.Optimization import Optimization
+from jasy.core.Permutation import Permutation
 
+import jasy.js.clean.Permutate
 import jasy.js.clean.DeadCode
 import jasy.js.clean.Unused
 
@@ -79,6 +83,9 @@ for fname in sys.argv[2:]:
         print("Assets: %s" % meta.assets)        
         
     elif job == "optimize":
+        permutation = Permutation({ "debug": False })
+        jasy.js.clean.Permutate.patch(root, permutation)
+        
         jasy.js.clean.DeadCode.cleanup(root)
         variables = scan(root)
         jasy.js.clean.Unused.cleanup(root)

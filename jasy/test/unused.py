@@ -70,6 +70,20 @@ class Tests(unittest.TestCase):
             '''),
             'function wrapper(){}'
         )
+        
+    def test_object(self):
+        """ Complex objects could not be removed. """
+        
+        self.assertEqual(self.process(
+        '''
+        function abc() {
+           var obj = {
+               x:1
+           };
+        };
+        '''
+        ), 
+        'function abc(){var a={x:1}};')
 
     def test_var_dep_blocks(self):
         """ y contains operation so could not be removed and x is still in use. """
