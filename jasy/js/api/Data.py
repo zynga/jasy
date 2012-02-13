@@ -549,12 +549,13 @@ class ApiData():
 
                 if funcParams:
                     if not comment.params:
-                        self.warn("Missing documentation for parameters of function %s" % name, valueNode.line)
+                        if requiresDocumentation(name):
+                            self.warn("Missing documentation for parameters of function %s" % name, valueNode.line)
                     else:
                         for paramName in funcParams:
                             if paramName in comment.params:
                                 entry["params"][paramName].update(comment.params[paramName])
-                            else:
+                            elif requiresDocumentation(name):
                                 self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
 
 
