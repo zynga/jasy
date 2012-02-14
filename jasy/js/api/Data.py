@@ -129,11 +129,21 @@ class ApiData():
             elif callName == "core.Main.declareNamespace":
                 target = getParameterFromCall(callNode, 0)
                 assigned = getParameterFromCall(callNode, 1)
-            
+                
                 if assigned.type == "function":
                     # Use callNode call for constructor, find first doc comment for main documentation
                     self.setMain("core.Main.declareNamespace", findCommentNode(tree), target.value)
                     self.addConstructor(assigned, callNode.parent)
+
+                elif assigned.type == "object_init":
+                    # Use callNode call for constructor, find first doc comment for main documentation
+                    self.setMain("core.Main.declareNamespace", findCommentNode(tree), target.value)
+                    self.addConstructor(assigned, callNode.parent)
+
+                    self.statics = {}
+                    for staticsEntry in assigned:
+                        self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
+
                 else:
                     self.setMain("core.Main.declareNamespace", callNode.parent, target.value)
         
