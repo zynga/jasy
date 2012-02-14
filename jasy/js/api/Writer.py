@@ -162,7 +162,7 @@ class ApiWriter():
         
         index, classes = self.collect()
         
-        logging.info("Saving Files...")
+        logging.debug("Saving Files...")
         
         for className in classes:
             try:
@@ -182,7 +182,7 @@ class ApiWriter():
         # Collecting Original Data
         #
         
-        logging.info("- Collecting Classes...")
+        logging.debug("Collecting Classes...")
         apiData = {}
         
         for project in self.session.getProjects():
@@ -220,7 +220,7 @@ class ApiWriter():
         # Including Mixins
         #
         
-        logging.info("- Resolving Mixins...")
+        logging.debug("Resolving Mixins...")
         
         for className in apiData:
             apiData[className] = getApi(className)
@@ -231,7 +231,7 @@ class ApiWriter():
         # Connection Interfaces
         #
         
-        logging.info("- Connecting Interfaces...")
+        logging.debug("Connecting Interfaces...")
         
         for className in apiData:
             classApi = getApi(className)
@@ -258,7 +258,7 @@ class ApiWriter():
         # Writing API Index
         #
         
-        logging.info("- Building Index...")
+        logging.debug("Building Index...")
         index = {}
         
         for className in apiData:

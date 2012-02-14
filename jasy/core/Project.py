@@ -244,7 +244,11 @@ class Project():
                             dirNames.remove(dirName)
 
                     for fileName in fileNames:
-                        if fileName[0] == "." or (fileName.endswith(".js") and self.__assetPath == self.__classPath):
+                        if fileName[0] == ".":
+                            continue
+                            
+                        # Ignore class/readme files in assets when sharing same folder with classes
+                        if self.__assetPath == self.__classPath and fileName.endswith((".js", ".md")):
                             continue
                             
                         # Exclude internally managed files
