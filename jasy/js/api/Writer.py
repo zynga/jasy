@@ -151,7 +151,12 @@ class ApiWriter():
         
         def encode(content):
             if format == "json":
-                return json.dumps(content, sort_keys=True, indent=2)
+                class SetEncoder(json.JSONEncoder):
+                    def default(self, obj):
+                        if isinstance(obj, set):
+                            return list(obj)
+                        return json.JSONEncoder.default(self, obj)
+                return json.dumps(content, sort_keys=True, indent=2, cls=SetEncoder)
             elif format == "msgpack":
                 return "%s" % msgpack.packb(content)
         
@@ -160,7 +165,11 @@ class ApiWriter():
         logging.info("Saving Files...")
         
         for className in classes:
-            writeFile(os.path.join(distFolder, "%s.%s" % (className, format)), encode(classes[className].export()))
+            try:
+                writeFile(os.path.join(distFolder, "%s.%s" % (className, format)), encode(classes[className].export()))
+            except TypeError:
+                logging.error("Could not write API data of: %s", className)
+                continue
         
         writeFile(os.path.join(distFolder, "index.%s" % format), encode(index))
         

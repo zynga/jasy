@@ -124,7 +124,7 @@ class ApiData():
 
 
             #
-            # Object.declareNamespace
+            # core.Main.declareNamespace
             #
             elif callName == "core.Main.declareNamespace":
                 target = getParameterFromCall(callNode, 0)
@@ -139,7 +139,7 @@ class ApiData():
         
         
         #
-        # Object.addStatics
+        # core.Main.addStatics
         #
         addStatics = findCall(tree, "core.Main.addStatics")
         if addStatics:
@@ -157,7 +157,7 @@ class ApiData():
         
         
         #
-        # Object.addMembers
+        # core.Main.addMembers
         #
         addMembers = findCall(tree, "core.Main.addMembers")
         if addMembers:
