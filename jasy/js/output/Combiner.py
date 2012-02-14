@@ -69,7 +69,7 @@ def storeKernel(fileName, session, assets=None, translations=None, optimization=
     classes = Sorter(resolver, permutation).getSortedClasses()
     storeCompressed(fileName, classes, permutation=permutation, optimization=optimization, formatting=formatting)
     
-    return resolver.getIncludedClasses()
+    return classes
 
 
 

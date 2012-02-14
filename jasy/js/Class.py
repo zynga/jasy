@@ -157,7 +157,7 @@ class Class():
         return tree
 
 
-    def getDependencies(self, permutation=None, classes=None):
+    def getDependencies(self, permutation=None, classes=None, warnings=True):
         """ 
         Returns a set of dependencies seen through the given list of known 
         classes (ignoring all unknown items in original set). This method
@@ -174,8 +174,10 @@ class Class():
         
         # Manually defined names/classes
         for name in meta.requires:
-            if name != self.__id and name in classes:
+            if name != self.__name and name in classes:
                 result.add(classes[name])
+            elif warnings:
+                logging.warn("Missing class (required): %s in %s", name, self.__name)
 
         # Globally modified names (mostly relevant when working without namespaces)
         for name in scope.shared:
@@ -209,8 +211,10 @@ class Class():
                     
         # Manually excluded names/classes
         for name in meta.optionals:
-            if name != self.__id and name in classes:
+            if name != self.__name and name in classes:
                 result.remove(classes[name])
+            elif warnings:
+                logging.warn("Missing class (optional): %s in %s", name, self.__name)
         
         return result
         
