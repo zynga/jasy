@@ -33,7 +33,7 @@ class ApiData():
         self.uses.update(tree.scope.packages)
 
 
-        callNode = findCall(tree, ("core.Module", "core.Interface", "core.Class", "Object.declareNamespace"))
+        callNode = findCall(tree, ("core.Module", "core.Interface", "core.Class", "core.Main.declareNamespace"))
         if callNode:
             callName = getCallName(callNode)
 
@@ -126,22 +126,22 @@ class ApiData():
             #
             # Object.declareNamespace
             #
-            elif callName == "Object.declareNamespace":
+            elif callName == "core.Main.declareNamespace":
                 target = getParameterFromCall(callNode, 0)
                 assigned = getParameterFromCall(callNode, 1)
             
                 if assigned.type == "function":
                     # Use callNode call for constructor, find first doc comment for main documentation
-                    self.setMain("Object.declareNamespace", findCommentNode(tree), target.value)
+                    self.setMain("core.Main.declareNamespace", findCommentNode(tree), target.value)
                     self.addConstructor(assigned, callNode.parent)
                 else:
-                    self.setMain("Object.declareNamespace", callNode.parent, target.value)
+                    self.setMain("core.Main.declareNamespace", callNode.parent, target.value)
         
         
         #
         # Object.addStatics
         #
-        addStatics = findCall(tree, "Object.addStatics")
+        addStatics = findCall(tree, "core.Main.addStatics")
         if addStatics:
             target = getParameterFromCall(addStatics, 0)
             staticsMap = getParameterFromCall(addStatics, 1)
@@ -149,7 +149,7 @@ class ApiData():
             if target.type == "string" and staticsMap.type == "object_init":
                 
                 if not self.main:
-                    self.setMain("Object.addStatics", addStatics.parent, target.value)
+                    self.setMain("core.Main.addStatics", addStatics.parent, target.value)
                 
                 self.statics = {}
                 for staticsEntry in staticsMap:
@@ -159,7 +159,7 @@ class ApiData():
         #
         # Object.addMembers
         #
-        addMembers = findCall(tree, "Object.addMembers")
+        addMembers = findCall(tree, "core.Main.addMembers")
         if addMembers:
             target = getParameterFromCall(addMembers, 0)
             membersMap = getParameterFromCall(addMembers, 1)
@@ -167,7 +167,7 @@ class ApiData():
             if target.type == "string" and membersMap.type == "object_init":
                 
                 if not self.main:
-                    self.setMain("Object.addMembers", addMembers.parent, target.value)
+                    self.setMain("core.Main.addMembers", addMembers.parent, target.value)
 
                 self.members = {}
                 for membersEntry in membersMap:
