@@ -216,6 +216,52 @@ class Project():
             logging.debug("Project %s contains %s classes", self.__name, len(classes))
             self.classes = classes
             return classes
+            
+            
+    def getDocs(self):
+        """ 
+        Returns all project doc files for JavaScript packages. Requires all files to have a "md" extension.
+        """
+        
+        if self.__classPath is None:
+            return None
+        
+        try:
+            return self.docs
+            
+        except AttributeError:
+            classPath = os.path.join(self.__path, self.__classPath)
+            docs = {}
+            package = self.__package
+            
+            classPathLen = len(classPath) + 1
+            
+            if classPath and os.path.exists(classPath):
+                for dirPath, dirNames, fileNames in os.walk(classPath):
+                    for dirName in dirNames:
+                        if dirName in self.__dirFilter:
+                            dirNames.remove(dirName)
+
+                    for fileName in fileNames:
+                        if fileName[0] == ".":
+                            continue
+                        
+                        if fileName in ("package.md", "readme.md"):
+                            filePath = os.path.join(dirPath, fileName)
+                            relPath = filePath[classPathLen:]
+                            
+                            # Support for pre-fixed package which is not used in filesystem, but in assets
+                            if package:
+                                name = "%s%s%s" % (package, os.sep, relPath)
+                            else:
+                                name = relPath
+
+                            # always using dot syntax for the docs
+                            docs[name.replace(os.sep, ".")[:-len(fileName)-1]] = open(filePath).read()
+                            
+            logging.debug("Project %s contains %s package documentation", self.__name, len(docs))
+            self.docs = docs
+            return docs
 
 
     def getAssets(self):

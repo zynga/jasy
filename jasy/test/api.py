@@ -17,7 +17,7 @@ class Tests(unittest.TestCase):
     def process(self, code):
         node = Parser.parse(code)
         ScopeScanner.scan(node)
-        data = Data.ApiData(node, "test")
+        data = Data.ApiData("test", node)
         
         return data
         

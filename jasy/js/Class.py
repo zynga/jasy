@@ -240,7 +240,7 @@ class Class():
         field = "api[%s]" % self.__id
         apidata = self.__cache.read(field, self.__mtime)
         if apidata is None:
-            apidata = ApiData(self.getTree(cleanup=False), self.__name)
+            apidata = ApiData(self.__name, self.getTree(cleanup=False))
             self.__cache.store(field, apidata, self.__mtime)
 
         return apidata

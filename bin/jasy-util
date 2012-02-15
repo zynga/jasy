@@ -51,7 +51,7 @@ for fname in sys.argv[2:]:
     print(">>> File: %s" % fname)
     
     if job == "api":
-        apidata = ApiData(root, fname)
+        apidata = ApiData(fname, root)
         print(json.dumps(apidata.export(), sort_keys=True, indent=2))
         
     elif job == "compress":

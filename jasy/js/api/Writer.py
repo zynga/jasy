@@ -5,6 +5,7 @@
 
 import logging, json, msgpack
 from jasy.util.File import *
+from jasy.js.api.Data import ApiData
 
 __all__ = ["ApiWriter"]
 
@@ -135,6 +136,7 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                         classEntry["params"][paramName].update(interfaceEntry["params"][paramName])
 
 
+
 class ApiWriter():
     
     def __init__(self, session):
@@ -166,7 +168,13 @@ class ApiWriter():
         
         for className in classes:
             try:
-                writeFile(os.path.join(distFolder, "%s.%s" % (className, format)), encode(classes[className].export()))
+                classData = classes[className]
+                if type(classData) is dict:
+                    classExport = classData
+                else:
+                    classExport = classData.export()
+                
+                writeFile(os.path.join(distFolder, "%s.%s" % (className, format)), encode(classExport))
             except TypeError:
                 logging.error("Could not write API data of: %s", className)
                 continue
@@ -187,11 +195,18 @@ class ApiWriter():
         
         for project in self.session.getProjects():
             classes = project.getClasses()
-            
             for className in classes:
                 apiData[className] = classes[className].getApi()
-
-
+                
+            docs = project.getDocs()
+            for packageName in docs:
+                apiData[packageName] = ApiData(packageName)
+                apiData[packageName].main = {
+                    "type" : "Package",
+                    "name" : packageName,
+                    "doc" : docs[packageName]
+                }
+            
 
         #
         # Accessor methods
@@ -235,8 +250,11 @@ class ApiWriter():
         
         for className in apiData:
             classApi = getApi(className)
-            classType = classApi.main["type"]
             
+            if not hasattr(classApi, "main"):
+                continue
+                
+            classType = classApi.main["type"]
             if classType == "core.Class":
                 
                 classImplements = getattr(classApi, "implement", None)
@@ -263,23 +281,43 @@ class ApiWriter():
         
         for className in apiData:
             
+            classApi = apiData[className]
+            mainInfo = classApi.main
+            
+            # Create className package
             current = index
             for split in className.split("."):
                 if not split in current:
-                    current[split] = {}
+                    current[split] = {
+                        "$type": "Package"
+                    }
 
                 current = current[split]
-                
-            classApi = apiData[className]
-            if "type" in classApi.main:
-                current["type"] = classApi.main["type"]
-                
-                if classApi.main["name"] != className:
-                    current["name"] = classApi.main["name"]
-                    
+            
+            if "type" in mainInfo:
+                current["$type"] = mainInfo["type"]
             else:
-                current["type"] = "None"
+                current["$type"] = "None"
 
+            # Create destName package
+            destName = mainInfo["name"]
+            if destName is not None and destName != className:
+                current = index
+            
+                for split in destName.split("."):
+                    if not split in current:
+                        current[split] = {}
+
+                    current = current[split]
+            
+                if not "type" in current:
+                    current["$type"] = "Extend"
+                
+                if "from" in current:
+                    current["$from"].append(className)
+                else:
+                    current["$from"] = [className]
+        
         
         
         #

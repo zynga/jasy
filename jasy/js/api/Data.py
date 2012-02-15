@@ -19,19 +19,20 @@ class ApiData():
     __slots__ = ["main", "constructor", "statics", "properties", "events", "members", "id", "uses", "include", "implement", "includedBy", "implementedBy"]
 
     
-    def __init__(self, tree, id):
+    def __init__(self, id, tree=None):
         
         self.id = id
         self.main = {}
-        
-        
-        #
-        # Export relevant usage data from scope scanner
-        #
         self.uses = {}
+        
+        if tree:
+            self.scan(tree)
+
+
+    def scan(self, tree):
+        
         self.uses.update(tree.scope.shared)
         self.uses.update(tree.scope.packages)
-
 
         callNode = findCall(tree, ("core.Module", "core.Interface", "core.Class", "core.Main.declareNamespace"))
         if callNode:
@@ -41,7 +42,7 @@ class ApiData():
             # core.Module
             #
             if callName == "core.Module":
-                self.setMain(callName, callNode.parent, id)
+                self.setMain(callName, callNode.parent, self.id)
             
                 staticsMap = getParameterFromCall(callNode, 1)
                 if staticsMap:
@@ -54,7 +55,7 @@ class ApiData():
             # core.Interface
             #
             elif callName == "core.Interface":
-                self.setMain(callName, callNode.parent, id)
+                self.setMain(callName, callNode.parent, self.id)
         
                 configMap = getParameterFromCall(callNode, 1)
                 if configMap:
@@ -86,7 +87,7 @@ class ApiData():
             # core.Class
             #
             elif callName == "core.Class":
-                self.setMain(callName, callNode.parent, id)
+                self.setMain(callName, callNode.parent, self.id)
             
                 configMap = getParameterFromCall(callNode, 1)
                 if configMap:
@@ -132,11 +133,11 @@ class ApiData():
                 
                 if assigned.type == "function":
                     # Use callNode call for constructor, find first doc comment for main documentation
-                    self.setMain("core.Main.declareNamespace", findCommentNode(tree), target.value)
+                    self.setMain("core.Main", findCommentNode(tree), target.value)
                     self.addConstructor(assigned, callNode.parent)
 
                 else:
-                    self.setMain("core.Main.declareNamespace", callNode.parent, target.value)
+                    self.setMain("core.Main", callNode.parent, target.value)
 
                     if assigned.type == "object_init":
                         self.statics = {}
@@ -155,7 +156,7 @@ class ApiData():
             if target.type == "string" and staticsMap.type == "object_init":
                 
                 if not self.main:
-                    self.setMain("core.Main.addStatics", addStatics.parent, target.value)
+                    self.setMain("core.Main", addStatics.parent, target.value)
                 
                 self.statics = {}
                 for staticsEntry in staticsMap:
@@ -173,7 +174,7 @@ class ApiData():
             if target.type == "string" and membersMap.type == "object_init":
                 
                 if not self.main:
-                    self.setMain("core.Main.addMembers", addMembers.parent, target.value)
+                    self.setMain("core.Main", addMembers.parent, target.value)
 
                 self.members = {}
                 for membersEntry in membersMap:
