@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Sebastian Werner
 #
 
-import logging, json, msgpack
+import logging, json, msgpack, copy
 from jasy.util.File import *
 from jasy.js.api.Data import ApiData
 
@@ -273,6 +273,58 @@ class ApiWriter():
         
         
         #
+        # Merging Named Classes
+        #
+        
+        for className in list(apiData):
+            classApi = apiData[className]
+            destName = classApi.main["name"]
+            if destName is not None and destName != className:
+
+                if destName in apiData:
+                    destApi = apiData[destName]
+                    destApi.main["from"].append(className)
+                else:
+                    destApi = apiData[destName] = ApiData(destName)
+                    destApi.main = {
+                        "type" : "Extend",
+                        "name" : destName,
+                        "from" : [className],
+                        "doc" : "Extensions to %s" % destName
+                    }
+                    
+                classApi.main["extension"] = True
+                    
+                # Read existing data
+                constructor = getattr(classApi, "constructor", None)
+                statics = getattr(classApi, "statics", None)
+                members = getattr(classApi, "members", None)
+
+                if constructor is not None:
+                    if hasattr(destApi, "constructor"):
+                        logging.warn("Overriding constructor in extension %s by %s", destName, className)
+                        
+                    destApi.constructor = constructor
+
+                if statics is not None:
+                    if not hasattr(destApi, "statics"):
+                        destApi.statics = {}
+
+                    for staticName in statics:
+                        destApi.statics[staticName] = copy.copy(statics[staticName])
+                        destApi.statics[staticName]["from"] = className
+
+                if members is not None:
+                    if not hasattr(destApi, "members"):
+                        destApi.members = {}
+                        
+                    for memberName in members:
+                        destApi.members[memberName] = members[memberName]
+                        destApi.members[memberName]["from"] = className
+            
+        
+        
+        #
         # Writing API Index
         #
         
@@ -288,36 +340,13 @@ class ApiWriter():
             current = index
             for split in className.split("."):
                 if not split in current:
-                    current[split] = {
-                        "$type": "Package"
-                    }
+                    current[split] = { "$type": "Package" }
 
                 current = current[split]
             
-            if "type" in mainInfo:
-                current["$type"] = mainInfo["type"]
-            else:
-                current["$type"] = "None"
+            # Store current type
+            current["$type"] = mainInfo["type"]
 
-            # Create destName package
-            destName = mainInfo["name"]
-            if destName is not None and destName != className:
-                current = index
-            
-                for split in destName.split("."):
-                    if not split in current:
-                        current[split] = {}
-
-                    current = current[split]
-            
-                if not "type" in current:
-                    current["$type"] = "Extend"
-                
-                if "from" in current:
-                    current["$from"].append(className)
-                else:
-                    current["$from"] = [className]
-        
         
         
         #

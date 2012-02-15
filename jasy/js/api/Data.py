@@ -239,9 +239,9 @@ class ApiData():
 
 
 
-    def setMain(self, mainType, mainNode, exportName):
+    def setMain(self, mainType, mainNode, exportName, requiredDoc=True):
         
-        callComment = self.getDocComment(mainNode, "Main")
+        callComment = self.getDocComment(mainNode, "Main", required=requiredDoc)
 
         self.main = {
             "type" : mainType,
