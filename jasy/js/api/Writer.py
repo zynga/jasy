@@ -143,7 +143,7 @@ class ApiWriter():
         self.session = session
         
         
-    def write(self, distFolder, format="json", compact=True, callback=None):
+    def write(self, distFolder, format="json", compact=True, callback=None, showInternals=False, showPrivates=False):
         
         logging.info("Writing API data to: %s" % distFolder)
         
@@ -172,7 +172,7 @@ class ApiWriter():
             elif format == "msgpack":
                 return "%s" % msgpack.packb(content)
         
-        index, classes = self.collect()
+        classes, index, search = self.collect(internals=showInternals, privates=showPrivates)
         
         extension = "jsonp" if callback and format is "json" else format
         logging.debug("Saving files as %s..." % extension)
@@ -191,11 +191,24 @@ class ApiWriter():
                 continue
         
         writeFile(os.path.join(distFolder, "$index.%s" % extension), encode(index, "$index"))
+        writeFile(os.path.join(distFolder, "$search.%s" % extension), encode(search, "$search"))
         
         
         
 
-    def collect(self):
+    def collect(self, internals=False, privates=False):
+        
+        def isVisible(entry):
+            if "visibility" in entry:
+                visibility = entry["visibility"]
+                if visibility == "private" and not privates:
+                    return False
+                if visibility == "internal" and not internals:
+                    return False
+
+            return True
+        
+        
         
         #
         # Collecting Original Data
@@ -281,6 +294,21 @@ class ApiWriter():
                         
                         connectInterface(className, interfaceName, classApi, interfaceApi)
         
+        
+        #
+        # Filter Internals/Privates
+        #
+        
+        def filterInternalsPrivates(classApi, field):
+            data = getattr(classApi, field, None)
+            if data:
+                for name in list(data):
+                    if not isVisible(data[name]):
+                        del data[name]
+
+        for className in apiData:
+            filterInternalsPrivates(apiData[className], "statics")
+            filterInternalsPrivates(apiData[className], "members")
         
         
         #
@@ -379,13 +407,45 @@ class ApiWriter():
             
             # Clear no documentation flag
             del current["$nodoc"]
+            
+            
+            
+        #
+        # Building Search Index
+        #
+        
+        logging.debug("Building Search Index")
+        search = {}
+        
+        def addSearch(classApi, field):
+            data = getattr(classApi, field, None)
+            if data:
+                for name in data:
+                    if not isVisible(data[name]):
+                        continue
+                    
+                    if not name in search:
+                        search[name] = set()
+
+                    search[name].add(className)                
+        
+        for className in apiData:
+            
+            classApi = apiData[className]
+
+            addSearch(classApi, "statics")
+            addSearch(classApi, "members")
+            addSearch(classApi, "properties")
+            addSearch(classApi, "events")
+        
+        
         
         
         #
         # Return
         #
         
-        return index, apiData
+        return apiData, index, search
         
         
         
