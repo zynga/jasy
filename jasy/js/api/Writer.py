@@ -143,7 +143,7 @@ class ApiWriter():
         self.session = session
         
         
-    def write(self, distFolder, format="json"):
+    def write(self, distFolder, format="json", compact=True, callback=None):
         
         logging.info("Writing API data to: %s" % distFolder)
         
@@ -151,21 +151,32 @@ class ApiWriter():
             logging.warn("Invalid output format: %s. Falling back to json." % format)
             format = "json"
         
-        def encode(content):
+        def encode(content, name):
             if format == "json":
                 class SetEncoder(json.JSONEncoder):
                     def default(self, obj):
                         if isinstance(obj, set):
                             return list(obj)
                         return json.JSONEncoder.default(self, obj)
-                return json.dumps(content, sort_keys=True, indent=2, cls=SetEncoder)
+                        
+                if compact:
+                    jsonEncoded = json.dumps(content, sort_keys=True, cls=SetEncoder, separators=(',',':'))
+                else:
+                    jsonEncoded = json.dumps(content, sort_keys=True, indent=2, cls=SetEncoder)
+                
+                if callback:
+                    return "%s(%s,'%s');" % (callback, jsonEncoded, name)
+                else:
+                    return jsonEncoded
+                
             elif format == "msgpack":
                 return "%s" % msgpack.packb(content)
         
         index, classes = self.collect()
         
-        logging.debug("Saving Files...")
-        
+        extension = "jsonp" if callback and format is "json" else format
+        logging.debug("Saving files as %s..." % extension)
+
         for className in classes:
             try:
                 classData = classes[className]
@@ -173,13 +184,13 @@ class ApiWriter():
                     classExport = classData
                 else:
                     classExport = classData.export()
-                
-                writeFile(os.path.join(distFolder, "%s.%s" % (className, format)), encode(classExport))
+                    
+                writeFile(os.path.join(distFolder, "%s.%s" % (className, extension)), encode(classExport, className))
             except TypeError:
                 logging.error("Could not write API data of: %s", className)
                 continue
         
-        writeFile(os.path.join(distFolder, "index.%s" % format), encode(index))
+        writeFile(os.path.join(distFolder, "$index.%s" % extension), encode(index, "$index"))
         
         
         
@@ -273,6 +284,25 @@ class ApiWriter():
         
         
         #
+        # Connecting Uses
+        #
+        
+        # This matches all uses with the known classes and only keeps them if matched
+        allClasses = set(list(apiData))
+        for className in apiData:
+            uses = apiData[className].uses
+            
+            cleanUses = set()
+            for use in uses:
+                if use in allClasses:
+                    cleanUses.add(use)
+            
+            apiData[className].uses = cleanUses
+        
+        
+        
+        
+        #
         # Merging Named Classes
         #
         
@@ -336,17 +366,19 @@ class ApiWriter():
             classApi = apiData[className]
             mainInfo = classApi.main
             
-            # Create className package
+            # Create missing packages for className
             current = index
             for split in className.split("."):
                 if not split in current:
-                    current[split] = { "$type": "Package" }
+                    current[split] = { "$type": "Package", "$nodoc" : True }
 
                 current = current[split]
             
             # Store current type
             current["$type"] = mainInfo["type"]
-
+            
+            # Clear no documentation flag
+            del current["$nodoc"]
         
         
         #

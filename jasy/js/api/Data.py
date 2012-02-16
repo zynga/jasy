@@ -23,7 +23,7 @@ class ApiData():
         
         self.id = id
         self.main = {}
-        self.uses = {}
+        self.uses = set()
         
         if tree:
             self.scan(tree)
@@ -32,8 +32,15 @@ class ApiData():
     def scan(self, tree):
         
         self.uses.update(tree.scope.shared)
-        self.uses.update(tree.scope.packages)
-
+        
+        for package in tree.scope.packages:
+            splits = package.split(".")
+            current = splits[0]
+            for split in splits[1:]:
+                current = "%s.%s" % (current, split)
+                self.uses.add(current)
+            
+            
         callNode = findCall(tree, ("core.Module", "core.Interface", "core.Class", "core.Main.declareNamespace"))
         if callNode:
             callName = getCallName(callNode)
