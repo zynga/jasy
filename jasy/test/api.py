@@ -408,7 +408,7 @@ class Tests(unittest.TestCase):
 
         """) 
 
-        self.assertEqual(data.include, ["foo.MEvents", "foo.MColor"])
+        self.assertEqual(data.includes, ["foo.MEvents", "foo.MColor"])
         
         
     def test_implement(self):
@@ -422,7 +422,7 @@ class Tests(unittest.TestCase):
 
         """) 
 
-        self.assertEqual(data.implement, ["foo.ILayoutObject", "foo.IThemeable"])        
+        self.assertEqual(data.implements, ["foo.ILayoutObject", "foo.IThemeable"])        
         
         
         
