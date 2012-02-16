@@ -295,6 +295,7 @@ class ApiWriter():
                         connectInterface(className, interfaceName, classApi, interfaceApi)
         
         
+        
         #
         # Filter Internals/Privates
         #
@@ -308,6 +309,7 @@ class ApiWriter():
 
         for className in apiData:
             filterInternalsPrivates(apiData[className], "statics")
+
             filterInternalsPrivates(apiData[className], "members")
         
         
@@ -326,7 +328,6 @@ class ApiWriter():
                     cleanUses.add(use)
             
             apiData[className].uses = cleanUses
-        
         
         
         
