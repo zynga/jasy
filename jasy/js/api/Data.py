@@ -16,7 +16,7 @@ __all__ = ["ApiData"]
 class ApiData():
     
 
-    __slots__ = ["main", "constructor", "statics", "properties", "events", "members", "id", "uses", "include", "implement", "includedBy", "implementedBy"]
+    __slots__ = ["main", "constructor", "statics", "properties", "events", "members", "id", "uses", "usedBy", "includes", "includedBy", "implements", "implementedBy"]
 
     
     def __init__(self, id, tree=None):
@@ -122,10 +122,10 @@ class ApiData():
                                 self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
                             
                         elif sectionName == "include":
-                            self.include = [valueToString(entry) for entry in sectionValue]
+                            self.includes = [valueToString(entry) for entry in sectionValue]
 
                         elif sectionName == "implement":
-                            self.implement = [valueToString(entry) for entry in sectionValue]
+                            self.implements = [valueToString(entry) for entry in sectionValue]
 
                         else:
                             logging.warn("Invalid section in %s (core.Interface): %s", sectionName) 

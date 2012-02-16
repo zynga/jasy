@@ -230,11 +230,14 @@ class ApiWriter():
                     "name" : packageName,
                     "doc" : docs[packageName]
                 }
-            
+
+
 
         #
-        # Accessor methods
+        # Including Mixins / IncludedBy
         #
+
+        logging.debug("Resolving Mixins...")
 
         mergedClasses = set()
 
@@ -244,30 +247,24 @@ class ApiWriter():
             if className in mergedClasses:
                 return classApi
 
-            classIncludes = getattr(classApi, "include", None)
+            classIncludes = getattr(classApi, "includes", None)
             if classIncludes:
                 for mixinName in classIncludes:
                     mergeMixin(className, mixinName, classApi, getApi(mixinName))
+                    
+            # TODO: Included By
 
             mergedClasses.add(className)
 
             return classApi
 
-
-
-        #
-        # Including Mixins
-        #
-        
-        logging.debug("Resolving Mixins...")
-        
         for className in apiData:
             apiData[className] = getApi(className)
 
 
 
         #
-        # Connection Interfaces
+        # Connection Interfaces / ImplementedBy
         #
         
         logging.debug("Connecting Interfaces...")
@@ -281,7 +278,7 @@ class ApiWriter():
             classType = classApi.main["type"]
             if classType == "core.Class":
                 
-                classImplements = getattr(classApi, "implement", None)
+                classImplements = getattr(classApi, "implements", None)
                 if classImplements:
                     
                     for interfaceName in classImplements:
@@ -293,6 +290,32 @@ class ApiWriter():
                         implementedBy.append(className)
                         
                         connectInterface(className, interfaceName, classApi, interfaceApi)
+        
+        
+        
+        #
+        # Connecting Uses / UsedBy
+        #
+
+        # This matches all uses with the known classes and only keeps them if matched
+        allClasses = set(list(apiData))
+        for className in apiData:
+            uses = apiData[className].uses
+
+            # Rebuild use list
+            cleanUses = set()
+            for use in uses:
+                if use in allClasses:
+                    cleanUses.add(use)
+                    
+                    if not "usedBy" in apiData[use]:
+                        apiData[use]["usedBy"] = set()
+                        
+                    apiData[use]["usedBy"].add(className)
+
+            apiData[className].uses = cleanUses
+        
+        
         
         
         
@@ -311,23 +334,6 @@ class ApiWriter():
             filterInternalsPrivates(apiData[className], "statics")
 
             filterInternalsPrivates(apiData[className], "members")
-        
-        
-        #
-        # Connecting Uses
-        #
-        
-        # This matches all uses with the known classes and only keeps them if matched
-        allClasses = set(list(apiData))
-        for className in apiData:
-            uses = apiData[className].uses
-            
-            cleanUses = set()
-            for use in uses:
-                if use in allClasses:
-                    cleanUses.add(use)
-            
-            apiData[className].uses = cleanUses
         
         
         
