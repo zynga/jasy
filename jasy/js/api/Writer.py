@@ -308,10 +308,11 @@ class ApiWriter():
                 if use in allClasses:
                     cleanUses.add(use)
                     
-                    if not hasattr(apiData[use], "usedBy"):
-                        apiData[use].usedBy = set()
+                    useEntry = apiData[use]
+                    if not hasattr(useEntry, "usedBy"):
+                        useEntry.usedBy = set()
                         
-                    apiData[use].usedBy.add(className)
+                    useEntry.usedBy.add(className)
 
             apiData[className].uses = cleanUses
         
