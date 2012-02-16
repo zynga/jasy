@@ -1,7 +1,32 @@
+Jasy 0.5-beta6
+==============
+
+- TODO
+
+Jasy 0.5-beta5
+==============
+
+- Added support for generating a basic search index with all statics/members/properties/events
+- Added support for compressing json output
+- Added support for ignoring private/internal statics/members
+- Added more connections between classes: includedBy and usedBy sections.
+
+Jasy 0.5-beta4
+==============
+
+- Added support for merging extensions into destination object (e.g. polyfills, sugar for native objects like String, etc.)
+- Added support for generating jsonp output files with custom callback
+- Added support for readme.md/package.md package docs
+
+Jasy 0.5-beta3
+==============
+
+- Minor fixes
+
 Jasy 0.5-beta2
 ==============
 
-- 
+- Minor fixes for paren optimization
 
 Jasy 0.5-beta1
 ==============
