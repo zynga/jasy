@@ -239,6 +239,7 @@ class ApiWriter():
 
         logging.debug("Resolving Mixins...")
 
+        # Just used temporary to keep track of which classes are merged
         mergedClasses = set()
 
         def getApi(className):
@@ -250,9 +251,14 @@ class ApiWriter():
             classIncludes = getattr(classApi, "includes", None)
             if classIncludes:
                 for mixinName in classIncludes:
+                    mixinApi = apiData[mixinName]
+                    if not hasattr(mixinApi, "includedBy"):
+                        mixinApi.includedBy = set()
+                    
+                    mixinApi.includedBy.add(className)
+
                     mergeMixin(className, mixinName, classApi, getApi(mixinName))
                     
-            # TODO: Included By
 
             mergedClasses.add(className)
 
