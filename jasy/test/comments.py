@@ -1062,7 +1062,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(parsed[0].comments), 1)
 
         self.assertEqual(parsed[0].comments[0].variant, "doc")
-        self.assertEqual(parsed[0].comments[0].html, "<p>Text formatting with &lsquo;quotes&rsquo; is pretty nice, too&hellip;</p>\n\n<p>It possible to use &ldquo;different styles&rdquo; here &ndash; to improve clarity.</p>\n\n<p>Still it keeps code like <code>this.foo()</code> intact.</p>\n\n<p>It&rsquo;s also capable of detecting these things: &ldquo;Joe&rsquo;s Restaurant&rdquo;.</p>\n")
+        self.assertEqual(parsed[0].comments[0].html, "<p>Text formatting with &#39;quotes&#39; is pretty nice, too&hellip;</p>\n\n<p>It possible to use &ldquo;different styles&rdquo; here &ndash; to improve clarity.</p>\n\n<p>Still it keeps code like <code>this.foo()</code> intact.</p>\n\n<p>It&#39;s also capable of detecting these things: &ldquo;Joe&#39;s Restaurant&rdquo;.</p>\n")
     
     
     
