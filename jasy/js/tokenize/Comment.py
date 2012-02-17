@@ -226,6 +226,8 @@ class Comment():
         for lineNo, line in enumerate((indent+text).split("\n")):
             if line.startswith(indent):
                 lines.append(line[len(indent):].rstrip())
+            elif line.strip() == "":
+                lines.append("")
             else:
                 logging.error("Could not outdent comment at line %s in %s", startLineNo+lineNo, self.fileId)
                 return text
