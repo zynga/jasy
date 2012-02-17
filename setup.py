@@ -110,7 +110,7 @@ setup(
       
       install_requires=requires,
       
-      scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util", "bin/jasy.bat" ],
+      scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util", "bin/jasy.bat", "bin/jasy-test.bat", "bin/jasy-util.bat" ],
       
       data_files = [
         ("doc", [
