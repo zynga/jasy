@@ -87,7 +87,7 @@ class ApiData():
                                 self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
                         
                         else:
-                            logging.warn("Invalid section in %s (core.Interface): %s", sectionName) 
+                            logging.warn("Invalid section \"%s\" (core.Interface) in %s", sectionName, self.id) 
 
 
             #
@@ -128,7 +128,7 @@ class ApiData():
                             self.implements = [valueToString(entry) for entry in sectionValue]
 
                         else:
-                            logging.warn("Invalid section in %s (core.Interface): %s", sectionName) 
+                            logging.warn("Invalid section \"%s\" (core.Class) in %s", sectionName, self.id) 
 
 
             #
