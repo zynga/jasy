@@ -103,6 +103,8 @@ paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+?)(\s*\.
 # Matches links in own dialect
 linkMatcher = re.compile(r"\{([a-zA-Z0-9_#\:\.]+)\}")
 
+linkMatcher = re.compile(r"\{((static|member|event|property)\:)?([a-zA-Z0-9_\.]+)?(\#([a-zA-Z0-9_]+))?\}")
+
 
 
 
@@ -386,13 +388,56 @@ class Comment():
     def __processLinks(self, text):
         
         def formatTypes(match):
-            link = match.group(1).strip()
-            label = link
-            if ":" in label:
-                label = label[label.find(":")+1:]
-            label = label.replace("#", "")
             
-            return '<a href="#%s"><code>%s</code></a>' % (link.replace("#", "~"), label)
+            parsedSection = match.group(2)
+            parsedFile = match.group(3)
+            parsedItem = match.group(5)
+            
+            print("GROUPS", parsedSection, parsedFile, parsedItem)
+            
+            attr = ""
+            link = "#"
+            label = ""
+            
+            if parsedSection:
+                link += '%s:' % parsedSection
+                attr += ' data-section="%s"' % parsedSection
+            
+            if parsedFile:
+                attr += ' data-file="%s"' % parsedFile
+                link += parsedFile
+                label += parsedFile
+                
+            if parsedItem:
+                link += "~%s" % parsedItem
+                if label == "":
+                    label = parsedItem
+                else:
+                    label += "#%s" % parsedItem
+                
+            # add link to attributes list
+            attr += ' href="%s"' % link
+            
+            # build final HTML
+            return '<a%s><code>%s</code></a>' % (attr, label)
+            
+            
+            # link = match.group(1).strip()
+            # label = link
+            # if ":" in label:
+            #     label = label[label.find(":")+1:]
+            # label = label.replace("#", "")
+            # 
+            # extra = ""
+            # if ":" in link:
+            #     extra += 'data-section="%s" ' % link[:link.find(":")]
+            #     
+            # if "#" in link:
+            #     extra += 'data-dest="item" '
+            # else:
+            #     extra += 'data-dest="file" '
+            #     
+            # return '<a %shref="#%s"><code>%s</code></a>' % (extra, link.replace("#", "~"), label)
             
         return linkMatcher.sub(formatTypes, text)
         

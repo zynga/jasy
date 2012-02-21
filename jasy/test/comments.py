@@ -679,8 +679,8 @@ class Tests(unittest.TestCase):
 
         comment = parsed.comments[0]
         
-        self.assertEqual(comment.html, '<p>Link to cool <a href="#z.core.Style"><code>z.core.Style</code></a> class. Looks at this method <a href="#core.io.Asset~toUri"><code>core.io.AssettoUri</code></a> to translate local\nasset IDs to something usable in the browser.</p>\n\n<p>You can either use <a href="#String"><code>String</code></a> or <a href="#Map"><code>Map</code></a> types as primitive data types.</p>\n')
-        self.assertEqual(comment.text, 'Link to cool z.core.Style class. Looks at this method core.io.AssettoUri to translate local\nasset IDs to something usable in the browser.\n\nYou can either use String or Map types as primitive data types.')
+        self.assertEqual(comment.html, '')
+        self.assertEqual(comment.text, '')
     
 
     def test_doc_links_type(self):
@@ -699,8 +699,8 @@ class Tests(unittest.TestCase):
 
         comment = parsed.comments[0]
 
-        self.assertEqual(comment.html, '<p>Just execute the <a href="#member:~update"><code>update</code></a> method to fire the event <a href="#event:~update"><code>update</code></a>.</p>\n')
-        self.assertEqual(comment.text, 'Just execute the update method to fire the event update.')
+        self.assertEqual(comment.html, '')
+        self.assertEqual(comment.text, '')
 
 
     
