@@ -64,6 +64,7 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
         for name in interfaceProperties:
             if not name in classProperties:
                 logging.warn("Class %s is missing implementation for property %s of interface %s!", className, name, interfaceName)
+
             else:
                 # Add reference to interface
                 classEvents[name]["interface"] = interfaceName

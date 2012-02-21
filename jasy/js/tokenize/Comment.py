@@ -101,7 +101,7 @@ tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
 paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+?)(\s*\.{3}\s*)?((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
 
 # Matches links in own dialect
-linkMatcher = re.compile(r"\{([a-zA-Z0-9_#\.]+)\}")
+linkMatcher = re.compile(r"\{([a-zA-Z0-9_#\:\.]+)\}")
 
 
 
@@ -387,7 +387,12 @@ class Comment():
         
         def formatTypes(match):
             link = match.group(1).strip()
-            return '<a href="#%s"><code>%s</code></a>' % (link.replace("#", ":"), link)
+            label = link
+            if ":" in label:
+                label = label[label.find(":")+1:]
+            label = label.replace("#", "")
+            
+            return '<a href="#%s"><code>%s</code></a>' % (link.replace("#", "~"), label)
             
         return linkMatcher.sub(formatTypes, text)
         
