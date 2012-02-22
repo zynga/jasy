@@ -338,7 +338,6 @@ class ApiWriter():
 
         for className in apiData:
             filterInternalsPrivates(apiData[className], "statics")
-
             filterInternalsPrivates(apiData[className], "members")
         
         
@@ -350,18 +349,20 @@ class ApiWriter():
         for className in list(apiData):
             classApi = apiData[className]
             destName = classApi.main["name"]
+            
             if destName is not None and destName != className:
 
                 if destName in apiData:
                     destApi = apiData[destName]
                     destApi.main["from"].append(className)
+                
                 else:
                     destApi = apiData[destName] = ApiData(destName)
                     destApi.main = {
                         "type" : "Extend",
                         "name" : destName,
                         "from" : [className],
-                        "doc" : "Extensions to %s" % destName
+                        "doc" : "Extensions for %s" % destName
                     }
                     
                 classApi.main["extension"] = True
@@ -384,6 +385,7 @@ class ApiWriter():
                     for staticName in statics:
                         destApi.statics[staticName] = copy.copy(statics[staticName])
                         destApi.statics[staticName]["from"] = className
+                        destApi.statics[staticName]["fromLink"] = "static:%s~%s" % (className, staticName)
 
                 if members is not None:
                     if not hasattr(destApi, "members"):
@@ -392,7 +394,7 @@ class ApiWriter():
                     for memberName in members:
                         destApi.members[memberName] = members[memberName]
                         destApi.members[memberName]["from"] = className
-            
+                        destApi.members[memberName]["fromLink"] = "member:%s~%s" % (className, staticName)
         
         
         #
