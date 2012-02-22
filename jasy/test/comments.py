@@ -410,6 +410,37 @@ class Tests(unittest.TestCase):
 
 
     #
+    # ATTACHMENT
+    #
+    
+    def test_missing_node(self):
+
+        parsed = self.process('''
+
+        /** Root Doc */
+        core.Class("xxx", {
+          members : {
+            foo : function() {
+              /** TODO */
+            }
+          }
+          /** END */
+        })
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        
+        self.assertEqual(isinstance(parsed[0].comments, list), True)
+        self.assertEqual(len(parsed[0].comments), 1)
+        self.assertEqual(parsed[0].comments[0].variant, "doc")
+        self.assertEqual(parsed[0].comments[0].text, "Root Doc")
+
+
+    
+
+
+    #
     # DOC COMMENTS
     #
     

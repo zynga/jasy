@@ -30,7 +30,12 @@ class VanillaBuilder:
             else:
                 currComments.append(comment)
         
-        currNode.comments = currComments
+        # Merge with previously added ones
+        if hasattr(currNode, "comments"):
+            currNode.comments.extend(currComments)
+        else:
+            currNode.comments = currComments
+        
         if prevNode:
             if hasattr(prevNode, "comments"):
                 prevNode.comments.extend(prevComments)

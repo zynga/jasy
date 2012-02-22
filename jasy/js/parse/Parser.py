@@ -778,9 +778,7 @@ def FunctionDefinition(tokenizer, staticContext, requireName, functionForm):
     functionNode.end = tokenizer.token.end
     functionNode.functionForm = functionForm
     
-    # if functionForm == "declared_form":
-    #    staticContext.functions.add(functionNode.name)
-        
+    builder.COMMENTS_add(functionNode.body, functionNode.body, tokenizer.getComments())
     builder.FUNCTION_finish(functionNode, staticContext)
     
     return functionNode
@@ -1457,6 +1455,7 @@ def PrimaryExpression(tokenizer, staticContext):
             builder.ARRAYCOMP_setTail(childNode, comprehensionTail(tokenizer, staticContext))
             node = childNode
         
+        builder.COMMENTS_add(node, node, tokenizer.getComments())
         tokenizer.mustMatch("right_bracket")
         builder.PRIMARY_finish(node)
 
@@ -1514,6 +1513,7 @@ def PrimaryExpression(tokenizer, staticContext):
                 if not tokenizer.match("comma"):
                     break
 
+            builder.COMMENTS_add(node, node, tokenizer.getComments())
             tokenizer.mustMatch("right_curly")
 
         builder.OBJECTINIT_finish(node)
