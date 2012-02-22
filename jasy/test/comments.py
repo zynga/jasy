@@ -667,8 +667,6 @@ class Tests(unittest.TestCase):
         /**
          * Link to cool {z.core.Style} class. Looks at this method {core.io.Asset#toUri} to translate local
          * asset IDs to something usable in the browser.
-         *
-         * You can either use {String} or {Map} types as primitive data types.
          */
 
         ''')
@@ -679,9 +677,29 @@ class Tests(unittest.TestCase):
 
         comment = parsed.comments[0]
         
-        self.assertEqual(comment.html, '')
-        self.assertEqual(comment.text, '')
+        self.assertEqual(comment.html, '<p>Link to cool <a href="#z.core.Style"><code>z.core.Style</code></a> class. Looks at this method <a href="#core.io.Asset~toUri"><code>core.io.Asset#toUri</code></a> to translate local\nasset IDs to something usable in the browser.</p>\n')
+        self.assertEqual(comment.text, 'Link to cool z.core.Style class. Looks at this method core.io.Asset#toUri to translate local\nasset IDs to something usable in the browser.')
     
+    
+    def test_doc_links_primitive(self):
+
+        parsed = self.process('''
+
+        /**
+         * You can either use {String} or {Map} types as primitive data types.
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.html, '<p>You can either use <a href="#String"><code>String</code></a> or <a href="#Map"><code>Map</code></a> types as primitive data types.</p>\n')
+        self.assertEqual(comment.text, 'You can either use String or Map types as primitive data types.')    
+
 
     def test_doc_links_type(self):
 
@@ -699,8 +717,8 @@ class Tests(unittest.TestCase):
 
         comment = parsed.comments[0]
 
-        self.assertEqual(comment.html, '')
-        self.assertEqual(comment.text, '')
+        self.assertEqual(comment.html, '<p>Just execute the <a href="#member:~update"><code>update</code></a> method to fire the event <a href="#event:~update"><code>update</code></a>.</p>\n')
+        self.assertEqual(comment.text, 'Just execute the update method to fire the event update.')
 
 
     

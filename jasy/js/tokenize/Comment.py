@@ -393,18 +393,18 @@ class Comment():
             parsedFile = match.group(3)
             parsedItem = match.group(5)
             
-            print("GROUPS", parsedSection, parsedFile, parsedItem)
+            # Minor corrections
+            if parsedSection and not parsedItem:
+                parsedSection = ""
             
             attr = ""
-            link = "#"
+            link = ""
             label = ""
             
             if parsedSection:
                 link += '%s:' % parsedSection
-                attr += ' data-section="%s"' % parsedSection
             
             if parsedFile:
-                attr += ' data-file="%s"' % parsedFile
                 link += parsedFile
                 label += parsedFile
                 
@@ -416,29 +416,11 @@ class Comment():
                     label += "#%s" % parsedItem
                 
             # add link to attributes list
-            attr += ' href="%s"' % link
+            attr += ' href="#%s"' % link
             
             # build final HTML
             return '<a%s><code>%s</code></a>' % (attr, label)
-            
-            
-            # link = match.group(1).strip()
-            # label = link
-            # if ":" in label:
-            #     label = label[label.find(":")+1:]
-            # label = label.replace("#", "")
-            # 
-            # extra = ""
-            # if ":" in link:
-            #     extra += 'data-section="%s" ' % link[:link.find(":")]
-            #     
-            # if "#" in link:
-            #     extra += 'data-dest="item" '
-            # else:
-            #     extra += 'data-dest="file" '
-            #     
-            # return '<a %shref="#%s"><code>%s</code></a>' % (extra, link.replace("#", "~"), label)
-            
+
         return linkMatcher.sub(formatTypes, text)
         
         
