@@ -67,7 +67,7 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
 
             else:
                 # Add reference to interface
-                classEvents[name]["interface"] = interfaceName
+                classProperties[name]["interface"] = interfaceName
 
                 # Copy over documentation
                 if not "doc" in classProperties[name] and "doc" in interfaceProperties[name]:
