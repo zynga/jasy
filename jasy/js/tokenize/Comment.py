@@ -101,9 +101,7 @@ tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
 paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+?)(\s*\.{3}\s*)?((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
 
 # Matches links in own dialect
-linkMatcher = re.compile(r"\{([a-zA-Z0-9_#\:\.]+)\}")
-
-linkMatcher = re.compile(r"\{((static|member|event|property)\:)?([a-zA-Z0-9_\.]+)?(\#([a-zA-Z0-9_]+))?\}")
+linkMatcher = re.compile(r"\{((static|member|property|event)\:)?([a-zA-Z0-9_\.]+)?(\#([a-zA-Z0-9_]+))?\}")
 
 
 
