@@ -8,8 +8,8 @@ import os, logging, json
 from jasy.js.Class import Class
 from jasy.core.Cache import Cache
 from jasy.core.Error import *
-        
-        
+
+
 class Project():
     
     def __init__(self, path):
@@ -20,19 +20,11 @@ class Project():
         
         path = os.path.normpath(path)
         if not os.path.isdir(path):
-            raise JasyError("Invalid project path: %s (Absolute: %s)" % (path, os.path.abspath(path)))
+            raise JasyError("Invalid project path: %s (absolute: %s)" % (path, os.path.abspath(path)))
         
         # Only store and work with full path
         self.__path = os.path.abspath(path)
 
-
-        # Initialize cache
-        try:
-            self.__cache = Cache(self.__path)
-        except IOError as err:
-            raise JasyError("Could not initialize project. Cache file could not be initialized! %s" % err)
-        
-        
         # Load project configuration
         projectConfigPath = os.path.join(self.__path, "jasyproject.json")
         if not os.path.exists(projectConfigPath):
@@ -43,6 +35,13 @@ class Project():
             projectData = json.load(open(projectConfigPath))
         except ValueError as err:
             raise JasyError("Could not parse jasyproject.json at %s: %s" % (projectConfigPath, err))
+
+
+        # Initialize cache
+        try:
+            self.__cache = Cache(self.__path)
+        except IOError as err:
+            raise JasyError("Could not initialize project. Cache file could not be initialized! %s" % err)
         
         
         # Read name from manifest or use the basename of the project's path

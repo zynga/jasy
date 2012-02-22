@@ -4,6 +4,7 @@
 #
 
 import shelve, time, logging, os, os.path, sys, pickle, dbm
+from jasy import __version__ as version
 
 class Cache:
     """ 
@@ -21,6 +22,15 @@ class Cache:
         
         try:
             self.__db = shelve.open(self.__file, flag="c")
+            
+            if "jasy-version" in self.__db:
+                storedVersion = self.__db["jasy-version"]
+            else:
+                storedVersion = None
+                
+            if storedVersion != version:
+                logging.warn("Jasy version has been changed. Recreating cache...")
+                self.clear()
             
         except dbm.error as error:
             errno = None
@@ -54,6 +64,7 @@ class Cache:
 
         logging.debug("Clearing cache file %s..." % self.__file)
         self.__db = shelve.open(self.__file, flag="n")
+        self.__db["jasy-version"] = version
         
         
     def read(self, key, timestamp=None):
