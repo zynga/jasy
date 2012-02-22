@@ -222,15 +222,6 @@ class ApiWriter():
             classes = project.getClasses()
             for className in classes:
                 apiData[className] = classes[className].getApi()
-                
-            docs = project.getDocs()
-            for packageName in docs:
-                apiData[packageName] = ApiData(packageName)
-                apiData[packageName].main = {
-                    "type" : "Package",
-                    "name" : packageName,
-                    "doc" : docs[packageName]
-                }
 
 
 
@@ -394,7 +385,26 @@ class ApiWriter():
                     for memberName in members:
                         destApi.members[memberName] = members[memberName]
                         destApi.members[memberName]["from"] = className
-                        destApi.members[memberName]["fromLink"] = "member:%s~%s" % (className, staticName)
+                        destApi.members[memberName]["fromLink"] = "member:%s~%s" % (className, memberName)
+        
+        
+        
+        #
+        # Collecting Package Docs
+        #
+
+        logging.debug("Collecting Package Docs...")
+
+        for project in self.session.getProjects():
+            docs = project.getDocs()
+            for packageName in docs:
+                apiData[packageName] = ApiData(packageName)
+                apiData[packageName].main = {
+                    "type" : "Package",
+                    "name" : packageName,
+                    "doc" : docs[packageName]
+                }
+        
         
         
         #
