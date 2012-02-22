@@ -175,7 +175,7 @@ class ApiWriter():
         
         classes, index, search = self.collect(internals=showInternals, privates=showPrivates)
         
-        extension = "jsonp" if callback and format is "json" else format
+        extension = "js" if callback and format is "json" else format
         logging.debug("Saving files as %s..." % extension)
 
         for className in classes:
@@ -404,6 +404,22 @@ class ApiWriter():
                     "name" : packageName,
                     "doc" : docs[packageName]
                 }
+                
+
+        for className in list(apiData):
+            # Auto create API data for all packages in between
+            splits = className.split(".")
+            packageName = splits[0]
+            for split in splits[1:]:
+                if not packageName in apiData:
+                    logging.debug("Creating missing package doc entry: %s" % packageName)
+                    apiData[packageName] = ApiData(packageName)
+                    apiData[packageName].main = {
+                        "type" : "Package",
+                        "name" : packageName
+                    }
+
+                packageName = "%s.%s" % (packageName, split)
         
         
         
@@ -429,6 +445,10 @@ class ApiWriter():
             
             # Store current type
             current["$type"] = mainInfo["type"]
+            
+            # Bring errornous info to index
+            if "errornous" in mainInfo:
+                current["$errornous"] = mainInfo["errornous"]
             
             # Clear no documentation flag
             del current["$nodoc"]
