@@ -272,7 +272,9 @@ class ApiData():
     def addProperty(self, name, valueNode, commentNode, collection):
         
         entry = collection[name] = {}
-        comment = self.getDocComment(valueNode, "Property '%s'" % name)
+        comment = self.getDocComment(commentNode, "Property '%s'" % name)
+        
+        print("XXX:",comment)
         
         if comment is None or not comment.text:
             entry["errornous"] = True
