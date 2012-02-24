@@ -88,6 +88,9 @@ def __replace(node, repl):
                 reduction = reduction + len(node.value) - len(repl[node.value])
                 node.value = repl[node.value]
                 modified = True
+            elif node.value.endswith("__"):
+                # Ignore __defineGetter__, __defineSetter__, __proto__
+                pass
             else:
                 raise Error(node.value, node.line)
         
