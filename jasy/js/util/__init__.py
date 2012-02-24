@@ -310,7 +310,10 @@ def getParameterFromCall(call, index=0):
     Returns a parameter node by index on the call node
     """
     
-    return call[1][index]
+    try:
+        return call[1][index]
+    except:
+        return None
 
 
 def getParamNamesFromFunction(func):

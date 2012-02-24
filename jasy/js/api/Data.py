@@ -143,18 +143,19 @@ class ApiData():
                 target = getParameterFromCall(callNode, 0)
                 assigned = getParameterFromCall(callNode, 1)
                 
-                if assigned.type == "function":
-                    # Use callNode call for constructor, find first doc comment for main documentation
-                    self.setMain("core.Main", findCommentNode(tree), target.value)
-                    self.addConstructor(assigned, callNode.parent)
+                if target and assigned:
+                    if assigned.type == "function":
+                        # Use callNode call for constructor, find first doc comment for main documentation
+                        self.setMain("core.Main", findCommentNode(tree), target.value)
+                        self.addConstructor(assigned, callNode.parent)
 
-                else:
-                    self.setMain("core.Main", callNode.parent, target.value)
+                    else:
+                        self.setMain("core.Main", callNode.parent, target.value)
 
-                    if assigned.type == "object_init":
-                        self.statics = {}
-                        for staticsEntry in assigned:
-                            self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
+                        if assigned.type == "object_init":
+                            self.statics = {}
+                            for staticsEntry in assigned:
+                                self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
         
         
         #
@@ -165,14 +166,15 @@ class ApiData():
             target = getParameterFromCall(addStatics, 0)
             staticsMap = getParameterFromCall(addStatics, 1)
             
-            if target.type == "string" and staticsMap.type == "object_init":
+            if target and staticsMap:
+                if target.type == "string" and staticsMap.type == "object_init":
                 
-                if not self.main:
-                    self.setMain("core.Main", addStatics.parent, target.value)
+                    if not self.main:
+                        self.setMain("core.Main", addStatics.parent, target.value)
                 
-                self.statics = {}
-                for staticsEntry in staticsMap:
-                    self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
+                    self.statics = {}
+                    for staticsEntry in staticsMap:
+                        self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
         
         
         #
@@ -183,14 +185,15 @@ class ApiData():
             target = getParameterFromCall(addMembers, 0)
             membersMap = getParameterFromCall(addMembers, 1)
 
-            if target.type == "string" and membersMap.type == "object_init":
+            if target and membersMap:
+                if target.type == "string" and membersMap.type == "object_init":
                 
-                if not self.main:
-                    self.setMain("core.Main", addMembers.parent, target.value)
+                    if not self.main:
+                        self.setMain("core.Main", addMembers.parent, target.value)
 
-                self.members = {}
-                for membersEntry in membersMap:
-                    self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                    
+                    self.members = {}
+                    for membersEntry in membersMap:
+                        self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                    
         
 
         #
