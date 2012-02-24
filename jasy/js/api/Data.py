@@ -274,10 +274,10 @@ class ApiData():
         entry = collection[name] = {}
         comment = self.getDocComment(commentNode, "Property '%s'" % name)
         
-        print("XXX:",comment)
-        
         if comment is None or not comment.text:
             entry["errornous"] = True
+        else:
+            entry["doc"] = comment.html
         
         # Copy over value
         ptype = getKeyValue(valueNode, "type")
