@@ -266,7 +266,6 @@ class ApiData():
         }
         
         if requiredDoc and (callComment is None or not callComment.text):
-            self.errornous = True
             self.main["errornous"] = True
 
 
@@ -276,7 +275,6 @@ class ApiData():
         comment = self.getDocComment(valueNode, "Property '%s'" % name)
         
         if comment is None or not comment.text:
-            self.errornous = True
             entry["errornous"] = True
         
         # Copy over value
@@ -349,8 +347,6 @@ class ApiData():
             if comment:
                 if not comment.params:
                     self.warn("Documentation for parameters of constructor are missing", valueNode.line)
-                    self.errornous = True
-                    entry["errornous"] = True
                     for paramName in funcParams:
                         entry["params"][paramName]["errornous"] = True
                 else:
@@ -358,13 +354,10 @@ class ApiData():
                         if paramName in comment.params:
                             entry["params"][paramName].update(comment.params[paramName])
                         else:
-                            self.errornous = True
-                            entry["errornous"] = True
                             entry["params"][paramName]["errornous"] = True
                             self.warn("Missing documentation for parameter %s in constructor" % paramName, valueNode.line)
                             
             else:
-                self.errornous = True
                 entry["errornous"] = True
 
 
@@ -400,11 +393,9 @@ class ApiData():
             if comment.html:
                 entry["doc"] = comment.html
             else:
-                self.errornous = True
                 entry["errornous"] = True
                 
         else:
-            self.errornous = True
             entry["errornous"] = True
             
 
@@ -565,7 +556,6 @@ class ApiData():
             if comment.html:
                 entry["doc"] = comment.html
             elif requiresDocumentation(name):
-                self.errornous = True
                 entry["errornous"] = True
                 
             if comment.tags:
@@ -574,8 +564,6 @@ class ApiData():
                 
                 
         elif requiresDocumentation(name):
-            
-            self.errornous = True
             entry["errornous"] = True
         
         
@@ -607,8 +595,6 @@ class ApiData():
                     if not comment.params:
                         if requiresDocumentation(name):
                             self.warn("Missing documentation for parameters of function %s" % name, valueNode.line)
-                            self.errornous = True
-                            entry["errornous"] = True
                             for paramName in funcParams:
                                 entry["params"][paramName]["errornous"] = True
                             
@@ -617,8 +603,6 @@ class ApiData():
                             if paramName in comment.params:
                                 entry["params"][paramName].update(comment.params[paramName])
                             elif requiresDocumentation(name):
-                                self.errornous = True
-                                entry["errornous"] = True
                                 entry["params"][paramName]["errornous"] = True
                                 self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
 
