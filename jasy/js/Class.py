@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Sebastian Werner
 #
 
-import os, logging, copy, hashlib
+import os, logging, copy, hashlib, zlib
 
 import jasy.js.parse.Parser as Parser
 import jasy.js.parse.ScopeScanner as ScopeScanner
@@ -25,6 +25,8 @@ from jasy.i18n.Translation import hasText
 
 
 aliases = {}
+defaultOptimization = jasy.js.output.Optimization.Optimization("declarations", "blocks", "variables", "privates")
+
 
 __all__ = ["Class", "Error"]
 
@@ -325,4 +327,24 @@ class Class():
         return compressed
             
             
+    def getSizes(self):
+        field = "sizes[%s]" % self.__id
+        sizes = self.__cache.read(field, self.__mtime)
+        
+        if sizes is None:
+            compressed = self.getCompressed()
+            optimized = self.getCompressed(optimization=defaultOptimization)
+            zipped = zlib.compress(optimized.encode("utf-8"))
+            
+            sizes = {
+                "compressed" : len(compressed),
+                "optimized" : len(optimized),
+                "zipped" : len(zipped)
+            }
+            
+            self.__cache.store(field, sizes, self.__mtime)
+            
+        return sizes
+        
+        
         

@@ -222,6 +222,7 @@ class ApiWriter():
             classes = project.getClasses()
             for className in classes:
                 apiData[className] = classes[className].getApi()
+                apiData[className].size = classes[className].getSizes()
 
 
 
@@ -386,6 +387,7 @@ class ApiWriter():
                         destApi.members[memberName] = members[memberName]
                         destApi.members[memberName]["from"] = className
                         destApi.members[memberName]["fromLink"] = "member:%s~%s" % (className, memberName)
+        
         
         
         
