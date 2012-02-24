@@ -24,10 +24,11 @@ from jasy.js.util import *
 from jasy.i18n.Translation import hasText
 
 
-
 aliases = {}
+
 defaultOptimization = jasy.js.output.Optimization.Optimization("declarations", "blocks", "variables", "privates")
 defaultPermutation = getPermutation({"debug":False})
+
 
 __all__ = ["Class", "Error"]
 

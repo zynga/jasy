@@ -304,7 +304,7 @@ class ApiWriter():
             # Rebuild use list
             cleanUses = set()
             for use in uses:
-                if use in allClasses:
+                if use != className and use in allClasses:
                     cleanUses.add(use)
                     
                     useEntry = apiData[use]
