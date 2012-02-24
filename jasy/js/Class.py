@@ -14,6 +14,7 @@ import jasy.js.clean.Permutate
 
 import jasy.js.output.Optimization
 
+from jasy.core.Permutation import getPermutation
 from jasy.js.api.Data import ApiData
 from jasy.js.MetaData import MetaData
 from jasy.js.output.Compressor import Compressor
@@ -26,7 +27,7 @@ from jasy.i18n.Translation import hasText
 
 aliases = {}
 defaultOptimization = jasy.js.output.Optimization.Optimization("declarations", "blocks", "variables", "privates")
-
+defaultPermutation = getPermutation({"debug":False})
 
 __all__ = ["Class", "Error"]
 
@@ -333,7 +334,7 @@ class Class():
         
         if sizes is None:
             compressed = self.getCompressed()
-            optimized = self.getCompressed(optimization=defaultOptimization)
+            optimized = self.getCompressed(permutation=defaultPermutation, optimization=defaultOptimization)
             zipped = zlib.compress(optimized.encode("utf-8"))
             
             sizes = {
