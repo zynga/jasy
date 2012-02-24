@@ -69,11 +69,13 @@ class Class():
             self.__cache = project.getCache()
             self.__localPath = os.path.relpath(path, project.getClassPath())
             self.__id = self.__localPath[:-3]
+            self.__name = self.__id
         else:
             self.__root = os.path.dirname(path)
             self.__package = ""
             self.__cache = Cache(self.__root)
             self.__id = os.path.filename(path)
+            self.__name = self.__id
             self.__localPath = path
         
         # This is by far slower and not the default but helps in specific project structures
