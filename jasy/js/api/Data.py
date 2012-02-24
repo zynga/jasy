@@ -549,7 +549,7 @@ class ApiData():
         # Add human readable value
         #
         valueNodeHumanValue = valueToString(valueNode)
-        if valueNodeHumanValue != entry["type"]:
+        if valueNodeHumanValue != entry["type"] and not valueNodeHumanValue in ("Other", "Call"):
             entry["value"] = valueNodeHumanValue
         
         
