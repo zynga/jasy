@@ -12,9 +12,23 @@ __all__ = ["ApiData"]
 
 
 class ApiData():
+    """
+    Container for all relevant API data. 
+    Automatically generated, filled and cached by jasy.js.Class.getApiDocs().
+    """
 
 
-    __slots__ = ["main", "construct", "statics", "properties", "events", "members", "id", "errornous", "package", "basename", "size", "assets", "permutations", "uses", "usedBy", "includes", "includedBy", "implements", "implementedBy"]
+    __slots__ = [
+        "main", "construct", "statics", "properties", "events", "members", 
+        
+        "id", "errornous", 
+        "package", "basename", 
+        "size", "assets", "permutations", 
+        
+        "uses", "usedBy", 
+        "includes", "includedBy", 
+        "implements", "implementedBy"
+    ]
 
 
     def __init__(self, id, tree=None):
@@ -34,9 +48,17 @@ class ApiData():
 
 
     def addSize(self, size):
+        """ 
+        Adds the statistics on different size aspects 
+        """
+        
         self.size = size
         
     def addAssets(self, assets):
+        """ 
+        Adds the info about used assets
+        """
+        
         self.assets = assets
         
     def addUses(self, uses):

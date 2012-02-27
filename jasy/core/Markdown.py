@@ -6,7 +6,16 @@
 import logging, re
 
 
-__all__ = ["markdown2html", "code2highlight"]
+__all__ = ["markdown", "markdown2html", "code2highlight"]
+
+
+
+def markdown(text, code=True):
+    html = markdown2html(text)
+    if code and html is not None:
+        html = code2highlight(html)
+        
+    return html
 
 
 # Try two alternative implementations
@@ -25,10 +34,10 @@ except ImportError as ex:
      
     try:
     
-        import markdown
-    
+        import markdown as markdownModule
+     
         def markdown2html(markdownStr):
-            return markdown.markdown(markdownStr)
+            return markdownModule.markdown(markdownStr)
 
         logging.debug("Using Python Markdown implementation.")
         
@@ -43,7 +52,7 @@ except ImportError as ex:
 
 
 try:
-    # http://misaka.61924.nl/#toc_3
+    # By http://misaka.61924.nl/#toc_3
     
     from pygments import highlight
     from pygments.formatters import HtmlFormatter
@@ -52,22 +61,23 @@ try:
     codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
 
     def code2highlight(html):
-        def _unescape_html(html):
+        def unescape(html):
             html = html.replace('&lt;', '<')
             html = html.replace('&gt;', '>')
             html = html.replace('&amp;', '&')
-            return html.replace('"', '"')
+            return html.replace('&#39;', "'")
         
-        def _highlight_match(match):
+        def replace(match):
             language, classname, code = match.groups()
+            if language is None:
+                language = classname if classname else "javascript"
             
-            # default to Javascript
-            if (language or classname) is None:
-                language = "javascript"
-                
-            return highlight(_unescape_html(code), get_lexer_by_name(language or classname or "javascript"), HtmlFormatter(linenos="table"))
+            lexer = get_lexer_by_name(language)
+            formatter = HtmlFormatter(linenos="table")
             
-        return codeblock.sub(_highlight_match, html)
+            return highlight(unescape(code), lexer, formatter)
+            
+        return codeblock.sub(replace, html)
         
 
 except ImportError as ex:
@@ -77,4 +87,5 @@ except ImportError as ex:
     
     logging.error("Syntax highlighting is disabled because Pygments is missing.")
     
+
 

@@ -4,7 +4,7 @@
 #
 
 import logging, re
-from jasy.core.Markdown import *
+from jasy.core.Markdown import markdown
 
 
 # Used to measure the doc indent size (with leading stars in front of content)
@@ -124,15 +124,7 @@ class Comment():
             html = text
             
             # Apply markdown convertion
-            if html != "":
-                html = markdown2html(html)
-
-                if html == None:
-                    html = ""
-                else:
-                    html = code2highlight(html)
-        
-            self.html = html
+            self.html = markdown(html)
             
             # Post process text to not contain any markup
             if "<" in text:

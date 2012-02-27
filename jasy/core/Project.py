@@ -257,11 +257,7 @@ class Project():
                                 name = relPath
 
                             # always using dot syntax for the docs
-                            html = markdown2html(open(filePath).read())
-                            if html != None:
-                                html = code2highlight(html)
-                            
-                            docs[name.replace(os.sep, ".")[:-len(fileName)-1]] = html
+                            docs[name.replace(os.sep, ".")[:-len(fileName)-1]] = markdown(open(filePath).read())
                             
             logging.debug("Project %s contains %s package documentation", self.__name, len(docs))
             self.docs = docs
