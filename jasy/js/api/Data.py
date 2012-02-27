@@ -14,7 +14,7 @@ __all__ = ["ApiData"]
 class ApiData():
 
 
-    __slots__ = ["main", "construct", "statics", "properties", "events", "members", "id", "errornous", "package", "basename", "size", "meta", "permutations", "uses", "usedBy", "includes", "includedBy", "implements", "implementedBy"]
+    __slots__ = ["main", "construct", "statics", "properties", "events", "members", "id", "errornous", "package", "basename", "size", "assets", "permutations", "uses", "usedBy", "includes", "includedBy", "implements", "implementedBy"]
 
 
     def __init__(self, id, tree=None):
@@ -36,8 +36,14 @@ class ApiData():
     def addSize(self, size):
         self.size = size
         
-    def addMetaData(self, meta):
-        self.meta = meta
+    def addAssets(self, assets):
+        self.assets = assets
+        
+    def addUses(self, uses):
+        self.uses.add(uses)
+
+    def removeUses(self, uses):
+        self.uses.remove(uses)
         
     def addPermutations(self, permutations):
         self.permutations = permutations

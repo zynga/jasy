@@ -250,8 +250,14 @@ class Class():
             
             apidata.scanTree(self.getTree(cleanup=False))
             
+            metaData = self.getMetaData()
+            apidata.addAssets(metaData.assets)
+            for require in metaData.requires:
+                apidata.addUses(require)
+            for optional in metaData.optionals:
+                apidata.removeUses(optional)
+                
             apidata.addSize(self.getSize())
-            apidata.addMetaData(self.getMetaData().export())
             apidata.addPermutations(self.getPermutationKeys())
             
             self.__cache.store(field, apidata, self.__mtime)
