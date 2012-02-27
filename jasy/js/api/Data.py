@@ -6,17 +6,16 @@
 import logging
 
 from jasy.js.util import *
-from jasy.js.output.Compressor import Compressor
 
-# Shared instance
-compressor = Compressor()
 
 __all__ = ["ApiData"]
 
-class ApiData():
-    
 
-    __slots__ = ["main", "construct", "statics", "properties", "events", "members", "id", "errornous", "package", "basename", "size", "uses", "usedBy", "includes", "includedBy", "implements", "implementedBy"]
+class ApiData():
+
+
+    __slots__ = ["main", "construct", "statics", "properties", "events", "members", "id", "errornous", "package", "basename", "size", "meta", "permutations", "uses", "usedBy", "includes", "includedBy", "implements", "implementedBy"]
+
 
     def __init__(self, id, tree=None):
         
@@ -26,35 +25,44 @@ class ApiData():
         self.basename = splits.pop()
         self.package = ".".join(splits)
         
+        self.uses = set()
         self.main = {
             "type" : "Unsupported",
             "name" : id,
             "line" : 1
         }
-        
-        self.uses = set()
-        
-        if tree:
-            self.uses.update(tree.scope.shared)
 
-            for package in tree.scope.packages:
-                splits = package.split(".")
-                current = splits[0]
-                for split in splits[1:]:
-                    current = "%s.%s" % (current, split)
-                    self.uses.add(current)
-            
-            try:
-                if not self.scan(tree):
-                    self.warn("Unsupported file to process %s" % id, 1)
-                    
-            except Exception as error:
-                self.warn("Error during processing file %s: %s" % (id, error), 1)
+
+    def addSize(self, size):
+        self.size = size
+        
+    def addMetaData(self, meta):
+        self.meta = meta
+        
+    def addPermutations(self, permutations):
+        self.permutations = permutations
+
+
+    def scanTree(self, tree):
+        self.uses.update(tree.scope.shared)
+
+        for package in tree.scope.packages:
+            splits = package.split(".")
+            current = splits[0]
+            for split in splits[1:]:
+                current = "%s.%s" % (current, split)
+                self.uses.add(current)
+        
+        try:
+            if not self.__processTree(tree):
+                self.warn("Unsupported file to process", 1)
                 
-
-
-    def scan(self, tree):
-        
+        except Exception as error:
+            self.warn("Error during processing file: %s" % error, 1)
+    
+    
+    def __processTree(self, tree):
+            
         success = False
         
         callNode = findCall(tree, ("core.Module", "core.Interface", "core.Class", "core.Main.declareNamespace"))

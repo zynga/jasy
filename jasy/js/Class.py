@@ -246,7 +246,14 @@ class Class():
         field = "api[%s]" % self.__id
         apidata = self.__cache.read(field, self.__mtime)
         if apidata is None:
-            apidata = ApiData(self.__name, self.getTree(cleanup=False))
+            apidata = ApiData(self.__name)
+            
+            apidata.scanTree(self.getTree(cleanup=False))
+            
+            apidata.addSize(self.getSize())
+            apidata.addMetaData(self.getMetaData().export())
+            apidata.addPermutations(self.getPermutationKeys())
+            
             self.__cache.store(field, apidata, self.__mtime)
 
         return apidata
@@ -329,24 +336,24 @@ class Class():
         return compressed
             
             
-    def getSizes(self):
-        field = "sizes[%s]" % self.__id
-        sizes = self.__cache.read(field, self.__mtime)
+    def getSize(self):
+        field = "size[%s]" % self.__id
+        size = self.__cache.read(field, self.__mtime)
         
-        if sizes is None:
+        if size is None:
             compressed = self.getCompressed()
             optimized = self.getCompressed(permutation=defaultPermutation, optimization=defaultOptimization)
             zipped = zlib.compress(optimized.encode("utf-8"))
             
-            sizes = {
+            size = {
                 "compressed" : len(compressed),
                 "optimized" : len(optimized),
                 "zipped" : len(zipped)
             }
             
-            self.__cache.store(field, sizes, self.__mtime)
+            self.__cache.store(field, size, self.__mtime)
             
-        return sizes
+        return size
         
         
         

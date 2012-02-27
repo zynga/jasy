@@ -187,8 +187,8 @@ class ApiWriter():
                     classExport = classData.export()
                     
                 writeFile(os.path.join(distFolder, "%s.%s" % (className, extension)), encode(classExport, className))
-            except TypeError:
-                logging.error("Could not write API data of: %s", className)
+            except TypeError as writeError:
+                logging.error("Could not write API data of: %s: %s", className, writeError)
                 continue
         
         writeFile(os.path.join(distFolder, "$index.%s" % extension), encode(index, "$index"))
@@ -222,7 +222,6 @@ class ApiWriter():
             classes = project.getClasses()
             for className in classes:
                 apiData[className] = classes[className].getApi()
-                apiData[className].size = classes[className].getSizes()
 
 
 

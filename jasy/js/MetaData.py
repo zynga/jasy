@@ -27,6 +27,16 @@ class MetaData:
         self.__inspect(tree)
         
         
+    def export(self):
+        return {
+            "name" : self.name,
+            "requires" : self.requires,
+            "optionals" : self.optionals,
+            "breaks" : self.breaks,
+            "assets" : self.assets
+        }
+        
+        
     def __inspect(self, node):
         """ The internal inspection routine """
     
