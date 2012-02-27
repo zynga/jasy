@@ -31,24 +31,32 @@ class ApiData():
             "name" : id,
             "line" : 1
         }
+        
         self.uses = set()
         
         if tree:
-            self.scan(tree)
+            self.uses.update(tree.scope.shared)
+
+            for package in tree.scope.packages:
+                splits = package.split(".")
+                current = splits[0]
+                for split in splits[1:]:
+                    current = "%s.%s" % (current, split)
+                    self.uses.add(current)
+            
+            try:
+                if not self.scan(tree):
+                    self.warn("Unsupported file to process %s" % id, 1)
+                    
+            except Exception as error:
+                self.warn("Error during processing file %s: %s" % (id, error), 1)
+                
 
 
     def scan(self, tree):
         
-        self.uses.update(tree.scope.shared)
+        success = False
         
-        for package in tree.scope.packages:
-            splits = package.split(".")
-            current = splits[0]
-            for split in splits[1:]:
-                current = "%s.%s" % (current, split)
-                self.uses.add(current)
-            
-            
         callNode = findCall(tree, ("core.Module", "core.Interface", "core.Class", "core.Main.declareNamespace"))
         if callNode:
             callName = getCallName(callNode)
@@ -61,6 +69,7 @@ class ApiData():
             
                 staticsMap = getParameterFromCall(callNode, 1)
                 if staticsMap:
+                    success = True
                     self.statics = {}
                     for staticsEntry in staticsMap:
                         self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
@@ -77,6 +86,8 @@ class ApiData():
         
                 configMap = getParameterFromCall(callNode, 1)
                 if configMap:
+                    success = True
+                    
                     for propertyInit in configMap:
                 
                         sectionName = propertyInit[0].value
@@ -112,6 +123,8 @@ class ApiData():
             
                 configMap = getParameterFromCall(callNode, 1)
                 if configMap:
+                    success = True
+                    
                     for propertyInit in configMap:
                     
                         sectionName = propertyInit[0].value
@@ -156,6 +169,8 @@ class ApiData():
                 assigned = getParameterFromCall(callNode, 1)
                 
                 if target and assigned:
+                    success = True
+                    
                     if assigned.type == "function":
                         # Use callNode call for constructor, find first doc comment for main documentation
                         self.setMain("core.Main", findCommentNode(tree), target.value)
@@ -183,6 +198,7 @@ class ApiData():
                 if not self.main:
                     self.setMain("core.Main", addStatics.parent, target.value)
             
+                success = True
                 self.statics = {}
                 for staticsEntry in staticsMap:
                     self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
@@ -205,6 +221,7 @@ class ApiData():
                 if not self.main:
                     self.setMain("core.Main", addMembers.parent, target.value)
 
+                success = True
                 self.members = {}
                 for membersEntry in membersMap:
                     self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                    
@@ -212,33 +229,9 @@ class ApiData():
             else:
                 
                 self.warn("Invalid core.Main.addMembers()")
-                        
-        
 
-        #
-        # Other
-        #
-        if not (callNode or addStatics or addMembers):
-            rootCommentNode = findCommentNode(tree)
-            if rootCommentNode:
-                rootComment = getDocComment(rootCommentNode)
-                rootTags = getattr(rootComment, "tags", None)
-                mainName = None
 
-                if rootTags and "custom" in rootTags:
-                    if type(rootComment.tags["custom"]) is set:
-                        mainName = list(rootComment.tags["custom"])[0]
-                    else:
-                        mainName = None
-                    
-                    self.setMain("Other", rootCommentNode, mainName)
-                
-                else:
-                    self.setMain("Unsupported", rootCommentNode, mainName)
-                    logging.warn("Unsupported declaration type in %s. You might want to define a #custom(one) using documentation tags." % id)
-                    
-            else:
-                self.setMain("Unsupported", tree, None)
+        return success
         
 
 
@@ -256,26 +249,9 @@ class ApiData():
         logging.warn("%s at line %s in %s" % (message, line, self.id))
 
 
-    def getDocComment(self, node, msg=None, required=True):
-        comments = getattr(node, "comments", None)
-        if comments:
-            for comment in comments:
-                if comment.variant == "doc":
-                    if not comment.text and msg and required:
-                        self.warn("Missing documentation text for %s" % msg, node.line)
-
-                    return comment
-
-        if msg and required:
-            self.warn("Missing documentation for %s" % msg, node.line)
-
-        return None
-
-
-
-    def setMain(self, mainType, mainNode, exportName, requiredDoc=True):
+    def setMain(self, mainType, mainNode, exportName):
         
-        callComment = self.getDocComment(mainNode, "Main", required=requiredDoc)
+        callComment = getDocComment(mainNode)
 
         self.main = {
             "type" : mainType,
@@ -284,14 +260,14 @@ class ApiData():
             "doc" : callComment.html if callComment else None
         }
         
-        if requiredDoc and (callComment is None or not callComment.text):
+        if callComment is None or not callComment.text:
             self.main["errornous"] = True
 
 
     def addProperty(self, name, valueNode, commentNode, collection):
         
         entry = collection[name] = {}
-        comment = self.getDocComment(commentNode, "Property '%s'" % name)
+        comment = getDocComment(commentNode)
         
         if comment is None or not comment.text:
             entry["errornous"] = True
@@ -364,7 +340,7 @@ class ApiData():
                 }
             
             # Use comment for enrich existing data
-            comment = self.getDocComment(commentNode, "Constructor")
+            comment = getDocComment(commentNode)
             if comment:
                 if not comment.params:
                     self.warn("Documentation for parameters of constructor are missing", valueNode.line)
@@ -402,7 +378,7 @@ class ApiData():
                 self.addEvent(name, values[0], commentNode, collection)
                 return
         
-        comment = self.getDocComment(commentNode, "Event '%s'" % name)
+        comment = getDocComment(commentNode)
         if comment:
             
             # Prefer type but fall back to returns (if the developer has made an error here)
@@ -452,7 +428,7 @@ class ApiData():
             commentNode = findCommentNode(commentNode)
             if commentNode:
 
-                comment = self.getDocComment(commentNode, "Call/Hook '%s'" % name)
+                comment = getDocComment(commentNode)
                 if comment:
 
                     # Static type definition
@@ -568,7 +544,7 @@ class ApiData():
         #
         # Read data from comment and add documentation
         #
-        comment = self.getDocComment(commentNode, "member/static %s (%s)" % (name, entry["type"]), requiresDocumentation(name))
+        comment = getDocComment(commentNode)
         if comment:
             
             if comment.type:
@@ -576,15 +552,13 @@ class ApiData():
                 
             if comment.html:
                 entry["doc"] = comment.html
-            elif requiresDocumentation(name):
+            else:
                 entry["errornous"] = True
                 
             if comment.tags:
                 entry["tags"] = comment.tags
                 
-                
-                
-        elif requiresDocumentation(name):
+        else:
             entry["errornous"] = True
         
         
@@ -614,16 +588,13 @@ class ApiData():
 
                 if funcParams:
                     if not comment.params:
-                        if requiresDocumentation(name):
-                            self.warn("Missing documentation for parameters of function %s" % name, valueNode.line)
-                            for paramName in funcParams:
-                                entry["params"][paramName]["errornous"] = True
+                        for paramName in funcParams:
+                            entry["params"][paramName]["errornous"] = True
                             
                     else:
                         for paramName in funcParams:
                             if paramName in comment.params:
                                 entry["params"][paramName].update(comment.params[paramName])
-                            elif requiresDocumentation(name):
+                            else:
                                 entry["params"][paramName]["errornous"] = True
-                                self.warn("Missing documentation for parameter %s in function %s" % (paramName, name), valueNode.line)
 
