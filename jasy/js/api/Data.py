@@ -18,7 +18,6 @@ class ApiData():
 
     __slots__ = ["main", "construct", "statics", "properties", "events", "members", "id", "errornous", "package", "basename", "size", "uses", "usedBy", "includes", "includedBy", "implements", "implementedBy"]
 
-    
     def __init__(self, id, tree=None):
         
         self.id = id
@@ -27,7 +26,11 @@ class ApiData():
         self.basename = splits.pop()
         self.package = ".".join(splits)
         
-        self.main = {}
+        self.main = {
+            "type" : "Unsupported",
+            "name" : id,
+            "line" : 1
+        }
         self.uses = set()
         
         if tree:
@@ -61,6 +64,9 @@ class ApiData():
                     self.statics = {}
                     for staticsEntry in staticsMap:
                         self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
+                        
+                else:
+                    self.warn("Invalid core.Module()", callNode.line)
 
 
             #
@@ -92,7 +98,10 @@ class ApiData():
                                 self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
                         
                         else:
-                            logging.warn("Invalid section \"%s\" (core.Interface) in %s", sectionName, self.id) 
+                            self.warn('Invalid core.Interface section "%s"' % sectionName, propertyInit.line) 
+
+                else:
+                    self.warn("Invalid core.Interface()", callNode.line)
 
 
             #
@@ -133,7 +142,10 @@ class ApiData():
                             self.implements = [valueToString(entry) for entry in sectionValue]
 
                         else:
-                            logging.warn("Invalid section \"%s\" (core.Class) in %s", sectionName, self.id) 
+                            self.warn('Invalid core.Class section "%s"' % sectionName, propertyInit.line) 
+                            
+                else:
+                    self.warn("Invalid core.Class()", callNode.line)
 
 
             #
@@ -166,15 +178,18 @@ class ApiData():
             target = getParameterFromCall(addStatics, 0)
             staticsMap = getParameterFromCall(addStatics, 1)
             
-            if target and staticsMap:
-                if target.type == "string" and staticsMap.type == "object_init":
+            if target and staticsMap and target.type == "string" and staticsMap.type == "object_init":
+            
+                if not self.main:
+                    self.setMain("core.Main", addStatics.parent, target.value)
+            
+                self.statics = {}
+                for staticsEntry in staticsMap:
+                    self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
+                        
+            else:
                 
-                    if not self.main:
-                        self.setMain("core.Main", addStatics.parent, target.value)
-                
-                    self.statics = {}
-                    for staticsEntry in staticsMap:
-                        self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
+                self.warn("Invalid core.Main.addStatics()")
         
         
         #
@@ -185,15 +200,19 @@ class ApiData():
             target = getParameterFromCall(addMembers, 0)
             membersMap = getParameterFromCall(addMembers, 1)
 
-            if target and membersMap:
-                if target.type == "string" and membersMap.type == "object_init":
+            if target and membersMap and target.type == "string" and membersMap.type == "object_init":
                 
-                    if not self.main:
-                        self.setMain("core.Main", addMembers.parent, target.value)
+                if not self.main:
+                    self.setMain("core.Main", addMembers.parent, target.value)
 
-                    self.members = {}
-                    for membersEntry in membersMap:
-                        self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                    
+                self.members = {}
+                for membersEntry in membersMap:
+                    self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                    
+                        
+            else:
+                
+                self.warn("Invalid core.Main.addMembers()")
+                        
         
 
         #
