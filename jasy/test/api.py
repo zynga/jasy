@@ -18,7 +18,7 @@ class Tests(unittest.TestCase):
         node = Parser.parse(code)
         ScopeScanner.scan(node)
         data = Data.ApiData("test")
-        data.processTree(node)
+        data.scanTree(node)
         
         return data
         
@@ -145,10 +145,10 @@ class Tests(unittest.TestCase):
         """)
 
         self.assertIsInstance(data, Data.ApiData)
-        self.assertIsInstance(data.constructor, dict)
-        self.assertIsInstance(data.constructor["params"], dict)
-        self.assertIsInstance(data.constructor["params"]["config"], dict)
-        self.assertEqual(data.constructor["params"]["config"]["type"], ["Map"])
+        self.assertIsInstance(data.construct, dict)
+        self.assertIsInstance(data.construct["params"], dict)
+        self.assertIsInstance(data.construct["params"]["config"], dict)
+        self.assertEqual(data.construct["params"]["config"]["type"], ["Map"])
         
         
         
