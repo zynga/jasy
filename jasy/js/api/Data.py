@@ -195,7 +195,7 @@ class ApiData():
             
             if target and staticsMap and target.type == "string" and staticsMap.type == "object_init":
             
-                if not self.main:
+                if self.main["type"] == "Unsupported":
                     self.setMain("core.Main", addStatics.parent, target.value)
             
                 success = True
@@ -218,7 +218,7 @@ class ApiData():
 
             if target and membersMap and target.type == "string" and membersMap.type == "object_init":
                 
-                if not self.main:
+                if self.main["type"] == "Unsupported":
                     self.setMain("core.Main", addMembers.parent, target.value)
 
                 success = True
