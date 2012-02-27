@@ -296,6 +296,9 @@ class ApiData():
             "doc" : callComment.html if callComment else None
         }
         
+        if callComment and hasattr(callComment, "tags"):
+            self.main["tags"] = callComment.tags
+        
         if callComment is None or not callComment.text:
             self.main["errornous"] = True
 
@@ -309,6 +312,9 @@ class ApiData():
             entry["errornous"] = True
         else:
             entry["doc"] = comment.html
+            
+        if comment and comment.tags:
+            entry["tags"] = comment.tags
         
         # Copy over value
         ptype = getKeyValue(valueNode, "type")
@@ -366,6 +372,9 @@ class ApiData():
         comment = getDocComment(commentNode)
         if comment and comment.html:
             entry["doc"] = comment.html
+
+        if comment and comment.tags:
+            entry["tags"] = comment.tags
         
         funcParams = getParamNamesFromFunction(valueNode)
         if funcParams:
@@ -416,6 +425,9 @@ class ApiData():
         
         comment = getDocComment(commentNode)
         if comment:
+            
+            if comment.tags:
+                entry["tags"] = comment.tags
             
             # Prefer type but fall back to returns (if the developer has made an error here)
             if comment.type:
@@ -582,6 +594,9 @@ class ApiData():
         #
         comment = getDocComment(commentNode)
         if comment:
+            
+            if comment.tags:
+                entry["tags"] = comment.tags
             
             if comment.type:
                 entry["type"] = comment.type
