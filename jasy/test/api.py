@@ -23,6 +23,19 @@ class Tests(unittest.TestCase):
         return data
         
     
+    def test_unsupported(self):
+        
+        data = self.process("""
+        
+        x;
+        
+        """)
+        
+        self.assertIsInstance(data, Data.ApiData)
+        self.assertEqual(data.main["type"], "Unsupported")
+        self.assertEqual(data.main["line"], 1)
+        
+    
     def test_uses(self):
         
         data = self.process("""
