@@ -18,6 +18,34 @@ itemMap = {
 }
 
 
+def convertFunction(item):
+    item["isFunction"] = True
+    if "params" in item:
+        params = item["params"]
+        paramsNew = []
+        sortedParams = list(sorted(params, key=lambda paramName: params[paramName]["position"]))
+        for paramName in sortedParams:
+            param = params[paramName]
+            param["name"] = paramName
+            paramsNew.append(param)
+            
+        item["params"] = paramsNew
+        
+        
+def convertTags(item):
+    if "tags" in item:
+        tags = item["tags"]
+        tagsNew = []
+        for tagName in sorted(tags):
+            tag = { "name" : tagName }
+            if tags[tagName] is not True:
+                tag["value"] = "+".join(tags[tagName])
+            tagsNew.append(tag)
+                
+        item["tags"] = tagsNew
+
+
+
 def safeUpdate(dest, origin):
     """ Like update() but only never overwrites"""
     
@@ -193,7 +221,8 @@ class ApiWriter():
                 class SetEncoder(json.JSONEncoder):
                     def default(self, obj):
                         if isinstance(obj, set):
-                            return list(obj)
+                            return sorted(list(obj))
+
                         return json.JSONEncoder.default(self, obj)
                         
                 if compact:
@@ -284,10 +313,8 @@ class ApiWriter():
                         mixinApi.includedBy = set()
                     
                     mixinApi.includedBy.add(className)
-
                     mergeMixin(className, mixinName, classApi, getApi(mixinName))
                     
-
             mergedClasses.add(className)
 
             return classApi
@@ -419,7 +446,7 @@ class ApiWriter():
                         destApi.members = {}
                         
                     for memberName in members:
-                        destApi.members[memberName] = members[memberName]
+                        destApi.members[memberName] = copy.copy(members[memberName])
                         destApi.members[memberName]["from"] = className
                         destApi.members[memberName]["fromLink"] = "member:%s~%s" % (className, memberName)
         
@@ -470,6 +497,66 @@ class ApiWriter():
                         logging.warn("- %s (line %s)", entry["kind"], entry["line"])
                 
                 classApi.errors = errorsSorted
+        
+        
+        
+        #
+        # Building Search Index
+        #
+
+        logging.debug("Building Search Index")
+        search = {}
+
+        def addSearch(classApi, field):
+            data = getattr(classApi, field, None)
+            if data:
+                for name in data:
+                    if not isVisible(data[name]):
+                        continue
+
+                    if not name in search:
+                        search[name] = set()
+
+                    search[name].add(className)
+
+        for className in apiData:
+
+            classApi = apiData[className]
+
+            addSearch(classApi, "statics")
+            addSearch(classApi, "members")
+            addSearch(classApi, "properties")
+            addSearch(classApi, "events")
+        
+        
+        
+        #
+        # Post Process (dict to sorted list)
+        #
+        for className in sorted(apiData):
+            classApi = apiData[className]
+            
+            construct = getattr(classApi, "construct", None)
+            if construct:
+                convertFunction(construct)
+                convertTags(construct)
+
+            for section in ("statics", "members", "properties", "events"):
+                items = getattr(classApi, section, None)
+                if items:
+                    sortedList = []
+                    for itemName in sorted(items):
+                        item = items[itemName]
+                        item["name"] = itemName
+                        
+                        if "type" in item and item["type"] == "Function":
+                            convertFunction(item)
+                                
+                        convertTags(item)
+                        sortedList.append(item)
+
+                    setattr(classApi, section, sortedList)
+        
         
         
         #
@@ -535,36 +622,7 @@ class ApiWriter():
             
             # Clear no documentation flag
             del current["$nodoc"]
-            
-            
-            
-        #
-        # Building Search Index
-        #
-        
-        logging.debug("Building Search Index")
-        search = {}
-        
-        def addSearch(classApi, field):
-            data = getattr(classApi, field, None)
-            if data:
-                for name in data:
-                    if not isVisible(data[name]):
-                        continue
-                    
-                    if not name in search:
-                        search[name] = set()
 
-                    search[name].add(className)                
-        
-        for className in apiData:
-            
-            classApi = apiData[className]
-
-            addSearch(classApi, "statics")
-            addSearch(classApi, "members")
-            addSearch(classApi, "properties")
-            addSearch(classApi, "events")
         
         
         
