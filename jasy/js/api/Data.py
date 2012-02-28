@@ -305,7 +305,9 @@ class ApiData():
 
     def addProperty(self, name, valueNode, commentNode, collection):
         
-        entry = collection[name] = {}
+        entry = collection[name] = {
+            "line": (commentNode or valueNode).line
+        }
         comment = getDocComment(commentNode)
         
         if comment is None or not comment.text:
@@ -364,7 +366,7 @@ class ApiData():
 
     def addConstructor(self, valueNode, commentNode=None):
         entry = self.construct = {
-            "line" : valueNode.line
+            "line" : (commentNode or valueNode).line
         }
         
         if commentNode is None:
@@ -407,7 +409,7 @@ class ApiData():
 
     def addEvent(self, name, valueNode, commentNode, collection):
         entry = collection[name] = {
-            "line" : valueNode.line
+            "line" : (commentNode or valueNode).line
         }
         
         if valueNode.type == "dot":
