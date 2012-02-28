@@ -1,7 +1,22 @@
+Jasy 0.5-beta8
+==============
+
+- Improved markdown handling
+- Stabilization when errors happen during API generation 
+- Added assets and other meta information to API data
+
+Jasy 0.5-beta7
+==============
+
+- Added size calculation of generated files to API data
+- Renamed "constructor" key in API data to "construct"
+- Minor bug fixes
+
 Jasy 0.5-beta6
 ==============
 
-- TODO
+- Added cache versioning
+- Minor bug fixes
 
 Jasy 0.5-beta5
 ==============
