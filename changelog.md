@@ -1,3 +1,8 @@
+Jasy 0.5-beta9
+==============
+
+- Improved error handling and output
+
 Jasy 0.5-beta8
 ==============
 
