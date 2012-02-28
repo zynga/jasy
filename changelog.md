@@ -1,7 +1,14 @@
+Jasy 0.5-beta10
+===============
+
+
+
 Jasy 0.5-beta9
 ==============
 
 - Improved error handling and output
+- Changed format of members/events/properties/statics to sorted arrays
+- Apply sorting to uses, implements, etc.
 
 Jasy 0.5-beta8
 ==============
