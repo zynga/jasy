@@ -10,12 +10,33 @@ from jasy.js.api.Data import ApiData
 __all__ = ["ApiWriter"]
 
 
+itemMap = {
+    "members": "member",
+    "statics": "static",
+    "properties": "property",
+    "events": "event"
+}
+
+
 def safeUpdate(dest, origin):
     """ Like update() but only never overwrites"""
     
     for key in origin:
         if not key in dest:
             dest[key] = origin[dest]
+
+
+def isErrornous(data):
+    if "errornous" in data:
+        return True
+        
+    if "params" in data:
+        for paramName in data["params"]:
+            param = data["params"][paramName]
+            if "errornous" in param:
+                return True
+                
+    return False
 
 
 def mergeMixin(className, mixinName, classApi, mixinApi):
@@ -403,6 +424,50 @@ class ApiWriter():
                         destApi.members[memberName]["fromLink"] = "member:%s~%s" % (className, memberName)
         
         
+        
+        #
+        # Collecting errors
+        #
+        
+        for className in apiData:
+            classApi = apiData[className]
+            errors = []
+
+            if isErrornous(classApi.main):
+                errors.append({
+                    "kind": "main",
+                    "name": None,
+                    "line": 1
+                })
+            
+            if hasattr(classApi, "construct"):
+                if isErrornous(classApi.construct):
+                    errors.append({
+                        "kind": "construct",
+                        "name": None,
+                        "line": classApi.construct["line"]
+                    })
+            
+            for section in ("statics", "members", "properties", "events"):
+                items = getattr(classApi, section, {})
+                for itemName in items:
+                    item = items[itemName]
+                    if isErrornous(item):
+                        errors.append({
+                            "kind": itemMap[section],
+                            "name": itemName,
+                            "line": item["line"]
+                        })
+                        
+            if errors:
+                logging.warn("API documentation errors in %s", className)
+                for entry in sorted(errors, key=lambda entry: entry["line"]):
+                    if entry["name"]:
+                        logging.warn("- %s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
+                    else:
+                        logging.warn("- %s (line %s)", entry["kind"], entry["line"])
+                
+                classApi.errors = errors
         
         
         #
