@@ -11,10 +11,10 @@ __all__ = ["ApiWriter"]
 
 
 itemMap = {
-    "members": "Member",
-    "statics": "Static",
-    "properties": "Property",
-    "events": "Event"
+    "members": "member",
+    "statics": "static",
+    "properties": "property",
+    "events": "event"
 }
 
 
