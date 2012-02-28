@@ -429,7 +429,7 @@ class ApiWriter():
         # Collecting errors
         #
         
-        for className in apiData:
+        for className in sorted(apiData):
             classApi = apiData[className]
             errors = []
 
