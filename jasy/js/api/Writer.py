@@ -10,7 +10,7 @@ from jasy.js.api.Data import ApiData
 __all__ = ["ApiWriter"]
 
 
-def mergeDict(dest, origin):
+def safeUpdate(dest, origin):
     """ Like update() but only never overwrites"""
     
     for key in origin:
@@ -19,7 +19,7 @@ def mergeDict(dest, origin):
 
 
 def mergeMixin(className, mixinName, classApi, mixinApi):
-    logging.debug("Merging: %s into %s", mixinName, className)
+    logging.debug("Merging %s into %s", mixinName, className)
 
     for section in ("members", "properties", "events"):
         mixinMembers = getattr(mixinApi, section, None)
@@ -53,7 +53,7 @@ def mergeMixin(className, mixinName, classApi, mixinApi):
 
 
 def connectInterface(className, interfaceName, classApi, interfaceApi):
-    logging.debug("Connecting: %s with %s", className, interfaceName)
+    logging.debug("Connecting %s with %s", className, interfaceName)
     
     #
     # Properties
@@ -132,7 +132,7 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                     if not "tags" in classEntry:
                         classEntry["tags"] = {}
                     
-                    mergeDict(classEntry["tags"], interfaceEntry["tags"])
+                    safeUpdate(classEntry["tags"], interfaceEntry["tags"])
 
                 # Copy over params from interface
                 if "params" in interfaceEntry:
