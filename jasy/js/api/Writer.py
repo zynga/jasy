@@ -36,12 +36,13 @@ def convertTags(item):
     if "tags" in item:
         tags = item["tags"]
         tagsNew = []
-        for tagName in sorted(tags):
-            tag = { "name" : tagName }
-            if tags[tagName] is not True:
-                tag["value"] = "+".join(tags[tagName])
-            tagsNew.append(tag)
-                
+        if tags:
+            for tagName in sorted(tags):
+                tag = { "name" : tagName }
+                if tags[tagName] is not True:
+                    tag["value"] = "+".join(tags[tagName])
+                tagsNew.append(tag)
+            
         item["tags"] = tagsNew
 
 
@@ -535,6 +536,8 @@ class ApiWriter():
         #
         for className in sorted(apiData):
             classApi = apiData[className]
+            
+            convertTags(classApi.main)
             
             construct = getattr(classApi, "construct", None)
             if construct:
