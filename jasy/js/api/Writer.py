@@ -11,10 +11,10 @@ __all__ = ["ApiWriter"]
 
 
 itemMap = {
-    "members": "member",
-    "statics": "static",
-    "properties": "property",
-    "events": "event"
+    "members": "Member",
+    "statics": "Static",
+    "properties": "Property",
+    "events": "Event"
 }
 
 
@@ -197,9 +197,9 @@ class ApiWriter():
                         return json.JSONEncoder.default(self, obj)
                         
                 if compact:
-                    jsonEncoded = json.dumps(content, sort_keys=True, cls=SetEncoder, separators=(',',':'))
+                    jsonEncoded = json.dumps(content, sort_keys=False, cls=SetEncoder, separators=(',',':'))
                 else:
-                    jsonEncoded = json.dumps(content, sort_keys=True, indent=2, cls=SetEncoder)
+                    jsonEncoded = json.dumps(content, sort_keys=False, indent=2, cls=SetEncoder)
                 
                 if callback:
                     return "%s(%s,'%s');" % (callback, jsonEncoded, name)
@@ -435,7 +435,7 @@ class ApiWriter():
 
             if isErrornous(classApi.main):
                 errors.append({
-                    "kind": "main",
+                    "kind": "Main",
                     "name": None,
                     "line": 1
                 })
@@ -443,7 +443,7 @@ class ApiWriter():
             if hasattr(classApi, "construct"):
                 if isErrornous(classApi.construct):
                     errors.append({
-                        "kind": "construct",
+                        "kind": "Constructor",
                         "name": None,
                         "line": classApi.construct["line"]
                     })
@@ -461,13 +461,15 @@ class ApiWriter():
                         
             if errors:
                 logging.warn("API documentation errors in %s", className)
-                for entry in sorted(errors, key=lambda entry: entry["line"]):
+                errorsSorted = sorted(errors, key=lambda entry: entry["line"])
+                
+                for entry in errorsSorted:
                     if entry["name"]:
                         logging.warn("- %s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
                     else:
                         logging.warn("- %s (line %s)", entry["kind"], entry["line"])
                 
-                classApi.errors = errors
+                classApi.errors = errorsSorted
         
         
         #
