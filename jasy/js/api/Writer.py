@@ -72,7 +72,10 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                 # Copy over documentation
                 if not "doc" in classProperties[name] and "doc" in interfaceProperties[name]:
                     classProperties[name]["doc"] = interfaceProperties[name]["doc"]
-
+                    
+                if "errornous" in classProperties[name] and not "errornous" in interfaceProperties[name]:
+                    del classProperties[name]["errornous"]
+    
     #
     # Events
     #
@@ -87,9 +90,14 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                 classEvents[name]["interface"] = interfaceName
                 
                 # Copy user event type and documentation from interface
-                for key in ("doc", "type"):
-                    if not key in classEvents[name] and key in interfaceEvents[name]:
-                        classEvents[name][key] = interfaceEvents[name][key]
+                if not "doc" in classEvents[name] and "doc" in interfaceEvents[name]:
+                    classEvents[name]["doc"] = interfaceEvents[name]["doc"]
+
+                if not "type" in classEvents[name] and "type" in interfaceEvents[name]:
+                    classEvents[name]["type"] = interfaceEvents[name]["type"]
+
+                if "errornous" in classEvents[name] and not "errornous" in interfaceEvents[name]:
+                    del classEvents[name]["errornous"]
 
     #
     # Members
@@ -111,6 +119,9 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                 # Copy over doc from interface
                 if not "doc" in classEntry and "doc" in interfaceEntry:
                     classEntry["doc"] = interfaceEntry["doc"]
+
+                if "errornous" in classEntry[name] and not "errornous" in interfaceEntry[name]:
+                    del classEntry[name]["errornous"]
 
                 # Priorize return value from interface (it's part of the interface feature set to enforce this)
                 if "returns" in interfaceEntry:
@@ -135,6 +146,10 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                             classEntry["params"][paramName] = {}
                             
                         classEntry["params"][paramName].update(interfaceEntry["params"][paramName])
+                        
+                        # Clear errournous documentation flags
+                        if "errornous" in classEntry["params"][paramName] and not "errornous" in interfaceEntry["params"][paramName]:
+                            del classEntry["params"][paramName]["errornous"]
 
 
 
