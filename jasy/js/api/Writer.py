@@ -46,7 +46,6 @@ def convertTags(item):
         item["tags"] = tagsNew
 
 
-
 def safeUpdate(dest, origin):
     """ Like update() but only never overwrites"""
     
