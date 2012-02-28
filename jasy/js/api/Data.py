@@ -21,9 +21,9 @@ class ApiData():
     __slots__ = [
         "main", "construct", "statics", "properties", "events", "members", 
         
-        "id", "errornous", 
+        "id", 
         "package", "basename", 
-        "size", "assets", "permutations", 
+        "errors", "size", "assets", "permutations", 
         
         "uses", "usedBy", 
         "includes", "includedBy", 
@@ -363,7 +363,9 @@ class ApiData():
         
 
     def addConstructor(self, valueNode, commentNode=None):
-        entry = self.construct = {}
+        entry = self.construct = {
+            "line" : valueNode.line
+        }
         
         if commentNode is None:
             commentNode = valueNode
@@ -404,7 +406,9 @@ class ApiData():
 
 
     def addEvent(self, name, valueNode, commentNode, collection):
-        entry = collection[name] = {}
+        entry = collection[name] = {
+            "line" : valueNode.line
+        }
         
         if valueNode.type == "dot":
             entry["type"] = assembleDot(valueNode)
