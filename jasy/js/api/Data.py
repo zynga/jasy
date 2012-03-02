@@ -380,6 +380,8 @@ class ApiData():
         if comment and comment.tags:
             entry["tags"] = comment.tags
         
+        entry["init"] = self.main["name"]
+        
         funcParams = getParamNamesFromFunction(valueNode)
         if funcParams:
             entry["params"] = {}
