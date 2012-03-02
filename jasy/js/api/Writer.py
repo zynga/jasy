@@ -239,14 +239,14 @@ class ApiWriter():
             elif format == "msgpack":
                 return "%s" % msgpack.packb(content)
         
-        classes, sources, index, search = self.collect(internals=showInternals, privates=showPrivates)
+        data, highlighted, index, search = self.collect(internals=showInternals, privates=showPrivates)
         
         extension = "js" if callback and format is "json" else format
         logging.debug("Saving files as %s..." % extension)
 
-        for className in classes:
+        for className in data:
             try:
-                classData = classes[className]
+                classData = data[className]
                 if type(classData) is dict:
                     classExport = classData
                 else:
@@ -257,12 +257,11 @@ class ApiWriter():
                 logging.error("Could not write API data of: %s: %s", className, writeError)
                 continue
 
-        for className in sources:
+        for className in highlighted:
             try:
-                sourceData = sources[className]
-                writeFile(os.path.join(distFolder, "%s.%s" % (className, "html")), sourceData)
+                writeFile(os.path.join(distFolder, "%s.html" % className), highlighted[className])
             except TypeError as writeError:
-                logging.error("Could not write Source data of: %s: %s", className, writeError)
+                logging.error("Could not write highlighted code of: %s: %s", className, writeError)
                 continue
 
         writeFile(os.path.join(distFolder, "$index.%s" % extension), encode(index, "$index"))
@@ -272,17 +271,6 @@ class ApiWriter():
         
 
     def collect(self, internals=False, privates=False):
-        
-        def isVisible(entry):
-            if "visibility" in entry:
-                visibility = entry["visibility"]
-                if visibility == "private" and not privates:
-                    return False
-                if visibility == "internal" and not internals:
-                    return False
-
-            return True
-        
         
         #
         # Collecting Original Data
@@ -303,12 +291,12 @@ class ApiWriter():
         #
 
         logging.debug("Highlighting Code...")
-        sourceData = {}
+        highlighted = {}
 
         for project in self.session.getProjects():
             classes = project.getClasses()
             for className in classes:
-                sourceData[className] = classes[className].getHighlightedCode()
+                highlighted[className] = classes[className].getHighlightedCode()
 
 
 
@@ -405,6 +393,16 @@ class ApiWriter():
         # Filter Internals/Privates
         #
         
+        def isVisible(entry):
+            if "visibility" in entry:
+                visibility = entry["visibility"]
+                if visibility == "private" and not privates:
+                    return False
+                if visibility == "internal" and not internals:
+                    return False
+
+            return True
+
         def filterInternalsPrivates(classApi, field):
             data = getattr(classApi, field, None)
             if data:
@@ -533,9 +531,6 @@ class ApiWriter():
             data = getattr(classApi, field, None)
             if data:
                 for name in data:
-                    if not isVisible(data[name]):
-                        continue
-
                     if not name in search:
                         search[name] = set()
 
@@ -655,7 +650,7 @@ class ApiWriter():
         # Return
         #
         
-        return apiData, sourceData, index, search
+        return apiData, highlighted, index, search
         
         
         
