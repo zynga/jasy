@@ -725,7 +725,8 @@ class ApiWriter():
                     apiData[lastPackage].content = []
             
                 classPkgEntry = {
-                    "name": className
+                    "name": splits[-1],
+                    "link": className
                 }
             
                 classMain = apiData[className].main
