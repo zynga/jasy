@@ -46,7 +46,7 @@ def code2highlight(html):
         if language is None:
             language = classname if classname else "javascript"
         
-        lexer = get_lexer_by_name(language)
+        lexer = get_lexer_by_name(language, tabsize=2)
         formatter = HtmlFormatter(linenos="table")
         
         return highlight(unescape(code), lexer, formatter)
