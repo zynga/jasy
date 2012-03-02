@@ -504,9 +504,10 @@ class ApiWriter():
                         "doc" : "Extensions for %s" % destName
                     }
                     
-                    
-                if "doc" in classApi.main and destApi.main["doc"] == "Extensions for %s" % destName:
-                    destApi.main["doc"] = classApi.main["doc"]
+                # If there is a "main" tag found in the class use its API description
+                if "tags" in classApi.main and classApi.main["tags"] is not None and "main" in classApi.main["tags"]:
+                    if "doc" in classApi.main and destApi.main["doc"] == "Extensions for %s" % destName:
+                        destApi.main["doc"] = classApi.main["doc"]
                 
                 classApi.main["extension"] = True
                     
