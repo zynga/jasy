@@ -82,14 +82,20 @@ def mergeMixin(className, mixinName, classApi, mixinApi):
                 
                     # If it was included, just store another origin
                     if "origin" in classMembers[name]:
-                        classMembers[name]["origin"].append(mixinName)
+                        classMembers[name]["origin"].append({
+                            "name": mixinName,
+                            "link": "%s:%s~%s" % (section, mixinName, name)
+                        })
                 
                     # Otherwise add it to the overridden list
                     else:
                         if not "overridden" in classMembers[name]:
                             classMembers[name]["overridden"] = []
 
-                        classMembers[name]["overridden"].append(mixinName)
+                        classMembers[name]["overridden"].append({
+                            "name": mixinName,
+                            "link": "%s:%s~%s" % (section, mixinName, name)
+                        })
 
                 # Remember where classes are included from
                 else:
@@ -98,7 +104,10 @@ def mergeMixin(className, mixinName, classApi, mixinApi):
                     if not "origin" in classMembers[name]:
                         classMembers[name]["origin"] = []
 
-                    classMembers[name]["origin"].append(mixinName)
+                    classMembers[name]["origin"].append({
+                        "name": mixinName,
+                        "link": "%s:%s~%s" % (section, mixinName, name)
+                    })
 
 
 
@@ -442,15 +451,15 @@ class ApiWriter():
                 classApi.main["extension"] = True
                     
                 # Read existing data
-                constructor = getattr(classApi, "constructor", None)
+                construct = getattr(classApi, "construct", None)
                 statics = getattr(classApi, "statics", None)
                 members = getattr(classApi, "members", None)
 
-                if constructor is not None:
-                    if hasattr(destApi, "constructor"):
+                if construct is not None:
+                    if hasattr(destApi, "construct"):
                         logging.warn("Overriding constructor in extension %s by %s", destName, className)
                         
-                    destApi.constructor = constructor
+                    destApi.construct = copy.copy(construct)
 
                 if statics is not None:
                     if not hasattr(destApi, "statics"):
