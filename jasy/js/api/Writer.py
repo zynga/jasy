@@ -424,8 +424,6 @@ class ApiWriter():
 
 
 
-
-
         #
         # Including Mixins / IncludedBy
         #
@@ -737,7 +735,6 @@ class ApiWriter():
                         classPkgEntry["summary"] = summary
             
                 apiData[lastPackage].content.append(classPkgEntry)
-            
         
         # Sort package content
         for packageName in packages:
