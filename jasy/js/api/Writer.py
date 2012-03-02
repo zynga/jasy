@@ -19,17 +19,6 @@ itemMap = {
 }
 
 
-def isVisible(entry):
-    if "visibility" in entry:
-        visibility = entry["visibility"]
-        if visibility == "private" and not privates:
-            return False
-        if visibility == "internal" and not internals:
-            return False
-
-    return True
-    
-
 def convertFunction(item):
     item["isFunction"] = True
     if "params" in item:
@@ -283,6 +272,17 @@ class ApiWriter():
         
 
     def collect(self, internals=False, privates=False):
+        
+        def isVisible(entry):
+            if "visibility" in entry:
+                visibility = entry["visibility"]
+                if visibility == "private" and not privates:
+                    return False
+                if visibility == "internal" and not internals:
+                    return False
+
+            return True
+        
         
         #
         # Collecting Original Data
