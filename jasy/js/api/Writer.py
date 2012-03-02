@@ -71,42 +71,44 @@ def isErrornous(data):
 def mergeMixin(className, mixinName, classApi, mixinApi):
     logging.debug("Merging %s into %s", mixinName, className)
 
-    for section in ("members", "properties", "events"):
-        mixinMembers = getattr(mixinApi, section, None)
-        if mixinMembers:
-            classMembers = getattr(classApi, section, {})
-            for name in mixinMembers:
+    sectionLink = ["member", "property", "event"]
+    
+    for pos, section in enumerate(("members", "properties", "events")):
+        mixinItems = getattr(mixinApi, section, None)
+        if mixinItems:
+            classItems = getattr(classApi, section, {})
+            for name in mixinItems:
 
                 # Overridden Check
-                if name in classMembers:
+                if name in classItems:
                 
                     # If it was included, just store another origin
-                    if "origin" in classMembers[name]:
-                        classMembers[name]["origin"].append({
+                    if "origin" in classItems[name]:
+                        classItems[name]["origin"].append({
                             "name": mixinName,
-                            "link": "%s:%s~%s" % (section, mixinName, name)
+                            "link": "%s:%s~%s" % (sectionLink[pos], mixinName, name)
                         })
                 
                     # Otherwise add it to the overridden list
                     else:
-                        if not "overridden" in classMembers[name]:
-                            classMembers[name]["overridden"] = []
+                        if not "overridden" in classItems[name]:
+                            classItems[name]["overridden"] = []
 
-                        classMembers[name]["overridden"].append({
+                        classItems[name]["overridden"].append({
                             "name": mixinName,
-                            "link": "%s:%s~%s" % (section, mixinName, name)
+                            "link": "%s:%s~%s" % (sectionLink[pos], mixinName, name)
                         })
 
                 # Remember where classes are included from
                 else:
-                    classMembers[name] = {}
-                    classMembers[name].update(mixinMembers[name])
-                    if not "origin" in classMembers[name]:
-                        classMembers[name]["origin"] = []
+                    classItems[name] = {}
+                    classItems[name].update(mixinItems[name])
+                    if not "origin" in classItems[name]:
+                        classItems[name]["origin"] = []
 
-                    classMembers[name]["origin"].append({
+                    classItems[name]["origin"].append({
                         "name": mixinName,
-                        "link": "%s:%s~%s" % (section, mixinName, name)
+                        "link": "%s:%s~%s" % (sectionLink[pos], mixinName, name)
                     })
 
 
@@ -126,14 +128,27 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
 
             else:
                 # Add reference to interface
-                classProperties[name]["interface"] = interfaceName
+                if not "interface" in classProperties[name]:
+                    classProperties[name]["defined"] = []
 
+                classProperties[name]["defined"].append({
+                    "name": interfaceName,
+                    "link": "property:%s~%s" % (interfaceName, name)
+                })
+                
                 # Copy over documentation
                 if not "doc" in classProperties[name] and "doc" in interfaceProperties[name]:
                     classProperties[name]["doc"] = interfaceProperties[name]["doc"]
                     
                 if "errornous" in classProperties[name] and not "errornous" in interfaceProperties[name]:
                     del classProperties[name]["errornous"]
+                    
+                # Update tags with data from interface
+                if "tags" in interfaceProperties[name]:
+                    if not "tags" in classProperties[name]:
+                        classProperties[name]["tags"] = {}
+
+                    safeUpdate(classProperties[name]["tags"], interfaceProperties[name]["tags"])                    
     
     #
     # Events
@@ -146,7 +161,13 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                 logging.warn("Class %s is missing implementation for event %s of interface %s!", className, name, interfaceName)
             else:
                 # Add reference to interface
-                classEvents[name]["interface"] = interfaceName
+                if not "interface" in classEvents[name]:
+                    classEvents[name]["defined"] = []
+
+                classEvents[name]["defined"].append({
+                    "name": interfaceName,
+                    "link": "event:%s~%s" % (interfaceName, name)
+                })
                 
                 # Copy user event type and documentation from interface
                 if not "doc" in classEvents[name] and "doc" in interfaceEvents[name]:
@@ -157,6 +178,13 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
 
                 if "errornous" in classEvents[name] and not "errornous" in interfaceEvents[name]:
                     del classEvents[name]["errornous"]
+                    
+                # Update tags with data from interface
+                if "tags" in interfaceEvents[name]:
+                    if not "tags" in classEntry:
+                        classEvents[name]["tags"] = {}
+
+                    safeUpdate(classEvents[name]["tags"], interfaceEvents[name]["tags"])                    
 
     #
     # Members
@@ -173,7 +201,13 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                 classEntry = classMembers[name]
                 
                 # Add reference to interface
-                classEntry["interface"] = interfaceName
+                if not "interface" in classEntry:
+                    classEntry["defined"] = []
+                    
+                classEntry["defined"].append({
+                    "name": interfaceName,
+                    "link": "member:%s~%s" % (interfaceName, name)
+                })
                 
                 # Copy over doc from interface
                 if not "doc" in classEntry and "doc" in interfaceEntry:
