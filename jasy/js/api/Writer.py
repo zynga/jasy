@@ -468,7 +468,7 @@ class ApiWriter():
             constructData = getattr(classApi, "construct", None)
             if constructData is not None:
                 if "line" in constructData:
-                    constructData["lineLink"] = "source:%s~%s" % (className, constructData["line"])
+                    constructData["sourceLink"] = "source:%s~%s" % (className, constructData["line"])
 
             for section in ("properties", "events", "statics", "members"):
 
@@ -477,7 +477,7 @@ class ApiWriter():
                 if sectionData is not None:
                     for name in sectionData:
                         if "line" in sectionData[name]:
-                            sectionData[name]["lineLink"] = "source:%s~%s" % (className, sectionData[name]["line"])
+                            sectionData[name]["sourceLink"] = "source:%s~%s" % (className, sectionData[name]["line"])
 
 
 
@@ -504,6 +504,10 @@ class ApiWriter():
                         "doc" : "Extensions for %s" % destName
                     }
                     
+                    
+                if "doc" in classApi.main and destApi.main["doc"] == "Extensions for %s" % destName:
+                    destApi.main["doc"] = classApi.main["doc"]
+                
                 classApi.main["extension"] = True
                     
                 # Read existing data
