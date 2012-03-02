@@ -427,7 +427,7 @@ class ApiWriter():
                 if "line" in constructData:
                     constructData["lineLink"] = "source:%s~%s" % (className, constructData["line"])
 
-            for section in ("properties", "statics", "members"):
+            for section in ("properties", "events", "statics", "members"):
 
                 sectionData = getattr(classApi, section, None)
 
