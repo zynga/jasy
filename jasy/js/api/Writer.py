@@ -3,7 +3,8 @@
 # Copyright 2010-2012 Sebastian Werner
 #
 
-import logging, json, msgpack, copy
+import logging, json, msgpack, copy, sys
+
 from jasy.util.File import *
 from jasy.js.api.Data import ApiData
 
@@ -239,7 +240,7 @@ class ApiWriter():
             elif format == "msgpack":
                 return "%s" % msgpack.packb(content)
         
-        classes, index, search = self.collect(internals=showInternals, privates=showPrivates)
+        classes, sources, index, search = self.collect(internals=showInternals, privates=showPrivates)
         
         extension = "js" if callback and format is "json" else format
         logging.debug("Saving files as %s..." % extension)
@@ -251,12 +252,20 @@ class ApiWriter():
                     classExport = classData
                 else:
                     classExport = classData.export()
-                    
+
                 writeFile(os.path.join(distFolder, "%s.%s" % (className, extension)), encode(classExport, className))
             except TypeError as writeError:
                 logging.error("Could not write API data of: %s: %s", className, writeError)
                 continue
-        
+
+        for className in sources:
+            try:
+                sourceData = sources[className]
+                writeFile(os.path.join(distFolder, "%s.%s" % (className, "html")), sourceData)
+            except TypeError as writeError:
+                logging.error("Could not write Source data of: %s: %s", className, writeError)
+                continue
+
         writeFile(os.path.join(distFolder, "$index.%s" % extension), encode(index, "$index"))
         writeFile(os.path.join(distFolder, "$search.%s" % extension), encode(search, "$search"))
         
@@ -290,6 +299,17 @@ class ApiWriter():
                 apiData[className] = classes[className].getApi()
 
 
+        #
+        # Collecting Source Code
+        #
+
+        logging.debug("Collecting highlighted Source Codes...")
+        sourceData = {}
+
+        for project in self.session.getProjects():
+            classes = project.getClasses()
+            for className in classes:
+                sourceData[className] = classes[className].getHighlightedCode()
 
         #
         # Including Mixins / IncludedBy
@@ -634,7 +654,7 @@ class ApiWriter():
         # Return
         #
         
-        return apiData, index, search
+        return apiData, sourceData, index, search
         
         
         

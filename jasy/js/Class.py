@@ -5,6 +5,10 @@
 
 import os, logging, copy, hashlib, zlib
 
+from pygments import highlight
+from pygments.lexers import JavascriptLexer
+from pygments.formatters import HtmlFormatter
+
 import jasy.js.parse.Parser as Parser
 import jasy.js.parse.ScopeScanner as ScopeScanner
 
@@ -124,7 +128,6 @@ class Class():
     def getText(self):
         """Reads the file (as UTF-8) and returns the text"""
         return open(self.__path, mode="r", encoding="utf-8").read()
-
 
     def getTree(self, permutation=None, cleanup=True):
         """
@@ -263,8 +266,18 @@ class Class():
             self.__cache.store(field, apidata, self.__mtime)
 
         return apidata
-        
-        
+
+    def getHighlightedCode(self):
+        field = "highlighted[%s]" % self.__id
+        source = self.__cache.read(field, self.__mtime)
+        if source is None:
+            lexer = JavascriptLexer(tabsize=2)
+            formatter = HtmlFormatter(full=True,style="autumn",linenos="table",lineanchors="line")
+            source = highlight(self.getText(), lexer, formatter)
+            self.__cache.store(field, source, self.__mtime)
+
+        return source
+
     def getMetaData(self, permutation=None):
         permutation = self.filterPermutation(permutation)
         
