@@ -20,20 +20,24 @@ itemMap = {
 
 # Used to filter first paragraph from HTML
 paragraphExtract = re.compile(r"^<p>(.*?)(\.|</p>)")
+newlineMatcher = re.compile(r"\n")
 
 # Used to remove markup sequences after doc processing of comment text
 stripMarkup = re.compile(r"<.*?>")
 
 def extractSummary(text):
+    text = newlineMatcher.sub(" ", text)
     matched = paragraphExtract.match(text)
     if matched:
         first = "%s." % matched.group(1)
         if first is not None:
             summary = stripMarkup.sub("", first)
             return summary
+            
+    else:
+        logging.debug("Unable to extract summary for: %s", text)
     
     return None
-    
 
 
 def convertFunction(item):
@@ -361,6 +365,68 @@ class ApiWriter():
 
 
         #
+        # Filter Internals/Privates
+        #
+        
+        logging.debug("Filtering Items...")
+        
+        def isVisible(entry):
+            if "visibility" in entry:
+                visibility = entry["visibility"]
+                if visibility == "private" and not privates:
+                    return False
+                if visibility == "internal" and not internals:
+                    return False
+
+            return True
+
+        def filterInternalsPrivates(classApi, field):
+            data = getattr(classApi, field, None)
+            if data:
+                for name in list(data):
+                    if not isVisible(data[name]):
+                        del data[name]
+
+        for className in apiData:
+            filterInternalsPrivates(apiData[className], "statics")
+            filterInternalsPrivates(apiData[className], "members")
+
+
+
+        #
+        # Attaching Links to Source Code (Lines)
+        # Building Documentation Summaries
+        #
+
+        logging.debug("Tweaking Output...")
+
+        for className in apiData:
+            classApi = apiData[className]
+
+            constructData = getattr(classApi, "construct", None)
+            if constructData is not None:
+                if "line" in constructData:
+                    constructData["sourceLink"] = "source:%s~%s" % (className, constructData["line"])
+
+            for section in ("properties", "events", "statics", "members"):
+
+                sectionData = getattr(classApi, section, None)
+
+                if sectionData is not None:
+                    for name in sectionData:
+                        if "line" in sectionData[name]:
+                            sectionData[name]["sourceLink"] = "source:%s~%s" % (className, sectionData[name]["line"])
+
+                        if "doc" in sectionData[name]:
+                            summary = extractSummary(sectionData[name]["doc"])
+                            if summary is not None:
+                                sectionData[name]["summary"] = summary
+
+
+
+
+
+        #
         # Including Mixins / IncludedBy
         #
 
@@ -450,70 +516,12 @@ class ApiWriter():
             apiData[className].uses = cleanUses
         
         
-        
-        #
-        # Filter Internals/Privates
-        #
-        
-        logging.debug("Filtering Items...")
-        
-        def isVisible(entry):
-            if "visibility" in entry:
-                visibility = entry["visibility"]
-                if visibility == "private" and not privates:
-                    return False
-                if visibility == "internal" and not internals:
-                    return False
-
-            return True
-
-        def filterInternalsPrivates(classApi, field):
-            data = getattr(classApi, field, None)
-            if data:
-                for name in list(data):
-                    if not isVisible(data[name]):
-                        del data[name]
-
-        for className in apiData:
-            filterInternalsPrivates(apiData[className], "statics")
-            filterInternalsPrivates(apiData[className], "members")
-
-
-
-        #
-        # Attaching Links to Source Code (Lines)
-        # Building Documentation Summaries
-        #
-        
-        logging.debug("Tweaking Output...")
-        
-        for className in apiData:
-            classApi = apiData[className]
-
-            constructData = getattr(classApi, "construct", None)
-            if constructData is not None:
-                if "line" in constructData:
-                    constructData["sourceLink"] = "source:%s~%s" % (className, constructData["line"])
-
-            for section in ("properties", "events", "statics", "members"):
-
-                sectionData = getattr(classApi, section, None)
-
-                if sectionData is not None:
-                    for name in sectionData:
-                        if "line" in sectionData[name]:
-                            sectionData[name]["sourceLink"] = "source:%s~%s" % (className, sectionData[name]["line"])
-                            
-                        if "doc" in sectionData[name]:
-                            summary = extractSummary(sectionData[name]["doc"])
-                            if summary is not None:
-                                sectionData[name]["summary"] = summary
-                            
-
 
         #
         # Merging Named Classes
         #
+        
+        logging.debug("Merging Named Classes...")
         
         for className in list(apiData):
             classApi = apiData[className]
@@ -684,9 +692,11 @@ class ApiWriter():
 
         logging.debug("Collecting Package Docs...")
 
+        packages = set()
         for project in self.session.getProjects():
             docs = project.getDocs()
             for packageName in docs:
+                packages.add(packageName)
                 apiData[packageName] = ApiData(packageName)
                 apiData[packageName].main = {
                     "type" : "Package",
@@ -694,21 +704,44 @@ class ApiWriter():
                     "doc" : docs[packageName]
                 }
                 
-
         for className in list(apiData):
             # Auto create API data for all packages in between
             splits = className.split(".")
             packageName = splits[0]
             for split in splits[1:]:
                 if not packageName in apiData:
+                    packages.add(packageName)
                     logging.debug("Creating missing package doc entry: %s" % packageName)
                     apiData[packageName] = ApiData(packageName)
                     apiData[packageName].main = {
                         "type" : "Package",
                         "name" : packageName
                     }
-
+                    
                 packageName = "%s.%s" % (packageName, split)
+                
+            # Register class inside package "content"
+            lastPackage = ".".join(splits[:-1])
+            if lastPackage:
+                if not hasattr(apiData[lastPackage], "content"):
+                    apiData[lastPackage].content = []
+            
+                classPkgEntry = {
+                    "name": className
+                }
+            
+                classMain = apiData[className].main
+                if "doc" in classMain and classMain["doc"]:
+                    summary = extractSummary(classMain["doc"])
+                    if summary:
+                        classPkgEntry["summary"] = summary
+            
+                apiData[lastPackage].content.append(classPkgEntry)
+            
+        
+        # Sort package content
+        for packageName in packages:
+            apiData[packageName].content.sort(key=lambda entry: entry["name"])
         
         
         
@@ -728,22 +761,13 @@ class ApiWriter():
             current = index
             for split in className.split("."):
                 if not split in current:
-                    current[split] = { "$type": "Package", "$nodoc" : True }
+                    current[split] = {}
 
                 current = current[split]
             
             # Store current type
             current["$type"] = mainInfo["type"]
-            
-            # Bring errornous info to index
-            if "errornous" in mainInfo:
-                current["$errornous"] = mainInfo["errornous"]
-            
-            # Clear no documentation flag
-            del current["$nodoc"]
 
-        
-        
         
         
         #

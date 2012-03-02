@@ -24,6 +24,7 @@ class ApiData():
         "id", 
         "package", "basename", 
         "errors", "size", "assets", "permutations", 
+        "content",
         
         "uses", "usedBy", 
         "includes", "includedBy", 
