@@ -422,9 +422,31 @@ class ApiWriter():
         for className in apiData:
             filterInternalsPrivates(apiData[className], "statics")
             filterInternalsPrivates(apiData[className], "members")
-        
-        
-        
+
+
+
+        #
+        # Attaching Links to Source Code (Lines)
+        #
+        for className in apiData:
+            classApi = apiData[className]
+
+            constructData = getattr(classApi, "construct", None)
+            if constructData is not None:
+                if "line" in constructData:
+                    constructData["lineLink"] = "source:%s~%s" % (className, constructData["line"])
+
+            for section in ("properties", "events", "statics", "members"):
+
+                sectionData = getattr(classApi, section, None)
+
+                if sectionData is not None:
+                    for name in sectionData:
+                        if "line" in sectionData[name]:
+                            sectionData[name]["lineLink"] = "source:%s~%s" % (className, sectionData[name]["line"])
+
+
+
         #
         # Merging Named Classes
         #
@@ -478,8 +500,8 @@ class ApiWriter():
                         destApi.members[memberName] = copy.copy(members[memberName])
                         destApi.members[memberName]["from"] = className
                         destApi.members[memberName]["fromLink"] = "member:%s~%s" % (className, memberName)
-        
-        
+
+
         
         #
         # Collecting errors
