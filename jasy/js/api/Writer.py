@@ -264,8 +264,8 @@ class ApiWriter():
                 logging.error("Could not write highlighted code of: %s: %s", className, writeError)
                 continue
 
-        writeFile(os.path.join(distFolder, "$index.%s" % extension), encode(index, "$index"))
-        writeFile(os.path.join(distFolder, "$search.%s" % extension), encode(search, "$search"))
+        writeFile(os.path.join(distFolder, "meta-index.%s" % extension), encode(index, "meta-index"))
+        writeFile(os.path.join(distFolder, "meta-search.%s" % extension), encode(search, "meta-search"))
         
         
         
