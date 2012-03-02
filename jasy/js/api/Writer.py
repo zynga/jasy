@@ -30,7 +30,6 @@ def extractSummary(text):
         first = "%s." % matched.group(1)
         if first is not None:
             summary = stripMarkup.sub("", first)
-            print(summary)
             return summary
     
     return None
