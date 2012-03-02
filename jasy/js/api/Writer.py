@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Sebastian Werner
 #
 
-import logging, json, msgpack, copy, sys
+import logging, json, msgpack, copy, re
 
 from jasy.util.File import *
 from jasy.js.api.Data import ApiData
@@ -17,6 +17,24 @@ itemMap = {
     "properties": "property",
     "events": "event"
 }
+
+# Used to filter first paragraph from HTML
+paragraphExtract = re.compile(r"^<p>(.*?)(\.|</p>)")
+
+# Used to remove markup sequences after doc processing of comment text
+stripMarkup = re.compile(r"<.*?>")
+
+def extractSummary(text):
+    matched = paragraphExtract.match(text)
+    if matched:
+        first = "%s." % matched.group(1)
+        if first is not None:
+            summary = stripMarkup.sub("", first)
+            print(summary)
+            return summary
+    
+    return None
+    
 
 
 def convertFunction(item):
@@ -410,6 +428,8 @@ class ApiWriter():
         #
         # Connecting Uses / UsedBy
         #
+        
+        logging.debug("Collecting Use Patterns...")
 
         # This matches all uses with the known classes and only keeps them if matched
         allClasses = set(list(apiData))
@@ -436,6 +456,8 @@ class ApiWriter():
         # Filter Internals/Privates
         #
         
+        logging.debug("Filtering Items...")
+        
         def isVisible(entry):
             if "visibility" in entry:
                 visibility = entry["visibility"]
@@ -461,7 +483,11 @@ class ApiWriter():
 
         #
         # Attaching Links to Source Code (Lines)
+        # Building Documentation Summaries
         #
+        
+        logging.debug("Tweaking Output...")
+        
         for className in apiData:
             classApi = apiData[className]
 
@@ -478,7 +504,12 @@ class ApiWriter():
                     for name in sectionData:
                         if "line" in sectionData[name]:
                             sectionData[name]["sourceLink"] = "source:%s~%s" % (className, sectionData[name]["line"])
-
+                            
+                        if "doc" in sectionData[name]:
+                            summary = extractSummary(sectionData[name]["doc"])
+                            if summary is not None:
+                                sectionData[name]["summary"] = summary
+                            
 
 
         #
