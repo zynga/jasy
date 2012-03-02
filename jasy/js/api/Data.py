@@ -204,10 +204,10 @@ class ApiData():
                 target = getParameterFromCall(callNode, 0)
                 assigned = getParameterFromCall(callNode, 1)
                 
-                if target and assigned:
+                if target:
                     success = True
                     
-                    if assigned.type == "function":
+                    if assigned and assigned.type == "function":
                         # Use callNode call for constructor, find first doc comment for main documentation
                         self.setMain("core.Main", findCommentNode(tree), target.value)
                         self.addConstructor(assigned, callNode.parent)
@@ -215,7 +215,7 @@ class ApiData():
                     else:
                         self.setMain("core.Main", callNode.parent, target.value)
 
-                        if assigned.type == "object_init":
+                        if assigned and assigned.type == "object_init":
                             self.statics = {}
                             for staticsEntry in assigned:
                                 self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
