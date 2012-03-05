@@ -19,7 +19,7 @@ itemMap = {
 }
 
 # Used to filter first paragraph from HTML
-paragraphExtract = re.compile(r"^<p>(.*?)(\.|</p>)")
+paragraphExtract = re.compile(r"^<p>(.*?)(\.|\?|\!|</p>)")
 newlineMatcher = re.compile(r"\n")
 
 # Used to remove markup sequences after doc processing of comment text
@@ -29,9 +29,11 @@ def extractSummary(text):
     text = newlineMatcher.sub(" ", text)
     matched = paragraphExtract.match(text)
     if matched:
-        first = "%s." % matched.group(1)
+        first = matched.group(1)
         if first is not None:
             summary = stripMarkup.sub("", first)
+            if not summary.endswith((".", "!", "?")):
+                summary = summary + "."
             return summary
             
     else:
@@ -160,6 +162,9 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                 # Copy over documentation
                 if not "doc" in classProperties[name] and "doc" in interfaceProperties[name]:
                     classProperties[name]["doc"] = interfaceProperties[name]["doc"]
+
+                if not "summary" in classProperties[name] and "summary" in interfaceProperties[name]:
+                    classProperties[name]["summary"] = interfaceProperties[name]["summary"]
                     
                 if "errornous" in classProperties[name] and not "errornous" in interfaceProperties[name]:
                     del classProperties[name]["errornous"]
@@ -193,6 +198,9 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                 # Copy user event type and documentation from interface
                 if not "doc" in classEvents[name] and "doc" in interfaceEvents[name]:
                     classEvents[name]["doc"] = interfaceEvents[name]["doc"]
+
+                if not "summary" in classEvents[name] and "summary" in interfaceEvents[name]:
+                    classEvents[name]["summary"] = interfaceEvents[name]["summary"]
 
                 if not "type" in classEvents[name] and "type" in interfaceEvents[name]:
                     classEvents[name]["type"] = interfaceEvents[name]["type"]
@@ -233,6 +241,9 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                 # Copy over doc from interface
                 if not "doc" in classEntry and "doc" in interfaceEntry:
                     classEntry["doc"] = interfaceEntry["doc"]
+
+                if not "summary" in classEntry and "summary" in interfaceEntry:
+                    classEntry["summary"] = interfaceEntry["summary"]
 
                 if "errornous" in classEntry[name] and not "errornous" in interfaceEntry[name]:
                     del classEntry[name]["errornous"]

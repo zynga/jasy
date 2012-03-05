@@ -1,7 +1,13 @@
-Jasy 0.5-beta10
+Jasy 0.5-beta11
 ===============
 
 
+
+
+Jasy 0.5-beta10
+===============
+
+- Worked on better API support
 
 Jasy 0.5-beta9
 ==============
