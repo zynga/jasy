@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+BASE=`pwd`
 PYTHONVER=3.2.2
 
 echo ">>> Reconfiguring PATH to /opt/jasy/bin"
@@ -67,7 +68,11 @@ echo ">>> Installing Cython..."
 pip install Cython || exit 1
 
 echo ">>> Installing Jasy..."
-pip install jasy || exit 1
+if [ $BASE/setup.py ]; then
+  pip install . || exit 1
+else
+  pip install jasy || exit 1
+fi
 
 echo ">>> Zipping files..."
 cd /opt || exit 1
