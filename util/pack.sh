@@ -12,6 +12,7 @@ rm -rf $DIST*
 echo ">>> Reconfiguring PATH to /opt/jasy/bin"
 export PATH="/opt/jasy/bin:$PATH"
 export PYTHONHOME=/opt/jasy
+export JASYHOME=/opt/jasy
 
 cd $TMPDIR
 
@@ -25,13 +26,17 @@ tar xfj Python-$PYTHONVER.tar.bz2
 
 echo ">>> Configuring Python..."
 cd Python-$PYTHONVER
-./configure --prefix=/opt/jasy --enable-framework MACOSX_DEPLOYMENT_TARGET=10.5 --with-universal-archs=all > /dev/null || exit 1
+export MACOSX_DEPLOYMENT_TARGET=10.5
+./configure --prefix=/opt/jasy --with-universal-archs=intel > /dev/null || exit 1
 
 echo ">>> Building Python..."
 make > /dev/null || exit 1
 
 echo ">>> Installing Python..."
 make install > /dev/null || exit 1
+cd /opt/jasy/bin || exit 1
+ln -s python3 python || exit 1
+cd ~- || exit 1
 
 echo ">>> Downloading Distribute..."
 rm -f distribute_setup.py
@@ -49,6 +54,10 @@ python3 get-pip.py 2>&1 > /dev/null || exit 1
 
 cd ~-
 
+echo "# Added by Jasy" > /opt/jasy/bin/activate
+echo "export PATH=/opt/jasy/bin" >> /opt/jasy/bin/activate
+echo "export PYTHONHOME=/opt/jasy" >> /opt/jasy/bin/activate
+
 echo ">>> Installing Cython..."
 pip install Cython || exit 1
 
@@ -56,15 +65,8 @@ echo ">>> Installing Jasy..."
 pip install jasy || exit 1
 
 echo ">>> Zipping files..."
-cd $BASE/$ROOT || exit 1
-zip -rq jasy-$VERSION.zip jasy-$VERSION || exit 1
-
-echo ">>> Cleaning up..."
-rm -rf jasy-$VERSION
-
-echo "# Added by Jasy" > /opt/jasy/bin/activate
-echo "export PATH=/opt/jasy/bin" >> /opt/jasy/bin/activate
-echo "export PYTHONHOME=/opt/jasy" >> /opt/jasy/bin/activate
+cd /opt || exit 1
+zip -rq jasy-$VERSION.zip jasy || exit 1
 
 echo ">>> Congratulations!"
 echo ">>> Jasy was packed as jasy-$VERSION.zip."
