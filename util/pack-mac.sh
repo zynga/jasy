@@ -8,6 +8,9 @@ export PATH="/opt/jasy/bin:$PATH"
 export PYTHONHOME=/opt/jasy
 export JASYHOME=/opt/jasy
 
+echo ">>> Deleting old Jasy install..."
+rm -rf $JASYHOME
+
 cd $TMPDIR
 
 echo ">>> Downloading Python..."
@@ -21,14 +24,14 @@ tar xfj Python-$PYTHONVER.tar.bz2
 echo ">>> Configuring Python..."
 cd Python-$PYTHONVER
 export MACOSX_DEPLOYMENT_TARGET=10.5
-./configure --prefix=/opt/jasy --disable-tk --disable-debug --with-universal-archs=intel > /dev/null || exit 1
+./configure --prefix=$JASYHOME --disable-tk --disable-debug --with-universal-archs=intel > /dev/null || exit 1
 
 echo ">>> Building Python..."
 make > /dev/null || exit 1
 
 echo ">>> Installing Python..."
 make install > /dev/null || exit 1
-cd /opt/jasy/bin || exit 1
+cd $JASYHOME/bin || exit 1
 ln -s python3 python || exit 1
 cd ~- || exit 1
 
@@ -48,21 +51,24 @@ python3 get-pip.py 2>&1 > /dev/null || exit 1
 
 cd ~-
 
-echo "export PATH=/opt/jasy/bin:\$PATH" > /opt/jasy/activate.sh
-echo "export PYTHONHOME=/opt/jasy" >> /opt/jasy/activate.sh
+echo "export PATH=/opt/jasy/bin:\$PATH" > $JASYHOME/activate.sh
+echo "export PYTHONHOME=/opt/jasy" >> $JASYHOME/activate.sh
 
-echo '#/usr/bin/env bash' > /opt/jasy/install.sh
-echo 'echo "Installing Jasy into /opt/jasy. Press ENTER to continue"' >> /opt/jasy/install.sh
-echo 'read' >> /opt/jasy/install.sh
-echo 'sudo mv `dirname $0/..` /opt/jasy || exit 1' >> /opt/jasy/install.sh
-echo 'sudo chown -R $USER /opt/jasy || exit 1' >> /opt/jasy/install.sh
-echo 'echo "" >> ~/.profile' >> /opt/jasy/install.sh
-echo 'echo "# Added by Jasy" >> ~/.profile' >> /opt/jasy/install.sh
-echo 'echo "source /opt/jasy/activate.sh" >> ~/.profile' >> /opt/jasy/install.sh
-echo 'echo "Successfully installed Jasy in /opt/jasy." >> /opt/jasy/install.sh
-chmod 755 /opt/jasy/install.sh
+echo '#/usr/bin/env bash' > $JASYHOME/install.sh
+echo 'echo "Installing Jasy into /opt/jasy. Press ENTER to continue"' >> $JASYHOME/install.sh
+echo 'read' >> $JASYHOME/install.sh
+echo 'sudo mv `dirname $0/..` /opt/jasy || exit 1' >> $JASYHOME/install.sh
+echo 'sudo chown -R $USER /opt/jasy || exit 1' >> $JASYHOME/install.sh
+echo 'echo "" >> ~/.profile' >> $JASYHOME/install.sh
+echo 'echo "# Added by Jasy" >> ~/.profile' >> $JASYHOME/install.sh
+echo 'echo "source /opt/jasy/activate.sh" >> ~/.profile' >> $JASYHOME/install.sh
+echo 'echo "Successfully installed Jasy in /opt/jasy." >> $JASYHOME/install.sh
+chmod 755 $JASYHOME/install.sh
 
-echo '/opt/jasy/bin/pip --no-deps --upgrade jasy' >
+echo '#/usr/bin/env bash' > $JASYHOME/install.sh
+echo '/opt/jasy/bin/pip --no-deps --upgrade jasy' > $JASYHOME/update.sh
+echo '/opt/jasy/bin/pip --no-deps --upgrade jasy' > $JASYHOME/update.sh
+chmod 755 $JASYHOME/update.sh
 
 echo ">>> Installing Cython..."
 pip install Cython || exit 1
