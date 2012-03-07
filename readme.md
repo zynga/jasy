@@ -17,7 +17,7 @@ details have a look at [the official documentation](https://github.com/zynga/jas
 
 ## Authors
 
-Jasy was initially developed by Sebastian Werner <info@sebastian-werner.net> 
+Jasy was initially developed by [Sebastian Werner](mailto:info@sebastian-werner.net)
 and is now continued as an official Zynga OpenSource project.
 
 
