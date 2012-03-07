@@ -1,12 +1,33 @@
 #/usr/bin/env bash
 
-echo "Installing Jasy into /opt/jasy. Press ENTER to continue"
+echo ">>> Installing Jasy into /opt/jasy (Replaces current installation!)."
+echo ">>> Press ENTER to continue"
 read
 
-sudo mv `dirname $0` /opt/jasy || exit 1
+if [ -r /opt/jasy ]; then
+  echo ">>> Deleting old installation..."
+  sudo rm -rf /opt/jasy
+fi
+
+echo ">>> Preparing folder structure..."
+sudo mkdir -p /opt
+
+echo ">>> Copying folder..."
+sudo cp -a `dirname $0` /opt/jasy || exit 1
+
+echo ">>> Configuring rights..."
 sudo chown -R $USER /opt/jasy || exit 1
 
 echo "" >> ~/.profile
 echo "# Added by Jasy" >> ~/.profile
 echo "source /opt/jasy/activate.sh" >> ~/.profile
-echo "Successfully installed Jasy in /opt/jasy."
+
+if ! grep -Fxq "source /opt/jasy/activate.sh" ~/.profile
+  echo ">>> Restart your terminal after installation."
+  echo "" >> ~/.profile
+  echo "# Added by Jasy" >> ~/.profile
+  echo "source /opt/jasy/activate.sh" >> ~/.profile
+fi
+
+echo ">>> Successfully installed Jasy in /opt/jasy."
+
