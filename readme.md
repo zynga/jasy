@@ -9,9 +9,18 @@ build/deployment scripts.
 
 ## Installation
 
+### Using Binary Packages
+
 There are [pre-built packages available for either Windows or Mac](https://github.com/zynga/jasy/downloads) 
-users. Otherwise you can install Jasy on your own. Jasy has a few dependencies
-like Python 3 (with PIP), Misaka (Markdown), Msgpack (API data), etc. For
+users. 
+
+Download the ZIP file and unpack it inside our download folder. Then either run `install.sh` (Mac) or `activate.bat` (Windows).
+
+
+### Custom Installation
+
+You can also install Jasy on your own. Jasy has a few dependencies
+like Python 3, Misaka (Markdown), Msgpack (API data), etc. For
 details have a look at [the official documentation](https://github.com/zynga/jasy/wiki/Installation).
 
 
