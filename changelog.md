@@ -1,8 +1,8 @@
 Jasy 0.5-beta11
 ===============
 
-
-
+- Added packer script for Mac OS.
+- Fixed a few API doc issues.
 
 Jasy 0.5-beta10
 ===============
