@@ -25,12 +25,8 @@ tar xfj Python-$PYTHONVER.tar.bz2 || exit 1
 echo ">>> Configuring Python..."
 cd Python-$PYTHONVER || exit 1
 patch -p0 < $UTILFOLDER/python_dbm.patch || exit 1
-if [ `uname` == "Darwin" ]; then
-  export MACOSX_DEPLOYMENT_TARGET=10.5
-  ./configure --prefix=$JASYHOME --with-universal-archs=intel > /dev/null || exit 1
-else
-  ./configure --prefix=$JASYHOME > /dev/null || exit 1
-fi
+export MACOSX_DEPLOYMENT_TARGET=10.5
+./configure --prefix=$JASYHOME --with-universal-archs=intel > /dev/null || exit 1
 
 echo ">>> Building Python..."
 make > /dev/null || exit 1
@@ -73,7 +69,7 @@ pip install $UTILFOLDER/.. || exit 1
 echo ">>> Zipping files..."
 cd /opt || exit 1
 VERSION=`python3 -c "import jasy; print(jasy.__version__)"`
-zip -rq jasy-$VERSION.zip jasy || exit 1
+zip -rq jasy-$VERSION-mac.zip jasy || exit 1
 
 echo ">>> Congratulations!"
 echo ">>> Jasy was packed as jasy-$VERSION.zip."
