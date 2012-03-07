@@ -68,6 +68,8 @@ pip install Cython || exit 1
 
 echo ">>> Installing Jasy..."
 pip install jasy || exit 1
+cd $UTILFOLDER/..
+pip install .
 
 echo ">>> Zipping files..."
 cd /opt || exit 1
