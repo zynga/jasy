@@ -67,9 +67,8 @@ echo ">>> Installing Cython..."
 pip install Cython || exit 1
 
 echo ">>> Installing Jasy..."
-pip install jasy || exit 1
-cd $UTILFOLDER/..
-pip install .
+pip install $UTILFOLDER/.. || exit 1
+# pip install jasy || exit 1
 
 echo ">>> Zipping files..."
 cd /opt || exit 1
