@@ -19,19 +19,18 @@ itemMap = {
 }
 
 # Used to filter first paragraph from HTML
-paragraphExtract = re.compile(r"^<p>(.*?)(\.|\?|\!|</p>)")
+paragraphExtract = re.compile(r"^(.*?)(\. |\? |\! )")
 newlineMatcher = re.compile(r"\n")
 
 # Used to remove markup sequences after doc processing of comment text
 stripMarkup = re.compile(r"<.*?>")
 
 def extractSummary(text):
-    text = newlineMatcher.sub(" ", text)
+    text = stripMarkup.sub("", newlineMatcher.sub(" ", text))
     matched = paragraphExtract.match(text)
     if matched:
-        first = matched.group(1)
-        if first is not None:
-            summary = stripMarkup.sub("", first)
+        summary = matched.group(1)
+        if summary is not None:
             if not summary.endswith((".", "!", "?")):
                 summary = summary + "."
             return summary
