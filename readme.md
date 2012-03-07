@@ -2,11 +2,9 @@ Jasy - Web Tooling Framework
 ============================
 
 Jasy is a powerful Python3-based tooling framework. It makes it 
-easy to manage heavy web projects The main goal of Jasy is to offer 
-an API which could be 
-used by developers to write their custom build/deployment scripts. 
-Your build script is just a normal Python script which includes the 
-Jasy-API and defines so-called tasks.
+easy to manage heavy web projects. Its main goal is to offer 
+an API which could be used by developers to write their custom 
+build/deployment scripts.
 
 
 ## Installation
@@ -15,6 +13,7 @@ There are [pre-built packages available for either Windows or Mac](https://githu
 users. Otherwise you can install Jasy on your own. Jasy has a few dependencies
 like Python 3 (with PIP), Misaka (Markdown), Msgpack (API data), etc. For
 details have a look at [the official documentation](https://github.com/zynga/jasy/wiki/Installation).
+
 
 ## License
 
