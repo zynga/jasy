@@ -1,10 +1,11 @@
-diff --git a/Lib/dbm/__init__.py b/Lib/dbm/__init__.py
---- a/Lib/dbm/__init__.py
-+++ b/Lib/dbm/__init__.py
-@@ -166,7 +166,7 @@ def whichdb(filename):
+--- Lib/dbm/__init__.py	2011-09-03 18:16:40.000000000 +0200
++++ Lib/dbm/__init__.py	2012-03-07 09:56:43.000000000 +0100
+@@ -166,7 +166,7 @@
          return ""
-
+ 
      # Check for GNU dbm
 -    if magic == 0x13579ace:
 +    if magic in (0x13579ace, 0x13579acd, 0x13579acf):
-         return "dbm.gnu
+         return "dbm.gnu"
+ 
+     # Later versions of Berkeley db hash file have a 12-byte pad in

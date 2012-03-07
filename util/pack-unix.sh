@@ -24,8 +24,8 @@ tar xfj Python-$PYTHONVER.tar.bz2
 
 echo ">>> Configuring Python..."
 cd Python-$PYTHONVER
-patch -p0 < $UTILFOLDER/python_dbm.patch
-if [`uname` == "Darwin"]; then
+patch -p0 < $UTILFOLDER/python_dbm.patch || exit 1
+if [ `uname` == "Darwin" ]; then
   export MACOSX_DEPLOYMENT_TARGET=10.5
   ./configure --prefix=$JASYHOME --with-universal-archs=intel > /dev/null || exit 1
 else
@@ -67,11 +67,7 @@ echo ">>> Installing Cython..."
 pip install Cython || exit 1
 
 echo ">>> Installing Jasy..."
-if [ $BASE/setup.py ]; then
-  pip install . || exit 1
-else
-  pip install jasy || exit 1
-fi
+pip install jasy || exit 1
 
 echo ">>> Zipping files..."
 cd /opt || exit 1
