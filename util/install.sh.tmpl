@@ -23,6 +23,7 @@ echo "# Added by Jasy" >> ~/.profile
 echo "source /opt/jasy/activate.sh" >> ~/.profile
 
 if ! grep -Fxq "source /opt/jasy/activate.sh" ~/.profile
+then
   echo ">>> Restart your terminal after installation."
   echo "" >> ~/.profile
   echo "# Added by Jasy" >> ~/.profile
