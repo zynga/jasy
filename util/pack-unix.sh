@@ -12,18 +12,18 @@ export JASYHOME=/opt/jasy
 echo ">>> Deleting old Jasy install..."
 rm -rf $JASYHOME
 
-cd $TMPDIR
+cd $TMPDIR || exit 1
 
 echo ">>> Downloading Python..."
 rm -f Python-$PYTHONVER.tar.bz2
-curl --silent -o Python-$PYTHONVER.tar.bz2 http://python.org/ftp/python/$PYTHONVER/Python-$PYTHONVER.tar.bz2
+curl --silent -o Python-$PYTHONVER.tar.bz2 http://python.org/ftp/python/$PYTHONVER/Python-$PYTHONVER.tar.bz2 || exit 1
 
 echo ">>> Unpacking Python..."
 rm -rf Python-$PYTHONVER
-tar xfj Python-$PYTHONVER.tar.bz2
+tar xfj Python-$PYTHONVER.tar.bz2 || exit 1
 
 echo ">>> Configuring Python..."
-cd Python-$PYTHONVER
+cd Python-$PYTHONVER || exit 1
 patch -p0 < $UTILFOLDER/python_dbm.patch || exit 1
 if [ `uname` == "Darwin" ]; then
   export MACOSX_DEPLOYMENT_TARGET=10.5
