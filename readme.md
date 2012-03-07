@@ -15,6 +15,12 @@ like Python 3 (with PIP), Misaka (Markdown), Msgpack (API data), etc. For
 details have a look at [the official documentation](https://github.com/zynga/jasy/wiki/Installation).
 
 
+## Authors
+
+Jasy was initially developed by Sebastian Werner <info@sebastian-werner.net> 
+and is now continued as an official Zynga OpenSource project.
+
+
 ## License
 
 Copyright (c) 2011-2012 Zynga Inc., http://zynga.com/
