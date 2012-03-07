@@ -12,7 +12,7 @@ Jasy-API and defines so-called tasks.
 
 ## License
 
-Copyright (c) 2011 Zynga Inc., http://zynga.com/
+Copyright (c) 2011-2012 Zynga Inc., http://zynga.com/
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
