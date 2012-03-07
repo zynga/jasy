@@ -10,6 +10,15 @@ Your build script is just a normal Python script which includes the
 Jasy-API and defines so-called tasks.
 
 
+## Installation
+
+There are pre-built packages available for either Windows or Mac users:
+https://github.com/zynga/jasy/downloads
+
+Otherwise you can install Jasy on your own. Jasy has a few dependencies
+like Python 3 (with PIP), Misaka (Markdown), Msgpack (API data), etc. For
+details have a look at [the official documentation](https://github.com/zynga/jasy/wiki/Installation).
+
 ## License
 
 Copyright (c) 2011-2012 Zynga Inc., http://zynga.com/
