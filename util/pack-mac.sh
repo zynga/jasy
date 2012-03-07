@@ -2,6 +2,7 @@
 
 BASE=`pwd`
 PYTHONVER=3.2.2
+UTILFOLDER=`pwd`/`dirname $0`
 
 echo ">>> Reconfiguring PATH to /opt/jasy/bin"
 export PATH="/opt/jasy/bin:$PATH"
@@ -23,8 +24,13 @@ tar xfj Python-$PYTHONVER.tar.bz2
 
 echo ">>> Configuring Python..."
 cd Python-$PYTHONVER
-export MACOSX_DEPLOYMENT_TARGET=10.5
-./configure --prefix=$JASYHOME --disable-tk --disable-debug --with-universal-archs=intel > /dev/null || exit 1
+patch -p0 < $UTILFOLDER/python_dbm.patch
+if [`uname` == "Darwin"]; then
+  export MACOSX_DEPLOYMENT_TARGET=10.5
+  ./configure --prefix=$JASYHOME --with-universal-archs=intel > /dev/null || exit 1
+else
+  ./configure --prefix=$JASYHOME > /dev/null || exit 1
+fi
 
 echo ">>> Building Python..."
 make > /dev/null || exit 1
@@ -51,23 +57,10 @@ python3 get-pip.py 2>&1 > /dev/null || exit 1
 
 cd ~-
 
-echo "export PATH=/opt/jasy/bin:\$PATH" > $JASYHOME/activate.sh
-echo "export PYTHONHOME=/opt/jasy" >> $JASYHOME/activate.sh
-
-echo '#/usr/bin/env bash' > $JASYHOME/install.sh
-echo 'echo "Installing Jasy into /opt/jasy. Press ENTER to continue"' >> $JASYHOME/install.sh
-echo 'read' >> $JASYHOME/install.sh
-echo 'sudo mv `dirname $0/..` /opt/jasy || exit 1' >> $JASYHOME/install.sh
-echo 'sudo chown -R $USER /opt/jasy || exit 1' >> $JASYHOME/install.sh
-echo 'echo "" >> ~/.profile' >> $JASYHOME/install.sh
-echo 'echo "# Added by Jasy" >> ~/.profile' >> $JASYHOME/install.sh
-echo 'echo "source /opt/jasy/activate.sh" >> ~/.profile' >> $JASYHOME/install.sh
-echo 'echo "Successfully installed Jasy in /opt/jasy." >> $JASYHOME/install.sh
+cp $UTILFOLDER/activate.sh.tmpl $JASYHOME/activate.sh
+cp $UTILFOLDER/install.sh.tmpl $JASYHOME/install.sh
+cp $UTILFOLDER/update.sh.tmpl $JASYHOME/update.sh
 chmod 755 $JASYHOME/install.sh
-
-echo '#/usr/bin/env bash' > $JASYHOME/install.sh
-echo '/opt/jasy/bin/pip --no-deps --upgrade jasy' > $JASYHOME/update.sh
-echo '/opt/jasy/bin/pip --no-deps --upgrade jasy' > $JASYHOME/update.sh
 chmod 755 $JASYHOME/update.sh
 
 echo ">>> Installing Cython..."

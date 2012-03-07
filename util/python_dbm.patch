@@ -1,0 +1,10 @@
+diff --git a/Lib/dbm/__init__.py b/Lib/dbm/__init__.py
+--- a/Lib/dbm/__init__.py
++++ b/Lib/dbm/__init__.py
+@@ -166,7 +166,7 @@ def whichdb(filename):
+         return ""
+
+     # Check for GNU dbm
+-    if magic == 0x13579ace:
++    if magic in (0x13579ace, 0x13579acd, 0x13579acf):
+         return "dbm.gnu
