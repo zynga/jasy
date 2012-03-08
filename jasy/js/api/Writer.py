@@ -437,21 +437,15 @@ class ApiWriter():
                 
             def processInternalLink(match):
                 linkUrl = match.group(2)
-                linkAttr = ""
 
                 if linkUrl.startswith("#"):
-                    linkAttr += 'data-type="internal" '
-
                     linkCheck = checkInternalLink(linkUrl[1:], className)
                     if linkCheck is not True:
-                        linkAttr += 'data-errornous="true" '
+                        item["errornous"] = True
                         logging.error("%s in %s at line %s" % (linkCheck, className, item["line"]))
 
-                else:
-                    linkAttr += 'data-type="external" '
-
                 quote = match.group(1)
-                return " %shref=%s%s%s" % (linkAttr, quote, linkUrl, quote)
+                return " href=%s%s%s" % (quote, linkUrl, quote)
             
             oldDoc = item["doc"]
             newDoc = linkExtract.sub(processInternalLink, oldDoc)
