@@ -505,7 +505,10 @@ class ApiWriter():
                     linkCheck = checkInternalLink(linkUrl[1:], className)
                     if linkCheck is not True:
                         item["errornous"] = True
-                        logging.error("  - %s in %s at line %s" % (linkCheck, className, item["line"]))
+                        if sectionName:
+                            logging.error("  - %s in %s:%s~%s at line %s" % (linkCheck, sectionName, className, name, item["line"]))
+                        else:
+                            logging.error("  - %s in %s at line %s" % (linkCheck, className, item["line"]))
 
                 quote = match.group(1)
                 return " href=%s%s%s" % (quote, linkUrl, quote)
@@ -519,16 +522,17 @@ class ApiWriter():
         for className in apiData:
             classApi = apiData[className]
             
+            sectionName = None
             constructData = getattr(classApi, "construct", None)
             if constructData is not None:
                 checkLinksInItem(constructData)
 
-            for section in ("properties", "events", "statics", "members"):
-                sectionData = getattr(classApi, section, None)
+            for sectionName in ("properties", "events", "statics", "members"):
+                section = getattr(classApi, sectionName, None)
 
-                if sectionData is not None:
-                    for name in sectionData:
-                         checkLinksInItem(sectionData[name])
+                if section is not None:
+                    for name in section:
+                         checkLinksInItem(section[name])
 
 
 
