@@ -364,6 +364,31 @@ def detectObjectType(objectNode):
     return "Object"
     
     
+
+def resolveIdentifierNode(identifierNode):
+    assignNodes, assignValues = findAssignments(identifierNode.value, identifierNode)
+    if assignNodes:
+    
+        assignCommentNode = None
+    
+        # Find first relevant assignment with comment! Otherwise just first one.
+        for assign in assignNodes:
+        
+            # The parent is the relevant doc comment container
+            # It's either a "var" (declaration) or "semicolon" (assignment)
+            if getDocComment(assign):
+                assignCommentNode = assign
+                break
+            elif getDocComment(assign.parent):
+                assignCommentNode = assign.parent
+                break
+        
+        return assignValues[0], assignCommentNode or assignValues[0]
+    
+    return None, None
+    
+    
+    
 def assembleDot(node, result=None):
     """
     Joins a dot node (cascaded supported, too) into a single string like "foo.bar.Baz"
