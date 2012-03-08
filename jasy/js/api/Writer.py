@@ -18,6 +18,17 @@ itemMap = {
     "events": "event"
 }
 
+linkMap = {
+    "member": "members",
+    "static": "statics",
+    "property": "properties",
+    "event": "events"
+}
+
+# Used to process HTML links
+linkExtract = re.compile(r" href=(\"|')([a-zA-Z0-9#\:\.\~]+)(\"|')", re.M)
+internalLinkParse = re.compile(r"^((static|member|property|event)\:)?([a-zA-Z0-9_\.]+)?(\~([a-zA-Z0-9_]+))?$")
+
 # Used to filter first paragraph from HTML
 paragraphExtract = re.compile(r"^(.*?)(\. |\? |\! )")
 newlineMatcher = re.compile(r"\n")
@@ -347,7 +358,7 @@ class ApiWriter():
     def collect(self, internals=False, privates=False):
         
         #
-        # Collecting Original Data
+        # Collecting Original (Cached) Data
         #
         
         logging.debug("Collecting Classes...")
@@ -371,6 +382,93 @@ class ApiWriter():
             classes = project.getClasses()
             for className in classes:
                 highlighted[className] = classes[className].getHighlightedCode()
+
+
+
+        #
+        # Checking links
+        #
+        
+        def checkInternalLink(link, className):
+            match = internalLinkParse.match(link)
+            if not match:
+                return 'Invalid link "%s"' % link
+                
+            if match.group(3) is not None:
+                className = match.group(3)
+                
+            if not className in apiData:
+                return 'Invalid file in link "%s"' % link
+                
+            classApi = apiData[className]
+            sectionName = match.group(2)
+            itemName = match.group(5)
+            
+            if itemName is None:
+                return True
+                
+            if sectionName is not None:
+                if not sectionName in linkMap:
+                    return 'Invalid section in link "%s"' % link
+                    
+                section = getattr(classApi, linkMap[sectionName], None)
+                if section is None:
+                    return 'Invalid section in link "%s"' % link
+                else:
+                    if itemName in section:
+                        return True
+                        
+                    return 'Invalid item in link "%s"' % link
+            
+            for sectionName in ("statics", "members", "properties", "events"):
+                section = getattr(classApi, sectionName, None)
+                if section and itemName in section:
+                    return True
+                
+            return 'Invalid item link "%s"' % link
+
+
+        def checkLinksInItem(item):
+            if not "doc" in item:
+                return
+                
+            def processInternalLink(match):
+                linkUrl = match.group(2)
+                linkAttr = ""
+
+                if linkUrl.startswith("#"):
+                    linkAttr += 'data-type="internal" '
+
+                    linkCheck = checkInternalLink(linkUrl[1:], className)
+                    if linkCheck is not True:
+                        linkAttr += 'data-errornous="true" '
+                        logging.error("%s in %s at line %s" % (linkCheck, className, item["line"]))
+
+                else:
+                    linkAttr += 'data-type="external" '
+
+                quote = match.group(1)
+                return " %shref=%s%s%s" % (linkAttr, quote, linkUrl, quote)
+            
+            oldDoc = item["doc"]
+            newDoc = linkExtract.sub(processInternalLink, oldDoc)
+            if newDoc != oldDoc:
+                item["doc"] = newDoc
+
+
+        for className in apiData:
+            classApi = apiData[className]
+            
+            constructData = getattr(classApi, "construct", None)
+            if constructData is not None:
+                checkLinksInItem(constructData)
+
+            for section in ("properties", "events", "statics", "members"):
+                sectionData = getattr(classApi, section, None)
+
+                if sectionData is not None:
+                    for name in sectionData:
+                         checkLinksInItem(sectionData[name])
 
 
 
@@ -408,7 +506,7 @@ class ApiWriter():
         # Building Documentation Summaries
         #
 
-        logging.debug("Tweaking Output...")
+        logging.debug("Adding Source Links / Generating Summaries...")
 
         for className in apiData:
             classApi = apiData[className]
@@ -419,7 +517,6 @@ class ApiWriter():
                     constructData["sourceLink"] = "source:%s~%s" % (className, constructData["line"])
 
             for section in ("properties", "events", "statics", "members"):
-
                 sectionData = getattr(classApi, section, None)
 
                 if sectionData is not None:

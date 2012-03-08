@@ -1,3 +1,10 @@
+Jasy 0.5-beta12
+===============
+
+- Added support for validating links inside doc strings
+
+
+
 Jasy 0.5-beta11
 ===============
 

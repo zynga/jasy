@@ -6,6 +6,8 @@
 import logging, re
 from jasy.core.Markdown import markdown
 
+__all__ = ["CommentException", "Comment"]
+
 
 # Used to measure the doc indent size (with leading stars in front of content)
 docIndentReg = re.compile(r"^(\s*\*\s*)(\S*)")
@@ -32,10 +34,6 @@ paramMatcher = re.compile(r"@([a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+?)(\s*\.
 
 # Matches links in own dialect
 linkMatcher = re.compile(r"\{((static|member|property|event)\:)?([a-zA-Z0-9_\.]+)?(\#([a-zA-Z0-9_]+))?\}")
-
-
-
-
 
 
 class CommentException(Exception):
