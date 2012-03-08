@@ -515,10 +515,10 @@ class ApiWriter():
                 for returnType in item["returns"]:
                     if not (returnType in pseudoTypes or returnType in nativeTypes or returnType in apiData):
                         logging.error('  - Invalid return type "%s" in %s at line %s', returnType, className, item["line"])
-                        
-                
-                        
-                    
+            
+            
+            
+            
             
             
             if not "doc" in item:
