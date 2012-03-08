@@ -494,7 +494,33 @@ class ApiWriter():
             return 'Invalid item link "#%s"' % link
 
 
+
+        pseudoTypes = set(["var", "undefined", "null", "true", "false", "this"])
+        nativeTypes = set(["Object", "String", "Number", "Boolean", "Array", "Function", "RegExp", "Date"])
+
         def checkLinksInItem(item):
+            
+            if "params" in item:
+                #print("PARAMS")
+                pass
+                
+                
+                
+            if "type" in item:
+                #print("TYPE")
+                pass
+                
+                
+            if "returns" in item:
+                for returnType in item["returns"]:
+                    if not (returnType in pseudoTypes or returnType in nativeTypes or returnType in apiData):
+                        logging.error('  - Invalid return type "%s" in %s at line %s', returnType, className, item["line"])
+                        
+                
+                        
+                    
+            
+            
             if not "doc" in item:
                 return
                 
@@ -689,7 +715,7 @@ class ApiWriter():
         # Collecting errors
         #
         
-        logging.info("- Collecting errors...")
+        logging.info("- Collecting Errors...")
         
         for className in sorted(apiData):
             classApi = apiData[className]
@@ -765,6 +791,9 @@ class ApiWriter():
         #
         # Post Process (dict to sorted list)
         #
+        
+        logging.info("- Post Processing Data...")
+        
         for className in sorted(apiData):
             classApi = apiData[className]
             
@@ -797,7 +826,7 @@ class ApiWriter():
         # Collecting Package Docs
         #
 
-        logging.debug("- Collecting Package Docs...")
+        logging.info("- Collecting Package Docs...")
 
         packages = set()
         for project in self.session.getProjects():
