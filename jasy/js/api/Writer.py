@@ -388,17 +388,20 @@ class ApiWriter():
         #
         # Checking links
         #
+        #
+        
+        logging.debug("Checking Links...")
         
         def checkInternalLink(link, className):
             match = internalLinkParse.match(link)
             if not match:
-                return 'Invalid link "%s"' % link
+                return 'Invalid link "#%s"' % link
                 
             if match.group(3) is not None:
                 className = match.group(3)
                 
             if not className in apiData:
-                return 'Invalid file in link "%s"' % link
+                return 'Invalid class in link "#%s"' % link
                 
             classApi = apiData[className]
             sectionName = match.group(2)
@@ -409,23 +412,23 @@ class ApiWriter():
                 
             if sectionName is not None:
                 if not sectionName in linkMap:
-                    return 'Invalid section in link "%s"' % link
+                    return 'Invalid section in link "#%s"' % link
                     
                 section = getattr(classApi, linkMap[sectionName], None)
                 if section is None:
-                    return 'Invalid section in link "%s"' % link
+                    return 'Invalid section in link "#%s"' % link
                 else:
                     if itemName in section:
                         return True
                         
-                    return 'Invalid item in link "%s"' % link
+                    return 'Invalid item in link "#%s"' % link
             
             for sectionName in ("statics", "members", "properties", "events"):
                 section = getattr(classApi, sectionName, None)
                 if section and itemName in section:
                     return True
                 
-            return 'Invalid item link "%s"' % link
+            return 'Invalid item link "#%s"' % link
 
 
         def checkLinksInItem(item):
