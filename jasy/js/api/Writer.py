@@ -386,8 +386,71 @@ class ApiWriter():
 
 
         #
-        # Checking links
+        # Attaching Links to Source Code (Lines)
+        # Building Documentation Summaries
         #
+
+        logging.debug("Adding Source Links / Generating Summaries...")
+
+        for className in apiData:
+            classApi = apiData[className]
+
+            constructData = getattr(classApi, "construct", None)
+            if constructData is not None:
+                if "line" in constructData:
+                    constructData["sourceLink"] = "source:%s~%s" % (className, constructData["line"])
+
+            for section in ("properties", "events", "statics", "members"):
+                sectionData = getattr(classApi, section, None)
+
+                if sectionData is not None:
+                    for name in sectionData:
+                        if "line" in sectionData[name]:
+                            sectionData[name]["sourceLink"] = "source:%s~%s" % (className, sectionData[name]["line"])
+
+                        if "doc" in sectionData[name]:
+                            summary = extractSummary(sectionData[name]["doc"])
+                            if summary is not None:
+                                sectionData[name]["summary"] = summary
+
+
+
+        #
+        # Including Mixins / IncludedBy
+        #
+
+        logging.debug("Resolving Mixins...")
+
+        # Just used temporary to keep track of which classes are merged
+        mergedClasses = set()
+
+        def getApi(className):
+            classApi = apiData[className]
+
+            if className in mergedClasses:
+                return classApi
+
+            classIncludes = getattr(classApi, "includes", None)
+            if classIncludes:
+                for mixinName in classIncludes:
+                    mixinApi = apiData[mixinName]
+                    if not hasattr(mixinApi, "includedBy"):
+                        mixinApi.includedBy = set()
+
+                    mixinApi.includedBy.add(className)
+                    mergeMixin(className, mixinName, classApi, getApi(mixinName))
+
+            mergedClasses.add(className)
+
+            return classApi
+
+        for className in apiData:
+            apiData[className] = getApi(className)
+
+
+
+        #
+        # Checking links
         #
         
         logging.debug("Checking Links...")
@@ -498,67 +561,6 @@ class ApiWriter():
 
 
 
-        #
-        # Attaching Links to Source Code (Lines)
-        # Building Documentation Summaries
-        #
-
-        logging.debug("Adding Source Links / Generating Summaries...")
-
-        for className in apiData:
-            classApi = apiData[className]
-
-            constructData = getattr(classApi, "construct", None)
-            if constructData is not None:
-                if "line" in constructData:
-                    constructData["sourceLink"] = "source:%s~%s" % (className, constructData["line"])
-
-            for section in ("properties", "events", "statics", "members"):
-                sectionData = getattr(classApi, section, None)
-
-                if sectionData is not None:
-                    for name in sectionData:
-                        if "line" in sectionData[name]:
-                            sectionData[name]["sourceLink"] = "source:%s~%s" % (className, sectionData[name]["line"])
-
-                        if "doc" in sectionData[name]:
-                            summary = extractSummary(sectionData[name]["doc"])
-                            if summary is not None:
-                                sectionData[name]["summary"] = summary
-
-
-
-        #
-        # Including Mixins / IncludedBy
-        #
-
-        logging.debug("Resolving Mixins...")
-
-        # Just used temporary to keep track of which classes are merged
-        mergedClasses = set()
-
-        def getApi(className):
-            classApi = apiData[className]
-
-            if className in mergedClasses:
-                return classApi
-
-            classIncludes = getattr(classApi, "includes", None)
-            if classIncludes:
-                for mixinName in classIncludes:
-                    mixinApi = apiData[mixinName]
-                    if not hasattr(mixinApi, "includedBy"):
-                        mixinApi.includedBy = set()
-                    
-                    mixinApi.includedBy.add(className)
-                    mergeMixin(className, mixinName, classApi, getApi(mixinName))
-                    
-            mergedClasses.add(className)
-
-            return classApi
-
-        for className in apiData:
-            apiData[className] = getApi(className)
 
 
 
