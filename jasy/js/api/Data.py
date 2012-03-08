@@ -623,10 +623,14 @@ class ApiData():
                 autoReturnType = nodeTypeToDocType[returnNode[0].type]
                 if autoReturnType == "Plus":
                     autoReturnType = detectPlusType(returnNode[0])
-                elif autoReturnType == "Call":
+                elif autoReturnType in ("Call", "Object"):
                     autoReturnType = "var"
                     
-                entry["returns"] = [autoReturnType]
+                entry["returns"] = [{
+                    "type": autoReturnType,
+                    "native": autoReturnType in nativeTypes,
+                    "pseudo": autoReturnType in pseudoTypes
+                }]
 
             # Use comment for enrich existing data
             if comment:

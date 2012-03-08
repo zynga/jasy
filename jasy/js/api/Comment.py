@@ -5,6 +5,7 @@
 
 import logging, re
 from jasy.core.Markdown import markdown
+from jasy.js.util import *
 
 __all__ = ["CommentException", "Comment"]
 
@@ -210,7 +211,30 @@ class Comment():
         if decl is None:
             return decl
         
-        return listSplit.split(decl.strip())
+        splitted = listSplit.split(decl.strip())
+
+        result = []
+        for entry in splitted:
+            
+            isArray = False
+            if entry.endswith("[]"):
+                isArray = True
+                entry = entry[:-2]
+            
+            store = { "name" : entry }
+            
+            if isArray:
+                store["isArray"] = True
+                
+            if entry in nativeTypes:
+                store["isNative"] = True
+                
+            if entry in pseudoTypes:
+                store["isPseudo"] = True
+            
+            result.append(store)
+            
+        return result
 
 
 

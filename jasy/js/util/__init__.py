@@ -8,6 +8,9 @@ from jasy.js.output.Compressor import Compressor
 # Shared instance
 compressor = Compressor()
 
+pseudoTypes = set(["var", "undefined", "null", "true", "false", "this"])
+nativeTypes = set(["Object", "String", "Number", "Boolean", "Array", "Function", "RegExp", "Date"])
+
 # Basic user friendly node type to human type
 nodeTypeToDocType = {
 
@@ -335,10 +338,12 @@ def detectPlusType(plusNode):
     
     if plusNode[0].type == "string" or plusNode[1].type == "string":
         return "String"
+    elif plusNode[0].type == "number" and plusNode[1].type == "number":
+        return "Number"
     elif plusNode[0].type == "plus" and detectPlusType(plusNode[0]) == "String":
         return "String"
     else:
-        return "Number"
+        return "var"
 
 
 def detectObjectType(objectNode):

@@ -636,7 +636,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.members["func"]["returns"], ["Number"])
         
         
-    def test_function_return(self):
+    def test_function_return_number(self):
 
         data = self.process("""
 
@@ -654,7 +654,91 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data.members, dict)
         self.assertIn("answer", data.members)
         self.assertEqual(data.members["answer"]["type"], "Function")
-        self.assertEqual(data.members["answer"]["returns"], ["Number"])        
+        self.assertEqual(data.members["answer"]["returns"][0]["type"], "Number")
+        
+    
+    def test_function_return_string(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+            answer: function() {
+                return "hello";
+            }
+          }
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+        self.assertIn("answer", data.members)
+        self.assertEqual(data.members["answer"]["type"], "Function")
+        self.assertEqual(data.members["answer"]["returns"][0]["type"], "String")
+        
+        
+    def test_function_return_plus_string(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+            answer: function() {
+                return "hello" + "world";
+            }
+          }
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+        self.assertIn("answer", data.members)
+        self.assertEqual(data.members["answer"]["type"], "Function")
+        self.assertEqual(data.members["answer"]["returns"][0]["type"], "String")
+        
+        
+    def test_function_return_plus_x(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+            answer: function(x) {
+                return x + x;
+            }
+          }
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+        self.assertIn("answer", data.members)
+        self.assertEqual(data.members["answer"]["type"], "Function")
+        self.assertEqual(data.members["answer"]["returns"][0]["type"], "var")        
+        
+        
+    def test_function_return_dotted(self):
+
+        data = self.process("""
+
+        core.Class("foo.Bar", 
+        {
+          members: {
+            answer: function() {
+                return window.innerWidth;
+            }
+          }
+        });
+
+        """)
+
+        self.assertIsInstance(data.members, dict)
+        self.assertIn("answer", data.members)
+        self.assertEqual(data.members["answer"]["type"], "Function")
+        self.assertEqual(data.members["answer"]["returns"][0]["type"], "var")
         
         
     def test_literal(self):
