@@ -361,7 +361,7 @@ class ApiWriter():
         # Collecting Original (Cached) Data
         #
         
-        logging.debug("Collecting Classes...")
+        logging.info("- Collecting Classes...")
         apiData = {}
         
         for project in self.session.getProjects():
@@ -375,7 +375,7 @@ class ApiWriter():
         # Collecting Source Code
         #
 
-        logging.debug("Highlighting Code...")
+        logging.info("- Highlighting Code...")
         highlighted = {}
 
         for project in self.session.getProjects():
@@ -390,7 +390,7 @@ class ApiWriter():
         # Building Documentation Summaries
         #
 
-        logging.debug("Adding Source Links / Generating Summaries...")
+        logging.info("- Adding Source Links / Generating Summaries...")
 
         for className in apiData:
             classApi = apiData[className]
@@ -419,7 +419,7 @@ class ApiWriter():
         # Including Mixins / IncludedBy
         #
 
-        logging.debug("Resolving Mixins...")
+        logging.info("- Resolving Mixins...")
 
         # Just used temporary to keep track of which classes are merged
         mergedClasses = set()
@@ -453,7 +453,7 @@ class ApiWriter():
         # Checking links
         #
         
-        logging.debug("Checking Links...")
+        logging.info("- Checking Links...")
         
         def checkInternalLink(link, className):
             match = internalLinkParse.match(link)
@@ -505,7 +505,7 @@ class ApiWriter():
                     linkCheck = checkInternalLink(linkUrl[1:], className)
                     if linkCheck is not True:
                         item["errornous"] = True
-                        logging.error("%s in %s at line %s" % (linkCheck, className, item["line"]))
+                        logging.error("  - %s in %s at line %s" % (linkCheck, className, item["line"]))
 
                 quote = match.group(1)
                 return " href=%s%s%s" % (quote, linkUrl, quote)
@@ -536,7 +536,7 @@ class ApiWriter():
         # Filter Internals/Privates
         #
         
-        logging.debug("Filtering Items...")
+        logging.info("- Filtering Items...")
         
         def isVisible(entry):
             if "visibility" in entry:
@@ -561,14 +561,11 @@ class ApiWriter():
 
 
 
-
-
-
         #
         # Connection Interfaces / ImplementedBy
         #
         
-        logging.debug("Connecting Interfaces...")
+        logging.info("- Connecting Interfaces...")
         
         for className in apiData:
             classApi = getApi(className)
@@ -598,7 +595,7 @@ class ApiWriter():
         # Connecting Uses / UsedBy
         #
         
-        logging.debug("Collecting Use Patterns...")
+        logging.info("- Collecting Use Patterns...")
 
         # This matches all uses with the known classes and only keeps them if matched
         allClasses = set(list(apiData))
@@ -625,7 +622,7 @@ class ApiWriter():
         # Merging Named Classes
         #
         
-        logging.debug("Merging Named Classes...")
+        logging.info("- Merging Named Classes...")
         
         for className in list(apiData):
             classApi = apiData[className]
@@ -688,6 +685,8 @@ class ApiWriter():
         # Collecting errors
         #
         
+        logging.info("- Collecting errors...")
+        
         for className in sorted(apiData):
             classApi = apiData[className]
             errors = []
@@ -719,14 +718,14 @@ class ApiWriter():
                         })
                         
             if errors:
-                logging.warn("API documentation errors in %s", className)
+                logging.warn("  - Found errors in %s", className)
                 errorsSorted = sorted(errors, key=lambda entry: entry["line"])
                 
                 for entry in errorsSorted:
                     if entry["name"]:
-                        logging.warn("- %s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
+                        logging.warn("    - %s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
                     else:
-                        logging.warn("- %s (line %s)", entry["kind"], entry["line"])
+                        logging.warn("    - %s (line %s)", entry["kind"], entry["line"])
                 
                 classApi.errors = errorsSorted
         
@@ -736,7 +735,7 @@ class ApiWriter():
         # Building Search Index
         #
 
-        logging.debug("Building Search Index")
+        logging.info("- Building Search Index...")
         search = {}
 
         def addSearch(classApi, field):
@@ -794,7 +793,7 @@ class ApiWriter():
         # Collecting Package Docs
         #
 
-        logging.debug("Collecting Package Docs...")
+        logging.debug("- Collecting Package Docs...")
 
         packages = set()
         for project in self.session.getProjects():
@@ -853,7 +852,7 @@ class ApiWriter():
         # Writing API Index
         #
         
-        logging.debug("Building Index...")
+        logging.debug("- Building Index...")
         index = {}
         
         for className in apiData:
