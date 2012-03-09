@@ -369,6 +369,8 @@ class ApiWriter():
             for className in classes:
                 apiData[className] = classes[className].getApi()
 
+        exportedNames = set([apiData[className].main["name"] for className in apiData])
+        
 
 
         #
@@ -495,32 +497,31 @@ class ApiWriter():
 
 
 
-        pseudoTypes = set(["var", "undefined", "null", "true", "false", "this"])
-        nativeTypes = set(["Object", "String", "Number", "Boolean", "Array", "Function", "RegExp", "Date"])
-
         def checkLinksInItem(item):
             
+            # Check param types
             if "params" in item:
                 #print("PARAMS")
                 pass
                 
                 
-                
+            # Check constant types
             if "type" in item:
                 #print("TYPE")
                 pass
                 
                 
+            # Check return types
             if "returns" in item:
-                for returnType in item["returns"]:
-                    if not (returnType in pseudoTypes or returnType in nativeTypes or returnType in apiData):
-                        logging.error('  - Invalid return type "%s" in %s at line %s', returnType, className, item["line"])
+                for returnTypeEntry in item["returns"]:
+                    if not ("builtin" in returnTypeEntry or "pseudo" in returnTypeEntry):
+                        if not returnTypeEntry["name"] in apiData:
+                            logging.error('  - Invalid return type "%s" in %s at line %s', returnTypeEntry["name"], className, item["line"])
+                            
+                    if not "pseudo" in returnTypeEntry and returnTypeEntry["name"] in exportedNames:
+                        returnTypeEntry["linkable"] = True
             
-            
-            
-            
-            
-            
+            # Process doc links
             if not "doc" in item:
                 return
                 
@@ -616,7 +617,6 @@ class ApiWriter():
                             implementedBy = interfaceApi.implementedBy = []
                             
                         implementedBy.append(className)
-                        
                         connectInterface(className, interfaceName, classApi, interfaceApi)
         
         
