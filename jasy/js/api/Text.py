@@ -1,3 +1,8 @@
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Sebastian Werner
+#
+
 import re, logging
 
 __all__ = ["extractSummary"]
@@ -23,3 +28,4 @@ def extractSummary(text):
         logging.debug("Unable to extract summary for: %s", text)
     
     return None
+    
