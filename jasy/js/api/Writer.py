@@ -468,8 +468,13 @@ class ApiWriter():
             if match.group(3) is not None:
                 className = match.group(3)
                 
-            if not className in apiData:
+            if not className in exportedNames:
                 return 'Invalid class in link "#%s"' % link
+                
+            # Accept all section/item values for named classes,
+            # as it might be pretty complicated to verify this here.
+            if not className in apiData:
+                return True
                 
             classApi = apiData[className]
             sectionName = match.group(2)
