@@ -514,7 +514,7 @@ class ApiWriter():
                 
             # Check constant types
             if "type" in item:
-                #print("TYPE: %s" % item["type"])
+                print("TYPE: %s" % item["type"])
                 pass
                 
                 
