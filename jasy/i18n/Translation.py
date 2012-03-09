@@ -1,6 +1,6 @@
 #
 # Jasy - Web Tooling Framework
-# Copyright 2010-2012 Sebastian Werner
+# Copyright 2010-2012 Zynga Inc.
 #
 
 import logging, re, copy, json

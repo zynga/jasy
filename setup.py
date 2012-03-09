@@ -2,7 +2,7 @@
 
 #
 # Jasy - Web Tooling Framework
-# Copyright 2010-2012 Sebastian Werner
+# Copyright 2010-2012 Zynga Inc.
 #
 
 import sys, os, pkg_resources
@@ -50,8 +50,8 @@ setup(
       name = 'jasy',
       version = jasy.__version__,
       
-      author = 'Sebastian Werner',
-      author_email = 'info@sebastian-werner.net',
+      author = 'Zynga Inc.',
+      author_email = 'germany@zynga.com',
       
       url = 'http://github.com/wpbasti/jasy',
       download_url = "http://pypi.python.org/packages/source/j/jasy/jasy-%s.zip" % jasy.__version__,
