@@ -528,14 +528,8 @@ class ApiWriter():
                                 logging.error("  - %s in %s:%s~%s at line %s" % (linkCheck, sectionName, className, name, item["line"]))
                             else:
                                 logging.error("  - %s in %s at line %s" % (linkCheck, className, item["line"]))
-
-                    quote = match.group(1)
-                    return " href=%s%s%s" % (quote, linkUrl, quote)
             
-                oldDoc = item["doc"]
-                newDoc = linkExtract.sub(processInternalLink, oldDoc)
-                if newDoc != oldDoc:
-                    item["doc"] = newDoc
+                linkExtract.sub(processInternalLink, item["doc"])
 
 
         # Process APIs

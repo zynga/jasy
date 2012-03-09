@@ -1,9 +1,9 @@
-import re
+import re, logging
 
 __all__ = ["extractSummary"]
 
 # Used to filter first paragraph from HTML
-paragraphExtract = re.compile(r"^(.*?)(\. |\? |\! )")
+paragraphExtract = re.compile(r"^(.*?)(\. |\? |\! |$)")
 newlineMatcher = re.compile(r"\n")
 
 # Used to remove markup sequences after doc processing of comment text
@@ -16,7 +16,7 @@ def extractSummary(text):
         summary = matched.group(1)
         if summary is not None:
             if not summary.endswith((".", "!", "?")):
-                summary = summary + "."
+                summary = summary.strip() + "."
             return summary
             
     else:
