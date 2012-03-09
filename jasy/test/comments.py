@@ -598,7 +598,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.html, "<p>Returns the sum of x and y.</p>\n")
         self.assertEqual(comment.text, "Returns the sum of x and y.")
-        self.assertEqual(comment.returns, ["Number"])
+        self.assertEqual(comment.returns[0]["name"], "Number")
         
         
     def test_doc_return_twotypes(self):
@@ -620,7 +620,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(comment.variant, "doc")
         self.assertEqual(comment.html, "<p>Returns the sum of x and y.</p>\n")
         self.assertEqual(comment.text, "Returns the sum of x and y.")
-        self.assertEqual(comment.returns, ["Number", "String"])
+        self.assertEqual(comment.returns[0]["name"], "Number")
+        self.assertEqual(comment.returns[1]["name"], "String")
     
     
     
@@ -785,10 +786,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(type(comment.params["cache"]), dict)
         self.assertEqual(type(comment.params["extra"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], ["Number"])
-        self.assertEqual(comment.params["y"]["type"], ["Number"])
-        self.assertEqual(comment.params["cache"]["type"], ["Boolean"])
-        self.assertEqual(comment.params["extra"]["type"], ["String", "Array"])
+        self.assertEqual(comment.params["x"]["type"][0]["name"], "Number")
+        self.assertEqual(comment.params["y"]["type"][0]["name"], "Number")
+        self.assertEqual(comment.params["cache"]["type"][0]["name"], "Boolean")
+        self.assertEqual(comment.params["extra"]["type"][0]["name"], "String")
+        self.assertEqual(comment.params["extra"]["type"][1]["name"], "Array")
+        self.assertEqual(comment.params["cache"]["type"][0]["builtin"], True)
+        self.assertEqual(comment.params["extra"]["type"][0]["builtin"], True)
+        self.assertEqual(comment.params["extra"]["type"][1]["builtin"], True)
 
         self.assertNotIn("optional", comment.params["x"])
         self.assertNotIn("optional", comment.params["y"])
@@ -822,7 +827,7 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(type(comment.params), dict)
         self.assertEqual(type(comment.params["number"]), dict)
-        self.assertEqual(comment.params["number"]["type"], ["Number"])
+        self.assertEqual(comment.params["number"]["type"][0]["name"], "Number")
         self.assertNotIn("optional", comment.params["number"])
         self.assertTrue(comment.params["number"]["dynamic"])
         self.assertNotIn("default", comment.params["number"])
@@ -849,7 +854,8 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(type(comment.params), dict)
         self.assertEqual(type(comment.params["number"]), dict)
-        self.assertEqual(comment.params["number"]["type"], ["Number"])
+        self.assertEqual(comment.params["number"]["type"][0]["name"], "Number")
+        self.assertEqual(comment.params["number"]["type"][0]["builtin"], True)
         self.assertTrue(comment.params["number"]["optional"])
         self.assertTrue(comment.params["number"]["dynamic"])
         self.assertEqual(comment.params["number"]["default"], "0")
@@ -876,7 +882,8 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(type(comment.params), dict)
         self.assertEqual(type(comment.params["number"]), dict)
-        self.assertEqual(comment.params["number"]["type"], ["Number", "Integer"])
+        self.assertEqual(comment.params["number"]["type"][0]["name"], "Number")
+        self.assertEqual(comment.params["number"]["type"][1]["name"], "Integer")
         self.assertNotIn("optional", comment.params["number"])
         self.assertTrue(comment.params["number"]["dynamic"])
         self.assertNotIn("default", comment.params["number"])
@@ -903,7 +910,8 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(type(comment.params), dict)
         self.assertEqual(type(comment.params["number"]), dict)
-        self.assertEqual(comment.params["number"]["type"], ["Number", "Integer"])
+        self.assertEqual(comment.params["number"]["type"][0]["name"], "Number")
+        self.assertEqual(comment.params["number"]["type"][1]["name"], "Integer")
         self.assertNotIn("optional", comment.params["number"])
         self.assertTrue(comment.params["number"]["dynamic"])
         self.assertNotIn("default", comment.params["number"])       
@@ -938,10 +946,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(type(comment.params["cache"]), dict)
         self.assertEqual(type(comment.params["extra"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], ["core.Number"])
-        self.assertEqual(comment.params["y"]["type"], ["core.Number"])
-        self.assertEqual(comment.params["cache"]["type"], ["core.Boolean"])
-        self.assertEqual(comment.params["extra"]["type"], ["core.String", "core.Array"])
+        self.assertEqual(comment.params["x"]["type"][0]["name"], "core.Number")
+        self.assertEqual(comment.params["y"]["type"][0]["name"], "core.Number")
+        self.assertEqual(comment.params["cache"]["type"][0]["name"], "core.Boolean")
+        self.assertEqual(comment.params["extra"]["type"][0]["name"], "core.String")
+        self.assertEqual(comment.params["extra"]["type"][1]["name"], "core.Array")
 
         self.assertNotIn("optional", comment.params["x"])
         self.assertNotIn("optional", comment.params["y"])
@@ -989,10 +998,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(type(comment.params["cache"]), dict)
         self.assertEqual(type(comment.params["extra"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], ["Number"])
-        self.assertEqual(comment.params["y"]["type"], ["Number"])
-        self.assertEqual(comment.params["cache"]["type"], ["Boolean"])
-        self.assertEqual(comment.params["extra"]["type"], ["String", "Array"])
+        self.assertEqual(comment.params["x"]["type"][0]["name"], "Number")
+        self.assertEqual(comment.params["y"]["type"][0]["name"], "Number")
+        self.assertEqual(comment.params["cache"]["type"][0]["name"], "Boolean")
+        self.assertEqual(comment.params["extra"]["type"][0]["name"], "String")
+        self.assertEqual(comment.params["extra"]["type"][1]["name"], "Array")
 
         self.assertNotIn("optional", comment.params["x"])
         self.assertNotIn("optional", comment.params["y"])
@@ -1035,8 +1045,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(type(comment.params["x"]), dict)
         self.assertEqual(type(comment.params["y"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], ["Number"])
-        self.assertEqual(comment.params["y"]["type"], ["Number"])
+        self.assertEqual(comment.params["x"]["type"][0]["name"], "Number")
+        self.assertEqual(comment.params["y"]["type"][0]["name"], "Number")
 
         self.assertNotIn("optional", comment.params["x"])
         self.assertNotIn("optional", comment.params["y"])
@@ -1074,8 +1084,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(type(comment.params["x"]), dict)
         self.assertEqual(type(comment.params["y"]), dict)
 
-        self.assertEqual(comment.params["x"]["type"], ["Number"])
-        self.assertEqual(comment.params["y"]["type"], ["Number"])
+        self.assertEqual(comment.params["x"]["type"][0]["name"], "Number")
+        self.assertEqual(comment.params["y"]["type"][0]["name"], "Number")
 
         self.assertTrue(comment.params["x"]["optional"])
         self.assertNotIn("optional", comment.params["y"])

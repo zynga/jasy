@@ -625,12 +625,21 @@ class ApiData():
                     autoReturnType = detectPlusType(returnNode[0])
                 elif autoReturnType in ("Call", "Object"):
                     autoReturnType = "var"
+            
+                autoReturnEntry = { 
+                    "name" : autoReturnType 
+                }
+                
+                if autoReturnType in builtinTypes:
+                    autoReturnEntry["builtin"] = True
                     
-                entry["returns"] = [{
-                    "type": autoReturnType,
-                    "native": autoReturnType in nativeTypes,
-                    "pseudo": autoReturnType in pseudoTypes
-                }]
+                if autoReturnType in pseudoTypes:
+                    autoReturnEntry["pseudo"] = True
+
+                if autoReturnType in pseudoTypes:
+                    autoReturnEntry["auto"] = True
+            
+                entry["returns"] = [autoReturnEntry]
 
             # Use comment for enrich existing data
             if comment:

@@ -224,13 +224,13 @@ class Comment():
             store = { "name" : entry }
             
             if isArray:
-                store["isArray"] = True
+                store["array"] = True
                 
-            if entry in nativeTypes:
-                store["isNative"] = True
+            if entry in builtinTypes:
+                store["builtin"] = True
                 
             if entry in pseudoTypes:
-                store["isPseudo"] = True
+                store["pseudo"] = True
             
             result.append(store)
             
