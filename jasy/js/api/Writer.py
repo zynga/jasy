@@ -7,6 +7,7 @@ import logging, json, msgpack, copy, re
 
 from jasy.util.File import *
 from jasy.js.api.Data import ApiData
+from jasy.js.api.Text import *
 from jasy.js.util import *
 
 __all__ = ["ApiWriter"]
@@ -29,28 +30,6 @@ linkMap = {
 # Used to process HTML links
 linkExtract = re.compile(r" href=(\"|')([a-zA-Z0-9#\:\.\~]+)(\"|')", re.M)
 internalLinkParse = re.compile(r"^((static|member|property|event)\:)?([a-zA-Z0-9_\.]+)?(\~([a-zA-Z0-9_]+))?$")
-
-# Used to filter first paragraph from HTML
-paragraphExtract = re.compile(r"^(.*?)(\. |\? |\! )")
-newlineMatcher = re.compile(r"\n")
-
-# Used to remove markup sequences after doc processing of comment text
-stripMarkup = re.compile(r"<.*?>")
-
-def extractSummary(text):
-    text = stripMarkup.sub("", newlineMatcher.sub(" ", text))
-    matched = paragraphExtract.match(text)
-    if matched:
-        summary = matched.group(1)
-        if summary is not None:
-            if not summary.endswith((".", "!", "?")):
-                summary = summary + "."
-            return summary
-            
-    else:
-        logging.debug("Unable to extract summary for: %s", text)
-    
-    return None
 
 
 def convertFunction(item):
@@ -393,7 +372,7 @@ class ApiWriter():
         # Building Documentation Summaries
         #
 
-        logging.info("- Adding Source Links / Generating Summaries...")
+        logging.info("- Adding Source Links...")
 
         for className in apiData:
             classApi = apiData[className]
@@ -410,11 +389,6 @@ class ApiWriter():
                     for name in sectionData:
                         if "line" in sectionData[name]:
                             sectionData[name]["sourceLink"] = "source:%s~%s" % (className, sectionData[name]["line"])
-
-                        if "doc" in sectionData[name]:
-                            summary = extractSummary(sectionData[name]["doc"])
-                            if summary is not None:
-                                sectionData[name]["summary"] = summary
 
 
 

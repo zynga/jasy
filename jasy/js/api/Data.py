@@ -6,6 +6,7 @@
 import logging
 
 from jasy.js.util import *
+from jasy.js.api.Text import *
 
 
 __all__ = ["ApiData"]
@@ -293,12 +294,17 @@ class ApiData():
         self.main = {
             "type" : mainType,
             "name" : exportName,
-            "line" : mainNode.line,
-            "doc" : callComment.html if callComment else None
+            "line" : mainNode.line
         }
         
-        if callComment and hasattr(callComment, "tags"):
-            self.main["tags"] = callComment.tags
+        if callComment:
+            
+            if callComment.text:
+                self.main["doc"] = callComment.html
+                self.main["summary"] = extractSummary(callComment.html)
+        
+            if hasattr(callComment, "tags"):
+                self.main["tags"] = callComment.tags
         
         if callComment is None or not callComment.text:
             self.main["errornous"] = True
@@ -315,6 +321,7 @@ class ApiData():
             entry["errornous"] = True
         else:
             entry["doc"] = comment.html
+            entry["summary"] = extractSummary(comment.html)
             
         if comment and comment.tags:
             entry["tags"] = comment.tags
@@ -377,6 +384,7 @@ class ApiData():
         comment = getDocComment(commentNode)
         if comment and comment.html:
             entry["doc"] = comment.html
+            entry["summary"] = extractSummary(comment.html)
 
         if comment and comment.tags:
             entry["tags"] = comment.tags
@@ -446,6 +454,7 @@ class ApiData():
 
             if comment.html:
                 entry["doc"] = comment.html
+                entry["summary"] = extractSummary(comment.html)
             else:
                 entry["errornous"] = True
                 
@@ -593,6 +602,7 @@ class ApiData():
                 
             if comment.html:
                 entry["doc"] = comment.html
+                entry["summary"] = extractSummary(comment.html)
             else:
                 entry["errornous"] = True
                 
