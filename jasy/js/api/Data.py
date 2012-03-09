@@ -627,7 +627,8 @@ class ApiData():
                     autoReturnType = "var"
             
                 autoReturnEntry = { 
-                    "name" : autoReturnType 
+                    "name" : autoReturnType,
+                    "auto" : True
                 }
                 
                 if autoReturnType in builtinTypes:
@@ -636,9 +637,6 @@ class ApiData():
                 if autoReturnType in pseudoTypes:
                     autoReturnEntry["pseudo"] = True
 
-                if autoReturnType in pseudoTypes:
-                    autoReturnEntry["auto"] = True
-            
                 entry["returns"] = [autoReturnEntry]
 
             # Use comment for enrich existing data
