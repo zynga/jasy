@@ -2,8 +2,8 @@ Jasy 0.5-beta12
 ===============
 
 - Added support for validating links inside doc strings
-
-
+- Added support for validating types in params and return values
+- Changed doc output format for param and return types to hold info about linkability, auto-detection, array-like, builtin, pseudo, etc.
 
 Jasy 0.5-beta11
 ===============
