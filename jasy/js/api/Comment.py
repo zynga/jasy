@@ -215,13 +215,16 @@ class Comment():
 
         result = []
         for entry in splitted:
-            
+
+            # Figure out if it is marked as array
             isArray = False
             if entry.endswith("[]"):
                 isArray = True
                 entry = entry[:-2]
             
-            store = { "name" : entry }
+            store = { 
+                "name" : entry 
+            }
             
             if isArray:
                 store["array"] = True
