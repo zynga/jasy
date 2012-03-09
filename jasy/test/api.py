@@ -1463,6 +1463,37 @@ class Tests(unittest.TestCase):
         self.assertEqual(data.events["keypress"]["doc"], "<p>Fired when the user presses a key</p>\n")
         
         
+    def test_summary(self):
+
+        data = self.process("""
+        
+        /** First sentence. Second sentence. */
+        core.Class("foo.Bar", {
+
+        });
+
+        """)
+
+        self.assertEqual(data.main["doc"], '<p>First sentence. Second sentence.</p>\n')
+        self.assertEqual(data.main["summary"], 'First sentence.')
+        
+        
+        
+    def test_summary_nodot(self):
+
+        data = self.process("""
+
+        /** First sentence */
+        core.Class("foo.Bar", {
+
+        });
+
+        """)
+
+        self.assertEqual(data.main["doc"], '<p>First sentence</p>\n')
+        self.assertEqual(data.main["summary"], 'First sentence.')        
+        
+        
         
     def test_tags(self):
 
