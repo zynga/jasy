@@ -91,9 +91,9 @@ class Tests(unittest.TestCase):
 
         self.assertIsInstance(data, Data.ApiData)
         self.assertEqual(data.main["type"], "core.Module")
-        self.assertEqual(data.statics["method"]["params"]["first"]["type"], ["Integer"])
-        self.assertEqual(data.statics["method"]["params"]["second"]["type"], ["Integer"])
-        self.assertEqual(data.statics["method"]["params"]["varargs"]["type"], ["Integer"])
+        self.assertEqual(data.statics["method"]["params"]["first"]["type"][0]["name"], "Integer")
+        self.assertEqual(data.statics["method"]["params"]["second"]["type"][0]["name"], "Integer")
+        self.assertEqual(data.statics["method"]["params"]["varargs"]["type"][0]["name"], "Integer")
         self.assertEqual(data.statics["method"]["params"]["first"]["position"], 0)
         self.assertEqual(data.statics["method"]["params"]["second"]["position"], 1)
         self.assertEqual(data.statics["method"]["params"]["varargs"]["position"], 2)
@@ -119,9 +119,9 @@ class Tests(unittest.TestCase):
 
         self.assertIsInstance(data, Data.ApiData)
         self.assertEqual(data.main["type"], "core.Module")
-        self.assertEqual(data.statics["method"]["params"]["first"]["type"], ["Integer"])
-        self.assertEqual(data.statics["method"]["params"]["second"]["type"], ["Integer"])
-        self.assertEqual(data.statics["method"]["params"]["varargs"]["type"], ["Integer"])
+        self.assertEqual(data.statics["method"]["params"]["first"]["type"][0]["name"], "Integer")
+        self.assertEqual(data.statics["method"]["params"]["second"]["type"][0]["name"], "Integer")
+        self.assertEqual(data.statics["method"]["params"]["varargs"]["type"][0]["name"], "Integer")
         self.assertTrue(data.statics["method"]["params"]["varargs"]["optional"])
         self.assertTrue(data.statics["method"]["params"]["varargs"]["dynamic"])
         
@@ -161,7 +161,7 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data.construct, dict)
         self.assertIsInstance(data.construct["params"], dict)
         self.assertIsInstance(data.construct["params"]["config"], dict)
-        self.assertEqual(data.construct["params"]["config"]["type"], ["Map"])
+        self.assertEqual(data.construct["params"]["config"]["type"][0]["name"], "Map")
         
         
         
@@ -631,9 +631,11 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data.members["func"]["params"], dict)
         self.assertIsInstance(data.members["func"]["params"]["a"], dict)
         self.assertIsInstance(data.members["func"]["params"]["b"], dict)
-        self.assertEqual(data.members["func"]["params"]["a"]["type"], ["Number"])
-        self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Number"])
-        self.assertEqual(data.members["func"]["returns"], ["Number"])
+        self.assertEqual(data.members["func"]["params"]["a"]["type"][0]["name"], "Number")
+        self.assertEqual(data.members["func"]["params"]["b"]["type"][0]["name"], "Number")
+        self.assertEqual(data.members["func"]["params"]["a"]["type"][0]["builtin"], True)
+        self.assertEqual(data.members["func"]["params"]["b"]["type"][0]["builtin"], True)
+        self.assertEqual(data.members["func"]["returns"][0]["name"], "Number")
         
         
     def test_function_return_number(self):
@@ -654,7 +656,7 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data.members, dict)
         self.assertIn("answer", data.members)
         self.assertEqual(data.members["answer"]["type"], "Function")
-        self.assertEqual(data.members["answer"]["returns"][0]["type"], "Number")
+        self.assertEqual(data.members["answer"]["returns"][0]["name"], "Number")
         
     
     def test_function_return_string(self):
@@ -675,7 +677,7 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data.members, dict)
         self.assertIn("answer", data.members)
         self.assertEqual(data.members["answer"]["type"], "Function")
-        self.assertEqual(data.members["answer"]["returns"][0]["type"], "String")
+        self.assertEqual(data.members["answer"]["returns"][0]["name"], "String")
         
         
     def test_function_return_plus_string(self):
@@ -696,7 +698,7 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data.members, dict)
         self.assertIn("answer", data.members)
         self.assertEqual(data.members["answer"]["type"], "Function")
-        self.assertEqual(data.members["answer"]["returns"][0]["type"], "String")
+        self.assertEqual(data.members["answer"]["returns"][0]["name"], "String")
         
         
     def test_function_return_plus_x(self):
@@ -717,7 +719,7 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data.members, dict)
         self.assertIn("answer", data.members)
         self.assertEqual(data.members["answer"]["type"], "Function")
-        self.assertEqual(data.members["answer"]["returns"][0]["type"], "var")        
+        self.assertEqual(data.members["answer"]["returns"][0]["name"], "var")        
         
         
     def test_function_return_dotted(self):
@@ -738,7 +740,7 @@ class Tests(unittest.TestCase):
         self.assertIsInstance(data.members, dict)
         self.assertIn("answer", data.members)
         self.assertEqual(data.members["answer"]["type"], "Function")
-        self.assertEqual(data.members["answer"]["returns"][0]["type"], "var")
+        self.assertEqual(data.members["answer"]["returns"][0]["name"], "var")
         
         
     def test_literal(self):
@@ -908,15 +910,15 @@ class Tests(unittest.TestCase):
         
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertIsInstance(data.members["func"]["params"], dict)
-        self.assertEqual(data.members["func"]["params"]["a"]["type"], ["Integer"])
-        self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])
+        self.assertEqual(data.members["func"]["params"]["a"]["type"][0]["name"], "Integer")
+        self.assertEqual(data.members["func"]["params"]["b"]["type"][0]["name"], "Integer")
         
         self.assertEqual(data.members["string"]["type"], "String")
         self.assertEqual(data.members["map"]["type"], "Map")
         
         self.assertEqual(data.members["hook"]["type"], "Function")
         self.assertIsInstance(data.members["hook"]["params"], dict)
-        self.assertEqual(data.members["hook"]["params"]["a"]["type"], ["voodoo.Hoo"])
+        self.assertEqual(data.members["hook"]["params"]["a"]["type"][0]["name"], "voodoo.Hoo")
         
         
     def test_dynamic_cascaded(self):
@@ -954,8 +956,8 @@ class Tests(unittest.TestCase):
         
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertIsInstance(data.members["func"]["params"], dict)
-        self.assertEqual(data.members["func"]["params"]["a"]["type"], ["Integer"])
-        self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])
+        self.assertEqual(data.members["func"]["params"]["a"]["type"][0]["name"], "Integer")
+        self.assertEqual(data.members["func"]["params"]["b"]["type"][0]["name"], "Integer")
         
         
     def test_dynamic_auto(self):
@@ -1055,8 +1057,8 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertIsInstance(data.members["func"]["params"], dict)
-        self.assertEqual(data.members["func"]["params"]["a"]["type"], ["Integer"])
-        self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])
+        self.assertEqual(data.members["func"]["params"]["a"]["type"][0]["name"], "Integer")
+        self.assertEqual(data.members["func"]["params"]["b"]["type"][0]["name"], "Integer")
 
 
     def test_closure_namedfunc(self):
@@ -1084,8 +1086,8 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertIsInstance(data.members["func"]["params"], dict)
-        self.assertEqual(data.members["func"]["params"]["a"]["type"], ["Integer"])
-        self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])        
+        self.assertEqual(data.members["func"]["params"]["a"]["type"][0]["name"], "Integer")
+        self.assertEqual(data.members["func"]["params"]["b"]["type"][0]["name"], "Integer")
         
         
     def test_closure_static(self):
@@ -1240,8 +1242,8 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertIsInstance(data.members["func"]["params"], dict)
-        self.assertEqual(data.members["func"]["params"]["a"]["type"], ["Integer"])
-        self.assertEqual(data.members["func"]["params"]["b"]["type"], ["Integer"])
+        self.assertEqual(data.members["func"]["params"]["a"]["type"][0]["name"], "Integer")
+        self.assertEqual(data.members["func"]["params"]["b"]["type"][0]["name"], "Integer")
         
         
     def test_closure_hook(self):
@@ -1277,7 +1279,7 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertIsInstance(data.members["func"]["params"], dict)
-        self.assertEqual(data.members["func"]["params"]["url"]["type"], ["String"])
+        self.assertEqual(data.members["func"]["params"]["url"]["type"][0]["name"], "String")
         
         
     def test_closure_call(self):
@@ -1315,7 +1317,7 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertIsInstance(data.members["func"]["params"], dict)
-        self.assertEqual(data.members["func"]["params"]["url"]["type"], ["String"])
+        self.assertEqual(data.members["func"]["params"]["url"]["type"][0]["name"], "String")
         
     
     def test_closure_call_alter(self):
@@ -1353,7 +1355,7 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(data.members["func"]["type"], "Function")
         self.assertIsInstance(data.members["func"]["params"], dict)
-        self.assertEqual(data.members["func"]["params"]["url"]["type"], ["String"])        
+        self.assertEqual(data.members["func"]["params"]["url"]["type"][0]["name"], "String")
 
 
     def test_reference(self):
