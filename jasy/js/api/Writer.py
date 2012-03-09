@@ -505,7 +505,7 @@ class ApiWriter():
                     paramEntry = item["params"][paramName]
                     if "type" in paramEntry:
                         for paramTypeEntry in paramEntry["type"]:
-                            if not paramTypeEntry["name"] in apiData and not ("builtin" in paramTypeEntry or "pseudo" in paramTypeEntry):
+                            if not paramTypeEntry["name"] in exportedNames and not ("builtin" in paramTypeEntry or "pseudo" in paramTypeEntry):
                                 logging.error('  - Invalid param type "%s" in %s at line %s', paramTypeEntry["name"], className, item["line"])
 
                             if not "pseudo" in paramTypeEntry and paramTypeEntry["name"] in exportedNames:
@@ -521,7 +521,7 @@ class ApiWriter():
             # Check return types
             if "returns" in item:
                 for returnTypeEntry in item["returns"]:
-                    if not returnTypeEntry["name"] in apiData and not ("builtin" in returnTypeEntry or "pseudo" in returnTypeEntry):
+                    if not returnTypeEntry["name"] in exportedNames and not ("builtin" in returnTypeEntry or "pseudo" in returnTypeEntry):
                         logging.error('  - Invalid return type "%s" in %s at line %s', returnTypeEntry["name"], className, item["line"])
                             
                     if not "pseudo" in returnTypeEntry and returnTypeEntry["name"] in exportedNames:
