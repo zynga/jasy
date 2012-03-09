@@ -8,7 +8,7 @@ from jasy.js.output.Compressor import Compressor
 # Shared instance
 compressor = Compressor()
 
-pseudoTypes = set(["var", "undefined", "null", "true", "false", "this"])
+pseudoTypes = set(["var", "undefined", "null", "true", "false", "this", "arguments"])
 builtinTypes = set(["Object", "String", "Number", "Boolean", "Array", "Function", "RegExp", "Date"])
 
 # Basic user friendly node type to human type

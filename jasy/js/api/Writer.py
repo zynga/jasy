@@ -7,6 +7,7 @@ import logging, json, msgpack, copy, re
 
 from jasy.util.File import *
 from jasy.js.api.Data import ApiData
+from jasy.js.util import *
 
 __all__ = ["ApiWriter"]
 
@@ -457,6 +458,8 @@ class ApiWriter():
         
         logging.info("- Checking Links...")
         
+        additionalTypes = ("Call", "Identifier", "Map", "Integer", "Node", "Element")
+        
         def checkInternalLink(link, className):
             match = internalLinkParse.match(link)
             if not match:
@@ -496,62 +499,67 @@ class ApiWriter():
             return 'Invalid item link "#%s"' % link
 
 
-
         def checkLinksInItem(item):
             
-            # Check param types
-            if "params" in item:
-                for paramName in item["params"]:
-                    paramEntry = item["params"][paramName]
-                    if "type" in paramEntry:
-                        for paramTypeEntry in paramEntry["type"]:
-                            if not paramTypeEntry["name"] in exportedNames and not ("builtin" in paramTypeEntry or "pseudo" in paramTypeEntry):
-                                logging.error('  - Invalid param type "%s" in %s at line %s', paramTypeEntry["name"], className, item["line"])
-
-                            if not "pseudo" in paramTypeEntry and paramTypeEntry["name"] in exportedNames:
-                                paramTypeEntry["linkable"] = True
-                
-                
-            # Check constant types
+            # Process types
             if "type" in item:
-                print("TYPE: %s" % item["type"])
-                pass
+                
+                if item["type"] == "Function":
+
+                    # Check param types
+                    if "params" in item:
+                        for paramName in item["params"]:
+                            paramEntry = item["params"][paramName]
+                            if "type" in paramEntry:
+                                for paramTypeEntry in paramEntry["type"]:
+                                    if not paramTypeEntry["name"] in exportedNames and not paramTypeEntry["name"] in additionalTypes and not ("builtin" in paramTypeEntry or "pseudo" in paramTypeEntry):
+                                        item["errornous"] = True
+                                        logging.error('  - Invalid param type "%s" in %s at line %s', paramTypeEntry["name"], className, item["line"])
+
+                                    if not "pseudo" in paramTypeEntry and paramTypeEntry["name"] in exportedNames:
+                                        paramTypeEntry["linkable"] = True
                 
                 
-            # Check return types
-            if "returns" in item:
-                for returnTypeEntry in item["returns"]:
-                    if not returnTypeEntry["name"] in exportedNames and not ("builtin" in returnTypeEntry or "pseudo" in returnTypeEntry):
-                        logging.error('  - Invalid return type "%s" in %s at line %s', returnTypeEntry["name"], className, item["line"])
+                    # Check return types
+                    if "returns" in item:
+                        for returnTypeEntry in item["returns"]:
+                            if not returnTypeEntry["name"] in exportedNames and not returnTypeEntry["name"] in additionalTypes and not ("builtin" in returnTypeEntry or "pseudo" in returnTypeEntry):
+                                item["errornous"] = True
+                                logging.error('  - Invalid return type "%s" in %s at line %s', returnTypeEntry["name"], className, item["line"])
                             
-                    if not "pseudo" in returnTypeEntry and returnTypeEntry["name"] in exportedNames:
-                        returnTypeEntry["linkable"] = True
+                            if not "pseudo" in returnTypeEntry and returnTypeEntry["name"] in exportedNames:
+                                returnTypeEntry["linkable"] = True
+                            
+                elif not item["type"] in builtinTypes and not item["type"] in additionalTypes:
+                    
+                    logging.error('  - Invalid type "%s" in %s at line %s', returnTypeEntry["name"], className, item["line"])
             
-            # Process doc links
-            if not "doc" in item:
-                return
+            
+            # Process doc
+            if "doc" in item:
                 
-            def processInternalLink(match):
-                linkUrl = match.group(2)
+                def processInternalLink(match):
+                    linkUrl = match.group(2)
 
-                if linkUrl.startswith("#"):
-                    linkCheck = checkInternalLink(linkUrl[1:], className)
-                    if linkCheck is not True:
-                        item["errornous"] = True
-                        if sectionName:
-                            logging.error("  - %s in %s:%s~%s at line %s" % (linkCheck, sectionName, className, name, item["line"]))
-                        else:
-                            logging.error("  - %s in %s at line %s" % (linkCheck, className, item["line"]))
+                    if linkUrl.startswith("#"):
+                        linkCheck = checkInternalLink(linkUrl[1:], className)
+                        if linkCheck is not True:
+                            item["errornous"] = True
+                            if sectionName:
+                                logging.error("  - %s in %s:%s~%s at line %s" % (linkCheck, sectionName, className, name, item["line"]))
+                            else:
+                                logging.error("  - %s in %s at line %s" % (linkCheck, className, item["line"]))
 
-                quote = match.group(1)
-                return " href=%s%s%s" % (quote, linkUrl, quote)
+                    quote = match.group(1)
+                    return " href=%s%s%s" % (quote, linkUrl, quote)
             
-            oldDoc = item["doc"]
-            newDoc = linkExtract.sub(processInternalLink, oldDoc)
-            if newDoc != oldDoc:
-                item["doc"] = newDoc
+                oldDoc = item["doc"]
+                newDoc = linkExtract.sub(processInternalLink, oldDoc)
+                if newDoc != oldDoc:
+                    item["doc"] = newDoc
 
 
+        # Process APIs
         for className in apiData:
             classApi = apiData[className]
             
