@@ -10,6 +10,8 @@ from jasy.core.Cache import Cache
 from jasy.core.Error import *
 from jasy.core.Markdown import *
 
+__all__ = ["Project"]
+
 
 def getKey(data, key, default=None):
     if key in data:
@@ -18,26 +20,99 @@ def getKey(data, key, default=None):
         return default
 
 
+def scanDirectory(path):
+
+    classes = []
+    styles = []
+    templates = []
+    translations = []
+    docs = []
+    assets = []
+    
+    if not os.path.exists(path):
+        return result
+        
+    for dirPath, dirNames, fileNames in os.walk(path):
+        for dirName in dirNames:
+            if dirName.startswith("."):
+                dirNames.remove(dirName)
+            
+            # Filter sub projects
+            if os.path.exists(os.path.join(dirPath, dirName, "jasyproject.json")):
+                dirNames.remove(dirName)
+
+        relDirPath = os.path.relpath(dirPath, path)
+
+        for fileName in fileNames:
+            fullPath = os.path.join(dirPath, fileName)
+            relPath = os.path.join(relDirPath, fileName)
+
+            if fileName[0] == ".":
+                continue
+                
+            fileSplits = os.path.splitext(fileName)
+            fileBase = fileSplits[0]
+            fileExtension = fileSplits[1]
+            
+            # Filter temporary files
+            if fileExtension == ".tmp":
+                continue
+            
+            if fileBase in ("jasyproject", "jasycache"):
+                continue
+
+            if fileExtension == ".js":
+                classes.append(relPath)
+            elif fileExtension == ".tmpl":
+                templates.append(relPath)
+            elif fileExtension == ".po":
+                translations.append(relPath)
+            elif fileExtension == ".ss":
+                styles.append(relPath)
+            elif fileExtension == ".md":
+                docs.append(relPath)
+            else:
+                assets.append(relPath)
+    
+    
+    return classes, styles, templates, translations, docs, assets
+
+
+
+def getProjectLevel(project):
+    level = 0
+    current = project.getParent()
+    while current:
+        level += 1
+        current = project.getParent()
+        
+    return level
+
+
+
 class Project():
     
-    def __init__(self, path, config=None, level=0):
+    def __init__(self, path, config=None, parent=None):
         """
         Constructor call of the project. 
-        First param is the path of the project relative to the current working directory.
+
+        - First param is the path of the project relative to the current working directory.
+        - Config can be read from jasyproject.json or using constructor parameter @config
+        - Parent is used for structural debug messages (dependency trees)
         """
         
-        path = os.path.normpath(path)
         if not os.path.isdir(path):
             raise JasyError("Invalid project path: %s (absolute: %s)" % (path, os.path.abspath(path)))
         
         # Only store and work with full path
         self.__path = os.path.abspath(path)
+        self.__parent = parent
 
         # Load project configuration
         if not config:
             configFile = os.path.join(self.__path, "jasyproject.json")
             if not os.path.exists(configFile):
-                raise JasyError("Missing jasyproject.json at: %s" % configFile)
+                raise JasyError("Missing jasyproject.json at: %s. Otherwise define a config via constructor." % configFile)
             
             try:
                 config = json.load(open(configFile))
@@ -61,36 +136,69 @@ class Project():
 
         # Read fields (for injecting data into the project and build permuations)
         self.__fields = getKey(config, "fields", {})
+        
+        
+        self.__level = getProjectLevel(self)
+        
+        logging.info("%s- Adding project %s" % (self.__level*"  ", self.__name))
+        
+        
+        if self.hasDir("source"):
+            if self.hasDir("class"):
+                results = self.scanDir("source/class")
+                    
+            
+            
+        
+        print(scanDirectory(self.__path))
+        
             
 
         # Try to figure out folder structure automatically
-        if os.path.isdir(os.path.join(self.__path, "source", "class")):
-            self.__classPath = os.path.join("source", "class")
-            self.__assetPath = os.path.join("source", "asset")
-            self.__translationPath = os.path.join("source", "translation")
-        elif os.path.isdir(os.path.join(self.__path, "class")):
-            self.__classPath = "class"
-            self.__assetPath = "asset"
-            self.__translationPath = "translation"
-        elif os.path.isdir(os.path.join(self.__path, "src")):
-            self.__classPath = "src"
-            self.__assetPath = "src"
-            self.__translationPath = "src"
-        else:
-            self.__classPath = ""
-            self.__assetPath = ""
-            self.__translationPath = ""
+        # if os.path.isdir(os.path.join(self.__path, "source", "class")):
+        #     self.__classPath = os.path.join("source", "class")
+        #     self.__assetPath = os.path.join("source", "asset")
+        #     self.__translationPath = os.path.join("source", "translation")
+        # elif os.path.isdir(os.path.join(self.__path, "class")):
+        #     self.__classPath = "class"
+        #     self.__assetPath = "asset"
+        #     self.__translationPath = "translation"
+        # elif os.path.isdir(os.path.join(self.__path, "src")):
+        #     self.__classPath = "src"
+        #     self.__assetPath = "src"
+        #     self.__translationPath = "src"
+        # else:
+        #     self.__classPath = ""
+        #     self.__assetPath = ""
+        #     self.__translationPath = ""
+        # 
+        # logging.info("%s- Adding project %s" % (level*"  ", self.__name))
 
-        logging.info("%s- Adding project %s" % (level*"  ", self.__name))
 
-
-    __dirFilter = [".svn", ".git", ".hg", ".bzr"]
-    __internalFiles = ("jasyproject.json", "jasyscript.py", "jasycache", "jasycache.db"),
-
+        
+    def hasDir(self, directory):
+        full = os.path.join(self.__path, directory)
+        if os.path.exists(full):
+            if not os.path.isdir(full):
+                raise JasyError("Expecting %s to be a directory: %s" % full)
+            
+            return True
+        
+        return False
+        
+        
+    def scanDir(self, directory):
+        full = os.path.join(self.__path, directory)
+        return scanDirectory(full)
+        
 
     def __str__(self):
         return self.__path
-
+        
+        
+    def getParent(self):
+        return self.__parent
+        
     
     def getName(self):
         return self.__name
