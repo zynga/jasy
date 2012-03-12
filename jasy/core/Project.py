@@ -20,7 +20,7 @@ def getKey(data, key, default=None):
 
 class Project():
     
-    def __init__(self, path, level=0):
+    def __init__(self, path, config=None, level=0):
         """
         Constructor call of the project. 
         First param is the path of the project relative to the current working directory.
@@ -34,35 +34,33 @@ class Project():
         self.__path = os.path.abspath(path)
 
         # Load project configuration
-        projectConfigPath = os.path.join(self.__path, "jasyproject.json")
-        if not os.path.exists(projectConfigPath):
-            raise JasyError("Missing jasyproject.json at: %s" % projectConfigPath)
-        
-        # Parse project configuration
-        try:
-            projectData = json.load(open(projectConfigPath))
-        except ValueError as err:
-            raise JasyError("Could not parse jasyproject.json at %s: %s" % (projectConfigPath, err))
-
-
+        if not config:
+            configFile = os.path.join(self.__path, "jasyproject.json")
+            if not os.path.exists(configFile):
+                raise JasyError("Missing jasyproject.json at: %s" % configFile)
+            
+            try:
+                config = json.load(open(configFile))
+            except ValueError as err:
+                raise JasyError("Could not parse jasyproject.json at %s: %s" % (configFile, err))
+            
         # Initialize cache
         try:
             self.__cache = Cache(self.__path)
         except IOError as err:
             raise JasyError("Could not initialize project. Cache file could not be initialized! %s" % err)
         
-        
         # Read name from manifest or use the basename of the project's path
-        self.__name = getKey(projectData, "name", os.path.basename(self.__path))
+        self.__name = getKey(config, "name", os.path.basename(self.__path))
             
         # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
-        self.__package = getKey(projectData, "package", self.__name)
+        self.__package = getKey(config, "package", self.__name)
 
         # Whether we need to parse files for get their correct name (using @name attributes)
-        self.__fuzzy = getKey(projectData, "fuzzy", False)
+        self.__fuzzy = getKey(config, "fuzzy", False)
 
         # Read fields (for injecting data into the project and build permuations)
-        self.__fields = getKey(projectData, "fields", {})
+        self.__fields = getKey(config, "fields", {})
             
 
         # Try to figure out folder structure automatically

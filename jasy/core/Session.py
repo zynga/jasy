@@ -37,7 +37,7 @@ class Session():
         
         print("Initialize projects...")
         if os.path.exists("jasyproject.json"):
-            self.addProject(Project(".", 0))
+            self.addProject(Project("."))
     
     
     def clearCache(self):
