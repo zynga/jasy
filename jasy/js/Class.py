@@ -18,6 +18,7 @@ import jasy.js.clean.Permutate
 
 import jasy.js.output.Optimization
 
+from jasy.core.Item import Item
 from jasy.core.Permutation import getPermutation
 from jasy.js.api.Data import ApiData
 from jasy.js.MetaData import MetaData
@@ -65,70 +66,8 @@ class Error(Exception):
         return "Error processing class %s: %s" % (self.__inst, self.__msg)
 
 
-class Class():
-    def __init__(self, path, project=None):
-        self.__path = path
-        self.__mtime = os.stat(path).st_mtime
-        
-        if project:
-            self.__project = project
-            self.__root = project.getClassPath()
-            self.__package = project.getPackage()
-            self.__cache = project.getCache()
-            self.__localPath = os.path.relpath(path, project.getClassPath())
-            self.__id = self.__localPath[:-3]
-            self.__name = self.__id
-        else:
-            self.__root = os.path.dirname(path)
-            self.__package = ""
-            self.__cache = Cache(self.__root)
-            self.__id = os.path.filename(path)
-            self.__name = self.__id
-            self.__localPath = path
-        
-        # This is by far slower and not the default but helps in specific project structures
-        if project is None or project.isFuzzy():
-            self.__name = self.getMetaData().name
-            if self.__name is None:
-                raise Exception("Could not figure out fuzzy class name of: %s" % path)
-        else:
-            self.__name = self.__id.replace(os.sep, ".")
-            if self.__package:
-                self.__name = self.__package + "." + self.__name
-                
+class Class(Item):
     
-    def getProject(self):
-        """Returns the project which the class belongs to"""
-        return self.__project
-
-    def getId(self):
-        """Returns a unique identify of the class. Typically as it is stored inside the project."""
-        return self.__id
-
-    def getName(self):
-        """Returns the class name of the class based on the file name (default) or on the meta data (fuzzy)."""
-        return self.__name
-        
-    # Map Python built-ins
-    __repr__ = getName
-    __str__ = getName
-        
-    def getPath(self):
-        """Returns the exact position of the class file in the file system."""
-        return self.__path
-        
-    def getLocalPath(self):
-        """Returns the relative path inside the project (or the full path when no project is given)."""
-        return self.__localPath
-        
-    def getModificationTime(self):
-        """Returns last modification time of the class"""
-        return self.__mtime
-
-    def getText(self):
-        """Reads the file (as UTF-8) and returns the text"""
-        return open(self.__path, mode="r", encoding="utf-8").read()
-
     def getTree(self, permutation=None, cleanup=True):
         """
         Returns the tree (of nodes from the parser) of the class. This parses the class,
@@ -139,13 +78,13 @@ class Class():
         
         permutation = self.filterPermutation(permutation)
         
-        field = "tree[%s]-%s-%s" % (self.__id, permutation, cleanup)
-        tree = self.__cache.read(field, self.__mtime)
+        field = "tree[%s]-%s-%s" % (self.id, permutation, cleanup)
+        tree = self.project.getCache().read(field, self.getModificationTime())
         if tree is not None:
             return tree
             
         # Parse tree
-        tree = Parser.parse(self.getText(), self.__name)
+        tree = Parser.parse(self.getText(), self.id)
 
         # Apply permutation
         if permutation:
@@ -162,7 +101,7 @@ class Class():
         if cleanup:
             jasy.js.clean.Unused.cleanup(tree)
         
-        self.__cache.store(field, tree, self.__mtime, True)
+        self.project.getCache().store(field, tree, self.getModificationTime(), True)
         return tree
 
 
@@ -183,14 +122,14 @@ class Class():
         
         # Manually defined names/classes
         for name in meta.requires:
-            if name != self.__name and name in classes:
+            if name != self.id and name in classes:
                 result.add(classes[name])
             elif warnings:
-                logging.warn("Missing class (required): %s in %s", name, self.__name)
+                logging.warn("Missing class (required): %s in %s", name, self.id)
 
         # Globally modified names (mostly relevant when working without namespaces)
         for name in scope.shared:
-            if name != self.__id and name in classes:
+            if name != self.id and name in classes:
                 result.add(classes[name])
         
         # Add classes from detected package access
@@ -203,7 +142,7 @@ class Class():
             
             orig = package
             while True:
-                if package == self.__id:
+                if package == self.id:
                     break
             
                 elif package in classes:
@@ -220,10 +159,10 @@ class Class():
                     
         # Manually excluded names/classes
         for name in meta.optionals:
-            if name != self.__name and name in classes:
+            if name != self.id and name in classes:
                 result.remove(classes[name])
             elif warnings:
-                logging.warn("Missing class (optional): %s in %s", name, self.__name)
+                logging.warn("Missing class (optional): %s in %s", name, self.id)
         
         return result
         
@@ -236,20 +175,20 @@ class Class():
         
         permutation = self.filterPermutation(permutation)
         
-        field = "scope[%s]-%s" % (self.__id, permutation)
-        scope = self.__cache.read(field, self.__mtime)
+        field = "scope[%s]-%s" % (self.id, permutation)
+        scope = self.project.getCache().read(field, self.getModificationTime())
         if scope is None:
             scope = self.getTree(permutation).scope
-            self.__cache.store(field, scope, self.__mtime)
+            self.project.getCache().store(field, scope, self.getModificationTime())
         
         return scope
         
         
     def getApi(self):
-        field = "api[%s]" % self.__id
-        apidata = self.__cache.read(field, self.__mtime)
+        field = "api[%s]" % self.id
+        apidata = self.project.getCache().read(field, self.getModificationTime())
         if apidata is None:
-            apidata = ApiData(self.__name)
+            apidata = ApiData(self.id)
             
             apidata.scanTree(self.getTree(cleanup=False))
             
@@ -263,49 +202,51 @@ class Class():
             apidata.addSize(self.getSize())
             apidata.addPermutations(self.getPermutationKeys())
             
-            self.__cache.store(field, apidata, self.__mtime)
+            self.project.getCache().store(field, apidata, self.getModificationTime())
 
         return apidata
 
+
     def getHighlightedCode(self):
-        field = "highlighted[%s]" % self.__id
-        source = self.__cache.read(field, self.__mtime)
+        field = "highlighted[%s]" % self.id
+        source = self.project.getCache().read(field, self.getModificationTime())
         if source is None:
             lexer = JavascriptLexer(tabsize=2)
             formatter = HtmlFormatter(full=True,style="autumn",linenos="table",lineanchors="line")
             source = highlight(self.getText(), lexer, formatter)
-            self.__cache.store(field, source, self.__mtime)
+            self.project.getCache().store(field, source, self.getModificationTime())
 
         return source
+
 
     def getMetaData(self, permutation=None):
         permutation = self.filterPermutation(permutation)
         
-        field = "meta[%s]-%s" % (self.__id, permutation)
-        meta = self.__cache.read(field, self.__mtime)
+        field = "meta[%s]-%s" % (self.id, permutation)
+        meta = self.project.getCache().read(field, self.getModificationTime())
         if meta is None:
             meta = MetaData(self.getTree(permutation))
-            self.__cache.store(field, meta, self.__mtime)
+            self.project.getCache().store(field, meta, self.getModificationTime())
             
         return meta
         
         
     def getPermutationKeys(self):
-        field = "permutations[%s]" % (self.__id)
-        keys = self.__cache.read(field, self.__mtime)
+        field = "permutations[%s]" % (self.id)
+        keys = self.project.getCache().read(field, self.getModificationTime())
         if keys is None:
             keys = collectPermutationKeys(self.getTree())
-            self.__cache.store(field, keys, self.__mtime)
+            self.project.getCache().store(field, keys, self.getModificationTime())
         
         return keys
 
 
     def usesTranslation(self):
-        field = "translation[%s]" % (self.__id)
-        result = self.__cache.read(field, self.__mtime)
+        field = "translation[%s]" % (self.id)
+        result = self.project.getCache().read(field, self.getModificationTime())
         if result is None:
             result = hasText(self.getTree())
-            self.__cache.store(field, result, self.__mtime)
+            self.project.getCache().store(field, result, self.getModificationTime())
         
         return result
         
@@ -330,10 +271,10 @@ class Class():
         permutation = self.filterPermutation(permutation)
         translation = self.filterTranslation(translation)
         
-        field = "compressed[%s]-%s-%s-%s-%s" % (self.__id, permutation, translation, optimization, format)
+        field = "compressed[%s]-%s-%s-%s-%s" % (self.id, permutation, translation, optimization, format)
         field = hashlib.md5(field.encode("utf-8")).hexdigest()
         
-        compressed = self.__cache.read(field, self.__mtime)
+        compressed = self.project.getCache().read(field, self.getModificationTime())
         if compressed == None:
             tree = self.getTree(permutation)
             
@@ -350,14 +291,14 @@ class Class():
                         raise Error(self, "Could not compress class! %s" % error)
                 
             compressed = Compressor(format).compress(tree)
-            self.__cache.store(field, compressed, self.__mtime)
+            self.project.getCache().store(field, compressed, self.getModificationTime())
             
         return compressed
             
             
     def getSize(self):
-        field = "size[%s]" % self.__id
-        size = self.__cache.read(field, self.__mtime)
+        field = "size[%s]" % self.id
+        size = self.project.getCache().read(field, self.getModificationTime())
         
         if size is None:
             compressed = self.getCompressed()
@@ -370,9 +311,8 @@ class Class():
                 "zipped" : len(zipped)
             }
             
-            self.__cache.store(field, size, self.__mtime)
+            self.project.getCache().store(field, size, self.getModificationTime())
             
         return size
-        
         
         

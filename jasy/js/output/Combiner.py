@@ -142,7 +142,7 @@ def storeSourceLoader(fileName, classes, session, bootCode="", relativeRoot="sou
         project = classObj.getProject()
 
         # This is the location of the class relative to the project which is generated right now
-        fromMainProjectRoot = os.path.join(session.getRelativePath(project), project.getClassPath(True), classObj.getLocalPath())
+        fromMainProjectRoot = os.path.join(session.getRelativePath(project), project.getClassPath(True), classObj.getRelativePath())
         
         # This is the location from the root, given by the user, where the HTML file is stored.
         # In typical Jasy projects this is "source" e.g. the file is named "source/index.html".
