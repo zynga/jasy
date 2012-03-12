@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, itertools, time, atexit, json
+import logging, itertools, time, atexit, json, os
 
 from jasy.i18n.Translation import Translation
 from jasy.i18n.LocaleData import *
@@ -34,6 +34,10 @@ class Session():
         self.__timestamp = time.time()
         self.__projects = []
         self.__fields = {}
+        
+        print("Initialize projects...")
+        if os.path.exists("jasyproject.json"):
+            self.addProject(Project(".", 0))
     
     
     def clearCache(self):

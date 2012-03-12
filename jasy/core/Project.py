@@ -13,7 +13,7 @@ from jasy.core.Markdown import *
 
 class Project():
     
-    def __init__(self, path):
+    def __init__(self, path, level=0):
         """
         Constructor call of the project. 
         First param is the path of the project relative to the current working directory.
@@ -88,7 +88,7 @@ class Project():
             self.__assetPath = ""
             self.__translationPath = ""
 
-        logging.info("Initialized project %s" % self.__name)
+        logging.info("%s- Adding project %s" % (level*"  ", self.__name))
 
 
     __dirFilter = [".svn", ".git", ".hg", ".bzr"]
