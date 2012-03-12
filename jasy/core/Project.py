@@ -11,6 +11,13 @@ from jasy.core.Error import *
 from jasy.core.Markdown import *
 
 
+def getKey(data, key, default=None):
+    if key in data:
+        return data[key]
+    else:
+        return default
+
+
 class Project():
     
     def __init__(self, path, level=0):
@@ -46,28 +53,16 @@ class Project():
         
         
         # Read name from manifest or use the basename of the project's path
-        if "name" in projectData:
-            self.__name = projectData["name"]
-        else:
-            self.__name = os.path.basename(self.__path)
+        self.__name = getKey(projectData, "name", os.path.basename(self.__path))
             
         # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
-        if "package" in projectData:
-            self.__package = projectData["package"]
-        else:
-            self.__package = self.__name
+        self.__package = getKey(projectData, "package", self.__name)
 
         # Whether we need to parse files for get their correct name (using @name attributes)
-        if "fuzzy" in projectData:
-            self.__fuzzy = projectData["fuzzy"]
-        else:
-            self.__fuzzy = False
+        self.__fuzzy = getKey(projectData, "fuzzy", False)
 
         # Read fields (for injecting data into the project and build permuations)
-        if "fields" in projectData:
-            self.__fields = projectData["fields"]
-        else:
-            self.__fields = {}            
+        self.__fields = getKey(projectData, "fields", {})
             
 
         # Try to figure out folder structure automatically
