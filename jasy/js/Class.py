@@ -68,6 +68,8 @@ class Error(Exception):
 
 class Class(Item):
     
+    kind = "class"
+    
     def getTree(self, permutation=None, cleanup=True):
         """
         Returns the tree (of nodes from the parser) of the class. This parses the class,

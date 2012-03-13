@@ -10,6 +10,7 @@ class Item:
     id = None
     project = None
     path = None
+    kind = "item"
 
     __cache = None
     __mtime = None
@@ -18,7 +19,7 @@ class Item:
         self.id = id
         self.project = project
 
-        print("Initialized Item: %s" % self.id)
+        #print("Initialized Item: %s" % self.id)
 
 
     def attach(self, path):

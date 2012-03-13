@@ -15,6 +15,28 @@ from jasy.core.Markdown import *
 __all__ = ["Project"]
 
 
+extensions = {
+    # Asset items
+    ".jpg" : "assets",
+    ".jpeg" : "assets",
+    ".png" : "assets",
+    ".gif" : "assets",
+    ".json" : "assets",
+    ".html" : "assets",
+    ".txt" : "assets",
+    ".css" : "assets",
+    ".manifest" : "assets",
+
+    # Processed items
+    ".js" : "classes",
+    ".sass" : "styles",
+    ".scss" : "styles",
+    ".less" : "styles",
+    ".tmpl" : "templates",
+    ".po": "translations"
+}
+
+
 
 def getKey(data, key, default=None):
     if key in data:
@@ -61,7 +83,7 @@ class Project():
         self.styles = {}
         self.templates = {}
         self.translations = {}
-        self.docs = {}
+        self.pkgdocs = {}
         self.assets = {}        
 
         # Load project configuration
@@ -109,7 +131,7 @@ class Project():
                 self.addDir("source/class")
 
             if self.hasDir("source/asset"):
-                self.addDir("source/asset", lambda dist: dist==self.assets)
+                self.addDir("source/asset", lambda id, path, dist: dist==self.assets)
             
             if self.hasDir("source/translation"):
                 self.addDir("source/translation")
@@ -120,7 +142,7 @@ class Project():
         
         # Like Darwin
         elif self.hasDir("class"):
-            self.addDir("src", ".js")
+            self.addDir("class")
 
         # Like Hogan, Ender, 
         elif self.hasDir("lib"):
@@ -171,7 +193,7 @@ class Project():
                 # Filter minified CSS/JS files
                 if fileName.endswith(("-min.js", "-min.css")):
                     continue
-
+                    
                 fileSplits = os.path.splitext(fileName)
                 fileBase = fileSplits[0]
                 fileExtension = fileSplits[1]
@@ -185,29 +207,37 @@ class Project():
                     continue
 
                 # Generating file ID from relative path
-
-                if fileExtension in (".js", ".tmpl", ".ss", ".md", ".po"):
-                    fileId = os.path.splitext(relPath)[0].replace(os.sep, ".")
+                
+                if fileName == "package.md":
+                    fileId = os.path.dirname(relPath)
+                elif fileExtension in (".js", ".tmpl", ".css", ".md", ".po"):
+                    fileId = os.path.splitext(relPath)[0]
                 else:
-                    fileId = relPath.replace(os.sep, ".")
+                    fileId = relPath
+                    
+                fileId = fileId.replace(os.sep, ".")
 
                 if fileExtension == ".js":
                     item = Class(self, fileId).attach(fullPath)
                 else:
                     item = Item(self, fileId).attach(fullPath)
 
-                if fileExtension == ".js":
-                    dist = getattr(self, "classes")
-                elif fileExtension == ".tmpl":
-                    dist = getattr(self, "templates")
-                elif fileExtension == ".ss":
-                    dist = getattr(self, "styles")
-                elif fileExtension == ".md":
-                    dist = getattr(self, "docs")
-                elif fileExtension == ".po":
-                    dist = getattr(self, "translations")
-                else:
-                    dist = getattr(self, "assets")
+                distname = None
+                if fileExtension in extensions:
+                    distname = extensions[fileExtension]
+                    
+                # Special named package.md files are used as package docs
+                if fileName == "package.md":
+                    distname = "pkgdocs"
+                    
+                if not distname:
+                    logging.debug("Ignoring unsupported file extension: %s in %s", fileExtension, relPath)
+                    continue
+
+                # Get storage dict
+                dist = getattr(self, distname)
+                    
+                print("ADD: %s (%s) => %s" % (fileId, item.kind, distname))
                     
                 if check and not check(fileId, filePath, dist):
                     continue
@@ -216,7 +246,7 @@ class Project():
                     raise Exception("Item ID was registered before: %s" % fileId)
                     
                 dist[fileId] = item
-
+                
         
 
     def __str__(self):
@@ -281,7 +311,7 @@ class Project():
             
     def getDocs(self):
         """ Returns all project doc files for JavaScript packages. Requires all files to have a "md" extension. """
-        return self.docs
+        return self.pkgdocs
         
         # if fileName in ("package.md", "readme.md"):
         #     filePath = os.path.join(dirPath, fileName)
@@ -293,8 +323,8 @@ class Project():
         #     else:
         #         name = relPath
         # 
-        #     # always using dot syntax for the docs
-        #     docs[name.replace(os.sep, ".")[:-len(fileName)-1]] = markdown(open(filePath).read())
+        #     # always using dot syntax for the pkgdocs
+        #     pkgdocs[name.replace(os.sep, ".")[:-len(fileName)-1]] = markdown(open(filePath).read())
             
 
 
