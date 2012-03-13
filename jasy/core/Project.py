@@ -126,7 +126,7 @@ class Project():
 
         # Contains project name folder, like QUnit
         if self.hasDir(self.__name):
-            pass
+            self.addDir(self.__name)
         
         # Application projects
         elif self.hasDir("source"):
@@ -157,8 +157,12 @@ class Project():
         elif self.hasDir("lib"):
             self.addDir("lib", self.classes)
             
+        # Error handling
+        else:
+            logging.error("  - Could not figure out project layout!")
+            return
             
-            
+        # Build summary
         summary = []
         for section in ["classes", "assets", "styles", "translations", "templates"]:
             content = getattr(self, section, None)

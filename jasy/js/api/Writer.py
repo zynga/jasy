@@ -276,7 +276,7 @@ class ApiWriter():
         
     def write(self, distFolder, format="json", compact=True, callback=None, showInternals=False, showPrivates=False):
         
-        logging.info("Writing API data to: %s" % distFolder)
+        logging.info("Writing API data to %s..." % distFolder)
         
         if not format in ("json", "msgpack"):
             logging.warn("Invalid output format: %s. Falling back to json." % format)
