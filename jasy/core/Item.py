@@ -48,6 +48,10 @@ class Item:
 
     def getText(self):
         """Reads the file (as UTF-8) and returns the text"""
+        
+        if self.path is None:
+            return None
+        
         return open(self.path, mode="r", encoding="utf-8").read()
     
 
@@ -55,4 +59,3 @@ class Item:
     __repr__ = getId
     __str__ = getId
 
-    

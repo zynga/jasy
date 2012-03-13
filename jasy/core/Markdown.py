@@ -10,6 +10,9 @@ __all__ = ["markdown", "markdown2html", "code2highlight"]
 
 
 def markdown(text, code=True):
+    if not text:
+        return text
+        
     html = markdown2html(text)
     if code and html is not None:
         html = code2highlight(html)
