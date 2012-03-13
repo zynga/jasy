@@ -106,7 +106,13 @@ class Project():
         # Application/Game projects
         elif self.hasDir("source"):
             if self.hasDir("source/class"):
-                results = self.addDir("source/class")
+                self.addDir("source/class")
+
+            if self.hasDir("source/asset"):
+                self.addDir("source/asset", lambda dist: dist==self.assets)
+            
+            if self.hasDir("source/translation"):
+                self.addDir("source/translation")
 
         # Simple projects
         elif self.hasDir("src"):
@@ -114,9 +120,7 @@ class Project():
         
         # Like Darwin
         elif self.hasDir("class"):
-            pass
-            
-            
+            self.addDir("src", ".js")
 
         # Like Hogan, Ender, 
         elif self.hasDir("lib"):
@@ -137,7 +141,7 @@ class Project():
         return False
         
         
-    def addDir(self, directory):
+    def addDir(self, directory, check=None):
         
         path = os.path.join(self.__path, directory)
 
@@ -204,6 +208,9 @@ class Project():
                     dist = getattr(self, "translations")
                 else:
                     dist = getattr(self, "assets")
+                    
+                if check and not check(fileId, filePath, dist):
+                    continue
                     
                 if fileId in dist:
                     raise Exception("Item ID was registered before: %s" % fileId)

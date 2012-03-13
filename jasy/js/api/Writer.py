@@ -864,8 +864,10 @@ class ApiWriter():
         
         # Sort package content
         for packageName in packages:
-            apiData[packageName].content.sort(key=lambda entry: entry["name"])
-        
+            try:
+                apiData[packageName].content.sort(key=lambda entry: entry["name"])
+            except AttributeError:
+                logging.warn("Could not sort package: %s. Invalid content!" % packageName)
         
         
         #
