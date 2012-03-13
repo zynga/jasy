@@ -853,7 +853,6 @@ class ApiWriter():
         # Sort package content
         for className in apiData:
             if hasattr(apiData[className], "content"):
-                print("X-SORT-CONTENT: %s" % className)
                 try:
                     apiData[className].content.sort(key=lambda entry: entry["name"])
                 except AttributeError:
