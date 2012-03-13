@@ -33,7 +33,7 @@ class ApiData():
     ]
 
 
-    def __init__(self, id, tree=None):
+    def __init__(self, id):
         
         self.id = id
         

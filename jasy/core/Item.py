@@ -19,8 +19,6 @@ class Item:
         self.id = id
         self.project = project
 
-        #print("Initialized Item: %s" % self.id)
-
 
     def attach(self, path):
         self.path = path
@@ -51,7 +49,6 @@ class Item:
     def getText(self):
         """Reads the file (as UTF-8) and returns the text"""
         return open(self.path, mode="r", encoding="utf-8").read()
-    
     
 
     # Map Python built-ins

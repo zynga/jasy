@@ -6,6 +6,7 @@
 import os, logging, json
 
 from jasy.core.Item import Item
+from jasy.js.Package import Package
 from jasy.js.Class import Class
 
 from jasy.core.Cache import Cache
@@ -221,22 +222,20 @@ class Project():
                     
                 fileId = fileId.replace(os.sep, ".")
 
-                if fileExtension == ".js":
-                    item = Class(self, fileId).attach(fullPath)
-                else:
-                    item = Item(self, fileId).attach(fullPath)
-
-                distname = None
-                if fileExtension in extensions:
-                    distname = extensions[fileExtension]
-                    
                 # Special named package.md files are used as package docs
                 if fileName == "package.md":
                     distname = "classes"
-                    
-                if not distname:
-                    logging.debug("Ignoring unsupported file extension: %s in %s", fileExtension, relPath)
-                    continue
+                    item = Package(self, fileId).attach(fullPath)
+                elif fileExtension == ".js":
+                    distname = "classes"
+                    item = Class(self, fileId).attach(fullPath)
+                else:
+                    item = Item(self, fileId).attach(fullPath)
+                    if fileExtension in extensions:
+                        distname = extensions[fileExtension]
+                    else:
+                        logging.debug("Ignoring unsupported file extension: %s in %s", fileExtension, relPath)
+                        continue
 
                 # Get storage dict
                 dist = getattr(self, distname)
