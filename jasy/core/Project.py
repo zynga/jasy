@@ -235,7 +235,8 @@ class Project():
                     fileId = relPath
                     
                 # Prepand package
-                fileId = "%s/%s" % (self.__package, fileId)
+                if self.__package:
+                    fileId = "%s/%s" % (self.__package, fileId)
                     
                 # Replace slash by "dot" for classes
                 if fileExtension == ".js" or fileName == "package.md":
@@ -265,7 +266,7 @@ class Project():
                 if fileId in dist:
                     raise Exception("Item ID was registered before: %s" % fileId)
                     
-                logging.info("  - Registering %s %s => %s" % (item.kind, fileId, distname))
+                logging.info("  - Registering %s %s" % (item.kind, fileId))
                 dist[fileId] = item
                 
         
