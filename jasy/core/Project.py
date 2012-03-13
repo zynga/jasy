@@ -126,12 +126,11 @@ class Project():
 
         # Read fields (for injecting data into the project and build permuations)
         self.__fields = getKey(config, "fields", {})
+
+        # Read requires
+        self.__requires = getKey(config, "requires", {})
         
-        
-        self.__level = getProjectLevel(self)
-        
-        logging.info("%s- Adding project %s" % (self.__level*"  ", self.__name))
-        
+        logging.info("- Initializing project %s (%s)", self.__name, self.__path)
 
         # Contains project name folder, like QUnit
         if self.hasDir(self.__name):
@@ -280,6 +279,18 @@ class Project():
     #
     # ESSENTIALS
     #
+
+    def getRequires(self):
+        """
+        Return the project requirements
+        """
+
+        result = []
+        for entry in self.__requires:
+            result.append(os.path.normpath(os.path.join(self.__path, entry)))
+
+        return result
+
 
     def getFields(self):
         """
