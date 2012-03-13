@@ -21,16 +21,22 @@ class Cache:
         self.__file = os.path.join(path, "jasycache")
         
         try:
-            self.__db = shelve.open(self.__file, flag="c")
+            if os.path.exists(self.__file):
+                self.__db = shelve.open(self.__file, flag="w")
             
-            if "jasy-version" in self.__db:
-                storedVersion = self.__db["jasy-version"]
-            else:
-                storedVersion = None
+                if "jasy-version" in self.__db:
+                    storedVersion = self.__db["jasy-version"]
+                else:
+                    storedVersion = None
                 
-            if storedVersion != version:
+                if storedVersion == version:
+                    return
+                    
                 logging.warn("Jasy version has been changed. Recreating cache...")
-                self.clear()
+                self.__db.close()
+                    
+            self.__db = shelve.open(self.__file, flag="n")
+            self.__db["jasy-version"] = version
             
         except dbm.error as error:
             errno = None
