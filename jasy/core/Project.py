@@ -266,7 +266,7 @@ class Project():
                 if fileId in dist:
                     raise Exception("Item ID was registered before: %s" % fileId)
                     
-                logging.info("  - Adding: %s[%s] => %s" % (fileId, item.kind, distname))
+                logging.info("  - Registering %s %s => %s" % (item.kind, fileId, distname))
                 dist[fileId] = item
                 
         
