@@ -363,7 +363,8 @@ class ApiWriter():
         for project in self.session.getProjects():
             classes = project.getClasses()
             for className in classes:
-                highlighted[className] = classes[className].getHighlightedCode()
+                if classes[className].kind == "class":
+                    highlighted[className] = classes[className].getHighlightedCode()
 
 
 
@@ -852,6 +853,7 @@ class ApiWriter():
         # Sort package content
         for className in apiData:
             if hasattr(apiData[className], "content"):
+                print("X-SORT-CONTENT: %s" % className)
                 try:
                     apiData[className].content.sort(key=lambda entry: entry["name"])
                 except AttributeError:

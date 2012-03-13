@@ -23,7 +23,4 @@ class Package(Item):
             self.project.getCache().store(field, apidata, self.getModificationTime())
 
         return apidata
-
-    def getHighlightedCode(self):
-        return None
         
