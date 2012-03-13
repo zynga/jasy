@@ -13,7 +13,7 @@ from jasy.core.Cache import Cache
 from jasy.core.Error import *
 from jasy.core.Markdown import *
 
-__all__ = ["Project"]
+__all__ = ["Project", "getProject"]
 
 
 extensions = {
@@ -58,24 +58,18 @@ def getKey(data, key, default=None):
         return default
 
 
+projects = {}
 
+def getProject(path, config=None):
+    if not path in projects:
+        projects[path] = Project(path, config)
 
-
-
-def getProjectLevel(project):
-    level = 0
-    current = project.getParent()
-    while current:
-        level += 1
-        current = project.getParent()
-        
-    return level
-
+    return projects[path]
 
 
 class Project():
     
-    def __init__(self, path, config=None, parent=None):
+    def __init__(self, path, config=None):
         """
         Constructor call of the project. 
 
@@ -89,7 +83,6 @@ class Project():
         
         # Only store and work with full path
         self.__path = os.path.abspath(path)
-        self.__parent = parent
         
         # Intialize item registries
         self.classes = {}
@@ -99,15 +92,17 @@ class Project():
         self.assets = {}        
 
         # Load project configuration
+        hasJasyProject = False
         if not config:
-            configFile = os.path.join(self.__path, "jasyproject.json")
-            if not os.path.exists(configFile):
-                raise JasyError("Missing jasyproject.json at: %s. Otherwise define a config via constructor." % configFile)
+            config = {}
             
-            try:
-                config = json.load(open(configFile))
-            except ValueError as err:
-                raise JasyError("Could not parse jasyproject.json at %s: %s" % (configFile, err))
+            configFile = os.path.join(self.__path, "jasyproject.json")
+            if os.path.exists(configFile):
+                try:
+                    config = json.load(open(configFile))
+                    hasJasyProject = True
+                except ValueError as err:
+                    raise JasyError("Could not parse jasyproject.json at %s: %s" % (configFile, err))
             
         # Initialize cache
         try:
@@ -119,10 +114,7 @@ class Project():
         self.__name = getKey(config, "name", os.path.basename(self.__path))
             
         # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
-        self.__package = getKey(config, "package", self.__name)
-
-        # Whether we need to parse files for get their correct name (using @name attributes)
-        self.__fuzzy = getKey(config, "fuzzy", False)
+        self.__package = getKey(config, "package", self.__name if hasJasyProject else None)
 
         # Read fields (for injecting data into the project and build permuations)
         self.__fields = getKey(config, "fields", {})
@@ -130,7 +122,7 @@ class Project():
         # Read requires
         self.__requires = getKey(config, "requires", {})
         
-        logging.info("- Initializing project %s (%s)", self.__name, self.__path)
+        logging.info("- Initializing project: %s (%s)", self.__name, self.__path)
 
         # Contains project name folder, like QUnit
         if self.hasDir(self.__name):
@@ -164,9 +156,24 @@ class Project():
         # Like Hogan, Ender, 
         elif self.hasDir("lib"):
             self.addDir("lib", self.classes)
+            
+            
+            
+        summary = []
+        for section in ["classes", "assets", "styles", "translations", "templates"]:
+            content = getattr(self, section, None)
+            if content:
+                summary.append("%s %s" % (len(content), section))
+
+        if summary:
+            logging.info("  - Found: %s", ", ".join(summary))
+        else:
+            logging.info("  - Empty project?!?")
 
 
-
+    #
+    # FILE SYSTEM INDEXER
+    #
         
     def hasDir(self, directory):
         full = os.path.join(self.__path, directory)
@@ -266,30 +273,39 @@ class Project():
                 if fileId in dist:
                     raise Exception("Item ID was registered before: %s" % fileId)
                     
-                logging.info("  - Registering %s %s" % (item.kind, fileId))
+                # logging.info("  - Registering %s %s" % (item.kind, fileId))
                 dist[fileId] = item
-                
-        
-
-    def __str__(self):
-        return self.__path
-        
         
         
         
     #
     # ESSENTIALS
     #
+    
+    def __str__(self):
+        return self.__path
+
+    def __repr__(self):
+        return self.__path
+    
 
     def getRequires(self):
         """
-        Return the project requirements
+        Return the project requirements as project instances
         """
 
         result = []
         for entry in self.__requires:
-            result.append(os.path.normpath(os.path.join(self.__path, entry)))
-
+            if type(entry) is dict:
+                source = entry["source"]
+                config = entry["config"]
+            else:
+                source = entry
+                config = None
+                
+            path = os.path.normpath(os.path.join(self.__path, source))
+            result.append(getProject(path, config))
+            
         return result
 
 
@@ -312,10 +328,6 @@ class Project():
             return None
             
                         
-    def getParent(self):
-        return self.__parent
-        
-    
     def getName(self):
         return self.__name
 
@@ -381,7 +393,7 @@ class Project():
         Returns all templates files. Supports Hogan.js/Mustache files with .tmpl extension.
         """
 
-        return self.translations
+        return self.templates
 
 
     def getTranslations(self):

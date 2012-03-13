@@ -88,10 +88,9 @@ class Session():
         - project: Instance of Project to append to the list
         """
         
-        for require in project.getRequires():
-            self.addProject(Project(require))
+        for requiredProject in project.getRequires():
+            self.addProject(requiredProject)
 
-        print("Adding project: %s" % project.getName())
         self.__projects.append(project)
         
         # Import project defined fields which might be configured using "activateField()"
