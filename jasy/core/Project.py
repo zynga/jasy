@@ -83,7 +83,6 @@ class Project():
         self.styles = {}
         self.templates = {}
         self.translations = {}
-        self.pkgdocs = {}
         self.assets = {}        
 
         # Load project configuration
@@ -125,16 +124,22 @@ class Project():
         if self.hasDir(self.__name):
             pass
         
-        # Application/Game projects
+        # Application projects
         elif self.hasDir("source"):
             if self.hasDir("source/class"):
-                self.addDir("source/class")
+                self.addDir("source/class", (self.classes))
 
             if self.hasDir("source/asset"):
-                self.addDir("source/asset", lambda id, path, dist: dist==self.assets)
+                self.addDir("source/asset", (self.assets))
             
+            if self.hasDir("source/style"):
+                self.addDir("source/style", (self.styles))
+
+            if self.hasDir("source/template"):
+                self.addDir("source/template", (self.templates))
+
             if self.hasDir("source/translation"):
-                self.addDir("source/translation")
+                self.addDir("source/translation", (self.translations))
 
         # Simple projects
         elif self.hasDir("src"):
@@ -142,12 +147,11 @@ class Project():
         
         # Like Darwin
         elif self.hasDir("class"):
-            self.addDir("class")
+            self.addDir("class", (self.classes))
 
         # Like Hogan, Ender, 
         elif self.hasDir("lib"):
-            pass
-            
+            self.addDir("lib", (self.classes))
 
 
 
@@ -163,7 +167,7 @@ class Project():
         return False
         
         
-    def addDir(self, directory, check=None):
+    def addDir(self, directory, accept=None):
         
         path = os.path.join(self.__path, directory)
 
@@ -228,7 +232,7 @@ class Project():
                     
                 # Special named package.md files are used as package docs
                 if fileName == "package.md":
-                    distname = "pkgdocs"
+                    distname = "classes"
                     
                 if not distname:
                     logging.debug("Ignoring unsupported file extension: %s in %s", fileExtension, relPath)
@@ -237,14 +241,14 @@ class Project():
                 # Get storage dict
                 dist = getattr(self, distname)
                     
-                print("ADD: %s (%s) => %s" % (fileId, item.kind, distname))
-                    
-                if check and not check(fileId, filePath, dist):
+                if accept and not dist in accept:
+                    logging.warn("Could not add %s from %s", fileId, directory)
                     continue
                     
                 if fileId in dist:
                     raise Exception("Item ID was registered before: %s" % fileId)
                     
+                print("Adding: %s[%s] => %s" % (fileId, item.kind, distname))
                 dist[fileId] = item
                 
         
@@ -253,6 +257,31 @@ class Project():
         return self.__path
         
         
+        
+        
+    #
+    # ESSENTIALS
+    #
+
+    def getFields(self):
+        """
+        Return the project defined fields which may be configured by the build script
+        """
+
+        return self.__fields
+
+
+    def getClassByName(self, className):
+        """
+        Finds a class by its name.
+        """
+
+        try:
+            return self.getClasses()[className]
+        except KeyError:
+            return None
+            
+                        
     def getParent(self):
         return self.__parent
         
@@ -267,12 +296,13 @@ class Project():
     
     def getPackage(self):
         return self.__package
-        
+
+
+
+    #
+    # CACHE API
+    #
     
-    def isFuzzy(self):
-        return self.__fuzzy
-        
-        
     def getCache(self):
         return self.__cache
     
@@ -283,49 +313,19 @@ class Project():
         
     def close(self):
         self.__cache.close()
-        
-        
-    def getFields(self):
-        """
-        Return the project defined fields which may be configured by the build script
-        """
-        
-        return self.__fields
-        
-        
-    def getClassByName(self, className):
-        """
-        Finds a class by its name.
-        """
-        
-        try:
-            return self.getClasses()[className]
-        except KeyError:
-            return None         
-        
-    
+
+
+
+    #
+    # LIST ACCESSORS
+    #
+
     def getClasses(self):
-        """ Returns all project JavaScript classes. Requires all files to have a "js" extension. """
-        return self.classes
-            
-            
-    def getDocs(self):
-        """ Returns all project doc files for JavaScript packages. Requires all files to have a "md" extension. """
-        return self.pkgdocs
+        """ 
+        Returns all project JavaScript classes. Requires all files to have a "js" extension. 
+        """
         
-        # if fileName in ("package.md", "readme.md"):
-        #     filePath = os.path.join(dirPath, fileName)
-        #     relPath = filePath[classPathLen:]
-        #     
-        #     # Support for pre-fixed package which is not used in filesystem, but in assets
-        #     if package:
-        #         name = "%s%s%s" % (package, os.sep, relPath)
-        #     else:
-        #         name = relPath
-        # 
-        #     # always using dot syntax for the pkgdocs
-        #     pkgdocs[name.replace(os.sep, ".")[:-len(fileName)-1]] = markdown(open(filePath).read())
-            
+        return self.classes
 
 
     def getAssets(self):
@@ -334,15 +334,31 @@ class Project():
         for specific extensions but ignores files starting with a dot or files used internally
         by Jasy like cache files or project configuration.
         """
+        
         return self.assets
 
+
+    def getStyles(self):
+        """ 
+        Returns all styles which pre-processor needs. Lists all Sass, Scss, Less files.
+        """
+        
+        return self.styles
+        
+
+    def getTemplates(self):
+        """ 
+        Returns all templates files. Supports Hogan.js/Mustache files with .tmpl extension.
+        """
+
+        return self.translations
 
 
     def getTranslations(self):
         """ 
-        Returns all translation files. Currently supports only gettext style PO files
-        with a "po" extension.
+        Returns all translation files. Supports gettext style PO files with .po extension.
         """
-        return self.translations
         
+        return self.translations
+
         
