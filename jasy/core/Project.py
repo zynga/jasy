@@ -17,18 +17,30 @@ __all__ = ["Project"]
 
 
 extensions = {
-    # Asset items
+    # Image Assets
     ".jpg" : "assets",
     ".jpeg" : "assets",
     ".png" : "assets",
     ".gif" : "assets",
+    ".svg" : "assets",
+    
+    # Date Assets
     ".json" : "assets",
     ".html" : "assets",
     ".txt" : "assets",
+    
+    # Font Assets
+    ".eot" : "assets",
+    ".ttf" : "assets",
+    ".woff" : "assets",
+    
+    # Style Assets
     ".css" : "assets",
+
+    # Meta Assets
     ".manifest" : "assets",
 
-    # Processed items
+    # Processed Items
     ".js" : "classes",
     ".sass" : "styles",
     ".scss" : "styles",
@@ -128,19 +140,19 @@ class Project():
         # Application projects
         elif self.hasDir("source"):
             if self.hasDir("source/class"):
-                self.addDir("source/class", (self.classes))
+                self.addDir("source/class", self.classes)
 
             if self.hasDir("source/asset"):
-                self.addDir("source/asset", (self.assets))
+                self.addDir("source/asset", self.assets)
             
             if self.hasDir("source/style"):
-                self.addDir("source/style", (self.styles))
+                self.addDir("source/style", self.styles)
 
             if self.hasDir("source/template"):
-                self.addDir("source/template", (self.templates))
+                self.addDir("source/template", self.templates)
 
             if self.hasDir("source/translation"):
-                self.addDir("source/translation", (self.translations))
+                self.addDir("source/translation", self.translations)
 
         # Simple projects
         elif self.hasDir("src"):
@@ -148,11 +160,11 @@ class Project():
         
         # Like Darwin
         elif self.hasDir("class"):
-            self.addDir("class", (self.classes))
+            self.addDir("class", self.classes)
 
         # Like Hogan, Ender, 
         elif self.hasDir("lib"):
-            self.addDir("lib", (self.classes))
+            self.addDir("lib", self.classes)
 
 
 
@@ -168,7 +180,7 @@ class Project():
         return False
         
         
-    def addDir(self, directory, accept=None):
+    def addDir(self, directory, acceptDist=None):
         
         path = os.path.join(self.__path, directory)
 
@@ -189,7 +201,11 @@ class Project():
 
             for fileName in fileNames:
                 fullPath = os.path.join(dirPath, fileName)
-                relPath = os.path.join(relDirPath, fileName)
+                
+                if relDirPath == ".":
+                    relPath = fileName
+                else:
+                    relPath = os.path.join(relDirPath, fileName)
 
                 # Filter dotted hidden files
                 if fileName[0] == ".":
@@ -212,22 +228,25 @@ class Project():
                     continue
 
                 # Generating file ID from relative path
-                
                 if fileName == "package.md":
                     fileId = os.path.dirname(relPath)
-                elif fileExtension in (".js", ".tmpl", ".css", ".md", ".po"):
+                elif fileExtension in (".js", ".tmpl", ".po"):
                     fileId = os.path.splitext(relPath)[0]
                 else:
                     fileId = relPath
                     
-                fileId = fileId.replace(os.sep, ".")
+                # Prepand package
+                fileId = "%s/%s" % (self.__package, fileId)
+                    
+                # Replace slash by "dot" for classes
+                if fileExtension == ".js" or fileName == "package.md":
+                    fileId = fileId.replace(os.sep, ".")
+                    distname = "classes"
 
                 # Special named package.md files are used as package docs
                 if fileName == "package.md":
-                    distname = "classes"
                     item = Package(self, fileId).attach(fullPath)
                 elif fileExtension == ".js":
-                    distname = "classes"
                     item = Class(self, fileId).attach(fullPath)
                 else:
                     item = Item(self, fileId).attach(fullPath)
@@ -240,14 +259,14 @@ class Project():
                 # Get storage dict
                 dist = getattr(self, distname)
                     
-                if accept and not dist in accept:
+                if acceptDist and dist != acceptDist:
                     logging.warn("Could not add %s from %s", fileId, directory)
                     continue
                     
                 if fileId in dist:
                     raise Exception("Item ID was registered before: %s" % fileId)
                     
-                print("Adding: %s[%s] => %s" % (fileId, item.kind, distname))
+                logging.info("  - Adding: %s[%s] => %s" % (fileId, item.kind, distname))
                 dist[fileId] = item
                 
         
