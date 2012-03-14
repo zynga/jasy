@@ -23,6 +23,7 @@ extensions = {
     ".png" : "assets",
     ".gif" : "assets",
     ".svg" : "assets",
+    ".ico" : "assets",
     
     # Date Assets
     ".json" : "assets",
@@ -92,17 +93,20 @@ class Project():
         self.assets = {}        
 
         # Load project configuration
-        hasJasyProject = False
-        if not config:
-            config = {}
-            
-            configFile = os.path.join(self.__path, "jasyproject.json")
-            if os.path.exists(configFile):
-                try:
-                    config = json.load(open(configFile))
-                    hasJasyProject = True
-                except ValueError as err:
-                    raise JasyError("Could not parse jasyproject.json at %s: %s" % (configFile, err))
+        configFilePath = os.path.join(self.__path, "jasyproject.json")
+        isJasyProject = os.path.exists(configFilePath)
+        if isJasyProject:
+            try:
+                storedConfig = json.load(open(configFilePath))
+            except ValueError as err:
+                raise JasyError("Could not parse jasyproject.json at %s: %s" % (configFile, err))
+                
+            if config:
+                for key in storedConfig:
+                    if not key in config:
+                        config[key] = storedConfig[key]
+            else:
+                config = storedConfig
             
         # Initialize cache
         try:
@@ -113,21 +117,50 @@ class Project():
         # Read name from manifest or use the basename of the project's path
         self.__name = getKey(config, "name", os.path.basename(self.__path))
             
-        # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
-        self.__package = getKey(config, "package", self.__name if hasJasyProject else None)
-
-        # Read fields (for injecting data into the project and build permuations)
-        self.__fields = getKey(config, "fields", {})
-
         # Read requires
         self.__requires = getKey(config, "requires", {})
         
-        logging.info("- Initializing project: %s (%s)", self.__name, self.__path)
+        if isJasyProject:
+            
+            # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
+            self.__package = getKey(config, "package", self.__name)
 
-        # Contains project name folder, like QUnit
-        if self.hasDir(self.__name):
-            self.addDir(self.__name)
+            # Read fields (for injecting data into the project and build permuations)
+            self.__fields = getKey(config, "fields", {})
+            
+            logging.info("- Initializing project: %s [valid] (from: %s)", self.__name, self.__path)
+
+        else:
+            
+            self.__package = None
+            self.__fields = {}
+
+            logging.info("- Initializing project: %s [compat] (from: %s)", self.__name, self.__path)
         
+        # Processing custom content section
+        if "content" in config:
+            for fileId in config["content"]:
+                fileContent = config["content"][fileId]
+                firstFile = fileContent[0]
+                fileExtension = os.path.splitext(firstFile)[1]
+                
+                if fileExtension == ".js":
+                    if fileId in self.classes:
+                        raise JasyError("Item ID was registered before: %s" % fileId)
+                    else:
+                        self.classes[fileId] = Class(self, fileId).attach(os.path.join(self.__path, fileContent[0]))
+                elif fileExtension in extensions and extensions[fileExtension] == "assets":
+                    if fileId in self.assets:
+                        raise JasyError("Item ID was registered before: %s" % fileId)
+                    else:
+                        self.assets[fileId] = Item(self, fileId).attach(os.path.join(self.__path, fileContent[0]))
+                else:
+                    raise JasyError("Invalid file content: %s" % fileContent[0])
+
+        # This section is a must for non jasy projects
+        elif not isJasyProject:
+            raise JasyError("Missing 'content' section for compat project!")
+
         # Application projects
         elif self.hasDir("source"):
             if self.hasDir("source/class"):
@@ -145,21 +178,25 @@ class Project():
             if self.hasDir("source/translation"):
                 self.addDir("source/translation", self.translations)
 
-        # Simple projects
+        # Simple projects (all in one folder)
         elif self.hasDir("src"):
             self.addDir("src")
         
-        # Like Darwin
+        # Simple projects (only classes)
         elif self.hasDir("class"):
             self.addDir("class", self.classes)
 
-        # Like Hogan, Ender, 
-        elif self.hasDir("lib"):
-            self.addDir("lib", self.classes)
-            
-        # Error handling
+        # Simple projects (only styles)
+        elif self.hasDir("style"):
+            self.addDir("style", self.styles)
+
+        # Simple projects (only assets)
+        elif self.hasDir("asset"):
+            self.addDir("asset", self.assets)
+
+        # Other layouts
         else:
-            logging.error("  - Could not figure out project layout!")
+            logging.error('  - Unsupported project layout! Please define a "content" section.')
             return
             
         # Build summary
@@ -175,10 +212,11 @@ class Project():
             logging.info("  - Empty project?!?")
 
 
+
     #
     # FILE SYSTEM INDEXER
     #
-        
+    
     def hasDir(self, directory):
         full = os.path.join(self.__path, directory)
         if os.path.exists(full):
@@ -190,12 +228,31 @@ class Project():
         return False
         
         
+    def shouldIgnoreFile(self, fileName):
+        # Filter dotted hidden files
+        if fileName[0] == ".":
+            return True
+
+        # Filter minified CSS/JS files
+        if fileName.endswith(("-min.js", "-min.css")):
+            return True
+            
+        # Filter internal files
+        if fileName.startswith(("jasyproject", "jasycache")):
+            return True
+            
+        # Exclude specific file names
+        if fileName in ("package.json", "index.html", "index.css", "index.js"):
+            return True
+            
+        return False
+        
+        
     def addDir(self, directory, acceptDist=None):
         
         path = os.path.join(self.__path, directory)
-
         if not os.path.exists(path):
-            return result
+            return
 
         for dirPath, dirNames, fileNames in os.walk(path):
             for dirName in dirNames:
@@ -206,82 +263,67 @@ class Project():
                 # Filter sub projects
                 if os.path.exists(os.path.join(dirPath, dirName, "jasyproject.json")):
                     dirNames.remove(dirName)
+                    
+                # Remove unit tests (expecting test as fixed name, pretty much a convention)
+                if dirName == "test":
+                    dirNames.remove(dirName)
 
             relDirPath = os.path.relpath(dirPath, path)
 
             for fileName in fileNames:
-                fullPath = os.path.join(dirPath, fileName)
-                
-                if relDirPath == ".":
-                    relPath = fileName
-                else:
-                    relPath = os.path.join(relDirPath, fileName)
+                if not self.shouldIgnoreFile(fileName):
+                    relPath = os.path.normpath(os.path.join(relDirPath, fileName))
+                    fullPath = os.path.join(dirPath, fileName)
+                    fileExtension = os.path.splitext(fileName)[1]
 
-                # Filter dotted hidden files
-                if fileName[0] == ".":
-                    continue
-
-                # Filter minified CSS/JS files
-                if fileName.endswith(("-min.js", "-min.css")):
-                    continue
-                    
-                fileSplits = os.path.splitext(fileName)
-                fileBase = fileSplits[0]
-                fileExtension = fileSplits[1]
-
-                # Filter temporary files
-                if fileExtension == ".tmp":
-                    continue
-
-                # Filter internal files
-                if fileBase in ("jasyproject", "jasycache"):
-                    continue
-
-                # Generating file ID from relative path
-                if fileName == "package.md":
-                    fileId = os.path.dirname(relPath)
-                elif fileExtension in (".js", ".tmpl", ".po"):
-                    fileId = os.path.splitext(relPath)[0]
-                else:
-                    fileId = relPath
-                    
-                # Prepand package
-                if self.__package:
-                    fileId = "%s/%s" % (self.__package, fileId)
-                    
-                # Replace slash by "dot" for classes
-                if fileExtension == ".js" or fileName == "package.md":
-                    fileId = fileId.replace(os.sep, ".")
-                    distname = "classes"
-
-                # Special named package.md files are used as package docs
-                if fileName == "package.md":
-                    item = Package(self, fileId).attach(fullPath)
-                elif fileExtension == ".js":
-                    item = Class(self, fileId).attach(fullPath)
-                else:
-                    item = Item(self, fileId).attach(fullPath)
-                    if fileExtension in extensions:
-                        distname = extensions[fileExtension]
+                    # Generating file ID from relative path
+                    if fileName == "package.md":
+                        fileId = os.path.dirname(relPath)
+                    elif fileExtension in (".js", ".tmpl", ".po"):
+                        fileId = os.path.splitext(relPath)[0]
                     else:
-                        logging.debug("Ignoring unsupported file extension: %s in %s", fileExtension, relPath)
-                        continue
+                        fileId = relPath
 
-                # Get storage dict
-                dist = getattr(self, distname)
-                    
-                if acceptDist and dist != acceptDist:
-                    logging.warn("Could not add %s from %s", fileId, directory)
-                    continue
-                    
-                if fileId in dist:
-                    raise Exception("Item ID was registered before: %s" % fileId)
-                    
-                # logging.info("  - Registering %s %s" % (item.kind, fileId))
-                dist[fileId] = item
-        
-        
-        
+                    # Prepand package
+                    if self.__package:
+                        fileId = "%s/%s" % (self.__package, fileId)
+
+                    # Replace slash by "dot" for classes
+                    if fileExtension == ".js" or fileName == "package.md":
+                        fileId = fileId.replace(os.sep, ".")
+
+                    # Special named package.md files are used as package docs
+                    if fileName == "package.md":
+                        item = Package(self, fileId).attach(fullPath)
+                        distname = "classes"
+                    elif fileExtension == ".js":
+                        item = Class(self, fileId).attach(fullPath)
+                        distname = "classes"
+                    else:
+                        item = Item(self, fileId).attach(fullPath)
+                        if fileExtension in extensions:
+                            distname = extensions[fileExtension]
+                        else:
+                            logging.debug("Ignoring unsupported file extension: %s in %s", fileExtension, relPath)
+                            return
+
+                    print("  - Add %s %s" % (distname, fileId))
+
+                    # Get storage dict
+                    dist = getattr(self, distname)
+
+                    if acceptDist and dist != acceptDist:
+                        logging.warn("Could not add %s from %s", fileId, directory)
+                        return
+
+                    if fileId in dist:
+                        raise JasyError("Item ID was registered before: %s" % fileId)
+
+                    # logging.info("  - Registering %s %s" % (item.kind, fileId))
+                    dist[fileId] = item
+
+
+
     #
     # ESSENTIALS
     #
