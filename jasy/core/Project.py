@@ -137,25 +137,9 @@ class Project():
 
             logging.info("- Initializing project: %s [compat] (from: %s)", self.__name, self.__path)
         
-        # Processing custom content section
+        # Processing custom content section. Only supports classes and assets.
         if "content" in config:
-            for fileId in config["content"]:
-                fileContent = config["content"][fileId]
-                firstFile = fileContent[0]
-                fileExtension = os.path.splitext(firstFile)[1]
-                
-                if fileExtension == ".js":
-                    if fileId in self.classes:
-                        raise JasyError("Item ID was registered before: %s" % fileId)
-                    else:
-                        self.classes[fileId] = Class(self, fileId).attach(os.path.join(self.__path, fileContent[0]))
-                elif fileExtension in extensions and extensions[fileExtension] == "assets":
-                    if fileId in self.assets:
-                        raise JasyError("Item ID was registered before: %s" % fileId)
-                    else:
-                        self.assets[fileId] = Item(self, fileId).attach(os.path.join(self.__path, fileContent[0]))
-                else:
-                    raise JasyError("Invalid file content: %s" % fileContent[0])
+            self.addContent(config["content"])
 
         # This section is a must for non jasy projects
         elif not isJasyProject:
@@ -229,23 +213,37 @@ class Project():
         
         
     def shouldIgnoreFile(self, fileName):
-        # Filter dotted hidden files
-        if fileName[0] == ".":
-            return True
+        """ Exclude dotted hidden files and specific file names. """
+        return fileName[0] == "." or fileName in ("jasyproject.json", "package.json", "index.html", "index.css", "index.js")
+        
+        
+    def addContent(self, content):
+        for fileId in content:
+            fileContent = content[fileId]
+            if len(fileContent) == 0:
+                raise JasyError("Empty content!")
 
-        # Filter minified CSS/JS files
-        if fileName.endswith(("-min.js", "-min.css")):
-            return True
+            fileExtension = os.path.splitext(fileContent[0])[1]
+            if len(fileContent) == 1:
+                filePath = os.path.join(self.__path, fileContent[0])
+            else:
+                filePath = [os.path.join(self.__path, filePart) for filePart in fileContent]
             
-        # Filter internal files
-        if fileName.startswith(("jasyproject", "jasycache")):
-            return True
-            
-        # Exclude specific file names
-        if fileName in ("package.json", "index.html", "index.css", "index.js"):
-            return True
-            
-        return False
+            if fileExtension == ".js":
+                if fileId in self.classes:
+                    raise JasyError("Class ID was registered before: %s" % fileId)
+                else:
+                    self.classes[fileId] = Class(self, fileId).attach(filePath)
+                    
+            elif fileExtension in extensions and extensions[fileExtension] == "assets":
+                if fileId in self.assets:
+                    raise JasyError("Item ID was registered before: %s" % fileId)
+                else:
+                    self.assets[fileId] = Item(self, fileId).attach(filePath)
+                    
+            else:
+                raise JasyError("Invalid file content: %s" % fileId)
+        
         
         
     def addDir(self, directory, acceptDist=None):
