@@ -24,6 +24,28 @@ like Python 3, Misaka (Markdown), Msgpack (API data), etc. For
 details have a look at [the official documentation](https://github.com/zynga/jasy/wiki/Installation).
 
 
+## Roadmap
+
+### March 2012
+
+* Improve installation support using pre-built Jasy installation packages for Mac and Windows. (DONE)
+* Support for checking links, param and return types inside API docs. (DONE)
+* Support API docs for dotted parameters (object parameters with specific required sub keys). (DONE)
+* Support API doc generation for plain JavaScript statics/members (using namespace={} or namespace.prototype={})
+* Supporting recursive project dependencies aka project A uses B uses C and A does not know anything about C.
+* Improve support for 3rd party JavaScript libraries not matching the Jasy requirements (no jasyproject.conf or matching file layout). This will be implemented moving the configuration and a manual file layout structure into the project requiring this 3rd party library.
+* Support for executing and manipulating tasks from other projects e.g. generating build version of project A from project B into a destination folder of project B.
+* Support for auto cloning of remote repositories (using Git URLs)
+
+### 2012
+
+* Verify and test support for sprite sheets (application icons, ...)
+* Style sheet pre processor
+* Image optimizer and sprite sheet generator
+* Further optimization modules (share strings, shorthands for public names, ...)
+* Improve localization support (Verify gettext support, add new features)
+
+
 ## Authors
 
 Jasy was initially developed by [Sebastian Werner](mailto:info@sebastian-werner.net)
