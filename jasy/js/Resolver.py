@@ -44,7 +44,7 @@ class Resolver():
         """ Removes a class name from dependencies """
         
         for classObj in self.__required:
-            if classObj.getName() == className:
+            if classObj.getId() == className:
                 self.__required.remove(classObj)
                 if self.__included:
                     self.__included = []

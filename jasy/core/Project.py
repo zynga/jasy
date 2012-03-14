@@ -305,8 +305,6 @@ class Project():
                             logging.debug("Ignoring unsupported file extension: %s in %s", fileExtension, relPath)
                             return
 
-                    print("  - Add %s %s" % (distname, fileId))
-
                     # Get storage dict
                     dist = getattr(self, distname)
 
