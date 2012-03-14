@@ -44,6 +44,8 @@ details have a look at [the official documentation](https://github.com/zynga/jas
 * Image optimizer and sprite sheet generator
 * Further optimization modules (share strings, shorthands for public names, ...)
 * Improve localization support (Verify gettext support, add new features)
+* Support for exporting multi names per file
+* Support for AMD- and NPM-like syntax for dependencies/API generator
 
 
 ## Authors
