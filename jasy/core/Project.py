@@ -321,6 +321,9 @@ class Project():
         relpath = os.path.relpath(path, root)
 
         if prefix:
+            if not prefix[-1] == "/":
+                prefix += "/"
+                
             relpath = os.path.normpath(prefix + relpath)
             
         return relpath

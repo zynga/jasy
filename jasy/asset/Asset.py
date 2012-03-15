@@ -75,7 +75,7 @@ class Asset:
         Publishes the selected files to the given 'buildFolder/assetFolder'. This merges files from 
         different projects to this one folder. This is ideal for preparing the final deployment.
         
-        Parameters:
+        - buildFolder: Root destination folder. Used for dealing with relative URLs and copying.
         - assetFolder: Where the assets should copied to inside the build folder (relative to the build folder).
         - urlPrefix: A URL which should be mapped to the project's root folder
         """
@@ -114,8 +114,16 @@ class Asset:
             else:
                 result[dirname][basename] = 1
             
+        if urlPrefix and not urlPrefix[-1] == "/":
+            urlPrefix += "/"
+
+        root = normpath(urlPrefix + assetFolder)
+
+        if not root[-1] == "/":
+            root += "/"
+            
         return json.dumps({
-            "root" : normpath(urlPrefix + assetFolder),
+            "root" : root,
             "dirs" : result
         })
 
@@ -125,7 +133,6 @@ class Asset:
         """ 
         Exports asset data for the source version using assets from their original paths.
         
-        Parameters:
         - urlBase: Where the HTML root is based on the project's root.
         - urlPrefix: Useful when a CDN should be used. Maps the project's root to a URL.
             As URLs are always absolute it makes sense to reset 'urlBase' to an empty
