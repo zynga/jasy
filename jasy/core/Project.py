@@ -108,29 +108,29 @@ class Project():
             self.kind = "application"
 
             if self.hasDir("source/class"):
-                self.addDir("source/class", self.classes)
+                self.addDir("source/class", "classes")
             if self.hasDir("source/asset"):
-                self.addDir("source/asset", self.assets)
+                self.addDir("source/asset", "assets")
             if self.hasDir("source/translation"):
-                self.addDir("source/translation", self.translations)
+                self.addDir("source/translation", "translations")
 
         # Compat - please change to class/style/asset instead
         elif self.hasDir("src"):
             self.kind = "legacy"
 
             logging.warn("  - Using legacy style src folder. Please rename/restructure to new conventions!")
-            self.addDir("src", self.classes)
+            self.addDir("src", "classes")
 
         # Resource projects
         else:
             self.kind = "resource"
 
             if self.hasDir("class"):
-                self.addDir("class", self.classes)
+                self.addDir("class", "classes")
             if self.hasDir("asset"):
-                self.addDir("asset", self.assets)
+                self.addDir("asset", "assets")
             if self.hasDir("translation"):
-                self.addDir("translation", self.translations)
+                self.addDir("translation", "translations")
 
 
         # Generate summary
@@ -188,7 +188,7 @@ class Project():
                     self.assets[fileId] = Item(self, fileId).attach(filePath)
         
         
-    def addDir(self, directory, dist):
+    def addDir(self, directory, distname):
         
         path = os.path.join(self.__path, directory)
         if not os.path.exists(path):
@@ -204,10 +204,6 @@ class Project():
                 if os.path.exists(os.path.join(dirPath, dirName, "jasyproject.json")):
                     dirNames.remove(dirName)
                     
-                # Remove unit tests (expecting test as fixed name, pretty much a convention)
-                if dirName == "test":
-                    dirNames.remove(dirName)
-
             relDirPath = os.path.relpath(dirPath, path)
 
             for fileName in fileNames:
@@ -229,37 +225,37 @@ class Project():
                 if fileExtension == ".js":
                     fileId += os.path.splitext(relPath)[0]
                     construct = Class
-                    typedist = self.classes
+                    dist = self.classes
                 elif fileExtension == ".po":
                     fileId += os.path.splitext(relPath)[0]
                     construct = Translation
-                    typedist = self.translations
+                    dist = self.translations
                 elif fileName == "package.md":
                     fileId += os.path.dirname(relPath)
                     fileId = fileId.strip("/") # edge case when top level directory
                     construct = Package
-                    typedist = self.docs
+                    dist = self.docs
                 else:
                     fileId += relPath
                     construct = Asset
-                    typedist = self.assets
-                    
-                # Validate destination (packages are okay for all other destinations)
-                if typedist is not dist and typedist is not self.docs:
-                    logging.info("  - Ignoring file: %s" % fileId)
-                    continue
+                    dist = self.assets
                     
                 # Only assets keep unix style paths identifiers
                 if construct != Asset:
                     fileId = fileId.replace(os.sep, ".")
+
+                # Validate destination (docs are okay for all other destinations)
+                if not dist is self.docs and dist != getattr(self, distname):
+                    logging.info("  - Ignoring file: %s" % fileId)
+                    continue
                     
-                # Create instance
-                item = construct(self, fileId).attach(fullPath)
-                
                 # Check for duplication
                 if fileId in dist:
                     raise JasyError("Item ID was registered before: %s" % fileId)
 
+                # Create instance
+                item = construct(self, fileId).attach(fullPath)
+                
                 logging.info("  - Registering %s %s" % (item.kind, fileId))
                 dist[fileId] = item
 

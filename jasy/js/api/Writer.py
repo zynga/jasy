@@ -363,8 +363,7 @@ class ApiWriter():
         for project in self.session.getProjects():
             classes = project.getClasses()
             for className in classes:
-                if classes[className].kind == "class":
-                    highlighted[className] = classes[className].getHighlightedCode()
+                highlighted[className] = classes[className].getHighlightedCode()
 
 
 
@@ -616,7 +615,7 @@ class ApiWriter():
         logging.info("- Collecting Use Patterns...")
 
         # This matches all uses with the known classes and only keeps them if matched
-        allClasses = set([className for className in apiData if apiData[className].kind == "class"])
+        allClasses = set(list(apiData))
         for className in apiData:
             uses = apiData[className].uses
 
