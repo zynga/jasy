@@ -120,23 +120,14 @@ class Project():
         # Read requires
         self.__requires = getKey(config, "requires", {})
         
-        if isJasyProject:
-            
-            # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
-            self.__package = getKey(config, "package", self.__name)
+        # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
+        self.__package = getKey(config, "package", self.__name if isJasyProject else None)
 
-            # Read fields (for injecting data into the project and build permuations)
-            self.__fields = getKey(config, "fields", {})
-            
-            logging.info("- Initializing project: %s [valid] (from: %s)", self.__name, self.__path)
+        # Read fields (for injecting data into the project and build permuations)
+        self.__fields = getKey(config, "fields", {})
 
-        else:
+        logging.info("- Initializing project: %s (from: %s)", self.__name, self.__path)
             
-            self.__package = None
-            self.__fields = {}
-
-            logging.info("- Initializing project: %s [compat] (from: %s)", self.__name, self.__path)
-        
         # Processing custom content section. Only supports classes and assets.
         if "content" in config:
             self.addContent(config["content"])
@@ -162,28 +153,17 @@ class Project():
             if self.hasDir("source/translation"):
                 self.addDir("source/translation", self.translations)
 
-        # Simple projects (all in one folder)
+        # Simple projects
         elif self.hasDir("src"):
             self.addDir("src")
-        
-        # Simple projects (only classes)
         elif self.hasDir("class"):
             self.addDir("class", self.classes)
-
-        # Simple projects (only styles)
         elif self.hasDir("style"):
             self.addDir("style", self.styles)
-
-        # Simple projects (only assets)
         elif self.hasDir("asset"):
             self.addDir("asset", self.assets)
 
-        # Other layouts
-        else:
-            logging.error('  - Unsupported project layout! Please define a "content" section.')
-            return
-            
-        # Build summary
+        # Generate summary
         summary = []
         for section in ["classes", "assets", "styles", "translations", "templates"]:
             content = getattr(self, section, None)
