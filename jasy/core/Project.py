@@ -12,7 +12,6 @@ from jasy.js.Class import Class
 from jasy.core.Cache import Cache
 from jasy.core.Error import *
 from jasy.core.Markdown import *
-from jasy.core.Filetypes import *
 
 __all__ = ["Project", "getProject"]
 
@@ -35,6 +34,8 @@ def getProject(path, config=None):
 
 class Project():
     
+    kind = "none"
+    
     def __init__(self, path, config=None):
         """
         Constructor call of the project. 
@@ -52,10 +53,8 @@ class Project():
         
         # Intialize item registries
         self.classes = {}
-        self.styles = {}
-        self.templates = {}
-        self.translations = {}
         self.assets = {}        
+        self.translations = {}
 
         # Load project configuration
         configFilePath = os.path.join(self.__path, "jasyproject.json")
@@ -95,6 +94,7 @@ class Project():
             
         # Processing custom content section. Only supports classes and assets.
         if "content" in config:
+            self.kind = "manual"
             self.addContent(config["content"])
 
         # This section is a must for non jasy projects
@@ -103,36 +103,43 @@ class Project():
 
         # Application projects
         elif self.hasDir("source"):
+            self.kind = "application"
+
             if self.hasDir("source/class"):
                 self.addDir("source/class", self.classes)
             if self.hasDir("source/asset"):
                 self.addDir("source/asset", self.assets)
-            if self.hasDir("source/style"):
-                self.addDir("source/style", self.styles)
-            if self.hasDir("source/template"):
-                self.addDir("source/template", self.templates)
             if self.hasDir("source/translation"):
                 self.addDir("source/translation", self.translations)
 
-        # Simple projects
-        elif self.hasDir("class"):
-            self.addDir("class", self.classes)
-        elif self.hasDir("style"):
-            self.addDir("style", self.styles)
-        elif self.hasDir("asset"):
-            self.addDir("asset", self.assets)
+        # Compat - please change to class/style/asset instead
         elif self.hasDir("src"):
-            self.addDir("src")
+            self.kind = "classic"
+
+            logging.warn("Using classic style source folder. Please rename/restructure to new conventions!")
+            self.addDir("src", self.classes)
+
+        # Resource projects
+        else:
+            self.kind = "resource"
+
+            if self.hasDir("class"):
+                self.addDir("class", self.classes)
+            if self.hasDir("asset"):
+                self.addDir("asset", self.assets)
+            if self.hasDir("translation"):
+                self.addDir("translation", self.translations)
+
 
         # Generate summary
         summary = []
-        for section in ["classes", "assets", "styles", "translations", "templates"]:
+        for section in ["classes", "assets", "translations"]:
             content = getattr(self, section, None)
             if content:
                 summary.append("%s %s" % (len(content), section))
 
         if summary:
-            logging.info("  - Found: %s", ", ".join(summary))
+            logging.info("  - Found [%s]: %s", self.kind, ", ".join(summary))
         else:
             logging.info("  - Empty project?!?")
 
@@ -171,14 +178,11 @@ class Project():
                 else:
                     self.classes[fileId] = Class(self, fileId).attach(filePath)
                     
-            elif fileExtension in extensions and extensions[fileExtension] == "assets":
+            else:
                 if fileId in self.assets:
                     raise JasyError("Item ID was registered before: %s" % fileId)
                 else:
                     self.assets[fileId] = Item(self, fileId).attach(filePath)
-                    
-            else:
-                raise JasyError("Invalid file content: %s" % fileId)
         
         
     def addDir(self, directory, acceptDist=None):
@@ -205,9 +209,9 @@ class Project():
 
             for fileName in fileNames:
                 
-                if fileName[0] == "." or fileName in ("jasyproject.json", "package.json", "index.html", "index.css", "index.js"):
+                if fileName[0] == ".":
                     pass
-                    
+
                 else:
                     relPath = os.path.normpath(os.path.join(relDirPath, fileName))
                     fullPath = os.path.join(dirPath, fileName)
@@ -226,8 +230,12 @@ class Project():
                         fileId = "%s/%s" % (self.__package, fileId)
 
                     # Replace slash by "dot" for classes
-                    if fileExtension == ".js" or fileName == "package.md":
+                    if fileExtension == ".js":
                         fileId = fileId.replace(os.sep, ".")
+                        distname = "classes"
+                    elif fileName == "package.md":
+                        fileId = fileId.replace(os.sep, ".")
+                        distname = "packages"
 
                     # Special named package.md files are used as package docs
                     if fileName == "package.md" or fileExtension == ".js":
@@ -337,14 +345,6 @@ class Project():
     def getAssets(self):
         """ Returns all project asssets (images, stylesheets, static data, etc.). """
         return self.assets
-
-    def getStyles(self):
-        """ Returns all styles which pre-processor needs. Lists all Sass, Scss, Less files. """
-        return self.styles
-        
-    def getTemplates(self):
-        """ Returns all templates files. Supports Hogan.js/Mustache files with .tmpl extension. """
-        return self.templates
 
     def getTranslations(self):
         """ Returns all translation files. Supports gettext style PO files with .po extension. """
