@@ -271,10 +271,7 @@ class Project():
                         fileId = fileId.replace(os.sep, ".")
 
                     # Special named package.md files are used as package docs
-                    if fileName == "package.md":
-                        item = Package(self, fileId).attach(fullPath)
-                        distname = "classes"
-                    elif fileExtension == ".js":
+                    if fileName == "package.md" or fileExtension == ".js":
                         item = Class(self, fileId).attach(fullPath)
                         distname = "classes"
                     else:
@@ -332,31 +329,23 @@ class Project():
 
 
     def getFields(self):
-        """
-        Return the project defined fields which may be configured by the build script
-        """
-
+        """ Return the project defined fields which may be configured by the build script """
         return self.__fields
 
 
     def getClassByName(self, className):
-        """
-        Finds a class by its name.
-        """
+        """ Finds a class by its name."""
 
         try:
             return self.getClasses()[className]
         except KeyError:
             return None
-            
-                        
+
     def getName(self):
         return self.__name
-
     
     def getPath(self):
         return self.__path
-
     
     def getPackage(self):
         return self.__package
@@ -370,10 +359,8 @@ class Project():
     def getCache(self):
         return self.__cache
     
-    
     def clearCache(self):
         self.__cache.clear()
-        
         
     def close(self):
         self.__cache.close()
@@ -385,44 +372,23 @@ class Project():
     #
 
     def getClasses(self):
-        """ 
-        Returns all project JavaScript classes. Requires all files to have a "js" extension. 
-        """
-        
+        """ Returns all project JavaScript classes. Requires all files to have a "js" extension. """
         return self.classes
 
-
     def getAssets(self):
-        """ 
-        Returns all project asssets (images, stylesheets, static data, etc.). Does not filter
-        for specific extensions but ignores files starting with a dot or files used internally
-        by Jasy like cache files or project configuration.
-        """
-        
+        """ Returns all project asssets (images, stylesheets, static data, etc.). """
         return self.assets
 
-
     def getStyles(self):
-        """ 
-        Returns all styles which pre-processor needs. Lists all Sass, Scss, Less files.
-        """
-        
+        """ Returns all styles which pre-processor needs. Lists all Sass, Scss, Less files. """
         return self.styles
         
-
     def getTemplates(self):
-        """ 
-        Returns all templates files. Supports Hogan.js/Mustache files with .tmpl extension.
-        """
-
+        """ Returns all templates files. Supports Hogan.js/Mustache files with .tmpl extension. """
         return self.templates
 
-
     def getTranslations(self):
-        """ 
-        Returns all translation files. Supports gettext style PO files with .po extension.
-        """
-        
+        """ Returns all translation files. Supports gettext style PO files with .po extension. """
         return self.translations
 
         

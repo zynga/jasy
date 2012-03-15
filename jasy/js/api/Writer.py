@@ -616,7 +616,7 @@ class ApiWriter():
         logging.info("- Collecting Use Patterns...")
 
         # This matches all uses with the known classes and only keeps them if matched
-        allClasses = set(list(apiData))
+        allClasses = set([className for className in apiData if apiData[className].kind == "class"])
         for className in apiData:
             uses = apiData[className].uses
 

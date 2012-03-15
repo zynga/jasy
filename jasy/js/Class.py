@@ -161,7 +161,7 @@ class Class(Item):
                     
         # Manually excluded names/classes
         for name in meta.optionals:
-            if name != self.id and name in classes:
+            if name != self.id and name in classes and classes[name].kind == "class":
                 result.remove(classes[name])
             elif warnings:
                 logging.warn("Missing class (optional): %s in %s", name, self.id)
