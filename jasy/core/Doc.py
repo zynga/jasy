@@ -7,9 +7,9 @@ from jasy.js.api.Data import ApiData
 from jasy.core.Markdown import markdown
 from jasy.core.Item import Item
 
-class Package(Item):
+class Doc(Item):
     
-    kind = "package"
+    kind = "doc"
     
     def getApi(self):
         field = "api[%s]" % self.id

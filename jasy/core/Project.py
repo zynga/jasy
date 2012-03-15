@@ -7,7 +7,7 @@ import os, logging, json
 
 from jasy.core.Item import Item
 from jasy.core.Asset import Asset
-from jasy.core.Package import Package
+from jasy.core.Doc import Doc
 from jasy.js.Class import Class
 
 from jasy.core.Cache import Cache
@@ -233,7 +233,7 @@ class Project():
                 elif fileName == "package.md":
                     fileId += os.path.dirname(relPath)
                     fileId = fileId.strip("/") # edge case when top level directory
-                    construct = Package
+                    construct = Doc
                     dist = self.docs
                 else:
                     fileId += relPath
