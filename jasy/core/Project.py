@@ -6,7 +6,8 @@
 import os, logging, json
 
 from jasy.core.Item import Item
-from jasy.js.Package import Package
+from jasy.core.Asset import Asset
+from jasy.core.Package import Package
 from jasy.js.Class import Class
 
 from jasy.core.Cache import Cache
@@ -54,6 +55,7 @@ class Project():
         # Intialize item registries
         self.classes = {}
         self.assets = {}        
+        self.docs = {}
         self.translations = {}
 
         # Load project configuration
@@ -114,9 +116,9 @@ class Project():
 
         # Compat - please change to class/style/asset instead
         elif self.hasDir("src"):
-            self.kind = "classic"
+            self.kind = "legacy"
 
-            logging.warn("Using classic style source folder. Please rename/restructure to new conventions!")
+            logging.warn("  - Using legacy style src folder. Please rename/restructure to new conventions!")
             self.addDir("src", self.classes)
 
         # Resource projects
@@ -139,7 +141,8 @@ class Project():
                 summary.append("%s %s" % (len(content), section))
 
         if summary:
-            logging.info("  - Found [%s]: %s", self.kind, ", ".join(summary))
+            logging.info("  - Kind: %s", self.kind)
+            logging.info("  - Found: %s", ", ".join(summary))
         else:
             logging.info("  - Empty project?!?")
 
@@ -185,7 +188,7 @@ class Project():
                     self.assets[fileId] = Item(self, fileId).attach(filePath)
         
         
-    def addDir(self, directory, acceptDist=None):
+    def addDir(self, directory, dist):
         
         path = os.path.join(self.__path, directory)
         if not os.path.exists(path):
@@ -210,57 +213,55 @@ class Project():
             for fileName in fileNames:
                 
                 if fileName[0] == ".":
-                    pass
+                    continue
 
+                relPath = os.path.normpath(os.path.join(relDirPath, fileName))
+                fullPath = os.path.join(dirPath, fileName)
+                fileExtension = os.path.splitext(fileName)[1]
+
+                # Prepand package
+                if self.__package:
+                    fileId = "%s/" % self.__package
                 else:
-                    relPath = os.path.normpath(os.path.join(relDirPath, fileName))
-                    fullPath = os.path.join(dirPath, fileName)
-                    fileExtension = os.path.splitext(fileName)[1]
+                    fileId = ""
 
-                    # Generating file ID from relative path
-                    if fileName == "package.md":
-                        fileId = os.path.dirname(relPath)
-                    elif fileExtension in (".js", ".tmpl", ".po"):
-                        fileId = os.path.splitext(relPath)[0]
-                    else:
-                        fileId = relPath
+                # Structure files
+                if fileExtension == ".js":
+                    fileId += os.path.splitext(relPath)[0]
+                    construct = Class
+                    typedist = self.classes
+                elif fileExtension == ".po":
+                    fileId += os.path.splitext(relPath)[0]
+                    construct = Translation
+                    typedist = self.translations
+                elif fileName == "package.md":
+                    fileId += os.path.dirname(relPath)
+                    fileId = fileId.strip("/") # edge case when top level directory
+                    construct = Package
+                    typedist = self.docs
+                else:
+                    fileId += relPath
+                    construct = Asset
+                    typedist = self.assets
+                    
+                # Validate destination (packages are okay for all other destinations)
+                if typedist is not dist and typedist is not self.docs:
+                    logging.info("  - Ignoring file: %s" % fileId)
+                    continue
+                    
+                # Only assets keep unix style paths identifiers
+                if construct != Asset:
+                    fileId = fileId.replace(os.sep, ".")
+                    
+                # Create instance
+                item = construct(self, fileId).attach(fullPath)
+                
+                # Check for duplication
+                if fileId in dist:
+                    raise JasyError("Item ID was registered before: %s" % fileId)
 
-                    # Prepand package
-                    if self.__package:
-                        fileId = "%s/%s" % (self.__package, fileId)
-
-                    # Replace slash by "dot" for classes
-                    if fileExtension == ".js":
-                        fileId = fileId.replace(os.sep, ".")
-                        distname = "classes"
-                    elif fileName == "package.md":
-                        fileId = fileId.replace(os.sep, ".")
-                        distname = "packages"
-
-                    # Special named package.md files are used as package docs
-                    if fileName == "package.md" or fileExtension == ".js":
-                        item = Class(self, fileId).attach(fullPath)
-                        distname = "classes"
-                    else:
-                        item = Item(self, fileId).attach(fullPath)
-                        if fileExtension in extensions:
-                            distname = extensions[fileExtension]
-                        else:
-                            logging.debug("Ignoring unsupported file extension: %s in %s", fileExtension, relPath)
-                            return
-
-                    # Get storage dict
-                    dist = getattr(self, distname)
-
-                    if acceptDist and dist != acceptDist:
-                        logging.warn("Could not add %s from %s", fileId, directory)
-                        return
-
-                    if fileId in dist:
-                        raise JasyError("Item ID was registered before: %s" % fileId)
-
-                    # logging.info("  - Registering %s %s" % (item.kind, fileId))
-                    dist[fileId] = item
+                logging.info("  - Registering %s %s" % (item.kind, fileId))
+                dist[fileId] = item
 
 
 
