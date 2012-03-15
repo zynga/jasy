@@ -108,6 +108,7 @@ class Asset:
                 result[dirname] = {}
             
             # Differentiate storage between images and other resources
+            # Using '1' for being short and truish
             if asset.isImage():
                 result[dirname][basename] = asset.getDimensions()
             else:
