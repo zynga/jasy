@@ -124,14 +124,14 @@ class Class(Item):
         
         # Manually defined names/classes
         for name in meta.requires:
-            if name != self.id and name in classes:
+            if name != self.id and name in classes and classes[name].kind == "class":
                 result.add(classes[name])
             elif warnings:
                 logging.warn("Missing class (required): %s in %s", name, self.id)
 
         # Globally modified names (mostly relevant when working without namespaces)
         for name in scope.shared:
-            if name != self.id and name in classes:
+            if name != self.id and name in classes and classes[name].kind == "class":
                 result.add(classes[name])
         
         # Add classes from detected package access
@@ -147,7 +147,7 @@ class Class(Item):
                 if package == self.id:
                     break
             
-                elif package in classes:
+                elif package in classes and classes[package].kind == "class":
                     aliases[orig] = package
                     result.add(classes[package])
                     break
