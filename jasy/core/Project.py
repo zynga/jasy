@@ -12,44 +12,9 @@ from jasy.js.Class import Class
 from jasy.core.Cache import Cache
 from jasy.core.Error import *
 from jasy.core.Markdown import *
+from jasy.core.Filetypes import *
 
 __all__ = ["Project", "getProject"]
-
-
-extensions = {
-    # Image Assets
-    ".jpg" : "assets",
-    ".jpeg" : "assets",
-    ".png" : "assets",
-    ".gif" : "assets",
-    ".svg" : "assets",
-    ".ico" : "assets",
-    
-    # Date Assets
-    ".json" : "assets",
-    ".html" : "assets",
-    ".txt" : "assets",
-    
-    # Font Assets
-    ".eot" : "assets",
-    ".ttf" : "assets",
-    ".woff" : "assets",
-    
-    # Style Assets
-    ".css" : "assets",
-
-    # Meta Assets
-    ".manifest" : "assets",
-
-    # Processed Items
-    ".js" : "classes",
-    ".sass" : "styles",
-    ".scss" : "styles",
-    ".less" : "styles",
-    ".tmpl" : "templates",
-    ".po": "translations"
-}
-
 
 
 def getKey(data, key, default=None):
@@ -140,28 +105,24 @@ class Project():
         elif self.hasDir("source"):
             if self.hasDir("source/class"):
                 self.addDir("source/class", self.classes)
-
             if self.hasDir("source/asset"):
                 self.addDir("source/asset", self.assets)
-            
             if self.hasDir("source/style"):
                 self.addDir("source/style", self.styles)
-
             if self.hasDir("source/template"):
                 self.addDir("source/template", self.templates)
-
             if self.hasDir("source/translation"):
                 self.addDir("source/translation", self.translations)
 
         # Simple projects
-        elif self.hasDir("src"):
-            self.addDir("src")
         elif self.hasDir("class"):
             self.addDir("class", self.classes)
         elif self.hasDir("style"):
             self.addDir("style", self.styles)
         elif self.hasDir("asset"):
             self.addDir("asset", self.assets)
+        elif self.hasDir("src"):
+            self.addDir("src")
 
         # Generate summary
         summary = []
@@ -192,11 +153,6 @@ class Project():
         return False
         
         
-    def shouldIgnoreFile(self, fileName):
-        """ Exclude dotted hidden files and specific file names. """
-        return fileName[0] == "." or fileName in ("jasyproject.json", "package.json", "index.html", "index.css", "index.js")
-        
-        
     def addContent(self, content):
         for fileId in content:
             fileContent = content[fileId]
@@ -225,7 +181,6 @@ class Project():
                 raise JasyError("Invalid file content: %s" % fileId)
         
         
-        
     def addDir(self, directory, acceptDist=None):
         
         path = os.path.join(self.__path, directory)
@@ -249,7 +204,11 @@ class Project():
             relDirPath = os.path.relpath(dirPath, path)
 
             for fileName in fileNames:
-                if not self.shouldIgnoreFile(fileName):
+                
+                if fileName[0] == "." or fileName in ("jasyproject.json", "package.json", "index.html", "index.css", "index.js"):
+                    pass
+                    
+                else:
                     relPath = os.path.normpath(os.path.join(relDirPath, fileName))
                     fullPath = os.path.join(dirPath, fileName)
                     fileExtension = os.path.splitext(fileName)[1]
