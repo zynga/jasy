@@ -118,7 +118,7 @@ def storeCompressed(fileName, classes, bootCode="", permutation=None, translatio
 
 
 
-def storeSourceLoader(fileName, classes, session, bootCode="", relativeRoot="source", urlPrefix=""):
+def storeSourceLoader(fileName, classes, session, bootCode="", urlPrefix=""):
     """
     Generates a source loader which is basically a file which loads the original JavaScript files.
     This is super useful during development of a project as it supports pretty fast workflows
@@ -137,21 +137,11 @@ def storeSourceLoader(fileName, classes, session, bootCode="", relativeRoot="sou
     
     logging.info("Building source loader (%s classes)...", len(classes))
 
-    files = []
-    for classObj in classes:
-        project = classObj.getProject()
+    main = session.getMain()
 
-        # This is the location of the class relative to the project which is generated right now
-        fromMainProjectRoot = os.path.join(session.getRelativePath(project), project.getClassPath(True), classObj.getRelativePath())
-        
-        # This is the location from the root, given by the user, where the HTML file is stored.
-        # In typical Jasy projects this is "source" e.g. the file is named "source/index.html".
-        fromWebFolder = urlPrefix + os.path.relpath(fromMainProjectRoot, relativeRoot).replace(os.sep, '/')
-        
-        # Now add this file to our list of files to load
-        files.append('"%s"' % fromWebFolder)
-
-    loader = ",".join(files)
+    # Process all classes
+    files = [main.toRelativeUrl(classObj.getPath(), urlPrefix) for classObj in classes]
+    loader = '"%s"' % '","'.join(files)
     boot = "function(){%s}" % bootCode if bootCode else "null"
     result = 'core.io.Queue.load([%s], %s, null, true)' % (loader, boot)
 

@@ -124,14 +124,6 @@ class Session():
         return self.__projects
         
         
-    def getMainProject(self):
-        """
-        The main project is basically the project with the currently running build script
-        """
-        
-        return self.__projects[-1]
-        
-        
     def getRelativePath(self, project):
         """
         Returns the relative path of any project to the main project
@@ -141,6 +133,10 @@ class Session():
         projectPath = project.getPath()
         
         return os.path.relpath(projectPath, mainPath)
+        
+        
+    def getMain(self):
+        return self.__projects[-1]
     
     
     

@@ -113,7 +113,7 @@ class Project():
                 self.addDir("source/asset", "assets")
             if self.hasDir("source/translation"):
                 self.addDir("source/translation", "translations")
-
+                
         # Compat - please change to class/style/asset instead
         elif self.hasDir("src"):
             self.kind = "legacy"
@@ -185,7 +185,7 @@ class Project():
                 if fileId in self.assets:
                     raise JasyError("Item ID was registered before: %s" % fileId)
                 else:
-                    self.assets[fileId] = Item(self, fileId).attach(filePath)
+                    self.assets[fileId] = Asset(self, fileId).attach(filePath).markAsManual()
         
         
     def addDir(self, directory, distname):
@@ -193,7 +193,7 @@ class Project():
         path = os.path.join(self.__path, directory)
         if not os.path.exists(path):
             return
-
+            
         for dirPath, dirNames, fileNames in os.walk(path):
             for dirName in dirNames:
                 # Filter dotted directories like .git, .bzr, .hg, .svn, etc.
@@ -265,11 +265,11 @@ class Project():
     # ESSENTIALS
     #
     
-    def __str__(self):
-        return self.__path
+    #def __str__(self):
+    #    return self.__path
 
-    def __repr__(self):
-        return self.__path
+    #def __repr__(self):
+    #    return self.__path
     
 
     def getRequires(self):
@@ -313,6 +313,19 @@ class Project():
     
     def getPackage(self):
         return self.__package
+        
+        
+        
+    def toRelativeUrl(self, path, prefix="", subpath="source"):
+        root = os.path.join(self.__path, subpath)
+        relpath = os.path.relpath(path, root)
+
+        if prefix:
+            relpath = os.path.normpath(prefix + relpath)
+            
+        return relpath
+        
+        
 
 
 
