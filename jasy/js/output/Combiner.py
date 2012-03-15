@@ -94,7 +94,6 @@ def storeCompressed(fileName, classes, bootCode="", permutation=None, translatio
     """
     Combines the compressed result of the stored class list
     
-    Parameters:
     - fileName: Filename to write to
     - classes: Classes to include in the compressed file in correct order
     - bootCode: Code to execute once all the classes are loaded
@@ -124,23 +123,18 @@ def storeSourceLoader(fileName, classes, session, bootCode="", urlPrefix=""):
     This is super useful during development of a project as it supports pretty fast workflows
     where most often a simple reload in the browser is enough to get the newest sources.
     
-    Parameters:
     - fileName: Filename to write to
     - classes: Classes to include in the compressed file in correct order
     - session: Session object, required to figure out relative project paths to each other.
     - bootCode: Code to run after all defined classes have been loaded.
-    - relativeRoot: Path from the project's root to the HTML file which is loaded in the browser. 
-        This is required to figure out relative paths to the JS files.
-    - prefixUrl: Useful when the project files are stored on another domain (CDN). Puts the given 
-        URL prefix in front of all URLs to load. Typically relativeRoot is an empty string in this case.
+    - prefixUrl: Useful when the project files are stored on another domain (CDN). Puts the given URL prefix in front of all URLs to load.
     """
     
     logging.info("Building source loader (%s classes)...", len(classes))
 
     main = session.getMain()
-
-    # Process all classes
     files = [main.toRelativeUrl(classObj.getPath(), urlPrefix) for classObj in classes]
+    
     loader = '"%s"' % '","'.join(files)
     boot = "function(){%s}" % bootCode if bootCode else "null"
     result = 'core.io.Queue.load([%s], %s, null, true)' % (loader, boot)
