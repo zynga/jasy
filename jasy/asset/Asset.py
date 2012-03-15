@@ -54,9 +54,9 @@ class Asset:
             for name in assets:
                 merged[name] = { 
                     "project" : project,
-                    "path" : assets[name]
+                    "path" : assets[name].getPath()
                 }
-
+                
         # Merge asset hints from all classes and remove duplicates
         hints = set()
         for classObj in self.__classes:
