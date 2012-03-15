@@ -70,43 +70,12 @@ class Asset:
 
 
 
-
-    def __exportHelper(self, roots):
-        """
-        Exports the internal data into a JSON structure
-        """
-        
-        projects = self.__session.getProjects()
-        
-        print("ROOTS: ", roots)
-        
-        class ProjectEncoder(json.JSONEncoder):
-            __projectIds = { 
-                project: pos for pos, project in enumerate(filter(lambda project: project.assets, projects)) 
-            }
-            
-            def default(self, obj):
-                if isinstance(obj, Project):
-                    return self.__projectIds[obj]
-                    
-                return json.JSONEncoder.default(self, obj)
-
-        return json.dumps({
-            "files" : self.__files,
-            "images" : self.__images,
-            "sprites" : self.__sprites,
-            "roots" : roots
-        }, separators=(',',':'), cls=ProjectEncoder)
-
-
-
     def exportBuild(self, buildFolder="build", assetFolder="asset", urlPrefix=""):
         """
         Publishes the selected files to the given 'buildFolder/assetFolder'. This merges files from 
         different projects to this one folder. This is ideal for preparing the final deployment.
         
         Parameters:
-        - buildFolder: Where the HTML root is based on the project's root
         - assetFolder: Where the assets should copied to inside the build folder (relative to the build folder).
         - urlPrefix: A URL which should be mapped to the project's root folder
         """
@@ -119,7 +88,7 @@ class Asset:
         
         counter = 0
         for fileId in assets:
-            srcFile = assets[fileId]["path"]
+            srcFile = assets[fileId].getPath()
             dstFile = os.path.join(buildFolder, assetFolder, fileId.replace("/", os.sep))
             
             if updateFile(srcFile, dstFile):
@@ -128,22 +97,27 @@ class Asset:
         logging.info("Updated %s/%s files" % (counter, len(assets)))
         pstop()
         
-        roots = []
-        for project in projects:
-            if not project.assets:
-                continue
+        result = {}
+        for fileId in assets:
+            asset = assets[fileId]
             
-            projectPackage = project.getPackage()
-            assetBasePath = os.path.join(assetFolder, projectPackage) if projectPackage else assetFolder
+            dirname = os.path.dirname(fileId)
+            basename = os.path.basename(fileId)
             
-            if urlPrefix:
-                roots.append("%s%s" % (urlPrefix, os.path.join(buildFolder, assetBasePath).replace(os.sep, "/")))
+            if not dirname in result:
+                result[dirname] = {}
+            
+            # Differentiate storage between images and other resources
+            if asset.isImage():
+                result[dirname][basename] = asset.getDimensions()
             else:
-                roots.append(assetBasePath.replace(os.sep, "/"))
+                result[dirname][basename] = 1
+            
+        return json.dumps({
+            "root" : normpath(urlPrefix + assetFolder),
+            "dirs" : result
+        })
 
-        return self.__exportHelper(roots)        
-        
-        
 
 
     def exportSource(self, urlPrefix=""):
@@ -172,7 +146,9 @@ class Asset:
                 result[fileId] = path
 
         # Dump as JSON with relative paths
-        return json.dumps(result, separators=(',',':'))
+        return json.dumps({
+            "files": result
+        }, separators=(',',':'))
         
         
         
