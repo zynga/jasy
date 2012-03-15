@@ -211,9 +211,9 @@ class Asset:
         
         class ProjectEncoder(json.JSONEncoder):
             __projectIds = { 
-                project: pos for pos, project in enumerate(filter(lambda project: project.getAssetPath() != None, projects)) 
+                project: pos for pos, project in enumerate(filter(lambda project: project.assets, projects)) 
             }
-
+            
             def default(self, obj):
                 if isinstance(obj, Project):
                     return self.__projectIds[obj]
