@@ -209,6 +209,8 @@ class Asset:
         
         projects = self.__session.getProjects()
         
+        print("ROOTS: ", roots)
+        
         class ProjectEncoder(json.JSONEncoder):
             __projectIds = { 
                 project: pos for pos, project in enumerate(filter(lambda project: project.assets, projects)) 
@@ -259,6 +261,9 @@ class Asset:
         
         roots = []
         for project in projects:
+            if not project.assets:
+                continue
+            
             projectPackage = project.getPackage()
             assetBasePath = os.path.join(assetFolder, projectPackage) if projectPackage else assetFolder
             
@@ -286,7 +291,8 @@ class Asset:
         webPath = os.path.join(self.__session.getMainProject().getPath(), urlBase)
         roots = []
         for project in projects:
-            roots.append(urlPrefix + os.path.relpath(project.getAssetPath(), webPath).replace(os.sep, '/'))
+            if project.assets:
+                roots.append(urlPrefix + os.path.relpath(project.getAssetPath(), webPath).replace(os.sep, '/'))
 
         return self.__exportHelper(roots)
 
