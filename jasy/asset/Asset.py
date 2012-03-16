@@ -9,7 +9,7 @@ from os.path import basename, dirname, relpath, normpath
 from jasy.util.Profiler import *
 from jasy.util.File import *
 from jasy.core.Project import Project
-from jasy.core.Env import session
+from jasy.core.Env import session, getPermutation
 
 __all__ = ["Asset"]
 
@@ -27,13 +27,11 @@ class Asset:
     
     Supports images and automatically detect their size and image format. Both informations
     are added to the exported data later on.
-    
-    Supports images sprites when it finds a 'sprites.json' in any folder.
     """
     
-    def __init__(self, classes, permutation=None):
+    def __init__(self, classes):
         self.__classes = classes
-        self.__permutation = permutation
+        self.__permutation = getPermutation()
         
         # Initialize storage pool
         assets = self.__assets = {}

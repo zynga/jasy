@@ -40,6 +40,8 @@ class Resolver():
         self.__required.append(self.__classes[className])
         
         del self.__included[:]
+        
+        return self
             
             
     def removeClassName(self, className):
@@ -62,6 +64,8 @@ class Resolver():
         
         # Invalidate included list
         self.__included = None
+        
+        return self
         
 
     def getRequiredClasses(self):
