@@ -201,7 +201,7 @@ class Project():
             
             # Create instance
             item = construct(self, fileId).attach(filePath)
-            logging.info("  - Registering %s %s" % (item.kind, fileId))
+            logging.debug("  - Registering %s %s" % (item.kind, fileId))
             dist[fileId] = item
         
         
@@ -272,7 +272,7 @@ class Project():
 
                 # Create instance
                 item = construct(self, fileId).attach(fullPath)
-                logging.info("  - Registering %s %s" % (item.kind, fileId))
+                logging.debug("  - Registering %s %s" % (item.kind, fileId))
                 dist[fileId] = item
 
 
