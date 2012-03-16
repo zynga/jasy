@@ -58,6 +58,9 @@ class Resolver():
         
         self.__excluded.extend(classObjects)
         
+        # Invalidate included list
+        self.__included = None
+        
 
     def getRequiredClasses(self):
         """ Returns the user added classes - the so-called required classes. """

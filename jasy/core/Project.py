@@ -170,6 +170,11 @@ class Project():
             fileContent = content[fileId]
             if len(fileContent) == 0:
                 raise JasyError("Empty content!")
+                
+            # If the user defines a file extension for JS public idenfiers 
+            # (which is not required) we filter them out
+            if fileId.endswith(".js"):
+                raise JasyError("JavaScript files should define the exported name, not a file name: %s" % fileId)
 
             fileExtension = os.path.splitext(fileContent[0])[1]
             

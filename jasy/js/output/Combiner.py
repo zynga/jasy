@@ -133,7 +133,15 @@ def storeSourceLoader(fileName, classes, session, bootCode="", urlPrefix=""):
     logging.info("Building source loader (%s classes)...", len(classes))
 
     main = session.getMain()
-    files = [main.toRelativeUrl(classObj.getPath(), urlPrefix) for classObj in classes]
+    files = []
+    for classObj in classes:
+        # Support for multi path classes (e.g. in manual mode)
+        path = classObj.getPath()
+        if type(path) is list:
+            for split in path:
+                files.append(main.toRelativeUrl(split, urlPrefix))
+        else:
+            files.append(main.toRelativeUrl(path, urlPrefix))
     
     loader = '"%s"' % '","'.join(files)
     boot = "function(){%s}" % bootCode if bootCode else "null"
