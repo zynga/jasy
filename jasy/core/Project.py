@@ -116,9 +116,7 @@ class Project():
                 
         # Compat - please change to class/style/asset instead
         elif self.hasDir("src"):
-            self.kind = "legacy"
-
-            logging.warn("  - Using legacy style src folder. Please rename/restructure to new conventions!")
+            self.kind = "resource"
             self.addDir("src", "classes")
 
         # Resource projects
@@ -256,7 +254,7 @@ class Project():
                 # Create instance
                 item = construct(self, fileId).attach(fullPath)
                 
-                logging.info("  - Registering %s %s" % (item.kind, fileId))
+                logging.debug("  - Registering %s %s" % (item.kind, fileId))
                 dist[fileId] = item
 
 
