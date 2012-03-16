@@ -16,6 +16,10 @@ from jasy.core.Markdown import *
 
 __all__ = ["Project", "getProject"]
 
+classExtensions = (".js")
+translationExtensions = (".po")
+docFiles = ("package.md", "readme.md")
+
 
 def getKey(data, key, default=None):
     if key in data:
@@ -168,15 +172,18 @@ class Project():
                 raise JasyError("Empty content!")
 
             fileExtension = os.path.splitext(fileContent[0])[1]
+            
+            # Support for joining text content
             if len(fileContent) == 1:
                 filePath = os.path.join(self.__path, fileContent[0])
             else:
                 filePath = [os.path.join(self.__path, filePart) for filePart in fileContent]
             
-            if fileExtension == ".js":
+            # Structure files
+            if fileExtension in classExtensions:
                 construct = Class
                 dist = self.classes
-            elif fileExtension == ".po":
+            elif fileExtension in translationExtensions:
                 construct = Translation
                 dist = self.translations
             else:
@@ -226,16 +233,16 @@ class Project():
                 else:
                     fileId = ""
 
-                # Structure files
-                if fileExtension == ".js":
+                # Structure files  
+                if fileExtension in classExtensions:
                     fileId += os.path.splitext(relPath)[0]
                     construct = Class
                     dist = self.classes
-                elif fileExtension == ".po":
+                elif fileExtension in translationExtensions:
                     fileId += os.path.splitext(relPath)[0]
                     construct = Translation
                     dist = self.translations
-                elif fileName == "package.md":
+                elif fileName in docFiles:
                     fileId += os.path.dirname(relPath)
                     fileId = fileId.strip("/") # edge case when top level directory
                     construct = Doc
