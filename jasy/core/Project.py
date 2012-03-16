@@ -27,7 +27,6 @@ def getKey(data, key, default=None):
     else:
         return default
 
-
 projects = {}
 
 def getProject(path, config=None):
@@ -323,8 +322,6 @@ class Project():
     def getPackage(self):
         return self.__package
         
-        
-        
     def toRelativeUrl(self, path, prefix="", subpath="source"):
         root = os.path.join(self.__path, subpath)
         relpath = os.path.relpath(path, root)
@@ -336,8 +333,6 @@ class Project():
             relpath = os.path.normpath(prefix + relpath)
             
         return relpath
-        
-        
 
 
 

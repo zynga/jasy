@@ -7,16 +7,12 @@ import logging, os, random
 
 from jasy.core.Error import JasyError
 from jasy.core.Permutation import Permutation
-
-from jasy.util.File import *
+from jasy.core.Env import *
 
 from jasy.js.Class import Error as ClassError
-from jasy.js.Resolver import Resolver
-from jasy.js.Sorter import Sorter
-from jasy.js.output.Optimization import Optimization
 
 
-def storeKernel(fileName, session, assets=None, translations=None, optimization=None, formatting=None, debug=False):
+def storeKernel(fileName, assets=None, translations=None, optimization=None, formatting=None, debug=False):
     """
     Writes a so-called kernel script to the given location. This script contains
     data about possible permutations based on current session values. It optionally
@@ -50,7 +46,7 @@ def storeKernel(fileName, session, assets=None, translations=None, optimization=
     
     # Build resolver
     # We need the permutation here because the field configuration might rely on detection classes
-    resolver = Resolver(session.getProjects(), permutation)
+    resolver = Resolver(permutation)
     
     # Include classes for value injection
     if fields is not None:
@@ -117,7 +113,7 @@ def storeCompressed(fileName, classes, bootCode="", permutation=None, translatio
 
 
 
-def storeSourceLoader(fileName, classes, session, bootCode="", urlPrefix=""):
+def storeSourceLoader(fileName, classes, bootCode="", urlPrefix=""):
     """
     Generates a source loader which is basically a file which loads the original JavaScript files.
     This is super useful during development of a project as it supports pretty fast workflows
@@ -125,7 +121,6 @@ def storeSourceLoader(fileName, classes, session, bootCode="", urlPrefix=""):
     
     - fileName: Filename to write to
     - classes: Classes to include in the compressed file in correct order
-    - session: Session object, required to figure out relative project paths to each other.
     - bootCode: Code to run after all defined classes have been loaded.
     - prefixUrl: Useful when the project files are stored on another domain (CDN). Puts the given URL prefix in front of all URLs to load.
     """

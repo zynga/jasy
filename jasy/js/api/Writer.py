@@ -9,6 +9,7 @@ from jasy.util.File import *
 from jasy.js.api.Data import ApiData
 from jasy.js.api.Text import *
 from jasy.js.util import *
+from jasy.core.Env import session
 
 __all__ = ["ApiWriter"]
 
@@ -30,7 +31,6 @@ linkMap = {
 # Used to process HTML links
 linkExtract = re.compile(r" href=(\"|')([a-zA-Z0-9#\:\.\~]+)(\"|')", re.M)
 internalLinkParse = re.compile(r"^((static|member|property|event)\:)?([a-zA-Z0-9_\.]+)?(\~([a-zA-Z0-9_]+))?$")
-
 
 def convertFunction(item):
     item["isFunction"] = True
@@ -267,13 +267,8 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                             del classEntry["params"][paramName]["errornous"]
 
 
-
 class ApiWriter():
     
-    def __init__(self, session):
-        self.session = session
-        
-        
     def write(self, distFolder, format="json", compact=True, callback=None, showInternals=False, showPrivates=False):
         
         logging.info("Writing API data to %s..." % distFolder)
@@ -341,10 +336,10 @@ class ApiWriter():
         # Collecting Original (Cached) Data
         #
         
-        logging.info("- Collecting Classes...")
+        logging.info("- Generating API Data...")
         apiData = {}
         
-        for project in self.session.getProjects():
+        for project in session.getProjects():
             classes = project.getClasses()
             for className in classes:
                 apiData[className] = classes[className].getApi()
@@ -360,7 +355,7 @@ class ApiWriter():
         logging.info("- Highlighting Code...")
         highlighted = {}
 
-        for project in self.session.getProjects():
+        for project in session.getProjects():
             classes = project.getClasses()
             for className in classes:
                 highlighted[className] = classes[className].getHighlightedCode()

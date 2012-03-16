@@ -15,7 +15,6 @@ from jasy.util.Profiler import *
 from jasy.util.File import *
 
 
-
 __all__ = ["Session"]
 
 
@@ -35,9 +34,11 @@ class Session():
         self.__projects = []
         self.__fields = {}
         
-        print("Initialize projects...")
+        logging.info("Initialize projects...")
         if os.path.exists("jasyproject.json"):
             self.addProject(Project("."))
+            
+        logging.info("Ready (%s projects)" % len(self.__projects))
     
     
     def clearCache(self):
@@ -358,4 +359,6 @@ class Session():
                     files.append(translations[entry])
         
         return Translation(locale, files)
-
+        
+        
+        

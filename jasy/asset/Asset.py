@@ -9,6 +9,7 @@ from os.path import basename, dirname, relpath, normpath
 from jasy.util.Profiler import *
 from jasy.util.File import *
 from jasy.core.Project import Project
+from jasy.core.Env import session
 
 __all__ = ["Asset"]
 
@@ -30,8 +31,7 @@ class Asset:
     Supports images sprites when it finds a 'sprites.json' in any folder.
     """
     
-    def __init__(self, session, classes, permutation=None):
-        self.__session = session
+    def __init__(self, classes, permutation=None):
         self.__classes = classes
         self.__permutation = permutation
         
@@ -42,7 +42,7 @@ class Asset:
         expr = self.__compileFilterExpr()
         
         # Loop though all projects and merge/filter assets
-        for project in self.__session.getProjects():
+        for project in session.getProjects():
             localAssets = project.assets
             for fileId in localAssets:
                 # Minor performance tweak: Using lookup instead of regexp during merge
@@ -81,7 +81,7 @@ class Asset:
         """
 
         assets = self.__assets
-        projects = self.__session.getProjects()
+        projects = session.getProjects()
 
         logging.info("Publishing files...")
         pstart()
@@ -139,7 +139,7 @@ class Asset:
             string so that the URLs do not contain useless ".." parent directory segments.
         """
         
-        main = self.__session.getMain()
+        main = session.getMain()
         assets = self.__assets
         result = {}
         

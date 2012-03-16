@@ -5,12 +5,13 @@
 
 import logging
 from jasy.util.Profiler import *
+from jasy.core.Env import session
 
 __all__ = ["Resolver"]
 
 class Resolver():
-    def __init__(self, projects, permutation=None):
-        # Keep session/permutation reference
+    def __init__(self, permutation=None):
+        # Keep permutation reference
         self.__permutation = permutation
 
         # Required classes by the user
@@ -24,7 +25,7 @@ class Resolver():
 
         # Collecting all available classes
         self.__classes = {}
-        for project in projects:
+        for project in session.getProjects():
             self.__classes.update(project.getClasses())
         
         
