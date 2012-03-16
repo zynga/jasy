@@ -174,16 +174,23 @@ class Project():
                 filePath = [os.path.join(self.__path, filePart) for filePart in fileContent]
             
             if fileExtension == ".js":
-                if fileId in self.classes:
-                    raise JasyError("Class ID was registered before: %s" % fileId)
-                else:
-                    self.classes[fileId] = Class(self, fileId).attach(filePath)
-                    
+                construct = Class
+                dist = self.classes
+            elif fileExtension == ".po":
+                construct = Translation
+                dist = self.translations
             else:
-                if fileId in self.assets:
-                    raise JasyError("Item ID was registered before: %s" % fileId)
-                else:
-                    self.assets[fileId] = Asset(self, fileId).attach(filePath).markAsManual()
+                construct = Asset
+                dist = self.assets
+                
+            # Check for duplication
+            if fileId in dist:
+                raise JasyError("Item ID was registered before: %s" % fileId)
+            
+            # Create instance
+            item = construct(self, fileId).attach(filePath)
+            logging.info("  - Registering %s %s" % (item.kind, fileId))
+            dist[fileId] = item
         
         
     def addDir(self, directory, distname):
@@ -253,8 +260,7 @@ class Project():
 
                 # Create instance
                 item = construct(self, fileId).attach(fullPath)
-                
-                logging.debug("  - Registering %s %s" % (item.kind, fileId))
+                logging.info("  - Registering %s %s" % (item.kind, fileId))
                 dist[fileId] = item
 
 
@@ -263,13 +269,6 @@ class Project():
     # ESSENTIALS
     #
     
-    #def __str__(self):
-    #    return self.__path
-
-    #def __repr__(self):
-    #    return self.__path
-    
-
     def getRequires(self):
         """
         Return the project requirements as project instances
