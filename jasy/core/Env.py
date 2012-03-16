@@ -32,7 +32,7 @@ from jasy.js.output.Optimization import Optimization
 from jasy.js.output.Formatting import Formatting
 
 formatting = Formatting()
-optimization = Optimization()
+optimization = Optimization("variables", "declarations", "blocks", "privates")
 
 # Import file operation goodies
 from jasy.util.File import *
