@@ -1094,6 +1094,41 @@ class Tests(unittest.TestCase):
         self.assertNotIn("default", comment.params["y"])
         
     
+    def test_doc_params_maps(self):
+
+        parsed = self.process('''
+
+        /**
+         * Additional arguments can be passed in via @options {Object?}:
+         *
+         * - @options.x {String}
+         * - @options.y {Number}
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.assertEqual(comment.html, '<p>Additional arguments can be passed in via <code class="param">options</code>:</p>\n\n<ul>\n<li><code class="param">options.x</code></li>\n<li><code class="param">options.y</code></li>\n</ul>\n')
+
+        self.assertEqual(type(comment.params), dict)
+
+        self.assertEqual(type(comment.params["options"]), dict)
+
+        self.assertEqual(type(comment.params["options"]["fields"]), dict)
+        self.assertEqual(comment.params["options"]["type"][0]["name"], "Object")
+
+        self.assertEqual(type(comment.params["options"]["fields"]["x"]), dict)
+        self.assertEqual(type(comment.params["options"]["fields"]["y"]), dict)
+
+        self.assertEqual(comment.params["options"]["fields"]["x"]["type"][0]["name"], "String")
+        self.assertEqual(comment.params["options"]["fields"]["y"]["type"][0]["name"], "Number")
+
     
     #
     # DOC COMMENTS :: MARKDOWN

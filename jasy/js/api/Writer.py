@@ -511,7 +511,7 @@ class ApiWriter():
                             
                 elif not item["type"] in builtinTypes and not item["type"] in additionalTypes:
                     
-                    logging.error('  - Invalid type "%s" in %s at line %s', returnTypeEntry["name"], className, item["line"])
+                    logging.error('  - Invalid type "%s" in %s at line %s', item["type"], className, item["line"])
             
             
             # Process doc
