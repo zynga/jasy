@@ -65,6 +65,7 @@ if not os.path.isfile(scriptname) and not options.showVersion:
     sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % scriptname)
     sys.exit(1)
 
+# Import global environment
 from jasy.core.Env import *
 
 try:

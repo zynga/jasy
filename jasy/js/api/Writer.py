@@ -9,7 +9,7 @@ from jasy.util.File import *
 from jasy.js.api.Data import ApiData
 from jasy.js.api.Text import *
 from jasy.js.util import *
-from jasy.core.Env import session
+from jasy.core.Env import session, startSection, endSection
 
 __all__ = ["ApiWriter"]
 
@@ -271,9 +271,7 @@ class ApiWriter():
     
     def write(self, distFolder, format="json", compact=True, callback=None, showInternals=False, showPrivates=False):
         
-        logging.info("===============================================================================")
-        logging.info("WRITE API DATA TO %s..." % distFolder)
-        logging.info("-------------------------------------------------------------------------------")
+        startSection("Writing API data...")
         
         if not format in ("json", "msgpack"):
             logging.warn("Invalid output format: %s. Falling back to json." % format)
@@ -329,8 +327,7 @@ class ApiWriter():
         writeFile(os.path.join(distFolder, "meta-index.%s" % extension), encode(index, "meta-index"))
         writeFile(os.path.join(distFolder, "meta-search.%s" % extension), encode(search, "meta-search"))
         
-        logging.info("===============================================================================")
-        logging.info("")
+        endSection()
         
 
     def collect(self, internals=False, privates=False):

@@ -5,20 +5,45 @@
 
 import logging, os
 
-# Include the Jasy public API
-import jasy
-
 # Print out some info
+import jasy
 logging.info("Jasy %s" % jasy.__version__)
 logging.debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
 
-from jasy.core.Session import Session
+# Section handling
+__sectionActive = False
 
-session = Session()
+def startSection(title):
+    global __sectionActive
+    if __sectionActive:
+        raise Exception("Another section is active already!")
+    
+    logging.info("")
+    logging.info(">>> %s" % title.upper())
+    logging.info("-------------------------------------------------------------------------------")
+    
+    __sectionActive = True
+    
+def endSection():
+    global __sectionActive
 
-permutation = None
+    if __sectionActive:
+        __sectionActive = False
+
+# Global permutation handling
+__permutation = None
+
 def getPermutation():
-    return permutation
+    global __permutation
+    return __permutation
+
+def setPermutation(use):
+    global __permutation
+    __permutation = use
+            
+# Global session object
+from jasy.core.Session import Session
+session = Session()
 
 # Task API for user scripts
 from jasy.core.Task import *

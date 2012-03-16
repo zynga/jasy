@@ -27,13 +27,11 @@ def storeKernel(fileName, assets=None, translations=None, optimization=None, for
     exclude it from the real other generated output files.
     """
     
-    logging.info("===============================================================================")
-    logging.info("STORE KERNEL")
-    logging.info("-------------------------------------------------------------------------------")
+    startSection("Storing kernel...")
     
     # Auto optimize kernel with basic compression features
     if optimization is None:
-        optimization = Optimization("variables", "declarations", "blocks")
+        optimization = Optimization("variables", "declarations", "blocks", "privates")
     
     # This exports all field values from the session
     fields = session.exportFields()
@@ -43,12 +41,12 @@ def storeKernel(fileName, assets=None, translations=None, optimization=None, for
     # - fields => core.Env
     # - assets => core.Asset
     # - translations => core.Locale
-    jasy.core.Env.permutation = Permutation({
+    setPermutation(Permutation({
         "debug" : debug,
         "fields" : fields,
         "assets" : assets,
         "translations" : translations
-    })
+    }))
     
     # Build resolver
     # We need the permutation here because the field configuration might rely on detection classes
@@ -71,10 +69,8 @@ def storeKernel(fileName, assets=None, translations=None, optimization=None, for
     classes = Sorter(resolver).getSortedClasses()
     storeCompressed(fileName, classes, optimization=optimization, formatting=formatting)
     
-    jasy.core.Env.permutation = None
-    
-    logging.info("===============================================================================")
-    logging.info("")
+    setPermutation(None)
+    endSection()
     
     return classes
 
@@ -97,7 +93,7 @@ def storeCombined(fileName, classes, bootCode=None):
 
 
 
-def storeCompressed(fileName, classes, bootCode="", permutation=None, translation=None, optimization=None, formatting=None):
+def storeCompressed(fileName, classes, bootCode="", translation=None, optimization=None, formatting=None):
     """
     Combines the compressed result of the stored class list
     
@@ -113,7 +109,7 @@ def storeCompressed(fileName, classes, bootCode="", permutation=None, translatio
     logging.info("Compressing %s classes...", len(classes))
 
     try:
-        result = "".join([classObj.getCompressed(permutation, translation, optimization, formatting) for classObj in classes])
+        result = "".join([classObj.getCompressed(getPermutation(), translation, optimization, formatting) for classObj in classes])
         if bootCode:
             result += bootCode
         

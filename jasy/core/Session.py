@@ -13,8 +13,7 @@ from jasy.core.Permutation import Permutation
 
 from jasy.util.Profiler import *
 from jasy.util.File import *
-
-import jasy.core.Env
+from jasy.core.Env import *
 
 __all__ = ["Session"]
 
@@ -36,15 +35,10 @@ class Session():
         self.__fields = {}
         
         if os.path.exists("jasyproject.json"):
-            logging.info("===============================================================================")
-            logging.info("INITIALIZE PROJECTS...")
-            logging.info("-------------------------------------------------------------------------------")
-            
+            startSection("Initializing projects...")
             self.addProject(Project("."))
-
             logging.info("Ready (%s projects)" % len(self.__projects))
-            logging.info("===============================================================================")
-            logging.info("")
+            endSection()
     
     
     def clearCache(self):
@@ -260,20 +254,14 @@ class Session():
     def permutate(self):
         """ Generator method for permutations for improving output capabilities """
         
-        allPermutations = self.getPermutations()
-        allNumber = len(allPermutations)
+        permutations = self.getPermutations()
+        length = len(permutations)
         
-        for pos, current in enumerate(allPermutations):
-
-
-
-            logging.info("===============================================================================")
-            logging.info("PERMUTATION %s/%s" % (pos+1, allNumber))
-            logging.info("-------------------------------------------------------------------------------")
-            jasy.core.Env.permutation=current
+        for pos, current in enumerate(permutations):
+            startSection("Permutation %s/%s" % (pos+1, length))
+            setPermutation(current)
             yield current
-            logging.info("===============================================================================")
-            logging.info("")
+            endSection()
 
 
     def exportFields(self):
