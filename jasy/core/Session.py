@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, itertools, time, atexit, json
+import logging, itertools, time, atexit, json, os
 
 from jasy.i18n.Translation import Translation
 from jasy.i18n.LocaleData import *
@@ -34,6 +34,10 @@ class Session():
         self.__timestamp = time.time()
         self.__projects = []
         self.__fields = {}
+        
+        print("Initialize projects...")
+        if os.path.exists("jasyproject.json"):
+            self.addProject(Project("."))
     
     
     def clearCache(self):
@@ -84,6 +88,9 @@ class Session():
         - project: Instance of Project to append to the list
         """
         
+        for requiredProject in project.getRequires():
+            self.addProject(requiredProject)
+
         self.__projects.append(project)
         
         # Import project defined fields which might be configured using "activateField()"
@@ -117,14 +124,6 @@ class Session():
         return self.__projects
         
         
-    def getMainProject(self):
-        """
-        The main project is basically the project with the currently running build script
-        """
-        
-        return self.__projects[-1]
-        
-        
     def getRelativePath(self, project):
         """
         Returns the relative path of any project to the main project
@@ -134,6 +133,10 @@ class Session():
         projectPath = project.getPath()
         
         return os.path.relpath(projectPath, mainPath)
+        
+        
+    def getMain(self):
+        return self.__projects[-1]
     
     
     

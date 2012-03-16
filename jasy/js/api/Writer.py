@@ -276,7 +276,7 @@ class ApiWriter():
         
     def write(self, distFolder, format="json", compact=True, callback=None, showInternals=False, showPrivates=False):
         
-        logging.info("Writing API data to: %s" % distFolder)
+        logging.info("Writing API data to %s..." % distFolder)
         
         if not format in ("json", "msgpack"):
             logging.warn("Invalid output format: %s. Falling back to json." % format)
@@ -815,25 +815,12 @@ class ApiWriter():
 
         logging.info("- Collecting Package Docs...")
 
-        packages = set()
-        for project in self.session.getProjects():
-            docs = project.getDocs()
-            for packageName in docs:
-                packages.add(packageName)
-                apiData[packageName] = ApiData(packageName)
-                apiData[packageName].main = {
-                    "type" : "Package",
-                    "name" : packageName,
-                    "doc" : docs[packageName]
-                }
-                
         for className in list(apiData):
             # Auto create API data for all packages in between
             splits = className.split(".")
             packageName = splits[0]
             for split in splits[1:]:
                 if not packageName in apiData:
-                    packages.add(packageName)
                     logging.debug("Creating missing package doc entry: %s" % packageName)
                     apiData[packageName] = ApiData(packageName)
                     apiData[packageName].main = {
@@ -863,9 +850,12 @@ class ApiWriter():
                 apiData[lastPackage].content.append(classPkgEntry)
         
         # Sort package content
-        for packageName in packages:
-            apiData[packageName].content.sort(key=lambda entry: entry["name"])
-        
+        for className in apiData:
+            if hasattr(apiData[className], "content"):
+                try:
+                    apiData[className].content.sort(key=lambda entry: entry["name"])
+                except AttributeError:
+                    logging.warn("Could not sort package: %s. Invalid content!" % packageName)
         
         
         #

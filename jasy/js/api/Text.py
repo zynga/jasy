@@ -15,8 +15,12 @@ newlineMatcher = re.compile(r"\n")
 stripMarkup = re.compile(r"<.*?>")
 
 def extractSummary(text):
-    text = stripMarkup.sub("", newlineMatcher.sub(" ", text))
-    matched = paragraphExtract.match(text)
+    try:
+        text = stripMarkup.sub("", newlineMatcher.sub(" ", text))
+        matched = paragraphExtract.match(text)
+    except TypeError:
+        matched = None
+        
     if matched:
         summary = matched.group(1)
         if summary is not None:
@@ -25,7 +29,7 @@ def extractSummary(text):
             return summary
             
     else:
-        logging.debug("Unable to extract summary for: %s", text)
+        logging.warn("Unable to extract summary for: %s", text)
     
     return None
     

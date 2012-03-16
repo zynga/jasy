@@ -24,7 +24,7 @@ class Sorter:
         classes = self.__resolver.getIncludedClasses()
 
         # Build class name dict
-        self.__names = dict([(classObj.getName(), classObj) for classObj in classes])
+        self.__names = dict([(classObj.getId(), classObj) for classObj in classes])
         
         # Initialize fields
         self.__loadDeps = {}
@@ -108,7 +108,7 @@ class Sorter:
         
         if classObj in stack:
             stack.append(classObj)
-            msg = " >> ".join([x.getName() for x in stack[stack.index(classObj):]])
+            msg = " >> ".join([x.getId() for x in stack[stack.index(classObj):]])
             raise CircularDependency("Circular Dependency: %s" % msg)
     
         stack.append(classObj)
@@ -132,7 +132,7 @@ class Sorter:
             if depObj is classObj:
                 continue
             
-            depName = depObj.getName()
+            depName = depObj.getId()
             
             if depName in classMeta.breaks:
                 logging.debug("Manual Break: %s => %s" % (classObj, depObj))
