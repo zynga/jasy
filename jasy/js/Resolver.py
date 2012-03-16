@@ -6,13 +6,14 @@
 import logging
 from jasy.util.Profiler import *
 from jasy.core.Env import session
+from jasy.core.Env import getPermutation
 
 __all__ = ["Resolver"]
 
 class Resolver():
-    def __init__(self, permutation=None):
+    def __init__(self):
         # Keep permutation reference
-        self.__permutation = permutation
+        self.__permutation = getPermutation()
 
         # Required classes by the user
         self.__required = []

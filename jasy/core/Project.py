@@ -95,7 +95,7 @@ class Project():
         # Read fields (for injecting data into the project and build permuations)
         self.__fields = getKey(config, "fields", {})
 
-        logging.info("- Initializing project: %s (from: %s)", self.__name, self.__path)
+        logging.info("Initializing project: %s (from: %s)", self.__name, self.__path)
             
         # Processing custom content section. Only supports classes and assets.
         if "content" in config:
@@ -142,10 +142,10 @@ class Project():
                 summary.append("%s %s" % (len(content), section))
 
         if summary:
-            logging.info("  - Kind: %s", self.kind)
-            logging.info("  - Found: %s", ", ".join(summary))
+            logging.info("- Kind: %s", self.kind)
+            logging.info("- Found: %s", ", ".join(summary))
         else:
-            logging.info("  - Empty project?!?")
+            logging.info("- Empty project?!?")
 
 
 

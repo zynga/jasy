@@ -271,7 +271,9 @@ class ApiWriter():
     
     def write(self, distFolder, format="json", compact=True, callback=None, showInternals=False, showPrivates=False):
         
-        logging.info("Writing API data to %s..." % distFolder)
+        logging.info("===============================================================================")
+        logging.info("WRITE API DATA TO %s..." % distFolder)
+        logging.info("-------------------------------------------------------------------------------")
         
         if not format in ("json", "msgpack"):
             logging.warn("Invalid output format: %s. Falling back to json." % format)
@@ -327,7 +329,8 @@ class ApiWriter():
         writeFile(os.path.join(distFolder, "meta-index.%s" % extension), encode(index, "meta-index"))
         writeFile(os.path.join(distFolder, "meta-search.%s" % extension), encode(search, "meta-search"))
         
-        
+        logging.info("===============================================================================")
+        logging.info("")
         
 
     def collect(self, internals=False, privates=False):
@@ -336,7 +339,7 @@ class ApiWriter():
         # Collecting Original (Cached) Data
         #
         
-        logging.info("- Generating API Data...")
+        logging.info("Generating API Data...")
         apiData = {}
         
         for project in session.getProjects():
@@ -352,7 +355,7 @@ class ApiWriter():
         # Collecting Source Code
         #
 
-        logging.info("- Highlighting Code...")
+        logging.info("Highlighting Code...")
         highlighted = {}
 
         for project in session.getProjects():
@@ -367,7 +370,7 @@ class ApiWriter():
         # Building Documentation Summaries
         #
 
-        logging.info("- Adding Source Links...")
+        logging.info("Adding Source Links...")
 
         for className in apiData:
             classApi = apiData[className]
@@ -391,7 +394,7 @@ class ApiWriter():
         # Including Mixins / IncludedBy
         #
 
-        logging.info("- Resolving Mixins...")
+        logging.info("Resolving Mixins...")
 
         # Just used temporary to keep track of which classes are merged
         mergedClasses = set()
@@ -425,7 +428,7 @@ class ApiWriter():
         # Checking links
         #
         
-        logging.info("- Checking Links...")
+        logging.info("Checking Links...")
         
         additionalTypes = ("Call", "Identifier", "Map", "Integer", "Node", "Element")
         
@@ -549,7 +552,7 @@ class ApiWriter():
         # Filter Internals/Privates
         #
         
-        logging.info("- Filtering Items...")
+        logging.info("Filtering Items...")
         
         def isVisible(entry):
             if "visibility" in entry:
@@ -578,7 +581,7 @@ class ApiWriter():
         # Connection Interfaces / ImplementedBy
         #
         
-        logging.info("- Connecting Interfaces...")
+        logging.info("Connecting Interfaces...")
         
         for className in apiData:
             classApi = getApi(className)
@@ -607,7 +610,7 @@ class ApiWriter():
         # Connecting Uses / UsedBy
         #
         
-        logging.info("- Collecting Use Patterns...")
+        logging.info("Collecting Use Patterns...")
 
         # This matches all uses with the known classes and only keeps them if matched
         allClasses = set(list(apiData))
@@ -634,7 +637,7 @@ class ApiWriter():
         # Merging Named Classes
         #
         
-        logging.info("- Merging Named Classes...")
+        logging.info("Merging Named Classes...")
         
         for className in list(apiData):
             classApi = apiData[className]
@@ -697,7 +700,7 @@ class ApiWriter():
         # Collecting errors
         #
         
-        logging.info("- Collecting Errors...")
+        logging.info("Collecting Errors...")
         
         for className in sorted(apiData):
             classApi = apiData[className]
@@ -730,14 +733,14 @@ class ApiWriter():
                         })
                         
             if errors:
-                logging.warn("  - Found errors in %s", className)
+                logging.warn("- Found errors in %s", className)
                 errorsSorted = sorted(errors, key=lambda entry: entry["line"])
                 
                 for entry in errorsSorted:
                     if entry["name"]:
-                        logging.warn("    - %s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
+                        logging.warn("  - %s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
                     else:
-                        logging.warn("    - %s (line %s)", entry["kind"], entry["line"])
+                        logging.warn("  - %s (line %s)", entry["kind"], entry["line"])
                 
                 classApi.errors = errorsSorted
         
@@ -747,7 +750,7 @@ class ApiWriter():
         # Building Search Index
         #
 
-        logging.info("- Building Search Index...")
+        logging.info("Building Search Index...")
         search = {}
 
         def addSearch(classApi, field):
@@ -774,7 +777,7 @@ class ApiWriter():
         # Post Process (dict to sorted list)
         #
         
-        logging.info("- Post Processing Data...")
+        logging.info("Post Processing Data...")
         
         for className in sorted(apiData):
             classApi = apiData[className]
@@ -808,7 +811,7 @@ class ApiWriter():
         # Collecting Package Docs
         #
 
-        logging.info("- Collecting Package Docs...")
+        logging.info("Collecting Package Docs...")
 
         for className in list(apiData):
             # Auto create API data for all packages in between
@@ -857,7 +860,7 @@ class ApiWriter():
         # Writing API Index
         #
         
-        logging.debug("- Building Index...")
+        logging.debug("Building Index...")
         index = {}
         
         for className in apiData:

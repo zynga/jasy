@@ -16,6 +16,10 @@ from jasy.core.Session import Session
 
 session = Session()
 
+permutation = None
+def getPermutation():
+    return permutation
+
 # Task API for user scripts
 from jasy.core.Task import *
 from jasy.asset.Asset import * 

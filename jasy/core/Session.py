@@ -14,6 +14,7 @@ from jasy.core.Permutation import Permutation
 from jasy.util.Profiler import *
 from jasy.util.File import *
 
+import jasy.core.Env
 
 __all__ = ["Session"]
 
@@ -34,11 +35,16 @@ class Session():
         self.__projects = []
         self.__fields = {}
         
-        logging.info("Initialize projects...")
         if os.path.exists("jasyproject.json"):
-            self.addProject(Project("."))
+            logging.info("===============================================================================")
+            logging.info("INITIALIZE PROJECTS...")
+            logging.info("-------------------------------------------------------------------------------")
             
-        logging.info("Ready (%s projects)" % len(self.__projects))
+            self.addProject(Project("."))
+
+            logging.info("Ready (%s projects)" % len(self.__projects))
+            logging.info("===============================================================================")
+            logging.info("")
     
     
     def clearCache(self):
@@ -48,6 +54,7 @@ class Session():
 
         for project in self.getProjects():
             project.clearCache()
+
 
     def close(self):
         """
@@ -247,9 +254,26 @@ class Session():
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
         permutations = [Permutation(combi) for combi in combinations]
 
-        logging.info("Detected %s possible permutations", len(permutations))
-
         return permutations
+
+
+    def permutate(self):
+        """ Generator method for permutations for improving output capabilities """
+        
+        allPermutations = self.getPermutations()
+        allNumber = len(allPermutations)
+        
+        for pos, current in enumerate(allPermutations):
+
+
+
+            logging.info("===============================================================================")
+            logging.info("PERMUTATION %s/%s" % (pos+1, allNumber))
+            logging.info("-------------------------------------------------------------------------------")
+            jasy.core.Env.permutation=current
+            yield current
+            logging.info("===============================================================================")
+            logging.info("")
 
 
     def exportFields(self):

@@ -7,6 +7,8 @@ import logging, os, random
 
 from jasy.core.Error import JasyError
 from jasy.core.Permutation import Permutation
+
+import jasy.core.Env
 from jasy.core.Env import *
 
 from jasy.js.Class import Error as ClassError
@@ -25,6 +27,10 @@ def storeKernel(fileName, assets=None, translations=None, optimization=None, for
     exclude it from the real other generated output files.
     """
     
+    logging.info("===============================================================================")
+    logging.info("STORE KERNEL")
+    logging.info("-------------------------------------------------------------------------------")
+    
     # Auto optimize kernel with basic compression features
     if optimization is None:
         optimization = Optimization("variables", "declarations", "blocks")
@@ -37,7 +43,7 @@ def storeKernel(fileName, assets=None, translations=None, optimization=None, for
     # - fields => core.Env
     # - assets => core.Asset
     # - translations => core.Locale
-    permutation = Permutation({
+    jasy.core.Env.permutation = Permutation({
         "debug" : debug,
         "fields" : fields,
         "assets" : assets,
@@ -46,7 +52,7 @@ def storeKernel(fileName, assets=None, translations=None, optimization=None, for
     
     # Build resolver
     # We need the permutation here because the field configuration might rely on detection classes
-    resolver = Resolver(permutation)
+    resolver = Resolver()
     
     # Include classes for value injection
     if fields is not None:
@@ -62,8 +68,13 @@ def storeKernel(fileName, assets=None, translations=None, optimization=None, for
     resolver.addClassName("core.io.Queue")
     
     # Sort resulting class list
-    classes = Sorter(resolver, permutation).getSortedClasses()
-    storeCompressed(fileName, classes, permutation=permutation, optimization=optimization, formatting=formatting)
+    classes = Sorter(resolver).getSortedClasses()
+    storeCompressed(fileName, classes, optimization=optimization, formatting=formatting)
+    
+    jasy.core.Env.permutation = None
+    
+    logging.info("===============================================================================")
+    logging.info("")
     
     return classes
 
