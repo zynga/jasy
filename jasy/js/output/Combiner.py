@@ -14,7 +14,7 @@ from jasy.core.Env import *
 from jasy.js.Class import Error as ClassError
 
 
-def storeKernel(fileName, assets=None, translations=None, optimization=None, formatting=None, debug=False):
+def storeKernel(fileName, assets=None, translations=None, debug=False):
     """
     Writes a so-called kernel script to the given location. This script contains
     data about possible permutations based on current session values. It optionally
@@ -28,10 +28,6 @@ def storeKernel(fileName, assets=None, translations=None, optimization=None, for
     """
     
     startSection("Storing kernel...")
-    
-    # Auto optimize kernel with basic compression features
-    if optimization is None:
-        optimization = Optimization("variables", "declarations", "blocks", "privates")
     
     # This exports all field values from the session
     fields = session.exportFields()
@@ -67,7 +63,7 @@ def storeKernel(fileName, assets=None, translations=None, optimization=None, for
     
     # Sort resulting class list
     classes = Sorter(resolver).getSortedClasses()
-    storeCompressed(fileName, classes, optimization=optimization, formatting=formatting)
+    storeCompressed(fileName, classes)
     
     setPermutation(None)
     endSection()
@@ -93,7 +89,7 @@ def storeCombined(fileName, classes, bootCode=None):
 
 
 
-def storeCompressed(fileName, classes, bootCode="", translation=None, optimization=None, formatting=None):
+def storeCompressed(fileName, classes, bootCode="", translation=None):
     """
     Combines the compressed result of the stored class list
     
@@ -102,8 +98,6 @@ def storeCompressed(fileName, classes, bootCode="", translation=None, optimizati
     - bootCode: Code to execute once all the classes are loaded
     - permutation: Permutation to apply to the classes before compression (for alternative code variants) (See Permutation.py)
     - translation: Translation to apply to the classes before compression (inlining of translation)
-    - optimization: Optimization to apply before compression (variable shortening, ...) (See Optimization.py)
-    - formatting: Formatting to use during compression (See Formatting.py)
     """
     
     logging.info("Compressing %s classes...", len(classes))

@@ -269,11 +269,11 @@ class Class(Item):
         return None
         
         
-    def getCompressed(self, permutation=None, translation=None, optimization=None, format=None):
+    def getCompressed(self, permutation=None, translation=None, optimization=None, formatting=None):
         permutation = self.filterPermutation(permutation)
         translation = self.filterTranslation(translation)
         
-        field = "compressed[%s]-%s-%s-%s-%s" % (self.id, permutation, translation, optimization, format)
+        field = "compressed[%s]-%s-%s-%s-%s" % (self.id, permutation, translation, optimization, formatting)
         field = hashlib.md5(field.encode("utf-8")).hexdigest()
         
         compressed = self.project.getCache().read(field, self.getModificationTime())
@@ -292,7 +292,7 @@ class Class(Item):
                     except jasy.js.output.Optimization.Error as error:
                         raise Error(self, "Could not compress class! %s" % error)
                 
-            compressed = Compressor(format).compress(tree)
+            compressed = Compressor(formatting).compress(tree)
             self.project.getCache().store(field, compressed, self.getModificationTime())
             
         return compressed
