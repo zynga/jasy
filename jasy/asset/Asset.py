@@ -9,7 +9,7 @@ from os.path import basename, dirname, relpath, normpath
 from jasy.util.Profiler import *
 from jasy.util.File import *
 from jasy.core.Project import Project
-from jasy.core.Env import session, getPermutation
+from jasy.core.Env import session, getPermutation, prependDist
 
 __all__ = ["Asset"]
 
@@ -68,12 +68,11 @@ class Asset:
 
 
 
-    def exportBuild(self, buildFolder="build", assetFolder="asset", urlPrefix=""):
+    def exportBuild(self, assetFolder="asset", urlPrefix=""):
         """
-        Publishes the selected files to the given 'buildFolder/assetFolder'. This merges files from 
+        Publishes the selected files to the destination folder. This merges files from 
         different projects to this one folder. This is ideal for preparing the final deployment.
         
-        - buildFolder: Root destination folder. Used for dealing with relative URLs and copying.
         - assetFolder: Where the assets should copied to inside the build folder (relative to the build folder).
         - urlPrefix: A URL which should be mapped to the project's root folder
         """
@@ -84,10 +83,12 @@ class Asset:
         logging.info("Publishing files...")
         pstart()
         
+        copyAssetFolder = prependDist(assetFolder)
+        
         counter = 0
         for fileId in assets:
             srcFile = assets[fileId].getPath()
-            dstFile = os.path.join(buildFolder, assetFolder, fileId.replace("/", os.sep))
+            dstFile = os.path.join(copyAssetFolder, fileId.replace("/", os.sep))
             
             if updateFile(srcFile, dstFile):
                 counter += 1

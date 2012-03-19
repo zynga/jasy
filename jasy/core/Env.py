@@ -31,6 +31,8 @@ def setPermutation(use):
 __dist = None
 
 def setDist(path):
+    global __dist
+
     if path is None:
         __dist = None
         logging.info("Resetting dist folder")
@@ -38,8 +40,17 @@ def setDist(path):
         __dist = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
         logging.info("Setting up dist folder: %s" % __dist)
     
-def getDist(path):
+def getDist():
+    global __dist
     return __dist
+    
+def prependDist(path):
+    global __dist
+    
+    if __dist and not os.path.isabs(path):
+        return os.path.join(__dist, path)
+    else:
+        return path
 
 # Global session object
 from jasy.core.Session import Session
