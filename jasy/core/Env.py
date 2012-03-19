@@ -27,10 +27,10 @@ def setPermutation(use):
     __permutation = use
     
     
-# Destination folder
+# Global prefix handling
 __dist = None
 
-def setDist(path):
+def setPrefix(path):
     global __dist
 
     if path is None:
@@ -40,11 +40,11 @@ def setDist(path):
         __dist = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
         logging.info("Setting up dist folder: %s" % __dist)
     
-def getDist():
+def getPrefix():
     global __dist
     return __dist
     
-def prependDist(path):
+def prependPrefix(path):
     global __dist
     
     if __dist and not os.path.isabs(path):
