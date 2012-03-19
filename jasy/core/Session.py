@@ -38,7 +38,6 @@ class Session():
             startSection("Initializing projects...")
             self.addProject(Project("."))
             logging.info("Ready (%s projects)" % len(self.__projects))
-            endSection()
     
     
     def clearCache(self):
@@ -261,7 +260,6 @@ class Session():
             startSection("Permutation %s/%s" % (pos+1, length))
             setPermutation(current)
             yield current
-            endSection()
 
 
     def exportFields(self):

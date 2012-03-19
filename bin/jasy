@@ -18,23 +18,28 @@ basedir = os.path.join(os.path.dirname(sys.argv[0]), os.pardir)
 if os.path.exists(os.path.join(basedir, "jasy")):
     sys.path.insert(0, basedir)
 
-# Configure Option Parser
-from optparse import OptionParser
+# Parse options
+from jasy.core.Options import Options
 
-parser = OptionParser()
-parser.add_option("-q", "--quiet", action="store_false", dest="verbose", help="don't print status messages to stdout")
-parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="print more detailed status messages to stdout")
-parser.add_option("-l", "--log", dest="logfile", help="Write debug messages to given logfile")
-parser.add_option("-f", "--file", dest="file", help="Use the given jasy script")
-parser.add_option("-V", "--version", action="store_true", dest="showVersion", help="Use the given jasy script")
+args = sys.argv[1:]
+if args and "jasyscript.py" in args[0]:
+    args = args.pop(0)
 
-(options, args) = parser.parse_args()
+options = Options()
+
+options.add("verbose", short="v", help="print more detailed status messages to stdout")
+options.add("quiet", short="q", help="don't print status messages to stdout")
+options.add("log", accept=str, short="l", help="Write debug messages to given logfile")
+options.add("file", accept=str, short="f", help="Use the given jasy script")
+options.add("version", short="V", help="Print version info only")
+
+options.parse(args)
 
 # Configure log level for root logger first (enable debug level when either logfile or console verbosity is activated)
 import logging
 
 loglevel = logging.INFO
-if options.logfile or options.verbose is True:
+if options.log or options.verbose is True:
     loglevel = logging.DEBUG
 
 # Basic configuration of console logging
@@ -43,13 +48,13 @@ logging.basicConfig(level=loglevel, format="%(message)s")
 # Configure console handler to correct level
 if options.verbose is True:
     logging.getLogger().handlers[0].setLevel(logging.DEBUG)
-elif options.verbose is False:
+elif options.quiet is True:
     logging.getLogger().handlers[0].setLevel(logging.WARN)
 else:
     logging.getLogger().handlers[0].setLevel(logging.INFO)
 
 # Enable writing to logfile with debug level
-if options.logfile:
+if options.log:
     logfileHandler = logging.FileHandler(options.logfile)
     logfileHandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
     logfileHandler.setLevel(logging.DEBUG)
@@ -61,7 +66,7 @@ if options.file:
 else:
     scriptname = "jasyscript.py"
 
-if not os.path.isfile(scriptname) and not options.showVersion:
+if not os.path.isfile(scriptname) and not options.version:
     sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % scriptname)
     sys.exit(1)
 
@@ -69,23 +74,20 @@ if not os.path.isfile(scriptname) and not options.showVersion:
 from jasy.core.Env import *
 
 try:
-    # Execute build script
+    # execute build script
     buildfile = open(scriptname, "r")
     retval = exec(buildfile.read(), globals())
 
-    # filter out jasyscript reference, useful when doing ./jasyscript.py from the command line
-    if args and "jasyscript.py" in args[0]:
-        args.pop(0)
-
     # list all tasks when none is given
-    if not args:
-        logging.error("No tasks to execute. Please choose from: ")
+    tasks = options.getTasks()
+    if not tasks:
+        logging.error("Available tasks: ")
         printTasks()
         sys.exit(1)
 
     # all arguments are processed as a list of task to execute in order
-    for name in args:
-        executeTask(name)
+    for entry in tasks:
+        executeTask(entry["task"], **entry["params"])
     
 except JasyError as error:
     sys.stderr.write("%s\n" % error)

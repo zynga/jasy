@@ -10,25 +10,10 @@ import jasy
 logging.info("Jasy %s" % jasy.__version__)
 logging.debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
 
-# Section handling
-__sectionActive = False
-
 def startSection(title):
-    global __sectionActive
-    if __sectionActive:
-        raise Exception("Another section is active already!")
-    
     logging.info("")
     logging.info(">>> %s" % title.upper())
     logging.info("-------------------------------------------------------------------------------")
-    
-    __sectionActive = True
-    
-def endSection():
-    global __sectionActive
-
-    if __sectionActive:
-        __sectionActive = False
 
 # Global permutation handling
 __permutation = None
@@ -40,7 +25,22 @@ def getPermutation():
 def setPermutation(use):
     global __permutation
     __permutation = use
-            
+    
+    
+# Destination folder
+__dist = None
+
+def setDist(path):
+    if path is None:
+        __dist = None
+        logging.info("Resetting dist folder")
+    else:
+        __dist = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
+        logging.info("Setting up dist folder: %s" % __dist)
+    
+def getDist(path):
+    return __dist
+
 # Global session object
 from jasy.core.Session import Session
 session = Session()

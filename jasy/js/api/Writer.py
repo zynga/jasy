@@ -9,7 +9,7 @@ from jasy.util.File import *
 from jasy.js.api.Data import ApiData
 from jasy.js.api.Text import *
 from jasy.js.util import *
-from jasy.core.Env import session, startSection, endSection
+from jasy.core.Env import session, startSection
 
 __all__ = ["ApiWriter"]
 
@@ -326,8 +326,6 @@ class ApiWriter():
 
         writeFile(os.path.join(distFolder, "meta-index.%s" % extension), encode(index, "meta-index"))
         writeFile(os.path.join(distFolder, "meta-search.%s" % extension), encode(search, "meta-search"))
-        
-        endSection()
         
 
     def collect(self, internals=False, privates=False):

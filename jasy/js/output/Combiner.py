@@ -66,7 +66,6 @@ def storeKernel(fileName, assets=None, translations=None, debug=False):
     storeCompressed(fileName, classes)
     
     setPermutation(None)
-    endSection()
     
     return classes
 

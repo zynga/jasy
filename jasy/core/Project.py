@@ -53,7 +53,7 @@ class Project():
             raise JasyError("Invalid project path: %s (absolute: %s)" % (path, os.path.abspath(path)))
         
         # Only store and work with full path
-        self.__path = os.path.abspath(path)
+        self.__path = os.path.abspath(os.path.expanduser(path))
         
         # Intialize item registries
         self.classes = {}
@@ -165,6 +165,8 @@ class Project():
         
         
     def addContent(self, content):
+        logging.debug("- Adding manual content")
+        
         for fileId in content:
             fileContent = content[fileId]
             if len(fileContent) == 0:
@@ -205,6 +207,8 @@ class Project():
         
         
     def addDir(self, directory, distname):
+        
+        logging.debug("- Scanning directory: %s" % directory)
         
         path = os.path.join(self.__path, directory)
         if not os.path.exists(path):

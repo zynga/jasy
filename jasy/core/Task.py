@@ -2,7 +2,7 @@ import types
 import logging
 
 from jasy.core.Error import *
-
+from jasy.core.Env import *
 
 __tasks__ = {}
 
@@ -10,10 +10,14 @@ def addTask(task):
     logging.debug("Registering task: %s" % task.name)
     __tasks__[task.name] = task
     
-def executeTask(name):
+def executeTask(name, **kwargs):
     if name in __tasks__:
-        logging.debug("Executing task: %s" % name)
-        __tasks__[name]()
+        startSection("Executing task %s..." % name)
+        try:
+            __tasks__[name](**kwargs)
+        except:
+            logging.error("Could not finish task %s successfully!" % name)
+            raise
     else:
         raise JasyError("No such task: %s" % name)
         
@@ -46,8 +50,8 @@ class Task:
         addTask(self)
         
 
-    def __call__(self, *args, **kw):
-        retval = self.__func()
+    def __call__(self, **kwargs):
+        retval = self.__func(**kwargs)
         return retval
 
 
