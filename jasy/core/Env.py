@@ -28,27 +28,27 @@ def setPermutation(use):
     
     
 # Global prefix handling
-__dist = None
+__prefix = None
 
 def setPrefix(path):
-    global __dist
+    global __prefix
 
     if path is None:
-        __dist = None
+        __prefix = None
         logging.info("Resetting dist folder")
     else:
-        __dist = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
-        logging.info("Setting up dist folder: %s" % __dist)
+        __prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
+        logging.info("Setting prefix to: %s" % __prefix)
     
 def getPrefix():
-    global __dist
-    return __dist
+    global __prefix
+    return __prefix
     
 def prependPrefix(path):
-    global __dist
+    global __prefix
     
-    if __dist and not os.path.isabs(path):
-        return os.path.join(__dist, path)
+    if __prefix and not os.path.isabs(path):
+        return os.path.join(__prefix, path)
     else:
         return path
 

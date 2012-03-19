@@ -4,7 +4,7 @@
 #
 
 import os, shutil
-from jasy.core.Env import prependDist
+from jasy.core.Env import prependPrefix
 
 
 def makeDir(dirname):
@@ -15,7 +15,7 @@ def makeDir(dirname):
     if dirname == "":
         return
         
-    dirname = prependDist(dirname)
+    dirname = prependPrefix(dirname)
     if not os.path.exists(dirname):
         os.makedirs(dirname)
 
@@ -26,7 +26,7 @@ def copyDir(src, dst):
     Copies a directory to a destination directory. Merges the existing directory structure with the folder to copy.
     """
     
-    dst = prependDist(dst)
+    dst = prependPrefix(dst)
     srcLength = len(src)
     counter = 0
     
@@ -57,7 +57,7 @@ def copyFile(src, dst):
     if not os.path.isfile(src):
         raise Exception("No such file: %s" % src)
 
-    dst = prependDist(dst)
+    dst = prependPrefix(dst)
 
     # First test for existance of destination directory
     makeDir(os.path.dirname(dst))
@@ -80,7 +80,7 @@ def updateFile(src, dst):
     if not os.path.isfile(src):
         raise Exception("No such file: %s" % src)
     
-    dst = prependDist(dst)
+    dst = prependPrefix(dst)
     
     try:
         dst_mtime = os.path.getmtime(dst)
@@ -100,7 +100,7 @@ def updateFile(src, dst):
 
 
 def writeFile(dst, content):
-    dst = prependDist(dst)
+    dst = prependPrefix(dst)
     
     # First test for existance of destination directory
     makeDir(os.path.dirname(dst))

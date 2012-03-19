@@ -9,7 +9,7 @@ from os.path import basename, dirname, relpath, normpath
 from jasy.util.Profiler import *
 from jasy.util.File import *
 from jasy.core.Project import Project
-from jasy.core.Env import session, getPermutation, prependDist
+from jasy.core.Env import session, getPermutation, prependPrefix
 
 __all__ = ["Asset"]
 
@@ -83,7 +83,7 @@ class Asset:
         logging.info("Publishing files...")
         pstart()
         
-        copyAssetFolder = prependDist(assetFolder)
+        copyAssetFolder = prependPrefix(assetFolder)
         
         counter = 0
         for fileId in assets:
