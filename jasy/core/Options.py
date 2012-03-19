@@ -31,18 +31,30 @@ class Options:
 
         try:
 
-            for name in args:
+            index = 0
+            length = len(args)
+            
+            while index < length:
+
+                name = args[index]
                 if name.startswith("--"):
                     name = name[2:]
-                    value = True
                 
                     if "=" in name:
                         pos = name.find("=")
                         value = name[pos+1:]
                         name = name[0:pos]
+                        
+                    elif (index+1) < length and not args[index+1].startswith("-"):
+                        index += 1
+                        value = args[index]
+
                     elif inTaskMode:
-                        raise Exception("Invalid argument: %s. Assign values using equal sign e.g. param=value." % name)
-                    
+                        raise Exception("Invalid argument: %s. In task mode values are required." % name)
+                        
+                    else:
+                        value = True
+                        
                     current["params"][name] = value
                 
                 elif name.startswith("-"):
@@ -62,6 +74,8 @@ class Options:
                     current["params"] = {}
                     
                     inTaskMode = True
+                    
+                index += 1
 
             if current:
                 self.tasks.append(current)
@@ -78,6 +92,7 @@ class Options:
                     
         except Exception as error:
             sys.stderr.write("Error: %s\n" % error)
+            raise
             sys.exit(1)
             
 

@@ -14,7 +14,7 @@ if sys.version_info[0] < 3:
     sys.exit(1)
 
 # Include local Jasy into Python library path
-basedir = os.path.join(os.path.dirname(sys.argv[0]), os.pardir)
+basedir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), os.pardir))
 if os.path.exists(os.path.join(basedir, "jasy")):
     sys.path.insert(0, basedir)
 
@@ -29,8 +29,8 @@ options = Options()
 
 options.add("verbose", short="v", help="print more detailed status messages to stdout")
 options.add("quiet", short="q", help="don't print status messages to stdout")
-options.add("log", accept=str, short="l", help="Write debug messages to given logfile")
-options.add("file", accept=str, short="f", help="Use the given jasy script")
+options.add("log", accept=str, help="Write debug messages to given logfile")
+options.add("file", accept=str, value="jasyscript.py", help="Use the given jasy script")
 options.add("version", short="V", help="Print version info only")
 
 options.parse(args)
@@ -61,21 +61,21 @@ if options.log:
     logging.getLogger().addHandler(logfileHandler)        
 
 # Find Jasy Script
-if options.file:
-    scriptname = options.file
-else:
-    scriptname = "jasyscript.py"
-
-if not os.path.isfile(scriptname) and not options.version:
-    sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % scriptname)
+if not os.path.isfile(options.file) and not options.version:
+    sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % options.file)
     sys.exit(1)
+
+# Change to root directory of jasyscript before executing it
+os.chdir(os.path.dirname(os.path.join(os.getcwd(), os.path.expanduser(options.file))))
+logging.info("Running from %s" % os.getcwd())
+jasyscript = os.path.basename(options.file)
 
 # Import global environment
 from jasy.core.Env import *
 
 try:
     # execute build script
-    buildfile = open(scriptname, "r")
+    buildfile = open(jasyscript, "r")
     retval = exec(buildfile.read(), globals())
 
     # list all tasks when none is given
