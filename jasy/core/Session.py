@@ -8,7 +8,7 @@ import logging, itertools, time, atexit, json, os
 from jasy.i18n.Translation import Translation
 from jasy.i18n.LocaleData import *
 
-from jasy.core.Project import Project
+from jasy.core.Project import Project, getProject
 from jasy.core.Permutation import Permutation
 
 from jasy.util.Profiler import *
@@ -36,7 +36,7 @@ class Session():
         
         if os.path.exists("jasyproject.json"):
             startSection("Initializing projects...")
-            self.addProject(Project("."))
+            self.addProject(getProject("."))
             logging.info("Ready (%s projects)" % len(self.__projects))
     
     
@@ -89,9 +89,15 @@ class Session():
         - project: Instance of Project to append to the list
         """
         
+        if project in self.__projects:
+            return
+        
+        self.__projects.append(project)
+
         for requiredProject in project.getRequires():
             self.addProject(requiredProject)
 
+        self.__projects.remove(project)
         self.__projects.append(project)
         
         # Import project defined fields which might be configured using "activateField()"

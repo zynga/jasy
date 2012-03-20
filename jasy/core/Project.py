@@ -27,13 +27,16 @@ def getKey(data, key, default=None):
     else:
         return default
 
-projects = {}
+__projects = {}
 
 def getProject(path, config=None):
-    if not path in projects:
-        projects[path] = Project(path, config)
+    global __projects
+    
+    path = os.path.abspath(path)
+    if not path in __projects:
+        __projects[path] = Project(path, config)
 
-    return projects[path]
+    return __projects[path]
 
 
 class Project():
