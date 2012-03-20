@@ -45,7 +45,10 @@ class Options:
                         value = name[pos+1:]
                         name = name[0:pos]
                         
-                    elif (index+1) < length and not args[index+1].startswith("-"):
+                        if self.types[name] is bool:
+                            raise Exception("Invalid argument: %s. Boolean flag!" % name)
+                        
+                    elif not self.types[name] is bool and (index+1) < length and not args[index+1].startswith("-"):
                         index += 1
                         value = args[index]
 
