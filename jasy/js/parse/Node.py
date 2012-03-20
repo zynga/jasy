@@ -10,8 +10,7 @@
 #   - Sebastian Werner <info@sebastian-werner.net> (Refactoring Python) (2010)
 #
 
-import json
-import copy
+from copy import deepcopy
 
 class Node(list):
     
@@ -26,9 +25,10 @@ class Node(list):
         "value", "expression", "body", "functionForm", "parenthesized", "fileId", "params", 
         "name", "readOnly", "initializer", "condition", "isLoop", "isEach", "object", "assignOp",
         "iterator", "thenPart", "exception", "elsePart", "setup", "postfix", "update", "tryBlock",
-        "block", "target", "defaultIndex", "discriminant", "label", "statements", "finallyBlock", 
+        "block", "defaultIndex", "discriminant", "label", "statements", "finallyBlock", 
         "statement", "variables", "names", "guard", "for", "tail", "expressionClosure"
     ]
+    
     
     def __init__(self, tokenizer=None, type=None, args=[]):
         list.__init__(self)
@@ -66,6 +66,7 @@ class Node(list):
             
     def getUnrelatedChildren(self):
         """Collects all unrelated children"""
+        
         collection = []
         for child in self:
             if not hasattr(child, "rel"):
@@ -76,6 +77,7 @@ class Node(list):
 
     def getChildrenLength(self, filter=True):
         """Number of (per default unrelated) children"""
+        
         count = 0
         for child in self:
             if not filter or not hasattr(child, "rel"):
@@ -84,6 +86,8 @@ class Node(list):
             
     
     def remove(self, kid):
+        """Removes the given kid"""
+        
         if not kid in self:
             raise Exception("Given node is no child!")
         
@@ -96,6 +100,8 @@ class Node(list):
         
         
     def insert(self, index, kid):
+        """Inserts the given kid at the given index"""
+        
         if index is None:
             return self.append(kid)
             
@@ -107,8 +113,9 @@ class Node(list):
         return list.insert(self, index, kid)
             
 
-    # Always use push to add operands to an expression, to update start and end.
     def append(self, kid, rel=None):
+        """Appends the given kid with an optional relation hint"""
+        
         # kid can be null e.g. [1, , 2].
         if kid:
             if hasattr(kid, "parent"):
@@ -141,8 +148,9 @@ class Node(list):
         return list.append(self, kid)
 
     
-    # Replaces the given kid with the given replacement kid
     def replace(self, kid, repl):
+        """Replaces the given kid with a replacement kid"""
+        
         if repl in self:
             self.remove(repl)
         
@@ -166,20 +174,22 @@ class Node(list):
         return kid
         
 
-    # Converts the node to XML
     def toXml(self, format=True, indent=0, tab="  "):
+        """Converts the node to XML"""
+
         lead = tab * indent if format else ""
         innerLead = tab * (indent+1) if format else ""
         lineBreak = "\n" if format else ""
 
         relatedChildren = []
         attrsCollection = []
-        for name in dir(self):
+        
+        for name in self.__slots__:
             # "type" is used as node name - no need to repeat it as an attribute
-            # "parent" and "target" are relations to other nodes which are not children - for serialization we ignore them at the moment
+            # "parent" is a relation to the parent node - for serialization we ignore these at the moment
             # "rel" is used internally to keep the relation to the parent - used by nodes which need to keep track of specific children
             # "start" and "end" are for debugging only
-            if name not in ("type", "parent", "comments", "target", "rel", "start", "end") and name[0] != "_":
+            if hasattr(self, name) and name not in ("type", "parent", "comments", "rel", "start", "end") and name[0] != "_":
                 value = getattr(self, name)
                 if isinstance(value, Node):
                     if hasattr(value, "rel"):
@@ -246,66 +256,43 @@ class Node(list):
         return result
         
         
-    # Creates a python data structure containing all recursive data of the node
-    def export(self):
-        attrs = {}
-        for name in dir(self):
-            if name not in ("parent", "target", "rel", "start", "end") and name[0] != "_":
-                value = getattr(self, name)
-                if isinstance(value, Node) and hasattr(value, "rel"):
-                    attrs[name] = value.export()
-                elif type(value) in (bool, int, float, str, list):
-                    attrs[name] = value
-        
-        for child in self:
-            if not hasattr(child, "rel"):
-                if not "children" in attrs:
-                    attrs["children"] = []
-                attrs["children"].append(child.export())
-        
-        return attrs    
-        
-        
     def __deepcopy__(self, memo):
+        """Used by deepcopy function to clone Node instances"""
+        
         # Create copy
         if hasattr(self, "tokenizer"):
-            result = Node(self.tokenizer)
+            result = Node(tokenizer=self.tokenizer)
         else:
-            result = Node(None, self.type)
+            result = Node(type=self.type)
         
         # Copy children
         for child in self:
-            rel = getattr(child, "rel", None)
-            result.append(copy.deepcopy(child, memo), rel)
+            # Using simple list appends for better performance
+            childCopy = deepcopy(child, memo)
+            childCopy.parent = result
+            list.append(result, childCopy)
         
         # Sync attributes
         # Note: "parent" attribute is handled by append() already
         for name in self.__slots__:
-            if hasattr(self, name) and not name in ("parent", "tokenizer") and name[0] != "_":
+            if hasattr(self, name) and not name in ("parent", "tokenizer"):
                 value = getattr(self, name)
                 if value is None:
                     pass
-                elif isinstance(value, Node):
-                    pass
                 elif type(value) in (bool, int, float, str):
                     setattr(result, name, value)
-                elif type(value) in (list, set):
-                    setattr(result, name, copy.deepcopy(value, memo))
+                elif type(value) in (list, set, dict, Node):
+                    setattr(result, name, deepcopy(value, memo))
+                # Scope can be assigned (will be re-created when needed for the copied node)
                 elif name == "scope":
                     result.scope = self.scope
-                else:
-                    logging.warn("Not copying attribute: %s = %s" % (name, value))
 
         return result
         
         
-    # Converts the node to JSON
-    def toJson(self, format=True, indent=2, tab="  "):
-        return json.dumps(self.export(), indent=indent)
-        
-        
-    # Returns the source code of the node
     def getSource(self):
+        """Returns the source code of the node"""
+
         if not self.tokenizer:
             raise Exception("Could not find source for node '%s'" % node.type)
             
@@ -323,6 +310,7 @@ class Node(list):
     # Map Python built-ins
     __repr__ = toXml
     __str__ = toXml
+    
     
     def __eq__(self, other):
         return self is other
