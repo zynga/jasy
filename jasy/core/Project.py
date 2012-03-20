@@ -348,6 +348,7 @@ class Project():
         return self.__cache
     
     def clearCache(self):
+        logging.info("Clearing cache of %s..." % self.__name)
         self.__cache.clear()
         
     def close(self):

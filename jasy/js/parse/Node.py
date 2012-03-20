@@ -14,13 +14,28 @@ import json
 import copy
 
 class Node(list):
+    
+    __slots__ = [
+        # core data
+        "line", "type", "tokenizer", "start", "end", "rel", "parent", 
+        
+        # dynamic added data by other modules
+        "comments", "scope", 
+        
+        # node type specific
+        "value", "expression", "body", "functionForm", "parenthesized", "fileId", "params", 
+        "name", "readOnly", "initializer", "condition", "isLoop", "isEach", "object", "assignOp",
+        "iterator", "thenPart", "exception", "elsePart", "setup", "postfix", "update", "tryBlock",
+        "block", "target", "defaultIndex", "discriminant", "label", "statements", "finallyBlock", 
+        "statement", "wrapped"
+    ]
+    
     def __init__(self, tokenizer=None, type=None, args=[]):
         list.__init__(self)
         
         self.start = 0
         self.end = 0
         self.line = None
-        self.filename = None
         
         if tokenizer:
             token = getattr(tokenizer, "token", None)
@@ -264,14 +279,24 @@ class Node(list):
             result.append(copy.deepcopy(child, memo), rel)
         
         # Sync attributes
-        for name in dir(self):
-            if not name in ("parent", "target") and name[0] != "_":
+        for name in self.__slots__:
+            if hasattr(self, name) and not name in ("parent", "target", "scope", "tokenizer") and name[0] != "_":
                 value = getattr(self, name)
-                if name == "scope" or type(value) in (bool, int, float, str):
+                if value is None:
+                    pass
+                elif isinstance(value, Node):
+                    pass
+                elif type(value) in (bool, int, float, str):
                     setattr(result, name, value)
-                elif name == "scope" or type(value) in (list, set):
+                elif type(value) in (list, set):
                     setattr(result, name, copy.deepcopy(value, memo))
-            
+                else:
+                    logging.warn("Not copying attribute: %s = %s" % (name, value))
+
+        # Copy scope
+        if hasattr(self, "scope"):
+            result.scope = self.scope
+        
         # Note: "target" attribute is ignored because if recursion error
         #       This is used by "break" and "continue" statements only and refers
         #       to the parent block where the jump should go to. This is not typically
@@ -304,11 +329,6 @@ class Node(list):
             return self.tokenizer.source[:self.end]
     
         return self.tokenizer.source[:]
-        
-    
-    # Returns the file name
-    def getFileName(self):
-        return self.filename
 
 
     # Map Python built-ins
