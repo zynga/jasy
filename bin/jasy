@@ -32,6 +32,7 @@ options.add("quiet", short="q", help="don't print status messages to stdout")
 options.add("log", accept=str, help="Write debug messages to given logfile")
 options.add("file", accept=str, value="jasyscript.py", help="Use the given jasy script")
 options.add("version", short="V", help="Print version info only")
+options.add("stats", help="Show statistics after run")
 
 options.parse(args)
 
@@ -73,29 +74,49 @@ jasyscript = os.path.basename(options.file)
 # Import global environment
 from jasy.core.Env import *
 
-try:
-    # execute build script
-    buildfile = open(jasyscript, "r")
-    retval = exec(buildfile.read(), globals())
+def main():
+    
+    try:
+        # execute build script
+        buildfile = open(jasyscript, "r")
+        retval = exec(buildfile.read(), globals())
 
-    # list all tasks when none is given
-    tasks = options.getTasks()
-    if not tasks:
-        logging.error("Available tasks: ")
-        printTasks()
+        # list all tasks when none is given
+        tasks = options.getTasks()
+        if not tasks:
+            logging.error("Available tasks: ")
+            printTasks()
+            sys.exit(1)
+
+        # all arguments are processed as a list of task to execute in order
+        for entry in tasks:
+            executeTask(entry["task"], **entry["params"])
+    
+    except JasyError as error:
+        sys.stderr.write("%s\n" % error)
         sys.exit(1)
 
-    # all arguments are processed as a list of task to execute in order
-    for entry in tasks:
-        executeTask(entry["task"], **entry["params"])
+    except KeyboardInterrupt:
+        sys.stderr.write("Build interrupted!\n")
+        sys.exit(2)
+
+    sys.exit(0)
+
+if options.stats:
     
-except JasyError as error:
-    sys.stderr.write("%s\n" % error)
-    sys.exit(1)
-
-except KeyboardInterrupt:
-    sys.stderr.write("Build interrupted!\n")
-    sys.exit(2)
-
-sys.exit(0)
-
+    logging.info("Running in profiling mode...")
+    
+    import cProfile
+    cProfile.run("main()", "jasyprofile.txt")
+    
+    startSection("Analysing data...")
+    import pstats
+    stats = pstats.Stats("jasyprofile.txt")
+    
+    stats.sort_stats('time', 'cum').print_stats(30)
+    
+    os.remove("jasyprofile.txt")
+    
+else:
+    
+    main()
