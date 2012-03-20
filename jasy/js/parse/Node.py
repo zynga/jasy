@@ -27,7 +27,7 @@ class Node(list):
         "name", "readOnly", "initializer", "condition", "isLoop", "isEach", "object", "assignOp",
         "iterator", "thenPart", "exception", "elsePart", "setup", "postfix", "update", "tryBlock",
         "block", "target", "defaultIndex", "discriminant", "label", "statements", "finallyBlock", 
-        "statement", "wrapped"
+        "statement", "wrapped", "variables", "names", "guard", "for", "tail", "expressionClosure"
     ]
     
     def __init__(self, tokenizer=None, type=None, args=[]):
