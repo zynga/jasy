@@ -55,7 +55,7 @@ class Session():
         """
 
         if self.__projects:
-            logging.info("Closing session...")
+            logging.debug("Closing session...")
             for project in self.getProjects():
                 project.close()
             
