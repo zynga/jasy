@@ -27,7 +27,7 @@ class Node(list):
         "name", "readOnly", "initializer", "condition", "isLoop", "isEach", "object", "assignOp",
         "iterator", "thenPart", "exception", "elsePart", "setup", "postfix", "update", "tryBlock",
         "block", "target", "defaultIndex", "discriminant", "label", "statements", "finallyBlock", 
-        "statement", "wrapped", "variables", "names", "guard", "for", "tail", "expressionClosure"
+        "statement", "variables", "names", "guard", "for", "tail", "expressionClosure"
     ]
     
     def __init__(self, tokenizer=None, type=None, args=[]):
@@ -279,8 +279,9 @@ class Node(list):
             result.append(copy.deepcopy(child, memo), rel)
         
         # Sync attributes
+        # Note: "parent" attribute is handled by append() already
         for name in self.__slots__:
-            if hasattr(self, name) and not name in ("parent", "target", "scope", "tokenizer") and name[0] != "_":
+            if hasattr(self, name) and not name in ("parent", "tokenizer") and name[0] != "_":
                 value = getattr(self, name)
                 if value is None:
                     pass
@@ -290,22 +291,10 @@ class Node(list):
                     setattr(result, name, value)
                 elif type(value) in (list, set):
                     setattr(result, name, copy.deepcopy(value, memo))
+                elif name == "scope":
+                    result.scope = self.scope
                 else:
                     logging.warn("Not copying attribute: %s = %s" % (name, value))
-
-        # Copy scope
-        if hasattr(self, "scope"):
-            result.scope = self.scope
-        
-        # Note: "target" attribute is ignored because if recursion error
-        #       This is used by "break" and "continue" statements only and refers
-        #       to the parent block where the jump should go to. This is not typically
-        #       good style in JS and is not used quite often.
-        # Sync target
-        # if hasattr(self, "target"):
-        #   result.target = copy.deepcopy(self.target, memo)
-        
-        # Note: "parent" attribute is handled by append() already
 
         return result
         
