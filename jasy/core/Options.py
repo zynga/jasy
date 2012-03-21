@@ -45,7 +45,7 @@ class Options:
                         value = name[pos+1:]
                         name = name[0:pos]
                         
-                        if self.types[name] is bool:
+                        if not inTaskMode and self.types[name] is bool:
                             raise Exception("Invalid argument: %s. Boolean flag!" % name)
                         
                     elif not self.types[name] is bool and (index+1) < length and not args[index+1].startswith("-"):
