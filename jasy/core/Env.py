@@ -61,11 +61,11 @@ __jasyCommand = None
 
 def setJasyCommand(cmd):
     global __jasyCommand
-    print("Setting jasy command to: %s" % cmd)
     __jasyCommand = cmd
 
-def run(project, task, **kwargs):
-    print("Running %s of project %s..." % (task, project))
+def runTask(project, task, **kwargs):
+    
+    startSection("Running %s of project %s..." % (task, project))
     
     import subprocess
     from jasy.core.Project import getProjectByName
@@ -77,18 +77,22 @@ def run(project, task, **kwargs):
     params = ["--%s=%s" % (key, kwargs[key]) for key in kwargs]
     if not "prefix" in kwargs:
         params.append("--prefix=%s" % __prefix)
-    
+
+    # Full list of args to pass to subprocess
     args = [__jasyCommand, task] + params
-    print("ARGS: ", args)
 
     # Change into sub folder and execute jasy task
     oldPath = os.getcwd()
     os.chdir(getProjectByName(project).getPath())
-    subprocess.call(args)
+    returnValue = subprocess.call(args)
     os.chdir(oldPath)
 
     # Resumes this session after sub process was finished
     session.resume()
+
+    # Error handling
+    if returnValue != 0:
+        raise JasyError("Executing of sub task %s from project %s failed" % (task, project))
 
 
 # Task API for user scripts
