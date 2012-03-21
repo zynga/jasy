@@ -48,12 +48,12 @@ class Options:
                         if not inTaskMode and self.types[name] is bool:
                             raise Exception("Invalid argument: %s. Boolean flag!" % name)
                         
-                    elif not self.types[name] is bool and (index+1) < length and not args[index+1].startswith("-"):
+                    elif (not name in self.types or not self.types[name] is bool) and (index+1) < length and not args[index+1].startswith("-"):
                         index += 1
                         value = args[index]
 
                     elif inTaskMode:
-                        raise Exception("Invalid argument: %s. In task mode values are required." % name)
+                        raise Exception("Invalid argument: %s. In task mode every arguments needs to have a value!" % name)
                         
                     else:
                         value = True
