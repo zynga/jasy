@@ -1,35 +1,12 @@
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Zynga Inc.
+#
+
 import types
-import logging
+from jasy.core.Env import setPrefix, addTask
 
-from jasy.core.Error import *
-from jasy.core.Env import *
-
-__tasks__ = {}
-
-def addTask(task):
-    logging.debug("Registering task: %s" % task.name)
-    __tasks__[task.name] = task
-    
-def executeTask(name, **kwargs):
-    if name in __tasks__:
-        startSection("Executing task %s..." % name)
-        try:
-            __tasks__[name](**kwargs)
-        except:
-            logging.error("Could not finish task %s successfully!" % name)
-            raise
-    else:
-        raise JasyError("No such task: %s" % name)
-        
-def printTasks():
-    for name in __tasks__:
-        obj = __tasks__[name]
-        if obj.desc:
-            logging.info("- %s: %s" % (name, obj.desc))
-        else:
-            logging.info("- %s" % name)
-
-
+__all__ = ["task"]
 
 class Task:
     __doc__ = ""
@@ -54,10 +31,13 @@ class Task:
         merged.update(kwargs)
         
         # Use prefix from arguments if available
+        # Use no prefix for cleanup tasks
         # Fallback to task name (e.g. "build" task => "build" folder)
         if "prefix" in merged:
             setPrefix(merged["prefix"])
             del merged["prefix"]
+        elif "clean" in self.name:
+            setPrefix(None)
         else:
             setPrefix(self.name)
         

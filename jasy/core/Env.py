@@ -35,7 +35,7 @@ def setPrefix(path):
 
     if path is None:
         __prefix = None
-        logging.info("Resetting dist folder")
+        logging.info("Resetting prefix to working directory")
     else:
         __prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
         logging.info("Setting prefix to: %s" % __prefix)
@@ -56,13 +56,42 @@ def prependPrefix(path):
 from jasy.core.Session import Session
 session = Session()
 
-# Remote run support
+# Jasy reference
 __jasyCommand = None
 
 def setJasyCommand(cmd):
     global __jasyCommand
     __jasyCommand = cmd
 
+
+# Local task managment
+__tasks__ = {}
+
+def addTask(task):
+    logging.debug("Registering task: %s" % task.name)
+    __tasks__[task.name] = task
+    
+def executeTask(name, **kwargs):
+    if name in __tasks__:
+        startSection("Executing task %s..." % name)
+        try:
+            __tasks__[name](**kwargs)
+        except:
+            logging.error("Could not finish task %s successfully!" % name)
+            raise
+    else:
+        raise JasyError("No such task: %s" % name)
+        
+def printTasks():
+    for name in __tasks__:
+        obj = __tasks__[name]
+        if obj.desc:
+            logging.info("- %s: %s" % (name, obj.desc))
+        else:
+            logging.info("- %s" % name)
+
+
+# Remote run support
 def runTask(project, task, **kwargs):
     
     startSection("Running %s of project %s..." % (task, project))
@@ -83,7 +112,11 @@ def runTask(project, task, **kwargs):
 
     # Change into sub folder and execute jasy task
     oldPath = os.getcwd()
-    os.chdir(getProjectByName(project).getPath())
+    remote = getProjectByName(project)
+    if remote is None:
+        raise JasyError("Unknown project %s" % project)
+        
+    os.chdir(remote.getPath())
     returnValue = subprocess.call(args)
     os.chdir(oldPath)
 
