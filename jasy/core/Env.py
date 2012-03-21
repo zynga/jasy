@@ -64,7 +64,7 @@ def setJasyCommand(cmd):
     print("Setting jasy command to: %s" % cmd)
     __jasyCommand = cmd
 
-def run(project, task, params=None):
+def run(project, task, **kwargs):
     print("Running %s of project %s..." % (task, project))
     
     import subprocess
@@ -72,13 +72,19 @@ def run(project, task, params=None):
 
     # Pauses this session to allow sub process fully accessing the same projects
     session.pause()
-
-    print("!!!PARAMS", params)
+    
+    # Build parameter list from optional arguments
+    params = ["--%s=%s" % (key, kwargs[key]) for key in kwargs]
+    if not "prefix" in kwargs:
+        params.append("--prefix=%s" % __prefix)
+    
+    args = [__jasyCommand, task] + params
+    print("ARGS: ", args)
 
     # Change into sub folder and execute jasy task
     oldPath = os.getcwd()
     os.chdir(getProjectByName(project).getPath())
-    subprocess.call([__jasyCommand, task])
+    subprocess.call(args)
     os.chdir(oldPath)
 
     # Resumes this session after sub process was finished
