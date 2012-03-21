@@ -33,26 +33,36 @@ def printTasks():
 
 class Task:
     __doc__ = ""
+    __slots__ = ["__func", "name", "desc", "args", "__doc__"]
+
     
-    def __init__(self, func, desc=""):
+    def __init__(self, func, desc="", **kwargs):
         name = func.__name__
         self.__func = func
         
         self.name = name
         self.desc = desc
-        self.fullname = "%s.%s" % (func.__module__, name)
+        self.args = kwargs
         
-        try:
-            self.__doc__ = func.__doc__
-        except AttributeError:
-            pass
-            
         addTask(self)
         
 
     def __call__(self, **kwargs):
-        retval = self.__func(**kwargs)
-        return retval
+        
+        merged = {}
+        merged.update(self.args)
+        merged.update(kwargs)
+        
+        # Use prefix from arguments if available
+        # Fallback to task name (e.g. "build" task => "build" folder)
+        if "prefix" in merged:
+            setPrefix(merged["prefix"])
+            del merged["prefix"]
+        else:
+            setPrefix(self.name)
+        
+        # Execute internal function
+        return self.__func(**merged)
 
 
     def __repr__(self):
@@ -60,7 +70,7 @@ class Task:
 
 
 
-def task(func):
+def task(func, **kwargs):
     """ Specifies that this function is a task. """
     
     if isinstance(func, Task):
@@ -70,9 +80,9 @@ def task(func):
         return Task(func)
     
     else:
-        # Used for descriptions
+        # Used for called task() (to pass in prefixes, descriptions, etc.)
         def wrapper(finalfunc):
-            return Task(finalfunc, func)
+            return Task(finalfunc, func, **kwargs)
             
         return wrapper
 
