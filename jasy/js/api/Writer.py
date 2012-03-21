@@ -269,7 +269,7 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
 
 class ApiWriter():
     
-    def write(self, distFolder, format="json", compact=True, callback=None, showInternals=False, showPrivates=False):
+    def write(self, distFolder, format="json", compact=True, callback="apibrowser.callback", showInternals=False, showPrivates=False):
         
         startSection("Writing API data...")
         
