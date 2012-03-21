@@ -51,10 +51,39 @@ def prependPrefix(path):
         return os.path.join(__prefix, path)
     else:
         return path
-
+        
 # Global session object
 from jasy.core.Session import Session
 session = Session()
+
+# Remote run support
+__jasyCommand = None
+
+def setJasyCommand(cmd):
+    global __jasyCommand
+    print("Setting jasy command to: %s" % cmd)
+    __jasyCommand = cmd
+
+def run(project, task, params=None):
+    print("Running %s of project %s..." % (task, project))
+    
+    import subprocess
+    from jasy.core.Project import getProjectByName
+
+    # Pauses this session to allow sub process fully accessing the same projects
+    session.pause()
+
+    print("!!!PARAMS", params)
+
+    # Change into sub folder and execute jasy task
+    oldPath = os.getcwd()
+    os.chdir(getProjectByName(project).getPath())
+    subprocess.call([__jasyCommand, task])
+    os.chdir(oldPath)
+
+    # Resumes this session after sub process was finished
+    session.resume()
+
 
 # Task API for user scripts
 from jasy.core.Task import *

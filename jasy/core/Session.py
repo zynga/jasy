@@ -41,31 +41,38 @@ class Session():
     
     
     def clearCache(self):
-        """
-        Clears all caches of known projects
-        """
+        """Clears all caches of known projects"""
 
-        for project in self.getProjects():
+        for project in self.__projects:
             project.clearCache()
 
 
     def close(self):
-        """
-        Closes the session and stores cache to the harddrive.
-        """
+        """Closes the session and stores cache to the harddrive."""
 
-        if self.__projects:
-            logging.debug("Closing session...")
-            for project in self.getProjects():
-                project.close()
-            
-            self.__projects = None
+        logging.debug("Closing session...")
+        for project in self.__projects:
+            project.close()
+        
+        self.__projects = None
     
+    
+    def pause(self):
+        """Pauses the session"""
+        
+        for project in self.__projects:
+            project.pause()
+    
+    
+    def resume(self):
+        """Resumes the session"""
+
+        for project in self.__projects:
+            project.resume()
+            
     
     def getClassByName(self, className):
-        """
-        Queries all currently known projects for the given class and returns the class object
-        """
+        """Queries all currently known projects for the given class and returns the class object"""
 
         for project in self.__projects:
             classes = project.getClasses()

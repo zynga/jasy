@@ -66,6 +66,9 @@ if not os.path.isfile(options.file) and not options.version:
     sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % options.file)
     sys.exit(1)
 
+# Executed Jasy
+jasyCommand = os.path.abspath(sys.argv[0])
+
 # Change to root directory of jasyscript before executing it
 os.chdir(os.path.dirname(os.path.join(os.getcwd(), os.path.expanduser(options.file))))
 logging.info("Running from %s" % os.getcwd())
@@ -73,6 +76,9 @@ jasyscript = os.path.basename(options.file)
 
 # Import global environment
 from jasy.core.Env import *
+
+# Configuring jasy for remote calls
+setJasyCommand(jasyCommand)
 
 def main():
     

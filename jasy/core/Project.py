@@ -14,7 +14,7 @@ from jasy.core.Cache import Cache
 from jasy.core.Error import *
 from jasy.core.Markdown import *
 
-__all__ = ["Project", "getProject"]
+__all__ = ["Project", "getProject", "getProjectByName"]
 
 classExtensions = (".js")
 translationExtensions = (".po")
@@ -37,6 +37,15 @@ def getProject(path, config=None):
         __projects[path] = Project(path, config)
 
     return __projects[path]
+    
+    
+def getProjectByName(name):
+    for path in __projects:
+        project = __projects[path]
+        if project.getName() == name:
+            return project
+    
+    return None
 
 
 class Project():
@@ -348,20 +357,46 @@ class Project():
     #
     
     def getCache(self):
+        """Returns the cache instance"""
+        
         return self.__cache
     
     def clearCache(self):
+        """Clears the cache of the project"""
+        
         logging.info("Clearing cache of %s..." % self.__name)
         self.__cache.clear()
         
     def close(self):
+        """Closes the project which deletes the internal caches"""
+        
         self.__cache.close()
+        self.__cache = None
+        
+        self.classes = None
+        self.assets = None
+        self.docs = None
+        self.translations = None
+        
+    def pause(self):
+        """Pauses the project so that other processes could modify/access it"""
+        
+        self.__cache.close()
+        
+    def resume(self):
+        """Resumes the paused project"""
+        
+        self.__cache.open()
 
 
 
     #
     # LIST ACCESSORS
     #
+    
+    def getDocs(self):
+        """Returns all package docs"""
+        return self.docs
 
     def getClasses(self):
         """ Returns all project JavaScript classes. Requires all files to have a "js" extension. """
