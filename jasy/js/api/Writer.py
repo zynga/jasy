@@ -807,40 +807,59 @@ class ApiWriter():
         #
 
         logging.info("Collecting Package Docs...")
+        
+        for project in session.getProjects():
+            classes = project.getClasses()
+            docs = project.getDocs()
+            
+            for className in classes:
+                splits = className.split(".")
+                packageName = splits[0]
+                for split in splits[1:]:
+                    if not packageName in apiData:
+                        if packageName in docs:
+                            logging.info("Creating package entry with documentation: %s" % packageName)
+                            apiData[packageName] = docs[packageName].getApi()
+ 
+                        else:
+                            # Fill missing package docs with a pseudo package
+                            logging.info("Creating package entry: %s" % packageName)
+                            apiData[packageName] = ApiData(packageName)
+                            apiData[packageName].main = {
+                                "type" : "Package",
+                                "name" : packageName
+                            }
+                            
+                    packageName = "%s.%s" % (packageName, split)
 
-        for className in list(apiData):
-            # Auto create API data for all packages in between
+
+        # Now register all classes in their parent namespace/package
+        for className in apiData:
             splits = className.split(".")
-            packageName = splits[0]
-            for split in splits[1:]:
-                if not packageName in apiData:
-                    logging.debug("Creating missing package doc entry: %s" % packageName)
-                    apiData[packageName] = ApiData(packageName)
-                    apiData[packageName].main = {
-                        "type" : "Package",
-                        "name" : packageName
-                    }
-                    
-                packageName = "%s.%s" % (packageName, split)
+            packageName = ".".join(splits[:-1])
+            if packageName:
+                package = apiData[packageName]
+                logging.debug("Registering class %s in parent %s" % (className, packageName))
                 
-            # Register class inside package "content"
-            lastPackage = ".".join(splits[:-1])
-            if lastPackage:
-                if not hasattr(apiData[lastPackage], "content"):
-                    apiData[lastPackage].content = []
-            
-                classPkgEntry = {
-                    "name": splits[-1],
-                    "link": className
+                entry = {
+                    "name" : splits[-1],
+                    "link" : className,
                 }
-            
+                
                 classMain = apiData[className].main
                 if "doc" in classMain and classMain["doc"]:
                     summary = extractSummary(classMain["doc"])
                     if summary:
-                        classPkgEntry["summary"] = summary
-            
-                apiData[lastPackage].content.append(classPkgEntry)
+                        entry["summary"] = summary
+                        
+                if "type" in classMain and classMain["type"]:
+                    entry["type"] = classMain["type"]
+                
+                if not hasattr(package, "content"):
+                    package.content = [entry]
+                else:
+                    package.content.append(entry)
+
         
         # Sort package content
         for className in apiData:
@@ -849,8 +868,9 @@ class ApiWriter():
                     apiData[className].content.sort(key=lambda entry: entry["name"])
                 except AttributeError:
                     logging.warn("Could not sort package: %s. Invalid content!" % packageName)
-        
-        
+
+
+
         #
         # Writing API Index
         #
