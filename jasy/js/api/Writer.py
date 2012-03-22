@@ -649,13 +649,12 @@ class ApiWriter():
                     destApi.main = {
                         "type" : "Extend",
                         "name" : destName,
-                        "from" : [className],
-                        "doc" : "Extensions for %s" % destName
+                        "from" : [className]
                     }
                     
                 # If there is a "main" tag found in the class use its API description
                 if "tags" in classApi.main and classApi.main["tags"] is not None and "main" in classApi.main["tags"]:
-                    if "doc" in classApi.main and destApi.main["doc"] == "Extensions for %s" % destName:
+                    if "doc" in classApi.main:
                         destApi.main["doc"] = classApi.main["doc"]
                 
                 classApi.main["extension"] = True
@@ -818,7 +817,7 @@ class ApiWriter():
         
         
         # Fill missing package docs
-        for className in list(apiData):
+        for className in sorted(apiData):
             splits = className.split(".")
             packageName = splits[0]
             for split in splits[1:]:
@@ -834,7 +833,7 @@ class ApiWriter():
 
 
         # Now register all classes in their parent namespace/package
-        for className in apiData:
+        for className in sorted(apiData):
             splits = className.split(".")
             packageName = ".".join(splits[:-1])
             if packageName:
@@ -860,15 +859,6 @@ class ApiWriter():
                 else:
                     package.content.append(entry)
 
-        
-        # Sort package content
-        for className in apiData:
-            if hasattr(apiData[className], "content"):
-                try:
-                    apiData[className].content.sort(key=lambda entry: entry["name"])
-                except AttributeError:
-                    logging.warn("Could not sort package: %s. Invalid content!" % packageName)
-
 
 
         #
@@ -878,22 +868,26 @@ class ApiWriter():
         logging.debug("Building Index...")
         index = {}
         
-        for className in apiData:
+        for className in sorted(apiData):
             
             classApi = apiData[className]
             mainInfo = classApi.main
             
-            # Create missing packages for className
+            # Create structure for className
             current = index
             for split in className.split("."):
                 if not split in current:
                     current[split] = {}
-
+            
                 current = current[split]
             
             # Store current type
             current["$type"] = mainInfo["type"]
-
+            
+            # Keep information if
+            if hasattr(classApi, "content"):
+                current["$content"] = True
+        
         
         
         #
