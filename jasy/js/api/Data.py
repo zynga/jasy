@@ -259,7 +259,7 @@ class ApiData():
                     def memberMatcher(node):
                         if node is not result and node.type == "assign" and node[0].type == "dot":
                             assignName = assembleDot(node[0])
-                            if assignName != name and assignName.startswith(name) and len(assignName) > len(name):
+                            if assignName is not None and assignName != name and assignName.startswith(name) and len(assignName) > len(name):
                                 localName = assignName[len(name):]
                                 if localName.startswith("."):
                                     localName = localName[1:]
