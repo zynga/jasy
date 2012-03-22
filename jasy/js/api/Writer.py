@@ -486,7 +486,7 @@ class ApiWriter():
                                 for paramTypeEntry in paramEntry["type"]:
                                     if not paramTypeEntry["name"] in exportedNames and not paramTypeEntry["name"] in additionalTypes and not ("builtin" in paramTypeEntry or "pseudo" in paramTypeEntry):
                                         item["errornous"] = True
-                                        logging.error('  - Invalid param type "%s" in %s at line %s', paramTypeEntry["name"], className, item["line"])
+                                        logging.error('- Invalid param type "%s" in %s at line %s', paramTypeEntry["name"], className, item["line"])
 
                                     if not "pseudo" in paramTypeEntry and paramTypeEntry["name"] in exportedNames:
                                         paramTypeEntry["linkable"] = True
@@ -497,14 +497,14 @@ class ApiWriter():
                         for returnTypeEntry in item["returns"]:
                             if not returnTypeEntry["name"] in exportedNames and not returnTypeEntry["name"] in additionalTypes and not ("builtin" in returnTypeEntry or "pseudo" in returnTypeEntry):
                                 item["errornous"] = True
-                                logging.error('  - Invalid return type "%s" in %s at line %s', returnTypeEntry["name"], className, item["line"])
+                                logging.error('- Invalid return type "%s" in %s at line %s', returnTypeEntry["name"], className, item["line"])
                             
                             if not "pseudo" in returnTypeEntry and returnTypeEntry["name"] in exportedNames:
                                 returnTypeEntry["linkable"] = True
                             
                 elif not item["type"] in builtinTypes and not item["type"] in additionalTypes:
                     
-                    logging.error('  - Invalid type "%s" in %s at line %s', item["type"], className, item["line"])
+                    logging.error('- Invalid type "%s" in %s at line %s', item["type"], className, item["line"])
             
             
             # Process doc
@@ -518,9 +518,9 @@ class ApiWriter():
                         if linkCheck is not True:
                             item["errornous"] = True
                             if sectionName:
-                                logging.error("  - %s in %s:%s~%s at line %s" % (linkCheck, sectionName, className, name, item["line"]))
+                                logging.error("- %s in %s:%s~%s at line %s" % (linkCheck, sectionName, className, name, item["line"]))
                             else:
-                                logging.error("  - %s in %s at line %s" % (linkCheck, className, item["line"]))
+                                logging.error("- %s in %s at line %s" % (linkCheck, className, item["line"]))
             
                 linkExtract.sub(processInternalLink, item["doc"])
 
@@ -808,29 +808,31 @@ class ApiWriter():
 
         logging.info("Collecting Package Docs...")
         
+        # Inject package docs
         for project in session.getProjects():
-            classes = project.getClasses()
             docs = project.getDocs()
             
-            for className in classes:
-                splits = className.split(".")
-                packageName = splits[0]
-                for split in splits[1:]:
-                    if not packageName in apiData:
-                        if packageName in docs:
-                            logging.info("Creating package entry with documentation: %s" % packageName)
-                            apiData[packageName] = docs[packageName].getApi()
- 
-                        else:
-                            # Fill missing package docs with a pseudo package
-                            logging.info("Creating package entry: %s" % packageName)
-                            apiData[packageName] = ApiData(packageName)
-                            apiData[packageName].main = {
-                                "type" : "Package",
-                                "name" : packageName
-                            }
-                            
-                    packageName = "%s.%s" % (packageName, split)
+            for packageName in docs:
+                logging.debug("Creating package entry with documentation: %s" % packageName)
+                apiData[packageName] = docs[packageName].getApi()
+        
+        
+        # Fill missing package docs
+        for className in list(apiData):
+            splits = className.split(".")
+            packageName = splits[0]
+            for split in splits[1:]:
+                if not packageName in apiData:
+                    # Fill missing package docs with a pseudo package
+                    logging.debug("Creating package entry: %s" % packageName)
+                    logging.warn("Missing package documentation for package: %s" % packageName)
+                    apiData[packageName] = ApiData(packageName)
+                    apiData[packageName].main = {
+                        "type" : "Package",
+                        "name" : packageName
+                    }
+                        
+                packageName = "%s.%s" % (packageName, split)
 
 
         # Now register all classes in their parent namespace/package
