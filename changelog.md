@@ -1,7 +1,18 @@
 Jasy 0.6-beta1
 ==============
 
+- Support for checking links, param and return types inside API docs.
+- Support API docs for dotted parameters (object parameters with specific required sub keys). 
+- Support API doc generation for plain JavaScript statics/members (using namespace={} or namespace.prototype={}) 
+- Supporting recursive project dependencies aka project A uses B uses C and A does not know anything about C.
+- Improve support for 3rd party JavaScript libraries not matching the Jasy requirements (no jasyproject.conf or matching file layout). This will be implemented moving the configuration and a manual file layout structure into the project requiring this 3rd party library.
+- Support for executing and manipulating tasks from other projects e.g. generating build version of project A from project B into a destination folder of project B.
 
+
+Jasy 0.5
+========
+
+- No stable release. Use 0.5-beta12 or 0.6.
 
 
 Jasy 0.5-beta12
