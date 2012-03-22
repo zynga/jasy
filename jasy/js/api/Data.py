@@ -222,6 +222,32 @@ class ApiData():
                             for staticsEntry in assigned:
                                 self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
         
+        #
+        # Handle plain JS namespace -> object assignments
+        #
+        else:
+
+            def assignMatcher(node):
+
+                # TODO check for prototype => add members
+                if node.type == "assign" and node[0].type == "dot" and node[1].type == "object_init":
+                    doc = getDocComment(node.parent)
+
+                    if doc and doc.hasTag('module'):
+                        return True
+                    
+                return False
+
+            result = query(tree, assignMatcher)
+
+            if result:
+                self.statics = {}
+                for prop in result[1]:
+                    self.addEntry(prop[0].value, prop[1], prop, self.statics)
+                
+                name = assembleDot(result[0])
+                self.setMain('plain', result.parent, name)
+                success = True
         
         #
         # core.Main.addStatics
