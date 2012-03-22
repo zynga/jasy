@@ -82,14 +82,18 @@ def isErrornous(data):
 
 
 def mergeMixin(className, mixinName, classApi, mixinApi):
-    logging.debug("Merging %s into %s", mixinName, className)
+    logging.info("Merging %s into %s", mixinName, className)
 
     sectionLink = ["member", "property", "event"]
     
     for pos, section in enumerate(("members", "properties", "events")):
         mixinItems = getattr(mixinApi, section, None)
         if mixinItems:
-            classItems = getattr(classApi, section, {})
+            classItems = getattr(classApi, section, None)
+            if not classItems:
+                classItems = {}
+                setattr(classApi, section, classItems)
+            
             for name in mixinItems:
 
                 # Overridden Check
@@ -392,6 +396,10 @@ class ApiWriter():
             classIncludes = getattr(classApi, "includes", None)
             if classIncludes:
                 for mixinName in classIncludes:
+                    if not mixinName in apiData:
+                        logging.error("Invalid mixin %s in class %s", className, mixinName)
+                        continue
+                        
                     mixinApi = apiData[mixinName]
                     if not hasattr(mixinApi, "includedBy"):
                         mixinApi.includedBy = set()
