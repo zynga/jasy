@@ -6,7 +6,6 @@
 import logging, re, json, os, fnmatch
 from os.path import basename, dirname, relpath, normpath
 
-from jasy.util.Profiler import *
 from jasy.util.File import *
 from jasy.core.Project import Project
 from jasy.core.Env import session, getPermutation, prependPrefix
@@ -81,7 +80,6 @@ class Asset:
         projects = session.getProjects()
 
         logging.info("Publishing files...")
-        pstart()
         
         copyAssetFolder = prependPrefix(assetFolder)
         
@@ -94,7 +92,6 @@ class Asset:
                 counter += 1
         
         logging.info("Updated %s/%s files" % (counter, len(assets)))
-        pstop()
         
         result = {}
         for fileId in assets:

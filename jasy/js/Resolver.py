@@ -4,7 +4,6 @@
 #
 
 import logging
-from jasy.util.Profiler import *
 from jasy.core.Env import session
 from jasy.core.Env import getPermutation
 
@@ -80,7 +79,6 @@ class Resolver():
         if self.__included:
             return self.__included
         
-        pstart()
         logging.info("Detecting dependencies...")
         
         collection = set()
@@ -94,7 +92,6 @@ class Resolver():
         
         self.__included = collection
         logging.debug("Including %s classes", len(collection))
-        pstop()
         
         return self.__included
 

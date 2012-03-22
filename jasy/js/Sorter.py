@@ -4,7 +4,6 @@
 #
 
 import logging, time
-from jasy.util.Profiler import *
 from jasy.core.Env import getPermutation
 
 __all__ = ["Sorter"]
@@ -38,7 +37,6 @@ class Sorter:
         if not self.__sortedClasses:
             logging.info("Sorting classes...")
             
-            pstart()
             classNames = self.__names
             for className in classNames:
                 self.__getLoadDeps(classNames[className])
@@ -51,7 +49,6 @@ class Sorter:
                     self.__addSorted(classObj, result)
 
             self.__sortedClasses = result
-            pstop()
 
         return self.__sortedClasses
 

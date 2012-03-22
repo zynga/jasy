@@ -11,7 +11,6 @@ from jasy.i18n.LocaleData import *
 from jasy.core.Project import Project, getProject
 from jasy.core.Permutation import Permutation
 
-from jasy.util.Profiler import *
 from jasy.util.File import *
 from jasy.core.Env import *
 

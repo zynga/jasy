@@ -5,7 +5,6 @@
 
 import logging, os, json, re, xml.etree.ElementTree
 from jasy.util.File import *
-from jasy.util.Profiler import *
 
 __all__ = ["storeLocale"]
 
@@ -90,7 +89,6 @@ def pluralToJavaScript(expr):
     
 class Parser():
     def __init__(self, locale):
-        pstart()
         logging.info("Preparing locale %s" % locale)
         splits = locale.split("_")
         
@@ -141,19 +139,15 @@ class Parser():
         # Add supplemental CLDR data
         self.__addSupplementals(self.__territory)
 
-        pstop()
-
 
     def export(self):
         # TOOD
         return
 
         logging.info("Writing result...")
-        pstart()
         
         writefile(os.path.join(project, "jasyproject.json"), '{"name":"cldr","kind":"basic"}')
         self.__exportRecurser(self.__data, "locale", project)
-        pstop()
 
 
     def __exportRecurser(self, data, prefix, project):
