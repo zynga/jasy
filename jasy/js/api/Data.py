@@ -234,7 +234,6 @@ class ApiData():
                     doc = getDocComment(node.parent)
 
                     if doc and doc.hasTag('module'):
-                        print(doc.text)
                         return True
                     
                 return False
