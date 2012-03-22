@@ -808,7 +808,7 @@ class ApiWriter():
 
         logging.info("Collecting Package Docs...")
         
-        # Inject package docs
+        # Inject existing package docs into api data
         for project in session.getProjects():
             docs = project.getDocs()
             
@@ -823,8 +823,6 @@ class ApiWriter():
             packageName = splits[0]
             for split in splits[1:]:
                 if not packageName in apiData:
-                    # Fill missing package docs with a pseudo package
-                    logging.debug("Creating package entry: %s" % packageName)
                     logging.warn("Missing package documentation for package: %s" % packageName)
                     apiData[packageName] = ApiData(packageName)
                     apiData[packageName].main = {
