@@ -14,27 +14,33 @@ if sys.version_info[0] < 3:
     sys.exit(1)
 
 # Include local Jasy into Python library path
-basedir = os.path.join(os.path.dirname(sys.argv[0]), os.pardir)
+basedir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), os.pardir))
 if os.path.exists(os.path.join(basedir, "jasy")):
     sys.path.insert(0, basedir)
 
-# Configure Option Parser
-from optparse import OptionParser
+# Parse options
+from jasy.core.Options import Options
 
-parser = OptionParser()
-parser.add_option("-q", "--quiet", action="store_false", dest="verbose", help="don't print status messages to stdout")
-parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="print more detailed status messages to stdout")
-parser.add_option("-l", "--log", dest="logfile", help="Write debug messages to given logfile")
-parser.add_option("-f", "--file", dest="file", help="Use the given jasy script")
-parser.add_option("-V", "--version", action="store_true", dest="showVersion", help="Use the given jasy script")
+args = sys.argv[1:]
+if args and "jasyscript.py" in args[0]:
+    args = args.pop(0)
 
-(options, args) = parser.parse_args()
+options = Options()
+
+options.add("verbose", short="v", help="print more detailed status messages to stdout")
+options.add("quiet", short="q", help="don't print status messages to stdout")
+options.add("log", accept=str, help="Write debug messages to given logfile")
+options.add("file", accept=str, value="jasyscript.py", help="Use the given jasy script")
+options.add("version", short="V", help="Print version info only")
+options.add("stats", help="Show statistics after run")
+
+options.parse(args)
 
 # Configure log level for root logger first (enable debug level when either logfile or console verbosity is activated)
 import logging
 
 loglevel = logging.INFO
-if options.logfile or options.verbose is True:
+if options.log or options.verbose is True:
     loglevel = logging.DEBUG
 
 # Basic configuration of console logging
@@ -43,80 +49,81 @@ logging.basicConfig(level=loglevel, format="%(message)s")
 # Configure console handler to correct level
 if options.verbose is True:
     logging.getLogger().handlers[0].setLevel(logging.DEBUG)
-elif options.verbose is False:
+elif options.quiet is True:
     logging.getLogger().handlers[0].setLevel(logging.WARN)
 else:
     logging.getLogger().handlers[0].setLevel(logging.INFO)
 
 # Enable writing to logfile with debug level
-if options.logfile:
+if options.log:
     logfileHandler = logging.FileHandler(options.logfile)
     logfileHandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
     logfileHandler.setLevel(logging.DEBUG)
     logging.getLogger().addHandler(logfileHandler)        
 
-# Include the Jasy public API
-import jasy
-
-from jasy.core.Error import *
-from jasy.core.Task import *
-from jasy.core.Session import *
-from jasy.core.Project import *
-
-from jasy.asset.Asset import * 
-
-from jasy.js.Resolver import *
-from jasy.js.Sorter import *
-
-from jasy.js.api.Writer import *
-
-from jasy.js.output.Combiner import *
-from jasy.js.output.Optimization import *
-from jasy.js.output.Formatting import *
-
-from jasy.util.File import *
-
-# Print out some info
-logging.info("Jasy %s" % jasy.__version__)
-logging.debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
-
 # Find Jasy Script
-if options.file:
-    scriptname = options.file
-else:
-    scriptname = "jasyscript.py"
-
-if not os.path.isfile(scriptname) and not options.showVersion:
-    sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % scriptname)
+if not os.path.isfile(options.file) and not options.version:
+    sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % options.file)
     sys.exit(1)
 
-try:
-    # Execute build script
-    buildfile = open(scriptname, "r")
-    retval = exec(buildfile.read(), globals())
+# Executed Jasy
+jasyCommand = os.path.abspath(sys.argv[0])
 
-    # filter out jasyscript reference, useful when doing ./jasyscript.py from the command line
-    if args and "jasyscript.py" in args[0]:
-        args.pop(0)
+# Change to root directory of jasyscript before executing it
+os.chdir(os.path.dirname(os.path.join(os.getcwd(), os.path.expanduser(options.file))))
+logging.info("Running from %s" % os.getcwd())
+jasyscript = os.path.basename(options.file)
 
-    # list all tasks when none is given
-    if not args:
-        logging.error("No tasks to execute. Please choose from: ")
-        printTasks()
+# Import global environment
+from jasy.core.Env import *
+
+# Configuring jasy for remote calls
+setJasyCommand(jasyCommand)
+
+def main():
+    
+    try:
+        # execute build script
+        buildfile = open(jasyscript, "r")
+        retval = exec(buildfile.read(), globals())
+
+        # list all tasks when none is given
+        tasks = options.getTasks()
+        if not tasks:
+            startSection("Help")
+            logging.error("Available tasks: ")
+            printTasks()
+            sys.exit(1)
+
+        # all arguments are processed as a list of task to execute in order
+        for entry in tasks:
+            executeTask(entry["task"], **entry["params"])
+    
+    except JasyError as error:
+        sys.stderr.write("%s\n" % error)
         sys.exit(1)
 
-    # all arguments are processed as a list of task to execute in order
-    for name in args:
-        executeTask(name)
+    except KeyboardInterrupt:
+        sys.stderr.write("Build interrupted!\n")
+        sys.exit(2)
+
+    sys.exit(0)
+
+if options.stats:
     
-
-except JasyError as error:
-    sys.stderr.write("%s\n" % error)
-    sys.exit(1)
-
-except KeyboardInterrupt:
-    sys.stderr.write("Build interrupted!\n")
-    sys.exit(2)
-
-sys.exit(0)
-
+    logging.info("Running in profiling mode...")
+    
+    import cProfile
+    cProfile.run("main()", "jasyprofile.txt")
+    
+    startSection("Analysing data...")
+    import pstats
+    stats = pstats.Stats("jasyprofile.txt")
+    
+    stats.sort_stats('time', 'cum').print_stats(30)
+    
+    os.remove("jasyprofile.txt")
+    
+else:
+    
+    main()

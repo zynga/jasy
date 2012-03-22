@@ -1,54 +1,48 @@
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Zynga Inc.
+#
+
 import types
-import logging
+from jasy.core.Env import setPrefix, addTask
 
-from jasy.core.Error import *
-
-
-__tasks__ = {}
-
-def addTask(task):
-    logging.debug("Registering task: %s" % task.name)
-    __tasks__[task.name] = task
-    
-def executeTask(name):
-    if name in __tasks__:
-        logging.debug("Executing task: %s" % name)
-        __tasks__[name]()
-    else:
-        raise JasyError("No such task: %s" % name)
-        
-def printTasks():
-    for name in __tasks__:
-        obj = __tasks__[name]
-        if obj.desc:
-            logging.info("- %s: %s" % (name, obj.desc))
-        else:
-            logging.info("- %s" % name)
-
-
+__all__ = ["task"]
 
 class Task:
     __doc__ = ""
+    __slots__ = ["__func", "name", "desc", "args", "__doc__"]
+
     
-    def __init__(self, func, desc=""):
+    def __init__(self, func, desc="", **kwargs):
         name = func.__name__
         self.__func = func
         
         self.name = name
         self.desc = desc
-        self.fullname = "%s.%s" % (func.__module__, name)
+        self.args = kwargs
         
-        try:
-            self.__doc__ = func.__doc__
-        except AttributeError:
-            pass
-            
         addTask(self)
         
 
-    def __call__(self, *args, **kw):
-        retval = self.__func()
-        return retval
+    def __call__(self, **kwargs):
+        
+        merged = {}
+        merged.update(self.args)
+        merged.update(kwargs)
+        
+        # Use prefix from arguments if available
+        # Use no prefix for cleanup tasks
+        # Fallback to task name (e.g. "build" task => "build" folder)
+        if "prefix" in merged:
+            setPrefix(merged["prefix"])
+            del merged["prefix"]
+        elif "clean" in self.name:
+            setPrefix(None)
+        else:
+            setPrefix(self.name)
+        
+        # Execute internal function
+        return self.__func(**merged)
 
 
     def __repr__(self):
@@ -56,7 +50,7 @@ class Task:
 
 
 
-def task(func):
+def task(func, **kwargs):
     """ Specifies that this function is a task. """
     
     if isinstance(func, Task):
@@ -66,9 +60,9 @@ def task(func):
         return Task(func)
     
     else:
-        # Used for descriptions
+        # Used for called task() (to pass in prefixes, descriptions, etc.)
         def wrapper(finalfunc):
-            return Task(finalfunc, func)
+            return Task(finalfunc, func, **kwargs)
             
         return wrapper
 

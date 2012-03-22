@@ -14,18 +14,24 @@ class Cache:
     hash table / dictionary.
     """
     
-    __db = None
+    __shelve = None
     
-    def __init__(self, path, clear=False):
+    def __init__(self, path):
         self.__transient = {}
         self.__file = os.path.join(path, "jasycache")
         
+        self.open()
+        
+        
+    def open(self):
+        """Opens a cache file in the given path"""
+        
         try:
             if os.path.exists(self.__file):
-                self.__db = shelve.open(self.__file, flag="w")
+                self.__shelve = shelve.open(self.__file, flag="w")
             
-                if "jasy-version" in self.__db:
-                    storedVersion = self.__db["jasy-version"]
+                if "jasy-version" in self.__shelve:
+                    storedVersion = self.__shelve["jasy-version"]
                 else:
                     storedVersion = None
                 
@@ -33,10 +39,10 @@ class Cache:
                     return
                     
                 logging.warn("Jasy version has been changed. Recreating cache...")
-                self.__db.close()
+                self.__shelve.close()
                     
-            self.__db = shelve.open(self.__file, flag="n")
-            self.__db["jasy-version"] = version
+            self.__shelve = shelve.open(self.__file, flag="n")
+            self.__shelve["jasy-version"] = version
             
         except dbm.error as error:
             errno = None
@@ -62,15 +68,15 @@ class Cache:
         Clears the cache file through re-creation of the file
         """
         
-        if self.__db != None:
+        if self.__shelve != None:
             logging.debug("Closing cache file %s..." % self.__file)
             
-            self.__db.close()
-            self.__db = None
+            self.__shelve.close()
+            self.__shelve = None
 
         logging.debug("Clearing cache file %s..." % self.__file)
-        self.__db = shelve.open(self.__file, flag="n")
-        self.__db["jasy-version"] = version
+        self.__shelve = shelve.open(self.__file, flag="n")
+        self.__shelve["jasy-version"] = version
         
         
     def read(self, key, timestamp=None):
@@ -84,9 +90,9 @@ class Cache:
             return self.__transient[key]
         
         timeKey = key + "-timestamp"
-        if key in self.__db and timeKey in self.__db:
-            if not timestamp or timestamp <= self.__db[timeKey]:
-                value = self.__db[key]
+        if key in self.__shelve and timeKey in self.__shelve:
+            if not timestamp or timestamp <= self.__shelve[timeKey]:
+                value = self.__shelve[key]
                 
                 # Useful to debug serialized size. Often a performance
                 # issue when data gets to big.
@@ -105,6 +111,7 @@ class Cache:
         Stores the given value.
         Default timestamp goes to the current time. Can be modified
         to the time of an other files modification date etc.
+        Transient enables in-memory cache for the given value
         """
         
         self.__transient[key] = value
@@ -115,8 +122,8 @@ class Cache:
             timestamp = time.time()
         
         try:
-            self.__db[key+"-timestamp"] = timestamp
-            self.__db[key] = value
+            self.__shelve[key+"-timestamp"] = timestamp
+            self.__shelve[key] = value
         except pickle.PicklingError as err:
             logging.error("Failed to store enty: %s" % key)
 
@@ -124,15 +131,15 @@ class Cache:
     def sync(self):
         """ Syncs the internal storage database """
         
-        if self.__db is not None:
-            self.__db.sync() 
+        if self.__shelve is not None:
+            self.__shelve.sync() 
       
       
     def close(self):
         """ Closes the internal storage database """
         
-        if self.__db is not None:
-            self.__db.close()  
-            self.__db = None       
-        
+        if self.__shelve is not None:
+            self.__shelve.close()  
+            self.__shelve = None
+
       

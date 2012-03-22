@@ -8,13 +8,12 @@ import logging, itertools, time, atexit, json, os
 from jasy.i18n.Translation import Translation
 from jasy.i18n.LocaleData import *
 
-from jasy.core.Project import Project
+from jasy.core.Project import Project, getProject
 from jasy.core.Permutation import Permutation
 
 from jasy.util.Profiler import *
 from jasy.util.File import *
-
-
+from jasy.core.Env import *
 
 __all__ = ["Session"]
 
@@ -35,36 +34,45 @@ class Session():
         self.__projects = []
         self.__fields = {}
         
-        print("Initialize projects...")
         if os.path.exists("jasyproject.json"):
-            self.addProject(Project("."))
+            startSection("Initializing projects...")
+            self.addProject(getProject("."))
+            logging.info("Ready (%s projects)" % len(self.__projects))
     
     
     def clearCache(self):
-        """
-        Clears all caches of known projects
-        """
+        """Clears all caches of known projects"""
 
-        for project in self.getProjects():
+        for project in self.__projects:
             project.clearCache()
 
-    def close(self):
-        """
-        Closes the session and stores cache to the harddrive.
-        """
 
-        if self.__projects:
-            logging.info("Closing session...")
-            for project in self.getProjects():
-                project.close()
-            
-            self.__projects = None
+    def close(self):
+        """Closes the session and stores cache to the harddrive."""
+
+        logging.debug("Closing session...")
+        for project in self.__projects:
+            project.close()
+        
+        self.__projects = None
     
+    
+    def pause(self):
+        """Pauses the session"""
+        
+        for project in self.__projects:
+            project.pause()
+    
+    
+    def resume(self):
+        """Resumes the session"""
+
+        for project in self.__projects:
+            project.resume()
+            
     
     def getClassByName(self, className):
-        """
-        Queries all currently known projects for the given class and returns the class object
-        """
+        """Queries all currently known projects for the given class and returns the class object"""
 
         for project in self.__projects:
             classes = project.getClasses()
@@ -88,9 +96,15 @@ class Session():
         - project: Instance of Project to append to the list
         """
         
+        if project in self.__projects:
+            return
+        
+        self.__projects.append(project)
+
         for requiredProject in project.getRequires():
             self.addProject(requiredProject)
 
+        self.__projects.remove(project)
         self.__projects.append(project)
         
         # Import project defined fields which might be configured using "activateField()"
@@ -246,9 +260,19 @@ class Session():
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
         permutations = [Permutation(combi) for combi in combinations]
 
-        logging.info("Detected %s possible permutations", len(permutations))
-
         return permutations
+
+
+    def permutate(self):
+        """ Generator method for permutations for improving output capabilities """
+        
+        permutations = self.getPermutations()
+        length = len(permutations)
+        
+        for pos, current in enumerate(permutations):
+            startSection("Permutation %s/%s" % (pos+1, length))
+            setPermutation(current)
+            yield current
 
 
     def exportFields(self):
@@ -358,4 +382,6 @@ class Session():
                     files.append(translations[entry])
         
         return Translation(locale, files)
-
+        
+        
+        

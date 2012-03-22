@@ -85,10 +85,10 @@ class ApiData():
         
         try:
             if not self.__processTree(tree):
-                self.warn("  - Unsupported file to process", 1)
+                self.warn("- Unsupported file to process", 1)
                 
         except Exception as error:
-            self.warn("  - Error during processing file: %s" % error, 1)
+            self.warn("- Error during processing file: %s" % error, 1)
     
     
     def __processTree(self, tree):
@@ -113,7 +113,7 @@ class ApiData():
                         self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
                         
                 else:
-                    self.warn("  - Invalid core.Module()", callNode.line)
+                    self.warn("- Invalid core.Module()", callNode.line)
 
 
             #
@@ -150,7 +150,7 @@ class ApiData():
                             self.warn('  - Invalid core.Interface section "%s"' % sectionName, propertyInit.line) 
 
                 else:
-                    self.warn("  - Invalid core.Interface()", callNode.line)
+                    self.warn("- Invalid core.Interface()", callNode.line)
 
 
             #
@@ -196,7 +196,7 @@ class ApiData():
                             self.warn('  - Invalid core.Class section "%s"' % sectionName, propertyInit.line) 
                             
                 else:
-                    self.warn("  - Invalid core.Class()", callNode.line)
+                    self.warn("- Invalid core.Class()", callNode.line)
 
 
             #
@@ -269,7 +269,7 @@ class ApiData():
                         
             else:
                 
-                self.warn("  - Invalid core.Main.addStatics()")
+                self.warn("- Invalid core.Main.addStatics()")
         
         
         #
@@ -292,7 +292,7 @@ class ApiData():
                         
             else:
                 
-                self.warn("  - Invalid core.Main.addMembers()")
+                self.warn("- Invalid core.Main.addMembers()")
 
 
         return success

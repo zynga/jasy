@@ -14,7 +14,7 @@ from jasy.core.Cache import Cache
 from jasy.core.Error import *
 from jasy.core.Markdown import *
 
-__all__ = ["Project", "getProject"]
+__all__ = ["Project", "getProject", "getProjectByName"]
 
 classExtensions = (".js")
 translationExtensions = (".po")
@@ -27,14 +27,25 @@ def getKey(data, key, default=None):
     else:
         return default
 
-
-projects = {}
+__projects = {}
 
 def getProject(path, config=None):
-    if not path in projects:
-        projects[path] = Project(path, config)
+    global __projects
+    
+    path = os.path.abspath(path)
+    if not path in __projects:
+        __projects[path] = Project(path, config)
 
-    return projects[path]
+    return __projects[path]
+    
+    
+def getProjectByName(name):
+    for path in __projects:
+        project = __projects[path]
+        if project.getName() == name:
+            return project
+    
+    return None
 
 
 class Project():
@@ -54,7 +65,7 @@ class Project():
             raise JasyError("Invalid project path: %s (absolute: %s)" % (path, os.path.abspath(path)))
         
         # Only store and work with full path
-        self.__path = os.path.abspath(path)
+        self.__path = os.path.abspath(os.path.expanduser(path))
         
         # Intialize item registries
         self.classes = {}
@@ -96,7 +107,7 @@ class Project():
         # Read fields (for injecting data into the project and build permuations)
         self.__fields = getKey(config, "fields", {})
 
-        logging.info("- Initializing project: %s (from: %s)", self.__name, self.__path)
+        logging.info("Initializing project: %s (from: %s)", self.__name, self.__path)
             
         # Processing custom content section. Only supports classes and assets.
         if "content" in config:
@@ -143,10 +154,10 @@ class Project():
                 summary.append("%s %s" % (len(content), section))
 
         if summary:
-            logging.info("  - Kind: %s", self.kind)
-            logging.info("  - Found: %s", ", ".join(summary))
+            logging.info("- Kind: %s", self.kind)
+            logging.info("- Found: %s", ", ".join(summary))
         else:
-            logging.info("  - Empty project?!?")
+            logging.info("- Empty project?!?")
 
 
 
@@ -166,6 +177,8 @@ class Project():
         
         
     def addContent(self, content):
+        logging.debug("- Adding manual content")
+        
         for fileId in content:
             fileContent = content[fileId]
             if len(fileContent) == 0:
@@ -206,6 +219,8 @@ class Project():
         
         
     def addDir(self, directory, distname):
+        
+        logging.debug("- Scanning directory: %s" % directory)
         
         path = os.path.join(self.__path, directory)
         if not os.path.exists(path):
@@ -323,8 +338,6 @@ class Project():
     def getPackage(self):
         return self.__package
         
-        
-        
     def toRelativeUrl(self, path, prefix="", subpath="source"):
         root = os.path.join(self.__path, subpath)
         relpath = os.path.relpath(path, root)
@@ -336,8 +349,6 @@ class Project():
             relpath = os.path.normpath(prefix + relpath)
             
         return relpath
-        
-        
 
 
 
@@ -346,19 +357,46 @@ class Project():
     #
     
     def getCache(self):
+        """Returns the cache instance"""
+        
         return self.__cache
     
     def clearCache(self):
+        """Clears the cache of the project"""
+        
+        logging.info("Clearing cache of %s..." % self.__name)
         self.__cache.clear()
         
     def close(self):
+        """Closes the project which deletes the internal caches"""
+        
         self.__cache.close()
+        self.__cache = None
+        
+        self.classes = None
+        self.assets = None
+        self.docs = None
+        self.translations = None
+        
+    def pause(self):
+        """Pauses the project so that other processes could modify/access it"""
+        
+        self.__cache.close()
+        
+    def resume(self):
+        """Resumes the paused project"""
+        
+        self.__cache.open()
 
 
 
     #
     # LIST ACCESSORS
     #
+    
+    def getDocs(self):
+        """Returns all package docs"""
+        return self.docs
 
     def getClasses(self):
         """ Returns all project JavaScript classes. Requires all files to have a "js" extension. """

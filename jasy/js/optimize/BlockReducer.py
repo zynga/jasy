@@ -194,9 +194,8 @@ def reworkElse(node, elsePart):
     # content to. This cannot work. So we need to wrap ourself
     # into a block and move the else statements to this newly
     # established block
-    if not target.type in ("block","script"):
+    if not target.type in ("block", "script"):
         newBlock = Node(None, "block")
-        newBlock.wrapped = True
         
         # Replace node with newly created block and put ourself into it
         node.parent.replace(node, newBlock)

@@ -9,6 +9,7 @@ from os.path import basename, dirname, relpath, normpath
 from jasy.util.Profiler import *
 from jasy.util.File import *
 from jasy.core.Project import Project
+from jasy.core.Env import session, getPermutation, prependPrefix
 
 __all__ = ["Asset"]
 
@@ -26,14 +27,11 @@ class Asset:
     
     Supports images and automatically detect their size and image format. Both informations
     are added to the exported data later on.
-    
-    Supports images sprites when it finds a 'sprites.json' in any folder.
     """
     
-    def __init__(self, session, classes, permutation=None):
-        self.__session = session
+    def __init__(self, classes):
         self.__classes = classes
-        self.__permutation = permutation
+        self.__permutation = getPermutation()
         
         # Initialize storage pool
         assets = self.__assets = {}
@@ -42,7 +40,7 @@ class Asset:
         expr = self.__compileFilterExpr()
         
         # Loop though all projects and merge/filter assets
-        for project in self.__session.getProjects():
+        for project in session.getProjects():
             localAssets = project.assets
             for fileId in localAssets:
                 # Minor performance tweak: Using lookup instead of regexp during merge
@@ -70,26 +68,27 @@ class Asset:
 
 
 
-    def exportBuild(self, buildFolder="build", assetFolder="asset", urlPrefix=""):
+    def exportBuild(self, assetFolder="asset", urlPrefix=""):
         """
-        Publishes the selected files to the given 'buildFolder/assetFolder'. This merges files from 
+        Publishes the selected files to the destination folder. This merges files from 
         different projects to this one folder. This is ideal for preparing the final deployment.
         
-        - buildFolder: Root destination folder. Used for dealing with relative URLs and copying.
         - assetFolder: Where the assets should copied to inside the build folder (relative to the build folder).
         - urlPrefix: A URL which should be mapped to the project's root folder
         """
 
         assets = self.__assets
-        projects = self.__session.getProjects()
+        projects = session.getProjects()
 
         logging.info("Publishing files...")
         pstart()
         
+        copyAssetFolder = prependPrefix(assetFolder)
+        
         counter = 0
         for fileId in assets:
             srcFile = assets[fileId].getPath()
-            dstFile = os.path.join(buildFolder, assetFolder, fileId.replace("/", os.sep))
+            dstFile = os.path.join(copyAssetFolder, fileId.replace("/", os.sep))
             
             if updateFile(srcFile, dstFile):
                 counter += 1
@@ -139,7 +138,7 @@ class Asset:
             string so that the URLs do not contain useless ".." parent directory segments.
         """
         
-        main = self.__session.getMain()
+        main = session.getMain()
         assets = self.__assets
         result = {}
         

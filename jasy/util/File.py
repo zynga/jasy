@@ -3,27 +3,37 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, shutil
+import os, shutil, logging
+from jasy.core.Env import prependPrefix
+
+
+def removeDir(dirname):
+    """Removes the given directory"""
+    
+    dirname = prependPrefix(dirname)
+    if os.path.exists(dirname):
+        logging.info("Deleting folder %s" % dirname)
+        shutil.rmtree(dirname)
 
 
 def makeDir(dirname):
-    """
-    Creates missing hierarchy levels for given directory
-    """
+    """Creates missing hierarchy levels for given directory"""
     
     if dirname == "":
         return
         
+    dirname = prependPrefix(dirname)
     if not os.path.exists(dirname):
         os.makedirs(dirname)
 
 
-
 def copyDir(src, dst):
     """
-    Copies a directory to a destination directory. Merges the existing directory structure with the folder to copy.
+    Copies a directory to a destination directory. 
+    Merges the existing directory structure with the folder to copy.
     """
     
+    dst = prependPrefix(dst)
     srcLength = len(src)
     counter = 0
     
@@ -45,14 +55,13 @@ def copyDir(src, dst):
     return counter
 
 
-
 def copyFile(src, dst):
-    """
-    Copy src file to dst file. Both should be filenames, not directories.
-    """
+    """Copy src file to dst file. Both should be filenames, not directories."""
     
     if not os.path.isfile(src):
         raise Exception("No such file: %s" % src)
+
+    dst = prependPrefix(dst)
 
     # First test for existance of destination directory
     makeDir(os.path.dirname(dst))
@@ -66,14 +75,13 @@ def copyFile(src, dst):
     return True
 
 
-
 def updateFile(src, dst):
-    """
-    Same as copyFile() but only do copying when source file is newer than target file
-    """
+    """Same as copyFile() but only do copying when source file is newer than target file"""
     
     if not os.path.isfile(src):
         raise Exception("No such file: %s" % src)
+    
+    dst = prependPrefix(dst)
     
     try:
         dst_mtime = os.path.getmtime(dst)
@@ -91,8 +99,11 @@ def updateFile(src, dst):
     return copyFile(src, dst)
 
 
-
 def writeFile(dst, content):
+    """Writes the content to the destination file name"""
+    
+    dst = prependPrefix(dst)
+    
     # First test for existance of destination directory
     makeDir(os.path.dirname(dst))
     

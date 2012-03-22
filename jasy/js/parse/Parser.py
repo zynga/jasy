@@ -418,14 +418,11 @@ def Statement(tokenizer, staticContext):
                     break
         
         if tokenType == "break":
-            builder.BREAK_setTarget(node, statementStack[i])
             builder.BREAK_finish(node)
-
         else:
-            builder.CONTINUE_setTarget(node, statementStack[i])
             builder.CONTINUE_finish(node)
         
-        # NO RETURN        
+        # NO RETURN
 
 
     elif tokenType == "try":

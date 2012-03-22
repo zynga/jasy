@@ -5,7 +5,7 @@
 
 import logging, time
 from jasy.util.Profiler import *
-
+from jasy.core.Env import getPermutation
 
 __all__ = ["Sorter"]
 
@@ -15,11 +15,11 @@ class CircularDependency(Exception):
     
 
 class Sorter:
-    def __init__(self, resolver, permutation=None):
+    def __init__(self, resolver):
         # Keep classes/permutation reference
         # Classes is set(classObj, ...)
         self.__resolver = resolver
-        self.__permutation = permutation
+        self.__permutation = getPermutation()
         
         classes = self.__resolver.getIncludedClasses()
 

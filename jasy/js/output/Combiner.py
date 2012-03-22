@@ -8,15 +8,13 @@ import logging, os, random
 from jasy.core.Error import JasyError
 from jasy.core.Permutation import Permutation
 
-from jasy.util.File import *
+import jasy.core.Env
+from jasy.core.Env import *
 
 from jasy.js.Class import Error as ClassError
-from jasy.js.Resolver import Resolver
-from jasy.js.Sorter import Sorter
-from jasy.js.output.Optimization import Optimization
 
 
-def storeKernel(fileName, session, assets=None, translations=None, optimization=None, formatting=None, debug=False):
+def storeKernel(fileName, assets=None, translations=None, debug=False):
     """
     Writes a so-called kernel script to the given location. This script contains
     data about possible permutations based on current session values. It optionally
@@ -29,9 +27,7 @@ def storeKernel(fileName, session, assets=None, translations=None, optimization=
     exclude it from the real other generated output files.
     """
     
-    # Auto optimize kernel with basic compression features
-    if optimization is None:
-        optimization = Optimization("variables", "declarations", "blocks")
+    startSection("Storing kernel...")
     
     # This exports all field values from the session
     fields = session.exportFields()
@@ -41,16 +37,16 @@ def storeKernel(fileName, session, assets=None, translations=None, optimization=
     # - fields => core.Env
     # - assets => core.Asset
     # - translations => core.Locale
-    permutation = Permutation({
+    setPermutation(Permutation({
         "debug" : debug,
         "fields" : fields,
         "assets" : assets,
         "translations" : translations
-    })
+    }))
     
     # Build resolver
     # We need the permutation here because the field configuration might rely on detection classes
-    resolver = Resolver(session.getProjects(), permutation)
+    resolver = Resolver()
     
     # Include classes for value injection
     if fields is not None:
@@ -66,8 +62,10 @@ def storeKernel(fileName, session, assets=None, translations=None, optimization=
     resolver.addClassName("core.io.Queue")
     
     # Sort resulting class list
-    classes = Sorter(resolver, permutation).getSortedClasses()
-    storeCompressed(fileName, classes, permutation=permutation, optimization=optimization, formatting=formatting)
+    classes = Sorter(resolver).getSortedClasses()
+    storeCompressed(fileName, classes)
+    
+    setPermutation(None)
     
     return classes
 
@@ -90,7 +88,7 @@ def storeCombined(fileName, classes, bootCode=None):
 
 
 
-def storeCompressed(fileName, classes, bootCode="", permutation=None, translation=None, optimization=None, formatting=None):
+def storeCompressed(fileName, classes, bootCode="", translation=None):
     """
     Combines the compressed result of the stored class list
     
@@ -99,14 +97,12 @@ def storeCompressed(fileName, classes, bootCode="", permutation=None, translatio
     - bootCode: Code to execute once all the classes are loaded
     - permutation: Permutation to apply to the classes before compression (for alternative code variants) (See Permutation.py)
     - translation: Translation to apply to the classes before compression (inlining of translation)
-    - optimization: Optimization to apply before compression (variable shortening, ...) (See Optimization.py)
-    - formatting: Formatting to use during compression (See Formatting.py)
     """
     
     logging.info("Compressing %s classes...", len(classes))
 
     try:
-        result = "".join([classObj.getCompressed(permutation, translation, optimization, formatting) for classObj in classes])
+        result = "".join([classObj.getCompressed(getPermutation(), translation, optimization, formatting) for classObj in classes])
         if bootCode:
             result += bootCode
         
@@ -117,7 +113,7 @@ def storeCompressed(fileName, classes, bootCode="", permutation=None, translatio
 
 
 
-def storeSourceLoader(fileName, classes, session, bootCode="", urlPrefix=""):
+def storeSourceLoader(fileName, classes, bootCode="", urlPrefix=""):
     """
     Generates a source loader which is basically a file which loads the original JavaScript files.
     This is super useful during development of a project as it supports pretty fast workflows
@@ -125,7 +121,6 @@ def storeSourceLoader(fileName, classes, session, bootCode="", urlPrefix=""):
     
     - fileName: Filename to write to
     - classes: Classes to include in the compressed file in correct order
-    - session: Session object, required to figure out relative project paths to each other.
     - bootCode: Code to run after all defined classes have been loaded.
     - prefixUrl: Useful when the project files are stored on another domain (CDN). Puts the given URL prefix in front of all URLs to load.
     """
