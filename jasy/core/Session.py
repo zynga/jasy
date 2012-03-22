@@ -11,7 +11,7 @@ from jasy.i18n.LocaleData import *
 from jasy.core.Project import Project, getProject
 from jasy.core.Permutation import Permutation
 
-from jasy.core.Filee import *
+from jasy.core.File import *
 from jasy.core.Env import *
 
 __all__ = ["Session"]

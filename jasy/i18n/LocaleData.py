@@ -4,7 +4,7 @@
 #
 
 import logging, os, json, re, xml.etree.ElementTree
-from jasy.core.Filee import *
+from jasy.core.File import *
 
 __all__ = ["storeLocale"]
 

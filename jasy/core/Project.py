@@ -6,8 +6,8 @@
 import os, logging, json
 
 from jasy.core.Item import Item
-from jasy.core.Asset import Asset
 from jasy.core.Doc import Doc
+from jasy.asset.Asset import Asset
 from jasy.js.Class import Class
 
 from jasy.core.Cache import Cache

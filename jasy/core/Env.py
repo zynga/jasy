@@ -130,7 +130,7 @@ def runTask(project, task, **kwargs):
 
 # Task API for user scripts
 from jasy.core.Task import *
-from jasy.asset.Asset import * 
+from jasy.asset.Manager import * 
 
 # Resolving/Sorting classes
 from jasy.js.Resolver import Resolver
@@ -147,7 +147,7 @@ formatting = Formatting()
 optimization = Optimization("variables", "declarations", "blocks", "privates")
 
 # Import file operation goodies
-from jasy.core.Filee import *
+from jasy.core.File import *
 
 # Import combiner script for merging/write js output
 from jasy.js.output.Combiner import *
