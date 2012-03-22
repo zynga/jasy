@@ -326,7 +326,8 @@ class ApiWriter():
 
         writeFile(os.path.join(distFolder, "meta-index.%s" % extension), encode(index, "meta-index"))
         writeFile(os.path.join(distFolder, "meta-search.%s" % extension), encode(search, "meta-search"))
-        
+
+
 
     def collect(self, internals=False, privates=False):
         
@@ -336,27 +337,15 @@ class ApiWriter():
         
         logging.info("Generating API Data...")
         apiData = {}
+        highlightedCode = {}
         
         for project in session.getProjects():
             classes = project.getClasses()
             for className in classes:
                 apiData[className] = classes[className].getApi()
-
-        exportedNames = set([apiData[className].main["name"] for className in apiData])
-        
-
-
-        #
-        # Collecting Source Code
-        #
-
-        logging.info("Highlighting Code...")
-        highlighted = {}
-
-        for project in session.getProjects():
-            classes = project.getClasses()
-            for className in classes:
-                highlighted[className] = classes[className].getHighlightedCode()
+                highlightedCode[className] = classes[className].getHighlightedCode()
+                
+        knownClasses = set(list(apiData))
 
 
 
@@ -435,7 +424,7 @@ class ApiWriter():
             if match.group(3) is not None:
                 className = match.group(3)
                 
-            if not className in exportedNames and not className in apiData:
+            if not className in knownClasses and not className in apiData:
                 return 'Invalid class in link "#%s"' % link
                 
             # Accept all section/item values for named classes,
@@ -484,22 +473,22 @@ class ApiWriter():
                             paramEntry = item["params"][paramName]
                             if "type" in paramEntry:
                                 for paramTypeEntry in paramEntry["type"]:
-                                    if not paramTypeEntry["name"] in exportedNames and not paramTypeEntry["name"] in additionalTypes and not ("builtin" in paramTypeEntry or "pseudo" in paramTypeEntry):
+                                    if not paramTypeEntry["name"] in knownClasses and not paramTypeEntry["name"] in additionalTypes and not ("builtin" in paramTypeEntry or "pseudo" in paramTypeEntry):
                                         item["errornous"] = True
                                         logging.error('- Invalid param type "%s" in %s at line %s', paramTypeEntry["name"], className, item["line"])
 
-                                    if not "pseudo" in paramTypeEntry and paramTypeEntry["name"] in exportedNames:
+                                    if not "pseudo" in paramTypeEntry and paramTypeEntry["name"] in knownClasses:
                                         paramTypeEntry["linkable"] = True
                 
                 
                     # Check return types
                     if "returns" in item:
                         for returnTypeEntry in item["returns"]:
-                            if not returnTypeEntry["name"] in exportedNames and not returnTypeEntry["name"] in additionalTypes and not ("builtin" in returnTypeEntry or "pseudo" in returnTypeEntry):
+                            if not returnTypeEntry["name"] in knownClasses and not returnTypeEntry["name"] in additionalTypes and not ("builtin" in returnTypeEntry or "pseudo" in returnTypeEntry):
                                 item["errornous"] = True
                                 logging.error('- Invalid return type "%s" in %s at line %s', returnTypeEntry["name"], className, item["line"])
                             
-                            if not "pseudo" in returnTypeEntry and returnTypeEntry["name"] in exportedNames:
+                            if not "pseudo" in returnTypeEntry and returnTypeEntry["name"] in knownClasses:
                                 returnTypeEntry["linkable"] = True
                             
                 elif not item["type"] in builtinTypes and not item["type"] in additionalTypes:
@@ -602,33 +591,6 @@ class ApiWriter():
         
         
         #
-        # Connecting Uses / UsedBy
-        #
-        
-        logging.info("Collecting Use Patterns...")
-
-        # This matches all uses with the known classes and only keeps them if matched
-        allClasses = set(list(apiData))
-        for className in apiData:
-            uses = apiData[className].uses
-
-            # Rebuild use list
-            cleanUses = set()
-            for use in uses:
-                if use != className and use in allClasses:
-                    cleanUses.add(use)
-                    
-                    useEntry = apiData[use]
-                    if not hasattr(useEntry, "usedBy"):
-                        useEntry.usedBy = set()
-                        
-                    useEntry.usedBy.add(className)
-
-            apiData[className].uses = cleanUses
-        
-        
-
-        #
         # Merging Named Classes
         #
         
@@ -639,6 +601,8 @@ class ApiWriter():
             destName = classApi.main["name"]
             
             if destName is not None and destName != className:
+
+                logging.debug("Extending class %s with %s" % (destName, className))
 
                 if destName in apiData:
                     destApi = apiData[destName]
@@ -689,6 +653,33 @@ class ApiWriter():
                         destApi.members[memberName]["fromLink"] = "member:%s~%s" % (className, memberName)
 
 
+
+        #
+        # Connecting Uses / UsedBy
+        #
+
+        logging.info("Collecting Use Patterns...")
+
+        # This matches all uses with the known classes and only keeps them if matched
+        allClasses = set(list(apiData))
+        for className in apiData:
+            uses = apiData[className].uses
+
+            # Rebuild use list
+            cleanUses = set()
+            for use in uses:
+                if use != className and use in allClasses:
+                    cleanUses.add(use)
+
+                    useEntry = apiData[use]
+                    if not hasattr(useEntry, "usedBy"):
+                        useEntry.usedBy = set()
+
+                    useEntry.usedBy.add(className)
+
+            apiData[className].uses = cleanUses
+
+        
         
         #
         # Collecting errors
@@ -812,7 +803,7 @@ class ApiWriter():
             docs = project.getDocs()
             
             for packageName in docs:
-                logging.debug("Creating package entry with documentation: %s" % packageName)
+                logging.debug("- Creating package entry with documentation: %s" % packageName)
                 apiData[packageName] = docs[packageName].getApi()
         
         
@@ -822,7 +813,7 @@ class ApiWriter():
             packageName = splits[0]
             for split in splits[1:]:
                 if not packageName in apiData:
-                    logging.warn("Missing package documentation for package: %s" % packageName)
+                    logging.warn("- Missing package documentation for package: %s" % packageName)
                     apiData[packageName] = ApiData(packageName)
                     apiData[packageName].main = {
                         "type" : "Package",
@@ -838,7 +829,7 @@ class ApiWriter():
             packageName = ".".join(splits[:-1])
             if packageName:
                 package = apiData[packageName]
-                logging.debug("Registering class %s in parent %s" % (className, packageName))
+                logging.debug("- Registering class %s in parent %s" % (className, packageName))
                 
                 entry = {
                     "name" : splits[-1],
@@ -894,7 +885,7 @@ class ApiWriter():
         # Return
         #
         
-        return apiData, highlighted, index, search
+        return apiData, highlightedCode, index, search
         
         
         
