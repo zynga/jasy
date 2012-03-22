@@ -39,11 +39,11 @@ class Session():
             logging.info("Ready (%s projects)" % len(self.__projects))
     
     
-    def clearCache(self):
+    def clean(self):
         """Clears all caches of known projects"""
 
         for project in self.__projects:
-            project.clearCache()
+            project.clean()
 
 
     def close(self):
