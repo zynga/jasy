@@ -6,7 +6,7 @@
 import logging, re, json, os, fnmatch
 from os.path import basename, dirname, relpath, normpath
 
-from jasy.util.File import *
+from jasy.core.Filee import *
 from jasy.core.Project import Project
 from jasy.core.Env import session, getPermutation, prependPrefix
 

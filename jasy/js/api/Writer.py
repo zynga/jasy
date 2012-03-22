@@ -5,7 +5,7 @@
 
 import logging, json, msgpack, copy, re
 
-from jasy.util.File import *
+from jasy.core.Filee import *
 from jasy.js.api.Data import ApiData
 from jasy.js.api.Text import *
 from jasy.js.util import *
