@@ -229,25 +229,74 @@ class ApiData():
 
             def assignMatcher(node):
 
-                # TODO check for prototype => add members
-                if node.type == "assign" and node[0].type == "dot" and node[1].type == "object_init":
-                    doc = getDocComment(node.parent)
-
-                    if doc and doc.hasTag('module'):
-                        return True
+                if node.type == "assign" and node[0].type == "dot":
+                    if node[1].type == "object_init":
+                        doc = getDocComment(node.parent)
+                        if not doc is None:
+                            return True
+                    elif node[1].type == "function":
+                        doc = getDocComment(node.parent)
+                        if not doc is None:
+                            return True
                     
                 return False
 
             result = query(tree, assignMatcher)
 
-            if result:
-                self.statics = {}
-                for prop in result[1]:
-                    self.addEntry(prop[0].value, prop[1], prop, self.statics)
-                
+            if not result is None:
                 name = assembleDot(result[0])
-                self.setMain('plain', result.parent, name)
+                self.setMain("Native", result.parent, name)
                 success = True
+
+                if result[1].type == "object_init":
+                    self.statics = {}
+                    for prop in result[1]:
+                        self.addEntry(prop[0].value, prop[1], prop, self.statics)
+                
+                elif result[1].type == "function":
+                    self.addConstructor(result[1], result.parent)
+                    
+                    def memberMatcher(node):
+                        if node is not result and node.type == "assign" and node[0].type == "dot":
+                            assignName = assembleDot(node[0])
+                            if assignName != name and assignName.startswith(name) and len(assignName) > len(name):
+                                localName = assignName[len(name):]
+                                if localName.startswith("."):
+                                    localName = localName[1:]
+
+                                    # Support for MyClass.prototype.memberFoo = function() {}
+                                    if "." in localName:
+                                        splittedLocalName = localName.split(".")
+                                        if len(splittedLocalName) == 2 and splittedLocalName[0] == "prototype":
+                                            if not hasattr(self, "members"):
+                                                self.members = {}
+                                                
+                                            self.addEntry(splittedLocalName[1], node[1], node.parent, self.members)                             
+                                        
+                                    # Support for MyClass.staticFoo = function() {}
+                                    elif localName != "prototype":
+                                        if not hasattr(self, "statics"):
+                                            self.statics = {}                                        
+                                    
+                                        self.addEntry(localName, node[1], node.parent, self.statics)
+                                    
+                                    else:
+                                        if not hasattr(self, "members"):
+                                            self.members = {}
+                                        
+                                        # Support for MyClass.prototype = {};
+                                        if node[1].type == "object_init":
+                                            membersMap = node[1]
+                                            for membersEntry in membersMap:
+                                                self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                                            
+                                        
+                                        # Support for MyClass.prototype = new BaseClass;
+                                        elif node[1].type == "new" or node[1].type == "new_with_args":
+                                            self.includes = [valueToString(node[1][0])]
+                    
+                    queryAll(tree, memberMatcher)
+        
+        
         
         #
         # core.Main.addStatics
@@ -263,7 +312,9 @@ class ApiData():
                     self.setMain("core.Main", addStatics.parent, target.value)
             
                 success = True
-                self.statics = {}
+                if not hasattr(self, "statics"):
+                    self.statics = {}
+                    
                 for staticsEntry in staticsMap:
                     self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
                         
@@ -286,7 +337,9 @@ class ApiData():
                     self.setMain("core.Main", addMembers.parent, target.value)
 
                 success = True
-                self.members = {}
+                if not hasattr(self, "members"):
+                    self.members = {}
+
                 for membersEntry in membersMap:
                     self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                    
                         
