@@ -14,11 +14,8 @@ from jasy.core.Permutation import Permutation
 from jasy.core.File import *
 from jasy.core.Env import *
 
+
 __all__ = ["Session"]
-
-
-
-
 
 
 def toJSON(obj, sort_keys=False):
