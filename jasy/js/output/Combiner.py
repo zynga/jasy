@@ -113,7 +113,7 @@ def storeCompressed(fileName, classes, bootCode="", translation=None):
 
 
 
-def storeSourceLoader(fileName, classes, bootCode="", urlPrefix=""):
+def storeLoader(fileName, classes, bootCode="", urlPrefix=""):
     """
     Generates a source loader which is basically a file which loads the original JavaScript files.
     This is super useful during development of a project as it supports pretty fast workflows
