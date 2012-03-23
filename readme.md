@@ -23,6 +23,10 @@ You can also install Jasy on your own. Jasy has a few dependencies
 like Python 3, Misaka (Markdown), Msgpack (API data), etc. For
 details have a look at [the official documentation](https://github.com/zynga/jasy/wiki/Installation).
 
+## Generate API documentation
+
+As Jasy is thought for being used as a API in basically Python scripts you can also generate the full API documentation using the command `util/doc.sh`. The documentation is based on the [Sphinx](http://sphinx.pocoo.org/) documentation generator.
+
 
 ## Roadmap
 
