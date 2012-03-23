@@ -7,7 +7,8 @@ Jasy 0.6-beta1
 - Supporting recursive project dependencies aka project A uses B uses C and A does not know anything about C.
 - Improve support for 3rd party JavaScript libraries not matching the Jasy requirements (no jasyproject.conf or matching file layout). This will be implemented moving the configuration and a manual file layout structure into the project requiring this 3rd party library.
 - Support for executing and manipulating tasks from other projects e.g. generating build version of project A from project B into a destination folder of project B.
-
+- Added support for automatic and overrideable task prefixes.
+- Performance of typical initial `build` tasks was dramatically improved by adding slots and improved deep cloning support to `Node`.
 
 Jasy 0.5
 ========
