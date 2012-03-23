@@ -14,7 +14,7 @@ from jasy.core.Cache import Cache
 from jasy.core.Error import *
 from jasy.core.Markdown import *
 
-__all__ = ["Project", "getProject", "getProjectByName"]
+__all__ = ["Project", "getProjectFromPath", "getProjectByName", "getProjectDependencies"]
 
 classExtensions = (".js")
 translationExtensions = (".po")
@@ -29,7 +29,7 @@ def getKey(data, key, default=None):
 
 __projects = {}
 
-def getProject(path, config=None):
+def getProjectFromPath(path, config=None):
     global __projects
     
     path = os.path.abspath(path)
@@ -40,12 +40,43 @@ def getProject(path, config=None):
     
     
 def getProjectByName(name):
+    """ Returns a project by its name """
     for path in __projects:
         project = __projects[path]
         if project.getName() == name:
             return project
     
     return None
+
+
+def getProjectDependencies(project):
+    """ Returns a sorted list of projects depending on the given project (including the given one) """
+    
+    def __resolve(project, force=False):
+
+        if project.getName() in names and not force:
+            return
+
+        names[project.getName()] = project
+        todo = []
+
+        for require in project.getRequires():
+            if not require.getName() in names:
+                names[require.getName()] = project
+                todo.append(require)
+
+        for require in todo:
+            __resolve(require, True)
+
+        result.append(project)
+        
+    result= []
+    names = {}
+
+    __resolve(project)
+
+    return result
+
 
 
 class Project():
@@ -311,7 +342,7 @@ class Project():
                 config = None
                 
             path = os.path.normpath(os.path.join(self.__path, source))
-            result.append(getProject(path, config))
+            result.append(getProjectFromPath(path, config))
             
         return result
 

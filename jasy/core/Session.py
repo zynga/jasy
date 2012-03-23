@@ -8,13 +8,17 @@ import logging, itertools, time, atexit, json, os
 from jasy.i18n.Translation import Translation
 from jasy.i18n.LocaleData import *
 
-from jasy.core.Project import Project, getProject
+from jasy.core.Project import Project, getProjectFromPath, getProjectDependencies
 from jasy.core.Permutation import Permutation
 
 from jasy.core.File import *
 from jasy.core.Env import *
 
 __all__ = ["Session"]
+
+
+
+
 
 
 def toJSON(obj, sort_keys=False):
@@ -31,12 +35,12 @@ class Session():
 
         self.__timestamp = time.time()
         self.__projects = []
+        self.__projectByName = {}
         self.__fields = {}
         
         if os.path.exists("jasyproject.json"):
             startSection("Initializing projects...")
-            self.addProject(getProject("."))
-            logging.info("Ready (%s projects)" % len(self.__projects))
+            self.addProject(getProjectFromPath("."))
     
     
     def clean(self):
@@ -95,38 +99,36 @@ class Session():
         - project: Instance of Project to append to the list
         """
         
-        if project in self.__projects:
-            return
+        result = getProjectDependencies(project)
+        logging.info("Adding %s projects..." % len(result))
         
-        self.__projects.append(project)
+        for project in result:
+            
+            # Append to list
+            logging.info("- Project %s from %s" % (project.getName(), project.getPath()))
+            self.__projects.append(project)
+            
+            # Import project defined fields which might be configured using "activateField()"
+            fields = project.getFields()
+            for name in fields:
+                entry = fields[name]
 
-        for requiredProject in project.getRequires():
-            self.addProject(requiredProject)
+                if name in self.__fields:
+                    raise Exception("Field '%s' was already defined!" % (name))
 
-        self.__projects.remove(project)
-        self.__projects.append(project)
-        
-        # Import project defined fields which might be configured using "activateField()"
-        fields = project.getFields()
-        for name in fields:
-            entry = fields[name]
-
-            if name in self.__fields:
-                raise Exception("Field '%s' was already defined!" % (name))
-
-            if "check" in entry:
-                check = entry["check"]
-                if check in ["Boolean", "String", "Number"] or type(check) == list:
-                    pass
-                else:
-                    raise Exception("Unsupported check: '%s' for field '%s'" % (check, name))
+                if "check" in entry:
+                    check = entry["check"]
+                    if check in ["Boolean", "String", "Number"] or type(check) == list:
+                        pass
+                    else:
+                        raise Exception("Unsupported check: '%s' for field '%s'" % (check, name))
                     
-            if "detect" in entry:
-                detect = entry["detect"]
-                if not self.getClassByName(detect):
-                    raise Exception("Field '%s' uses unknown detection class %s." % (name, detect))
+                if "detect" in entry:
+                    detect = entry["detect"]
+                    if not self.getClassByName(detect):
+                        raise Exception("Field '%s' uses unknown detection class %s." % (name, detect))
                 
-            self.__fields[name] = entry
+                self.__fields[name] = entry
         
         
     def getProjects(self):
