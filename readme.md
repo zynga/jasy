@@ -26,19 +26,18 @@ details have a look at [the official documentation](https://github.com/zynga/jas
 
 ## Roadmap
 
-### March 2012
-
+* Support for project overrides (local project overrides project with same name of any dependency) (useful for hot fixes).
 * Support for auto cloning of remote repositories (using Git URLs)
-
-### 2012
-
-* Verify and test support for sprite sheets (application icons, ...)
+* Add support for sprite sheets (application icons, ...)
 * Style sheet pre processor
 * Image optimizer and sprite sheet generator
-* Further optimization modules (share strings, shorthands for public names, ...)
-* Improve localization support (Verify gettext support, add new features)
+* Further optimization modules (share strings, shorthands for used objects, ...)
+* Improve localization support (verify gettext support, add new features)
 * Support for exporting multi names per file
 * Support for AMD- and NPM-like syntax for dependencies/API generator
+* Add pretty-printing option
+* Add hinting support (ala JSHint)
+* Add support for pushing builds to remote services (S3, etc.)
 
 
 ## Authors
