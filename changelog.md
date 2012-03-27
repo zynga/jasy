@@ -1,3 +1,9 @@
+Jasy 0.6-beta2
+==============
+
+- Support for project overrides (local project overrides project with same name of any dependency) (useful for hot fixes).
+
+
 Jasy 0.6-beta1
 ==============
 
@@ -9,6 +15,7 @@ Jasy 0.6-beta1
 - Support for executing and manipulating tasks from other projects e.g. generating build version of project A from project B into a destination folder of project B.
 - Added support for automatic and overrideable task prefixes.
 - Performance of typical initial `build` tasks was dramatically improved by adding slots and improved deep cloning support to `Node`.
+
 
 Jasy 0.5
 ========
