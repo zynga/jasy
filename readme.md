@@ -27,10 +27,10 @@ details have a look at [the official documentation](https://github.com/zynga/jas
 
 As Jasy is thought for being used as a API in basically Python scripts you can also generate the full API documentation using the command `util/doc.sh`. The documentation is based on the [Sphinx](http://sphinx.pocoo.org/) documentation generator.
 
+The [documentation is online](http://zynga.github.com/jasy/api/jasy.html) available as well.
 
 ## Roadmap
 
-* Support for project overrides (local project overrides project with same name of any dependency) (useful for hot fixes).
 * Support for auto cloning of remote repositories (using Git URLs)
 * Add support for sprite sheets (application icons, ...)
 * Style sheet pre processor
