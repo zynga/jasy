@@ -128,10 +128,6 @@ def runTask(project, task, **kwargs):
         raise JasyError("Executing of sub task %s from project %s failed" % (task, project))
 
 
-#TODO:
-# add __all__
-
-
 # Task API for user scripts
 from jasy.core.Task import *
 from jasy.asset.Manager import * 

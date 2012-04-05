@@ -58,7 +58,6 @@ def cloneGit(repo, rev=None, override=False, prefix=None):
     os.chdir(dist)
     if executeCommand(["git", "init", "."], "Could not initialize GIT repository!"):
         if executeCommand(["git", "remote", "add", "origin", repo], "Could not register remote repository!"):
-            logging.info("- Fetching revision: %s...", rev)
             if executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch revision!"):
                 if executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!"):
                     os.chdir(old)

@@ -11,6 +11,7 @@ from jasy.i18n.LocaleData import *
 from jasy.core.Project import Project, getProjectFromPath, getProjectDependencies
 from jasy.core.Permutation import Permutation
 
+from jasy.core.Error import JasyError
 from jasy.core.File import *
 from jasy.core.Env import *
 
@@ -37,7 +38,11 @@ class Session():
         
         if os.path.exists("jasyproject.json"):
             startSection("Initializing projects...")
-            self.addProject(getProjectFromPath("."))
+            
+            try:
+                self.addProject(getProjectFromPath("."))
+            except JasyError as jasyerr:
+                raise JasyError("Could not initialize session! %s" % jasyerr)
     
     
     def clean(self):

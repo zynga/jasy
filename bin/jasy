@@ -74,8 +74,15 @@ os.chdir(os.path.dirname(os.path.join(os.getcwd(), os.path.expanduser(options.fi
 logging.info("Running from %s" % os.getcwd())
 jasyscript = os.path.basename(options.file)
 
+# Import error handling
+from jasy.core.Error import JasyError
+
 # Import global environment
-from jasy.core.Env import *
+try:
+    from jasy.core.Env import *
+except JasyError as error:
+    sys.stderr.write("%s\n" % error)
+    sys.exit(1)
 
 # Configuring jasy for remote calls
 setJasyCommand(jasyCommand)

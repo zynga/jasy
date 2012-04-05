@@ -4,6 +4,7 @@
 #
 
 import os
+from jasy.core.Error import JasyError
 
 class Item:
     
@@ -22,17 +23,21 @@ class Item:
     def attach(self, path):
         self.__path = path
         
-        if type(path) is list:
-            mtime = 0
-            for entry in path:
-                entryTime = os.stat(entry).st_mtime
-                if entryTime > mtime:
-                    mtime = entryTime
+        try:
+            if type(path) is list:
+                mtime = 0
+                for entry in path:
+                    entryTime = os.stat(entry).st_mtime
+                    if entryTime > mtime:
+                        mtime = entryTime
                     
-            self.__mtime = mtime
+                self.__mtime = mtime
         
-        else:
-            self.__mtime = os.stat(path).st_mtime
+            else:
+                self.__mtime = os.stat(path).st_mtime
+            
+        except OSError as oserr:
+            raise JasyError("Invalid item path: %s" % path)
         
         return self
         
