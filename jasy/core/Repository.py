@@ -10,6 +10,8 @@ __all__ = ["cloneGit", "isGitRepositoryUrl"]
 
 
 def getDistFolder(repo, rev):
+    """Returns the destination folder name of the given repository/revision combination."""
+    
     baseFolder = repo[repo.rindex("/")+1:]
     if baseFolder.endswith(".git"):
         baseFolder = baseFolder[:-4]
@@ -23,6 +25,8 @@ def getDistFolder(repo, rev):
 nullDevice = open(os.devnull, 'w')
 
 def executeCommand(args, msg):
+    """Executes the given process and outputs message when errors happen."""
+    
     returnValue = subprocess.call(args, stdout=nullDevice, shell=False)
     if returnValue != 0:
         logging.error("Error during executing shell command!")
@@ -32,15 +36,18 @@ def executeCommand(args, msg):
     return True
 
 
-def cloneGit(repo, rev=None, override=False, prefix=None):
+def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
+    """Clones the given repository URL into a folder in prefix (optionally with overriding/update features)"""
+
     if rev is None:
         rev = "master"
 
-    logging.debug("Cloning: %s at %s", repo, rev)
     dist = getDistFolder(repo, rev)
     if prefix:
         dist = os.path.join(prefix, dist)
         
+    old = os.getcwd()
+    
     logging.debug("- Using folder: %s", dist)
     if os.path.exists(dist):
         
@@ -48,16 +55,24 @@ def cloneGit(repo, rev=None, override=False, prefix=None):
             logging.debug("- Cleaning up...")
             shutil.rmtree(dist)
         else:
-            logging.debug("- Checkout is already available")
+            if update and (rev == "master" or "refs/heads/" in rev):
+                logging.info("Updating clone %s@%s", repo, rev)
+                os.chdir(dist)
+                executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch updated revision!")
+                executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
+                os.chdir(old)
+                
+            else:
+                logging.debug("- Clone is already available")
+
             return dist
 
-    old = os.getcwd()
-    
-    logging.debug("- Fetching revision...")
+    logging.info("Cloning %s@%s", repo, rev)
     os.makedirs(dist)
     os.chdir(dist)
     if executeCommand(["git", "init", "."], "Could not initialize GIT repository!"):
         if executeCommand(["git", "remote", "add", "origin", repo], "Could not register remote repository!"):
+            logging.debug("- Fetching revision...")
             if executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch revision!"):
                 if executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!"):
                     os.chdir(old)
@@ -70,6 +85,7 @@ gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+
     
     
 def isGitRepositoryUrl(url):
+    """Figures out whether the given string is a valid Git repository URL"""
 
     # Detects these urls correctly
     # foo => False

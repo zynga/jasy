@@ -107,9 +107,8 @@ class Session():
         for project in result:
             
             # Append to list
-            logging.info("- Project %s" % project.getName())
-            logging.debug("  - From: %s" % project.getPath())
-            
+            relpath = os.path.relpath(project.getPath(), os.getcwd())
+            logging.info("- Project %s (%s)", project.getName(), relpath)
             self.__projects.append(project)
             
             # Import project defined fields which might be configured using "activateField()"
