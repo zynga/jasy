@@ -67,39 +67,30 @@ def isUrlLinke(url):
     return
     
     
+accountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
+    
+    
 def isGitRepositoryUrl(url):
 
-    tests = [
-        "foo",
-        "../bar",
-        "https://faz.net?x=1",
-        "git@github.com:zynga/apibrowser.git",
-        "https://github.com/zynga/core",
-        "https://wpbasti@github.com/zynga/apibrowser.git",
-        "git://github.com/zynga/core.git",
-        "git://gitorious.org/qt/qtdeclarative.git",
-        "https://git.gitorious.org/qt/qtdeclarative.git"
-    ]
+    # Detects these urls correctly
+    # foo => False
+    # ../bar => False
+    # https://faz.net?x=1 => False
+    # git@github.com:zynga/apibrowser.git => True
+    # https://github.com/zynga/core => True
+    # https://wpbasti@github.com/zynga/apibrowser.git => True
+    # git://github.com/zynga/core.git => True
+    # git://gitorious.org/qt/qtdeclarative.git => True
+    # https://git.gitorious.org/qt/qtdeclarative.git => True
     
+    if not url.endswith(".git"):
+        return False
+        
+    parsed = urlparse(url)
+    if parsed.scheme in ("git", "https"):
+        return not parsed.params and not parsed.query and not parsed.fragment
+    elif not parsed.scheme and parsed.path == entry and accountUrl.match(url):
+        return True
+        
+    return False
     
-    for entry in tests:
-        print(">>> %s" % entry)
-        parsed = urlparse(entry)
-        print(parsed)
-
-        if parsed.scheme in ("git", "https"):
-            if not parsed.params and not parsed.query and not parsed.fragment:
-                print("okay")
-            else:
-                print("malformed")
-                
-        elif not parsed.scheme and parsed.path == entry:
-            
-            re.compile("([a-zA-Z0-9-_]+)@()")
-            
-            
-            
-        print()
-    
-    
-    return True
