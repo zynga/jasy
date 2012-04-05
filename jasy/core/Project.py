@@ -11,6 +11,7 @@ from jasy.asset.Asset import Asset
 from jasy.js.Class import Class
 
 from jasy.core.Cache import Cache
+from jasy.core.Repository import cloneGit, isGitRepositoryUrl
 from jasy.core.Error import *
 from jasy.core.Markdown import *
 
@@ -91,6 +92,10 @@ class Project():
         - Config can be read from jasyproject.json or using constructor parameter @config
         - Parent is used for structural debug messages (dependency trees)
         """
+        
+        if isGitRepositoryUrl(path):
+            return
+        
         
         if not os.path.isdir(path):
             raise JasyError("Invalid project path: %s (absolute: %s)" % (path, os.path.abspath(path)))
