@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, logging, json
+import os, logging, json, re
 
 from jasy.core.Item import Item
 from jasy.core.Doc import Doc
@@ -20,6 +20,7 @@ __all__ = ["Project", "getProjectFromPath", "getProjectByName", "getProjectDepen
 classExtensions = (".js")
 translationExtensions = (".po")
 docFiles = ("package.md", "readme.md")
+autoCloneFolder = re.compile(r"^([a-zA-Z0-9\.\ _-]+)-([a-f0-9]{40})$")
 
 
 def getKey(data, key, default=None):
@@ -78,6 +79,15 @@ def getProjectDependencies(project):
     return result
 
 
+def getProjectNameFromPath(path):
+    basename = os.path.basename(path)
+
+    clone = autoCloneFolder.match(basename)
+    if clone is not None:
+        return clone.group(1)
+    else:
+        return basename
+
 
 class Project():
     
@@ -127,7 +137,7 @@ class Project():
             raise JasyError("Could not initialize project. Cache file could not be initialized! %s" % err)
         
         # Read name from manifest or use the basename of the project's path
-        self.__name = getKey(config, "name", os.path.basename(self.__path))
+        self.__name = getKey(config, "name", getProjectNameFromPath(self.__path))
             
         # Read requires
         self.__requires = getKey(config, "requires", {})
@@ -138,7 +148,7 @@ class Project():
         # Read fields (for injecting data into the project and build permuations)
         self.__fields = getKey(config, "fields", {})
 
-        logging.info("Initializing project: %s (from: %s)", self.__name, self.__path)
+        logging.info("Initializing project: %s", self.__name)
             
         # Processing custom content section. Only supports classes and assets.
         if "content" in config:
@@ -327,7 +337,7 @@ class Project():
     # ESSENTIALS
     #
     
-    def getRequires(self):
+    def getRequires(self, prefix="requires"):
         """
         Return the project requirements as project instances
         """
@@ -345,7 +355,7 @@ class Project():
             
             if isGitRepositoryUrl(source):
                 # Auto cloning always happens relative to main project root folder (not to project requiring it)
-                path = os.path.abspath(cloneGit(source, version, prefix="requires"))
+                path = os.path.abspath(cloneGit(source, version, prefix=prefix))
             else:
                 # Other references to requires projects are always relative to the project requiring it
                 path = os.path.normpath(os.path.join(self.__path, source))

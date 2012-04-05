@@ -36,32 +36,31 @@ def cloneGit(repo, rev=None, override=False, prefix=None):
     if rev is None:
         rev = "master"
 
-    logging.info("Cloning: %s at %s", repo, rev)
-
+    logging.debug("Cloning: %s at %s", repo, rev)
     dist = getDistFolder(repo, rev)
     if prefix:
         dist = os.path.join(prefix, dist)
         
-    logging.info("- Using folder: %s", dist)
+    logging.debug("- Using folder: %s", dist)
     if os.path.exists(dist):
         
         if override:
-            logging.info("- Cleaning up...")
+            logging.debug("- Cleaning up...")
             shutil.rmtree(dist)
         else:
-            logging.info("- Checkout is already available")
+            logging.debug("- Checkout is already available")
             return dist
 
     old = os.getcwd()
     
-    logging.info("- Preparing repository...")
+    logging.debug("- Fetching revision...")
     os.makedirs(dist)
     os.chdir(dist)
     if executeCommand(["git", "init", "."], "Could not initialize GIT repository!"):
         if executeCommand(["git", "remote", "add", "origin", repo], "Could not register remote repository!"):
             logging.info("- Fetching revision: %s...", rev)
-            if executeCommand(["git", "fetch", "--depth", "1", "origin", rev], "Could not fetch revision!"):
-                if executeCommand(["git", "reset", "--hard", "FETCH_HEAD"], "Could not update checkout!"):
+            if executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch revision!"):
+                if executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!"):
                     os.chdir(old)
                     return dist
 
