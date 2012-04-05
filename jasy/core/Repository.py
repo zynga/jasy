@@ -6,11 +6,11 @@
 import subprocess, os, logging, hashlib, shutil, re
 from urllib.parse import urlparse
 
-__all__ = ["cloneGit"]
+__all__ = ["cloneGit", "isGitRepositoryUrl"]
 
 
 def getDistFolder(repo, rev):
-    baseFolder = repo[repo.index("/")+1:]
+    baseFolder = repo[repo.rindex("/")+1:]
     if baseFolder.endswith(".git"):
         baseFolder = baseFolder[:-4]
     
@@ -32,12 +32,17 @@ def executeCommand(args, msg):
     return True
 
 
-def cloneGit(repo, rev="master", override=False):
+def cloneGit(repo, rev=None, override=False, prefix=None):
+    if rev is None:
+        rev = "master"
+
     logging.info("Cloning: %s at %s", repo, rev)
 
     dist = getDistFolder(repo, rev)
+    if prefix:
+        dist = os.path.join(prefix, dist)
+        
     logging.info("- Using folder: %s", dist)
-
     if os.path.exists(dist):
         
         if override:
@@ -50,7 +55,7 @@ def cloneGit(repo, rev="master", override=False):
     old = os.getcwd()
     
     logging.info("- Preparing repository...")
-    os.mkdir(dist)
+    os.makedirs(dist)
     os.chdir(dist)
     if executeCommand(["git", "init", "."], "Could not initialize GIT repository!"):
         if executeCommand(["git", "remote", "add", "origin", repo], "Could not register remote repository!"):
@@ -62,12 +67,8 @@ def cloneGit(repo, rev="master", override=False):
 
     os.chdir(old)
     
-    
-def isUrlLinke(url):
-    return
-    
-    
-accountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
+
+gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
     
     
 def isGitRepositoryUrl(url):
@@ -89,7 +90,7 @@ def isGitRepositoryUrl(url):
     parsed = urlparse(url)
     if parsed.scheme in ("git", "https"):
         return not parsed.params and not parsed.query and not parsed.fragment
-    elif not parsed.scheme and parsed.path == entry and accountUrl.match(url):
+    elif not parsed.scheme and parsed.path == url and gitAccountUrl.match(url) != None:
         return True
         
     return False

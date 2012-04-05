@@ -33,7 +33,6 @@ __projects = {}
 def getProjectFromPath(path, config=None):
     global __projects
     
-    path = os.path.abspath(path)
     if not path in __projects:
         __projects[path] = Project(path, config)
 
@@ -92,10 +91,6 @@ class Project():
         - Config can be read from jasyproject.json or using constructor parameter @config
         - Parent is used for structural debug messages (dependency trees)
         """
-        
-        if isGitRepositoryUrl(path):
-            return
-        
         
         if not os.path.isdir(path):
             raise JasyError("Invalid project path: %s (absolute: %s)" % (path, os.path.abspath(path)))
@@ -341,12 +336,20 @@ class Project():
         for entry in self.__requires:
             if type(entry) is dict:
                 source = entry["source"]
-                config = entry["config"]
+                config = getKey(entry, "config")
+                version = getKey(entry, "version")
             else:
                 source = entry
                 config = None
+                version = None
+            
+            if isGitRepositoryUrl(source):
+                # Auto cloning always happens relative to main project root folder (not to project requiring it)
+                path = os.path.abspath(cloneGit(source, version, prefix="requires"))
+            else:
+                # Other references to requires projects are always relative to the project requiring it
+                path = os.path.normpath(os.path.join(self.__path, source))
                 
-            path = os.path.normpath(os.path.join(self.__path, source))
             result.append(getProjectFromPath(path, config))
             
         return result
