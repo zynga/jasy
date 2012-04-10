@@ -13,7 +13,7 @@ from jasy.core.Permutation import Permutation
 
 from jasy.core.Error import JasyError
 from jasy.core.File import *
-from jasy.env.Main import *
+from jasy.env.State import setPermutation
 
 
 __all__ = ["Session"]

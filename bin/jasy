@@ -71,10 +71,12 @@ os.chdir(os.path.dirname(os.path.join(os.getcwd(), os.path.expanduser(options.fi
 logging.info("Running from %s" % os.getcwd())
 jasyscript = os.path.basename(options.file)
 
-# Import error handling
+# Basics
 from jasy.core.Error import JasyError
+from jasy.env.Task import setJasyCommand, printTasks, executeTask
+from jasy.env.State import startSection
 
-# Import global environment
+# Global environment
 try:
     from jasy.env.Main import *
 except JasyError as error:
