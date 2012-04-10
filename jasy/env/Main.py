@@ -14,7 +14,7 @@ from jasy.env.State import *
         
 # Core Methods
 from jasy.env.Task import *
-from jasy.core.File import *
+from jasy.env.File import *
 
 # Asset Support
 from jasy.asset.Manager import AssetManager

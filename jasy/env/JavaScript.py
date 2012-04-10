@@ -7,7 +7,7 @@ import logging, os, random
 
 from jasy.core.Error import JasyError
 from jasy.core.Permutation import Permutation
-from jasy.core.File import writeFile
+from jasy.env.File import writeFile
 
 from jasy.js.Class import ClassError
 from jasy.js.Resolver import Resolver
