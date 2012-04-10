@@ -6,7 +6,7 @@
 #
 
 # Import standard library stuff
-import sys, os.path, pkg_resources
+import sys, os, os.path, pkg_resources, logging
 
 # Version check
 if sys.version_info[0] < 3:
@@ -37,8 +37,6 @@ options.add("stats", help="Show statistics after run")
 options.parse(args)
 
 # Configure log level for root logger first (enable debug level when either logfile or console verbosity is activated)
-import logging
-
 loglevel = logging.INFO
 if options.log or options.verbose is True:
     loglevel = logging.DEBUG
@@ -78,7 +76,31 @@ from jasy.env.State import startSection
 
 # Global environment
 try:
-    from jasy.env.Main import *
+    
+    import jasy
+
+    # Print out some info
+    logging.info("Jasy %s" % jasy.__version__)
+    logging.debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
+
+    # Global State Handling
+    from jasy.env.State import *
+
+    # Core Methods
+    from jasy.env.Task import *
+    from jasy.env.File import *
+
+    # Asset Support
+    from jasy.asset.Manager import AssetManager
+
+    # JavaScript Support
+    from jasy.js.Resolver import Resolver
+    from jasy.js.Sorter import Sorter
+    from jasy.js.api.Writer import ApiWriter
+
+    # Environment Addons
+    from jasy.env.JavaScript import *
+    
 except JasyError as error:
     sys.stderr.write("%s\n" % error)
     sys.exit(1)

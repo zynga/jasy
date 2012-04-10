@@ -13,7 +13,7 @@ from jasy.js.Class import ClassError
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
 
-from jasy.env.Main import session, setPermutation, startSection, getPermutation, optimization, formatting
+from jasy.env.State import session, setPermutation, startSection, getPermutation, optimization, formatting
 
 
 __all__ = ["storeKernel", "storeCombined", "storeCompressed", "storeLoader"]
