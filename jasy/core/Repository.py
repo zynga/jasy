@@ -9,6 +9,10 @@ from urllib.parse import urlparse
 __all__ = ["cloneGit", "isGitRepositoryUrl"]
 
 
+__nullDevice = open(os.devnull, 'w')
+__gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
+
+
 def getDistFolder(repo, rev):
     """Returns the destination folder name of the given repository/revision combination."""
     
@@ -22,12 +26,11 @@ def getDistFolder(repo, rev):
     return "%s-%s" % (baseFolder, hashedKey)
 
 
-nullDevice = open(os.devnull, 'w')
 
 def executeCommand(args, msg):
     """Executes the given process and outputs message when errors happen."""
     
-    returnValue = subprocess.call(args, stdout=nullDevice, shell=False)
+    returnValue = subprocess.call(args, stdout=__nullDevice, shell=False)
     if returnValue != 0:
         logging.error("Error during executing shell command!")
         logging.error(msg)
@@ -79,11 +82,8 @@ def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
                     return dist
 
     os.chdir(old)
-    
 
-gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
-    
-    
+
 def isGitRepositoryUrl(url):
     """Figures out whether the given string is a valid Git repository URL"""
 
@@ -104,7 +104,7 @@ def isGitRepositoryUrl(url):
     parsed = urlparse(url)
     if parsed.scheme in ("git", "https"):
         return not parsed.params and not parsed.query and not parsed.fragment
-    elif not parsed.scheme and parsed.path == url and gitAccountUrl.match(url) != None:
+    elif not parsed.scheme and parsed.path == url and __gitAccountUrl.match(url) != None:
         return True
         
     return False
