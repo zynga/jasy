@@ -64,7 +64,7 @@ def prependPrefix(path):
 # Global session object
 # ---------------------------------------------
 
-from jasy.core.Session import Session
+from jasy.env.Session import Session
 session = Session()
 
 
