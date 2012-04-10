@@ -12,7 +12,6 @@ from jasy.core.Project import Project, getProjectFromPath, getProjectDependencie
 from jasy.core.Permutation import Permutation
 
 from jasy.core.Error import JasyError
-#from jasy.env.File import *
 from jasy.env.State import setPermutation, startSection
 
 

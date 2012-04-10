@@ -9,7 +9,7 @@ from jasy.env.File import *
 from jasy.js.api.Data import ApiData
 from jasy.js.api.Text import *
 from jasy.js.util import *
-from jasy.env.Main import session, startSection
+from jasy.env.State import session, startSection
 
 __all__ = ["ApiWriter"]
 

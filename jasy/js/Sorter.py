@@ -4,7 +4,7 @@
 #
 
 import logging, time
-from jasy.env.Main import getPermutation
+from jasy.env.State import getPermutation
 
 __all__ = ["Sorter"]
 
