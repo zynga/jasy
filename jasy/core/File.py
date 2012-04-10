@@ -4,7 +4,7 @@
 #
 
 import os, shutil, logging
-from jasy.core.Env import prependPrefix
+from jasy.env.Main import prependPrefix
 
 
 def removeDir(dirname):

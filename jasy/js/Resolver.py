@@ -4,8 +4,8 @@
 #
 
 import logging
-from jasy.core.Env import session
-from jasy.core.Env import getPermutation
+from jasy.env.Main import session
+from jasy.env.Main import getPermutation
 
 __all__ = ["Resolver"]
 

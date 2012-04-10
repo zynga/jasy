@@ -129,28 +129,25 @@ def runTask(project, task, **kwargs):
         raise JasyError("Executing of sub task %s from project %s failed" % (task, project))
 
 
-# Task API for user scripts
+# Core
 from jasy.core.Task import task
+from jasy.core.File import *
+
+# Asset Support
 from jasy.asset.Manager import AssetManager
 
-# Resolving/Sorting classes
+# JavaScript Support
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
-
-# API Writer
 from jasy.js.api.Writer import ApiWriter
-
-# Output options
 from jasy.js.output.Optimization import Optimization
 from jasy.js.output.Formatting import Formatting
 
+# Initialize shared objects
 formatting = Formatting()
 optimization = Optimization("variables", "declarations", "blocks", "privates")
 
-# File operation goodies
-from jasy.core.File import *
-
-# Merging/Writing JS files
-from jasy.js.output.Combiner import *
+# Language specific environment addons
+from jasy.env.JavaScript import *
 
 

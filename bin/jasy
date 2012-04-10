@@ -76,7 +76,7 @@ from jasy.core.Error import JasyError
 
 # Import global environment
 try:
-    from jasy.core.Env import *
+    from jasy.env.Main import *
 except JasyError as error:
     sys.stderr.write("%s\n" % error)
     sys.exit(1)

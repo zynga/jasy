@@ -4,7 +4,7 @@
 #
 
 import types
-from jasy.core.Env import setPrefix, addTask
+from jasy.env.Main import setPrefix, addTask
 
 __all__ = ["task"]
 
