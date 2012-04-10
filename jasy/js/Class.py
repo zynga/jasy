@@ -32,7 +32,7 @@ from jasy.i18n.Translation import hasText
 aliases = {}
 
 defaultOptimization = jasy.js.output.Optimization.Optimization("declarations", "blocks", "variables", "privates")
-defaultPermutation = getPermutation({"debug":False})
+defaultPermutation = getPermutation({"debug" : False})
 
 
 __all__ = ["Class", "Error"]
@@ -57,7 +57,7 @@ def collectPermutationKeys(node, keys=None):
     return keys
 
 
-class Error(Exception):
+class ClassError(Exception):
     def __init__(self, inst, msg):
         self.__msg = msg
         self.__inst = inst
@@ -290,7 +290,7 @@ class Class(Item):
                     try:
                         optimization.apply(tree)
                     except jasy.js.output.Optimization.Error as error:
-                        raise Error(self, "Could not compress class! %s" % error)
+                        raise ClassError(self, "Could not compress class! %s" % error)
                 
             compressed = Compressor(formatting).compress(tree)
             self.project.getCache().store(field, compressed, self.getModificationTime())

@@ -147,9 +147,10 @@ from jasy.js.output.Formatting import Formatting
 formatting = Formatting()
 optimization = Optimization("variables", "declarations", "blocks", "privates")
 
-# Import file operation goodies
+# File operation goodies
 from jasy.core.File import *
 
-# Import combiner script for merging/write js output
+# Merging/Writing JS files
 from jasy.js.output.Combiner import *
+
 
