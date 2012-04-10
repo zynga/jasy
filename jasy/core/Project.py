@@ -337,7 +337,7 @@ class Project():
     # ESSENTIALS
     #
     
-    def getRequires(self, prefix="requires"):
+    def getRequires(self, prefix="external"):
         """
         Return the project requirements as project instances
         """
