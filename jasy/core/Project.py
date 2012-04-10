@@ -5,22 +5,27 @@
 
 import os, logging, json, re
 
-from jasy.core.Item import Item
-from jasy.core.Doc import Doc
-from jasy.asset.Asset import Asset
-from jasy.js.Class import Class
-
 from jasy.core.Cache import Cache
 from jasy.core.Repository import cloneGit, isGitRepositoryUrl
-from jasy.core.Error import *
-from jasy.core.Markdown import *
+from jasy.core.Error import JasyError
+
+# Item types
+from jasy.core.Item import Item
+from jasy.core.Doc import Doc
+from jasy.js.Class import Class
+from jasy.asset.Asset import Asset
+
 
 __all__ = ["Project", "getProjectFromPath", "getProjectByName", "getProjectDependencies"]
+
 
 classExtensions = (".js")
 translationExtensions = (".po")
 docFiles = ("package.md", "readme.md")
-autoCloneFolder = re.compile(r"^([a-zA-Z0-9\.\ _-]+)-([a-f0-9]{40})$")
+repositoryFolder = re.compile(r"^([a-zA-Z0-9\.\ _-]+)-([a-f0-9]{40})$")
+
+
+__projects = {}
 
 
 def getKey(data, key, default=None):
@@ -29,7 +34,6 @@ def getKey(data, key, default=None):
     else:
         return default
 
-__projects = {}
 
 def getProjectFromPath(path, config=None):
     global __projects
@@ -82,7 +86,7 @@ def getProjectDependencies(project):
 def getProjectNameFromPath(path):
     basename = os.path.basename(path)
 
-    clone = autoCloneFolder.match(basename)
+    clone = repositoryFolder.match(basename)
     if clone is not None:
         return clone.group(1)
     else:
