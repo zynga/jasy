@@ -86,6 +86,7 @@ setup(
         'jasy',
         'jasy.asset',
         'jasy.core',
+        'jasy.env',
         'jasy.i18n',
         'jasy.js',
         'jasy.js.api',
