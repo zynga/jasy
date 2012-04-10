@@ -56,13 +56,6 @@ def prependPrefix(path):
 from jasy.core.Session import Session
 session = Session()
 
-# Jasy reference
-__jasyCommand = None
-
-def setJasyCommand(cmd):
-    global __jasyCommand
-    __jasyCommand = cmd
-
 
 # Local task managment
 __tasks__ = {}
@@ -89,6 +82,14 @@ def printTasks():
             logging.info("- %s: %s" % (name, obj.desc))
         else:
             logging.info("- %s" % name)
+
+
+# Jasy reference for executing remote tasks
+__jasyCommand = None
+
+def setJasyCommand(cmd):
+    global __jasyCommand
+    __jasyCommand = cmd
 
 
 # Remote run support
@@ -129,8 +130,8 @@ def runTask(project, task, **kwargs):
 
 
 # Task API for user scripts
-from jasy.core.Task import *
-from jasy.asset.Manager import * 
+from jasy.core.Task import task
+from jasy.asset.Manager import AssetManager
 
 # Resolving/Sorting classes
 from jasy.js.Resolver import Resolver
