@@ -3,7 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, hashlib
+import hashlib
+
 
 __all__ = ["Permutation", "getPermutation"]
 
