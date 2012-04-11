@@ -10,7 +10,6 @@ import logging, os
 # Colorized Output
 # ---------------------------------------------
 
-
 colors = {
     'bold'      : ['\033[1m',  '\033[22m'],
     'italic'    : ['\033[3m',  '\033[23m'],
@@ -41,7 +40,7 @@ def colorize(text, color="red"):
 
 def startSection(title):
     logging.info("")
-    logging.info(colorize(">>> %s" % title.upper(), "blue"))
+    logging.info(colorize(colorize(">>> %s" % title.upper(), "blue"), "bold"))
     logging.info(colorize("-------------------------------------------------------------------------------", "blue"))
 
 

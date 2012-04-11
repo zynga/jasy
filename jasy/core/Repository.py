@@ -52,6 +52,7 @@ def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
     if rev.startswith("refs/"):
         pass
     elif re.compile(r"^[a-f0-9]{40}$").match(rev):
+        # See also: http://git.661346.n2.nabble.com/Fetch-by-SHA-missing-td5604552.html
         raise Exception("Can't fetch non tags/branches: %s@%s!" % (repo, rev))
     elif __versionNumber.match(rev) is not None:
         rev = "refs/tags/" + rev

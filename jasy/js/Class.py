@@ -31,7 +31,7 @@ from jasy.i18n.Translation import hasText
 
 aliases = {}
 
-defaultOptimization = jasy.js.output.Optimization.Optimization("declarations", "blocks", "variables", "privates")
+defaultOptimization = jasy.js.output.Optimization.Optimization("declarations", "blocks", "variables")
 defaultPermutation = getPermutation({"debug" : False})
 
 
