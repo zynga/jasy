@@ -125,7 +125,7 @@ class Project():
             try:
                 storedConfig = json.load(open(configFilePath))
             except ValueError as err:
-                raise JasyError("Could not parse jasyproject.json at %s: %s" % (configFile, err))
+                raise JasyError("Could not parse jasyproject.json at %s: %s" % (configFilePath, err))
                 
             if config:
                 for key in storedConfig:

@@ -36,26 +36,35 @@ class Optimization:
     """
     
     __allowed = ("wrap", "declarations", "blocks", "variables", "privates")
+    __key = None
     
     def __init__(self, *args):
         self.__optimizations = set()
         
-        for identifier in args:
-            if not identifier in self.__allowed:
-                logging.warn("Unsupported optimization: %s", identifier)
+        for flag in args:
+            if not flag in self.__allowed:
+                logging.warn("Unsupported optimization: %s", flag)
                 
-            self.__optimizations.add(identifier)
-            
-        self.__key = "+".join(sorted(self.__optimizations))
-        
+            self.__optimizations.add(flag)
 
-    def has(self, key):
+
+    def has(self, flag):
         """
         Whether the given optimization is enabled.
         """
         
-        return key in self.__optimizations
+        return flag in self.__optimizations
 
+
+    def enable(self, flag):
+        self.__optimizations.add(flag)
+        self.__key = None
+        
+        
+    def disable(self, flag):
+        self.__optimizations.remove(flag)
+        self.__key = None
+        
 
     def apply(self, tree):
         """
@@ -101,6 +110,9 @@ class Optimization:
         """
         Returns a unique key to identify this optimization set
         """
+        
+        if self.__key is None:
+            self.__key = "+".join(sorted(self.__optimizations))
         
         return self.__key
         

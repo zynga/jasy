@@ -17,7 +17,8 @@ class Formatting:
     """
     
     __allowed = ("comma", "semicolon")
-    
+    __key = None
+
     
     def __init__(self, *args):
         self.__formatting = set()
@@ -37,6 +38,16 @@ class Formatting:
         """
 
         return key in self.__formatting
+    
+    
+    def enable(self, flag):
+        self.__formatting.add(flag)
+        self.__key = None
+
+
+    def disable(self, flag):
+        self.__formatting.remove(flag)
+        self.__key = None        
         
         
     def getKey(self):
@@ -44,9 +55,14 @@ class Formatting:
         Returns a unique key to identify this formatting set
         """
 
+        if self.__key is None:
+            self.__key = "+".join(sorted(self.__formatting))
+        
         return self.__key
 
 
     # Map Python built-ins
     __repr__ = getKey
-    __str__ = getKey        
+    __str__ = getKey
+
+

@@ -69,10 +69,8 @@ os.chdir(os.path.dirname(os.path.join(os.getcwd(), os.path.expanduser(options.fi
 logging.info("Running from %s" % os.getcwd())
 jasyscript = os.path.basename(options.file)
 
-# Basics
-from jasy.core.Error import JasyError
-from jasy.env.Task import setJasyCommand, printTasks, executeTask
-from jasy.env.State import startSection
+# Extend path
+sys.path.insert(0, os.getcwd())
 
 # Global environment
 try:
@@ -83,11 +81,10 @@ try:
     logging.info("Jasy %s" % jasy.__version__)
     logging.debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
 
-    # Global State Handling
-    from jasy.env.State import *
-
-    # Core Methods
+    # Basics
+    from jasy.core.Error import JasyError
     from jasy.env.Task import *
+    from jasy.env.State import *
     from jasy.env.File import *
 
     # Asset Support

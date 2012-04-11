@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, shutil, logging
+import os, shutil, logging, json
 from jasy.env.State import prependPrefix
 
 
@@ -111,3 +111,13 @@ def writeFile(dst, content):
     handle = open(dst, mode="w", encoding="utf-8")
     handle.write(content)
     handle.close()
+    
+    
+def writeJson(dst, content, compact=True):
+    if compact:
+        result = json.dumps(content, separators=(',',':'))
+    else:
+        result = json.dumps(content, indent=2)
+        
+    return writeFile(dst, result)
+

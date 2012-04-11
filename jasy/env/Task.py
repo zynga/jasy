@@ -3,10 +3,12 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import types, logging
-from jasy.env.State import setPrefix, startSection
+import types, logging, os
+from jasy.env.State import setPrefix, startSection, session, getPrefix
 
-__all__ = ["task"]
+
+__all__ = ["task", "executeTask", "runTask", "printTasks", "setJasyCommand"]
+
 
 class Task:
     __doc__ = ""
@@ -69,17 +71,25 @@ def task(func, **kwargs):
 
 
 # Local task managment
-__tasks__ = {}
+__taskRegistry = {}
 
 def addTask(task):
-    logging.debug("Registering task: %s" % task.name)
-    __tasks__[task.name] = task
+    """Registers the given task with its name"""
+    
+    if task.name in __taskRegistry:
+        logging.debug("Overriding task: %s" % task.name)
+    else:
+        logging.debug("Registering task: %s" % task.name)
+        
+    __taskRegistry[task.name] = task
 
 def executeTask(name, **kwargs):
-    if name in __tasks__:
+    """Executes the given task by name with any optional named arguments"""
+    
+    if name in __taskRegistry:
         startSection("Executing task %s..." % name)
         try:
-            __tasks__[name](**kwargs)
+            __taskRegistry[name](**kwargs)
         except:
             logging.error("Could not finish task %s successfully!" % name)
             raise
@@ -87,8 +97,10 @@ def executeTask(name, **kwargs):
         raise JasyError("No such task: %s" % name)
 
 def printTasks():
-    for name in __tasks__:
-        obj = __tasks__[name]
+    """Prints out a list of all avaible tasks and their descriptions"""
+    
+    for name in __taskRegistry:
+        obj = __taskRegistry[name]
         if obj.desc:
             logging.info("- %s: %s" % (name, obj.desc))
         else:
@@ -117,7 +129,7 @@ def runTask(project, task, **kwargs):
     # Build parameter list from optional arguments
     params = ["--%s=%s" % (key, kwargs[key]) for key in kwargs]
     if not "prefix" in kwargs:
-        params.append("--prefix=%s" % __prefix)
+        params.append("--prefix=%s" % getPrefix())
 
     # Full list of args to pass to subprocess
     args = [__jasyCommand, task] + params
@@ -138,3 +150,5 @@ def runTask(project, task, **kwargs):
     # Error handling
     if returnValue != 0:
         raise JasyError("Executing of sub task %s from project %s failed" % (task, project))
+
+
