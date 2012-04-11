@@ -11,6 +11,8 @@ __all__ = ["cloneGit", "isGitRepositoryUrl"]
 
 __nullDevice = open(os.devnull, 'w')
 __gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
+__gitHash = re.compile(r"^[a-f0-9]{40}$")
+__versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?$")
 
 
 def getDistFolder(repo, rev):
@@ -39,12 +41,23 @@ def executeCommand(args, msg):
     return True
 
 
+
 def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
     """Clones the given repository URL into a folder in prefix (optionally with overriding/update features)"""
 
     if rev is None:
         rev = "master"
-
+        
+    # Expand revision
+    if rev.startswith("refs/"):
+        pass
+    elif re.compile(r"^[a-f0-9]{40}$").match(rev):
+        raise Exception("Can't fetch non tags/branches: %s@%s!" % (repo, rev))
+    elif __versionNumber.match(rev) is not None:
+        rev = "refs/tags/" + rev
+    else:
+        rev = "refs/heads/" + rev
+        
     dist = getDistFolder(repo, rev)
     if prefix:
         dist = os.path.join(prefix, dist)
@@ -77,11 +90,10 @@ def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
         if executeCommand(["git", "remote", "add", "origin", repo], "Could not register remote repository!"):
             logging.debug("- Fetching revision...")
             if executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch revision!"):
-                if executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!"):
-                    os.chdir(old)
-                    return dist
+                executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
 
     os.chdir(old)
+    return dist
 
 
 def isGitRepositoryUrl(url):
