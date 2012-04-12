@@ -10,7 +10,7 @@ import logging, os
 # Colorized Output
 # ---------------------------------------------
 
-colors = {
+__colors = {
     'bold'      : ['\033[1m',  '\033[22m'],
     'italic'    : ['\033[3m',  '\033[23m'],
     'underline' : ['\033[4m',  '\033[24m'],
@@ -29,9 +29,8 @@ colors = {
 }
 
 def colorize(text, color="red"):
-    entry = colors[color]
+    entry = __colors[color]
     return "%s%s%s" % (entry[0], text, entry[1])
-
 
 
 # ---------------------------------------------
@@ -42,7 +41,6 @@ def startSection(title):
     logging.info("")
     logging.info(colorize(colorize(">>> %s" % title.upper(), "blue"), "bold"))
     logging.info(colorize("-------------------------------------------------------------------------------", "blue"))
-
 
 
 # ---------------------------------------------
@@ -106,4 +104,8 @@ from jasy.js.output.Formatting import Formatting
 
 formatting = Formatting()
 optimization = Optimization("variables", "declarations", "blocks", "privates")
+
+# Remove modules after using them
+del Formatting
+del Optimization
 

@@ -59,6 +59,18 @@ if options.log:
     logfileHandler.setLevel(logging.DEBUG)
     logging.getLogger().addHandler(logfileHandler)        
 
+# Jasy Main
+import jasy
+
+# Print out some info
+logging.info("Jasy %s" % jasy.__version__)
+logging.debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
+
+if options.version:
+    sys.exit(0)
+    
+del jasy
+
 # Find Jasy Script
 if not os.path.isfile(options.file) and not options.version:
     sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % options.file)
@@ -66,7 +78,7 @@ if not os.path.isfile(options.file) and not options.version:
 
 # Change to root directory of jasyscript before executing it
 os.chdir(os.path.dirname(os.path.join(os.getcwd(), os.path.expanduser(options.file))))
-logging.info("Running from %s" % os.getcwd())
+logging.debug("Running from %s" % os.getcwd())
 jasyscript = os.path.basename(options.file)
 
 # Extend path
@@ -75,12 +87,6 @@ sys.path.insert(0, os.getcwd())
 # Global environment
 try:
     
-    import jasy
-
-    # Print out some info
-    logging.info("Jasy %s" % jasy.__version__)
-    logging.debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
-
     # Basics
     from jasy.core.Error import JasyError
     from jasy.env.Task import *
