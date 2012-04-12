@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import subprocess, os, logging, hashlib, shutil, re, tempfile
+import subprocess, os, logging, hashlib, shutil, re, tempfile, sys
 from urllib.parse import urlparse
 
 __all__ = ["cloneGit", "isGitRepositoryUrl"]
