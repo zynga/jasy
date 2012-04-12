@@ -291,7 +291,7 @@ class Project():
                 if fileName[0] == ".":
                     continue
 
-                relPath = os.path.normpath(os.path.join(relDirPath, fileName))
+                relPath = os.path.normpath(os.path.join(relDirPath, fileName)).replace(os.sep, "/")
                 fullPath = os.path.join(dirPath, fileName)
                 fileExtension = os.path.splitext(fileName)[1]
 
@@ -322,7 +322,7 @@ class Project():
                     
                 # Only assets keep unix style paths identifiers
                 if construct != Asset:
-                    fileId = fileId.replace(os.sep, ".")
+                    fileId = fileId.replace("/", ".")
 
                 # Validate destination (docs are okay for all other destinations)
                 if not dist is self.docs and dist != getattr(self, distname):
@@ -399,12 +399,12 @@ class Project():
         relpath = os.path.relpath(path, root)
 
         if prefix:
-            if not prefix[-1] == "/":
-                prefix += "/"
+            if not prefix[-1] == os.sep:
+                prefix += os.sep
                 
             relpath = os.path.normpath(prefix + relpath)
             
-        return relpath
+        return relpath.replace(os.sep, "/")
 
 
 
