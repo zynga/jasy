@@ -133,6 +133,9 @@ class Project():
                         config[key] = storedConfig[key]
             else:
                 config = storedConfig
+                
+            if config is None:
+                raise Exception("Could not initialize project configuration in %s!" % self.__path)
             
         # Initialize cache
         try:

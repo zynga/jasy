@@ -3,13 +3,16 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import subprocess, os, logging, hashlib, shutil, re
+import subprocess, os, logging, hashlib, shutil, re, tempfile
 from urllib.parse import urlparse
 
 __all__ = ["cloneGit", "isGitRepositoryUrl"]
 
 # Windows has no /dev/null, using None here
-__nullDevice = open(os.devnull, 'w') if os.devnull != "nul" else None
+if os.devnull == "nul":
+    __nullDevice = tempfile.mkstemp()[0]
+else:
+    __nullDevice = open(os.devnull, 'w')
 
 __gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
 __gitHash = re.compile(r"^[a-f0-9]{40}$")
