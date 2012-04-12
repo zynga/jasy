@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, os
+import logging, os, sys
 
 
 # ---------------------------------------------
@@ -29,6 +29,10 @@ __colors = {
 }
 
 def colorize(text, color="red"):
+    # Not supported on console on Windows
+    if sys.platform == "win32":
+        return text
+        
     entry = __colors[color]
     return "%s%s%s" % (entry[0], text, entry[1])
 
