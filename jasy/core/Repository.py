@@ -8,8 +8,9 @@ from urllib.parse import urlparse
 
 __all__ = ["cloneGit", "isGitRepositoryUrl"]
 
+# Windows has no /dev/null, using None here
+__nullDevice = open(os.devnull, 'w') if os.devnull != "nul" else None
 
-__nullDevice = open(os.devnull, 'w')
 __gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
 __gitHash = re.compile(r"^[a-f0-9]{40}$")
 __versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?$")
@@ -31,7 +32,7 @@ def getDistFolder(repo, rev):
 
 def executeCommand(args, msg):
     """Executes the given process and outputs message when errors happen."""
-    
+
     returnValue = subprocess.call(args, stdout=__nullDevice, shell=False)
     if returnValue != 0:
         logging.error("Error during executing shell command!")
