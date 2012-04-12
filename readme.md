@@ -31,7 +31,6 @@ The [documentation is online](http://zynga.github.com/jasy/api/jasy.html) availa
 
 ## Roadmap
 
-* Support for auto cloning of remote repositories (using Git URLs)
 * Add support for sprite sheets (application icons, ...)
 * Style sheet pre processor
 * Image optimizer and sprite sheet generator

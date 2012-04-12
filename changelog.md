@@ -1,3 +1,16 @@
+Jasy 0.6
+========
+
+- Major simplification of `jasyscript` via revamp of environment handling
+- Support for auto cloning of repositories via `git` (needs system installation)
+- Support for project requirements (recursively)
+- Revamped console logging (colored and structured)
+- Cleanup of project processing/indexing (improved stability/flexibility)
+- Support for manually defined project structures to support non-jasy 3rd party projects easily
+- Support for calling remote tasks
+- Support for executing jasy from a other folder than the project's root
+
+
 Jasy 0.6-beta2
 ==============
 
