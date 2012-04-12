@@ -36,7 +36,8 @@ def getDistFolder(repo, rev):
 def executeCommand(args, msg):
     """Executes the given process and outputs message when errors happen."""
 
-    returnValue = subprocess.call(args, stdout=__nullDevice, shell=False)
+    # Using shell on Windows to resolve binaries like "git"
+    returnValue = subprocess.call(args, stdout=__nullDevice, shell=sys.platform == "win32")
     if returnValue != 0:
         logging.error("Error during executing shell command!")
         logging.error(msg)
