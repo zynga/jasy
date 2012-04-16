@@ -5,6 +5,7 @@
 
 import types, logging, os
 from jasy.env.State import setPrefix, startSection, session, getPrefix
+from jasy.core.Error import JasyError
 
 
 __all__ = ["task", "executeTask", "runTask", "printTasks", "setJasyCommand"]
