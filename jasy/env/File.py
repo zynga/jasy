@@ -16,6 +16,15 @@ def removeDir(dirname):
         shutil.rmtree(dirname)
 
 
+def removeFile(filename):
+    """Removes the given file"""
+    
+    filename = prependPrefix(filename)
+    if os.path.exists(filename):
+        logging.info("Deleting file %s" % filename)
+        os.remove(filename)
+
+
 def makeDir(dirname):
     """Creates missing hierarchy levels for given directory"""
     
