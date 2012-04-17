@@ -91,7 +91,7 @@ else:
     jasyscript = os.path.abspath(os.path.expanduser(jasyscript))
     
 if jasyscript is None or not os.path.isfile(jasyscript):
-    sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % jasyscript)
+    sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % options.file)
     sys.exit(1)
 
 # Change to root directory of jasyscript before executing it
