@@ -6,13 +6,13 @@
 import subprocess, os, logging, hashlib, shutil, re, tempfile, sys
 from urllib.parse import urlparse
 
-__all__ = ["cloneGit", "isGitRepositoryUrl"]
+__all__ = ["cloneGit", "isGitRepositoryUrl", "getGitBranch"]
 
 __nullDevice = open(os.devnull, 'w')
 __gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
 __gitHash = re.compile(r"^[a-f0-9]{40}$")
 __versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?$")
-__branchParser = re.compile("([a-zA-Z0-9_-]+)$")
+__branchParser = re.compile("ref:.*/([a-zA-Z0-9_-]+)$")
 
 
 def getGitBranch(path=None):
