@@ -72,14 +72,34 @@ if options.version:
 del jasy
 
 # Find Jasy Script
-if not os.path.isfile(options.file) and not options.version:
-    sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % options.file)
+def findJasyscript():
+    current = os.path.abspath(os.getcwd())
+    while True:
+        scriptfile = os.path.join(current, "jasyscript.py")
+        if os.path.exists(scriptfile):
+            return scriptfile
+
+        old = current
+        current = os.path.normpath(os.path.join(current, ".."))
+        if current == old:
+            break
+            
+jasyscript = options.file
+if jasyscript == "jasyscript.py":
+    jasyscript = findJasyscript()
+else:
+    jasyscript = os.path.abspath(os.path.expanduser(jasyscript))
+    
+if jasyscript is None or not os.path.isfile(jasyscript):
+    sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % jasyscript)
     sys.exit(1)
 
 # Change to root directory of jasyscript before executing it
-os.chdir(os.path.dirname(os.path.join(os.getcwd(), os.path.expanduser(options.file))))
-logging.debug("Running from %s" % os.getcwd())
-jasyscript = os.path.basename(options.file)
+oldcwd = os.getcwd()
+os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
+if os.getcwd() != oldcwd:
+    logging.info("Running from %s" % os.getcwd())
+jasyscript = os.path.basename(jasyscript)
 
 # Extend path
 sys.path.insert(0, os.getcwd())
