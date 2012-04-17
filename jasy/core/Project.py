@@ -290,53 +290,61 @@ class Project():
                 
                 if fileName[0] == ".":
                     continue
-
+                    
                 relPath = os.path.normpath(os.path.join(relDirPath, fileName)).replace(os.sep, "/")
                 fullPath = os.path.join(dirPath, fileName)
-                fileExtension = os.path.splitext(fileName)[1]
+                
+                self.addFile(relPath, fullPath, distname)
 
-                # Prepand package
-                if self.__package:
-                    fileId = "%s/" % self.__package
-                else:
-                    fileId = ""
 
-                # Structure files  
-                if fileExtension in classExtensions:
-                    fileId += os.path.splitext(relPath)[0]
-                    construct = Class
-                    dist = self.classes
-                elif fileExtension in translationExtensions:
-                    fileId += os.path.splitext(relPath)[0]
-                    construct = Translation
-                    dist = self.translations
-                elif fileName in docFiles:
-                    fileId += os.path.dirname(relPath)
-                    fileId = fileId.strip("/") # edge case when top level directory
-                    construct = Doc
-                    dist = self.docs
-                else:
-                    fileId += relPath
-                    construct = Asset
-                    dist = self.assets
-                    
-                # Only assets keep unix style paths identifiers
-                if construct != Asset:
-                    fileId = fileId.replace("/", ".")
+    def addFile(self, relPath, fullPath, distname, override=False):
+        
+        fileName = os.path.basename(relPath)
+        fileExtension = os.path.splitext(fileName)[1]
 
-                # Validate destination (docs are okay for all other destinations)
-                if not dist is self.docs and dist != getattr(self, distname):
-                    logging.info("  - Ignoring file: %s" % fileId)
-                    continue
-                    
-                # Check for duplication
-                if fileId in dist:
-                    raise JasyError("Item ID was registered before: %s" % fileId)
+        # Prepand package
+        if self.__package:
+            fileId = "%s/" % self.__package
+        else:
+            fileId = ""
 
-                # Create instance
-                item = construct(self, fileId).attach(fullPath)
-                logging.debug("  - Registering %s %s" % (item.kind, fileId))
-                dist[fileId] = item
+        # Structure files  
+        if fileExtension in classExtensions:
+            fileId += os.path.splitext(relPath)[0]
+            construct = Class
+            dist = self.classes
+        elif fileExtension in translationExtensions:
+            fileId += os.path.splitext(relPath)[0]
+            construct = Translation
+            dist = self.translations
+        elif fileName in docFiles:
+            fileId += os.path.dirname(relPath)
+            fileId = fileId.strip("/") # edge case when top level directory
+            construct = Doc
+            dist = self.docs
+        else:
+            fileId += relPath
+            construct = Asset
+            dist = self.assets
+            
+        # Only assets keep unix style paths identifiers
+        if construct != Asset:
+            fileId = fileId.replace("/", ".")
+
+        # Validate destination (docs are okay for all other destinations)
+        if not dist is self.docs and dist != getattr(self, distname):
+            logging.info("  - Ignoring file: %s" % fileId)
+            return
+            
+        # Check for duplication
+        if fileId in dist and not override:
+            raise JasyError("Item ID was registered before: %s" % fileId)
+
+        # Create instance
+        item = construct(self, fileId).attach(fullPath)
+        logging.debug("  - Registering %s %s" % (item.kind, fileId))
+        dist[fileId] = item        
+
 
 
 
