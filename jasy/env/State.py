@@ -96,6 +96,8 @@ def prependPrefix(path):
 # ---------------------------------------------
 
 from jasy.env.Session import Session
+from jasy.core.Project import getProjectByName
+
 session = Session()
 
 
