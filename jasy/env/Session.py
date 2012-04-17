@@ -134,17 +134,12 @@ class Session():
         
         
     def getProjects(self):
-        """ 
-        Returns all currently known projects.
-        """
-        
+        """Returns all currently known projects."""
         return self.__projects
         
         
     def getRelativePath(self, project):
-        """
-        Returns the relative path of any project to the main project
-        """
+        """Returns the relative path of any project to the main project"""
         
         mainPath = self.__projects[-1].getPath()
         projectPath = project.getPath()
