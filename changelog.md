@@ -1,3 +1,12 @@
+Jasy 0.6.1
+==========
+
+- Added `getProjectByName()`, `getGitBranch()`, `sha1File()`, `removeFile()`
+- Added possibility to post-register assets using `addFile()`
+- Added support for executing Jasy from inside the project structure e.g. from "source/class".
+- Improved stability in project handling and git cloning
+
+
 Jasy 0.6
 ========
 
