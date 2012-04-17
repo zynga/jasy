@@ -12,6 +12,21 @@ __nullDevice = open(os.devnull, 'w')
 __gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
 __gitHash = re.compile(r"^[a-f0-9]{40}$")
 __versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?$")
+__branchParser = re.compile("([a-zA-Z0-9_-]+)$")
+
+
+def getGitBranch(path=None):
+    """Returns the name of the git branch"""
+    
+    if path is None:
+        path = os.getcwd()
+    
+    headfile = os.path.join(path, ".git/HEAD")
+    if not os.path.exists(headfile):
+        raise Exception("Invalid GIT project path: %s" % path)
+        
+    return __branchParser.search(open(headfile).read()).group(1)
+
 
 
 def getDistFolder(repo, rev):
