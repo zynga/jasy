@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 BASE=`pwd`
-PYTHONVER=3.2.2
+PYTHONVER=3.2.3
 UTILFOLDER=`pwd`/`dirname $0`
 
 echo ">>> Reconfiguring PATH to /opt/jasy/bin"
