@@ -53,9 +53,7 @@ def executeCommand(args, msg):
     # Using shell on Windows to resolve binaries like "git"
     returnValue = subprocess.call(args, stdout=__nullDevice, shell=sys.platform == "win32")
     if returnValue != 0:
-        logging.error("Error during executing shell command!")
-        logging.error(msg)
-        return False
+        raise Exception("Error during executing shell command: %s" % msg)
         
     return True
 
@@ -84,34 +82,45 @@ def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
         
     old = os.getcwd()
     
-    logging.debug("- Using folder: %s", dist)
-    if os.path.exists(dist):
-        
-        if override:
-            logging.debug("- Cleaning up...")
-            shutil.rmtree(dist)
-        else:
-            if update and (rev == "master" or "refs/heads/" in rev):
-                logging.info("Updating clone %s@%s", repo, rev)
-                os.chdir(dist)
-                executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch updated revision!")
-                executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
-                os.chdir(old)
-                
+    try:
+    
+        logging.debug("Using folder: %s", dist)
+        if os.path.exists(dist):
+            
+            if not os.path.exists(os.path.join(dist, ".git", "HEAD")):
+                logging.error("Invalid git project. Cleaning up...")
+                shutil.rmtree(dist)
+            elif override:
+                logging.debug("Cleaning up...")
+                shutil.rmtree(dist)
             else:
-                logging.debug("- Clone is already available")
+                if update and (rev == "master" or "refs/heads/" in rev):
+                    logging.info("Updating clone %s@%s", repo, rev)
+                    os.chdir(dist)
+                    executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch updated revision!")
+                    executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
+                    os.chdir(old)
+                    
+                else:
+                    logging.debug("- Clone is already available")
 
-            return dist
+                return dist
 
-    logging.info("Cloning %s@%s", repo, rev)
-    os.makedirs(dist)
-    os.chdir(dist)
-    if executeCommand(["git", "init", "."], "Could not initialize GIT repository!"):
-        if executeCommand(["git", "remote", "add", "origin", repo], "Could not register remote repository!"):
-            logging.debug("- Fetching revision...")
-            if executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch revision!"):
-                executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
-
+        logging.info("Cloning %s@%s", repo, rev)
+        os.makedirs(dist)
+        os.chdir(dist)
+        
+        executeCommand(["git", "init", "."], "Could not initialize GIT repository!")
+        executeCommand(["git", "remote", "add", "origin", repo], "Could not register remote repository!")
+        logging.debug("- Fetching revision...")
+        executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch revision!")
+        executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
+            
+    except Exception:
+        logging.error("Error during git transaction!")
+        os.chdir(old)
+        return
+        
     os.chdir(old)
     return dist
 

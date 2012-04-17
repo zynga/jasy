@@ -107,7 +107,7 @@ class Project():
         """
         
         if not os.path.isdir(path):
-            raise JasyError("Invalid project path: %s (absolute: %s)" % (path, os.path.abspath(path)))
+            raise JasyError("Invalid project path: %s" % path)
         
         # Only store and work with full path
         self.__path = os.path.abspath(os.path.expanduser(path))
@@ -134,8 +134,8 @@ class Project():
             else:
                 config = storedConfig
                 
-            if config is None:
-                raise Exception("Could not initialize project configuration in %s!" % self.__path)
+        if config is None:
+            raise Exception("Could not initialize project configuration in %s!" % self.__path)
             
         # Initialize cache
         try:
