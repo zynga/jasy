@@ -160,38 +160,38 @@ class Project():
         # Processing custom content section. Only supports classes and assets.
         if "content" in config:
             self.kind = "manual"
-            self.addContent(config["content"])
+            self.__addContent(config["content"])
 
         # This section is a must for non jasy projects
         elif not isJasyProject:
             raise JasyError("Missing 'content' section for compat project!")
 
         # Application projects
-        elif self.hasDir("source"):
+        elif self.__hasDir("source"):
             self.kind = "application"
 
-            if self.hasDir("source/class"):
-                self.addDir("source/class", "classes")
-            if self.hasDir("source/asset"):
-                self.addDir("source/asset", "assets")
-            if self.hasDir("source/translation"):
-                self.addDir("source/translation", "translations")
+            if self.__hasDir("source/class"):
+                self.__addDir("source/class", "classes")
+            if self.__hasDir("source/asset"):
+                self.__addDir("source/asset", "assets")
+            if self.__hasDir("source/translation"):
+                self.__addDir("source/translation", "translations")
                 
         # Compat - please change to class/style/asset instead
-        elif self.hasDir("src"):
+        elif self.__hasDir("src"):
             self.kind = "resource"
-            self.addDir("src", "classes")
+            self.__addDir("src", "classes")
 
         # Resource projects
         else:
             self.kind = "resource"
 
-            if self.hasDir("class"):
-                self.addDir("class", "classes")
-            if self.hasDir("asset"):
-                self.addDir("asset", "assets")
-            if self.hasDir("translation"):
-                self.addDir("translation", "translations")
+            if self.__hasDir("class"):
+                self.__addDir("class", "classes")
+            if self.__hasDir("asset"):
+                self.__addDir("asset", "assets")
+            if self.__hasDir("translation"):
+                self.__addDir("translation", "translations")
 
 
         # Generate summary
@@ -213,7 +213,7 @@ class Project():
     # FILE SYSTEM INDEXER
     #
     
-    def hasDir(self, directory):
+    def __hasDir(self, directory):
         full = os.path.join(self.__path, directory)
         if os.path.exists(full):
             if not os.path.isdir(full):
@@ -224,7 +224,7 @@ class Project():
         return False
         
         
-    def addContent(self, content):
+    def __addContent(self, content):
         logging.debug("- Adding manual content")
         
         for fileId in content:
@@ -266,7 +266,7 @@ class Project():
             dist[fileId] = item
         
         
-    def addDir(self, directory, distname):
+    def __addDir(self, directory, distname):
         
         logging.debug("- Scanning directory: %s" % directory)
         
@@ -343,10 +343,10 @@ class Project():
         # Create instance
         item = construct(self, fileId).attach(fullPath)
         logging.debug("  - Registering %s %s" % (item.kind, fileId))
-        dist[fileId] = item        
-
-
-
+        dist[fileId] = item
+        
+        
+    
 
     #
     # ESSENTIALS
