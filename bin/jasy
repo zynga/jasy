@@ -32,6 +32,7 @@ options.add("quiet", short="q", help="don't print status messages to stdout")
 options.add("log", accept=str, help="Write debug messages to given logfile")
 options.add("file", accept=str, value="jasyscript.py", help="Use the given jasy script")
 options.add("version", short="V", help="Print version info only")
+options.add("quick", short="q", help="Prevents repository updates")
 options.add("stats", help="Show statistics after run")
 
 options.parse(args)
@@ -103,6 +104,11 @@ jasyscript = os.path.basename(jasyscript)
 
 # Extend path
 sys.path.insert(0, os.getcwd())
+
+# Quick mode globally disables repository updates
+if options.quick:
+    from jasy.core.Repository import enableRepositoryUpdates
+    enableRepositoryUpdates(False)
 
 # Global environment
 try:

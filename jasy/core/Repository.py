@@ -6,14 +6,20 @@
 import subprocess, os, logging, hashlib, shutil, re, tempfile, sys
 from urllib.parse import urlparse
 
-__all__ = ["cloneGit", "isGitRepositoryUrl", "getGitBranch"]
+__all__ = ["cloneGit", "isGitRepositoryUrl", "getGitBranch", "enableRepositoryUpdates"]
 
 __nullDevice = open(os.devnull, 'w')
 __gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
 __gitHash = re.compile(r"^[a-f0-9]{40}$")
 __versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?$")
 __branchParser = re.compile("^ref:.*/([a-zA-Z0-9_-]+)$")
+__enableUpdates = True
 
+
+def enableRepositoryUpdates(enabled):
+    global __enableUpdates
+    __enableUpdates = enabled
+    
 
 def getGitBranch(path=None):
     """Returns the name of the git branch"""
@@ -95,11 +101,14 @@ def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
                 shutil.rmtree(dist)
             else:
                 if update and (rev == "master" or "refs/heads/" in rev):
-                    logging.info("Updating clone %s@%s", repo, rev)
-                    os.chdir(dist)
-                    executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch updated revision!")
-                    executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
-                    os.chdir(old)
+                    if __enableUpdates:
+                        logging.info("Updating clone %s@%s", repo, rev)
+                        os.chdir(dist)
+                        executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch updated revision!")
+                        executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
+                        os.chdir(old)
+                    else:
+                        logging.debug("Updates disabled")
                     
                 else:
                     logging.debug("- Clone is already available")
