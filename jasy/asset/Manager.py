@@ -9,8 +9,18 @@ from os.path import basename, dirname, relpath, normpath
 from jasy.env.File import *
 from jasy.core.Project import Project
 from jasy.env.State import session, getPermutation, prependPrefix
+from jasy.asset.Asset import Asset
 
 __all__ = ["AssetManager"]
+
+
+class AssetEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Asset):
+            return obj.export()
+            
+        return json.JSONEncoder.default(self, obj)
+        
 
 
 class AssetManager:
@@ -40,16 +50,54 @@ class AssetManager:
         
         # Loop though all projects and merge/filter assets
         for project in session.getProjects():
-            localAssets = project.assets
-            for fileId in localAssets:
+            projectAssets = project.assets
+            for fileId in projectAssets:
                 # Minor performance tweak: Using lookup instead of regexp during merge
                 if fileId in assets or expr.match(fileId):
-                    assets[fileId] = localAssets[fileId]
+                    assets[fileId] = projectAssets[fileId]
                 
         logging.debug("Selected classes make use of %s assets" % len(assets))
         
+        
+        
+        
+        
         # TODO: Support image sprites
         # TODO: Support CSS preprocessing
+        
+        
+        
+    def structure(self, data):
+        root = {}
+        
+        for fileId in data:
+            current = root
+            splits = fileId.split("/")
+            basename = splits.pop()
+            
+            for split in splits:
+                if not split in current:
+                    current[split] = {}
+                    
+                current = current[split]
+            
+            # Split into filename and extension
+            filename, extension = os.path.splitext(basename)
+            extension = extension[1:]
+            
+            if filename in current:
+                if type(current[filename][0]) == list:
+                    current[filename][0].append(extension)
+                else:
+                    current[filename][0] = [current[filename][0], extension]
+            
+            else:
+                current[filename] = [extension] + data[fileId]
+        
+        return root
+    
+    
+    
         
         
         
@@ -64,17 +112,10 @@ class AssetManager:
         logging.debug("Matching assets using: %s" % matcher)
         
         return re.compile(matcher)
-
-
-
-    def exportBuild(self, assetFolder="asset", urlPrefix=""):
-        """
-        Publishes the selected files to the destination folder. This merges files from 
-        different projects to this one folder. This is ideal for preparing the final deployment.
         
-        - assetFolder: Where the assets should copied to inside the build folder (relative to the build folder).
-        - urlPrefix: A URL which should be mapped to the project's root folder
-        """
+        
+        
+    def deployBuild(self, assetFolder="asset"):
 
         assets = self.__assets
         projects = session.getProjects()
@@ -92,47 +133,54 @@ class AssetManager:
                 counter += 1
         
         logging.info("Updated %s/%s files" % (counter, len(assets)))
+
+
+
+    def exportBuild(self, assetFolder="asset", urlPrefix=""):
+        """
+        Publishes the selected files to the destination folder. This merges files from 
+        different projects to this one folder. This is ideal for preparing the final deployment.
         
+        - assetFolder: Name of local asset folder
+        - urlPrefix: A URL which should be mapped to the project's root folder
+        """
+
+        assets = self.__assets
         result = {}
+        
+        # Process assets
         for fileId in assets:
             asset = assets[fileId]
             
-            dirname = os.path.dirname(fileId)
-            basename = os.path.basename(fileId)
-            
-            if not dirname in result:
-                result[dirname] = {}
-            
-            # Differentiate storage between images and other resources
-            # Using '1' for being short and truish
-            if asset.isImage():
-                result[dirname][basename] = asset.getDimensions()
-            else:
-                result[dirname][basename] = 1
-            
-        if urlPrefix and not urlPrefix[-1] == "/":
-            urlPrefix += "/"
-
-        root = normpath(urlPrefix + assetFolder)
-
-        if not root[-1] == "/":
+            result[fileId] = []
+            exported = asset.export()
+            if exported != None:
+                result[fileId].append(exported)
+        
+        # Figuring out root
+        root = urlPrefix
+        if root and root[-1] != "/":
+            root += "/"
+        root += assetFolder
+        if root and root[-1] != "/":
             root += "/"
             
-        return json.dumps({
-            "root" : root,
-            "dirs" : result
+        # Exporting data
+        export = toJson({
+            "assets" : self.structure(result),
+            "merged" : True,
+            "root" : root
         })
+        
+        print(export)
+        return export
 
 
 
     def exportSource(self, urlPrefix=""):
         """ 
         Exports asset data for the source version using assets from their original paths.
-        
-        - urlBase: Where the HTML root is based on the project's root.
         - urlPrefix: Useful when a CDN should be used. Maps the project's root to a URL.
-            As URLs are always absolute it makes sense to reset 'urlBase' to an empty
-            string so that the URLs do not contain useless ".." parent directory segments.
         """
         
         main = session.getMain()
@@ -141,18 +189,26 @@ class AssetManager:
         
         for fileId in assets:
             asset = assets[fileId]
-            path = main.toRelativeUrl(asset.getPath(), prefix=urlPrefix)
+            path = os.path.splitext(main.toRelativeUrl(asset.getPath()))[0]
+            
+            result[fileId] = [path]
+            exported = asset.export()
+            if exported != None:
+                result[fileId].append(exported)
+        
+        # Figuring out global root
+        root = urlPrefix
+        if root and root[-1] != "/":
+            root += "/"
 
-            # Differentiate storage between images and other resources
-            if asset.isImage():
-                result[fileId] = [path] + asset.getDimensions()
-            else:
-                result[fileId] = path
+        # Exporting data
+        export = toJson({
+            "assets" : self.structure(result),
+            "merged" : False,
+            "root": root
+        })
 
-        # Dump as JSON with relative paths
-        return json.dumps({
-            "files": result
-        }, separators=(',',':'))
-        
-        
-        
+        print(export)
+        return export
+
+
