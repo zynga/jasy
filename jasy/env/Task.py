@@ -91,8 +91,10 @@ def executeTask(name, **kwargs):
         startSection("Executing task %s..." % name)
         try:
             __taskRegistry[name](**kwargs)
+        except JasyError as err:
+            raise
         except:
-            logging.error("Could not finish task %s successfully!" % name)
+            logging.error("Unexpected error! Could not finish task %s successfully!" % name)
             raise
     else:
         raise JasyError("No such task: %s" % name)

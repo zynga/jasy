@@ -10,6 +10,7 @@ from jasy.env.File import *
 from jasy.core.Project import Project
 from jasy.env.State import session, getPermutation, prependPrefix
 from jasy.asset.Asset import Asset
+from jasy.core.Error import JasyError
 
 __all__ = ["AssetManager"]
 
@@ -87,6 +88,8 @@ class AssetManager:
             for split in splits:
                 if not split in current:
                     current[split] = {}
+                elif type(current[split]) != dict:
+                    raise JasyError("Invalid asset structure. Folder names must not be identical to any filename without extension: \"%s\" in %s" % (split, fileId))
                     
                 current = current[split]
             
@@ -178,9 +181,16 @@ class AssetManager:
         if root and root[-1] != "/":
             root += "/"
             
+        # Structurize
+        try:
+            structured = self.__structurize(result)
+        except Exception:
+            logging.error("Could not export build data of assets")
+            raise
+            
         # Exporting data
         export = toJson({
-            "assets" : self.__structurize(result),
+            "assets" : structured,
             "merged" : True,
             "root" : root
         })
@@ -215,9 +225,16 @@ class AssetManager:
         if root and root[-1] != "/":
             root += "/"
 
+        # Structurize
+        try:
+            structured = self.__structurize(result)
+        except Exception:
+            logging.error("Could not export build data of assets")
+            raise
+
         # Exporting data
         export = toJson({
-            "assets" : self.__structurize(result),
+            "assets" : structured,
             "merged" : False,
             "root": root
         })
