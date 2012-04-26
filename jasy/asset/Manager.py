@@ -58,23 +58,32 @@ class AssetManager:
                 
         logging.debug("Selected classes make use of %s assets" % len(assets))
         
-        
-        
-        
-        
         # TODO: Support image sprites
         # TODO: Support CSS preprocessing
         
         
         
-    def structure(self, data):
+    def __structurize(self, data):
+        """
+        This method structurizes the incoming data into a cascaded structure representing the
+        file system location (aka file IDs) as a tree. It further extracts the extensions and
+        merges files with the same name (but different extensions) into the same entry. This is
+        especially useful for alternative formats like audio files, videos and fonts. It only
+        respects the data of the first entry! So it is not a good idea to have different files
+        with different content stored with the same name e.g. content.css and content.png.
+        """
+        
         root = {}
         
-        for fileId in data:
+        # Easier to debug and understand when sorted
+        for fileId in sorted(data):
             current = root
             splits = fileId.split("/")
+            
+            # Extract the last item aka the filename itself
             basename = splits.pop()
             
+            # Find the current node to store info on
             for split in splits:
                 if not split in current:
                     current[split] = {}
@@ -85,22 +94,24 @@ class AssetManager:
             filename, extension = os.path.splitext(basename)
             extension = extension[1:]
             
+            # Merge with existing entry
             if filename in current:
+                logging.info("Adding %s [merge]..." % fileId)
+
                 if type(current[filename][0]) == list:
                     current[filename][0].append(extension)
                 else:
                     current[filename][0] = [current[filename][0], extension]
             
             else:
+                # Create new entry
+                logging.info("Adding %s [new]..." % fileId)
                 current[filename] = [extension] + data[fileId]
         
         return root
     
     
     
-        
-        
-        
     def __compileFilterExpr(self):
         # Merge asset hints from all classes and remove duplicates
         hints = set()
@@ -116,6 +127,7 @@ class AssetManager:
         
         
     def deployBuild(self, assetFolder="asset"):
+        """Deploys all asset files to the destination asset folder"""
 
         assets = self.__assets
         projects = session.getProjects()
@@ -168,7 +180,7 @@ class AssetManager:
             
         # Exporting data
         export = toJson({
-            "assets" : self.structure(result),
+            "assets" : self.__structurize(result),
             "merged" : True,
             "root" : root
         })
@@ -205,7 +217,7 @@ class AssetManager:
 
         # Exporting data
         export = toJson({
-            "assets" : self.structure(result),
+            "assets" : self.__structurize(result),
             "merged" : False,
             "root": root
         })
