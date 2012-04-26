@@ -148,14 +148,15 @@ class AssetManager:
         assets = self.__assets
         result = {}
         
-        # Process assets
+        # Processing assets
         for fileId in assets:
             asset = assets[fileId]
-            
-            result[fileId] = []
             exported = asset.export()
-            if exported != None:
-                result[fileId].append(exported)
+            
+            if exported is None:
+                result[fileId] = []
+            else:
+                result[fileId] = [exported]
         
         # Figuring out root
         root = urlPrefix
@@ -172,7 +173,6 @@ class AssetManager:
             "root" : root
         })
         
-        print(export)
         return export
 
 
@@ -187,14 +187,16 @@ class AssetManager:
         assets = self.__assets
         result = {}
         
+        # Processing assets
         for fileId in assets:
             asset = assets[fileId]
             path = os.path.splitext(main.toRelativeUrl(asset.getPath()))[0]
-            
-            result[fileId] = [path]
             exported = asset.export()
-            if exported != None:
-                result[fileId].append(exported)
+
+            if exported is None:
+                result[fileId] = [path]
+            else:
+                result[fileId] = [path, exported]
         
         # Figuring out global root
         root = urlPrefix
@@ -208,7 +210,5 @@ class AssetManager:
             "root": root
         })
 
-        print(export)
         return export
-
 
