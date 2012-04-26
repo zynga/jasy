@@ -115,6 +115,7 @@ try:
     
     # Basics
     from jasy.core.Error import JasyError
+    from jasy.core.Json import *
     from jasy.env.Task import *
     from jasy.env.State import *
     from jasy.env.File import *

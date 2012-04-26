@@ -1,4 +1,11 @@
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Zynga Inc.
+#
+
 import json
+
+__all__ = ["enableJsonCompression", "disableJsonCompression", "toJson"]
 
 __compress = True
 

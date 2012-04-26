@@ -8,6 +8,7 @@ import logging, itertools, time, atexit, json, os
 from jasy.i18n.Translation import Translation
 from jasy.i18n.LocaleData import *
 
+from jasy.core.Json import toJson
 from jasy.core.Project import Project, getProjectFromPath, getProjectDependencies
 from jasy.core.Permutation import Permutation
 
@@ -303,12 +304,12 @@ class Session():
                         values.remove(source["default"])
                         values.insert(0, source["default"])
                     
-                    content.append(toJSON(values))
+                    content.append(toJson(values))
             
                 else:
                     # EXPORT STRUCT 2
                     content.append("2")
-                    content.append(toJSON(values[0]))
+                    content.append(toJson(values[0]))
 
             # Has no relevance for permutation, just insert the test
             else:
@@ -321,7 +322,7 @@ class Session():
                     
                     # Add default value if available
                     if "default" in source:
-                        content.append(toJSON(source["default"]))
+                        content.append(toJson(source["default"]))
                 
                 else:
                     # Has no detection and no permutation. Ignore it completely
