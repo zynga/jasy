@@ -13,15 +13,10 @@ from jasy.core.Permutation import Permutation
 
 from jasy.core.Error import JasyError
 from jasy.env.State import setPermutation, startSection
-
+from jasy.core.Json import toJson
 
 __all__ = ["Session"]
 
-
-def toJSON(obj, sort_keys=False):
-    return json.dumps(obj, separators=(',',':'), ensure_ascii=False, sort_keys=sort_keys)
-    
-    
 
 class Session():
     #

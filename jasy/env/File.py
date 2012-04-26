@@ -5,6 +5,7 @@
 
 import os, shutil, logging, json
 from jasy.env.State import prependPrefix
+from jasy.core.Json import toJson
 
 
 def removeDir(dirname):
@@ -122,11 +123,6 @@ def writeFile(dst, content):
     handle.close()
     
     
-def writeJson(dst, content, compact=True):
-    if compact:
-        result = json.dumps(content, separators=(',',':'))
-    else:
-        result = json.dumps(content, indent=2)
-        
-    return writeFile(dst, result)
+def writeJson(dst, content):
+    return writeFile(dst, toJson(content))
 

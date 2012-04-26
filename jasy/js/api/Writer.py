@@ -10,6 +10,7 @@ from jasy.js.api.Data import ApiData
 from jasy.js.api.Text import *
 from jasy.js.util import *
 from jasy.env.State import session, startSection
+from jasy.core.Json import toJson
 
 __all__ = ["ApiWriter"]
 
@@ -273,7 +274,7 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
 
 class ApiWriter():
     
-    def write(self, distFolder, format="json", compact=True, callback="apiload", showInternals=False, showPrivates=False):
+    def write(self, distFolder, format="json", callback="apiload", showInternals=False, showPrivates=False):
         
         startSection("Writing API data...")
         
@@ -283,22 +284,10 @@ class ApiWriter():
         
         def encode(content, name):
             if format == "json":
-                class SetEncoder(json.JSONEncoder):
-                    def default(self, obj):
-                        if isinstance(obj, set):
-                            return sorted(list(obj))
-
-                        return json.JSONEncoder.default(self, obj)
-                        
-                if compact:
-                    jsonEncoded = json.dumps(content, sort_keys=False, cls=SetEncoder, separators=(',',':'))
-                else:
-                    jsonEncoded = json.dumps(content, sort_keys=False, indent=2, cls=SetEncoder)
-                
                 if callback:
-                    return "%s(%s,'%s');" % (callback, jsonEncoded, name)
+                    return "%s(%s,'%s');" % (callback, toJson(content), name)
                 else:
-                    return jsonEncoded
+                    return toJson(content)
                 
             elif format == "msgpack":
                 return "%s" % msgpack.packb(content)

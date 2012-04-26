@@ -30,14 +30,9 @@ if not job in supported:
 
 logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
-import jasy, json
+import jasy
 
-class SetEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, set):
-            return list(obj)
-        return json.JSONEncoder.default(self, obj)
-
+from jasy.core.Json import toJson
 from jasy.js.parse.Parser import parse
 from jasy.js.parse.ScopeScanner import scan
 from jasy.js.api.Data import ApiData
@@ -58,7 +53,7 @@ for fname in sys.argv[2:]:
     
     if job == "api":
         apidata = ApiData(fname, root)
-        print(json.dumps(apidata.export(), sort_keys=True, indent=2, cls=SetEncoder))
+        print(toJson(apidata.export()))
         
     elif job == "compress":
         print(Compressor().compress(root))
