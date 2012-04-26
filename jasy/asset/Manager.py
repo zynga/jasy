@@ -93,23 +93,9 @@ class AssetManager:
                     
                 current = current[split]
             
-            # Split into filename and extension
-            filename, extension = os.path.splitext(basename)
-            extension = extension[1:]
-            
-            # Merge with existing entry
-            if filename in current:
-                logging.info("Adding %s [merge]..." % fileId)
-
-                if type(current[filename][0]) == list:
-                    current[filename][0].append(extension)
-                else:
-                    current[filename][0] = [current[filename][0], extension]
-            
-            else:
-                # Create new entry
-                logging.info("Adding %s [new]..." % fileId)
-                current[filename] = [extension] + data[fileId]
+            # Create entry
+            logging.debug("Adding %s..." % fileId)
+            current[basename] = data[fileId]
         
         return root
     
@@ -169,9 +155,9 @@ class AssetManager:
             exported = asset.export()
             
             if exported is None:
-                result[fileId] = []
+                result[fileId] = 1
             else:
-                result[fileId] = [exported]
+                result[fileId] = exported
         
         # Figuring out root
         root = urlPrefix
@@ -218,7 +204,7 @@ class AssetManager:
             if exported is None:
                 result[fileId] = [path]
             else:
-                result[fileId] = [path, exported]
+                result[fileId] = [path] + exported
         
         # Figuring out global root
         root = urlPrefix
