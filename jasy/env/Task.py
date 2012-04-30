@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import types, logging, os
+import types, logging, os, sys
 from jasy.env.State import setPrefix, startSection, session, getPrefix
 from jasy.core.Error import JasyError
 
@@ -144,7 +144,7 @@ def runTask(project, task, **kwargs):
         raise JasyError("Unknown project %s" % project)
 
     os.chdir(remote.getPath())
-    returnValue = subprocess.call(args)
+    returnValue = subprocess.call(args, shell=sys.platform == "win32")
     os.chdir(oldPath)
 
     # Resumes this session after sub process was finished
