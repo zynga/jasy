@@ -177,7 +177,7 @@ class AssetManager:
         # Exporting data
         export = toJson({
             "assets" : structured,
-            "merged" : True,
+            "deployed" : True,
             "root" : root
         })
         
@@ -198,7 +198,7 @@ class AssetManager:
         # Processing assets
         for fileId in assets:
             asset = assets[fileId]
-            path = os.path.splitext(main.toRelativeUrl(asset.getPath()))[0]
+            path = main.toRelativeUrl(asset.getPath())
             exported = asset.export()
 
             if exported is None:
@@ -221,7 +221,7 @@ class AssetManager:
         # Exporting data
         export = toJson({
             "assets" : structured,
-            "merged" : False,
+            "deployed" : False,
             "root": root
         })
 
