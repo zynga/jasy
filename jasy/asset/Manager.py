@@ -155,6 +155,7 @@ class AssetManager:
             exported = asset.export()
             
             if exported is None:
+                # short value to allow simple lookup checks in JS
                 result[fileId] = 1
             else:
                 result[fileId] = exported
@@ -204,7 +205,7 @@ class AssetManager:
             if exported is None:
                 result[fileId] = [path]
             else:
-                result[fileId] = [path] + exported
+                result[fileId] = exported + [path]
         
         # Figuring out global root
         root = urlPrefix
