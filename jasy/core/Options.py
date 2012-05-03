@@ -4,6 +4,7 @@
 #
 
 import sys, logging
+from jasy.core.Logging import colorize
 
 class Options:
     
@@ -99,23 +100,25 @@ class Options:
             sys.exit(1)
             
             
-    def showHelp(self, indent=20):
+    def showHelp(self, indent=14):
 
         logging.info("Options:")
         for name in self.defaults:
-            msg = "  --%s" % name
+            col = len(name)
+            msg = colorize("  --%s" % name, "bold")
             
             for shortcut in self.shortcuts:
                 if self.shortcuts[shortcut] == name:
-                    msg += " [-%s]" % shortcut
+                    col += len(" [-%s]" % shortcut)
+                    msg += colorize(" [-%s]" % shortcut, "grey")
                     
             if name in self.help:
                 msg += ": "
-                diff = indent - (len(msg)-3)
+                diff = indent - col
                 if diff > 0:
                     msg += " " * diff
                     
-                msg += self.help[name]
+                msg += colorize(self.help[name], "magenta")
             
             logging.info(msg)
         
