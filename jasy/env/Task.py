@@ -105,9 +105,9 @@ def printTasks():
     for name in __taskRegistry:
         obj = __taskRegistry[name]
         if obj.desc:
-            logging.info("- %s: %s" % (name, obj.desc))
+            logging.info("  %s: %s" % (name, obj.desc))
         else:
-            logging.info("- %s" % name)
+            logging.info("  %s" % name)
 
 
 # Jasy reference for executing remote tasks

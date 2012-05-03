@@ -3,7 +3,7 @@
 # Copyright 2012 Zynga Inc.
 #
 
-import sys
+import sys, logging
 
 class Options:
     
@@ -98,6 +98,27 @@ class Options:
             raise
             sys.exit(1)
             
+            
+    def showHelp(self, indent=20):
+
+        logging.info("Options:")
+        for name in self.defaults:
+            msg = "  --%s" % name
+            
+            for shortcut in self.shortcuts:
+                if self.shortcuts[shortcut] == name:
+                    msg += " [-%s]" % shortcut
+                    
+            if name in self.help:
+                msg += ": "
+                diff = indent - (len(msg)-3)
+                if diff > 0:
+                    msg += " " * diff
+                    
+                msg += self.help[name]
+            
+            logging.info(msg)
+        
 
     def add(self, name, accept=bool, value=None, short=None, help=""):
         
