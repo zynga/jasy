@@ -148,6 +148,7 @@ def main():
 
         # list all tasks when none is given
         tasks = options.getTasks()
+        
         if not tasks or options.help:
             startSection("Help")
             logging.info("Usage: jasy [options...] task1 [flags...] [task2 [flags...]]")

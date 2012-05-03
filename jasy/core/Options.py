@@ -8,17 +8,17 @@ from jasy.core.Logging import colorize
 
 class Options:
     
-    __slots__ = ["tasks", "options", "defaults", "types", "shortcuts", "help"]
+    __slots__ = ["__tasks", "__options", "__defaults", "__types", "__shortcuts", "__help"]
     
     def __init__(self, defaults={}):
 
-        self.tasks = []
-        self.options = {}
+        self.__tasks = []
+        self.__options = {}
         
-        self.help = {}
-        self.defaults = {}
-        self.types = {}
-        self.shortcuts = {}
+        self.__help = {}
+        self.__defaults = {}
+        self.__types = {}
+        self.__shortcuts = {}
 
 
     def parse(self, args):
@@ -46,10 +46,10 @@ class Options:
                         value = name[pos+1:]
                         name = name[0:pos]
                         
-                        if not inTaskMode and self.types[name] is bool:
+                        if not inTaskMode and self.__types[name] is bool:
                             raise Exception("Invalid argument: %s. Boolean flag!" % name)
                         
-                    elif (not name in self.types or not self.types[name] is bool) and (index+1) < length and not args[index+1].startswith("-"):
+                    elif (not name in self.__types or not self.__types[name] is bool) and (index+1) < length and not args[index+1].startswith("-"):
                         index += 1
                         value = args[index]
 
@@ -71,7 +71,7 @@ class Options:
                 
                 else:
                     if current:
-                        self.tasks.append(current)
+                        self.__tasks.append(current)
 
                     current = {}
                     current["task"] = name
@@ -82,15 +82,15 @@ class Options:
                 index += 1
 
             if current:
-                self.tasks.append(current)
+                self.__tasks.append(current)
             
-            if self.tasks and self.tasks[0]["task"] is None:
-                self.options = self.tasks.pop(0)["params"]
+            if self.__tasks and self.__tasks[0]["task"] is None:
+                self.__options = self.__tasks.pop(0)["params"]
                 
-            for name in list(self.options):
-                if name in self.shortcuts:
-                    self.options[self.shortcuts[name]] = self.options[name]
-                    del self.options[name]
+            for name in list(self.__options):
+                if name in self.__shortcuts:
+                    self.__options[self.__shortcuts[name]] = self.__options[name]
+                    del self.__options[name]
                 elif len(name) == 1:
                     raise Exception("Invalid argument: %s" % name)
                     
@@ -103,49 +103,49 @@ class Options:
     def showHelp(self, indent=14):
 
         logging.info("Options:")
-        for name in self.defaults:
+        for name in self.__defaults:
             col = len(name)
             msg = colorize("  --%s" % name, "bold")
             
-            for shortcut in self.shortcuts:
-                if self.shortcuts[shortcut] == name:
+            for shortcut in self.__shortcuts:
+                if self.__shortcuts[shortcut] == name:
                     col += len(" [-%s]" % shortcut)
                     msg += colorize(" [-%s]" % shortcut, "grey")
                     
-            if name in self.help:
+            if name in self.__help:
                 msg += ": "
                 diff = indent - col
                 if diff > 0:
                     msg += " " * diff
                     
-                msg += colorize(self.help[name], "magenta")
+                msg += colorize(self.__help[name], "magenta")
             
             logging.info(msg)
         
 
     def add(self, name, accept=bool, value=None, short=None, help=""):
         
-        self.defaults[name] = value
+        self.__defaults[name] = value
 
         if accept is not None:
-            self.types[name] = accept
+            self.__types[name] = accept
         if short is not None:
-            self.shortcuts[short] = name
+            self.__shortcuts[short] = name
         if help:
-            self.help[name] = help
+            self.__help[name] = help
 
     def __str__(self):
-        return str(self.tasks)
+        return str(self.__tasks)
         
     def __getattr__(self, name):
-        if name in self.options:
-            return self.options[name]
-        elif name in self.defaults:
-            return self.defaults[name]
+        if name in self.__options:
+            return self.__options[name]
+        elif name in self.__defaults:
+            return self.__defaults[name]
         else:
             raise Exception("Unknown option: %s!" % name)
     
     def getTasks(self):
-        return self.tasks
+        return self.__tasks
 
         
