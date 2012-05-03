@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import struct, logging
+import struct, logging, hashlib
 
 """
 Contains image format detection classes. Once the format is detect it supports image size detection, too.
@@ -28,6 +28,14 @@ class ImgFile(object):
 
     def close(self):
         self.fp.close()
+
+    def getChecksum(self):
+
+        self.fp.seek(0)
+        m = hashlib.md5()
+        m.update(self.fp.read())
+
+        return m.hexdigest()
 
     def __del__(self):
         self.close()
@@ -147,3 +155,12 @@ class ImgInfo(object):
                 return img.size()
 
         return None
+
+    def getChecksum(self):
+
+        img = ImgFile(self.__filename)
+        checksum = img.getChecksum()
+        img.close()
+
+        return checksum
+
