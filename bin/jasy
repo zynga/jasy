@@ -27,13 +27,14 @@ if args and "jasyscript.py" in args[0]:
 
 options = Options()
 
-options.add("verbose", short="v", help="print more detailed status messages to stdout")
-options.add("quiet", short="q", help="don't print status messages to stdout")
+options.add("verbose", short="v", help="Print more detailed status messages to stdout")
+options.add("quiet", short="q", help="Don't print status messages to stdout")
 options.add("log", accept=str, help="Write debug messages to given logfile")
 options.add("file", accept=str, value="jasyscript.py", help="Use the given jasy script")
 options.add("version", short="V", help="Print version info only")
-options.add("quick", short="q", help="Prevents repository updates")
+options.add("fast", short="f", help="Prevents repository updates")
 options.add("stats", help="Show statistics after run")
+options.add("help", short="h", help="Shows available options")
 
 options.parse(args)
 
@@ -106,7 +107,7 @@ jasyscript = os.path.basename(jasyscript)
 sys.path.insert(0, os.getcwd())
 
 # Quick mode globally disables repository updates
-if options.quick:
+if options.fast:
     from jasy.core.Repository import enableRepositoryUpdates
     enableRepositoryUpdates(False)
 
@@ -147,11 +148,17 @@ def main():
 
         # list all tasks when none is given
         tasks = options.getTasks()
-        if not tasks:
+        if not tasks or options.help:
             startSection("Help")
-            logging.error("Available tasks: ")
+            logging.info("Usage: jasy [options...] task1 [flags...] [task2 [flags...]]")
+            options.showHelp()
+            logging.error("Tasks: ")
             printTasks()
-            sys.exit(1)
+            
+            if options.help:
+                sys.exit(0)
+            else:
+                sys.exit(1)
 
         # all arguments are processed as a list of task to execute in order
         for entry in tasks:

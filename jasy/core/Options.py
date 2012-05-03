@@ -3,7 +3,8 @@
 # Copyright 2012 Zynga Inc.
 #
 
-import sys
+import sys, logging
+from jasy.core.Logging import colorize
 
 class Options:
     
@@ -98,6 +99,29 @@ class Options:
             raise
             sys.exit(1)
             
+            
+    def showHelp(self, indent=14):
+
+        logging.info("Options:")
+        for name in self.defaults:
+            col = len(name)
+            msg = colorize("  --%s" % name, "bold")
+            
+            for shortcut in self.shortcuts:
+                if self.shortcuts[shortcut] == name:
+                    col += len(" [-%s]" % shortcut)
+                    msg += colorize(" [-%s]" % shortcut, "grey")
+                    
+            if name in self.help:
+                msg += ": "
+                diff = indent - col
+                if diff > 0:
+                    msg += " " * diff
+                    
+                msg += colorize(self.help[name], "magenta")
+            
+            logging.info(msg)
+        
 
     def add(self, name, accept=bool, value=None, short=None, help=""):
         

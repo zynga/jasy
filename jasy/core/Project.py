@@ -370,7 +370,10 @@ class Project():
             
             if isGitRepositoryUrl(source):
                 # Auto cloning always happens relative to main project root folder (not to project requiring it)
-                path = os.path.abspath(cloneGit(source, version, prefix=prefix))
+                clonePath = cloneGit(source, version, prefix=prefix)
+                if not clonePath:
+                    raise JasyError("Could not clone GIT repository %s" % source)
+                path = os.path.abspath(clonePath)
             else:
                 # Other references to requires projects are always relative to the project requiring it
                 path = os.path.normpath(os.path.join(self.__path, source))

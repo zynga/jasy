@@ -6,6 +6,7 @@
 import types, logging, os, sys
 from jasy.env.State import setPrefix, startSection, session, getPrefix
 from jasy.core.Error import JasyError
+from jasy.core.Logging import colorize
 
 
 __all__ = ["task", "executeTask", "runTask", "printTasks", "setJasyCommand"]
@@ -99,15 +100,18 @@ def executeTask(name, **kwargs):
     else:
         raise JasyError("No such task: %s" % name)
 
-def printTasks():
+def printTasks(indent=16):
     """Prints out a list of all avaible tasks and their descriptions"""
     
     for name in __taskRegistry:
         obj = __taskRegistry[name]
+        
+        formattedName = colorize(name, "bold")
         if obj.desc:
-            logging.info("- %s: %s" % (name, obj.desc))
+            space = (indent - len(name)) * " "
+            logging.info("  %s: %s%s" % (formattedName, space, colorize(obj.desc, "magenta")))
         else:
-            logging.info("- %s" % name)
+            logging.info("  %s" % formattedName)
 
 
 # Jasy reference for executing remote tasks
