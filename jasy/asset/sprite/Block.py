@@ -11,6 +11,7 @@ class Block():
         self.image = image
         self.duplicates = []
         self.area = w * h
+        self.rotated = False
 
     def toJSON(self):
         if self.fit:
