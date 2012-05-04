@@ -35,7 +35,6 @@ Otherwise feel free to install using setup.py or running jasy locally from the i
 
 As Jasy is thought for being used as a API in basically Python scripts you can also generate the full API documentation using the command `util/doc.sh`. The documentation is based on the [Sphinx](http://sphinx.pocoo.org/) documentation generator.
 
-The [documentation is online](http://zynga.github.com/jasy/api/jasy.html) available as well.
 
 ## Roadmap
 
