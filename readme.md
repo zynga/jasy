@@ -24,11 +24,11 @@ like Python 3, Misaka (Markdown), Msgpack (API data), etc. For
 details have a look at [the official documentation](https://github.com/zynga/jasy/wiki/Installation).
 
 
-### Cloning via GIT
+### Cloning via Git
 
 Otherwise feel free to install using setup.py or running jasy locally from the inside the cloned folder. Both should work fine.
 
-Please be aware that the `master` branch is unstable. If you require stability check out one of the release tags like "0.6.1".
+*Please be aware that the `master` branch is unstable. If you require stability check out one of the release tags like "0.6.1".*
 
 
 ## Generate API documentation
