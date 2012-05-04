@@ -54,7 +54,15 @@ class PackerScore():
 
         # Otherwise sort against the index size
         elif self.value >= other.value:
-            return self.indexSize < other.indexSize
+
+            if self.indexSize < other.indexSize:
+                return True
+
+            elif self.indexSize == other.indexSize and self.sheets[0].width > other.sheets[0].width:
+                return True
+
+            else:
+                return False
 
         else:
             return False
@@ -63,7 +71,7 @@ class PackerScore():
         return not self < other
 
     def __repr__(self):
-        return '<PackerScore %d sheets #%d (%s) Area: %d Used: %d (%2.f%%) External: %d Count: %d Value: %2.5f>' % (self.count, self.indexSize, ', '.join(self.sizes), self.area, self.usedArea, self.efficency, self.excount, self.count ** self.count, self.value)
+        return '<PackerScore %d sheets #%d (%s) Area: %d Used: %d (%2.f%%) External: %d Count: %d Value: %2.5f>' % (self.count, self.indexSize, ', '.join(self.sizes), self.area, self.usedArea, self.efficency, self.excount - 1, self.count ** self.count, self.value)
 
 
 
@@ -170,12 +178,24 @@ class SpritePacker():
         # by averaging the widths and heights of all images
         # while taking the ones in the sorted middile higher into account
         # then the ones at the outer edges of the spectirum
+
+
         l = len(self.files)
         mw = [(l - abs(i - l / 2)) / l * v for i, v in enumerate(sorted([i.width for i in self.files]))]
         mh = [(l - abs(i - l / 2)) / l * v for i, v in enumerate(sorted([i.height for i in self.files]))]
 
-        minWidth = math.pow(2, math.ceil(math.log(sum(mw) / l, 2)))
-        minHeight = math.pow(2, math.ceil(math.log(sum(mh) / l, 2)))
+        minWidth = max(128, math.pow(2, math.ceil(math.log(sum(mw) / l, 2))))
+        minHeight = max(128, math.pow(2, math.ceil(math.log(sum(mh) / l, 2))))
+
+        #baseArea = sum([(l - abs(i - l / 2)) / l * v for i, v in enumerate(sorted([i.width * i.height for i in self.files]))])
+
+        # try to skip senseless generation of way to small sprites
+        baseArea = sum([minWidth * minHeight for i in self.files])
+        while baseArea / (minWidth * minHeight) >= 20: # bascially an estimate of the number of sheets needed
+            minWidth *= 2
+            minHeight *= 2
+
+        logging.debug('- Minimal size is %dx%dpx' % (minWidth, minHeight))
 
         sizes = list(itertools.product([w for w in [128, 256, 512, 1024, 2048] if w >= minWidth],
                                        [h for h in [128, 256, 512, 1024, 2048] if h >= minHeight]))
