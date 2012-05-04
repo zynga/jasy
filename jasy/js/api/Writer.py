@@ -240,8 +240,8 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
                 if not "summary" in classEntry and "summary" in interfaceEntry:
                     classEntry["summary"] = interfaceEntry["summary"]
 
-                if "errornous" in classEntry[name] and not "errornous" in interfaceEntry[name]:
-                    del classEntry[name]["errornous"]
+                if "errornous" in classEntry and not "errornous" in interfaceEntry:
+                    del classEntry["errornous"]
 
                 # Priorize return value from interface (it's part of the interface feature set to enforce this)
                 if "returns" in interfaceEntry:
