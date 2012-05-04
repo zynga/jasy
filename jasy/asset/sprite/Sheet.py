@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys
+import sys, math, logging
 
 sys.path.insert(0, ".")
 sys.path.insert(1, "PIL")
@@ -43,7 +43,7 @@ class SpriteSheet():
         return data
 
 
-    def toImage(self, filename, showUnused=False):
+    def toImage(self, filename, showDebug=False):
 
         img = Image.new('RGBA', (self.width, self.height))
         draw = ImageDraw.Draw(img)
@@ -54,17 +54,22 @@ class SpriteSheet():
         for block in self.blocks:
             res = Image.open(block.image.src)
 
-            img.paste(res, (block.fit.x, block.fit.y))
+            x, y = block.fit.x, block.fit.y
+            if block.rotated:
+                logging.debug('%s is rotated' % block.image.src)
+                res = res.rotate(90)
+
+            img.paste(res, (x, y))
             del res
 
-        # Debug output coloring unused blocks in pink
-        # TODO we can just as well fill the whole image
-        if showUnused:
+            if showDebug:
+                x, y, w, h = block.fit.x, block.fit.y, block.w, block.h
+                draw.rectangle((x, y , x + w , y + h), outline=(0, 0, 255, 255) if block.rotated else (255, 0, 0, 255))
 
-            count = len(self.packer.getUnused())
+        if showDebug:
             for i, block in enumerate(self.packer.getUnused()):
                 x, y, w, h = block.x, block.y, block.w, block.h
-                draw.rectangle((x, y, x + w, y + h ), fill=(255, 0, int(255 / count * i), 255))
+                draw.rectangle((x, y , x + w , y + h), fill=(255, 255, 0, 255))
 
         img.save(filename)
 

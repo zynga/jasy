@@ -4,14 +4,14 @@
 #
 class Block():
 
-    def __init__(self, w, h, image):
+    def __init__(self, w, h, image, rotated=False):
         self.w = w
         self.h = h
         self.fit = None
         self.image = image
         self.duplicates = []
         self.area = w * h
-        self.rotated = False
+        self.rotated = rotated
 
     def toJSON(self):
         if self.fit:

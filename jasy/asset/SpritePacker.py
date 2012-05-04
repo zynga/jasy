@@ -12,6 +12,61 @@ from jasy.asset.sprite.Sheet import SpriteSheet
 
 import os, json, itertools, logging, math
 
+
+
+class PackerScore():
+
+    def __init__(self, sheets, external):
+        
+        self.sheets = sheets
+        self.external = external
+
+        # TODO choose quadratic over non??
+        self.sizes = ['%dx%dpx' % (s.width, s.height) for s in sheets]
+        self.indexSize = sum([s.width / 128 + s.height / 128 for s in sheets])
+
+        # the total area used
+        self.area = sum([s.area for s in sheets]) * 0.0001
+        self.exArea = sum([s.area for s in external]) * 0.0001
+        self.usedArea = sum([s.usedArea for s in sheets]) * 0.0001
+        self.count = len(sheets) 
+
+        # we only factor in left out images
+        # if their size is less than 50% of the total spritesheet size we have right now
+        # everything else is included as it would blow up the sheet way too much
+        self.excount = len([i for i in external if i.w * i.h * 0.0001 < self.area * 0.5]) + 1
+
+        # Calculate in efficiency
+        self.efficency = (100 / self.area) * self.usedArea
+        self.value = self.efficency / (self.area * (self.excount * self.excount)) / (self.count ** self.count)
+
+    def data(self):
+        return (self.sheets, self.external)
+
+    def __lt__(self, other):
+
+        # Merge index sizes! if less images
+
+        # Only go with bigger index size (n^2 more space taken) if we're score at least
+        # 10% better
+        if self.value > other.value * 1.1:
+            return True
+
+        # Otherwise sort against the index size
+        elif self.value >= other.value:
+            return self.indexSize < other.indexSize
+
+        else:
+            return False
+
+    def __gt__(self, other):
+        return not self < other
+
+    def __repr__(self):
+        return '<PackerScore %d sheets #%d (%s) Area: %d Used: %d (%2.f%%) External: %d Count: %d Value: %2.5f>' % (self.count, self.indexSize, ', '.join(self.sizes), self.area, self.usedArea, self.efficency, self.excount, self.count ** self.count, self.value)
+
+
+
 class SpritePacker():
 
     def __init__(self, base, types = ('png'), width=1024, height=1024):
@@ -83,61 +138,13 @@ class SpritePacker():
         logging.debug('- Found image "%s" (%dx%dpx)' % (relPath, w, h))
 
 
-    def packBest(self):
+    # Pack blocks into a sprite sheet by trying multiple settings -------------
+    # -------------------------------------------------------------------------
+    def packBest(self, allowRotate=True):
 
         sheets, extraBlocks = [], []
         score = 0
         
-        class PackerScore():
-
-            def __init__(self, sheets, external):
-                
-                self.sheets = sheets
-                self.external = external
-
-                # TODO choose quadratic over non??
-                self.sizes = ['%dx%dpx' % (s.width, s.height) for s in sheets]
-                self.indexSize = sum([s.width / 128 + s.height / 128 for s in sheets])
-
-                # the total area used
-                self.area = sum([s.area for s in sheets]) * 0.0001
-                self.exArea = sum([s.area for s in external]) * 0.0001
-                self.usedArea = sum([s.usedArea for s in sheets]) * 0.0001
-                self.count = len(sheets) 
-
-                # we only factor in left out images
-                # if their size is less than 50% of the total spritesheet size we have right now
-                # everything else is included as it would blow up the sheet way too much
-                self.excount = len([i for i in external if i.w * i.h * 0.0001 < self.area * 0.5]) + 1
-
-                # Calculate in efficiency
-                self.efficency = (100 / self.area) * self.usedArea
-                self.value = self.efficency / (self.area * (self.excount * self.excount)) / (self.count ** self.count)
-
-            def data(self):
-                return (self.sheets, self.external)
-
-            def __lt__(self, other):
-
-                # Merge index sizes! if less images
-
-                # Only go with bigger index size (n^2 more space taken) if we're score at least
-                # 10% better
-                if self.value > other.value * 1.1:
-                    return True
-
-                # Otherwise sort against the index size
-                elif self.value >= other.value:
-                    return self.indexSize < other.indexSize
-
-                else:
-                    return False
-
-            def __gt__(self, other):
-                return not self < other
-
-            def __repr__(self):
-                return '<PackerScore %d sheets #%d (%s) Area: %d Used: %d (%2.f%%) External: %d Count: %d Value: %2.5f>' % (self.count, self.indexSize, ', '.join(self.sizes), self.area, self.usedArea, self.efficency, self.excount, self.count ** self.count, self.value)
 
         best = {
             'score': 0,
@@ -157,6 +164,7 @@ class SpritePacker():
             return (img.w * img.h, img.w, img.h)
 
         sorts = [sortHeight, sortWidth, sortArea]
+        rotationDiff = [(0, 0), (1.4, 0), (0, 1.4), (1.4, 1.4)] # rotate by 90 degrees if either b / a > value
 
         # Determine minimum size for spritesheet generation
         # by averaging the widths and heights of all images
@@ -172,15 +180,19 @@ class SpritePacker():
         sizes = list(itertools.product([w for w in [128, 256, 512, 1024, 2048] if w >= minWidth],
                                        [h for h in [128, 256, 512, 1024, 2048] if h >= minHeight]))
 
-        methods = list(itertools.product(sorts, sizes))
+        if allowRotate:
+            methods = list(itertools.product(sorts, sizes, rotationDiff))
+
+        else:
+            methods = list(itertools.product(sorts, sizes, [(0, 0)]))
 
         logging.debug('Packing SpriteSheet Variants...')
 
         scores = []
-        for sort, size in methods:
+        for sort, size, rotation in methods:
 
             # pack with current settings
-            sh, ex, _ = self.pack(size[0], size[1], sort, silent=True)
+            sh, ex, _ = self.pack(size[0], size[1], sort, silent=True, rotate=rotation)
             score = PackerScore(sh, ex)
 
             # Determine score, highest wins
@@ -196,7 +208,9 @@ class SpritePacker():
         return sheets, external, len(scores)
 
 
-    def pack(self, width = 1024, height = 1024, sort=None, silent=False):
+    # Pack blocks into a sprite sheet -----------------------------------------
+    # -------------------------------------------------------------------------
+    def pack(self, width = 1024, height = 1024, sort=None, silent=False, rotate=(0, 0)):
         """Packs all sprites within the pack into sheets of the given size."""
         
         logging.debug('Packing %d images...' % len(self.files))
@@ -209,7 +223,24 @@ class SpritePacker():
             f.block = None
 
             if not f.checksum in checkBlocks:
-                checkBlocks[f.checksum] = f.block = Block(f.width, f.height, f)
+                
+                # check for rotation
+                ow = f.width
+                oh = f.height
+
+                rot = False
+
+                if rotate[0] != 0:
+                    if ow / oh > rotate[0]:
+                        rot = True
+
+                elif rotate[1] != 0:
+                    if oh / ow > rotate[1]:
+                        rot = True
+                
+                w, h = (oh, ow) if rot else (ow, oh)
+
+                checkBlocks[f.checksum] = f.block = Block(w, h, f, rot)
                 allBlocks.append(f.block)
 
             else:
@@ -282,10 +313,12 @@ class SpritePacker():
         return (sheets, extraBlocks, 0)
 
 
-    def generate(self, pattern='sheet_%d.png', best=False, size=(1024, 1024), path=''):
+    # Generate sheets/variants ------------------------------------------------
+    # -------------------------------------------------------------------------
+    def generate(self, pattern='sheet_%d.png', best=False, size=(1024, 1024), path='', allowRotate=True, showDebug=False):
         
         logging.info('\nGenerating sprite sheet variants:')
-        sheets, tooBig, count = self.packBest() if best else self.pack()
+        sheets, tooBig, count = self.packBest(allowRotate) if best else self.pack()
         logging.info(' - Choosing best image from %d candidates...' % count)
 
         # Clean up
@@ -310,7 +343,7 @@ class SpritePacker():
             out = os.path.join(self.base, path, name)
 
             logging.info(' - Creating image for sheet (%dx%dpx) with %d image(s) > %s' % (sheet.width, sheet.height, len(sheet), out))
-            sheet.toImage(out, False)
+            sheet.toImage(out, showDebug)
 
             js[name] = sheet.toJSON()
 
@@ -326,11 +359,11 @@ class SpritePacker():
         logging.info('\nThe following images have not been added to the sheet:')
         for block in tooBig:
             logging.info(' - "%s" (%dx%dpx) into spritesheet, too big to be efficent' % (block.image.relPath, block.w, block.h))
-            #js[block.image.relPath] = block.toJSON()
 
 
-
-    def packDir(self, path='', recursive=True, pattern='sheet_%d.png', best=False, size=(1024, 1024)):
+    # Pack images inside a dir into sprite sheets -----------------------------
+    # -------------------------------------------------------------------------
+    def packDir(self, path='', recursive=True, pattern='sheet_%d.png', best=False, size=(1024, 1024), allowRotate=True, showDebug=False):
 
         logging.info('\nPacking sprites in: %s' % os.path.join(self.base, path))
         self.reset()
@@ -338,5 +371,6 @@ class SpritePacker():
         logging.info('- Found %d images' % len(self.files))
 
         if len(self.files) > 0:
-            self.generate(pattern, best, size, path=path)
+            self.generate(pattern, best, size, path=path, allowRotate=allowRotate, showDebug=showDebug)
+
 
