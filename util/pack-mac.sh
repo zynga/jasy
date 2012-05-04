@@ -34,7 +34,6 @@ make > /dev/null || exit 1
 echo ">>> Installing Python..."
 make install > /dev/null || exit 1
 cd $JASYHOME/bin || exit 1
-ln -s python3 python || exit 1
 cd ~- || exit 1
 
 echo ">>> Downloading Distribute..."
