@@ -3,11 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, math, logging
-
-sys.path.insert(0, ".")
-sys.path.insert(1, "PIL")
-import Image, ImageDraw
+import sys, math, logging, Image, ImageDraw
 
 class SpriteSheet():
 
