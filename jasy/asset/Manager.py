@@ -62,6 +62,7 @@ class AssetManager:
         
 
         self.__processSprites()
+        self.__processFrames()
         
         logging.debug("Selected classes make use of %s assets" % len(assets))
         
@@ -104,9 +105,6 @@ class AssetManager:
                         assets[singleId] = singleAsset
                         # TODO
                         
-                        
-                        
-                        
                     
                     singleAsset.addSpriteData(spriteImageId, singleData["left"], singleData["top"])
                     
@@ -118,8 +116,18 @@ class AssetManager:
                         fileChecksum = singleAsset.getChecksum()
                         storedChecksum = singleData["checksum"]
                         
+                        logging.info("Checksum Compare: %s <=> %s", fileChecksum[0:6], storedChecksum[0:6])
+                        
                         if storedChecksum != fileChecksum:
                             raise JasyError("Sprite Sheet is not up-to-date. Checksum of %s differs.", singleId)
+        
+            logging.debug("  - Deleting sprite config from assets: %s", fileId)
+            del assets[fileId]
+        
+        
+        
+    def __processFrames(self):
+        
         
         
         

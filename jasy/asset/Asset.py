@@ -16,8 +16,9 @@ class Asset(Item):
     
     kind = "asset"
 
-    __spriteData = []
-    __dimensionData = []
+    __imageSpriteData = []
+    __imageFrameData = []
+    __imageDimensionData = []
     
     def isSpriteConfig(self):
         return basename(self.id) == "jasysprite.json"
@@ -42,21 +43,34 @@ class Asset(Item):
         
     def addSpriteData(self, id, left, top):
         logging.debug("  - Registering sprite location for %s: %s@%sx%s", self.id, id, left, top)
-        self.__spriteData = [id, left, top]
+        self.__imageSpriteData = [id, left, top]
+        
+    
+    def addFrameData(self, columns, rows, number=None, frames=None):
+        if frames:
+            self.__imageFrameData = frames
+        elif number:
+            self.__imageFrameData = [columns, rows, number]
+        else:
+            self.__imageFrameData = [columns, rows]
     
     
     def addDimensions(self, width, height):
         logging.debug("  - Adding dimension data for %s: %sx%s", self.id, width, height)
-        self.__dimensionData = [width, height]
+        self.__imageDimensionData = [width, height]
     
     
     def export(self):
         if self.isImage():
-            dimensions = self.__dimensionData or self.getDimensions()
-            if self.__spriteData:
-                return dimensions + self.__spriteData
-            else:
-                return dimensions
+            result = self.__imageDimensionData or self.getDimensions()
+
+            if self.__imageSpriteData:
+                result += self.__imageSpriteData
+                
+            if self.__imageFrameData:
+                result += self.__imageFrameData
+            
+            return result
             
         # audio length, video codec, etc.?
         

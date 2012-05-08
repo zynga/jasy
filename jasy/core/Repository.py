@@ -49,7 +49,7 @@ def getDistFolder(repo, rev):
     uniqueKey = "%s@%s" % (repo, rev)
     hashedKey = hashlib.sha1(uniqueKey.encode("utf-8")).hexdigest()
     
-    return "%s-%s" % (baseFolder, hashedKey)
+    return "%s-%s-%s" % (baseFolder, rev[rev.rindex("/")+1:], hashedKey)
 
 
 
@@ -115,7 +115,7 @@ def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
 
                 return dist
 
-        logging.info("Cloning %s@%s", repo, rev)
+        logging.info("Cloning %s@%s into %s", repo, rev, dist[:dist.rindex("-")])
         os.makedirs(dist)
         os.chdir(dist)
         
