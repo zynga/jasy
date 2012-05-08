@@ -50,9 +50,9 @@ class Asset(Item):
         
     
     def addAnimationData(self, columns, rows, number=None, frames=None):
-        if frames:
+        if frames != None:
             self.__imageAnimationData = frames
-        elif number:
+        elif number != None:
             self.__imageAnimationData = [columns, rows, number]
         else:
             self.__imageAnimationData = [columns, rows]
