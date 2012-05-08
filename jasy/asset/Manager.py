@@ -11,7 +11,7 @@ from jasy.core.Project import Project
 from jasy.env.State import session, getPermutation, prependPrefix
 from jasy.asset.Asset import Asset
 from jasy.core.Error import JasyError
-from jasy.core.Util import sha1File
+from jasy.core.Util import sha1File, getKey
 
 __all__ = ["AssetManager"]
 
@@ -132,20 +132,45 @@ class AssetManager:
         logging.info("Processing %s image animation configs...", len(configs))
         
         for fileId in configs:
-            logging.info("- Processing image frame data from %s", fileId)
+            logging.info("- Processing image animation data from %s", fileId)
         
             asset = assets[fileId]
-            frameBase = dirname(fileId)
+            base = dirname(fileId)
                 
             try:
-                frameConfig = json.loads(asset.getText())
+                config = json.loads(asset.getText())
             except ValueError as err:
-                raise JasyError("Could not parse jasyframes.json at %s: %s" % (fileId, err))
+                raise JasyError("Could not parse jasyanimation.json at %s: %s" % (fileId, err))
             
-            for frameImage in frameConfig:
-                frameImageId = "%s/%s" % (frameBase, frameImage)
+            for relPath in config:
+                imageId = "%s/%s" % (base, relPath)
+                data = config[relPath]
+                
+                if not imageId in assets:
+                    raise JasyError("Unknown asset %s in %s" % (imageId, fileId))
+                
+                animationAsset = assets[imageId]
+                
+                if "rows" in data or "columns" in data:
+                    rows = getKey(data, "rows", 1)
+                    columns = getKey(data, "columns", 1)
+                    frames = getKey(data, "frames")
+                    
+                    animationAsset.addAnimationData(columns, rows, frames)
+                    
+                    if frames is None:
+                        frames = rows * columns
+                    
+                    
+                elif "layout" in data:
+                    layout = data["layout"]
+                    animationAsset.addAnimationData(None, None, layout=layout)
+                    frames = len(layout)
+                    
+                else:
+                    raise JasyError("Invalid image frame data for: %s" % imageId)
 
-                logging.info("  - Image %s has %s frames", frameImageId, 0)
+                logging.info("  - Registered animation %s with %s frames", imageId, frames)
 
         
         

@@ -8,6 +8,7 @@ import os, logging, json, re
 from jasy.core.Cache import Cache
 from jasy.core.Repository import cloneGit, isGitRepositoryUrl
 from jasy.core.Error import JasyError
+from jasy.core.Util import getKey
 
 # Item types
 from jasy.core.Item import Item
@@ -26,13 +27,6 @@ repositoryFolder = re.compile(r"^([a-zA-Z0-9\.\ _-]+)-([a-f0-9]{40})$")
 
 
 __projects = {}
-
-
-def getKey(data, key, default=None):
-    if key in data:
-        return data[key]
-    else:
-        return default
 
 
 def getProjectFromPath(path, config=None):

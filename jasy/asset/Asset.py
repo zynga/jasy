@@ -49,11 +49,11 @@ class Asset(Item):
         self.__imageSpriteData = [id, left, top]
         
     
-    def addAnimationData(self, columns, rows, number=None, frames=None):
-        if frames != None:
-            self.__imageAnimationData = frames
-        elif number != None:
-            self.__imageAnimationData = [columns, rows, number]
+    def addAnimationData(self, columns, rows, frames=None, layout=None):
+        if layout is not None:
+            self.__imageAnimationData = layout
+        elif frames is not None:
+            self.__imageAnimationData = [columns, rows, frames]
         else:
             self.__imageAnimationData = [columns, rows]
     

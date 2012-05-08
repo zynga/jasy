@@ -14,3 +14,11 @@ def sha1File(f, block_size=2**20):
         sha1.update(data)
 
     return sha1.hexdigest()
+    
+    
+
+def getKey(data, key, default=None):
+    if key in data:
+        return data[key]
+    else:
+        return default
