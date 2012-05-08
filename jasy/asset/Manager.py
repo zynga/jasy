@@ -161,7 +161,6 @@ class AssetManager:
                     if frames is None:
                         frames = rows * columns
                     
-                    
                 elif "layout" in data:
                     layout = data["layout"]
                     animationAsset.addAnimationData(None, None, layout=layout)
@@ -172,6 +171,8 @@ class AssetManager:
 
                 logging.info("  - Registered animation %s with %s frames", imageId, frames)
 
+            logging.debug("  - Deleting animation config from assets: %s", fileId)
+            del assets[fileId]
         
         
         
