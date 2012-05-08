@@ -162,14 +162,14 @@ class SpritePacker():
         }
         
         # Sort Functions
-        def sortHeight(img):
-            return (img.w, img.h)
+        def sortHeight(block):
+            return (block.w, block.h, block.image.checksum)
 
-        def sortWidth(img):
-            return (img.h, img.w)
+        def sortWidth(block):
+            return (block.h, block.w, block.image.checksum)
 
-        def sortArea(img):
-            return (img.w * img.h, img.w, img.h)
+        def sortArea(block):
+            return (block.w * block.h, block.w, block.h, block.image.checksum)
 
         sorts = [sortHeight, sortWidth, sortArea]
         rotationDiff = [(0, 0), (1.4, 0), (0, 1.4), (1.4, 1.4)] # rotate by 90 degrees if either b / a > value

@@ -19,7 +19,8 @@ class Block():
                 "left": self.fit.x,
                 "top": self.fit.y,
                 "width": self.fit.w,
-                "height": self.fit.h
+                "height": self.fit.h,
+                "rotation": -90 if self.rotated else 0
             }
 
         else:
@@ -27,6 +28,7 @@ class Block():
                 "left": 0,
                 "top": 0,
                 "width": self.w,
-                "height": self.h
+                "height": self.h,
+                "rotation": 0
             }
 
