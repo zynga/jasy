@@ -58,7 +58,7 @@ class Asset(Item):
             self.__imageAnimationData = [columns, rows]
     
     
-    def addDimensions(self, width, height):
+    def addDimensionData(self, width, height):
         logging.debug("  - Adding dimension data for %s: %sx%s", self.id, width, height)
         self.__imageDimensionData = [width, height]
     

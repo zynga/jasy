@@ -108,7 +108,7 @@ class AssetManager:
                     singleAsset.addSpriteData(spriteImageId, singleData["left"], singleData["top"])
                     
                     if "width" in singleData and "height" in singleData:
-                        singleAsset.addDimensions(singleData["width"], singleData["height"])
+                        singleAsset.addDimensionData(singleData["width"], singleData["height"])
                     
                     # Verify that sprite sheet is up-to-date
                     if "checksum" in singleData:
