@@ -17,11 +17,14 @@ class Asset(Item):
     kind = "asset"
 
     __imageSpriteData = []
-    __imageFrameData = []
+    __imageAnimationData = []
     __imageDimensionData = []
     
-    def isSpriteConfig(self):
+    def isImageSpriteConfig(self):
         return basename(self.id) == "jasysprite.json"
+
+    def isImageAnimationConfig(self):
+        return basename(self.id) == "jasyanimation.json"
 
     def isImage(self):
         return self.id.lower().endswith(imageExtensions)
@@ -46,13 +49,13 @@ class Asset(Item):
         self.__imageSpriteData = [id, left, top]
         
     
-    def addFrameData(self, columns, rows, number=None, frames=None):
+    def addAnimationData(self, columns, rows, number=None, frames=None):
         if frames:
-            self.__imageFrameData = frames
+            self.__imageAnimationData = frames
         elif number:
-            self.__imageFrameData = [columns, rows, number]
+            self.__imageAnimationData = [columns, rows, number]
         else:
-            self.__imageFrameData = [columns, rows]
+            self.__imageAnimationData = [columns, rows]
     
     
     def addDimensions(self, width, height):
@@ -67,8 +70,8 @@ class Asset(Item):
             if self.__imageSpriteData:
                 result += self.__imageSpriteData
                 
-            if self.__imageFrameData:
-                result += self.__imageFrameData
+            if self.__imageAnimationData:
+                result += self.__imageAnimationData
             
             return result
             
@@ -76,3 +79,5 @@ class Asset(Item):
         
         else:
             return None
+
+

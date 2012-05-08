@@ -62,7 +62,7 @@ class AssetManager:
         
 
         self.__processSprites()
-        self.__processFrames()
+        self.__processAnimations()
         
         logging.debug("Selected classes make use of %s assets" % len(assets))
         
@@ -72,9 +72,8 @@ class AssetManager:
     def __processSprites(self):
         
         assets = self.__assets
-        configs = [fileId for fileId in assets if assets[fileId].isSpriteConfig()]
-        logging.info("Processing %s images sprites...", len(configs))
-        
+        configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
+        logging.info("Processing %s images sprite configs...", len(configs))
         
         for fileId in configs:
             logging.info("- Processing image sprite data from %s", fileId)
@@ -85,7 +84,7 @@ class AssetManager:
             try:
                 spriteConfig = json.loads(asset.getText())
             except ValueError as err:
-                raise JasyError("Could not parse jasyproject.json at %s: %s" % (fileId, err))
+                raise JasyError("Could not parse jasysprite.json at %s: %s" % (fileId, err))
                 
             for spriteImage in spriteConfig:
                 spriteImageId = "%s/%s" % (spriteBase, spriteImage)
@@ -126,9 +125,28 @@ class AssetManager:
         
         
         
-    def __processFrames(self):
+    def __processAnimations(self):
         
+        assets = self.__assets
+        configs = [fileId for fileId in assets if assets[fileId].isImageAnimationConfig()]
+        logging.info("Processing %s image animation configs...", len(configs))
         
+        for fileId in configs:
+            logging.info("- Processing image frame data from %s", fileId)
+        
+            asset = assets[fileId]
+            frameBase = dirname(fileId)
+                
+            try:
+                frameConfig = json.loads(asset.getText())
+            except ValueError as err:
+                raise JasyError("Could not parse jasyframes.json at %s: %s" % (fileId, err))
+            
+            for frameImage in frameConfig:
+                frameImageId = "%s/%s" % (frameBase, frameImage)
+
+                logging.info("  - Image %s has %s frames", frameImageId, 0)
+
         
         
         
