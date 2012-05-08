@@ -5,6 +5,7 @@
 
 import os
 from jasy.core.Error import JasyError
+from jasy.core.Util import sha1File
 
 class Item:
     
@@ -61,16 +62,21 @@ class Item:
         """Returns last modification time of the class"""
         return self.__mtime
 
-    def getText(self):
+    def getText(self, encoding="utf-8"):
         """Reads the file (as UTF-8) and returns the text"""
         
         if self.__path is None:
             return None
         
         if type(self.__path) == list:
-            return "".join([open(filename, mode="r", encoding="utf-8").read() for filename in self.__path])
+            return "".join([open(filename, mode="r", encoding=encoding).read() for filename in self.__path])
         else:
-            return open(self.__path, mode="r", encoding="utf-8").read()
+            return open(self.__path, mode="r", encoding=encoding).read()
+    
+    def getChecksum(self, mode="rb"):
+        """Returns the SHA1 checksum of the item"""
+        
+        return sha1File(open(self.getPath(), mode))
     
 
     # Map Python built-ins

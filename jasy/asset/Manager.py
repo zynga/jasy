@@ -11,6 +11,7 @@ from jasy.core.Project import Project
 from jasy.env.State import session, getPermutation, prependPrefix
 from jasy.asset.Asset import Asset
 from jasy.core.Error import JasyError
+from jasy.core.Util import sha1File
 
 __all__ = ["AssetManager"]
 
@@ -56,11 +57,71 @@ class AssetManager:
                 # Minor performance tweak: Using lookup instead of regexp during merge
                 if fileId in assets or expr.match(fileId):
                     assets[fileId] = projectAssets[fileId]
-                
+        
+        
+        
+
+        self.__processSprites()
+        
         logging.debug("Selected classes make use of %s assets" % len(assets))
         
-        # TODO: Support image sprites
-        # TODO: Support CSS preprocessing
+        
+        
+        
+    def __processSprites(self):
+        
+        assets = self.__assets
+        configs = [fileId for fileId in assets if assets[fileId].isSpriteConfig()]
+        logging.info("Processing %s images sprites...", len(configs))
+        
+        
+        for fileId in configs:
+            logging.info("- Processing image sprite data from %s", fileId)
+            
+            asset = assets[fileId]
+            spriteBase = dirname(fileId)
+                
+            try:
+                spriteConfig = json.loads(asset.getText())
+            except ValueError as err:
+                raise JasyError("Could not parse jasyproject.json at %s: %s" % (fileId, err))
+                
+            for spriteImage in spriteConfig:
+                spriteImageId = "%s/%s" % (spriteBase, spriteImage)
+                
+                singleRelPaths = spriteConfig[spriteImage]
+                logging.info("  - Image %s combines %s images", spriteImageId, len(singleRelPaths))
+
+                for singleRelPath in singleRelPaths:
+                    singleId = "%s/%s" % (spriteBase, singleRelPath)
+                    singleData = singleRelPaths[singleRelPath]
+
+                    if singleId in assets:
+                        singleAsset = assets[singleId]
+                    else:
+                        logging.info("Creating new asset: %s", singleId)
+                        singleAsset = Asset(None)
+                        assets[singleId] = singleAsset
+                        # TODO
+                        
+                        
+                        
+                        
+                    
+                    singleAsset.addSpriteData(spriteImageId, singleData["left"], singleData["top"])
+                    
+                    if "width" in singleData and "height" in singleData:
+                        singleAsset.addDimensions(singleData["width"], singleData["height"])
+                    
+                    # Verify that sprite sheet is up-to-date
+                    if "checksum" in singleData:
+                        fileChecksum = singleAsset.getChecksum()
+                        storedChecksum = singleData["checksum"]
+                        
+                        if storedChecksum != fileChecksum:
+                            raise JasyError("Sprite Sheet is not up-to-date. Checksum of %s differs.", singleId)
+        
+        
         
         
         
