@@ -123,6 +123,7 @@ try:
 
     # Asset Support
     from jasy.asset.Manager import AssetManager
+    from jasy.asset.SpritePacker import SpritePacker
 
     # JavaScript Support
     from jasy.js.Resolver import Resolver
