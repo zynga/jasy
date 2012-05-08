@@ -13,3 +13,5 @@ class SpriteFile():
         self.checksum = checksum
         self.block = None
 
+    def __repr__(self):
+        return '<SpriteFile %s > %s %dx%dpx>' % (self.relPath, self.src, self.width, self.height)

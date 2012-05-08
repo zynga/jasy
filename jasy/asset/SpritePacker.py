@@ -213,10 +213,15 @@ class SpritePacker():
 
             # pack with current settings
             sh, ex, _ = self.pack(size[0], size[1], sort, silent=True, rotate=rotation)
-            score = PackerScore(sh, ex)
 
-            # Determine score, highest wins
-            scores.append(score)
+            if len(sh):
+                score = PackerScore(sh, ex)
+
+                # Determine score, highest wins
+                scores.append(score)
+
+            else:
+                logging.debug('- No sprite sheets generated, no image fit into the sheet')
 
         scores.sort()
 
