@@ -169,7 +169,7 @@ class AssetManager:
                 else:
                     raise JasyError("Invalid image frame data for: %s" % imageId)
 
-                logging.info("  - Registered animation %s with %s frames", imageId, frames)
+                logging.info("  - Animation %s has %s frames", imageId, frames)
 
             logging.debug("  - Deleting animation config from assets: %s", fileId)
             del assets[fileId]
