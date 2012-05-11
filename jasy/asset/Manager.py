@@ -73,7 +73,7 @@ class AssetManager:
         
         assets = self.__assets
         configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
-        logging.info("Processing %s images sprite configs...", len(configs))
+        logging.info("Processing %s image sprite configs...", len(configs))
         
         for fileId in configs:
             logging.info("- Processing image sprite data from %s", fileId)
