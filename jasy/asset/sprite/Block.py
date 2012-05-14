@@ -18,8 +18,8 @@ class Block():
             return {
                 "left": self.fit.x,
                 "top": self.fit.y,
-                "width": self.fit.w,
-                "height": self.fit.h,
+                "width": self.image.width,
+                "height": self.image.height,
                 "rotation": -90 if self.rotated else 0
             }
 
