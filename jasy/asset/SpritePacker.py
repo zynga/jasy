@@ -65,6 +65,9 @@ class PackerScore():
                 return False
 
         else:
+            if other.count == 1 and self.count > 1:
+                return True
+
             return False
 
     def __gt__(self, other):
@@ -189,6 +192,7 @@ class SpritePacker():
 
         #baseArea = sum([(l - abs(i - l / 2)) / l * v for i, v in enumerate(sorted([i.width * i.height for i in self.files]))])
 
+
         # try to skip senseless generation of way to small sprites
         baseArea = sum([minWidth * minHeight for i in self.files])
         while baseArea / (minWidth * minHeight) >= 20: # bascially an estimate of the number of sheets needed
@@ -196,6 +200,8 @@ class SpritePacker():
             minHeight *= 2
 
         logging.debug('- Minimal size is %dx%dpx' % (minWidth, minHeight))
+
+        print(minWidth, minHeight)
 
         sizes = list(itertools.product([w for w in [128, 256, 512, 1024, 2048] if w >= minWidth],
                                        [h for h in [128, 256, 512, 1024, 2048] if h >= minHeight]))
