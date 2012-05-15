@@ -19,11 +19,6 @@ from jasy.env.State import session, setPermutation, startSection, getPermutation
 __all__ = ["storeKernel", "storeAssets", "storeCompressed", "storeLoader"]
 
 
-def storeAssets(folder, resolver):
-    startSection("Publishing assets...")
-    session.getAssetManager().deployBuild(resolver.getIncludedClasses(), assetFolder=folder)
-
-
 def storeKernel(fileName, debug=False):
     """
     Writes a so-called kernel script to the given location. This script contains
@@ -56,7 +51,7 @@ def storeKernel(fileName, debug=False):
     resolver.addClassName("core.io.Queue")
     
     # Sort resulting class list
-    storeCompressed(fileName, resolver)
+    storeCompressed(resolver, fileName)
     
     setPermutation(None)
     
@@ -64,7 +59,15 @@ def storeKernel(fileName, debug=False):
 
 
 
-def storeCompressed(fileName, resolver, bootCode=""):
+def storeAssets(resolver, folder="asset"):
+    """Deploys assets to the given folder"""
+
+    startSection("Publishing assets...")
+    session.getAssetManager().deployBuild(resolver.getIncludedClasses(), assetFolder=folder)
+
+
+
+def storeCompressed(resolver, fileName, bootCode=""):
     """
     Combines the compressed result of the stored class list
     
@@ -98,7 +101,7 @@ def storeCompressed(fileName, resolver, bootCode=""):
 
 
 
-def storeLoader(fileName, resolver, bootCode="", urlPrefix=""):
+def storeLoader(resolver, fileName, bootCode="", urlPrefix=""):
     """
     Generates a source loader which is basically a file which loads the original JavaScript files.
     This is super useful during development of a project as it supports pretty fast workflows
