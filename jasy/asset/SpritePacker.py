@@ -357,7 +357,7 @@ class SpritePacker():
 
     # Generate sheets/variants ------------------------------------------------
     # -------------------------------------------------------------------------
-    def generate(self, pattern='sheet_%d.png', best=False, size=(1024, 1024), path='', allowRotate=False, showDebug=False):
+    def generate(self, pattern='jasysprite_%d.png', best=False, size=(1024, 1024), path='', allowRotate=False, showDebug=False):
         
         logging.info('\nGenerating sprite sheet variants:')
         sheets, tooBig, count = self.packBest(allowRotate) if best else self.pack()
