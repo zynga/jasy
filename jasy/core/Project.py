@@ -327,7 +327,7 @@ class Project():
 
         # Validate destination (docs are okay for all other destinations)
         if not dist is self.docs and dist != getattr(self, distname):
-            logging.info("  - Ignoring file: %s" % fileId)
+            logging.info("- Ignoring file: %s", relPath)
             return
             
         # Check for duplication
