@@ -88,6 +88,17 @@ class SpritePacker():
     
     def reset(self):
         self.files = []
+        
+        
+    def clear(self):
+        logging.info("Cleaning sprite files...")
+        for dirPath, dirNames, fileNames in os.walk(self.base):
+            for fileName in fileNames:
+                if fileName.startswith("jasysprite"):
+                    filePath = os.path.join(dirPath, fileName)
+                    logging.debug("- Removing file: %s", filePath)
+                    os.remove(filePath)
+        
 
     def addDir(self, directory, recursive=False):
         """Adds all images within a directory to the sprite packer."""
@@ -119,7 +130,7 @@ class SpritePacker():
             # Add all the files within the dir
             for fileName in fileNames:
                 
-                if fileName[0] == "." or fileName.split('.')[-1] not in self.types or fileName.startswith('sheet_'):
+                if fileName[0] == "." or fileName.split('.')[-1] not in self.types or fileName.startswith('jasysprite'):
                     continue
                     
                 relPath = os.path.normpath(os.path.join(relDirPath, fileName)).replace(os.sep, "/")
@@ -151,7 +162,7 @@ class SpritePacker():
 
     # Pack blocks into a sprite sheet by trying multiple settings -------------
     # -------------------------------------------------------------------------
-    def packBest(self, allowRotate=True):
+    def packBest(self, allowRotate=False):
 
         sheets, extraBlocks = [], []
         score = 0
@@ -346,7 +357,7 @@ class SpritePacker():
 
     # Generate sheets/variants ------------------------------------------------
     # -------------------------------------------------------------------------
-    def generate(self, pattern='sheet_%d.png', best=False, size=(1024, 1024), path='', allowRotate=True, showDebug=False):
+    def generate(self, pattern='sheet_%d.png', best=False, size=(1024, 1024), path='', allowRotate=False, showDebug=False):
         
         logging.info('\nGenerating sprite sheet variants:')
         sheets, tooBig, count = self.packBest(allowRotate) if best else self.pack()
@@ -394,7 +405,7 @@ class SpritePacker():
 
     # Pack images inside a dir into sprite sheets -----------------------------
     # -------------------------------------------------------------------------
-    def packDir(self, path='', recursive=True, pattern='sheet_%d.png', best=False, size=(1024, 1024), allowRotate=True, showDebug=False):
+    def packDir(self, path='', recursive=True, pattern='jasysprite_%d.png', best=False, size=(1024, 1024), allowRotate=False, showDebug=False):
 
         logging.info('\nPacking sprites in: %s' % os.path.join(self.base, path))
         self.reset()
