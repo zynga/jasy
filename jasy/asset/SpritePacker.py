@@ -26,9 +26,9 @@ class PackerScore():
         self.indexSize = sum([s.width / 128 + s.height / 128 for s in sheets])
 
         # the total area used
-        self.area = sum([s.area for s in sheets]) * 0.0001
+        self.area = int(sum([s.area for s in sheets]) * 0.0001)
         self.exArea = sum([s.area for s in external]) * 0.0001
-        self.usedArea = sum([s.usedArea for s in sheets]) * 0.0001
+        self.usedArea = int(sum([s.usedArea for s in sheets]) * 0.0001)
         self.count = len(sheets) 
 
         # we only factor in left out images
@@ -65,7 +65,7 @@ class PackerScore():
                 return False
 
         else:
-            if other.count == 1 and self.count > 1:
+            if other.area == 1 and self.area > 1:
                 return True
 
             return False
