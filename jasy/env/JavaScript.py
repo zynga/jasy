@@ -19,7 +19,7 @@ from jasy.env.State import session, setPermutation, startSection, getPermutation
 __all__ = ["storeKernel", "storeCombined", "storeCompressed", "storeLoader"]
 
 
-def storeKernel(fileName, assets=None, translations=None, debug=False):
+def storeKernel(fileName, debug=False):
     """
     Writes a so-called kernel script to the given location. This script contains
     data about possible permutations based on current session values. It optionally
@@ -38,32 +38,16 @@ def storeKernel(fileName, assets=None, translations=None, debug=False):
     fields = session.exportFields()
     
     # This permutation injects data in the core classes and configures debugging as given by parameter
-    #
-    # - fields => core.Env
-    # - assets => core.Asset
-    # - translations => core.Locale
     setPermutation(Permutation({
         "debug" : debug,
-        "fields" : fields,
-        "assets" : assets,
-        "translations" : translations
+        "fields" : fields
     }))
     
     # Build resolver
     # We need the permutation here because the field configuration might rely on detection classes
     resolver = Resolver()
-    
-    # Include classes for value injection
-    if fields is not None:
-        resolver.addClassName("core.Env")
-    
-    if assets is not None:
-        resolver.addClassName("core.io.Asset")
-        
-    if translations is not None:
-        resolver.addClassName("core.locale.Translate")
-
-    # Include IO classes
+    resolver.addClassName("core.Env")
+    resolver.addClassName("core.io.Asset")
     resolver.addClassName("core.io.Queue")
     
     # Sort resulting class list
@@ -118,7 +102,7 @@ def storeCompressed(fileName, classes, bootCode="", translation=None):
 
 
 
-def storeLoader(fileName, classes, bootCode="", urlPrefix=""):
+def storeLoader(fileName, classes, assets=None, translations=None, bootCode="", urlPrefix=""):
     """
     Generates a source loader which is basically a file which loads the original JavaScript files.
     This is super useful during development of a project as it supports pretty fast workflows
@@ -126,6 +110,8 @@ def storeLoader(fileName, classes, bootCode="", urlPrefix=""):
     
     - fileName: Filename to write to
     - classes: Classes to include in the compressed file in correct order
+    - assets: Assets for the given classes (merged into global database at load time)
+    - translations: Translation as used by the given classes (merged into global database at load time)
     - bootCode: Code to run after all defined classes have been loaded.
     - prefixUrl: Useful when the project files are stored on another domain (CDN). Puts the given URL prefix in front of all URLs to load.
     """
@@ -145,8 +131,18 @@ def storeLoader(fileName, classes, bootCode="", urlPrefix=""):
     
     loader = '"%s"' % '","'.join(files)
     boot = "function(){%s}" % bootCode if bootCode else "null"
-    result = 'core.io.Queue.load([%s], %s, null, true)' % (loader, boot)
+    
+    
+    result = []
+    
+    if assets:
+        result.append('core.io.Asset.addData(%s);' % assets.exportSource())
 
-    writeFile(fileName, result)
+    if translations:
+        result.append('core.locale.Translations.addData(%s);' % translations.exportSource())
+    
+    result.append('core.io.Queue.load([%s], %s, null, true);' % (loader, boot))
+
+    writeFile(fileName, "\n".join(result))
 
 

@@ -50,25 +50,16 @@ class AssetManager:
         # Returns the regular expression object to use for filtering
         expr = self.__compileFilterExpr()
         
-        # Loop though all projects and merge/filter assets
+        # Loop though all projects and merge assets
         for project in session.getProjects():
-            projectAssets = project.assets
-            for fileId in projectAssets:
-                # Minor performance tweak: Using lookup instead of regexp during merge
-                if fileId in assets or expr.match(fileId):
-                    assets[fileId] = projectAssets[fileId]
+            assets.update(project.assets)
         
-        
-        
-
         self.__processSprites()
         self.__processAnimations()
         
-        logging.debug("Selected classes make use of %s assets" % len(assets))
-        
-        
-        
-        
+        logging.debug("Initialized %s assets" % len(assets))
+
+
     def __processSprites(self):
         
         assets = self.__assets
@@ -102,9 +93,8 @@ class AssetManager:
                         logging.info("Creating new asset: %s", singleId)
                         singleAsset = Asset(None)
                         assets[singleId] = singleAsset
-                        # TODO
+                        # FIXME
                         
-                    
                     singleAsset.addSpriteData(spriteImageId, singleData["left"], singleData["top"])
                     
                     if "width" in singleData and "height" in singleData:
