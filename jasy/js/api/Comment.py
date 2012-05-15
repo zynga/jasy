@@ -123,7 +123,7 @@ class Comment():
             text = self.__processDoc(text, lineNo)
             html = text
             
-            if markdown in None:
+            if markdown is None:
                 raise JasyError("Missing Markdown feature to convert comments to HTML.")
             
             # Apply markdown convertion

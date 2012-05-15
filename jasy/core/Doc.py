@@ -16,7 +16,7 @@ class Doc(Item):
         field = "api[%s]" % self.id
         apidata = self.project.getCache().read(field, self.getModificationTime())
         
-        if markdown in None:
+        if markdown is None:
             raise JasyError("Missing Markdown feature to convert package docs into HTML.")
         
         if apidata is None:
