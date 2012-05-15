@@ -86,10 +86,6 @@ class SpritePacker():
         self.files = []
         self.types = types
     
-    def reset(self):
-        self.files = []
-        
-        
     def clear(self):
         logging.info("Cleaning sprite files...")
         for dirPath, dirNames, fileNames in os.walk(self.base):
@@ -160,13 +156,11 @@ class SpritePacker():
         logging.debug('- Found image "%s" (%dx%dpx)' % (relPath, w, h))
 
 
-    # Pack blocks into a sprite sheet by trying multiple settings -------------
-    # -------------------------------------------------------------------------
-    def packBest(self, allowRotate=False):
+    def packBest(self, autorotate=False):
+        """Pack blocks into a sprite sheet by trying multiple settings."""
 
         sheets, extraBlocks = [], []
         score = 0
-        
 
         best = {
             'score': 0,
@@ -215,7 +209,7 @@ class SpritePacker():
         sizes = list(itertools.product([w for w in [128, 256, 512, 1024, 2048] if w >= minWidth],
                                        [h for h in [128, 256, 512, 1024, 2048] if h >= minHeight]))
 
-        if allowRotate:
+        if autorotate:
             methods = list(itertools.product(sorts, sizes, rotationDiff))
 
         else:
@@ -245,12 +239,15 @@ class SpritePacker():
             logging.debug('- ' + str(i))
 
         sheets, external = scores[0].data()
-        return sheets, external, len(scores)
+        
+        if external:
+            for block in external:
+                logging.info('- Ignored file %s (%dx%dpx)' % (block.image.relPath, block.w, block.h))
+        
+        return sheets, len(scores)
 
 
-    # Pack blocks into a sprite sheet -----------------------------------------
-    # -------------------------------------------------------------------------
-    def pack(self, width = 1024, height = 1024, sort=None, silent=False, rotate=(0, 0)):
+    def pack(self, width=1024, height=1024, sort=None, silent=False, rotate=(0, 0)):
         """Packs all sprites within the pack into sheets of the given size."""
         
         logging.debug('Packing %d images...' % len(self.files))
@@ -316,7 +313,6 @@ class SpritePacker():
             else:
                 blocks.append(b)
 
-
         sheets = []
 
         fitted = 0
@@ -353,46 +349,40 @@ class SpritePacker():
         return (sheets, extraBlocks, 0)
 
 
-    # Generate sheets/variants ------------------------------------------------
-    # -------------------------------------------------------------------------
-    def generate(self, pattern='jasysprite_%d.png', best=False, size=(1024, 1024), path='', allowRotate=False, showDebug=False):
+    def generate(self, path='', autorotate=False, debug=False):
+        """Generate sheets/variants"""
         
         logging.info('- Generating sprite sheet variants...')
-        sheets, tooBig, count = self.packBest(allowRotate) if best else self.pack()
+        sheets, count = self.packBest(autorotate)
 
         # Write PNG files
         data = {}
-        for i, sheet in enumerate(sheets):
+        for pos, sheet in enumerate(sheets):
 
-            name = pattern % i
-            out = os.path.join(self.base, path, name)
+            logging.info('- Writing image (%dx%dpx) with %d images' % (sheet.width, sheet.height, len(sheet)))
+            name = 'jasysprite_%d.png' % pos
 
-            logging.info('- Creating image for sheet (%dx%dpx) with %d images' % (sheet.width, sheet.height, len(sheet)))
-            sheet.toImage(out, showDebug)
+            # Export
+            sheet.write(os.path.join(self.base, path, name), debug)
             data[name] = sheet.export()
 
         # Generate JSON
+        logging.info('- Exporting data...')
         script = os.path.join(self.base, path, 'jasysprite.json')
-        logging.info('- Exporting meta data...')
         output = json.dumps(data, sort_keys=True, indent=2).encode('ascii')
         open(script, 'wb').write(output)
 
-        # Log about files which were to big
-        logging.debug('The following images have been omitted:')
-        for block in tooBig:
-            logging.debug('- "%s" (%dx%dpx) into spritesheet' % (block.image.relPath, block.w, block.h))
 
 
-    # Pack images inside a dir into sprite sheets -----------------------------
-    # -------------------------------------------------------------------------
-    def packDir(self, path='', recursive=True, pattern='jasysprite_%d.png', best=False, size=(1024, 1024), allowRotate=False, showDebug=False):
+    def packDir(self, path='', recursive=True, autorotate=False, debug=False):
+        """Pack images inside a dir into sprite sheets"""
 
         logging.info('Packing sprites in: %s' % os.path.join(self.base, path))
-        self.reset()
+        self.files = []
         self.addDir(path, recursive=recursive)
         logging.info('- Found %d images' % len(self.files))
 
         if len(self.files) > 0:
-            self.generate(pattern, best, size, path=path, allowRotate=allowRotate, showDebug=showDebug)
+            self.generate(path, autorotate, debug)
 
 

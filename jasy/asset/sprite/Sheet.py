@@ -39,7 +39,7 @@ class SpriteSheet():
         return data
 
 
-    def toImage(self, filename, showDebug=False):
+    def write(self, filename, debug=False):
 
         img = Image.new('RGBA', (self.width, self.height))
         draw = ImageDraw.Draw(img)
@@ -58,11 +58,11 @@ class SpriteSheet():
             img.paste(res, (x, y))
             del res
 
-            if showDebug:
+            if debug:
                 x, y, w, h = block.fit.x, block.fit.y, block.w, block.h
                 draw.rectangle((x, y , x + w , y + h), outline=(0, 0, 255, 255) if block.rotated else (255, 0, 0, 255))
 
-        if showDebug:
+        if debug:
             for i, block in enumerate(self.packer.getUnused()):
                 x, y, w, h = block.x, block.y, block.w, block.h
                 draw.rectangle((x, y , x + w , y + h), fill=(255, 255, 0, 255))
