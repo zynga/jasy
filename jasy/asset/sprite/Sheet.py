@@ -3,7 +3,14 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, math, logging, Image, ImageDraw
+import sys, math, logging
+from jasy.core.Error import JasyError
+
+try:
+    import Image, ImageDraw
+except:
+    logging.warn("PIL is needed to convert create sprite images => Disabling feature")
+    Image = None
 
 class SpriteSheet():
 
@@ -40,6 +47,9 @@ class SpriteSheet():
 
 
     def write(self, filename, debug=False):
+
+        if Image in None:
+            raise JasyError("Missing PIL to create sprite sheets")
 
         img = Image.new('RGBA', (self.width, self.height))
         draw = ImageDraw.Draw(img)

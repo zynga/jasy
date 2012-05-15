@@ -5,9 +5,12 @@
 
 import os, logging, copy, hashlib, zlib
 
-from pygments import highlight
-from pygments.lexers import JavascriptLexer
-from pygments.formatters import HtmlFormatter
+try:
+    from pygments import highlight
+    from pygments.lexers import JavascriptLexer
+    from pygments.formatters import HtmlFormatter
+except:
+    highlight = None
 
 import jasy.js.parse.Parser as Parser
 import jasy.js.parse.ScopeScanner as ScopeScanner
@@ -218,6 +221,9 @@ class Class(Item):
         field = "highlighted[%s]" % self.id
         source = self.project.getCache().read(field, self.getModificationTime())
         if source is None:
+            if highlight is None:
+                raise JasyError("Could not highlight code. Pygments is missing!")
+            
             lexer = JavascriptLexer(tabsize=2)
             formatter = HtmlFormatter(full=True,style="autumn",linenos="table",lineanchors="line")
             source = highlight(self.getText(), lexer, formatter)

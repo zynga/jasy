@@ -9,17 +9,6 @@ import logging, re
 __all__ = ["markdown", "markdown2html", "code2highlight"]
 
 
-def markdown(text, code=True):
-    if not text:
-        return text
-        
-    html = markdown2html(text)
-    if code and html is not None:
-        html = code2highlight(html)
-        
-    return html
-
-
 try:
     import misaka
 except:
@@ -34,8 +23,7 @@ if misaka:
         return misaka.html(markdownStr, misakaExt, misakaRender)
 
 else:
-    def markdown2html(markdownStr):
-        return markdownStr
+    markdown2html = None
 
 
 try:
@@ -71,6 +59,24 @@ if highlight:
 
 else:
     
-    def code2highlight(html):
-        return html
+    code2highlight = None
 
+
+
+
+if markdown2html and code2highlight:
+
+    def markdown(text, code=True):
+        if not text:
+            return text
+
+        html = markdown2html(text)
+        if code and html is not None:
+            html = code2highlight(html)
+
+        return html
+        
+else:
+    
+    markdown = None
+    

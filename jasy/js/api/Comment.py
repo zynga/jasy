@@ -5,6 +5,7 @@
 
 import logging, re
 from jasy.core.Markdown import markdown
+from jasy.core.Error import JasyError
 from jasy.js.util import *
 
 __all__ = ["CommentException", "Comment"]
@@ -121,6 +122,9 @@ class Comment():
         if self.variant == "doc":
             text = self.__processDoc(text, lineNo)
             html = text
+            
+            if markdown in None:
+                raise JasyError("Missing Markdown feature to convert comments to HTML.")
             
             # Apply markdown convertion
             self.html = markdown(html)
