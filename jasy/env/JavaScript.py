@@ -16,7 +16,12 @@ from jasy.js.Sorter import Sorter
 from jasy.env.State import session, setPermutation, startSection, getPermutation, optimization, formatting
 
 
-__all__ = ["storeKernel", "storeCombined", "storeCompressed", "storeLoader"]
+__all__ = ["storeKernel", "storeAssets", "storeCompressed", "storeLoader"]
+
+
+def storeAssets(folder, resolver):
+    startSection("Publishing assets...")
+    session.getAssetManager().deployBuild(resolver.getIncludedClasses(), assetFolder=folder)
 
 
 def storeKernel(fileName, debug=False):
@@ -51,54 +56,45 @@ def storeKernel(fileName, debug=False):
     resolver.addClassName("core.io.Queue")
     
     # Sort resulting class list
-    classes = Sorter(resolver).getSortedClasses()
-    storeCompressed(fileName, classes)
+    storeCompressed(fileName, resolver)
     
     setPermutation(None)
     
-    return classes
+    return resolver.getIncludedClasses()
 
 
 
-def storeCombined(fileName, classes, bootCode=None):
-    """
-    Combines the unmodified content of the stored class list
-    """
-
-    try:
-        result = "".join([classObj.getText() for classObj in classes])
-        if bootCode:
-            result += bootCode
-        
-    except ClassError as error:
-        raise JasyError("Error during class combining! %s" % error)
-
-    writeFile(fileName, result)
-
-
-
-def storeCompressed(fileName, classes, bootCode="", translation=None):
+def storeCompressed(fileName, resolver, bootCode=""):
     """
     Combines the compressed result of the stored class list
     
     - fileName: Filename to write to
-    - classes: Classes to include in the compressed file in correct order
+    - resolver: Resolver which contains all relevant classes
     - bootCode: Code to execute once all the classes are loaded
-    - permutation: Permutation to apply to the classes before compression (for alternative code variants) (See Permutation.py)
-    - translation: Translation to apply to the classes before compression (inlining of translation)
     """
     
-    logging.info("Compressing %s classes...", len(classes))
-
+    logging.info("Compressing %s classes...", len(resolver.getIncludedClasses()))
+    classes = Sorter(resolver).getSortedClasses()
+    result = []
+    
     try:
-        result = "".join([classObj.getCompressed(getPermutation(), translation, optimization, formatting) for classObj in classes])
-        if bootCode:
-            result += bootCode
+        # FIXME
+        translation = None 
         
+        for classObj in classes:
+            result.append(classObj.getCompressed(getPermutation(), translation, optimization, formatting))
+            
     except ClassError as error:
         raise JasyError("Error during class compression! %s" % error)
+
+    assets = session.getAssetManager().exportBuild(classes)
+    if assets:
+        result.append('core.io.Asset.addData(%s);' % assets)
+
+    if bootCode:
+        result.append(bootCode)
         
-    writeFile(fileName, result)
+    writeFile(fileName, "\n".join(result))
 
 
 
@@ -109,11 +105,9 @@ def storeLoader(fileName, resolver, bootCode="", urlPrefix=""):
     where most often a simple reload in the browser is enough to get the newest sources.
     
     - fileName: Filename to write to
-    - classes: Classes to include in the compressed file in correct order
-    - assets: Assets for the given classes (merged into global database at load time)
-    - translations: Translation as used by the given classes (merged into global database at load time)
+    - resolver: Resolver which contains all relevant classes
     - bootCode: Code to run after all defined classes have been loaded.
-    - prefixUrl: Useful when the project files are stored on another domain (CDN). Puts the given URL prefix in front of all URLs to load.
+    - urlPrefix: Useful when the project files are stored on another domain (CDN). Puts the given URL prefix in front of all URLs to load.
     """
     
     logging.info("Building source loader (%s classes)...", len(resolver.getIncludedClasses()))
@@ -132,15 +126,12 @@ def storeLoader(fileName, resolver, bootCode="", urlPrefix=""):
     
     loader = '"%s"' % '","'.join(files)
     boot = "function(){%s}" % bootCode if bootCode else "null"
-    
-    
     result = []
-
 
     assets = session.getAssetManager().exportSource(classes)
     result.append('core.io.Asset.addData(%s);' % assets)
 
-    
+    # FIXME
     #result.append('core.locale.Translations.addData(%s);' % translations.exportSource())
     
     result.append('core.io.Queue.load([%s], %s, null, true);' % (loader, boot))

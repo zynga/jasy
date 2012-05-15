@@ -89,8 +89,6 @@ class Class(Item):
         msg = "- Parsing class %s" % self.id
         if permutation:
             msg += " (%s)" % permutation
-        if cleanup:
-            msg += " [clean]"
         logging.info("%s..." % msg)
             
         tree = Parser.parse(self.getText(), self.id)

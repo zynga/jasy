@@ -216,18 +216,20 @@ class AssetManager:
         
         
         
-    def deployBuild(self, assetFolder="asset"):
+    def deployBuild(self, classes, assetFolder="asset"):
         """Deploys all asset files to the destination asset folder"""
 
         assets = self.__assets
         projects = session.getProjects()
 
-        logging.info("Publishing files...")
-        
         copyAssetFolder = prependPrefix(assetFolder)
+        filterExpr = self.__compileFilterExpr(classes)
         
         counter = 0
         for fileId in assets:
+            if not filterExpr.match(fileId):
+                continue
+            
             srcFile = assets[fileId].getPath()
             dstFile = os.path.join(copyAssetFolder, fileId.replace("/", os.sep))
             
