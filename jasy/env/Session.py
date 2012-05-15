@@ -16,6 +16,7 @@ from jasy.core.Error import JasyError
 from jasy.env.State import setPermutation, startSection
 from jasy.core.Json import toJson
 
+
 __all__ = ["Session"]
 
 
@@ -149,6 +150,20 @@ class Session():
     
     
     
+    #
+    # Asset Integration
+    #
+    
+    __assetManager = None
+    
+    def getAssetManager(self):
+        if self.__assetManager is None:
+            from jasy.asset.Manager import AssetManager
+            self.__assetManager = AssetManager()
+        
+        return self.__assetManager
+    
+    
     
     #
     # Support for fields
@@ -261,13 +276,15 @@ class Session():
     def permutate(self):
         """ Generator method for permutations for improving output capabilities """
         
+        startSection("Processing permutations...")
+        
         permutations = self.getPermutations()
         length = len(permutations)
         
         for pos, current in enumerate(permutations):
-            startSection("Permutation %s/%s" % (pos+1, length))
             setPermutation(current)
             yield current
+            logging.info("")
 
 
     def exportFields(self):

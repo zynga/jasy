@@ -35,8 +35,6 @@ class Sorter:
         """ Returns the sorted class list (caches result) """
 
         if not self.__sortedClasses:
-            logging.info("Sorting classes...")
-            
             classNames = self.__names
             for className in classNames:
                 self.__getLoadDeps(classNames[className])

@@ -102,7 +102,7 @@ def storeCompressed(fileName, classes, bootCode="", translation=None):
 
 
 
-def storeLoader(fileName, classes, assets=None, translations=None, bootCode="", urlPrefix=""):
+def storeLoader(fileName, classes, bootCode="", urlPrefix=""):
     """
     Generates a source loader which is basically a file which loads the original JavaScript files.
     This is super useful during development of a project as it supports pretty fast workflows
@@ -134,12 +134,13 @@ def storeLoader(fileName, classes, assets=None, translations=None, bootCode="", 
     
     
     result = []
-    
-    if assets:
-        result.append('core.io.Asset.addData(%s);' % assets.exportSource())
 
-    if translations:
-        result.append('core.locale.Translations.addData(%s);' % translations.exportSource())
+
+    assets = session.getAssetManager().exportSource(classes)
+    result.append('core.io.Asset.addData(%s);' % assets)
+
+    
+    #result.append('core.locale.Translations.addData(%s);' % translations.exportSource())
     
     result.append('core.io.Queue.load([%s], %s, null, true);' % (loader, boot))
 

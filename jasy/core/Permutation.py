@@ -86,6 +86,9 @@ class Permutation:
             if key in available:
                 filtered[key] = self.__combination[key]
         
+        if not filtered:
+            return None
+            
         return getPermutation(filtered)
 
 

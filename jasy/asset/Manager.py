@@ -40,15 +40,9 @@ class AssetManager:
     are added to the exported data later on.
     """
     
-    def __init__(self, classes):
-        self.__classes = classes
-        self.__permutation = getPermutation()
-        
+    def __init__(self):
         # Initialize storage pool
         assets = self.__assets = {}
-        
-        # Returns the regular expression object to use for filtering
-        expr = self.__compileFilterExpr()
         
         # Loop though all projects and merge assets
         for project in session.getProjects():
@@ -61,6 +55,7 @@ class AssetManager:
 
 
     def __processSprites(self):
+        """Processes jasysprite.json files to merge sprite data into asset registry"""
         
         assets = self.__assets
         configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
@@ -116,6 +111,7 @@ class AssetManager:
         
         
     def __processAnimations(self):
+        """Processes jasyanimation.json files to merge animation data into asset registry"""
         
         assets = self.__assets
         configs = [fileId for fileId in assets if assets[fileId].isImageAnimationConfig()]
@@ -204,11 +200,13 @@ class AssetManager:
     
     
     
-    def __compileFilterExpr(self):
+    def __compileFilterExpr(self, classes):
+        """Returns the regular expression object to use for filtering"""
+        
         # Merge asset hints from all classes and remove duplicates
         hints = set()
-        for classObj in self.__classes:
-            hints.update(classObj.getMetaData(self.__permutation).assets)
+        for classObj in classes:
+            hints.update(classObj.getMetaData(getPermutation()).assets)
         
         # Compile filter expressions
         matcher = "^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints])
@@ -240,7 +238,7 @@ class AssetManager:
 
 
 
-    def exportBuild(self, assetFolder="asset", urlPrefix=""):
+    def exportBuild(self, classes, assetFolder="asset", urlPrefix=""):
         """
         Publishes the selected files to the destination folder. This merges files from 
         different projects to this one folder. This is ideal for preparing the final deployment.
@@ -249,11 +247,16 @@ class AssetManager:
         - urlPrefix: A URL which should be mapped to the project's root folder
         """
 
+        filterExpr = self.__compileFilterExpr(classes)
+
         assets = self.__assets
         result = {}
         
         # Processing assets
         for fileId in assets:
+            if not filterExpr.match(fileId):
+                continue
+            
             asset = assets[fileId]
             exported = asset.export()
             
@@ -289,11 +292,14 @@ class AssetManager:
 
 
 
-    def exportSource(self, urlPrefix=""):
+    def exportSource(self, classes, urlPrefix=""):
         """ 
         Exports asset data for the source version using assets from their original paths.
+        
         - urlPrefix: Useful when a CDN should be used. Maps the project's root to a URL.
         """
+        
+        filterExpr = self.__compileFilterExpr(classes)
         
         main = session.getMain()
         assets = self.__assets
@@ -301,6 +307,10 @@ class AssetManager:
         
         # Processing assets
         for fileId in assets:
+            
+            if not filterExpr.match(fileId):
+                continue
+            
             asset = assets[fileId]
             path = main.toRelativeUrl(asset.getPath())
             exported = asset.export()

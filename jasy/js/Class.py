@@ -86,6 +86,11 @@ class Class(Item):
             return tree
             
         # Parse tree
+        if permutation:
+            logging.info("- Parsing class %s (%s)...", self.id, permutation)
+        else:
+            logging.info("- Parsing class %s...", self.id)
+            
         tree = Parser.parse(self.getText(), self.id)
 
         # Apply permutation
@@ -127,7 +132,7 @@ class Class(Item):
             if name != self.id and name in classes and classes[name].kind == "class":
                 result.add(classes[name])
             elif warnings:
-                logging.warn("Missing class (required): %s in %s", name, self.id)
+                logging.warn("- Missing class (required): %s in %s", name, self.id)
 
         # Globally modified names (mostly relevant when working without namespaces)
         for name in scope.shared:
@@ -164,7 +169,7 @@ class Class(Item):
             if name != self.id and name in classes and classes[name].kind == "class":
                 result.remove(classes[name])
             elif warnings:
-                logging.warn("Missing class (optional): %s in %s", name, self.id)
+                logging.warn("- Missing class (optional): %s in %s", name, self.id)
         
         return result
         
