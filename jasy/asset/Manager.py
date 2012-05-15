@@ -276,6 +276,10 @@ class AssetManager:
         if root and root[-1] != "/":
             root += "/"
             
+        # Ignore empty result
+        if not result:
+            return None
+            
         # Structurize
         try:
             structured = self.__structurize(result)
@@ -327,13 +331,17 @@ class AssetManager:
         if root and root[-1] != "/":
             root += "/"
 
+        # Ignore empty result
+        if not result:
+            return None
+
         # Structurize
         try:
             structured = self.__structurize(result)
         except Exception:
             logging.error("Could not export build data of assets")
             raise
-
+            
         # Exporting data
         export = toJson({
             "assets" : structured,
