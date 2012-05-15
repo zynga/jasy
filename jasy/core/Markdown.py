@@ -20,40 +20,57 @@ def markdown(text, code=True):
     return html
 
 
-import misaka
+try:
+    import misaka
+except:
+    logging.warn("Misaka is needed to convert Markdown to HTML => Disabling feature")
+    misaka = None
 
-misakaExt = misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS | misaka.EXT_FENCED_CODE
-misakaRender = misaka.HTML_SKIP_STYLE | misaka.HTML_SMARTYPANTS
+if misaka:
+    misakaExt = misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS | misaka.EXT_FENCED_CODE
+    misakaRender = misaka.HTML_SKIP_STYLE | misaka.HTML_SMARTYPANTS
 
-def markdown2html(markdownStr):
-    return misaka.html(markdownStr, misakaExt, misakaRender)
+    def markdown2html(markdownStr):
+        return misaka.html(markdownStr, misakaExt, misakaRender)
+
+else:
+    def markdown2html(markdownStr):
+        return markdownStr
 
 
-# By http://misaka.61924.nl/#toc_3
+try:
+    from pygments import highlight
+    from pygments.formatters import HtmlFormatter
+    from pygments.lexers import get_lexer_by_name
+except:
+    logging.warn("Pygments is needed to highlighting code => Disabling feature")
+    highlight = None
 
-from pygments import highlight
-from pygments.formatters import HtmlFormatter
-from pygments.lexers import get_lexer_by_name
+if highlight:
+    # By http://misaka.61924.nl/#toc_3
+    codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
 
-codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
-
-def code2highlight(html):
-    def unescape(html):
-        html = html.replace('&lt;', '<')
-        html = html.replace('&gt;', '>')
-        html = html.replace('&amp;', '&')
-        return html.replace('&#39;', "'")
+    def code2highlight(html):
+        def unescape(html):
+            html = html.replace('&lt;', '<')
+            html = html.replace('&gt;', '>')
+            html = html.replace('&amp;', '&')
+            return html.replace('&#39;', "'")
     
-    def replace(match):
-        language, classname, code = match.groups()
-        if language is None:
-            language = classname if classname else "javascript"
+        def replace(match):
+            language, classname, code = match.groups()
+            if language is None:
+                language = classname if classname else "javascript"
         
-        lexer = get_lexer_by_name(language, tabsize=2)
-        formatter = HtmlFormatter(linenos="table")
+            lexer = get_lexer_by_name(language, tabsize=2)
+            formatter = HtmlFormatter(linenos="table")
         
-        return highlight(unescape(code), lexer, formatter)
+            return highlight(unescape(code), lexer, formatter)
         
-    return codeblock.sub(replace, html)
+        return codeblock.sub(replace, html)
 
+else:
+    
+    def code2highlight(html):
+        return html
 
