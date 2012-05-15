@@ -296,14 +296,14 @@ class AssetManager:
         """ 
         Exports asset data for the source version using assets from their original paths.
         
+        - classes: Classes for filter assets according to
         - urlPrefix: Useful when a CDN should be used. Maps the project's root to a URL.
         """
-        
-        filterExpr = self.__compileFilterExpr(classes)
         
         main = session.getMain()
         assets = self.__assets
         result = {}
+        filterExpr = self.__compileFilterExpr(classes)
         
         # Processing assets
         for fileId in assets:

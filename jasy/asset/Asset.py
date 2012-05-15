@@ -65,14 +65,17 @@ class Asset(Item):
     
     def export(self):
         if self.isImage():
-            result = self.__imageDimensionData or self.getDimensions()
+            if self.__imageDimensionData:
+                result = self.__imageDimensionData[:]
+            else:
+                result = self.getDimensions()
 
             if self.__imageSpriteData:
                 result += self.__imageSpriteData
                 
             if self.__imageAnimationData:
                 result += self.__imageAnimationData
-            
+                
             return result
             
         # audio length, video codec, etc.?
