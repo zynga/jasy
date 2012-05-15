@@ -102,7 +102,7 @@ def storeCompressed(fileName, classes, bootCode="", translation=None):
 
 
 
-def storeLoader(fileName, classes, bootCode="", urlPrefix=""):
+def storeLoader(fileName, resolver, bootCode="", urlPrefix=""):
     """
     Generates a source loader which is basically a file which loads the original JavaScript files.
     This is super useful during development of a project as it supports pretty fast workflows
@@ -116,8 +116,9 @@ def storeLoader(fileName, classes, bootCode="", urlPrefix=""):
     - prefixUrl: Useful when the project files are stored on another domain (CDN). Puts the given URL prefix in front of all URLs to load.
     """
     
-    logging.info("Building source loader (%s classes)...", len(classes))
-
+    logging.info("Building source loader (%s classes)...", len(resolver.getIncludedClasses()))
+    classes = Sorter(resolver).getSortedClasses()
+    
     main = session.getMain()
     files = []
     for classObj in classes:
