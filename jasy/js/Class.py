@@ -86,10 +86,12 @@ class Class(Item):
             return tree
             
         # Parse tree
+        msg = "- Parsing class %s" % self.id
         if permutation:
-            logging.info("- Parsing class %s (%s)...", self.id, permutation)
-        else:
-            logging.info("- Parsing class %s...", self.id)
+            msg += " (%s)" % permutation
+        if cleanup:
+            msg += " [clean]"
+        logging.info("%s..." % msg)
             
         tree = Parser.parse(self.getText(), self.id)
 

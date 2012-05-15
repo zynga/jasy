@@ -196,10 +196,10 @@ class Project():
                 summary.append("%s %s" % (len(content), section))
 
         if summary:
-            logging.info("- Kind: %s", self.kind)
-            logging.info("- Found: %s", ", ".join(summary))
+            logging.debug("- Kind: %s", self.kind)
+            logging.debug("- Found: %s", ", ".join(summary))
         else:
-            logging.info("- Empty project?!?")
+            logging.error("- Empty project?!?")
 
 
 

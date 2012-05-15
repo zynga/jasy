@@ -15,7 +15,7 @@ from jasy.core.Permutation import Permutation
 from jasy.core.Error import JasyError
 from jasy.env.State import setPermutation, startSection
 from jasy.core.Json import toJson
-
+from jasy.core.Logging import colorize
 
 __all__ = ["Session"]
 
@@ -105,7 +105,7 @@ class Session():
             
             # Append to list
             relpath = os.path.relpath(project.getPath(), os.getcwd())
-            logging.info("- Project %s (%s)", project.getName(), relpath)
+            logging.info("- Project %s %s", project.getName(), colorize("(" + relpath + ")", "grey"))
             self.__projects.append(project)
             
             # Import project defined fields which might be configured using "activateField()"
@@ -114,19 +114,19 @@ class Session():
                 entry = fields[name]
 
                 if name in self.__fields:
-                    raise Exception("Field '%s' was already defined!" % (name))
+                    raise JasyError("Field '%s' was already defined!" % (name))
 
                 if "check" in entry:
                     check = entry["check"]
                     if check in ["Boolean", "String", "Number"] or type(check) == list:
                         pass
                     else:
-                        raise Exception("Unsupported check: '%s' for field '%s'" % (check, name))
+                        raise JasyError("Unsupported check: '%s' for field '%s'" % (check, name))
                     
                 if "detect" in entry:
                     detect = entry["detect"]
                     if not self.getClassByName(detect):
-                        raise Exception("Field '%s' uses unknown detection class %s." % (name, detect))
+                        raise JasyError("Field '%s' uses unknown detection class %s." % (name, detect))
                 
                 self.__fields[name] = entry
         
@@ -282,6 +282,7 @@ class Session():
         length = len(permutations)
         
         for pos, current in enumerate(permutations):
+            logging.info(colorize(colorize("Permutation %s/%s:" % (pos+1, length), "bold"), "magenta"))
             setPermutation(current)
             yield current
             logging.info("")

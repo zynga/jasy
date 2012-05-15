@@ -62,7 +62,7 @@ class AssetManager:
         logging.info("Processing %s image sprite configs...", len(configs))
         
         for fileId in configs:
-            logging.info("- Processing image sprite data from %s", fileId)
+            logging.info("- Processing %s...", fileId)
             
             asset = assets[fileId]
             spriteBase = dirname(fileId)
@@ -76,7 +76,7 @@ class AssetManager:
                 spriteImageId = "%s/%s" % (spriteBase, spriteImage)
                 
                 singleRelPaths = spriteConfig[spriteImage]
-                logging.info("  - Image %s combines %s images", spriteImageId, len(singleRelPaths))
+                logging.debug("  - Image %s combines %s images", spriteImageId, len(singleRelPaths))
 
                 for singleRelPath in singleRelPaths:
                     singleId = "%s/%s" % (spriteBase, singleRelPath)
@@ -118,7 +118,7 @@ class AssetManager:
         logging.info("Processing %s image animation configs...", len(configs))
         
         for fileId in configs:
-            logging.info("- Processing image animation data from %s", fileId)
+            logging.info("- Processing %s...", fileId)
         
             asset = assets[fileId]
             base = dirname(fileId)
@@ -155,7 +155,7 @@ class AssetManager:
                 else:
                     raise JasyError("Invalid image frame data for: %s" % imageId)
 
-                logging.info("  - Animation %s has %s frames", imageId, frames)
+                logging.debug("  - Animation %s has %s frames", imageId, frames)
 
             logging.debug("  - Deleting animation config from assets: %s", fileId)
             del assets[fileId]
