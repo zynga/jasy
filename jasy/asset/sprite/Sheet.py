@@ -23,7 +23,7 @@ class SpriteSheet():
         return len(self.blocks)
 
 
-    def toJSON(self, projectId=''):
+    def export(self, projectId=''):
         
         data = {}
 

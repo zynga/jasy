@@ -212,8 +212,6 @@ class SpritePacker():
 
         logging.debug('- Minimal size is %dx%dpx' % (minWidth, minHeight))
 
-        print(minWidth, minHeight)
-
         sizes = list(itertools.product([w for w in [128, 256, 512, 1024, 2048] if w >= minWidth],
                                        [h for h in [128, 256, 512, 1024, 2048] if h >= minHeight]))
 
@@ -223,7 +221,7 @@ class SpritePacker():
         else:
             methods = list(itertools.product(sorts, sizes, [(0, 0)]))
 
-        logging.debug('Packing SpriteSheet Variants...')
+        logging.debug('Packing sprite sheet variants...')
 
         scores = []
         for sort, size, rotation in methods:
@@ -242,9 +240,9 @@ class SpritePacker():
 
         scores.sort()
 
-        logging.debug('\n Generated the following sheets:')
+        logging.debug('Generated the following sheets:')
         for i in scores:
-            logging.debug(' - ' + str(i))
+            logging.debug('- ' + str(i))
 
         sheets, external = scores[0].data()
         return sheets, external, len(scores)
@@ -359,55 +357,37 @@ class SpritePacker():
     # -------------------------------------------------------------------------
     def generate(self, pattern='jasysprite_%d.png', best=False, size=(1024, 1024), path='', allowRotate=False, showDebug=False):
         
-        logging.info('\nGenerating sprite sheet variants:')
+        logging.info('- Generating sprite sheet variants...')
         sheets, tooBig, count = self.packBest(allowRotate) if best else self.pack()
-        logging.info(' - Choosing best image from %d candidates...' % count)
-
-        # Clean up
-        i = 0
-        while i < 100:
-
-            name = pattern % i
-            out = os.path.join(self.base, path, name)
-
-            if os.path.exists(out):
-                logging.debug('Removing old sprite sheet: %s' % out)
-                os.unlink(out)
-
-            i += 1
-
 
         # Write PNG files
-        js = {}
+        data = {}
         for i, sheet in enumerate(sheets):
 
             name = pattern % i
             out = os.path.join(self.base, path, name)
 
-            logging.info(' - Creating image for sheet (%dx%dpx) with %d image(s) > %s' % (sheet.width, sheet.height, len(sheet), out))
+            logging.info('- Creating image for sheet (%dx%dpx) with %d images' % (sheet.width, sheet.height, len(sheet)))
             sheet.toImage(out, showDebug)
+            data[name] = sheet.export()
 
-            js[name] = sheet.toJSON()
-
-        # Generate json
+        # Generate JSON
         script = os.path.join(self.base, path, 'jasysprite.json')
-
-        logging.info(' - Generating json meta data > %s' % script)
-        with open(script, 'wb') as f:
-            f.write(json.dumps(js, sort_keys=True, indent=4).encode('ascii'))
-
+        logging.info('- Exporting meta data...')
+        output = json.dumps(data, sort_keys=True, indent=2).encode('ascii')
+        open(script, 'wb').write(output)
 
         # Log about files which were to big
-        logging.info('\nThe following images have not been added to the sheet:')
+        logging.debug('The following images have been omitted:')
         for block in tooBig:
-            logging.info(' - "%s" (%dx%dpx) into spritesheet, too big to be efficent' % (block.image.relPath, block.w, block.h))
+            logging.debug('- "%s" (%dx%dpx) into spritesheet' % (block.image.relPath, block.w, block.h))
 
 
     # Pack images inside a dir into sprite sheets -----------------------------
     # -------------------------------------------------------------------------
     def packDir(self, path='', recursive=True, pattern='jasysprite_%d.png', best=False, size=(1024, 1024), allowRotate=False, showDebug=False):
 
-        logging.info('\nPacking sprites in: %s' % os.path.join(self.base, path))
+        logging.info('Packing sprites in: %s' % os.path.join(self.base, path))
         self.reset()
         self.addDir(path, recursive=recursive)
         logging.info('- Found %d images' % len(self.files))
