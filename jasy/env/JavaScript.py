@@ -67,7 +67,7 @@ def storeAssets(resolver, folder="asset"):
 
 
 
-def storeCompressed(resolver, fileName, bootCode=""):
+def storeCompressed(resolver, fileName, bootCode="", assets=None):
     """
     Combines the compressed result of the stored class list
     
@@ -90,7 +90,9 @@ def storeCompressed(resolver, fileName, bootCode=""):
     except ClassError as error:
         raise JasyError("Error during class compression! %s" % error)
 
-    assets = session.getAssetManager().exportBuild(classes)
+    if assets is None:
+        assets = session.getAssetManager().exportBuild(classes)
+
     if assets:
         result.append('core.io.Asset.addData(%s);' % assets)
 
@@ -101,7 +103,7 @@ def storeCompressed(resolver, fileName, bootCode=""):
 
 
 
-def storeLoader(resolver, fileName, bootCode="", urlPrefix=""):
+def storeLoader(resolver, fileName, bootCode="", urlPrefix="", assets=None):
     """
     Generates a source loader which is basically a file which loads the original JavaScript files.
     This is super useful during development of a project as it supports pretty fast workflows
@@ -131,8 +133,11 @@ def storeLoader(resolver, fileName, bootCode="", urlPrefix=""):
     boot = "function(){%s}" % bootCode if bootCode else "null"
     result = []
 
-    assets = session.getAssetManager().exportSource(classes)
-    result.append('core.io.Asset.addData(%s);' % assets)
+    if assets is None:
+        assets = session.getAssetManager().exportSource(classes)
+        
+    if assets:
+        result.append('core.io.Asset.addData(%s);' % assets)
 
     # FIXME
     #result.append('core.locale.Translations.addData(%s);' % translations.exportSource())

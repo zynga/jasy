@@ -41,6 +41,9 @@ class AssetManager:
     """
     
     def __init__(self):
+        # Registry for profiles aka asset groups
+        self.__profiles = {}
+        
         # Initialize storage pool
         assets = self.__assets = {}
         
@@ -88,7 +91,6 @@ class AssetManager:
                         logging.info("Creating new asset: %s", singleId)
                         singleAsset = Asset(None)
                         assets[singleId] = singleAsset
-                        # FIXME
                         
                     singleAsset.addSpriteData(spriteImageId, singleData["left"], singleData["top"])
                     
@@ -160,9 +162,35 @@ class AssetManager:
             logging.debug("  - Deleting animation config from assets: %s", fileId)
             del assets[fileId]
         
+    
+    
+    def addProfile(self, name, root, separator="/"):
+        """
+        - root: root uri for assets with the given profile
+        - separator: replacement symbol for seperating directories in the asset ID
+        """
         
+        profiles = self.__profiles
+        if name in profiles:
+            raise JasyError("Asset profile %s was already defined!")
         
-        
+        profiles[name] = {
+            "id" : len(profiles),
+            "root" : root,
+            "separator" : separator
+        }
+    
+    
+    def addData(self, data):
+        assets = self.__assets
+        for fileId in data:
+            if not fileId in assets:
+                logging.debug("Unknown asset: %s" % fileId)
+                continue
+                
+            assets[fileId].update(data[fileId])
+    
+    
     def __structurize(self, data):
         """
         This method structurizes the incoming data into a cascaded structure representing the
@@ -226,8 +254,11 @@ class AssetManager:
         filterExpr = self.__compileFilterExpr(classes)
         
         counter = 0
+        length = len(assets)
+        
         for fileId in assets:
             if not filterExpr.match(fileId):
+                length -= 1
                 continue
             
             srcFile = assets[fileId].getPath()
@@ -236,7 +267,7 @@ class AssetManager:
             if updateFile(srcFile, dstFile):
                 counter += 1
         
-        logging.info("Updated %s/%s files" % (counter, len(assets)))
+        logging.info("Updated %s/%s files" % (counter, length))
 
 
 
@@ -249,14 +280,14 @@ class AssetManager:
         - urlPrefix: A URL which should be mapped to the project's root folder
         """
 
-        filterExpr = self.__compileFilterExpr(classes)
+        filterExpr = self.__compileFilterExpr(classes) if classes else None
 
         assets = self.__assets
         result = {}
         
         # Processing assets
         for fileId in assets:
-            if not filterExpr.match(fileId):
+            if filterExpr and not filterExpr.match(fileId):
                 continue
             
             asset = assets[fileId]
@@ -309,12 +340,11 @@ class AssetManager:
         main = session.getMain()
         assets = self.__assets
         result = {}
-        filterExpr = self.__compileFilterExpr(classes)
+        filterExpr = self.__compileFilterExpr(classes) if classes else None
         
         # Processing assets
         for fileId in assets:
-            
-            if not filterExpr.match(fileId):
+            if filterExpr and not filterExpr.match(fileId):
                 continue
             
             asset = assets[fileId]

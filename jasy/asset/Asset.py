@@ -5,12 +5,38 @@
 
 from jasy.asset.ImageInfo import ImgInfo
 from jasy.core.Item import Item
-from os.path import basename
+from jasy.core.Util import getKey
+from os.path import basename, splitext
 import logging
 
 imageExtensions = (".png", ".jpeg", ".jpg", ".gif")
 audioExtensions = (".mp3", ".ogg", ".m4a", ".aac")
 videoExtensions = (".avi", ".mpeg", ".mpg", ".m4v", ".mkv")
+
+extensions = {
+    ".png" : "image",
+    ".jpeg" : "image",
+    ".jpg" : "image",
+    ".gif" : "image",
+    
+    ".mp3" : "audio",
+    ".ogg" : "audio",
+    ".m4a" : "audio",
+    ".aac" : "audio",
+    
+    ".avi" : "video",
+    ".mpeg" : "video",
+    ".mpg" : "video",
+    ".m4v" : "video",
+    ".mkv" : "video",
+    
+    ".json" : "data",
+    ".js" : "data",
+    ".txt" : "data",
+    ".csv" : "data",
+    ".tmpl" : "data"
+}
+
 
 class Asset(Item):
     
@@ -19,29 +45,40 @@ class Asset(Item):
     __imageSpriteData = []
     __imageAnimationData = []
     __imageDimensionData = []
-    
+
+    def __init__(self, project, id=None):
+        self.id = id
+        self.extension = splitext(self.id.lower())[1]
+        self.type = getKey(extensions, self.extension)
+        self.project = project
+        self.data = {}
+
     def isImageSpriteConfig(self):
-        return basename(self.id) == "jasysprite.json"
+        return self.isData() and basename(self.id) == "jasysprite.json"
 
     def isImageAnimationConfig(self):
-        return basename(self.id) == "jasyanimation.json"
+        return self.isData() and basename(self.id) == "jasyanimation.json"
+
+    def isData(self):
+        return self.type == "data"
 
     def isImage(self):
-        return self.id.lower().endswith(imageExtensions)
+        return self.type == "image"
     
     def isAudio(self):
-        return self.id.lower().endswith(audioExtensions)
+        return self.type == "audio"
 
     def isVideo(self):
-        return self.id.lower().endswith(videoExtensions)
+        return self.type == "video"
         
     
     def getDimensions(self):
-        info = ImgInfo(self.getPath()).getInfo()
-        if info is None:
-            raise Exception("Invalid image: %s" % fileId)
+        if self.type == "image":
+            info = ImgInfo(self.getPath()).getInfo()
+            if info is None:
+                raise Exception("Invalid image: %s" % fileId)
             
-        return [info[0], info[1]]
+            return [info[0], info[1]]
         
         
     def addSpriteData(self, id, left, top):
@@ -63,24 +100,30 @@ class Asset(Item):
         self.__imageDimensionData = [width, height]
     
     
+    def addData(self, data):
+        self.data.update(data)
+    
+    
     def export(self):
+
         if self.isImage():
+            image = []
+            
             if self.__imageDimensionData:
-                result = self.__imageDimensionData[:]
+                image += self.__imageDimensionData[:]
             else:
-                result = self.getDimensions()
+                image += self.getDimensions()
 
             if self.__imageSpriteData:
-                result += self.__imageSpriteData
+                image += self.__imageSpriteData
                 
             if self.__imageAnimationData:
-                result += self.__imageAnimationData
+                image += self.__imageAnimationData
                 
-            return result
+            self.data["img"] = image
             
         # audio length, video codec, etc.?
         
-        else:
-            return None
+        return self.data
 
 
