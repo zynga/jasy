@@ -188,7 +188,7 @@ class AssetManager:
                 logging.debug("Unknown asset: %s" % fileId)
                 continue
                 
-            assets[fileId].update(data[fileId])
+            assets[fileId].addData(data[fileId])
     
     
     def __structurize(self, data):
