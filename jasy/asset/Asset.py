@@ -107,18 +107,19 @@ class Asset(Item):
     def export(self):
 
         if self.isImage():
-            image = []
-            
             if self.__imageDimensionData:
-                image += self.__imageDimensionData[:]
+                image = self.__imageDimensionData[:]
             else:
-                image += self.getDimensions()
+                image = self.getDimensions()
 
             if self.__imageSpriteData:
-                image += self.__imageSpriteData
+                image.append(self.__imageSpriteData)
+            elif self.__imageAnimationData:
+                # divider between sprite data and animation data
+                image.append(0)
                 
             if self.__imageAnimationData:
-                image += self.__imageAnimationData
+                image.append(self.__imageAnimationData)
                 
             self.data["img"] = image
             
