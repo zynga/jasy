@@ -41,6 +41,9 @@ class AssetManager:
     """
     
     def __init__(self):
+        self.__data = {}
+        
+        
         # Registry for profiles aka asset groups
         self.__profiles = {}
         
@@ -181,23 +184,52 @@ class AssetManager:
         
         profiles = self.__profiles
         if name in profiles:
-            raise JasyError("Asset profile %s was already defined!")
+            raise JasyError("Asset profile %s was already defined!" % name)
         
         profiles[name] = {
             "id" : len(profiles),
             "root" : root,
             "separator" : separator
         }
+        
+        return profiles[name]["id"]
     
     
-    def addData(self, data):
+    def addSourceProfile(self, urlPrefix=""):
+
+        # First create a new profile with optional (CDN-) URL prefix
+        root = urlPrefix
+        if root and not root.endswith("/"):
+            root += "/"
+        profileId = self.addProfile("source", root)
+
+        # Then export all relative paths to main project and add this to the runtime data
+        main = session.getMain()
         assets = self.__assets
-        for fileId in data:
+        runtime = {}
+
+        for fileId in assets:
+            runtime[fileId] = {
+                "p" : profileId,
+                "u" : main.toRelativeUrl(assets[fileId].getPath())
+            }
+
+        self.addRuntimeData(runtime)
+
+    
+    def addRuntimeData(self, runtime):
+        assets = self.__assets
+        data = self.__data
+        
+        for fileId in runtime:
             if not fileId in assets:
                 logging.debug("Unknown asset: %s" % fileId)
                 continue
                 
-            assets[fileId].addData(data[fileId])
+            if not fileId in data:
+                data[fileId] = {}
+                
+            data[fileId].update(runtime[fileId])
     
     
     def __structurize(self, data):
@@ -328,67 +360,49 @@ class AssetManager:
             raise
             
         # Exporting data
-        export = toJson({
-            "assets" : structured,
+        return toJson({
+            "assets" : self.__structurize(result),
             "profiles" : self.__profiles,
-            "sprites" : self.__sprites,
-            "deployed" : True,
-            "root" : root
+            "sprites" : self.__sprites
         })
-        
-        return export
 
 
 
-    def exportSource(self, classes, urlPrefix=""):
+    def export(self, classes=None):
         """ 
         Exports asset data for the source version using assets from their original paths.
-        
         - classes: Classes for filter assets according to
-        - urlPrefix: Useful when a CDN should be used. Maps the project's root to a URL.
         """
         
-        main = session.getMain()
+        # Processing assets
         assets = self.__assets
+        data = self.__data
+        
         result = {}
         filterExpr = self.__compileFilterExpr(classes) if classes else None
-        
-        # Processing assets
         for fileId in assets:
             if filterExpr and not filterExpr.match(fileId):
                 continue
             
-            asset = assets[fileId]
-            path = main.toRelativeUrl(asset.getPath())
-            exported = asset.export()
-
-            if exported is None:
-                result[fileId] = [path]
-            else:
-                result[fileId] = exported + [path]
+            entry = {}
+            
+            exported = assets[fileId].export()
+            if exported:
+                entry["d"] = exported
+            
+            if fileId in data:
+                entry.update(data[fileId])
+            
+            result[fileId] = entry
         
-        # Figuring out global root
-        root = urlPrefix
-        if root and root[-1] != "/":
-            root += "/"
-
         # Ignore empty result
         if not result:
             return None
 
-        # Structurize
-        try:
-            structured = self.__structurize(result)
-        except Exception:
-            logging.error("Could not export build data of assets")
-            raise
-            
         # Exporting data
-        export = toJson({
-            "assets" : structured,
-            "deployed" : False,
-            "root": root
+        return toJson({
+            "assets" : self.__structurize(result),
+            "profiles" : self.__profiles,
+            "sprites" : self.__sprites
         })
-
-        return export
 

@@ -91,7 +91,7 @@ def storeCompressed(resolver, fileName, bootCode="", assets=None):
         raise JasyError("Error during class compression! %s" % error)
 
     if assets is None:
-        assets = session.getAssetManager().exportBuild(classes)
+        assets = session.getAssetManager().export(classes)
 
     if assets:
         result.append('core.io.Asset.addData(%s);' % assets)
@@ -134,13 +134,13 @@ def storeLoader(resolver, fileName, bootCode="", urlPrefix="", assets=None):
     result = []
 
     if assets is None:
-        assets = session.getAssetManager().exportSource(classes)
+        assets = session.getAssetManager().export(classes)
         
     if assets:
         result.append('core.io.Asset.addData(%s);' % assets)
 
     # FIXME
-    #result.append('core.locale.Translations.addData(%s);' % translations.exportSource())
+    #result.append('core.locale.Translations.addData(%s);' % translations.export())
     
     result.append('core.io.Queue.load([%s], %s, null, true);' % (loader, boot))
 

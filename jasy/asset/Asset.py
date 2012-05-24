@@ -51,7 +51,6 @@ class Asset(Item):
         self.extension = splitext(self.id.lower())[1]
         self.type = getKey(extensions, self.extension)
         self.project = project
-        self.data = {}
 
     def isImageSpriteConfig(self):
         return self.isData() and basename(self.id) == "jasysprite.json"
@@ -100,12 +99,8 @@ class Asset(Item):
         self.__imageDimensionData = [width, height]
     
     
-    def addData(self, data):
-        self.data.update(data)
-    
-    
     def export(self):
-
+        
         if self.isImage():
             if self.__imageDimensionData:
                 image = self.__imageDimensionData[:]
@@ -121,10 +116,10 @@ class Asset(Item):
             if self.__imageAnimationData:
                 image.append(self.__imageAnimationData)
                 
-            self.data["img"] = image
+            return image
             
-        # audio length, video codec, etc.?
+        # TODO: audio length, video codec, etc.?
         
-        return self.data
+        return None
 
 
