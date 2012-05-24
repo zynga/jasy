@@ -6,9 +6,9 @@
 import sys, math, logging
 
 try:
-    Image, ImageDraw
-except ImportError:
-    logging.warn("Please install Python PIL (https://github.com/sloonz/pil-py3k) to support generating image sprites")
+    import Image, ImageDraw
+except:
+    print("Please install Python PIL (https://github.com/sloonz/pil-py3k) to support generating image sprites")
 
 class SpriteSheet():
 
