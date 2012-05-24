@@ -45,7 +45,7 @@ class AssetManager:
         
         
         # Registry for profiles aka asset groups
-        self.__profiles = {}
+        self.__profiles = []
         
         # Initialize storage pool
         assets = self.__assets = {}
@@ -176,23 +176,29 @@ class AssetManager:
         
     
     
-    def addProfile(self, name, root, separator="/"):
+    def addProfile(self, name, root=None, data=None):
         """
         - root: root uri for assets with the given profile
-        - separator: replacement symbol for seperating directories in the asset ID
         """
         
         profiles = self.__profiles
-        if name in profiles:
-            raise JasyError("Asset profile %s was already defined!" % name)
+        for entry in profiles:
+            if entry["name"] == name:
+                raise JasyError("Asset profile %s was already defined!" % name)
         
-        profiles[name] = {
-            "id" : len(profiles),
-            "root" : root,
-            "separator" : separator
+        profile = {
+            "name" : name
         }
         
-        return profiles[name]["id"]
+        if root:
+            profile["root"] = root
+        
+        if data is not None:
+            profile.update(data)
+
+        unique = len(profiles)
+        profiles.append(profile)
+        return unique
     
     
     def addSourceProfile(self, urlPrefix=""):
