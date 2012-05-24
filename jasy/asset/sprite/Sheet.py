@@ -3,7 +3,12 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, math, logging, Image, ImageDraw
+import sys, math, logging
+
+try:
+    Image, ImageDraw
+except ImportError:
+    logging.warn("Please install Python PIL (https://github.com/sloonz/pil-py3k) to support generating image sprites")
 
 class SpriteSheet():
 
