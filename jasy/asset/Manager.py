@@ -64,6 +64,7 @@ class AssetManager:
         configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
         logging.info("Processing %s image sprite configs...", len(configs))
         
+        sprites = []
         for fileId in configs:
             logging.info("- Processing %s...", fileId)
             
@@ -92,7 +93,13 @@ class AssetManager:
                         singleAsset = Asset(None)
                         assets[singleId] = singleAsset
                         
-                    singleAsset.addSpriteData(spriteImageId, singleData["left"], singleData["top"])
+                    if not spriteImageId in sprites:
+                        spriteImageIndex = len(sprites) 
+                        sprites.append(spriteImageId)
+                    else:
+                        spriteImageIndex = sprites.index(spriteImageId)
+                        
+                    singleAsset.addSpriteData(spriteImageIndex, singleData["left"], singleData["top"])
                     
                     if "width" in singleData and "height" in singleData:
                         singleAsset.addDimensionData(singleData["width"], singleData["height"])
@@ -109,6 +116,8 @@ class AssetManager:
         
             logging.debug("  - Deleting sprite config from assets: %s", fileId)
             del assets[fileId]
+            
+        self.__sprites = sprites
         
         
         
@@ -321,6 +330,8 @@ class AssetManager:
         # Exporting data
         export = toJson({
             "assets" : structured,
+            "profiles" : self.__profiles,
+            "sprites" : self.__sprites,
             "deployed" : True,
             "root" : root
         })
