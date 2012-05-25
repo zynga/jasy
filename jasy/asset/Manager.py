@@ -176,7 +176,7 @@ class AssetManager:
         
     
     
-    def addProfile(self, name, root=None, data=None):
+    def addProfile(self, name, root=None, config=None, items=None):
         """
         - root: root uri for assets with the given profile
         """
@@ -193,11 +193,18 @@ class AssetManager:
         if root:
             profile["root"] = root
         
-        if data is not None:
-            profile.update(data)
+        if config is not None:
+            profile.update(config)
 
         unique = len(profiles)
         profiles.append(profile)
+        
+        if items:
+            for fileId in items:
+                items[fileId]["p"] = unique
+            
+            self.addRuntimeData(items)
+        
         return unique
     
     
