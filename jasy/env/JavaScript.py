@@ -16,7 +16,7 @@ from jasy.js.Sorter import Sorter
 from jasy.env.State import session, setPermutation, startSection, getPermutation, optimization, formatting
 
 
-__all__ = ["storeKernel", "storeAssets", "storeCompressed", "storeLoader"]
+__all__ = ["storeKernel", "storeCompressed", "storeLoader"]
 
 
 def storeKernel(fileName, debug=False):
