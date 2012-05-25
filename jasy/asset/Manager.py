@@ -191,6 +191,9 @@ class AssetManager:
         }
         
         if root:
+            if not root.endswith("/"):
+                root += "/"
+                
             profile["root"] = root
         
         if config is not None:
@@ -208,7 +211,7 @@ class AssetManager:
         return unique
     
     
-    def addSourceProfile(self, urlPrefix=""):
+    def addSourceProfile(self, urlPrefix="", override=False):
 
         # First create a new profile with optional (CDN-) URL prefix
         root = urlPrefix
@@ -219,18 +222,18 @@ class AssetManager:
         # Then export all relative paths to main project and add this to the runtime data
         main = session.getMain()
         assets = self.__assets
-        runtime = {}
+        data = self.__data
 
         for fileId in assets:
-            runtime[fileId] = {
-                "p" : profileId,
-                "u" : main.toRelativeUrl(assets[fileId].getPath())
-            }
-
-        self.addRuntimeData(runtime)
+            if not fileId in data:
+                data[fileId] = {}
+                
+            if override or not "p" in data[fileId]:
+                data[fileId]["p"] = profileId
+                data[fileId]["u"] = main.toRelativeUrl(assets[fileId].getPath())
 
     
-    def addRuntimeData(self, runtime):
+    def addRuntimeData(self, runtime, override=False):
         assets = self.__assets
         data = self.__data
         
@@ -238,7 +241,7 @@ class AssetManager:
             if not fileId in assets:
                 logging.debug("Unknown asset: %s" % fileId)
                 continue
-                
+        
             if not fileId in data:
                 data[fileId] = {}
                 
