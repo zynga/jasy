@@ -58,15 +58,6 @@ def storeKernel(fileName, debug=False):
     return resolver.getIncludedClasses()
 
 
-
-def storeAssets(resolver, folder="asset"):
-    """Deploys assets to the given folder"""
-
-    startSection("Publishing assets...")
-    session.getAssetManager().deploy(resolver.getIncludedClasses(), assetFolder=folder)
-
-
-
 def storeCompressed(resolver, fileName, bootCode="", assets=None):
     """
     Combines the compressed result of the stored class list
@@ -99,8 +90,7 @@ def storeCompressed(resolver, fileName, bootCode="", assets=None):
     if bootCode:
         result.append(bootCode)
         
-    writeFile(fileName, "\n".join(result))
-
+    writeFile(fileName, "".join(result))
 
 
 def storeLoader(resolver, fileName, bootCode="", urlPrefix="", assets=None):
@@ -144,6 +134,6 @@ def storeLoader(resolver, fileName, bootCode="", urlPrefix="", assets=None):
     
     result.append('core.io.Queue.load([%s], %s, null, true);' % (loader, boot))
 
-    writeFile(fileName, "\n".join(result))
+    writeFile(fileName, "".join(result))
 
 
