@@ -63,7 +63,7 @@ def storeAssets(resolver, folder="asset"):
     """Deploys assets to the given folder"""
 
     startSection("Publishing assets...")
-    session.getAssetManager().deployBuild(resolver.getIncludedClasses(), assetFolder=folder)
+    session.getAssetManager().deploy(resolver.getIncludedClasses(), assetFolder=folder)
 
 
 

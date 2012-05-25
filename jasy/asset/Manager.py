@@ -214,10 +214,7 @@ class AssetManager:
     def addSourceProfile(self, urlPrefix="", override=False):
 
         # First create a new profile with optional (CDN-) URL prefix
-        root = urlPrefix
-        if root and not root.endswith("/"):
-            root += "/"
-        profileId = self.addProfile("source", root)
+        profileId = self.addProfile("source", urlPrefix)
 
         # Then export all relative paths to main project and add this to the runtime data
         main = session.getMain()
@@ -232,8 +229,27 @@ class AssetManager:
                 data[fileId]["p"] = profileId
                 data[fileId]["u"] = main.toRelativeUrl(assets[fileId].getPath())
 
+
+
+    def addBuildProfile(self, urlPrefix="asset", override=False):
+        
+        # First create a new profile with optional (CDN-) URL prefix
+        profileId = self.addProfile("build", urlPrefix)
+
+        # Then export all relative paths to main project and add this to the runtime data
+        main = session.getMain()
+        assets = self.__assets
+        data = self.__data
+
+        for fileId in assets:
+            if not fileId in data:
+                data[fileId] = {}
+                
+            if override or not "p" in data[fileId]:
+                data[fileId]["p"] = profileId
+
     
-    def addRuntimeData(self, runtime, override=False):
+    def addRuntimeData(self, runtime):
         assets = self.__assets
         data = self.__data
         
@@ -301,7 +317,7 @@ class AssetManager:
         
         
         
-    def deployBuild(self, classes, assetFolder="asset"):
+    def deploy(self, classes, assetFolder="asset"):
         """Deploys all asset files to the destination asset folder"""
 
         assets = self.__assets
@@ -328,67 +344,8 @@ class AssetManager:
 
 
 
-    def exportBuild(self, classes, assetFolder="asset", urlPrefix=""):
-        """
-        Publishes the selected files to the destination folder. This merges files from 
-        different projects to this one folder. This is ideal for preparing the final deployment.
-        
-        - assetFolder: Name of local asset folder
-        - urlPrefix: A URL which should be mapped to the project's root folder
-        """
-
-        filterExpr = self.__compileFilterExpr(classes) if classes else None
-
-        assets = self.__assets
-        result = {}
-        
-        # Processing assets
-        for fileId in assets:
-            if filterExpr and not filterExpr.match(fileId):
-                continue
-            
-            asset = assets[fileId]
-            exported = asset.export()
-            
-            if exported is None:
-                # short value to allow simple lookup checks in JS
-                result[fileId] = 1
-            else:
-                result[fileId] = exported
-        
-        # Figuring out root
-        root = urlPrefix
-        if root and root[-1] != "/":
-            root += "/"
-        root += assetFolder
-        if root and root[-1] != "/":
-            root += "/"
-            
-        # Ignore empty result
-        if not result:
-            return None
-            
-        # Structurize
-        try:
-            structured = self.__structurize(result)
-        except Exception:
-            logging.error("Could not export build data of assets")
-            raise
-            
-        # Exporting data
-        return toJson({
-            "assets" : self.__structurize(result),
-            "profiles" : self.__profiles,
-            "sprites" : self.__sprites
-        })
-
-
-
     def export(self, classes=None):
-        """ 
-        Exports asset data for the source version using assets from their original paths.
-        - classes: Classes for filter assets according to
-        """
+        """Exports asset data for the source version using assets from their original paths."""
         
         # Processing assets
         assets = self.__assets

@@ -48,7 +48,7 @@ class SpriteSheet():
 
     def write(self, filename, debug=False):
 
-        if Image in None:
+        if Image is None:
             raise JasyError("Missing PIL to create sprite sheets")
 
         img = Image.new('RGBA', (self.width, self.height))
