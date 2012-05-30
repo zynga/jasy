@@ -91,7 +91,7 @@ def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
     try:
     
         logging.debug("Using folder: %s", dist)
-        if os.path.exists(dist):
+        if os.path.exists(dist) and os.path.exists(os.path.join(dist, ".git")):
             
             if not os.path.exists(os.path.join(dist, ".git", "HEAD")):
                 logging.error("Invalid git project. Cleaning up...")
@@ -125,9 +125,18 @@ def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch revision!")
         executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
             
+    except KeyboardInterrupt:
+        logging.error("Aborted by user!")
+        os.chdir(old)
+        logging.error("Removing checkout folder...")
+        shutil.rmtree(dist)
+        return
+    
     except Exception:
         logging.error("Error during git transaction!")
         os.chdir(old)
+        logging.error("Removing checkout folder...")
+        shutil.rmtree(dist)
         return
         
     os.chdir(old)
