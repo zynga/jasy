@@ -1,0 +1,6 @@
+Pygments
+polib
+PIL -e git://github.com/sloonz/pil-py3k.git#egg=PIL
+Cython
+misaka
+msgpack-python

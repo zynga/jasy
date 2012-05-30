@@ -93,3 +93,10 @@ setup(
         )
       ]
 )
+
+print("You might want to install these packages, too:")
+print("- Misaka: Generating API docs with markdown comments")
+print("- Pygments: Highlight code and convert to HTML markup")
+print("- PIL: Generating image sprite sheets")
+print("- Polib: PO file based translations")
+print("- Msgpack: Highly compressed output format for API docs")
