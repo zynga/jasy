@@ -3,8 +3,9 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, json, msgpack, copy, re
+import logging, json, copy, re
 
+from jasy.core.Error import JasyError
 from jasy.env.File import *
 from jasy.js.api.Data import ApiData
 from jasy.js.api.Text import *
@@ -14,6 +15,11 @@ from jasy.core.Json import toJson
 
 __all__ = ["ApiWriter"]
 
+try:
+    import msgpack
+except:
+    logging.debug("Msgpack is needed to export API data as MsgPack! MsgPack support is disabled.")
+    msgpack = None
 
 itemMap = {
     "members": "member",
@@ -290,6 +296,9 @@ class ApiWriter():
                     return toJson(content)
                 
             elif format == "msgpack":
+                if msgpack is None:
+                    raise JasyError("Could not pack API data as MsgPack because msgpack is not installed!")
+                
                 return "%s" % msgpack.packb(content)
         
         data, highlighted, index, search = self.collect(internals=showInternals, privates=showPrivates)

@@ -4,13 +4,14 @@
 #
 
 import logging, re, copy, json
+from jasy.core.Error import JasyError
 
 try:
     import polib
-    hasPoLib = True
 except ImportError:
-    hasPoLib = False
-
+    logging.debug("Polib is needed to extract translation text from PO files! Translation via PO files is disabled.")
+    polib = None
+    
 from jasy.js.parse.Node import Node
 
 __all__ = ["TranslationError", "Translation", "hasText"]
@@ -55,15 +56,17 @@ class Translation:
         if files:
             logging.debug("Load %s translation files..." % len(files))
             for path in files:
-                if hasPoLib:
-                    pofile = polib.pofile(path)
-                    # print("Process: %s" % path)
-                    for entry in pofile:
-                        if not entry.msgid in self.__table:
-                            if entry.msgstr != "":
-                                self.__table[entry.msgid] = entry.msgstr
-                            elif entry.msgstr_plural:
-                                self.__table[entry.msgid] = entry.msgstr_plural
+                if not polib:
+                    raise JasyError("Could not parse PO file %s Polib is not installed omn the system!" % path)
+                
+                pofile = polib.pofile(path)
+                # print("Process: %s" % path)
+                for entry in pofile:
+                    if not entry.msgid in self.__table:
+                        if entry.msgstr != "":
+                            self.__table[entry.msgid] = entry.msgstr
+                        elif entry.msgstr_plural:
+                            self.__table[entry.msgid] = entry.msgstr_plural
                         
         logging.debug("Translation of %s entries ready" % len(self.__table))
         

@@ -5,24 +5,20 @@
 
 import logging, re
 
-
 __all__ = ["markdown", "markdown2html", "code2highlight"]
 
 
 try:
     import misaka
-except:
-    logging.warn("Misaka is needed to convert Markdown to HTML => Disabling feature")
-    misaka = None
 
-if misaka:
     misakaExt = misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS | misaka.EXT_FENCED_CODE
     misakaRender = misaka.HTML_SKIP_STYLE | misaka.HTML_SMARTYPANTS
 
     def markdown2html(markdownStr):
         return misaka.html(markdownStr, misakaExt, misakaRender)
 
-else:
+except:
+    logging.debug("Misaka is needed to convert Markdown to HTML! Markdown support is disabled.")
     markdown2html = None
 
 
@@ -30,11 +26,7 @@ try:
     from pygments import highlight
     from pygments.formatters import HtmlFormatter
     from pygments.lexers import get_lexer_by_name
-except:
-    logging.warn("Pygments is needed to highlighting code => Disabling feature")
-    highlight = None
 
-if highlight:
     # By http://misaka.61924.nl/#toc_3
     codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
 
@@ -56,14 +48,13 @@ if highlight:
             return highlight(unescape(code), lexer, formatter)
         
         return codeblock.sub(replace, html)
-
-else:
-    
+        
+except:
+    logging.debug("Pygments is missing. Pygments is used to highlight code! Feature will be disabled.")
     code2highlight = None
 
 
-
-
+# If both is available we can offer a merged "markdown" command
 if markdown2html and code2highlight:
 
     def markdown(text, code=True):

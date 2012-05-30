@@ -5,12 +5,7 @@
 
 import os, logging, copy, hashlib, zlib
 
-try:
-    from pygments import highlight
-    from pygments.lexers import JavascriptLexer
-    from pygments.formatters import HtmlFormatter
-except:
-    highlight = None
+from jasy.core.Error import JasyError
 
 import jasy.js.parse.Parser as Parser
 import jasy.js.parse.ScopeScanner as ScopeScanner
@@ -30,6 +25,14 @@ from jasy.js.output.Compressor import Compressor
 from jasy.js.util import *
 
 from jasy.i18n.Translation import hasText
+
+try:
+    from pygments import highlight
+    from pygments.lexers import JavascriptLexer
+    from pygments.formatters import HtmlFormatter
+except:
+    logging.debug("Pygments is missing. Pygments is used to highlight code for API docs! Feature will be disabled.")
+    highlight = None
 
 
 aliases = {}
@@ -222,11 +225,12 @@ class Class(Item):
         source = self.project.getCache().read(field, self.getModificationTime())
         if source is None:
             if highlight is None:
-                raise JasyError("Could not highlight code. Pygments is missing!")
+                raise JasyError("Could not highlight code! Please install pygments.")
             
             lexer = JavascriptLexer(tabsize=2)
-            formatter = HtmlFormatter(full=True,style="autumn",linenos="table",lineanchors="line")
+            formatter = HtmlFormatter(full=True, style="autumn", linenos="table", lineanchors="line")
             source = highlight(self.getText(), lexer, formatter)
+            
             self.project.getCache().store(field, source, self.getModificationTime())
 
         return source
