@@ -85,18 +85,22 @@ setup(
       scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util", "bin/jasy.bat", "bin/jasy-test.bat", "bin/jasy-util.bat" ],
       
       data_files = [
-        ("doc", [
+        ("doc/jasy-%s" % jasy.__version__, [
           "changelog.md",
           "license.md",
-          "readme.md"
+          "readme.md",
+          "requirements.txt"
          ]
         )
       ]
 )
 
+print("Thanks for installing Jasy!")
+print("")
 print("You might want to install these packages, too:")
 print("- Misaka: Generating API docs with markdown comments")
 print("- Pygments: Highlight code and convert to HTML markup")
 print("- PIL: Generating image sprite sheets")
 print("- Polib: PO file based translations")
 print("- Msgpack: Highly compressed output format for API docs")
+print("Easiest way to install these is by using pip install -r requirements.txt (you have to choose the right requirements.txt though)")
