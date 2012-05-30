@@ -303,11 +303,11 @@ class Project():
             fileId = ""
 
         # Structure files  
-        if fileExtension in classExtensions:
+        if fileExtension in classExtensions and distname == "classes":
             fileId += os.path.splitext(relPath)[0]
             construct = Class
             dist = self.classes
-        elif fileExtension in translationExtensions:
+        elif fileExtension in translationExtensions and distname == "translations":
             fileId += os.path.splitext(relPath)[0]
             construct = Translation
             dist = self.translations
