@@ -325,11 +325,6 @@ class Project():
         if construct != Asset:
             fileId = fileId.replace("/", ".")
 
-        # Validate destination (docs are okay for all other destinations)
-        if not dist is self.docs and dist != getattr(self, distname):
-            logging.info("- Ignoring file: %s", relPath)
-            return
-            
         # Check for duplication
         if fileId in dist and not override:
             raise JasyError("Item ID was registered before: %s" % fileId)
