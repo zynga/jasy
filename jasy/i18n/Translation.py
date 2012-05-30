@@ -9,7 +9,7 @@ from jasy.core.Error import JasyError
 try:
     import polib
 except ImportError:
-    logging.debug("Polib is needed to extract translation text from PO files! Translation via PO files is disabled.")
+    logging.warn("Polib is no installed. Polib is needed to extract translation text from PO files!")
     polib = None
     
 from jasy.js.parse.Node import Node

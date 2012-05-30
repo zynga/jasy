@@ -9,7 +9,7 @@ from jasy.core.Error import JasyError
 try:
     import Image, ImageDraw
 except:
-    logging.warn("PIL is needed to convert create sprite images => Disabling feature")
+    logging.warn("Python PIL is not installed. PIL is used to create sprite images.")
     Image = None
 
 class SpriteSheet():

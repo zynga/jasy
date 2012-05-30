@@ -18,7 +18,7 @@ __all__ = ["ApiWriter"]
 try:
     import msgpack
 except:
-    logging.debug("Msgpack is needed to export API data as MsgPack! MsgPack support is disabled.")
+    logging.warn("MsgPack is not installed. MsgPack is needed for an alternative export format for API docs.")
     msgpack = None
 
 itemMap = {

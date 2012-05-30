@@ -31,7 +31,6 @@ try:
     from pygments.lexers import JavascriptLexer
     from pygments.formatters import HtmlFormatter
 except:
-    logging.debug("Pygments is missing. Pygments is used to highlight code for API docs! Feature will be disabled.")
     highlight = None
 
 
@@ -225,7 +224,7 @@ class Class(Item):
         source = self.project.getCache().read(field, self.getModificationTime())
         if source is None:
             if highlight is None:
-                raise JasyError("Could not highlight code! Please install pygments.")
+                raise JasyError("Could not highlight JavaScript code! Please install Pygments.")
             
             lexer = JavascriptLexer(tabsize=2)
             formatter = HtmlFormatter(full=True, style="autumn", linenos="table", lineanchors="line")
