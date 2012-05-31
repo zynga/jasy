@@ -121,14 +121,10 @@ try:
     from jasy.env.State import *
     from jasy.env.File import *
 
-    # Asset Support
-    from jasy.asset.Manager import AssetManager
-    from jasy.asset.SpritePacker import SpritePacker
-
-    # JavaScript Support
+    # User API
     from jasy.js.Resolver import Resolver
-    from jasy.js.Sorter import Sorter
     from jasy.js.api.Writer import ApiWriter
+    from jasy.asset.SpritePacker import SpritePacker
 
     # Environment Addons
     from jasy.env.JavaScript import *
