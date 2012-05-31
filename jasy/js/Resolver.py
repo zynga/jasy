@@ -5,6 +5,7 @@
 
 import logging
 from jasy.env.State import session, getPermutation
+from jasy.js.Sorter import Sorter
 
 __all__ = ["Resolver"]
 
@@ -93,6 +94,10 @@ class Resolver():
         logging.debug("Including %s classes", len(collection))
         
         return self.__included
+        
+        
+    def getSortedClasses(self):
+        return Sorter(self).getSortedClasses()
 
 
     def __resolveDependencies(self, classObj, collection):

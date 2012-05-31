@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, logging, copy, hashlib, zlib
+import os, logging, copy, zlib
 
 from jasy.core.Error import JasyError
 
@@ -288,8 +288,6 @@ class Class(Item):
         translation = self.filterTranslation(translation)
         
         field = "compressed[%s]-%s-%s-%s-%s" % (self.id, permutation, translation, optimization, formatting)
-        field = hashlib.md5(field.encode("utf-8")).hexdigest()
-        
         compressed = self.project.getCache().read(field, self.getModificationTime())
         if compressed == None:
             tree = self.getTree(permutation)

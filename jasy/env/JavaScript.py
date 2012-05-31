@@ -51,24 +51,24 @@ def storeKernel(fileName, debug=False):
     resolver.addClassName("core.io.Queue")
     
     # Sort resulting class list
-    storeCompressed(resolver, fileName)
+    classes = resolver.getSortedClasses()
+    storeCompressed(classes, fileName)
     
     setPermutation(None)
     
-    return resolver.getIncludedClasses()
+    return classes
 
 
-def storeCompressed(resolver, fileName, bootCode="", assets=None):
+def storeCompressed(classes, fileName, bootCode=""):
     """
     Combines the compressed result of the stored class list
     
-    - fileName: Filename to write to
-    - resolver: Resolver which contains all relevant classes
+    - classes: List of sorted classes to compress
+    - fileName: Filename to write result to
     - bootCode: Code to execute once all the classes are loaded
     """
     
-    logging.info("Compressing %s classes...", len(resolver.getIncludedClasses()))
-    classes = Sorter(resolver).getSortedClasses()
+    logging.info("Compressing %s classes...", len(classes))
     result = []
     
     try:
@@ -81,9 +81,7 @@ def storeCompressed(resolver, fileName, bootCode="", assets=None):
     except ClassError as error:
         raise JasyError("Error during class compression! %s" % error)
 
-    if assets is None:
-        assets = session.getAssetManager().export(classes)
-
+    assets = session.getAssetManager().export(classes)
     if assets:
         result.append('core.io.Asset.addData(%s);' % assets)
 
@@ -93,45 +91,42 @@ def storeCompressed(resolver, fileName, bootCode="", assets=None):
     writeFile(fileName, "".join(result))
 
 
-def storeLoader(resolver, fileName, bootCode="", urlPrefix="", assets=None):
+def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     """
     Generates a source loader which is basically a file which loads the original JavaScript files.
     This is super useful during development of a project as it supports pretty fast workflows
     where most often a simple reload in the browser is enough to get the newest sources.
     
-    - fileName: Filename to write to
-    - resolver: Resolver which contains all relevant classes
-    - bootCode: Code to run after all defined classes have been loaded.
-    - urlPrefix: Useful when the project files are stored on another domain (CDN). Puts the given URL prefix in front of all URLs to load.
+    - classes: List of sorted classes to compress
+    - fileName: Filename to write result to
+    - bootCode: Code to execute once all classes have been loaded
+    - urlPrefix: Prepends the given URL prefix to all class URLs to load
     """
     
-    logging.info("Building source loader (%s classes)...", len(resolver.getIncludedClasses()))
-    classes = Sorter(resolver).getSortedClasses()
+    logging.info("Building source loader (%s classes)...", len(classes))
     
     main = session.getMain()
     files = []
     for classObj in classes:
-        # Support for multi path classes (e.g. in manual mode)
         path = classObj.getPath()
+
+        # Support for multi path classes 
+        # (typically in projects with custom layout/structure e.g. 3rd party)
         if type(path) is list:
-            for split in path:
-                files.append(main.toRelativeUrl(split, urlPrefix))
+            for singleFileName in path:
+                files.append(main.toRelativeUrl(singleFileName, urlPrefix))
+        
         else:
             files.append(main.toRelativeUrl(path, urlPrefix))
     
     loader = '"%s"' % '","'.join(files)
-    boot = "function(){%s}" % bootCode if bootCode else "null"
     result = []
 
-    if assets is None:
-        assets = session.getAssetManager().export(classes)
-        
+    assets = session.getAssetManager().export(classes)
     if assets:
         result.append('core.io.Asset.addData(%s);' % assets)
 
-    # FIXME
-    #result.append('core.locale.Translations.addData(%s);' % translations.export())
-    
+    boot = "function(){%s}" % bootCode if bootCode else "null"
     result.append('core.io.Queue.load([%s], %s, null, true);' % (loader, boot))
 
     writeFile(fileName, "".join(result))
