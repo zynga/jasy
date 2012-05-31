@@ -62,16 +62,28 @@ session = Session()
 
 
 # ---------------------------------------------
+# Global asset manager
+# ---------------------------------------------
+
+from jasy.asset.Manager import AssetManager
+
+assetManager = AssetManager()
+
+# Remove class after using them
+del AssetManager
+
+
+# ---------------------------------------------
 # Global output configuration
 # ---------------------------------------------
 
 from jasy.js.output.Optimization import Optimization
 from jasy.js.output.Formatting import Formatting
 
-formatting = Formatting()
-optimization = Optimization("variables", "declarations", "blocks", "privates")
+jsFormatting = Formatting()
+jsOptimization = Optimization("variables", "declarations", "blocks", "privates")
 
-# Remove modules after using them
+# Remove classes after using them
 del Formatting
 del Optimization
 

@@ -151,21 +151,6 @@ class Session():
     
     
     #
-    # Asset Integration
-    #
-    
-    __assetManager = None
-    
-    def getAssetManager(self):
-        if self.__assetManager is None:
-            from jasy.asset.Manager import AssetManager
-            self.__assetManager = AssetManager()
-        
-        return self.__assetManager
-    
-    
-    
-    #
     # Support for fields
     # Fields allow to inject data from the build into the running application
     #
