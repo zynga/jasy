@@ -9,10 +9,6 @@ from jasy.core.Util import getKey
 from os.path import basename, splitext
 import logging
 
-imageExtensions = (".png", ".jpeg", ".jpg", ".gif")
-audioExtensions = (".mp3", ".ogg", ".m4a", ".aac")
-videoExtensions = (".avi", ".mpeg", ".mpg", ".m4v", ".mkv")
-
 extensions = {
     ".png" : "image",
     ".jpeg" : "image",
@@ -23,6 +19,7 @@ extensions = {
     ".ogg" : "audio",
     ".m4a" : "audio",
     ".aac" : "audio",
+    ".wav" : "audio",
     
     ".avi" : "video",
     ".mpeg" : "video",
@@ -30,11 +27,29 @@ extensions = {
     ".m4v" : "video",
     ".mkv" : "video",
     
-    ".json" : "data",
-    ".js" : "data",
-    ".txt" : "data",
-    ".csv" : "data",
-    ".tmpl" : "data"
+    ".eot" : "font",
+    ".woff" : "font",
+    ".ttf" : "font",
+    ".otf" : "font",
+    ".pfa" : "font",
+    ".pfb" : "font",
+    ".afm" : "font",
+    
+    ".json" : "text",
+    ".svg" : "text",
+    ".txt" : "text",
+    ".csv" : "text",
+    ".html" : "text",
+    ".js" : "text",
+    ".css" : "text",
+    ".htc" : "text",
+    ".xml" : "text",
+    ".tmpl" : "text",
+    
+    ".fla" : "binary",
+    ".swf" : "binary",
+    ".psd" : "binary",
+    ".pdf" : "binary"
 }
 
 
@@ -49,17 +64,19 @@ class Asset(Item):
     def __init__(self, project, id=None):
         self.id = id
         self.extension = splitext(self.id.lower())[1]
-        self.type = getKey(extensions, self.extension)
+        self.type = getKey(extensions, self.extension, "other")
+        self.shortType = self.type[0]
         self.project = project
+        
 
     def isImageSpriteConfig(self):
-        return self.isData() and basename(self.id) == "jasysprite.json"
+        return self.isText() and basename(self.id) == "jasysprite.json"
 
     def isImageAnimationConfig(self):
-        return self.isData() and basename(self.id) == "jasyanimation.json"
+        return self.isText() and basename(self.id) == "jasyanimation.json"
 
-    def isData(self):
-        return self.type == "data"
+    def isText(self):
+        return self.type == "text"
 
     def isImage(self):
         return self.type == "image"
@@ -70,22 +87,20 @@ class Asset(Item):
     def isVideo(self):
         return self.type == "video"
         
+        
+    def getType(self, short=False):
+        if short:
+            return self.shortType
+        else:
+            return self.type
+
     
-    def getDimensions(self):
-        if self.type == "image":
-            info = ImgInfo(self.getPath()).getInfo()
-            if info is None:
-                raise Exception("Invalid image: %s" % fileId)
-            
-            return [info[0], info[1]]
-        
-        
-    def addSpriteData(self, id, left, top):
+    def addImageSpriteData(self, id, left, top):
         logging.debug("  - Registering sprite location for %s: %s@%sx%s", self.id, id, left, top)
         self.__imageSpriteData = [id, left, top]
         
     
-    def addAnimationData(self, columns, rows, frames=None, layout=None):
+    def addImageAnimationData(self, columns, rows, frames=None, layout=None):
         if layout is not None:
             self.__imageAnimationData = layout
         elif frames is not None:
@@ -94,18 +109,22 @@ class Asset(Item):
             self.__imageAnimationData = [columns, rows]
     
     
-    def addDimensionData(self, width, height):
+    def addImageDimensionData(self, width, height):
         logging.debug("  - Adding dimension data for %s: %sx%s", self.id, width, height)
         self.__imageDimensionData = [width, height]
     
     
-    def export(self):
+    def exportData(self):
         
         if self.isImage():
             if self.__imageDimensionData:
                 image = self.__imageDimensionData[:]
             else:
-                image = self.getDimensions()
+                info = ImgInfo(self.getPath()).getInfo()
+                if info is None:
+                    raise Exception("Invalid image: %s" % fileId)
+
+                image = [info[0], info[1]]
 
             if self.__imageSpriteData:
                 image.append(self.__imageSpriteData)

@@ -16,15 +16,6 @@ from jasy.core.Util import sha1File, getKey
 __all__ = ["AssetManager"]
 
 
-class AssetEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Asset):
-            return obj.export()
-            
-        return json.JSONEncoder.default(self, obj)
-        
-
-
 class AssetManager:
     """
     Manages assets aka images, styles and other files required for a web application.
@@ -102,10 +93,10 @@ class AssetManager:
                     else:
                         spriteImageIndex = sprites.index(spriteImageId)
                         
-                    singleAsset.addSpriteData(spriteImageIndex, singleData["left"], singleData["top"])
+                    singleAsset.addImageSpriteData(spriteImageIndex, singleData["left"], singleData["top"])
                     
                     if "width" in singleData and "height" in singleData:
-                        singleAsset.addDimensionData(singleData["width"], singleData["height"])
+                        singleAsset.addImageDimensionData(singleData["width"], singleData["height"])
                     
                     # Verify that sprite sheet is up-to-date
                     if "checksum" in singleData:
@@ -156,14 +147,14 @@ class AssetManager:
                     columns = getKey(data, "columns", 1)
                     frames = getKey(data, "frames")
                     
-                    animationAsset.addAnimationData(columns, rows, frames)
+                    animationAsset.addImageAnimationData(columns, rows, frames)
                     
                     if frames is None:
                         frames = rows * columns
                     
                 elif "layout" in data:
                     layout = data["layout"]
-                    animationAsset.addAnimationData(None, None, layout=layout)
+                    animationAsset.addImageAnimationData(None, None, layout=layout)
                     frames = len(layout)
                     
                 else:
@@ -359,13 +350,16 @@ class AssetManager:
             
             entry = {}
             
-            exported = assets[fileId].export()
-            if exported:
-                entry["d"] = exported
+            asset = assets[fileId]
+            entry["t"] = asset.getType(short=True)
+
+            assetData = asset.exportData()
+            if assetData:
+                entry["d"] = assetData
             
             if fileId in data:
                 entry.update(data[fileId])
-            
+                
             result[fileId] = entry
         
         # Ignore empty result

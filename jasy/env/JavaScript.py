@@ -13,10 +13,18 @@ from jasy.js.Class import ClassError
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
 
-from jasy.env.State import session, setPermutation, startSection, getPermutation, optimization, formatting
+from jasy.env.State import session, setPermutation, startSection, getPermutation, jsOptimization, jsFormatting, assetManager
 
 
 __all__ = ["storeKernel", "storeCompressed", "storeLoader"]
+
+from jasy.js.parse.Parser import parse
+from jasy.js.output.Compressor import Compressor
+
+compressor = Compressor()
+
+def packCode(code):
+    return Compressor().compress(parse(code))
 
 
 def storeKernel(fileName, debug=False):
@@ -76,17 +84,19 @@ def storeCompressed(classes, fileName, bootCode=""):
         translation = None 
         
         for classObj in classes:
-            result.append(classObj.getCompressed(getPermutation(), translation, optimization, formatting))
+            result.append(classObj.getCompressed(getPermutation(), translation, jsOptimization, jsFormatting))
             
     except ClassError as error:
         raise JasyError("Error during class compression! %s" % error)
 
-    assets = session.getAssetManager().export(classes)
-    if assets:
-        result.append('core.io.Asset.addData(%s);' % assets)
+    assetData = assetManager.export(classes)
+    if assetData:
+        assetCode = 'core.io.Asset.addData(%s);' % assetData
+        result.append(packCode(assetCode))
 
     if bootCode:
-        result.append(bootCode)
+        wrappedBootCode = "(function(){%s})();" % bootCode
+        result.append(packCode(wrappedBootCode))
         
     writeFile(fileName, "".join(result))
 
@@ -122,12 +132,14 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     loader = '"%s"' % '","'.join(files)
     result = []
 
-    assets = session.getAssetManager().export(classes)
-    if assets:
-        result.append('core.io.Asset.addData(%s);' % assets)
+    assetData = assetManager.export(classes)
+    if assetData:
+        assetCode = 'core.io.Asset.addData(%s);' % assetData
+        result.append(packCode(assetCode))
 
-    boot = "function(){%s}" % bootCode if bootCode else "null"
-    result.append('core.io.Queue.load([%s], %s, null, true);' % (loader, boot))
+    wrappedBootCode = "function(){%s}" % bootCode if bootCode else "null"
+    loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loader, wrappedBootCode)
+    result.append(packCode(loaderCode))
 
     writeFile(fileName, "".join(result))
 
