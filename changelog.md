@@ -1,3 +1,14 @@
+Jasy 0.7
+========
+
+- Completely revamped asset handling. See migration guide for hints on how calls in jasyscript.py need to be modified.
+  - Allow modular assets - moved out of kernel.js
+  - Improved internal structure of assets for better compression and faster lookup
+  - Support for multi profile assets (assets from different locations, roots and with different URL layouts)
+  - Support for image sprites and image animations based on configuration files
+- Renamed formatting=>jsFormatting, optimization=>jsOptimization in preparation of new supported types.
+
+
 Jasy 0.6.1
 ==========
 

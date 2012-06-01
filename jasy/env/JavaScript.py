@@ -21,10 +21,21 @@ __all__ = ["storeKernel", "storeCompressed", "storeLoader"]
 from jasy.js.parse.Parser import parse
 from jasy.js.output.Compressor import Compressor
 
+
 compressor = Compressor()
+packCache = {}
+
 
 def packCode(code):
-    return Compressor().compress(parse(code))
+    """Packs the given code by passing it to the compression engine"""
+    
+    if code in packCache:
+       return packCache[code]
+    
+    packed = compressor.compress(parse(code))
+    packCache[code] = packed
+    
+    return packed
 
 
 def storeKernel(fileName, debug=False):
