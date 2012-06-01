@@ -24,7 +24,6 @@ tar xfj Python-$PYTHONVER.tar.bz2 || exit 1
 
 echo ">>> Configuring Python..."
 cd Python-$PYTHONVER || exit 1
-patch -p0 < $UTILFOLDER/python_dbm.patch || exit 1
 export MACOSX_DEPLOYMENT_TARGET=10.5
 ./configure --prefix=$JASYHOME --with-universal-archs=intel > /dev/null || exit 1
 
@@ -64,6 +63,9 @@ pip install Cython || exit 1
 echo ">>> Installing Jasy..."
 pip install $UTILFOLDER/.. || exit 1
 # pip install jasy || exit 1
+
+echo ">>> Installing optional packages..."
+pip install -r $UTILFOLDER/../requirements.txt || exit 1
 
 echo ">>> Zipping files..."
 cd /opt || exit 1
