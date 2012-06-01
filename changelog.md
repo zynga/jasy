@@ -1,12 +1,31 @@
 Jasy 0.7
 ========
 
+Major
+-----
+
 - Completely revamped asset handling. See migration guide for hints on how calls in jasyscript.py need to be modified.
   - Allow modular assets - moved out of kernel.js
   - Improved internal structure of assets for better compression and faster lookup
   - Support for multi profile assets (assets from different locations, roots and with different URL layouts)
   - Support for image sprites and image animations based on configuration files
+  - Added information about asset types so that one can access this information on the client via core.io.Asset APIs.
+- Added support for generating image sprites from source assets
+- Revamped Jasy dependencies to make all dependencies optional (through disabling features). Makes initial installation of Jasy much easier. Added requirements.txt for easy installation of optional packages.
+- Added support for omitting repository updates via "--fast"/"-f" option.
+- Added help screen when no tasks were given and with "-h" option.
+
+Minor
+-----
+
+- Improved categorization of project's content into classes, assets, translations, etc.
+- Improved GIT cloning/updating stability.
+- Improved output during processing/parsing classes for better user feedback during long runs.
 - Renamed formatting=>jsFormatting, optimization=>jsOptimization in preparation of new supported types.
+- Added getSortedClasses() to Resolver to omit initializing Sorter() in jasyscript.py at all, making scripts simpler again.
+- Improved some edge cases for better error handling. Throwing user friendly JasyError instead of plain Exception.
+- Added new utility method getChecksum() to easily detect SHA1 checksum of files.
+- Removed typically unused storeCombined() method.
 
 
 Jasy 0.6.1
