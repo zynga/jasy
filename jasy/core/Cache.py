@@ -38,7 +38,7 @@ class Cache:
                 if storedVersion == version:
                     return
                     
-                logging.debug("Jasy version has been changed. Recreating cache...")
+                logging.info("Jasy version has been changed. Recreating cache...")
                 self.__shelve.close()
                     
             self.__shelve = shelve.open(self.__file, flag="n")
