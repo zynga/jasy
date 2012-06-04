@@ -3,7 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, time
+import time
+from jasy.core.Logging import *
 from jasy.env.State import getPermutation
 
 __all__ = ["Sorter"]
@@ -43,7 +44,7 @@ class Sorter:
             requiredClasses = self.__resolver.getRequiredClasses()
             for classObj in requiredClasses:
                 if not classObj in result:
-                    logging.debug("Start adding with: %s", classObj)
+                    debug("Start adding with: %s", classObj)
                     self.__addSorted(classObj, result)
 
             self.__sortedClasses = result
@@ -63,7 +64,7 @@ class Sorter:
         if classObj in result:
             return
             
-        # logging.debug("Adding class: %s", classObj)
+        # debug("Adding class: %s", classObj)
         result.append(classObj)
 
         # Insert circular dependencies as soon as possible
@@ -130,7 +131,7 @@ class Sorter:
             depName = depObj.getId()
             
             if depName in classMeta.breaks:
-                logging.debug("Manual Break: %s => %s" % (classObj, depObj))
+                debug("Manual Break: %s => %s" % (classObj, depObj))
                 pass
             
             elif depObj in loadDeps:

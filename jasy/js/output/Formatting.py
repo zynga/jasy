@@ -3,9 +3,6 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging
-
-
 __all__ = ["Formatting"]
 
 
@@ -16,7 +13,6 @@ class Formatting:
     key based on the given formatting options.
     """
     
-    __allowed = ("comma", "semicolon")
     __key = None
 
     
@@ -24,9 +20,6 @@ class Formatting:
         self.__formatting = set()
         
         for identifier in args:
-            if not identifier in self.__allowed:
-                logging.warn("Unsupported formatting option: %s", identifier)
-                
             self.__formatting.add(identifier)
             
         self.__key = "+".join(sorted(self.__formatting))

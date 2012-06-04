@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging
+from jasy.core.Logging import *
 from jasy.env.State import session, getPermutation
 from jasy.js.Sorter import Sorter
 
@@ -35,7 +35,7 @@ class Resolver():
         if not className in self.__classes:
             raise Exception("Unknown Class: %s" % className)
             
-        logging.debug("Adding class: %s", className)
+        debug("Adding class: %s", className)
         self.__required.append(self.__classes[className])
         
         del self.__included[:]
@@ -79,7 +79,7 @@ class Resolver():
         if self.__included:
             return self.__included
         
-        logging.info("Detecting dependencies...")
+        info("Detecting dependencies...")
         
         collection = set()
         for classObj in self.__required:
@@ -91,7 +91,7 @@ class Resolver():
                 collection.remove(classObj)
         
         self.__included = collection
-        logging.debug("Including %s classes", len(collection))
+        debug("Including %s classes", len(collection))
         
         return self.__included
         

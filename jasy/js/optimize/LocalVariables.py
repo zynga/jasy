@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import string, logging
+import string
 from jasy.js.tokenize.Tokenizer import keywords
 
 __all__ = ["optimize", "Error"]
@@ -28,8 +28,6 @@ def optimize(node):
     """
     Node to optimize with the global variables to ignore as names
     """
-    
-    logging.debug(">>> Renaming local variables...")
     
     blocked = set(node.scope.shared.keys())
     blocked.update(node.scope.modified)

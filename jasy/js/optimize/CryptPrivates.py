@@ -3,7 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import zlib, string, logging, re
+import zlib, string, re
+from jasy.core.Logging import debug
 
 __all__ = ["optimize", "Error"]
 
@@ -26,19 +27,21 @@ class Error(Exception):
 
 def optimize(node, contextId=""):
     
-    logging.debug(">>> Crypting private fields...")
+    debug("Crypting private fields...")
+    indent()
     
     coll = __search(node)
 
     repl = {}
     for name in coll:
         repl[name] = "__%s" % __encode("%s.%s" % (contextId, name[2:]))
-        logging.debug("Replace private field %s with %s (context: %s)", name, repl[name], contextId)
+        debug("Replace private field %s with %s (context: %s)", name, repl[name], contextId)
     
-    logging.debug("Found %s private fields" % len(repl))
+    debug("Found %s private fields" % len(repl))
     modified, reduction = __replace(node, repl)
     
-    logging.debug("Reduced size by %s bytes" % reduction)
+    debug("Reduced size by %s bytes" % reduction)
+    outdent()
     
     return modified
     

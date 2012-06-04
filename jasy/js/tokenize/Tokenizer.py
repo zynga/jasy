@@ -10,10 +10,11 @@
 #   - Sebastian Werner <info@sebastian-werner.net> (Python Port) (2010)
 #
 
-import re, logging
+import re
 from copy import copy
 from jasy.js.tokenize.Lang import keywords
 from jasy.js.api.Comment import Comment, CommentException
+from jasy.core.Logging import error
 
 __all__ = [ "Tokenizer" ]
 
@@ -221,7 +222,7 @@ class Tokenizer(object):
                 try:
                     self.comments.append(Comment(text, mode, commentStartLine, indent, self.fileId))
                 except CommentException as commentError:
-                    logging.error("Ignoring comment in %s: %s", self.fileId, commentError)
+                    error("Ignoring comment in %s: %s", self.fileId, commentError)
                     
                     
             elif ch == "/" and next == "/":
@@ -253,7 +254,7 @@ class Tokenizer(object):
                 try:
                     self.comments.append(Comment(text, mode, self.line-1, "", self.fileId))
                 except CommentException:
-                    logging.error("Ignoring comment in %s: %s", self.fileId, commentError)
+                    error("Ignoring comment in %s: %s", self.fileId, commentError)
 
             # check for whitespace, also for special cases like 0xA0
             elif ch in "\xA0 \t":

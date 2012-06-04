@@ -3,7 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, re
+import re
+from jasy.core.Logging import debug
 
 __all__ = ["markdown", "markdown2html", "code2highlight"]
 
@@ -18,7 +19,7 @@ try:
         return misaka.html(markdownStr, misakaExt, misakaRender)
 
 except:
-    logging.debug("Misaka is needed to convert Markdown to HTML! Markdown support is disabled.")
+    debug("Misaka is needed to convert Markdown to HTML! Markdown support is disabled.")
     markdown2html = None
 
 
@@ -50,7 +51,7 @@ try:
         return codeblock.sub(replace, html)
         
 except:
-    logging.debug("Pygments is missing. Pygments is used to highlight code! Feature will be disabled.")
+    debug("Pygments is missing. Pygments is used to highlight code! Feature will be disabled.")
     code2highlight = None
 
 

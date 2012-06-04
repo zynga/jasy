@@ -3,8 +3,6 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging
-
 import jasy.js.optimize.CryptPrivates as CryptPrivates
 import jasy.js.optimize.BlockReducer as BlockReducer
 import jasy.js.optimize.LocalVariables as LocalVariables
@@ -35,16 +33,12 @@ class Optimization:
     key based on the given optimizations.
     """
     
-    __allowed = ("wrap", "declarations", "blocks", "variables", "privates")
     __key = None
     
     def __init__(self, *args):
         self.__optimizations = set()
         
         for flag in args:
-            if not flag in self.__allowed:
-                logging.warn("Unsupported optimization: %s", flag)
-                
             self.__optimizations.add(flag)
 
 
