@@ -102,7 +102,7 @@ class Options:
             
     def showHelp(self, indent=14):
 
-        info("Options:")
+        print("Options:")
         for name in self.__defaults:
             col = len(name)
             msg = colorize("  --%s" % name, "bold")
@@ -120,7 +120,7 @@ class Options:
                     
                 msg += colorize(self.__help[name], "magenta")
             
-            info(msg)
+            print(msg)
         
 
     def add(self, name, accept=bool, value=None, short=None, help=""):

@@ -65,8 +65,10 @@ if options.log:
 import jasy
 
 # Print out some info
-logging.info("Jasy %s" % jasy.__version__)
-logging.debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
+from jasy.core.Logging import *
+
+info("Jasy %s" % jasy.__version__)
+debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
 
 if options.version:
     sys.exit(0)
@@ -100,7 +102,7 @@ if jasyscript is None or not os.path.isfile(jasyscript):
 oldcwd = os.getcwd()
 os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
 if os.getcwd() != oldcwd:
-    logging.info("Running from %s" % os.getcwd())
+    info("Running from %s" % os.getcwd())
 jasyscript = os.path.basename(jasyscript)
 
 # Extend path
@@ -148,9 +150,9 @@ def main():
         
         if not tasks or options.help:
             header("Help")
-            logging.info("Usage: jasy [options...] task1 [flags...] [task2 [flags...]]")
+            info("Usage: jasy [options...] task1 [flags...] [task2 [flags...]]")
             options.showHelp()
-            logging.error("Tasks: ")
+            print("Tasks: ")
             printTasks()
             
             if options.help:
@@ -162,19 +164,19 @@ def main():
         for entry in tasks:
             executeTask(entry["task"], **entry["params"])
     
-    except JasyError as error:
-        sys.stderr.write("%s\n" % error)
+    except JasyError as obj:
+        error("%s\n" % obj)
         sys.exit(1)
 
     except KeyboardInterrupt:
-        sys.stderr.write("Build interrupted!\n")
+        error("Build interrupted!")
         sys.exit(2)
 
     sys.exit(0)
 
 if options.stats:
     
-    logging.info("Running in profiling mode...")
+    info("Running in profiling mode...")
     
     import cProfile
     cProfile.run("main()", "jasyprofile.txt")

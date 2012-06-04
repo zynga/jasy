@@ -249,7 +249,7 @@ class SpritePacker():
         
         if external:
             for block in external:
-                info('- Ignored file %s (%dx%dpx)' % (block.image.relPath, block.w, block.h))
+                info('Ignored file %s (%dx%dpx)' % (block.image.relPath, block.w, block.h))
         
         return sheets, len(scores)
 
@@ -377,6 +377,8 @@ class SpritePacker():
             # Export
             sheet.write(os.path.join(self.base, path, name), debug)
             data[name] = sheet.export()
+            
+        outdent()
 
         # Generate JSON
         info('Exporting data...')
@@ -390,11 +392,15 @@ class SpritePacker():
         """Pack images inside a dir into sprite sheets"""
 
         info('Packing sprites in: %s' % os.path.join(self.base, path))
+        indent()
+        
         self.files = []
         self.addDir(path, recursive=recursive)
         info('Found %d images' % len(self.files))
 
         if len(self.files) > 0:
             self.generate(path, autorotate, debug)
+            
+        outdent()
 
 

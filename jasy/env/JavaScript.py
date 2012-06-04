@@ -98,10 +98,10 @@ def storeCompressed(classes, fileName, bootCode=""):
         translation = None 
         
         for classObj in classes:
-            debug("Adding class %s", classObj.id)
-            indent()
+            #debug("Adding class %s", classObj.id)
+            #indent()
             result.append(classObj.getCompressed(getPermutation(), translation, jsOptimization, jsFormatting))
-            outdent()
+            #outdent()
             
     except ClassError as error:
         raise JasyError("Error during class compression! %s" % error)
