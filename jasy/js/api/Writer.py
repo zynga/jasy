@@ -292,8 +292,6 @@ class ApiWriter():
             for className in classes:
                 apiData[className] = classes[className].getApi()
                 highlightedCode[className] = classes[className].getHighlightedCode()
-                
-        success("Data was collected")
         
         
         
@@ -303,7 +301,6 @@ class ApiWriter():
         
         header("Processing API Data...")
         data, index, search = self.process(apiData, internals=showInternals, privates=showPrivates)
-        success("Data was processed")
         
         
         
@@ -346,8 +343,6 @@ class ApiWriter():
         info("Writing index...")
         writeFile(os.path.join(distFolder, "meta-index.%s" % extension), encode(index, "meta-index"))
         writeFile(os.path.join(distFolder, "meta-search.%s" % extension), encode(search, "meta-search"))
-        
-        success("Files were stored")
         
 
 

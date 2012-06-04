@@ -270,7 +270,9 @@ class Session():
             logging.info(colorize(colorize("Permutation %s/%s:" % (pos+1, length), "bold"), "magenta"))
             setPermutation(current)
             yield current
-            logging.info("")
+            
+            if pos+1 != length:
+                logging.info("")
 
 
     def exportFields(self):
