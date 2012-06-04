@@ -604,6 +604,7 @@ class ApiWriter():
         #
         
         info("Merging Named Classes...")
+        indent()
         
         for className in list(apiData):
             classApi = apiData[className]
@@ -661,7 +662,8 @@ class ApiWriter():
                         destApi.members[memberName]["from"] = className
                         destApi.members[memberName]["fromLink"] = "member:%s~%s" % (className, memberName)
 
-
+        outdent()
+        
 
         #
         # Connecting Uses / UsedBy
@@ -695,6 +697,7 @@ class ApiWriter():
         #
         
         info("Collecting Errors...")
+        indent()
         
         for className in sorted(apiData):
             classApi = apiData[className]
@@ -727,16 +730,20 @@ class ApiWriter():
                         })
                         
             if errors:
-                warn("- Found errors in %s", className)
+                warn("Found errors in %s", className)
                 errorsSorted = sorted(errors, key=lambda entry: entry["line"])
                 
+                indent()
                 for entry in errorsSorted:
                     if entry["name"]:
-                        warn("  - %s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
+                        warn("%s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
                     else:
-                        warn("  - %s (line %s)", entry["kind"], entry["line"])
+                        warn("%s (line %s)", entry["kind"], entry["line"])
                 
+                outdent()
                 classApi.errors = errorsSorted
+                
+        outdent()
         
         
         
@@ -806,13 +813,14 @@ class ApiWriter():
         #
 
         info("Collecting Package Docs...")
+        indent()
         
         # Inject existing package docs into api data
         for project in session.getProjects():
             docs = project.getDocs()
             
             for packageName in docs:
-                debug("- Creating package documentation %s", packageName)
+                debug("Creating package documentation %s", packageName)
                 apiData[packageName] = docs[packageName].getApi()
         
         
@@ -822,7 +830,7 @@ class ApiWriter():
             packageName = splits[0]
             for split in splits[1:]:
                 if not packageName in apiData:
-                    warn("- Missing documentation for package %s", packageName)
+                    warn("Missing documentation for package %s", packageName)
                     apiData[packageName] = ApiData(packageName)
                     apiData[packageName].main = {
                         "type" : "Package",
@@ -838,7 +846,7 @@ class ApiWriter():
             packageName = ".".join(splits[:-1])
             if packageName:
                 package = apiData[packageName]
-                debug("- Registering class %s in parent %s", className, packageName)
+                # debug("- Registering class %s in parent %s", className, packageName)
                 
                 entry = {
                     "name" : splits[-1],
@@ -858,6 +866,8 @@ class ApiWriter():
                     package.content = [entry]
                 else:
                     package.content.append(entry)
+                    
+        outdent()
 
 
 

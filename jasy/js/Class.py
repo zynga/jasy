@@ -83,9 +83,11 @@ class Class(Item):
         tree = self.project.getCache().read(field, self.mtime)
         if not tree:
             info("Processing class %s %s...", colorize(self.id, "bold"), colorize("[%s]" % context, "cyan"))
-
+            
+            indent()
             tree = Parser.parse(self.getText(), self.id)
             ScopeScanner.scan(tree)
+            outdent()
             
             self.project.getCache().store(field, tree, self.mtime, True)
         
@@ -108,6 +110,7 @@ class Class(Item):
                 msg += colorize(" [%s]" % context, "cyan")
                 
             info("%s..." % msg)
+            indent()
 
             # Apply permutation
             if permutation:
@@ -119,6 +122,7 @@ class Class(Item):
             jasy.js.clean.Unused.cleanup(tree)
         
             self.project.getCache().store(field, tree, self.mtime, True)
+            outdent()
 
         return tree
 

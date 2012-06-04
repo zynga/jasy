@@ -315,7 +315,7 @@ class AssetManager:
         
         # Compile filter expressions
         matcher = "^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints])
-        debug("Matching assets using: %s" % matcher)
+        debug("Compiled asset matcher: %s" % matcher)
         
         return re.compile(matcher)
         
@@ -329,6 +329,8 @@ class AssetManager:
 
         copyAssetFolder = prependPrefix(assetFolder)
         filterExpr = self.__compileFilterExpr(classes)
+        
+        info("Deploying assets...")
         
         counter = 0
         length = len(assets)
@@ -350,6 +352,9 @@ class AssetManager:
 
     def export(self, classes=None):
         """Exports asset data for the source version using assets from their original paths."""
+        
+        info("Exporting assets...")
+        indent()
         
         # Processing assets
         assets = self.__assets
@@ -380,9 +385,15 @@ class AssetManager:
             return None
 
         # Exporting data
-        return toJson({
+        json = toJson({
             "assets" : self.__structurize(result),
             "profiles" : self.__profiles,
             "sprites" : self.__sprites
         })
+        
+        outdent()
+        info("Exported %s assets", len(result))
+        
+        return json
+        
 

@@ -50,7 +50,7 @@ __level = 0
 def level(text):
     global __level
     
-    if __level == 0:
+    if __level == 0 or text == "":
         return text
     elif __level == 1:
         return "- %s" % text

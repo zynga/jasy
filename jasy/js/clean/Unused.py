@@ -35,13 +35,18 @@ def cleanup(node):
     x = 0
     cleaned = False
     
+    debug("Removing unused variables...")
     while True:
         x = x + 1
-        debug("Removing unused variables [Iteration: %s]...", x)
+        #debug("Removing unused variables [Iteration: %s]...", x)
+        indent()
+
         if __cleanup(node):
             ScopeScanner.scan(node)
             cleaned = True
+            outdent()
         else:
+            outdent()
             break
         
     return cleaned

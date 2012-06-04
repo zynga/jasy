@@ -36,6 +36,9 @@ class Sorter:
         """ Returns the sorted class list (caches result) """
 
         if not self.__sortedClasses:
+            debug("Sorting classes...")
+            indent()
+            
             classNames = self.__names
             for className in classNames:
                 self.__getLoadDeps(classNames[className])
@@ -47,6 +50,7 @@ class Sorter:
                     debug("Start adding with: %s", classObj)
                     self.__addSorted(classObj, result)
 
+            outdent()
             self.__sortedClasses = result
 
         return self.__sortedClasses

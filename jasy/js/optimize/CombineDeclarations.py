@@ -70,7 +70,7 @@ def __combineSiblings(node):
 
         # Combine declarations of VAR statements
         if child.type == "var" and prevChild.type == "var":
-            debug("Combining var statement at line %s" % child.line)
+            # debug("Combining var statement at line %s" % child.line)
             
             # Fix loop through casting node to list()
             for variable in list(child):

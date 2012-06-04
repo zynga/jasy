@@ -84,6 +84,7 @@ def __cleanup(node):
         check = __checkCondition(node.condition)
         if check is not None:
             optimized = True
+            debug("Optimizing if/else at line %s", node.line)
             
             if check is True:
                 node.parent.replace(node, node.thenPart)
@@ -98,6 +99,7 @@ def __cleanup(node):
     if node.type == "hook":
         check = __checkCondition(node[0])
         if check is not None:
+            debug("Optimizing hook at line %s", node.line)
             optimized = True
         
             if check is True:
@@ -134,6 +136,7 @@ def __cleanup(node):
                 matcher = fallback
                 
             node.parent.replace(node, matcher)
+            debug("Optimizing switch at line %s", node.line)
             optimized = True
     
     return optimized

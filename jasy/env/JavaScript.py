@@ -90,6 +90,7 @@ def storeCompressed(classes, fileName, bootCode=""):
     """
     
     info("Merging compressed output of %s classes...", len(classes))
+    indent()
     result = []
     
     try:
@@ -97,7 +98,10 @@ def storeCompressed(classes, fileName, bootCode=""):
         translation = None 
         
         for classObj in classes:
+            debug("Adding class %s", classObj.id)
+            indent()
             result.append(classObj.getCompressed(getPermutation(), translation, jsOptimization, jsFormatting))
+            outdent()
             
     except ClassError as error:
         raise JasyError("Error during class compression! %s" % error)
@@ -110,7 +114,8 @@ def storeCompressed(classes, fileName, bootCode=""):
     if bootCode:
         wrappedBootCode = "(function(){%s})();" % bootCode
         result.append(packCode(wrappedBootCode))
-        
+
+    outdent()
     writeFile(fileName, "".join(result))
 
 
@@ -127,6 +132,7 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     """
     
     info("Generating loader for %s classes...", len(classes))
+    indent()
     
     main = session.getMain()
     files = []
@@ -154,6 +160,7 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loader, wrappedBootCode)
     result.append(packCode(loaderCode))
 
+    outdent()
     writeFile(fileName, "".join(result))
 
 

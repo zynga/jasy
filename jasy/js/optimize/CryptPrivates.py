@@ -35,7 +35,7 @@ def optimize(node, contextId=""):
     repl = {}
     for name in coll:
         repl[name] = "__%s" % __encode("%s.%s" % (contextId, name[2:]))
-        debug("Replace private field %s with %s (context: %s)", name, repl[name], contextId)
+        debug("Replacing private field %s with %s (context: %s)", name, repl[name], contextId)
     
     debug("Found %s private fields" % len(repl))
     modified, reduction = __replace(node, repl)

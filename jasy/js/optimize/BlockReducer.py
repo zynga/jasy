@@ -340,7 +340,7 @@ def fixParens(node):
         
         needsParens = prio < parentPrio
         if needsParens:
-            debug("Adding parens around %s node at line: %s", node.type, node.line)
+            # debug("Adding parens around %s node at line: %s", node.type, node.line)
             node.parenthesized = needsParens
 
 
