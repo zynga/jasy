@@ -82,26 +82,31 @@ class Class(Item):
         field = "tree[%s]" % self.id
         tree = self.project.getCache().read(field, self.mtime)
         if not tree:
-            
-            logging.info("- Processing class %s [%s]...", colorize(self.id, "bold"), context)
+            logging.info("- Processing class %s %s...", colorize(self.id, "bold"), colorize("[%s]" % context, "cyan"))
+
             tree = Parser.parse(self.getText(), self.id)
             ScopeScanner.scan(tree)
+            
             self.project.getCache().store(field, tree, self.mtime, True)
         
         return tree
     
     
     def __getOptimizedTree(self, permutation=None, context=None):
+        """Returns an optimized tree with permutations applied"""
 
         field = "opt-tree[%s]-%s" % (self.id, permutation)
         tree = self.project.getCache().read(field, self.mtime)
         if not tree:
-            tree = copy.deepcopy(self.__getTree("%s-plain" % context))
+            tree = copy.deepcopy(self.__getTree("%s:plain" % context))
 
             # Logging
-            msg = "- Processing class %s [%s]" % (colorize(self.id, "bold"), context)
+            msg = "- Processing class %s" % colorize(self.id, "bold")
             if permutation:
                 msg += colorize(" (%s)" % permutation, "grey")
+            if context:
+                msg += colorize(" [%s]" % context, "cyan")
+                
             logging.info("%s..." % msg)
 
             # Apply permutation
@@ -316,8 +321,8 @@ class Class(Item):
         size = self.project.getCache().read(field, self.mtime)
         
         if size is None:
-            compressed = self.getCompressed(context="size-compressed")
-            optimized = self.getCompressed(permutation=defaultPermutation, optimization=defaultOptimization, context="size-optimized")
+            compressed = self.getCompressed(context="size")
+            optimized = self.getCompressed(permutation=defaultPermutation, optimization=defaultOptimization, context="size")
             zipped = zlib.compress(optimized.encode("utf-8"))
             
             size = {
