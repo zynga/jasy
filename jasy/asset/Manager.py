@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, re, json, os, fnmatch
+import re, json, os, fnmatch
 from os.path import basename, dirname, relpath, normpath
 
 from jasy.env.File import *
@@ -12,6 +12,7 @@ from jasy.env.State import session, getPermutation, prependPrefix
 from jasy.asset.Asset import Asset
 from jasy.core.Error import JasyError
 from jasy.core.Util import sha1File, getKey
+from jasy.core.Logging import *
 
 __all__ = ["AssetManager"]
 
@@ -34,6 +35,7 @@ class AssetManager:
     def __init__(self):
         self.__data = {}
         
+        header("Preparing assets")
         
         # Registry for profiles aka asset groups
         self.__profiles = []
@@ -48,7 +50,7 @@ class AssetManager:
         self.__processSprites()
         self.__processAnimations()
         
-        logging.debug("Initialized %s assets" % len(assets))
+        info("Initialized %s assets" % len(assets))
 
 
     def __processSprites(self):
@@ -58,11 +60,12 @@ class AssetManager:
         configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
         
         if configs:
-            logging.info("Processing %s image sprite configs...", len(configs))
+            info("Processing %s image sprite configs...", len(configs))
         
         sprites = []
+        indent()
         for fileId in configs:
-            logging.info("- Processing %s...", fileId)
+            debug("Processing %s...", fileId)
             
             asset = assets[fileId]
             spriteBase = dirname(fileId)
@@ -72,11 +75,12 @@ class AssetManager:
             except ValueError as err:
                 raise JasyError("Could not parse jasysprite.json at %s: %s" % (fileId, err))
                 
+            indent()
             for spriteImage in spriteConfig:
                 spriteImageId = "%s/%s" % (spriteBase, spriteImage)
                 
                 singleRelPaths = spriteConfig[spriteImage]
-                logging.debug("  - Image %s combines %s images", spriteImageId, len(singleRelPaths))
+                debug("Image %s combines %s images", spriteImageId, len(singleRelPaths))
 
                 for singleRelPath in singleRelPaths:
                     singleId = "%s/%s" % (spriteBase, singleRelPath)
@@ -85,7 +89,7 @@ class AssetManager:
                     if singleId in assets:
                         singleAsset = assets[singleId]
                     else:
-                        logging.info("Creating new asset: %s", singleId)
+                        info("Creating new asset: %s", singleId)
                         singleAsset = Asset(None)
                         assets[singleId] = singleAsset
                         
@@ -105,14 +109,16 @@ class AssetManager:
                         fileChecksum = singleAsset.getChecksum()
                         storedChecksum = singleData["checksum"]
                         
-                        logging.info("Checksum Compare: %s <=> %s", fileChecksum[0:6], storedChecksum[0:6])
+                        debug("Checksum Compare: %s <=> %s", fileChecksum[0:6], storedChecksum[0:6])
                         
                         if storedChecksum != fileChecksum:
                             raise JasyError("Sprite Sheet is not up-to-date. Checksum of %s differs.", singleId)
         
-            logging.debug("  - Deleting sprite config from assets: %s", fileId)
+            outdent()
+            debug("Deleting sprite config from assets: %s", fileId)
             del assets[fileId]
             
+        outdent()
         self.__sprites = sprites
         
         
@@ -124,10 +130,11 @@ class AssetManager:
         configs = [fileId for fileId in assets if assets[fileId].isImageAnimationConfig()]
         
         if configs:
-            logging.info("Processing %s image animation configs...", len(configs))
+            info("Processing %s image animation configs...", len(configs))
         
+        indent()
         for fileId in configs:
-            logging.info("- Processing %s...", fileId)
+            debug("Processing %s...", fileId)
         
             asset = assets[fileId]
             base = dirname(fileId)
@@ -164,10 +171,12 @@ class AssetManager:
                 else:
                     raise JasyError("Invalid image frame data for: %s" % imageId)
 
-                logging.debug("  - Animation %s has %s frames", imageId, frames)
+                debug("  - Animation %s has %s frames", imageId, frames)
 
-            logging.debug("  - Deleting animation config from assets: %s", fileId)
+            debug("  - Deleting animation config from assets: %s", fileId)
             del assets[fileId]
+            
+        outdent()
         
     
     
@@ -250,7 +259,7 @@ class AssetManager:
         
         for fileId in runtime:
             if not fileId in assets:
-                logging.debug("Unknown asset: %s" % fileId)
+                debug("Unknown asset: %s" % fileId)
                 continue
         
             if not fileId in data:
@@ -289,7 +298,7 @@ class AssetManager:
                 current = current[split]
             
             # Create entry
-            logging.debug("Adding %s..." % fileId)
+            debug("Adding %s..." % fileId)
             current[basename] = data[fileId]
         
         return root
@@ -306,7 +315,7 @@ class AssetManager:
         
         # Compile filter expressions
         matcher = "^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints])
-        logging.debug("Matching assets using: %s" % matcher)
+        debug("Matching assets using: %s" % matcher)
         
         return re.compile(matcher)
         
@@ -335,7 +344,7 @@ class AssetManager:
             if updateFile(srcFile, dstFile):
                 counter += 1
         
-        logging.info("Updated %s/%s files" % (counter, length))
+        info("Updated %s/%s files" % (counter, length))
 
 
 

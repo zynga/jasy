@@ -3,12 +3,13 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, logging, json, re
+import os, json, re
 
 from jasy.core.Cache import Cache
 from jasy.core.Repository import cloneGit, isGitRepositoryUrl
 from jasy.core.Error import JasyError
 from jasy.core.Util import getKey
+from jasy.core.Logging import *
 
 # Item types
 from jasy.core.Item import Item
@@ -149,7 +150,8 @@ class Project():
         # Read fields (for injecting data into the project and build permuations)
         self.__fields = getKey(config, "fields", {})
 
-        logging.info("Initializing project: %s", self.__name)
+        debug("Initializing project: %s", self.__name)
+        indent()
             
         # Processing custom content section. Only supports classes and assets.
         if "content" in config:
@@ -196,10 +198,11 @@ class Project():
                 summary.append("%s %s" % (len(content), section))
 
         if summary:
-            logging.debug("- Kind: %s", self.kind)
-            logging.debug("- Found: %s", ", ".join(summary))
+            debug("Kind: %s", self.kind)
+            debug("Found: %s", ", ".join(summary))
         else:
-            logging.error("- Empty project?!?")
+            error("Empty project?!?")
+        outdent()
 
 
 
@@ -219,8 +222,9 @@ class Project():
         
         
     def __addContent(self, content):
-        logging.debug("- Adding manual content")
+        debug("Adding manual content")
         
+        indent()
         for fileId in content:
             fileContent = content[fileId]
             if len(fileContent) == 0:
@@ -256,13 +260,16 @@ class Project():
             
             # Create instance
             item = construct(self, fileId).attach(filePath)
-            logging.debug("  - Registering %s %s" % (item.kind, fileId))
+            debug("Registering %s %s" % (item.kind, fileId))
             dist[fileId] = item
+            
+        outdent()
         
         
     def __addDir(self, directory, distname):
         
-        logging.debug("- Scanning directory: %s" % directory)
+        debug("Scanning directory: %s" % directory)
+        indent()
         
         path = os.path.join(self.__path, directory)
         if not os.path.exists(path):
@@ -289,6 +296,8 @@ class Project():
                 fullPath = os.path.join(dirPath, fileName)
                 
                 self.addFile(relPath, fullPath, distname)
+        
+        outdent()
 
 
     def addFile(self, relPath, fullPath, distname, override=False):
@@ -331,7 +340,7 @@ class Project():
 
         # Create instance
         item = construct(self, fileId).attach(fullPath)
-        logging.debug("  - Registering %s %s" % (item.kind, fileId))
+        debug("Registering %s %s" % (item.kind, fileId))
         dist[fileId] = item
         
         
@@ -420,7 +429,7 @@ class Project():
     def clean(self):
         """Clears the cache of the project"""
         
-        logging.info("Clearing cache of %s..." % self.__name)
+        info("Clearing cache of %s..." % self.__name)
         self.__cache.clear()
         
     def close(self):

@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, itertools, time, atexit, json, os
+import itertools, time, atexit, json, os
 
 from jasy.i18n.Translation import Translation
 from jasy.i18n.LocaleData import *
@@ -15,7 +15,7 @@ from jasy.core.Permutation import Permutation
 from jasy.core.Error import JasyError
 from jasy.env.State import setPermutation, header
 from jasy.core.Json import toJson
-from jasy.core.Logging import colorize
+from jasy.core.Logging import *
 
 __all__ = ["Session"]
 
@@ -34,8 +34,6 @@ class Session():
         self.__fields = {}
         
         if os.path.exists("jasyproject.json"):
-            header("Initializing projects...")
-            
             try:
                 self.addProject(getProjectFromPath("."))
             except JasyError as jasyerr:
@@ -52,7 +50,7 @@ class Session():
     def close(self):
         """Closes the session and stores cache to the harddrive."""
 
-        logging.debug("Closing session...")
+        debug("Closing session...")
         for project in self.__projects:
             project.close()
         
@@ -99,13 +97,15 @@ class Session():
         """
         
         result = getProjectDependencies(project)
-        logging.info("Adding %s projects..." % len(result))
+        header("Registering projects...")
+        info("Adding %s projects..." % len(result))
+        indent()
         
         for project in result:
             
             # Append to list
             relpath = os.path.relpath(project.getPath(), os.getcwd())
-            logging.info("- Project %s %s", project.getName(), colorize("(" + relpath + ")", "grey"))
+            info("%s from %s", colorize(project.getName(), "bold"), colorize(relpath, "grey"))
             self.__projects.append(project)
             
             # Import project defined fields which might be configured using "activateField()"
@@ -129,6 +129,8 @@ class Session():
                         raise JasyError("Field '%s' uses unknown detection class %s." % (name, detect))
                 
                 self.__fields[name] = entry
+                
+        outdent()
         
         
     def getProjects(self):
@@ -267,12 +269,12 @@ class Session():
         length = len(permutations)
         
         for pos, current in enumerate(permutations):
-            logging.info(colorize(colorize("Permutation %s/%s:" % (pos+1, length), "bold"), "magenta"))
+            info(colorize(colorize("Permutation %s/%s:" % (pos+1, length), "bold"), "magenta"))
             setPermutation(current)
             yield current
             
             if pos+1 != length:
-                logging.info("")
+                info("")
 
 
     def exportFields(self):

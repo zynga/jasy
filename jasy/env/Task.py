@@ -89,7 +89,6 @@ def executeTask(name, **kwargs):
     """Executes the given task by name with any optional named arguments"""
     
     if name in __taskRegistry:
-        header("Executing task %s..." % name)
         try:
             __taskRegistry[name](**kwargs)
         except JasyError as err:

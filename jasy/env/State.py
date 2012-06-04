@@ -3,8 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, os, sys
-from jasy.core.Logging import header
+import os, sys
+from jasy.core.Logging import *
 
 
 # ---------------------------------------------
@@ -33,10 +33,10 @@ def setPrefix(path):
 
     if path is None:
         __prefix = None
-        logging.info("Resetting prefix to working directory")
+        debug("Resetting prefix to working directory")
     else:
         __prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
-        logging.info("Setting prefix to: %s" % __prefix)
+        debug("Setting prefix to: %s" % __prefix)
     
 def getPrefix():
     global __prefix

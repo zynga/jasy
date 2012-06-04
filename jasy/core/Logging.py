@@ -5,7 +5,7 @@
 
 import logging, sys
 
-__all__ = ["colorize", "header", "error", "warn", "info", "debug", "success"]
+__all__ = ["colorize", "header", "error", "warn", "info", "debug", "indent", "outdent"]
 
 
 
@@ -38,28 +38,45 @@ def colorize(text, color="red"):
         
     entry = __colors[color]
     return "%s%s%s" % (entry[0], text, entry[1])
-    
-    
-    
+
+
+
 # ---------------------------------------------
 # Logging API
 # ---------------------------------------------
 
+__level = 0
+
+def level(text):
+    global __level
+    
+    if __level == 0:
+        return text
+    elif __level == 1:
+        return "- %s" % text
+    else:
+        return "%s- %s" % ("  " * (__level-1), text)
+
+def indent():
+    global __level
+    __level += 1
+
+def outdent():
+    global __level
+    __level -= 1
+    
 def error(text, *argv):
-    logging.warn(colorize(colorize(text, "red"), "bold"), *argv)
+    logging.warn(level(colorize(colorize(text, "red"), "bold")), *argv)
 
 def warn(text, *argv):
-    logging.warn(colorize(text, "red"), *argv)
+    logging.warn(level(colorize(text, "red")), *argv)
 
 def info(text, *argv):
-    logging.info(text, *argv)
+    logging.info(level(text), *argv)
 
 def debug(text, *argv):
-    logging.debug(text, *argv)
+    logging.debug(level(text), *argv)
 
-def success(text, *argv):
-    logging.info(colorize(colorize("+++ ", "bold"), "green") + colorize(text, "green"), *argv)
-    
 def header(title):
     logging.info("")
     logging.info(colorize(colorize(">>> %s" % title.upper(), "blue"), "bold"))

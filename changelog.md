@@ -1,3 +1,10 @@
+Jasy 0.7.1
+==========
+
+- Performance optimizations
+- Improved logging output
+
+
 Jasy 0.7
 ========
 
