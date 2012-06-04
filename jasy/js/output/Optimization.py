@@ -95,7 +95,7 @@ class Optimization:
 
         if "privates" in enabled:
             try:
-                CryptPrivates.optimize(tree)
+                CryptPrivates.optimize(tree, tree.fileId)
             except CryptPrivates.Error as err:
                 raise Error(err)
                 
