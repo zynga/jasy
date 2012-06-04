@@ -80,7 +80,7 @@ assignOperators = ["|", "^", "&", "<<", ">>", ">>>", "+", "-", "*", "/", "%"]
 #
 
 class Token: 
-    pass
+    __slots__ = ["type", "start", "line", "assignOp", "end", "value"]
 
 
 class ParseError(Exception):
