@@ -353,8 +353,6 @@ class AssetManager:
     def export(self, classes=None):
         """Exports asset data for the source version using assets from their original paths."""
         
-        #info("Filtering assets...")
-        
         # Processing assets
         assets = self.__assets
         data = self.__data
@@ -381,7 +379,6 @@ class AssetManager:
         
         # Ignore empty result
         if not result:
-            outdent()
             return None
 
         # Exporting data
