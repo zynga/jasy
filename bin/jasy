@@ -147,7 +147,7 @@ def main():
         tasks = options.getTasks()
         
         if not tasks or options.help:
-            startSection("Help")
+            header("Help")
             logging.info("Usage: jasy [options...] task1 [flags...] [task2 [flags...]]")
             options.showHelp()
             logging.error("Tasks: ")
@@ -179,7 +179,7 @@ if options.stats:
     import cProfile
     cProfile.run("main()", "jasyprofile.txt")
     
-    startSection("Analysing data...")
+    header("Analysing data...")
     import pstats
     stats = pstats.Stats("jasyprofile.txt")
     

@@ -7,6 +7,7 @@ import logging
 
 from jasy.js.util import *
 from jasy.js.api.Text import *
+from jasy.core.Logging import *
 
 
 __all__ = ["ApiData"]
@@ -69,7 +70,7 @@ class ApiData():
     def removeUses(self, uses):
         self.uses.remove(uses)
         
-    def addPermutations(self, permutations):
+    def addFields(self, permutations):
         self.permutations = permutations
 
 
@@ -85,10 +86,10 @@ class ApiData():
         
         try:
             if not self.__processTree(tree):
-                self.warn("- Unsupported file to process", 1)
+                self.warn("  - Unsupported file to process", 1)
                 
         except Exception as error:
-            self.warn("- Error during processing file: %s" % error, 1)
+            self.warn("  - Error during processing file: %s" % error, 1)
     
     
     def __processTree(self, tree):
@@ -363,7 +364,7 @@ class ApiData():
 
 
     def warn(self, message, line):
-        logging.warn("%s at line %s in %s" % (message, line, self.id))
+        warn("%s at line %s in %s" % (message, line, self.id))
 
 
     def setMain(self, mainType, mainNode, exportName):

@@ -13,7 +13,7 @@ from jasy.core.Project import Project, getProjectFromPath, getProjectDependencie
 from jasy.core.Permutation import Permutation
 
 from jasy.core.Error import JasyError
-from jasy.env.State import setPermutation, startSection
+from jasy.env.State import setPermutation, header
 from jasy.core.Json import toJson
 from jasy.core.Logging import colorize
 
@@ -34,7 +34,7 @@ class Session():
         self.__fields = {}
         
         if os.path.exists("jasyproject.json"):
-            startSection("Initializing projects...")
+            header("Initializing projects...")
             
             try:
                 self.addProject(getProjectFromPath("."))
@@ -261,7 +261,7 @@ class Session():
     def permutate(self):
         """ Generator method for permutations for improving output capabilities """
         
-        startSection("Processing permutations...")
+        header("Processing permutations...")
         
         permutations = self.getPermutations()
         length = len(permutations)

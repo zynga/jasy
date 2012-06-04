@@ -13,7 +13,7 @@ from jasy.js.Class import ClassError
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
 
-from jasy.env.State import session, setPermutation, startSection, getPermutation, jsOptimization, jsFormatting, assetManager
+from jasy.env.State import session, setPermutation, header, getPermutation, jsOptimization, jsFormatting, assetManager
 
 
 __all__ = ["storeKernel", "storeCompressed", "storeLoader"]
@@ -51,7 +51,7 @@ def storeKernel(fileName, debug=False):
     exclude it from the real other generated output files.
     """
     
-    startSection("Storing kernel...")
+    header("Storing kernel...")
     
     # This exports all field values from the session
     fields = session.exportFields()

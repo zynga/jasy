@@ -5,7 +5,7 @@
 
 import logging, sys
 
-__all__ = ["colorize", "startSection"]
+__all__ = ["colorize", "header", "error", "warn", "info", "debug", "success"]
 
 
 
@@ -42,10 +42,25 @@ def colorize(text, color="red"):
     
     
 # ---------------------------------------------
-# Global logging addons
+# Logging API
 # ---------------------------------------------
 
-def startSection(title):
+def error(text, *argv):
+    logging.warn(colorize(colorize(text, "red"), "bold"), *argv)
+
+def warn(text, *argv):
+    logging.warn(colorize(text, "red"), *argv)
+
+def info(text, *argv):
+    logging.info(text, *argv)
+
+def debug(text, *argv):
+    logging.debug(text, *argv)
+
+def success(text, *argv):
+    logging.info(colorize(colorize("+++ ", "bold"), "green") + colorize(text, "green"), *argv)
+    
+def header(title):
     logging.info("")
     logging.info(colorize(colorize(">>> %s" % title.upper(), "blue"), "bold"))
     logging.info(colorize("-------------------------------------------------------------------------------", "blue"))

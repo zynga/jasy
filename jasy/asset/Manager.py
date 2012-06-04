@@ -56,7 +56,9 @@ class AssetManager:
         
         assets = self.__assets
         configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
-        logging.info("Processing %s image sprite configs...", len(configs))
+        
+        if configs:
+            logging.info("Processing %s image sprite configs...", len(configs))
         
         sprites = []
         for fileId in configs:
@@ -120,7 +122,9 @@ class AssetManager:
         
         assets = self.__assets
         configs = [fileId for fileId in assets if assets[fileId].isImageAnimationConfig()]
-        logging.info("Processing %s image animation configs...", len(configs))
+        
+        if configs:
+            logging.info("Processing %s image animation configs...", len(configs))
         
         for fileId in configs:
             logging.info("- Processing %s...", fileId)

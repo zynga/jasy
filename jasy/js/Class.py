@@ -26,6 +26,8 @@ from jasy.js.util import *
 
 from jasy.i18n.Translation import hasText
 
+from jasy.core.Logging import colorize
+
 try:
     from pygments import highlight
     from pygments.lexers import JavascriptLexer
@@ -43,7 +45,7 @@ defaultPermutation = getPermutation({"debug" : False})
 __all__ = ["Class", "Error"]
 
 
-def collectPermutationKeys(node, keys=None):
+def collectAccessedFields(node, keys=None):
     
     if keys is None:
         keys = set()
@@ -57,7 +59,7 @@ def collectPermutationKeys(node, keys=None):
     # Process children
     for child in reversed(node):
         if child != None:
-            collectPermutationKeys(child, keys)
+            collectAccessedFields(child, keys)
             
     return keys
 
@@ -75,7 +77,7 @@ class Class(Item):
     
     kind = "class"
     
-    def getTree(self, permutation=None, cleanup=True):
+    def getTree(self, permutation=None, cleanup=True, context=None):
         """
         Returns the tree (of nodes from the parser) of the class. This parses the class,
         creates the tree, applies and optional permutation, scans for variables usage 
@@ -91,11 +93,18 @@ class Class(Item):
             return tree
             
         # Parse tree
-        msg = "- Parsing class %s" % self.id
+        msg = "- Processing class"
+
+        msg += " %s" % colorize(self.id, "bold")
+
         if permutation:
-            msg += " (%s)" % permutation
-        logging.info("%s..." % msg)
+            msg += colorize(" (%s)" % permutation, "grey")
             
+        if context:
+            msg += colorize(" [%s]" % context, "grey")
+
+        logging.info("%s..." % msg)
+
         tree = Parser.parse(self.getText(), self.id)
 
         # Apply permutation
@@ -190,7 +199,7 @@ class Class(Item):
         field = "scope[%s]-%s" % (self.id, permutation)
         scope = self.project.getCache().read(field, self.getModificationTime())
         if scope is None:
-            scope = self.getTree(permutation).scope
+            scope = self.getTree(permutation, context="scope-data").scope
             self.project.getCache().store(field, scope, self.getModificationTime())
         
         return scope
@@ -202,7 +211,7 @@ class Class(Item):
         if apidata is None:
             apidata = ApiData(self.id)
             
-            apidata.scanTree(self.getTree(cleanup=False))
+            apidata.scanTree(self.getTree(cleanup=False, context="api"))
             
             metaData = self.getMetaData()
             apidata.addAssets(metaData.assets)
@@ -212,7 +221,7 @@ class Class(Item):
                 apidata.removeUses(optional)
                 
             apidata.addSize(self.getSize())
-            apidata.addPermutations(self.getPermutationKeys())
+            apidata.addFields(self.getFields())
             
             self.project.getCache().store(field, apidata, self.getModificationTime())
 
@@ -241,17 +250,17 @@ class Class(Item):
         field = "meta[%s]-%s" % (self.id, permutation)
         meta = self.project.getCache().read(field, self.getModificationTime())
         if meta is None:
-            meta = MetaData(self.getTree(permutation))
+            meta = MetaData(self.getTree(permutation, context="meta"))
             self.project.getCache().store(field, meta, self.getModificationTime())
             
         return meta
         
         
-    def getPermutationKeys(self):
-        field = "permutations[%s]" % (self.id)
+    def getFields(self):
+        field = "fields[%s]" % (self.id)
         keys = self.project.getCache().read(field, self.getModificationTime())
         if keys is None:
-            keys = collectPermutationKeys(self.getTree())
+            keys = collectAccessedFields(self.getTree(context="fields"))
             self.project.getCache().store(field, keys, self.getModificationTime())
         
         return keys
@@ -261,7 +270,7 @@ class Class(Item):
         field = "translation[%s]" % (self.id)
         result = self.project.getCache().read(field, self.getModificationTime())
         if result is None:
-            result = hasText(self.getTree())
+            result = hasText(self.getTree(context="i18n"))
             self.project.getCache().store(field, result, self.getModificationTime())
         
         return result
@@ -269,7 +278,7 @@ class Class(Item):
         
     def filterPermutation(self, permutation):
         if permutation:
-            keys = self.getPermutationKeys()
+            keys = self.getFields()
             if keys:
                 return permutation.filter(keys)
 
@@ -283,14 +292,14 @@ class Class(Item):
         return None
         
         
-    def getCompressed(self, permutation=None, translation=None, optimization=None, formatting=None):
+    def getCompressed(self, permutation=None, translation=None, optimization=None, formatting=None, context="compressed"):
         permutation = self.filterPermutation(permutation)
         translation = self.filterTranslation(translation)
         
         field = "compressed[%s]-%s-%s-%s-%s" % (self.id, permutation, translation, optimization, formatting)
         compressed = self.project.getCache().read(field, self.getModificationTime())
         if compressed == None:
-            tree = self.getTree(permutation)
+            tree = self.getTree(permutation, context=context)
             
             if translation or optimization:
                 tree = copy.deepcopy(tree)
@@ -315,8 +324,8 @@ class Class(Item):
         size = self.project.getCache().read(field, self.getModificationTime())
         
         if size is None:
-            compressed = self.getCompressed()
-            optimized = self.getCompressed(permutation=defaultPermutation, optimization=defaultOptimization)
+            compressed = self.getCompressed(context="size-compressed")
+            optimized = self.getCompressed(permutation=defaultPermutation, optimization=defaultOptimization, context="size-optimized")
             zipped = zlib.compress(optimized.encode("utf-8"))
             
             size = {

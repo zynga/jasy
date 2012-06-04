@@ -4,7 +4,7 @@
 #
 
 import logging, os, sys
-from jasy.core.Logging import startSection
+from jasy.core.Logging import header
 
 
 # ---------------------------------------------

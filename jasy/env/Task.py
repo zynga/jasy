@@ -4,7 +4,7 @@
 #
 
 import types, logging, os, sys
-from jasy.env.State import setPrefix, startSection, session, getPrefix
+from jasy.env.State import setPrefix, header, session, getPrefix
 from jasy.core.Error import JasyError
 from jasy.core.Logging import colorize
 
@@ -89,7 +89,7 @@ def executeTask(name, **kwargs):
     """Executes the given task by name with any optional named arguments"""
     
     if name in __taskRegistry:
-        startSection("Executing task %s..." % name)
+        header("Executing task %s..." % name)
         try:
             __taskRegistry[name](**kwargs)
         except JasyError as err:
@@ -125,7 +125,7 @@ def setJasyCommand(cmd):
 # Remote run support
 def runTask(project, task, **kwargs):
 
-    startSection("Running %s of project %s..." % (task, project))
+    header("Running %s of project %s..." % (task, project))
 
     import subprocess
     from jasy.core.Project import getProjectByName
