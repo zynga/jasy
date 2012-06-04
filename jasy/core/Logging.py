@@ -78,6 +78,9 @@ def debug(text, *argv):
     logging.debug(level(text), *argv)
 
 def header(title):
+    global __level
+    __level = 0
+    
     logging.info("")
     logging.info(colorize(colorize(">>> %s" % title.upper(), "blue"), "bold"))
     logging.info(colorize("-------------------------------------------------------------------------------", "blue"))

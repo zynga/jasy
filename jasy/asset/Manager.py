@@ -382,6 +382,7 @@ class AssetManager:
         
         # Ignore empty result
         if not result:
+            outdent()
             return None
 
         # Exporting data
