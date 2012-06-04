@@ -3,10 +3,10 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import types, logging, os, sys
-from jasy.env.State import setPrefix, header, session, getPrefix
+import types, os, sys
+from jasy.env.State import setPrefix, session, getPrefix
 from jasy.core.Error import JasyError
-from jasy.core.Logging import colorize
+from jasy.core.Logging import *
 
 
 __all__ = ["task", "executeTask", "runTask", "printTasks", "setJasyCommand"]
@@ -79,9 +79,9 @@ def addTask(task):
     """Registers the given task with its name"""
     
     if task.name in __taskRegistry:
-        logging.debug("Overriding task: %s" % task.name)
+        debug("Overriding task: %s" % task.name)
     else:
-        logging.debug("Registering task: %s" % task.name)
+        debug("Registering task: %s" % task.name)
         
     __taskRegistry[task.name] = task
 
@@ -94,7 +94,7 @@ def executeTask(name, **kwargs):
         except JasyError as err:
             raise
         except:
-            logging.error("Unexpected error! Could not finish task %s successfully!" % name)
+            error("Unexpected error! Could not finish task %s successfully!" % name)
             raise
     else:
         raise JasyError("No such task: %s" % name)
@@ -108,9 +108,9 @@ def printTasks(indent=16):
         formattedName = colorize(name, "bold")
         if obj.desc:
             space = (indent - len(name)) * " "
-            logging.info("  %s: %s%s" % (formattedName, space, colorize(obj.desc, "magenta")))
+            info("  %s: %s%s" % (formattedName, space, colorize(obj.desc, "magenta")))
         else:
-            logging.info("  %s" % formattedName)
+            info("  %s" % formattedName)
 
 
 # Jasy reference for executing remote tasks

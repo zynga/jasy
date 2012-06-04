@@ -3,8 +3,8 @@
 # Copyright 2012 Zynga Inc.
 #
 
-import sys, logging
-from jasy.core.Logging import colorize
+import sys
+from jasy.core.Logging import *
 
 class Options:
     
@@ -102,7 +102,7 @@ class Options:
             
     def showHelp(self, indent=14):
 
-        logging.info("Options:")
+        info("Options:")
         for name in self.__defaults:
             col = len(name)
             msg = colorize("  --%s" % name, "bold")
@@ -120,7 +120,7 @@ class Options:
                     
                 msg += colorize(self.__help[name], "magenta")
             
-            logging.info(msg)
+            info(msg)
         
 
     def add(self, name, accept=bool, value=None, short=None, help=""):

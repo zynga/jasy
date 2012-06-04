@@ -10,7 +10,9 @@ from jasy.asset.sprite.BlockPacker import BlockPacker
 from jasy.asset.sprite.File import SpriteFile
 from jasy.asset.sprite.Sheet import SpriteSheet
 
-import os, json, itertools, logging, math
+from jasy.core.Logging import *
+
+import os, json, itertools, math
 
 
 
@@ -87,14 +89,17 @@ class SpritePacker():
         self.types = types
     
     def clear(self):
-        logging.info("Cleaning sprite files...")
+        info("Cleaning sprite files...")
+        indent()
+        
         for dirPath, dirNames, fileNames in os.walk(self.base):
             for fileName in fileNames:
                 if fileName.startswith("jasysprite"):
                     filePath = os.path.join(dirPath, fileName)
-                    logging.debug("- Removing file: %s", filePath)
+                    debug("Removing file: %s", filePath)
                     os.remove(filePath)
         
+        outdent()
 
     def addDir(self, directory, recursive=False):
         """Adds all images within a directory to the sprite packer."""
@@ -112,7 +117,7 @@ class SpritePacker():
         # Iteratre over all directories
         for dirPath, dirNames, fileNames in dirs:
 
-            logging.debug('Scanning directory for images: %s' % dirPath)
+            debug('Scanning directory for images: %s' % dirPath)
 
             # go through all dirs
             for dirName in dirNames:
@@ -153,7 +158,7 @@ class SpritePacker():
 
         self.files.append(SpriteFile(w, h, relPath, fullPath, checksum))
 
-        logging.debug('- Found image "%s" (%dx%dpx)' % (relPath, w, h))
+        debug('- Found image "%s" (%dx%dpx)' % (relPath, w, h))
 
 
     def packBest(self, autorotate=False):
@@ -204,7 +209,7 @@ class SpritePacker():
             minWidth *= 2
             minHeight *= 2
 
-        logging.debug('- Minimal size is %dx%dpx' % (minWidth, minHeight))
+        debug('- Minimal size is %dx%dpx' % (minWidth, minHeight))
 
         sizes = list(itertools.product([w for w in [128, 256, 512, 1024, 2048] if w >= minWidth],
                                        [h for h in [128, 256, 512, 1024, 2048] if h >= minHeight]))
@@ -215,7 +220,8 @@ class SpritePacker():
         else:
             methods = list(itertools.product(sorts, sizes, [(0, 0)]))
 
-        logging.debug('Packing sprite sheet variants...')
+        debug('Packing sprite sheet variants...')
+        indent()
 
         scores = []
         for sort, size, rotation in methods:
@@ -230,19 +236,20 @@ class SpritePacker():
                 scores.append(score)
 
             else:
-                logging.debug('- No sprite sheets generated, no image fit into the sheet')
+                debug('No sprite sheets generated, no image fit into the sheet')
 
+        outdent()
         scores.sort()
 
-        logging.debug('Generated the following sheets:')
+        debug('Generated the following sheets:')
         for i in scores:
-            logging.debug('- ' + str(i))
+            debug('- ' + str(i))
 
         sheets, external = scores[0].data()
         
         if external:
             for block in external:
-                logging.info('- Ignored file %s (%dx%dpx)' % (block.image.relPath, block.w, block.h))
+                info('- Ignored file %s (%dx%dpx)' % (block.image.relPath, block.w, block.h))
         
         return sheets, len(scores)
 
@@ -250,7 +257,7 @@ class SpritePacker():
     def pack(self, width=1024, height=1024, sort=None, silent=False, rotate=(0, 0)):
         """Packs all sprites within the pack into sheets of the given size."""
         
-        logging.debug('Packing %d images...' % len(self.files))
+        debug('Packing %d images...' % len(self.files))
 
         allBlocks = []
         duplicateCount = 0
@@ -282,14 +289,14 @@ class SpritePacker():
 
             else:
                 src = checkBlocks[f.checksum]
-                logging.debug('  - Detected duplicate of "%s" (using "%s" as reference)' % (f.relPath, src.image.relPath))
+                debug('  - Detected duplicate of "%s" (using "%s" as reference)' % (f.relPath, src.image.relPath))
 
                 src.duplicates.append(f)
                 duplicateCount += 1
 
             f.block = checkBlocks[f.checksum]
 
-        logging.debug('Found %d unique blocks (mapping %d duplicates)' % (len(allBlocks), duplicateCount))
+        debug('Found %d unique blocks (mapping %d duplicates)' % (len(allBlocks), duplicateCount))
 
         # Sort Functions
         def sortHeight(img):
@@ -318,7 +325,8 @@ class SpritePacker():
         fitted = 0
         while len(blocks):
 
-            logging.debug('Sorting %d blocks...' % len(blocks))
+            debug('Sorting %d blocks...' % len(blocks))
+            indent()
 
             sortedSprites = sorted(blocks, key=sort if sort is not None else sortHeight)
             sortedSprites.reverse()
@@ -338,13 +346,15 @@ class SpritePacker():
                 sheet = SpriteSheet(packer, fitBlocks)
                 sheets.append(sheet)
 
-                logging.debug('- Created new sprite sheet (%dx%dpx, %d%% used)' % (sheet.width, sheet.height, sheet.used))
+                debug('Created new sprite sheet (%dx%dpx, %d%% used)' % (sheet.width, sheet.height, sheet.used))
 
             else:
-                logging.debug('- Only one image fit into sheet, ignoring.')
+                debug('Only one image fit into sheet, ignoring.')
                 extraBlocks.append(fitBlocks[0])
+                
+            outdent()
 
-        logging.debug('Packed %d images into %d sheets. %d images were found to be too big and did not fit.' % (fitted, len(sheets), len(extraBlocks)))
+        debug('Packed %d images into %d sheets. %d images were found to be too big and did not fit.' % (fitted, len(sheets), len(extraBlocks)))
 
         return (sheets, extraBlocks, 0)
 
@@ -352,14 +362,16 @@ class SpritePacker():
     def generate(self, path='', autorotate=False, debug=False):
         """Generate sheets/variants"""
         
-        logging.info('- Generating sprite sheet variants...')
+        info('Generating sprite sheet variants...')
+        indent()
+        
         sheets, count = self.packBest(autorotate)
 
         # Write PNG files
         data = {}
         for pos, sheet in enumerate(sheets):
 
-            logging.info('- Writing image (%dx%dpx) with %d images' % (sheet.width, sheet.height, len(sheet)))
+            info('Writing image (%dx%dpx) with %d images' % (sheet.width, sheet.height, len(sheet)))
             name = 'jasysprite_%d.png' % pos
 
             # Export
@@ -367,7 +379,7 @@ class SpritePacker():
             data[name] = sheet.export()
 
         # Generate JSON
-        logging.info('- Exporting data...')
+        info('Exporting data...')
         script = os.path.join(self.base, path, 'jasysprite.json')
         output = json.dumps(data, sort_keys=True, indent=2).encode('ascii')
         open(script, 'wb').write(output)
@@ -377,10 +389,10 @@ class SpritePacker():
     def packDir(self, path='', recursive=True, autorotate=False, debug=False):
         """Pack images inside a dir into sprite sheets"""
 
-        logging.info('Packing sprites in: %s' % os.path.join(self.base, path))
+        info('Packing sprites in: %s' % os.path.join(self.base, path))
         self.files = []
         self.addDir(path, recursive=recursive)
-        logging.info('- Found %d images' % len(self.files))
+        info('Found %d images' % len(self.files))
 
         if len(self.files) > 0:
             self.generate(path, autorotate, debug)

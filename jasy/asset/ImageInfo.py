@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import struct, logging, hashlib
+import struct, hashlib
 from jasy.core.Logging import error
 
 """

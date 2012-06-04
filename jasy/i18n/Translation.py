@@ -3,13 +3,14 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, re, copy, json
+import re, copy, json
 from jasy.core.Error import JasyError
+from jasy.core.Logging import *
 
 try:
     import polib
 except ImportError:
-    logging.warn("Polib is no installed. Polib is needed to extract translation text from PO files!")
+    warn("Polib is no installed. Polib is needed to extract translation text from PO files!")
     polib = None
     
 from jasy.js.parse.Node import Node
@@ -47,14 +48,14 @@ class Translation:
     def __init__(self, locale, files=None, table=None):
         self.__locale = locale
 
-        logging.debug("Initialize translation: %s" % locale)
+        debug("Initialize translation: %s" % locale)
         self.__table = {}
 
         if table:
             self.__table.update(table)
         
         if files:
-            logging.debug("Load %s translation files..." % len(files))
+            debug("Load %s translation files..." % len(files))
             for path in files:
                 if not polib:
                     raise JasyError("Could not parse PO file %s Polib is not installed omn the system!" % path)
@@ -68,7 +69,7 @@ class Translation:
                         elif entry.msgstr_plural:
                             self.__table[entry.msgid] = entry.msgstr_plural
                         
-        logging.debug("Translation of %s entries ready" % len(self.__table))
+        debug("Translation of %s entries ready" % len(self.__table))
         
         
         
@@ -198,7 +199,7 @@ class Translation:
                     
                 # Error handling
                 elif (funcName == "trn" or funcName == "trc") and params[1].type != "string":
-                    logging.warn("Expecting translation string to be type string: %s at line %s" % (params[1].type, params[1].line))
+                    warn("Expecting translation string to be type string: %s at line %s" % (params[1].type, params[1].line))
 
                 # Signature tr(msg, arg1, arg2, ...)
                 elif funcName == "tr":

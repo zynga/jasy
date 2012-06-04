@@ -3,8 +3,9 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, os, json, re, xml.etree.ElementTree
+import os, json, re, xml.etree.ElementTree
 from jasy.env.File import *
+from jasy.core.Logging import *
 
 __all__ = ["storeLocale"]
 
@@ -89,7 +90,7 @@ def pluralToJavaScript(expr):
     
 class Parser():
     def __init__(self, locale):
-        logging.info("Preparing locale %s" % locale)
+        info("Preparing locale %s" % locale)
         splits = locale.split("_")
         
         # Store for internal usage
@@ -144,7 +145,7 @@ class Parser():
         # TOOD
         return
 
-        logging.info("Writing result...")
+        info("Writing result...")
         
         writefile(os.path.join(project, "jasyproject.json"), '{"name":"cldr","kind":"basic"}')
         self.__exportRecurser(self.__data, "locale", project)
