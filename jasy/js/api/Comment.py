@@ -159,7 +159,7 @@ class Comment():
             elif line.strip() == "":
                 lines.append("")
             else:
-                error("  - Could not outdent comment at line %s in %s", startLineNo+lineNo, self.fileId)
+                error("Could not outdent comment at line %s in %s", startLineNo+lineNo, self.fileId)
                 return text
                 
         # Find first line with real content
@@ -190,7 +190,7 @@ class Comment():
                     lines[lineNo] = ""
                 else:
                     if not line.startswith(outdentString):
-                        error("  - Invalid indention in doc string at line %s in %s", startLineNo+lineNo, self.fileId)
+                        error("Invalid indention in doc string at line %s in %s", startLineNo+lineNo, self.fileId)
                     else:
                         lines[lineNo] = line[outdentStringLen:]
 

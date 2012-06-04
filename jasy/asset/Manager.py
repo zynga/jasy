@@ -353,7 +353,7 @@ class AssetManager:
     def export(self, classes=None):
         """Exports asset data for the source version using assets from their original paths."""
         
-        info("Exporting assets...")
+        info("Filtering assets...")
         indent()
         
         # Processing assets
@@ -392,8 +392,8 @@ class AssetManager:
             "sprites" : self.__sprites
         })
         
-        outdent()
         info("Exported %s assets", len(result))
+        outdent()
         
         return json
         
