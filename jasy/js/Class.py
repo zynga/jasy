@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, logging, copy, zlib
+import os, copy, zlib
 
 from jasy.core.Error import JasyError
 
@@ -26,7 +26,7 @@ from jasy.js.util import *
 
 from jasy.i18n.Translation import hasText
 
-from jasy.core.Logging import colorize
+from jasy.core.Logging import * 
 
 try:
     from pygments import highlight
@@ -82,7 +82,7 @@ class Class(Item):
         field = "tree[%s]" % self.id
         tree = self.project.getCache().read(field, self.mtime)
         if not tree:
-            logging.info("- Processing class %s %s...", colorize(self.id, "bold"), colorize("[%s]" % context, "cyan"))
+            info("Processing class %s %s...", colorize(self.id, "bold"), colorize("[%s]" % context, "cyan"))
 
             tree = Parser.parse(self.getText(), self.id)
             ScopeScanner.scan(tree)
@@ -101,13 +101,13 @@ class Class(Item):
             tree = copy.deepcopy(self.__getTree("%s:plain" % context))
 
             # Logging
-            msg = "- Processing class %s" % colorize(self.id, "bold")
+            msg = "Processing class %s" % colorize(self.id, "bold")
             if permutation:
                 msg += colorize(" (%s)" % permutation, "grey")
             if context:
                 msg += colorize(" [%s]" % context, "cyan")
                 
-            logging.info("%s..." % msg)
+            info("%s..." % msg)
 
             # Apply permutation
             if permutation:
@@ -143,7 +143,7 @@ class Class(Item):
             if name != self.id and name in classes and classes[name].kind == "class":
                 result.add(classes[name])
             elif warnings:
-                logging.warn("- Missing class (required): %s in %s", name, self.id)
+                warn("- Missing class (required): %s in %s", name, self.id)
 
         # Globally modified names (mostly relevant when working without namespaces)
         for name in scope.shared:
@@ -180,7 +180,7 @@ class Class(Item):
             if name != self.id and name in classes and classes[name].kind == "class":
                 result.remove(classes[name])
             elif warnings:
-                logging.warn("- Missing class (optional): %s in %s", name, self.id)
+                warn("- Missing class (optional): %s in %s", name, self.id)
         
         return result
         

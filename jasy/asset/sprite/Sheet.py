@@ -3,13 +3,14 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, math, logging
+import sys, math
 from jasy.core.Error import JasyError
+from jasy.core.Logging import debug, warn
 
 try:
     import Image, ImageDraw
 except:
-    logging.warn("Python PIL is not installed. PIL is used to create sprite images.")
+    warn("Python PIL is not installed. PIL is used to create sprite images.")
     Image = None
 
 class SpriteSheet():
@@ -62,7 +63,7 @@ class SpriteSheet():
 
             x, y = block.fit.x, block.fit.y
             if block.rotated:
-                logging.debug('%s is rotated' % block.image.src)
+                debug('%s is rotated' % block.image.src)
                 res = res.rotate(90)
 
             img.paste(res, (x, y))

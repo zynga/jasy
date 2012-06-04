@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shelve, time, logging, os, os.path, sys, pickle, dbm
+import shelve, time, os, os.path, sys, pickle, dbm
 
 from jasy.core.Logging import *
 from jasy import __version__ as version

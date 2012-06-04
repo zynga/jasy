@@ -4,7 +4,7 @@
 #
 
 import zlib, string, re
-from jasy.core.Logging import debug
+from jasy.core.Logging import *
 
 __all__ = ["optimize", "Error"]
 

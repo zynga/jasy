@@ -80,6 +80,7 @@ class Resolver():
             return self.__included
         
         info("Detecting dependencies...")
+        indent()
         
         collection = set()
         for classObj in self.__required:
@@ -91,6 +92,8 @@ class Resolver():
                 collection.remove(classObj)
         
         self.__included = collection
+
+        outdent()
         debug("Including %s classes", len(collection))
         
         return self.__included

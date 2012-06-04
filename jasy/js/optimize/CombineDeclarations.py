@@ -4,7 +4,7 @@
 #
 
 from jasy.js.parse.Node import Node
-import logging
+from jasy.core.Logging import *
 
 __all__ = ["optimize", "Error"]
 
@@ -20,8 +20,11 @@ class Error(Exception):
         
         
 def optimize(node):
-    logging.debug(">>> Combining declarations...")
-    return __optimize(node)
+    debug("Combining declarations...")
+    indent()
+    result = __optimize(node)
+    outdent()
+    return result
     
 
 def __optimize(node):
@@ -61,13 +64,13 @@ def __combineSiblings(node):
         if child.type == "for" and prevChild.type == "var":
             setup = getattr(child, "setup", None)
             if setup and setup.type == "var":
-                logging.debug("Removing for-loop setup section at line %s" % setup.line)
+                debug("Removing for-loop setup section at line %s" % setup.line)
                 child.remove(setup)
                 child = setup    
 
         # Combine declarations of VAR statements
         if child.type == "var" and prevChild.type == "var":
-            logging.debug("Combining var statement at line %s" % child.line)
+            debug("Combining var statement at line %s" % child.line)
             
             # Fix loop through casting node to list()
             for variable in list(child):
@@ -273,7 +276,7 @@ def __rebuildAsAssignment(node, firstVarStatement):
     # Edge case. Not yet found if this happen realistically
     else:
         if hasattr(node, "rel"):
-            logging.warn("Remove related node (%s) from parent: %s" % (node.rel, node))
+            warn("Remove related node (%s) from parent: %s" % (node.rel, node))
             
         node.parent.remove(node)
         

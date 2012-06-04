@@ -6,8 +6,8 @@
 from jasy.asset.ImageInfo import ImgInfo
 from jasy.core.Item import Item
 from jasy.core.Util import getKey
+from jasy.core.Logging import debug
 from os.path import basename, splitext
-import logging
 
 extensions = {
     ".png" : "image",
@@ -96,7 +96,7 @@ class Asset(Item):
 
     
     def addImageSpriteData(self, id, left, top):
-        logging.debug("  - Registering sprite location for %s: %s@%sx%s", self.id, id, left, top)
+        debug("Registering sprite location for %s: %s@%sx%s", self.id, id, left, top)
         self.__imageSpriteData = [id, left, top]
         
     
@@ -110,7 +110,7 @@ class Asset(Item):
     
     
     def addImageDimensionData(self, width, height):
-        logging.debug("  - Adding dimension data for %s: %sx%s", self.id, width, height)
+        debug("Adding dimension data for %s: %sx%s", self.id, width, height)
         self.__imageDimensionData = [width, height]
     
     

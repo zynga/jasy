@@ -3,10 +3,12 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, os, random
+import os, random
 
 from jasy.core.Error import JasyError
 from jasy.core.Permutation import Permutation
+from jasy.core.Logging import *
+
 from jasy.env.File import writeFile
 
 from jasy.js.Class import ClassError
@@ -87,7 +89,7 @@ def storeCompressed(classes, fileName, bootCode=""):
     - bootCode: Code to execute once all the classes are loaded
     """
     
-    logging.info("Compressing %s classes...", len(classes))
+    info("Merging compressed output of %s classes...", len(classes))
     result = []
     
     try:
@@ -124,7 +126,7 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     - urlPrefix: Prepends the given URL prefix to all class URLs to load
     """
     
-    logging.info("Building source loader (%s classes)...", len(classes))
+    info("Generating loader for %s classes...", len(classes))
     
     main = session.getMain()
     files = []

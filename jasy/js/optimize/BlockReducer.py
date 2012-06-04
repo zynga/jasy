@@ -6,8 +6,8 @@
 from jasy.js.parse.Node import Node
 from jasy.js.output.Compressor import Compressor
 from jasy.js.parse.Lang import expressionOrder, expressions
+from jasy.core.Logging import *
 
-import logging
 
 __all__ = ["optimize", "Error"]
 
@@ -18,9 +18,12 @@ class Error(Exception):
 
 
 def optimize(node):
-    logging.debug(">>> Reducing block complexity...")
-    return __optimize(node, Compressor())
-
+    debug("Reducing block complexity...")
+    indent()
+    result = __optimize(node, Compressor())
+    outdent()
+    return result
+    
 
 def __optimize(node, compressor):
     # Process from inside to outside
@@ -40,7 +43,7 @@ def __optimize(node, compressor):
                 pass
             else:
                 if expr is not None:
-                    logging.debug("Remove empty statement at line %s of type: %s" % (expr.line, expr.type))
+                    debug("Remove empty statement at line %s of type: %s", expr.line, expr.type)
                 node.parent.remove(node)
                 return
 
@@ -60,11 +63,11 @@ def __optimize(node, compressor):
         if type(firstNumber.value) == str or type(secondNumber.value) == str:
             pass
         elif operator == "plus":
-            logging.debug("Precompute numeric %s operation at line: %s" % (operator, node.line))
+            debug("Precompute numeric %s operation at line: %s", operator, node.line)
             firstNumber.value += secondNumber.value
             node.parent.replace(node, firstNumber)
         elif operator == "minus":
-            logging.debug("Precompute numeric %s operation at line: %s" % (operator, node.line))
+            debug("Precompute numeric %s operation at line: %s", operator, node.line)
             firstNumber.value -= secondNumber.value
             node.parent.replace(node, firstNumber)
         else:
@@ -78,14 +81,14 @@ def __optimize(node, compressor):
                 result = None
             
             if result is not None and len(str(result)) < len(compressor.compress(node)):
-                logging.debug("Precompute numeric %s operation at line: %s" % (operator, node.line))
+                debug("Precompute numeric %s operation at line: %s", operator, node.line)
                 firstNumber.value = result
                 node.parent.replace(node, firstNumber)
 
 
     # Pre-combine strings (even supports mixed string + number concats)
     elif node.type == "plus" and node[0].type in ("number", "string") and node[1].type in ("number", "string"):
-        logging.debug("Joining strings at line: %s", node.line)
+        debug("Joining strings at line: %s", node.line)
         node[0].value = "%s%s" % (node[0].value, node[1].value)
         node[0].type = "string"
         node.parent.replace(node, node[0])
@@ -96,7 +99,7 @@ def __optimize(node, compressor):
         if node.parent.type in ("try", "catch", "finally"):
             pass
         elif len(node) == 0:
-            logging.debug("Replace empty block with semicolon at line: %s", node.line)
+            debug("Replace empty block with semicolon at line: %s", node.line)
             repl = Node(node.tokenizer, "semicolon")
             node.parent.replace(node, repl)
             node = repl
@@ -111,7 +114,7 @@ def __optimize(node, compressor):
                 # virtual blocks inside case/default statements
                 pass
             else:
-                # logging.debug("Removing block for single statement at line %s", node.line)
+                # debug("Removing block for single statement at line %s", node.line)
                 node.parent.replace(node, node[0])
                 node = node[0]
         else:
@@ -122,12 +125,12 @@ def __optimize(node, compressor):
     if node.type == "semicolon":
         if not hasattr(node, "expression"):
             if node.parent.type in ("block", "script"):
-                logging.debug("Remove empty semicolon expression at line: %s", node.line)
+                debug("Remove empty semicolon expression at line: %s", node.line)
                 node.parent.remove(node)
             elif node.parent.type == "if":
                 rel = getattr(node, "rel", None)
                 if rel == "elsePart":
-                    logging.debug("Remove empty else part at line: %s", node.line)
+                    debug("Remove empty else part at line: %s", node.line)
                     node.parent.remove(node)
             
             
@@ -337,7 +340,7 @@ def fixParens(node):
         
         needsParens = prio < parentPrio
         if needsParens:
-            logging.debug("Adding parens around %s node at line: %s" % (node.type, node.line))
+            debug("Adding parens around %s node at line: %s", node.type, node.line)
             node.parenthesized = needsParens
 
 

@@ -3,9 +3,11 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, shutil, logging, json
+import os, shutil, json
+
 from jasy.env.State import prependPrefix
 from jasy.core.Json import toJson
+from jasy.core.Logging import *
 
 
 def removeDir(dirname):
@@ -13,7 +15,7 @@ def removeDir(dirname):
     
     dirname = prependPrefix(dirname)
     if os.path.exists(dirname):
-        logging.info("Deleting folder %s" % dirname)
+        info("Deleting folder %s" % dirname)
         shutil.rmtree(dirname)
 
 
@@ -22,7 +24,7 @@ def removeFile(filename):
     
     filename = prependPrefix(filename)
     if os.path.exists(filename):
-        logging.info("Deleting file %s" % filename)
+        info("Deleting file %s" % filename)
         os.remove(filename)
 
 
@@ -80,7 +82,7 @@ def copyFile(src, dst):
     try:
         shutil.copy2(src, dst)
     except IOError as ex:
-        logging.error("Could not write file %s: %s" % (dst, ex))
+        error("Could not write file %s: %s" % (dst, ex))
         
     return True
 

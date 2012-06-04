@@ -3,8 +3,9 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import subprocess, os, logging, hashlib, shutil, re, tempfile, sys
+import subprocess, os, hashlib, shutil, re, tempfile, sys
 from urllib.parse import urlparse
+from jasy.core.Logging import *
 
 __all__ = ["cloneGit", "isGitRepositoryUrl", "getGitBranch", "enableRepositoryUpdates"]
 
@@ -90,52 +91,51 @@ def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
     
     try:
     
-        logging.debug("Using folder: %s", dist)
+        debug("Using folder: %s", dist)
         if os.path.exists(dist) and os.path.exists(os.path.join(dist, ".git")):
             
             if not os.path.exists(os.path.join(dist, ".git", "HEAD")):
-                logging.error("Invalid git project. Cleaning up...")
+                error("Invalid git project. Cleaning up...")
                 shutil.rmtree(dist)
             elif override:
-                logging.debug("Cleaning up...")
+                debug("Cleaning up...")
                 shutil.rmtree(dist)
             else:
                 if update and (rev == "master" or "refs/heads/" in rev):
                     if __enableUpdates:
-                        logging.info("Updating clone %s@%s", repo, rev)
+                        info("Updating clone %s@%s", repo, rev)
                         os.chdir(dist)
                         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch updated revision!")
                         executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
                         os.chdir(old)
                     else:
-                        logging.debug("Updates disabled")
+                        debug("Updates disabled")
                     
                 else:
-                    logging.debug("- Clone is already available")
+                    debug("Clone is already available")
 
                 return dist
 
-        logging.info("Cloning %s@%s into %s", repo, rev, dist[:dist.rindex("-")])
+        info("Cloning %s@%s into %s", repo, rev, dist[:dist.rindex("-")])
         os.makedirs(dist)
         os.chdir(dist)
         
         executeCommand(["git", "init", "."], "Could not initialize GIT repository!")
         executeCommand(["git", "remote", "add", "origin", repo], "Could not register remote repository!")
-        logging.debug("- Fetching revision...")
         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch revision!")
         executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
             
     except KeyboardInterrupt:
-        logging.error("Aborted by user!")
+        error("Aborted by user!")
         os.chdir(old)
-        logging.error("Removing checkout folder...")
+        error("Removing checkout folder...")
         shutil.rmtree(dist)
         return
     
     except Exception:
-        logging.error("Error during git transaction!")
+        error("Error during git transaction!")
         os.chdir(old)
-        logging.error("Removing checkout folder...")
+        error("Removing checkout folder...")
         shutil.rmtree(dist)
         return
         

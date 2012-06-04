@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, json, copy, re
+import json, copy, re
 
 from jasy.core.Error import JasyError
 from jasy.env.File import *
@@ -283,16 +283,18 @@ class ApiWriter():
         #
         
         header("Collecting API Data...")
+        
         apiData = {}
         highlightedCode = {}
         
         for project in session.getProjects():
             classes = project.getClasses()
             info("Loading %s classes of project %s", len(classes), project.getName())
+            indent()
             for className in classes:
                 apiData[className] = classes[className].getApi()
                 highlightedCode[className] = classes[className].getHighlightedCode()
-        
+            outdent()
         
         
         #
@@ -692,7 +694,7 @@ class ApiWriter():
         # Collecting errors
         #
         
-        logging.info("Collecting Errors...")
+        info("Collecting Errors...")
         
         for className in sorted(apiData):
             classApi = apiData[className]

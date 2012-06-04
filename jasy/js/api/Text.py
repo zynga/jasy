@@ -3,7 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import re, logging
+import re
+from jasy.core.Logging import warn
 
 __all__ = ["extractSummary"]
 
@@ -29,7 +30,7 @@ def extractSummary(text):
             return summary
             
     else:
-        logging.warn("Unable to extract summary for: %s", text)
+        warn("Unable to extract summary for: %s", text)
     
     return None
     

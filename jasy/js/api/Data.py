@@ -3,8 +3,6 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging
-
 from jasy.js.util import *
 from jasy.js.api.Text import *
 from jasy.core.Logging import *
@@ -86,10 +84,11 @@ class ApiData():
         
         try:
             if not self.__processTree(tree):
-                self.warn("  - Unsupported file to process", 1)
+                self.main["errornous"] = True
                 
         except Exception as error:
-            self.warn("  - Error during processing file: %s" % error, 1)
+            self.main["errornous"] = True
+            self.warn("Error during processing file: %s" % error, 1)
     
     
     def __processTree(self, tree):
@@ -114,7 +113,7 @@ class ApiData():
                         self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
                         
                 else:
-                    self.warn("- Invalid core.Module()", callNode.line)
+                    self.warn("Invalid core.Module()", callNode.line)
 
 
             #
@@ -148,10 +147,10 @@ class ApiData():
                                 self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
                         
                         else:
-                            self.warn('  - Invalid core.Interface section "%s"' % sectionName, propertyInit.line) 
+                            self.warn('Invalid core.Interface section "%s"' % sectionName, propertyInit.line) 
 
                 else:
-                    self.warn("- Invalid core.Interface()", callNode.line)
+                    self.warn("Invalid core.Interface()", callNode.line)
 
 
             #
@@ -194,10 +193,10 @@ class ApiData():
                             self.implements = [valueToString(entry) for entry in sectionValue]
 
                         else:
-                            self.warn('  - Invalid core.Class section "%s"' % sectionName, propertyInit.line) 
+                            self.warn('Invalid core.Class section "%s"' % sectionName, propertyInit.line) 
                             
                 else:
-                    self.warn("- Invalid core.Class()", callNode.line)
+                    self.warn("Invalid core.Class()", callNode.line)
 
 
             #
@@ -321,7 +320,7 @@ class ApiData():
                         
             else:
                 
-                self.warn("- Invalid core.Main.addStatics()")
+                self.warn("Invalid core.Main.addStatics()")
         
         
         #
@@ -346,7 +345,7 @@ class ApiData():
                         
             else:
                 
-                self.warn("- Invalid core.Main.addMembers()")
+                self.warn("Invalid core.Main.addMembers()")
 
 
         return success

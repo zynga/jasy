@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, re
+import re
 from jasy.core.Markdown import markdown
 from jasy.core.Error import JasyError
 from jasy.js.util import *

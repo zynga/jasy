@@ -3,7 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import logging, shutil, json, base64, os, re, random, sys, mimetypes, http.client, urllib.parse, hashlib
+import shutil, json, base64, os, re, random, sys, mimetypes, http.client, urllib.parse, hashlib
+from jasy.core.Logging import *
 
 __all__ = ["requestUrl", "uploadData"]
 
@@ -15,7 +16,7 @@ __all__ = ["requestUrl", "uploadData"]
 def requestUrl(url, content_type="text/plain", headers=None, method="GET", port=None, body="", user=None, password=None):
     """Generic HTTP request wrapper with support for basic authentification and automatic parsing of response content"""
     
-    logging.info("- Opening %s request to %s..." % (method, url))
+    info("Opening %s request to %s..." % (method, url))
 
     parsed = urllib.parse.urlparse(url)
     
@@ -41,9 +42,11 @@ def requestUrl(url, content_type="text/plain", headers=None, method="GET", port=
     request.endheaders()
     
     if body:
-        logging.info("- Sending data (%s bytes)..." % len(body))
+        info("Sending data (%s bytes)..." % len(body))
     else:
-        logging.info("- Sending request...")
+        info("Sending request...")
+
+    indent()
 
     request.send(body)
 
@@ -55,11 +58,11 @@ def requestUrl(url, content_type="text/plain", headers=None, method="GET", port=
     res_success = False
     
     if res_code >= 200 and res_code <= 300:
-        logging.debug("  - HTTP Success!")
+        debug("HTTP Success!")
         res_success = True
     else:
-        logging.error("  - HTTP Failure Code: %s!", res_code)
-    
+        error("HTTP Failure Code: %s!", res_code)
+        
     if "Content-Type" in res_headers:
         res_type = res_headers["Content-Type"]
         
@@ -73,9 +76,11 @@ def requestUrl(url, content_type="text/plain", headers=None, method="GET", port=
             res_content = json.loads(res_content)
             
             if "error" in res_content:
-                logging.error("  - Error %s: %s", res_content["error"], res_content["reason"])
+                error("Error %s: %s", res_content["error"], res_content["reason"])
             elif "reason" in res_content:
-                logging.info("  - Success: %s" % res_content["reason"])
+                info("Success: %s" % res_content["reason"])
+                
+    outdent()
     
     return res_success, res_headers, res_content
 

@@ -49,15 +49,20 @@ It can figure out combined expressions as well like:
 
 __all__ = ["cleanup"]
 
-import logging
+from jasy.core.Logging import *
 
 def cleanup(node):
     """
     Reprocesses JavaScript to remove dead paths 
     """
     
-    logging.debug(">>> Removing dead code branches...")
-    return __cleanup(node)
+    debug("Removing dead code branches...")
+
+    indent()
+    result = __cleanup(node)
+    outdent()
+
+    return result
 
 
 def __cleanup(node):
@@ -112,7 +117,7 @@ def __cleanup(node):
             if child.type == "case":
                 block = child[len(child)-1]
                 if len(block) == 0 or block[len(block)-1].type != "break":
-                    logging.warn("Could not optimize switch statement (at line %s) because of fallthrough break statement." % node.line)
+                    warn("Could not optimize switch statement (at line %s) because of fallthrough break statement.", node.line)
                     return False
 
             if child.type == "default":
