@@ -43,6 +43,8 @@ class Session():
     def clean(self):
         """Clears all caches of known projects"""
 
+        header("Cleaning session...")
+        
         for project in self.__projects:
             project.clean()
 
