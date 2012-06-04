@@ -4,6 +4,8 @@
 #
 
 import shelve, time, logging, os, os.path, sys, pickle, dbm
+
+from jasy.core.Logging import *
 from jasy import __version__ as version
 
 class Cache:
@@ -38,7 +40,7 @@ class Cache:
                 if storedVersion == version:
                     return
                     
-                logging.info("Jasy version has been changed. Recreating cache...")
+                info("Jasy version has been changed. Recreating cache...")
                 self.__shelve.close()
                     
             self.__shelve = shelve.open(self.__file, flag="n")
@@ -55,8 +57,8 @@ class Cache:
                 raise IOError("Cache file is locked by another process! Maybe there is still another open Session/Project?")
                 
             elif "db type could not be determined" in str(error):
-                logging.error("Could not detect cache file format!")
-                logging.warn("Recreating cache database...")
+                error("Could not detect cache file format!")
+                warn("Recreating cache database...")
                 self.clear()
                 
             else:
@@ -69,12 +71,12 @@ class Cache:
         """
         
         if self.__shelve != None:
-            logging.debug("Closing cache file %s..." % self.__file)
+            debug("Closing cache file %s..." % self.__file)
             
             self.__shelve.close()
             self.__shelve = None
 
-        logging.debug("Clearing cache file %s..." % self.__file)
+        debug("Clearing cache file %s..." % self.__file)
         self.__shelve = shelve.open(self.__file, flag="n")
         self.__shelve["jasy-version"] = version
         
@@ -125,7 +127,7 @@ class Cache:
             self.__shelve[key+"-timestamp"] = timestamp
             self.__shelve[key] = value
         except pickle.PicklingError as err:
-            logging.error("Failed to store enty: %s" % key)
+            error("Failed to store enty: %s" % key)
 
         
     def sync(self):
