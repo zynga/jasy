@@ -15,7 +15,7 @@ class Item:
 
     __path = None
     __cache = None
-    __mtime = None
+    mtime = None
     
     def __init__(self, project, id=None):
         self.id = id
@@ -32,10 +32,10 @@ class Item:
                     if entryTime > mtime:
                         mtime = entryTime
                     
-                self.__mtime = mtime
+                self.mtime = mtime
         
             else:
-                self.__mtime = os.stat(path).st_mtime
+                self.mtime = os.stat(path).st_mtime
             
         except OSError as oserr:
             raise JasyError("Invalid item path: %s" % path)
@@ -60,7 +60,7 @@ class Item:
 
     def getModificationTime(self):
         """Returns last modification time of the class"""
-        return self.__mtime
+        return self.mtime
 
     def getText(self, encoding="utf-8"):
         """Reads the file (as UTF-8) and returns the text"""
