@@ -271,12 +271,11 @@ class Session():
         length = len(permutations)
         
         for pos, current in enumerate(permutations):
-            info(colorize(colorize("Permutation %s/%s:" % (pos+1, length), "bold"), "magenta"))
+            info(colorize("Permutation %s/%s:" % (pos+1, length), "bold"))
             setPermutation(current)
+            indent()
             yield current
-            
-            if pos+1 != length:
-                info("")
+            outdent()
 
 
     def exportFields(self):

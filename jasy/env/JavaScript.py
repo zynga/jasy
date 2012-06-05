@@ -106,6 +106,8 @@ def storeCompressed(classes, fileName, bootCode=""):
     except ClassError as error:
         raise JasyError("Error during class compression! %s" % error)
 
+    outdent()
+
     assetData = assetManager.export(classes)
     if assetData:
         assetCode = 'core.io.Asset.addData(%s);' % assetData
@@ -115,7 +117,6 @@ def storeCompressed(classes, fileName, bootCode=""):
         wrappedBootCode = "(function(){%s})();" % bootCode
         result.append(packCode(wrappedBootCode))
 
-    outdent()
     writeFile(fileName, "".join(result))
 
 
@@ -150,7 +151,8 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     
     loader = '"%s"' % '","'.join(files)
     result = []
-
+    outdent()
+    
     assetData = assetManager.export(classes)
     if assetData:
         assetCode = 'core.io.Asset.addData(%s);' % assetData
@@ -160,7 +162,6 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loader, wrappedBootCode)
     result.append(packCode(loaderCode))
 
-    outdent()
     writeFile(fileName, "".join(result))
 
 
