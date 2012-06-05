@@ -12,9 +12,7 @@ build/deployment scripts.
 ### Using Binary Packages
 
 There are [pre-built packages available for either Windows or Mac](https://github.com/zynga/jasy/downloads) 
-users. 
-
-Download the ZIP file and unpack it inside our download folder. Then either run `install.sh` (Mac) or `activate.bat` (Windows).
+users. For instructions take a look at [the specific documentation](https://github.com/zynga/jasy/wiki/Installation-using-binary-packages). 
 
 
 ### Custom Installation
@@ -40,9 +38,8 @@ Please be aware that this API documentation is work in progress!
 
 ## Roadmap
 
-* Add support for sprite sheets (application icons, ...)
 * Style sheet pre processor
-* Image optimizer and sprite sheet generator
+* Image optimizer
 * Further optimization modules (share strings, shorthands for used objects, ...)
 * Improve localization support (verify gettext support, add new features)
 * Support for exporting multi names per file
