@@ -275,7 +275,22 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
 
 class ApiWriter():
     
-    def write(self, distFolder, callback="apiload", showInternals=False, showPrivates=False):
+    def isIncluded(self, className, classFilter):
+        
+        if not classFilter:
+            return True
+            
+        if type(classFilter) is tuple:
+            if className.startswith(classFilter):
+                return True
+            
+        elif not classFilter(className):
+            return True
+            
+        return False
+    
+    
+    def write(self, distFolder, classFilter=None, callback="apiload", showInternals=False, showPrivates=False):
         
         
         #
@@ -292,8 +307,10 @@ class ApiWriter():
             info("Loading %s classes of project %s", len(classes), project.getName())
             indent()
             for className in classes:
-                apiData[className] = classes[className].getApi()
-                highlightedCode[className] = classes[className].getHighlightedCode()
+                if self.isIncluded(className, classFilter):
+                    apiData[className] = classes[className].getApi()
+                    highlightedCode[className] = classes[className].getHighlightedCode()
+                
             outdent()
         
         
@@ -302,7 +319,7 @@ class ApiWriter():
         #
         
         header("Processing API Data...")
-        data, index, search = self.process(apiData, internals=showInternals, privates=showPrivates)
+        data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates)
         
         
         
@@ -348,7 +365,7 @@ class ApiWriter():
         
 
 
-    def process(self, apiData, internals=False, privates=False):
+    def process(self, apiData, classFilter=None, internals=False, privates=False):
         
         knownClasses = set(list(apiData))
 
@@ -820,8 +837,9 @@ class ApiWriter():
             docs = project.getDocs()
             
             for packageName in docs:
-                debug("Creating package documentation %s", packageName)
-                apiData[packageName] = docs[packageName].getApi()
+                if self.isIncluded(packageName, classFilter):
+                    debug("Creating package documentation %s", packageName)
+                    apiData[packageName] = docs[packageName].getApi()
         
         
         # Fill missing package docs
