@@ -212,7 +212,10 @@ class Class(Item):
         if apidata is None:
             apidata = ApiData(self.id)
             
-            apidata.scanTree(self.__getTree(context="api"))
+            tree = self.__getTree(context="api")
+            indent()
+            apidata.scanTree(tree)
+            outdent()
             
             metaData = self.getMetaData()
             apidata.addAssets(metaData.assets)
