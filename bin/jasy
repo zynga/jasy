@@ -69,6 +69,7 @@ from jasy.core.Logging import *
 
 info("Jasy %s" % jasy.__version__)
 debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
+header("Initializing...")
 
 if options.version:
     sys.exit(0)

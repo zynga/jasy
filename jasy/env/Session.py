@@ -99,15 +99,15 @@ class Session():
         """
         
         result = getProjectDependencies(project)
+        
         header("Registering projects...")
-        info("Adding %s projects..." % len(result))
+        info("Initializing %s projects..." % len(result))
         indent()
         
         for project in result:
             
-            # Append to list
-            relpath = os.path.relpath(project.getPath(), os.getcwd())
-            info("%s from %s", colorize(project.getName(), "bold"), colorize(relpath, "grey"))
+            # Intialize project
+            project.init()
             self.__projects.append(project)
             
             # Import project defined fields which might be configured using "activateField()"

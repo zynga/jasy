@@ -30,11 +30,11 @@ repositoryFolder = re.compile(r"^([a-zA-Z0-9\.\ _-]+)-([a-f0-9]{40})$")
 __projects = {}
 
 
-def getProjectFromPath(path, config=None):
+def getProjectFromPath(path, config=None, version=None, repo=None):
     global __projects
     
     if not path in __projects:
-        __projects[path] = Project(path, config)
+        __projects[path] = Project(path, config, version, repo)
 
     return __projects[path]
     
@@ -73,7 +73,12 @@ def getProjectDependencies(project):
     result= []
     names = {}
 
+    info("Detecting dependencies of project %s", project.getName())
+    indent()
+    
     __resolve(project)
+    
+    outdent()
 
     return result
 
@@ -92,7 +97,7 @@ class Project():
     
     kind = "none"
     
-    def __init__(self, path, config=None):
+    def __init__(self, path, config=None, version=None, repo=None):
         """
         Constructor call of the project. 
 
@@ -106,6 +111,10 @@ class Project():
         
         # Only store and work with full path
         self.__path = os.path.abspath(os.path.expanduser(path))
+        
+        # Store given params
+        self.__version = version
+        self.__repo = repo
         
         # Intialize item registries
         self.classes = {}
@@ -150,21 +159,34 @@ class Project():
         # Read fields (for injecting data into the project and build permuations)
         self.__fields = getKey(config, "fields", {})
 
-        debug("Initializing project: %s", self.__name)
-        indent()
+        # Store config
+        self.__config = config
+        
+        # This section is a must for non jasy projects
+        if not "content" in config and not isJasyProject:
+            raise JasyError("Missing 'content' section for compat project!")
+
+
+    #
+    # Project Scan/Init
+    #
+    
+    def getVersion(self):
+        return self.__version
+    
+    
+    def init(self):
+        
+        config = self.__config
             
         # Processing custom content section. Only supports classes and assets.
         if "content" in config:
-            self.kind = "manual"
+            self.__kind = "manual"
             self.__addContent(config["content"])
-
-        # This section is a must for non jasy projects
-        elif not isJasyProject:
-            raise JasyError("Missing 'content' section for compat project!")
 
         # Application projects
         elif self.__hasDir("source"):
-            self.kind = "application"
+            self.__kind = "application"
 
             if self.__hasDir("source/class"):
                 self.__addDir("source/class", "classes")
@@ -175,12 +197,12 @@ class Project():
                 
         # Compat - please change to class/style/asset instead
         elif self.__hasDir("src"):
-            self.kind = "resource"
+            self.__kind = "resource"
             self.__addDir("src", "classes")
 
         # Resource projects
         else:
-            self.kind = "resource"
+            self.__kind = "resource"
 
             if self.__hasDir("class"):
                 self.__addDir("class", "classes")
@@ -188,7 +210,6 @@ class Project():
                 self.__addDir("asset", "assets")
             if self.__hasDir("translation"):
                 self.__addDir("translation", "translations")
-
 
         # Generate summary
         summary = []
@@ -198,11 +219,15 @@ class Project():
                 summary.append("%s %s" % (len(content), section))
 
         if summary:
-            debug("Kind: %s", self.kind)
-            debug("Found: %s", ", ".join(summary))
+            if self.getVersion():
+                info("%s @ %s [%s]: %s", colorize(self.getName(), "bold"), colorize(self.getVersion(), "magenta"), colorize(self.__kind, "cyan"), colorize(", ".join(summary), "grey"))
+            else:
+                info("%s [%s]: %s", colorize(self.getName(), "bold"), colorize(self.__kind, "cyan"), colorize(", ".join(summary), "grey"))
+                
         else:
-            error("Empty project?!?")
-        outdent()
+            error("Project %s is empty!", self.getName())
+
+
 
 
 
@@ -356,6 +381,7 @@ class Project():
         """
 
         result = []
+        
         for entry in self.__requires:
             if type(entry) is dict:
                 source = entry["source"]
@@ -366,17 +392,31 @@ class Project():
                 config = None
                 version = None
             
+            if version:
+                info("Processing requirement: %s@%s", source, version)
+            else:
+                info("Processing requirement: %s", source)
+                
+            indent()
+            
             if isGitRepositoryUrl(source):
                 # Auto cloning always happens relative to main project root folder (not to project requiring it)
                 clonePath = cloneGit(source, version, prefix=prefix)
                 if not clonePath:
                     raise JasyError("Could not clone GIT repository %s" % source)
                 path = os.path.abspath(clonePath)
+                repo = "git"
+                if not version:
+                    version = "master"
             else:
                 # Other references to requires projects are always relative to the project requiring it
                 path = os.path.normpath(os.path.join(self.__path, source))
+                repo = "local"
                 
-            result.append(getProjectFromPath(path, config))
+            project = getProjectFromPath(path, config, version, repo)
+            result.append(project)
+            
+            outdent()
             
         return result
 
