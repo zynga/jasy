@@ -30,11 +30,11 @@ repositoryFolder = re.compile(r"^([a-zA-Z0-9\.\ _-]+)-([a-f0-9]{40})$")
 __projects = {}
 
 
-def getProjectFromPath(path, config=None, version=None, repo=None):
+def getProjectFromPath(path, config=None, version=None, repo=None, revision=None):
     global __projects
     
     if not path in __projects:
-        __projects[path] = Project(path, config, version, repo)
+        __projects[path] = Project(path, config, version, repo, revision)
 
     return __projects[path]
     
@@ -97,7 +97,7 @@ class Project():
     
     kind = "none"
     
-    def __init__(self, path, config=None, version=None, repo=None):
+    def __init__(self, path, config=None, version=None, repo=None, revision=None):
         """
         Constructor call of the project. 
 
@@ -115,6 +115,7 @@ class Project():
         # Store given params
         self.__version = version
         self.__repo = repo
+        self.__revision = revision
         
         # Intialize item registries
         self.classes = {}
@@ -171,10 +172,6 @@ class Project():
     # Project Scan/Init
     #
     
-    def getVersion(self):
-        return self.__version
-    
-    
     def init(self):
         
         config = self.__config
@@ -219,10 +216,23 @@ class Project():
                 summary.append("%s %s" % (len(content), section))
 
         if summary:
-            if self.getVersion():
-                info("%s @ %s [%s]: %s", colorize(self.getName(), "bold"), colorize(self.getVersion(), "magenta"), colorize(self.__kind, "cyan"), colorize(", ".join(summary), "grey"))
-            else:
-                info("%s [%s]: %s", colorize(self.getName(), "bold"), colorize(self.__kind, "cyan"), colorize(", ".join(summary), "grey"))
+            msg = "%s " % colorize(self.getName(), "bold")
+            
+            if self.__version:
+                msg += "@ %s" % colorize(self.__version, "magenta")
+
+                rev = self.__revision
+                if rev is not None:
+                    if type(rev) is str and len(rev) > 10:
+                        rev = rev[:6]
+                    msg += colorize("-%s " % rev, "grey")
+                    
+                else:
+                    msg += " "
+                    
+            msg += "[%s]: %s" % (colorize(self.__kind, "cyan"), colorize(", ".join(summary), "grey"))
+            
+            info(msg)
                 
         else:
             error("Project %s is empty!", self.getName())
@@ -383,6 +393,9 @@ class Project():
         result = []
         
         for entry in self.__requires:
+            repo = None
+            revision = None
+            
             if type(entry) is dict:
                 source = entry["source"]
                 config = getKey(entry, "config")
@@ -400,21 +413,24 @@ class Project():
             indent()
             
             if isGitRepositoryUrl(source):
-                # Auto cloning always happens relative to main project root folder (not to project requiring it)
-                gitReturn = cloneGit(source, version, prefix=prefix)
-                if not gitReturn:
-                    raise JasyError("Could not clone GIT repository %s" % source)
-                clonePath, cloneRevision = gitReturn
-                path = os.path.abspath(clonePath)
-                repo = "git"
                 if not version:
                     version = "master"
+
+                # Auto cloning always happens relative to main project root folder (not to project requiring it)
+                retval = cloneGit(source, version, prefix=prefix)
+                if not retval:
+                    raise JasyError("Could not clone GIT repository %s" % source)
+                    
+                path, revision = retval
+                path = os.path.abspath(path)
+                repo = "git"
+                
             else:
                 # Other references to requires projects are always relative to the project requiring it
                 path = os.path.normpath(os.path.join(self.__path, source))
                 repo = "local"
                 
-            project = getProjectFromPath(path, config, version, repo)
+            project = getProjectFromPath(path, config, version, repo, revision)
             result.append(project)
             
             outdent()
