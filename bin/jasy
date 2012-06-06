@@ -132,8 +132,8 @@ try:
     # Environment Addons
     from jasy.env.JavaScript import *
     
-except JasyError as error:
-    sys.stderr.write("%s\n" % error)
+except JasyError as errobj:
+    error("%s" % errobj)
     sys.exit(1)
 
 # Configuring jasy for remote calls
@@ -165,8 +165,8 @@ def main():
         for entry in tasks:
             executeTask(entry["task"], **entry["params"])
     
-    except JasyError as obj:
-        error("%s\n" % obj)
+    except JasyError as errobj:
+        error("%s" % errobj)
         sys.exit(1)
 
     except KeyboardInterrupt:

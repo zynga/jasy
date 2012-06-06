@@ -37,7 +37,9 @@ class Session():
             try:
                 self.addProject(getProjectFromPath("."))
             except JasyError as jasyerr:
-                raise JasyError("Could not initialize session! %s" % jasyerr)
+                outdent(True)
+                error(jasyerr)
+                raise JasyError("Critical: Could not initialize session!")
     
     
     def clean(self):

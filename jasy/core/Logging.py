@@ -61,9 +61,13 @@ def indent():
     global __level
     __level += 1
 
-def outdent():
+def outdent(all=False):
     global __level
-    __level -= 1
+    
+    if all:
+        __level = 0
+    else:
+        __level -= 1
     
 def error(text, *argv):
     logging.warn(level(colorize(colorize(text, "red"), "bold")), *argv)

@@ -57,12 +57,25 @@ def getDistFolder(repo, rev):
 def executeCommand(args, msg):
     """Executes the given process and outputs message when errors happen."""
 
+    debug("Executing command: %s", " ".join(args))
+    indent()
+    
     # Using shell on Windows to resolve binaries like "git"
-    returnValue = subprocess.call(args, stdout=__nullDevice, shell=sys.platform == "win32")
+    output = tempfile.TemporaryFile(mode="w+t")
+    returnValue = subprocess.call(args, stdout=output, stderr=output, shell=sys.platform == "win32")
     if returnValue != 0:
         raise Exception("Error during executing shell command: %s" % msg)
         
-    return True
+    output.seek(0)
+    result = output.read().strip("\n\r")
+    output.close()
+    
+    for line in result.splitlines():
+        debug(line)
+    
+    outdent()
+    
+    return result
 
 
 
@@ -89,58 +102,90 @@ def cloneGit(repo, rev=None, override=False, prefix=None, update=True):
         
     old = os.getcwd()
     
-    try:
-    
-        debug("Using folder: %s", dist)
-        if os.path.exists(dist) and os.path.exists(os.path.join(dist, ".git")):
+    debug("Using folder: %s", dist)
+    if os.path.exists(dist) and os.path.exists(os.path.join(dist, ".git")):
+        
+        if not os.path.exists(os.path.join(dist, ".git", "HEAD")):
+            error("Invalid git project. Cleaning up...")
+            shutil.rmtree(dist)
+        elif override:
+            debug("Cleaning up...")
+            shutil.rmtree(dist)
+        else:
+            os.chdir(dist)
+            revision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
             
-            if not os.path.exists(os.path.join(dist, ".git", "HEAD")):
-                error("Invalid git project. Cleaning up...")
-                shutil.rmtree(dist)
-            elif override:
-                debug("Cleaning up...")
-                shutil.rmtree(dist)
-            else:
-                if update and (rev == "master" or "refs/heads/" in rev):
-                    if __enableUpdates:
-                        info("Updating clone %s@%s", repo, rev)
-                        os.chdir(dist)
+            if update and (rev == "master" or "refs/heads/" in rev):
+                if __enableUpdates:
+                    info("Updating clone %s@%s", repo, rev)
+                    
+                    try:
                         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch updated revision!")
                         executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
+                        newRevision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
+                        
+                        if revision != newRevision:
+                            indent()
+                            info("Updated from %s to %s", revision[:10], newRevision[:10])
+                            revision = newRevision
+                            outdent()
+                        
+                    except Exception:
+                        error("Error during git transaction! Could not update clone.")
+                        error("Please verify that the host is reachable or disable automatic branch updates.")
+                        
                         os.chdir(old)
-                    else:
-                        debug("Updates disabled")
+                        return
+                        
+                    except KeyboardInterrupt:
+                        print()
+                        error("Aborted by user!")
+                        
+                        os.chdir(old)
+                        return                            
                     
                 else:
-                    debug("Clone is already available")
+                    debug("Updates disabled")
+                
+            else:
+                debug("Clone is already available")
 
-                return dist
+            os.chdir(old)
+            return dist, revision
 
-        info("Cloning %s@%s into %s", repo, rev, dist[:dist.rindex("-")])
-        os.makedirs(dist)
-        os.chdir(dist)
-        
+    info("Cloning %s@%s into %s", repo, rev, dist[:dist.rindex("-")])
+    os.makedirs(dist)
+    os.chdir(dist)
+    
+    try:
         executeCommand(["git", "init", "."], "Could not initialize GIT repository!")
         executeCommand(["git", "remote", "add", "origin", repo], "Could not register remote repository!")
         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", rev], "Could not fetch revision!")
         executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
-            
-    except KeyboardInterrupt:
-        error("Aborted by user!")
-        os.chdir(old)
-        error("Removing checkout folder...")
-        shutil.rmtree(dist)
-        return
-    
+        revision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
+        
     except Exception:
-        error("Error during git transaction!")
+        error("Error during git transaction! Intitial clone required for continuing!")
+        error("Please verify that the host is reachable.")
+
+        error("Cleaning up...")
         os.chdir(old)
-        error("Removing checkout folder...")
         shutil.rmtree(dist)
+
         return
         
+    except KeyboardInterrupt:
+        print()
+        error("Aborted by user!")
+        
+        error("Cleaning up...")
+        os.chdir(old)
+        shutil.rmtree(dist)
+        
+        return
+    
     os.chdir(old)
-    return dist
+    return dist, revision
 
 
 def isGitRepositoryUrl(url):

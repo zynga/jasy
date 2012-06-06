@@ -401,9 +401,10 @@ class Project():
             
             if isGitRepositoryUrl(source):
                 # Auto cloning always happens relative to main project root folder (not to project requiring it)
-                clonePath = cloneGit(source, version, prefix=prefix)
-                if not clonePath:
+                gitReturn = cloneGit(source, version, prefix=prefix)
+                if not gitReturn:
                     raise JasyError("Could not clone GIT repository %s" % source)
+                clonePath, cloneRevision = gitReturn
                 path = os.path.abspath(clonePath)
                 repo = "git"
                 if not version:
