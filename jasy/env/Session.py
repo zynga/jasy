@@ -35,7 +35,14 @@ class Session():
         
         if os.path.exists("jasyproject.json"):
             try:
-                self.addProject(getProjectFromPath("."))
+                # TODO: Figure out repo type and branch/revision of current project
+                version = None
+                repo = None
+                revision = None
+
+                project = getProjectFromPath(".", version=version, repo=repo, revision=revision)
+                
+                self.addProject(project)
             except JasyError as jasyerr:
                 outdent(True)
                 error(jasyerr)
