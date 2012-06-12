@@ -57,12 +57,12 @@ class Cache:
                 raise IOError("Cache file is locked by another process!")
                 
             elif "type could not be determined" in str(dbmerror):
-                error("Could not detect cache file format!")
+                error("Could not detect cache file format: %s" % self.__file)
                 warn("Recreating cache database...")
                 self.clear()
                 
             elif "module is not available" in str(dbmerror):
-                error("Unsupported cache file format!")
+                error("Unsupported cache file format: %s" % self.__file)
                 warn("Recreating cache database...")
                 self.clear()
                 
