@@ -406,9 +406,9 @@ class Project():
                 version = None
             
             if version:
-                info("Processing requirement: %s@%s", source, version)
+                info("Processing: %s @ %s", source, version)
             else:
-                info("Processing requirement: %s", source)
+                info("Processing: %s", source)
                 
             indent()
             
