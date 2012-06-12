@@ -3,10 +3,13 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shelve, time, os, os.path, sys, pickle, dbm
+import shelve, time, os, os.path, sys, pickle, dbm, uuid
 
 from jasy.core.Logging import *
 from jasy import __version__ as version
+from jasy.core.Util import getKey
+
+hostId = uuid.getnode()
 
 class Cache:
     """ 
@@ -32,19 +35,18 @@ class Cache:
             if os.path.exists(self.__file):
                 self.__shelve = shelve.open(self.__file, flag="w")
             
-                if "jasy-version" in self.__shelve:
-                    storedVersion = self.__shelve["jasy-version"]
-                else:
-                    storedVersion = None
-                
-                if storedVersion == version:
+                storedVersion = getKey(self.__shelve, "jasy-version")
+                storedHost = getKey(self.__shelve, "jasy-host")
+            
+                if storedVersion == version and storedHost == hostId:
                     return
                     
-                info("Jasy version has been changed. Recreating cache...")
+                info("Jasy version or host has been changed. Recreating cache...")
                 self.__shelve.close()
                     
             self.__shelve = shelve.open(self.__file, flag="n")
             self.__shelve["jasy-version"] = version
+            self.__shelve["jasy-host"] = hostId
             
         except dbm.error as dbmerror:
             errno = None
