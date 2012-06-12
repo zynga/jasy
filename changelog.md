@@ -1,3 +1,13 @@
+Jasy 0.7.2
+==========
+
+- Fix some issues with unused optimizer (SWFObject compilation)
+- Added machine ID to verify cache is opened on same machine as created
+- Some logging output improvements
+- Further improved/fixed GIT support for edge cases
+- Added debug logging of detailed shell output (Git only at the moment)
+
+
 Jasy 0.7.1
 ==========
 
