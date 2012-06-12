@@ -46,18 +46,23 @@ class Cache:
             self.__shelve = shelve.open(self.__file, flag="n")
             self.__shelve["jasy-version"] = version
             
-        except dbm.error as error:
+        except dbm.error as dbmerror:
             errno = None
             try:
-                errno = error.errno
+                errno = dbmerror.errno
             except:
                 pass
                 
             if errno is 35:
-                raise IOError("Cache file is locked by another process! Maybe there is still another open Session/Project?")
+                raise IOError("Cache file is locked by another process!")
                 
-            elif "db type could not be determined" in str(error):
+            elif "type could not be determined" in str(dbmerror):
                 error("Could not detect cache file format!")
+                warn("Recreating cache database...")
+                self.clear()
+                
+            elif "module is not available" in str(dbmerror):
+                error("Unsupported cache file format!")
                 warn("Recreating cache database...")
                 self.clear()
                 
