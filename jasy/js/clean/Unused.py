@@ -147,6 +147,8 @@ def __recurser(node, unused):
                         # Protect non-expressions with parens
                         if init.type in ("array_init", "object_init"):
                             init.parenthesized = True
+                        elif init.type == "call" and init[0].type == "function":
+                            init[0].parenthesized = True
                         
                         node.parent.replace(node, semicolon)
                         retval = True
@@ -163,6 +165,8 @@ def __recurser(node, unused):
                         # Protect non-expressions with parens
                         if init.type in ("array_init", "object_init"):
                             init.parenthesized = True
+                        elif init.type == "call" and init[0].type == "function":
+                            init[0].parenthesized = True
 
                         if isFirst:
                             node.parent.insert(nodePos, semicolon)

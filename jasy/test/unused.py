@@ -18,7 +18,7 @@ class Tests(unittest.TestCase):
     def process(self, code):
         node = Parser.parse(code)
         Unused.cleanup(node)
-        return Compressor.Compressor().compress(node)        
+        return Compressor.Compressor().compress(node)
 
     def test_var_single(self):
         """ y is unused. Removed whole var block. """
@@ -70,6 +70,89 @@ class Tests(unittest.TestCase):
             '''),
             'function wrapper(){}'
         )
+        
+
+    def test_var_ief(self):
+        """  """
+        self.assertEqual(self.process(
+            '''
+            function wrapper() {
+              var exec = (function() {
+                return 4+5;
+              })();
+            }
+            '''),
+            'function wrapper(){(function(){return 4+5})()}'
+        )        
+        
+    def test_var_ief_middle(self):
+        """  """
+        self.assertEqual(self.process(
+            '''
+            function wrapper() {
+              var a, exec = (function() {
+                return 4+5;
+              })(), b;
+            }
+            '''),
+            'function wrapper(){(function(){return 4+5})()}'
+        )
+        
+    def test_var_ief_end(self):
+        """  """
+        self.assertEqual(self.process(
+            '''
+            function wrapper() {
+              var a, exec = (function() {
+                return 4+5;
+              })();
+            }
+            '''),
+            'function wrapper(){(function(){return 4+5})()}'
+        )        
+        
+        
+
+    def test_var_ief_noparens(self):
+        """  """
+        self.assertEqual(self.process(
+            '''
+            function wrapper() {
+              var exec = function() {
+                return 4+5;
+              }();
+            }
+            '''),
+            'function wrapper(){(function(){return 4+5})()}'
+        )        
+
+    def test_var_ief_noparens_middle(self):
+        """  """
+        self.assertEqual(self.process(
+            '''
+            function wrapper() {
+              var a, exec = function() {
+                return 4+5;
+              }(), b;
+            }
+            '''),
+            'function wrapper(){(function(){return 4+5})()}'
+        )
+
+    def test_var_ief_noparens_end(self):
+        """  """
+        self.assertEqual(self.process(
+            '''
+            function wrapper() {
+              var a, exec = function() {
+                return 4+5;
+              }();
+            }
+            '''),
+            'function wrapper(){(function(){return 4+5})()}'
+        )        
+        
+        
         
     def test_object(self):
         """ Non expressions must be protected with parens. """
