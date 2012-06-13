@@ -56,7 +56,7 @@ else:
 
 # Enable writing to logfile with debug level
 if options.log:
-    logfileHandler = logging.FileHandler(options.logfile)
+    logfileHandler = logging.FileHandler(options.log)
     logfileHandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
     logfileHandler.setLevel(logging.DEBUG)
     logging.getLogger().addHandler(logfileHandler)        
