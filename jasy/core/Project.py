@@ -426,8 +426,13 @@ class Project():
                 repo = "git"
                 
             else:
+                if not source.startswith(("/", "~")):
+                    path = os.path.join(self.__path, source)
+                else:
+                    path = source
+                
                 # Other references to requires projects are always relative to the project requiring it
-                path = os.path.normpath(os.path.join(self.__path, source))
+                path = os.path.normpath(os.path.expanduser(path))
                 repo = "local"
                 
             project = getProjectFromPath(path, config, version, repo, revision)
