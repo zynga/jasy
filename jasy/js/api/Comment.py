@@ -33,7 +33,7 @@ typeMatcher = re.compile(r"^\s*\{=([a-zA-Z0-9_ \.]+)\}")
 tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
 
 # Matches param declarations in own dialect
-paramMatcher = re.compile(r"@([a-zA-Z0-9]+\.[a-zA-Z0-9]+|[a-zA-Z0-9]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+?)(\s*\.{3}\s*)?((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
+paramMatcher = re.compile(r"@([a-zA-Z0-9_\.]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+?)(\s*\.{3}\s*)?((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
 
 # Matches links in own dialect
 linkMatcher = re.compile(r"\{((static|member|property|event)\:)?([a-zA-Z0-9_\.]+)?(\#([a-zA-Z0-9_]+))?\}")
@@ -316,33 +316,27 @@ class Comment():
             
             if self.params is None:
                 self.params = {}
-            
+
             params = self.params
-            fullName = paramName
-
-
-            # Support field declartions for parameter maps
-            # TODO validate later and ensure we only have these on Object|Map
-            if paramName.find('.') != -1:
-
-                mapName, paramName = paramName.split('.')
+            fullName = match.group(1)
+            names = fullName.split('.')
+            for mapName in names:
 
                 # Ensure we have the map object in the params
-                if not mapName in self.params:
-                    self.params[mapName] = {}
+                if not mapName in params:
+                    params[mapName] = {}
 
-                params = self.params[mapName]
+                params = params[mapName]
 
                 if not "fields" in params:
                     params["fields"] = {}
 
                 params = params["fields"]
-                fullName = mapName + "." + paramName
 
 
             # Add new entries and overwrite if a type is defined in this entry
-            if not paramName in params or paramTypes is not None:
-                paramEntry = params[paramName] = {}
+            if not mapName in params or paramTypes is not None:
+                paramEntry = params[mapName] = {}
                 
                 if paramTypes is not None:
                     paramEntry["type"] = paramTypes

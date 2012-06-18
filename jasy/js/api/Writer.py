@@ -517,8 +517,7 @@ class ApiWriter():
                             if not "pseudo" in returnTypeEntry and returnTypeEntry["name"] in knownClasses:
                                 returnTypeEntry["linkable"] = True
                             
-                elif not item["type"] in builtinTypes and not item["type"] in additionalTypes:
-                    
+                elif not item["type"] in builtinTypes and not item["type"] in pseudoTypes and not item["type"] in additionalTypes:
                     error('- Invalid type "%s" in %s at line %s', item["type"], className, item["line"])
             
             
