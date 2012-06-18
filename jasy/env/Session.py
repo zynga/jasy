@@ -149,6 +149,16 @@ class Session():
         return self.__projects
         
         
+    def getProjectByName(self, name):
+        """Returns a project as used by the session by its name"""
+        
+        for project in self.__projects:
+            if project.getName() == name:
+                return project
+                
+        return None
+        
+        
     def getRelativePath(self, project):
         """Returns the relative path of any project to the main project"""
         

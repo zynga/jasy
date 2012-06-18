@@ -18,7 +18,7 @@ from jasy.js.Class import Class
 from jasy.asset.Asset import Asset
 
 
-__all__ = ["Project", "getProjectFromPath", "getProjectByName", "getProjectDependencies"]
+__all__ = ["Project", "getProjectFromPath", "getProjectDependencies"]
 
 
 classExtensions = (".js")
@@ -39,16 +39,6 @@ def getProjectFromPath(path, config=None, version=None, repo=None, revision=None
     return __projects[path]
     
     
-def getProjectByName(name):
-    """ Returns a project by its name """
-    for path in __projects:
-        project = __projects[path]
-        if project.getName() == name:
-            return project
-    
-    return None
-
-
 def getProjectDependencies(project):
     """ Returns a sorted list of projects depending on the given project (including the given one) """
     

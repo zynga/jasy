@@ -127,7 +127,6 @@ def runTask(project, task, **kwargs):
     header("Running %s of project %s..." % (task, project))
 
     import subprocess
-    from jasy.core.Project import getProjectByName
 
     # Pauses this session to allow sub process fully accessing the same projects
     session.pause()
@@ -142,7 +141,7 @@ def runTask(project, task, **kwargs):
 
     # Change into sub folder and execute jasy task
     oldPath = os.getcwd()
-    remote = getProjectByName(project)
+    remote = session.getProjectByName(project)
     if remote is None:
         raise JasyError("Unknown project %s" % project)
 
