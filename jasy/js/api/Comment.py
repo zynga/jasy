@@ -134,13 +134,16 @@ class Comment():
             self.text = text
 
 
-    def getHtml():
+    def getHtml(self):
         """Returns the comment text converted to HTML"""
         
         # Apply markdown conversion
         if self.variant == "doc" and self.__html is None:
+            if markdown is None:
+                raise JasyError("Markdown is not supported by the system. Documentation comments could not be processed into HTML.")
+            
             self.__html = markdown(self.__originalText)
-        
+    
         return self.__html
     
     
