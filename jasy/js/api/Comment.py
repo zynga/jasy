@@ -33,7 +33,7 @@ typeMatcher = re.compile(r"^\s*\{=([a-zA-Z0-9_ \.]+)\}")
 tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
 
 # Matches param declarations in own dialect
-paramMatcher = re.compile(r"@([a-zA-Z0-9_\.]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+?)(\s*\.{3}\s*)?((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
+paramMatcher = re.compile(r"@([a-zA-Z0-9_][a-zA-Z0-9_\.]*[a-zA-Z0-9_]|[a-zA-Z0-9_]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+?)(\s*\.{3}\s*)?((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
 
 # Matches links in own dialect
 linkMatcher = re.compile(r"\{((static|member|property|event)\:)?([a-zA-Z0-9_\.]+)?(\#([a-zA-Z0-9_]+))?\}")
@@ -323,6 +323,7 @@ class Comment():
     def __processParams(self, text):
         
         def collectParams(match):
+
             paramName = match.group(1)
             paramTypes = match.group(3)
             paramDynamic = match.group(4) is not None
@@ -336,37 +337,51 @@ class Comment():
                 self.params = {}
 
             params = self.params
-            fullName = match.group(1)
+            fullName = match.group(1).strip()
             names = fullName.split('.')
-            for mapName in names:
+
+            for i, mapName in enumerate(names):
 
                 # Ensure we have the map object in the params
                 if not mapName in params:
                     params[mapName] = {}
 
-                params = params[mapName]
-
-                if not "fields" in params:
-                    params["fields"] = {}
-
-                params = params["fields"]
-
-
-            # Add new entries and overwrite if a type is defined in this entry
-            if not mapName in params or paramTypes is not None:
-                paramEntry = params[mapName] = {}
+                # Add new entries and overwrite if a type is defined in this entry
+                if not mapName in params or paramTypes is not None:
                 
-                if paramTypes is not None:
-                    paramEntry["type"] = paramTypes
-                
-                if paramDynamic:
-                    paramEntry["dynamic"] = paramDynamic
+                    # Make sure to not overwrite something like @options {Object} with the type of @options.x {Number}
+                    if i == len(names) - 1:
+
+                        paramEntry = params[mapName] = {}
+
+                        if paramTypes is not None:
+                            paramEntry["type"] = paramTypes
+                        
+                        if paramDynamic:
+                            paramEntry["dynamic"] = paramDynamic
+                            
+                        if paramOptional:
+                            paramEntry["optional"] = paramOptional
+                            
+                        if paramDefault is not None:
+                            paramEntry["default"] = paramDefault
+
+                    else:
+                        paramEntry = params[mapName]
+
+
+                else:
+                    paramEntry = params[mapName]
                     
-                if paramOptional:
-                    paramEntry["optional"] = paramOptional
-                    
-                if paramDefault is not None:
-                    paramEntry["default"] = paramDefault
+
+                # create fields for new map level
+                if i + 1 < len(names):
+                    if not "fields" in paramEntry:
+                        paramEntry["fields"] = {}
+
+                    params = paramEntry["fields"]
+
+
             
             return '<code class="param">%s</code>' % fullName
             

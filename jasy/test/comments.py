@@ -1129,6 +1129,61 @@ class Tests(unittest.TestCase):
         self.assertEqual(comment.params["options"]["fields"]["x"]["type"][0]["name"], "String")
         self.assertEqual(comment.params["options"]["fields"]["y"]["type"][0]["name"], "Number")
 
+
+    def test_doc_params_maps_multi_levels(self):
+
+        parsed = self.process('''
+
+        /**
+         * Additional arguments can be passed in via @options {Object?}:
+         *
+         * - @options {Object}
+         *
+         *   - @options.x {String}
+         *   - @options.y {Number}
+         *
+         *   - @options.foo {Object}
+         *
+         *     - @options.foo.x {String}
+         *     - @options.foo.y {Number}
+         *
+         */
+
+        ''')
+
+        self.assertEqual(parsed.type, "script")
+        self.assertEqual(isinstance(parsed.comments, list), True)
+        self.assertEqual(len(parsed.comments), 1)
+
+        comment = parsed.comments[0]
+
+        self.assertEqual(comment.variant, "doc")
+        self.maxDiff = None
+
+        self.assertEqual(comment.getHtml(), '<p>Additional arguments can be passed in via <code class="param">options</code>:</p>\n\n<ul>\n<li><p><code class="param">options</code></p>\n\n<ul>\n<li><code class="param">options.x</code></li>\n<li><code class="param">options.y</code></li>\n<li><code class="param">options.foo</code></li>\n<li><code class="param">options.foo.x</code></li>\n<li><code class="param">options.foo.y</code></li>\n</ul></li>\n</ul>\n')
+
+        self.assertEqual(type(comment.params), dict)
+
+        self.assertEqual(type(comment.params["options"]), dict)
+
+        self.assertEqual(type(comment.params["options"]["fields"]), dict)
+        self.assertEqual(comment.params["options"]["type"][0]["name"], "Object")
+
+        self.assertEqual(type(comment.params["options"]["fields"]["x"]), dict)
+        self.assertEqual(type(comment.params["options"]["fields"]["y"]), dict)
+
+        self.assertEqual(comment.params["options"]["fields"]["x"]["type"][0]["name"], "String")
+        self.assertEqual(comment.params["options"]["fields"]["y"]["type"][0]["name"], "Number")
+
+        self.assertEqual(type(comment.params["options"]["fields"]["foo"]), dict)
+        self.assertEqual(comment.params["options"]["fields"]["foo"]["type"][0]["name"], "Object")
+
+        self.assertEqual(type(comment.params["options"]["fields"]["foo"]["fields"]["x"]), dict)
+        self.assertEqual(type(comment.params["options"]["fields"]["foo"]["fields"]["y"]), dict)
+
+        self.assertEqual(comment.params["options"]["fields"]["foo"]["fields"]["x"]["type"][0]["name"], "String")
+        self.assertEqual(comment.params["options"]["fields"]["foo"]["fields"]["y"]["type"][0]["name"], "Number")
+
     
     #
     # DOC COMMENTS :: MARKDOWN
