@@ -131,7 +131,7 @@ class Comment():
             if "<" in text:
                 text = stripMarkup.sub("", text)
                 
-            self.text = text
+        self.text = text
 
 
     def getHtml(self):
