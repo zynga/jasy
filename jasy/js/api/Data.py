@@ -379,8 +379,8 @@ class ApiData():
         if callComment:
             
             if callComment.text:
-                self.main["doc"] = callComment.html
-                self.main["summary"] = extractSummary(callComment.html)
+                self.main["doc"] = callComment.getHtml()
+                self.main["summary"] = extractSummary(callComment.getHtml())
         
             if hasattr(callComment, "tags"):
                 self.main["tags"] = callComment.tags
@@ -399,8 +399,8 @@ class ApiData():
         if comment is None or not comment.text:
             entry["errornous"] = True
         else:
-            entry["doc"] = comment.html
-            entry["summary"] = extractSummary(comment.html)
+            entry["doc"] = comment.getHtml()
+            entry["summary"] = extractSummary(comment.getHtml())
             
         if comment and comment.tags:
             entry["tags"] = comment.tags
@@ -461,9 +461,9 @@ class ApiData():
             
         # Root doc comment is optional for constructors
         comment = getDocComment(commentNode)
-        if comment and comment.html:
-            entry["doc"] = comment.html
-            entry["summary"] = extractSummary(comment.html)
+        if comment and comment.getHtml():
+            entry["doc"] = comment.getHtml()
+            entry["summary"] = extractSummary(comment.getHtml())
 
         if comment and comment.tags:
             entry["tags"] = comment.tags
@@ -531,9 +531,9 @@ class ApiData():
             elif comment.returns:
                 entry["type"] = comment.returns[0]
 
-            if comment.html:
-                entry["doc"] = comment.html
-                entry["summary"] = extractSummary(comment.html)
+            if comment.getHtml():
+                entry["doc"] = comment.getHtml()
+                entry["summary"] = extractSummary(comment.getHtml())
             else:
                 entry["errornous"] = True
                 
@@ -679,9 +679,9 @@ class ApiData():
             if comment.type:
                 entry["type"] = comment.type
                 
-            if comment.html:
-                entry["doc"] = comment.html
-                entry["summary"] = extractSummary(comment.html)
+            if comment.getHtml():
+                entry["doc"] = comment.getHtml()
+                entry["summary"] = extractSummary(comment.getHtml())
             else:
                 entry["errornous"] = True
                 

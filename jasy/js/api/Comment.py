@@ -7,7 +7,7 @@ import re
 from jasy.core.Markdown import markdown
 from jasy.core.Error import JasyError
 from jasy.js.util import *
-from jasy.core.Logging import error
+from jasy.core.Logging import error, warn
 
 __all__ = ["CommentException", "Comment"]
 
@@ -76,7 +76,7 @@ class Comment():
     text = None
     
     # Text of the comment converted to HTML (only for doc comment)
-    html = None
+    __html = None
     
     
     def __init__(self, text, context=None, lineNo=0, indent="", fileId=None):
@@ -113,29 +113,35 @@ class Comment():
         if "\n" in text:
             # Outdent indention
             text = self.__outdent(text, indent, lineNo)
-            
+
         else:
             # Strip white space from single line comments
             # " hello " => "hello"
             text = text.strip()
 
-        # Extract docs
         if self.variant == "doc":
             text = self.__processDoc(text, lineNo)
-            html = text
             
-            if markdown is None:
-                raise JasyError("Missing Markdown feature to convert comments to HTML.")
+        # Post process text to not contain any markup
+        if self.variant == "doc":
             
-            # Apply markdown convertion
-            self.html = markdown(html)
+            # Store original, unstripped text for later Markdown conversion
+            self.__originalText = text
             
-            # Post process text to not contain any markup
             if "<" in text:
                 text = stripMarkup.sub("", text)
+                
+            self.text = text
+
+
+    def getHtml():
+        """Returns the comment text converted to HTML"""
         
-        self.text = text
+        # Apply markdown conversion
+        if self.variant == "doc" and self.__html is None:
+            self.__html = markdown(self.__originalText)
         
+        return self.__html
     
     
     def getTags(self):
@@ -159,7 +165,11 @@ class Comment():
             elif line.strip() == "":
                 lines.append("")
             else:
-                error("Could not outdent comment at line %s in %s", startLineNo+lineNo, self.fileId)
+                # Only warn for doc comments, otherwise it might just be code commented out 
+                # which is sometimes formatted pretty crazy when commented out
+                if self.variant == "doc":
+                    warn("Could not outdent doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
+                    
                 return text
                 
         # Find first line with real content
@@ -190,7 +200,12 @@ class Comment():
                     lines[lineNo] = ""
                 else:
                     if not line.startswith(outdentString):
-                        error("Invalid indention in doc string at line %s in %s", startLineNo+lineNo, self.fileId)
+                        
+                        # Only warn for doc comments, otherwise it might just be code commented out 
+                        # which is sometimes formatted pretty crazy when commented out
+                        if self.variant == "doc":
+                            warn("Invalid indention in doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
+                        
                     else:
                         lines[lineNo] = line[outdentStringLen:]
 
