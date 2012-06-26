@@ -1,7 +1,15 @@
 Jasy 0.7.3
 ==========
 
+- Improved support for deep object documentation (e.g. defining a parameter x which is a map with the keys foo and bar)
+- Improved comment processing: Made the text to HTML conversion lazy so that it is not done during parsing the class, but at generating API docs. Improves initial performance.
+- Improved parsing/outdenting of code comments (comments which contain actual code) to not raise warnings
 - Fixed detecting size of JPEGs directly saved via Photoshop
+- Fixed output to log file
+- Fixed `getProjectByName` to actually use the correct active session project and not simply the first found.
+- Fixed project references in "requires" which uses shell shorthands like `~` for the home directory
+- Fixed dependencies so that this release should really be the first which does not require any packages being installed (fixes comment parsing where we still have used Misaka in Jasy 0.7.2)
+
 
 
 Jasy 0.7.2
