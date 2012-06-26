@@ -32,19 +32,17 @@ class Cache:
         """Opens a cache file in the given path"""
         
         try:
-            if os.path.exists(self.__file):
-                self.__shelve = shelve.open(self.__file, flag="w")
+            self.__shelve = shelve.open(self.__file, flag="w")
             
-                storedVersion = getKey(self.__shelve, "jasy-version")
-                storedHost = getKey(self.__shelve, "jasy-host")
+            storedVersion = getKey(self.__shelve, "jasy-version")
+            storedHost = getKey(self.__shelve, "jasy-host")
             
-                if storedVersion == version and storedHost == hostId:
-                    return
+            if storedVersion == version and storedHost == hostId:
+                return
                     
+            if storedVersion is not None or storedHost is not None:
                 info("Jasy version or host has been changed. Recreating cache...")
-                self.__shelve.close()
                     
-            self.__shelve = shelve.open(self.__file, flag="n")
             self.__shelve["jasy-version"] = version
             self.__shelve["jasy-host"] = hostId
             
