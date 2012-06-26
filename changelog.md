@@ -1,3 +1,9 @@
+Jasy 0.7.3
+==========
+
+- Fixed detecting size of JPEGs directly saved via Photoshop
+
+
 Jasy 0.7.2
 ==========
 
