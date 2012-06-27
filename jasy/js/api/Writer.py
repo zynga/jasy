@@ -290,7 +290,7 @@ class ApiWriter():
         return False
     
     
-    def write(self, distFolder, classFilter=None, callback="apiload", showInternals=False, showPrivates=False):
+    def write(self, distFolder, classFilter=None, callback="apiload", showInternals=False, showPrivates=False, printErrors=True):
         
         
         #
@@ -319,7 +319,7 @@ class ApiWriter():
         #
         
         header("Processing API Data...")
-        data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates)
+        data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates, printErrors=printErrors)
         
         
         
