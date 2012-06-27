@@ -35,12 +35,9 @@ class Session():
         
         if os.path.exists("jasyproject.json"):
             try:
-                # TODO: Figure out repo type and branch/revision of current project
+                # TODO: Figure out version of current project
                 version = None
-                repo = None
-                revision = None
-
-                project = getProjectFromPath(".", version=version, repo=repo, revision=revision)
+                project = getProjectFromPath(".", version=version)
                 
                 self.addProject(project)
             except JasyError as jasyerr:
@@ -109,14 +106,15 @@ class Session():
         
         result = getProjectDependencies(project)
         
-        header("Registering projects...")
-        info("Initializing %s projects..." % len(result))
+        info("Initializing projects...")
         indent()
         
         for project in result:
             
-            # Intialize project
-            project.init()
+            # Scan project
+            project.scan()
+            
+            # Append to session list
             self.__projects.append(project)
             
             # Import project defined fields which might be configured using "activateField()"

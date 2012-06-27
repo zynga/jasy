@@ -6,7 +6,7 @@
 import os, json, re
 
 from jasy.core.Cache import Cache
-from jasy.core.Repository import cloneGit, isGitRepositoryUrl
+from jasy.core.Repository import isRepository, getRepositoryType, getRepositoryFolder, updateRepository
 from jasy.core.Error import JasyError
 from jasy.core.Util import getKey
 from jasy.core.Logging import *
@@ -27,45 +27,51 @@ docFiles = ("package.md", "readme.md")
 repositoryFolder = re.compile(r"^([a-zA-Z0-9\.\ _-]+)-([a-f0-9]{40})$")
 
 
-__projects = {}
+projects = {}
 
 
-def getProjectFromPath(path, config=None, version=None, repo=None, revision=None):
-    global __projects
+def getProjectFromPath(path, config=None, version=None):
+    global projects
     
-    if not path in __projects:
-        __projects[path] = Project(path, config, version, repo, revision)
+    if not path in projects:
+        projects[path] = Project(path, config, version)
 
-    return __projects[path]
+    return projects[path]
     
     
 def getProjectDependencies(project):
     """ Returns a sorted list of projects depending on the given project (including the given one) """
     
-    def __resolve(project, force=False):
+    def __resolve(project):
 
-        if project.getName() in names and not force:
+        name = project.getName()
+
+        if name in names:
+            debug("Ignore already known project %s", name)
             return
 
-        names[project.getName()] = project
-        todo = []
+        names[name] = project
+        result.insert(0, project)
 
-        for require in project.getRequires():
-            if not require.getName() in names:
-                names[require.getName()] = project
-                todo.append(require)
+        if project.version:
+            info("Processing %s @ %s", colorize(name, "bold"), colorize(project.version, "magenta"))
+        else:
+            info("Processing %s", colorize(name, "bold"))
 
-        for require in todo:
-            __resolve(require, True)
+        indent()
+        requires = project.getRequires()
 
-        result.append(project)
-        
+        for require in reversed(requires):
+            __resolve(require)
+
+        outdent()
+
     result= []
     names = {}
-
-    info("Detecting dependencies of project %s", project.getName())
-    indent()
     
+    info("Detecting dependencies...")
+    indent()
+
     __resolve(project)
     
     outdent()
@@ -87,7 +93,7 @@ class Project():
     
     kind = "none"
     
-    def __init__(self, path, config=None, version=None, repo=None, revision=None):
+    def __init__(self, path, config=None, version=None):
         """
         Constructor call of the project. 
 
@@ -103,9 +109,7 @@ class Project():
         self.__path = os.path.abspath(os.path.expanduser(path))
         
         # Store given params
-        self.__version = version
-        self.__repo = repo
-        self.__revision = revision
+        self.version = version
         
         # Intialize item registries
         self.classes = {}
@@ -162,18 +166,18 @@ class Project():
     # Project Scan/Init
     #
     
-    def init(self):
+    def scan(self):
         
         config = self.__config
             
         # Processing custom content section. Only supports classes and assets.
         if "content" in config:
-            self.__kind = "manual"
+            self.kind = "manual"
             self.__addContent(config["content"])
 
         # Application projects
         elif self.__hasDir("source"):
-            self.__kind = "application"
+            self.kind = "application"
 
             if self.__hasDir("source/class"):
                 self.__addDir("source/class", "classes")
@@ -184,12 +188,12 @@ class Project():
                 
         # Compat - please change to class/style/asset instead
         elif self.__hasDir("src"):
-            self.__kind = "resource"
+            self.kind = "resource"
             self.__addDir("src", "classes")
 
         # Resource projects
         else:
-            self.__kind = "resource"
+            self.kind = "resource"
 
             if self.__hasDir("class"):
                 self.__addDir("class", "classes")
@@ -206,24 +210,7 @@ class Project():
                 summary.append("%s %s" % (len(content), section))
 
         if summary:
-            msg = "%s " % colorize(self.getName(), "bold")
-            
-            if self.__version:
-                msg += "@ %s" % colorize(self.__version, "magenta")
-
-                rev = self.__revision
-                if rev is not None:
-                    if type(rev) is str and len(rev) > 10:
-                        rev = rev[:6]
-                    msg += colorize("-%s " % rev, "grey")
-                    
-                else:
-                    msg += " "
-                    
-            msg += "[%s]: %s" % (colorize(self.__kind, "cyan"), colorize(", ".join(summary), "grey"))
-            
-            info(msg)
-                
+            info("Scanned %s %s: %s" % (colorize(self.getName(), "bold"), colorize("[%s]" % self.kind, "grey"), colorize(", ".join(summary), "green")))
         else:
             error("Project %s is empty!", self.getName())
 
@@ -380,56 +367,76 @@ class Project():
         Return the project requirements as project instances
         """
 
+        global projects
+        
         result = []
         
         for entry in self.__requires:
-            repo = None
-            revision = None
             
             if type(entry) is dict:
                 source = entry["source"]
                 config = getKey(entry, "config")
                 version = getKey(entry, "version")
+                kind = getKey(entry, "kind")
             else:
                 source = entry
                 config = None
                 version = None
-            
-            if version:
-                info("Processing: %s @ %s", source, version)
-            else:
-                info("Processing: %s", source)
-                
-            indent()
-            
-            if isGitRepositoryUrl(source):
-                if not version:
-                    version = "master"
+                kind = None
 
-                # Auto cloning always happens relative to main project root folder (not to project requiring it)
-                retval = cloneGit(source, version, prefix=prefix)
-                if not retval:
-                    raise JasyError("Could not clone GIT repository %s" % source)
-                    
-                path, revision = retval
-                path = os.path.abspath(path)
-                repo = "git"
+            revision = None
+            
+            if isRepository(source):
+                kind = kind or getRepositoryType(source)
+                path = os.path.abspath(os.path.join(prefix, getRepositoryFolder(source, version, kind)))
                 
+                # Only clone and update when the folder is unique in this session
+                # This reduces git/hg/svn calls which are typically quite expensive
+                if not path in projects:
+                    revision = updateRepository(source, version, path)
+                    if revision is None:
+                        raise JasyError("Could not update repository %s" % source)
+            
             else:
+                kind = "local"
                 if not source.startswith(("/", "~")):
                     path = os.path.join(self.__path, source)
                 else:
-                    path = source
+                    path = os.path.abspath(os.path.expanduser(source))
+            
+            if path in projects:
+                project = projects[path]
                 
-                # Other references to requires projects are always relative to the project requiring it
-                path = os.path.normpath(os.path.expanduser(path))
-                repo = "local"
+            else:
+                fullversion = []
                 
-            project = getProjectFromPath(path, config, version, repo, revision)
+                # Produce user readable version when non is defined
+                if version is None and revision is not None:
+                    version = "master"
+                
+                if version is not None:
+                    if "/" in version:
+                        fullversion.append(version[version.rindex("/")+1:])
+                    else:
+                        fullversion.append(version)
+                    
+                if revision is not None:
+                    # Shorten typical long revisions as used by e.g. Git
+                    if type(revision) is str and len(revision) > 20:
+                        fullversion.append(revision[:6])
+                    else:
+                        fullversion.append(revision)
+                        
+                if fullversion:
+                    fullversion = "-".join(fullversion)
+                else:
+                    fullversion = None
+
+                project = Project(path, config, fullversion)
+                projects[path] = project
+            
             result.append(project)
-            
-            outdent()
-            
+        
         return result
 
 
