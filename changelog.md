@@ -2,7 +2,11 @@ Jasy 0.7.4
 ==========
 
 - Fixed issues with correctly loading cache file on some systems
-- Minor other improvements
+- Revamped project initialization phase to be more efficient and logical while displaying a nice dependency tree during init. 
+- Improved version detection and handling inside `Session`/`Project`
+- Internal Repository API is now less Git specific
+- Made error reporting for API errors optional on console using new "printErrors" parameter in `Writer.write()`
+- Improved error message output when invalid parameters are used
 
 
 Jasy 0.7.3
@@ -16,7 +20,6 @@ Jasy 0.7.3
 - Fixed `getProjectByName` to actually use the correct active session project and not simply the first found.
 - Fixed project references in "requires" which uses shell shorthands like `~` for the home directory
 - Fixed dependencies so that this release should really be the first which does not require any packages being installed (fixes comment parsing where we still have used Misaka in Jasy 0.7.2)
-
 
 
 Jasy 0.7.2
