@@ -142,7 +142,7 @@ def updateGitRepository(url, version, path, update=True):
                         
                         if revision != newRevision:
                             indent()
-                            info("Updated from %s to %s", revision[:6], newRevision[:6])
+                            info("Updated from %s to %s", revision[:10], newRevision[:10])
                             revision = newRevision
                             outdent()
                         

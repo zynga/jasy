@@ -423,7 +423,7 @@ class Project():
                 if revision is not None:
                     # Shorten typical long revisions as used by e.g. Git
                     if type(revision) is str and len(revision) > 20:
-                        fullversion.append(revision[:6])
+                        fullversion.append(revision[:10])
                     else:
                         fullversion.append(revision)
                         

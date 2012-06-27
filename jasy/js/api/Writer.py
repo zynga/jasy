@@ -365,7 +365,7 @@ class ApiWriter():
         
 
 
-    def process(self, apiData, classFilter=None, internals=False, privates=False):
+    def process(self, apiData, classFilter=None, internals=False, privates=False, printErrors=True):
         
         knownClasses = set(list(apiData))
 
@@ -746,17 +746,21 @@ class ApiWriter():
                         })
                         
             if errors:
-                warn("Found errors in %s", className)
+                if printErrors:
+                    warn("Found errors in %s", className)
+                    
                 errorsSorted = sorted(errors, key=lambda entry: entry["line"])
                 
-                indent()
-                for entry in errorsSorted:
-                    if entry["name"]:
-                        warn("%s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
-                    else:
-                        warn("%s (line %s)", entry["kind"], entry["line"])
+                if printErrors:
+                    indent()
+                    for entry in errorsSorted:
+                        if entry["name"]:
+                            warn("%s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
+                        else:
+                            warn("%s (line %s)", entry["kind"], entry["line"])
                 
-                outdent()
+                    outdent()
+                    
                 classApi.errors = errorsSorted
                 
         outdent()
@@ -847,7 +851,7 @@ class ApiWriter():
             packageName = splits[0]
             for split in splits[1:]:
                 if not packageName in apiData:
-                    warn("Missing documentation for package %s", packageName)
+                    warn("Missing package documentation %s", packageName)
                     apiData[packageName] = ApiData(packageName)
                     apiData[packageName].main = {
                         "type" : "Package",
