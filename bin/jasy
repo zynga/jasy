@@ -69,7 +69,6 @@ from jasy.core.Logging import *
 
 info("Jasy %s" % jasy.__version__)
 debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
-header("Initializing...")
 
 if options.version:
     sys.exit(0)
@@ -96,8 +95,10 @@ else:
     jasyscript = os.path.abspath(os.path.expanduser(jasyscript))
     
 if jasyscript is None or not os.path.isfile(jasyscript):
-    sys.stderr.write("Cannot find any Jasy script with task definitions (%s)!\n" % options.file)
+    error("Cannot find any Jasy script with task definitions (%s)!" % options.file)
     sys.exit(1)
+
+header("Initializing...")
 
 # Change to root directory of jasyscript before executing it
 oldcwd = os.getcwd()
