@@ -1,3 +1,10 @@
+Jasy 0.7.4
+==========
+
+- Fixed issues with correctly loading cache file on some systems
+- Minor other improvements
+
+
 Jasy 0.7.3
 ==========
 
