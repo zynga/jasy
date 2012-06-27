@@ -32,7 +32,7 @@ class Cache:
         """Opens a cache file in the given path"""
         
         try:
-            self.__shelve = shelve.open(self.__file, flag="w")
+            self.__shelve = shelve.open(self.__file, flag="c")
             
             storedVersion = getKey(self.__shelve, "jasy-version")
             storedHost = getKey(self.__shelve, "jasy-host")
