@@ -304,7 +304,7 @@ class ApiWriter():
         
         for project in session.getProjects():
             classes = project.getClasses()
-            info("Loading %s classes of project %s", len(classes), project.getName())
+            info("Loading API of project %s: %s...", colorize(project.getName(), "bold"), colorize("%s classes" % len(classes), "cyan"))
             indent()
             for className in classes:
                 if self.isIncluded(className, classFilter):
