@@ -20,11 +20,12 @@ if os.path.exists(os.path.join(basedir, "jasy")):
 
 # Parse options
 from jasy.core.Options import Options
+from jasy.core.Logging import *
 
 args = sys.argv[1:]
 if args and "jasyscript.py" in args[0]:
     args = args.pop(0)
-
+    
 options = Options()
 
 options.add("verbose", short="v", help="Print more detailed status messages to stdout")
@@ -36,7 +37,12 @@ options.add("fast", short="f", help="Prevents repository updates")
 options.add("stats", help="Show statistics after run")
 options.add("help", short="h", help="Shows available options")
 
-options.parse(args)
+try:
+    options.parse(args)
+except Exception as optionError:
+    logging.basicConfig(format="%(message)s")
+    error(optionError)
+    sys.exit(1)
 
 # Configure log level for root logger first (enable debug level when either logfile or console verbosity is activated)
 loglevel = logging.INFO
@@ -65,8 +71,6 @@ if options.log:
 import jasy
 
 # Print out some info
-from jasy.core.Logging import *
-
 info("Jasy %s" % jasy.__version__)
 debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
 

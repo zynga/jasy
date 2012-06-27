@@ -30,74 +30,67 @@ class Options:
 
         inTaskMode = False
 
-        try:
+        index = 0
+        length = len(args)
+        
+        while index < length:
 
-            index = 0
-            length = len(args)
+            name = args[index]
+            if name.startswith("--"):
+                name = name[2:]
             
-            while index < length:
-
-                name = args[index]
-                if name.startswith("--"):
-                    name = name[2:]
-                
-                    if "=" in name:
-                        pos = name.find("=")
-                        value = name[pos+1:]
-                        name = name[0:pos]
-                        
-                        if not inTaskMode and self.__types[name] is bool:
-                            raise Exception("Invalid argument: %s. Boolean flag!" % name)
-                        
-                    elif (not name in self.__types or not self.__types[name] is bool) and (index+1) < length and not args[index+1].startswith("-"):
-                        index += 1
-                        value = args[index]
-
-                    elif inTaskMode:
-                        raise Exception("Invalid argument: %s. In task mode every arguments needs to have a value!" % name)
-                        
-                    else:
-                        value = True
-                        
-                    current["params"][name] = value
-                
-                elif name.startswith("-"):
-                    if inTaskMode:
-                        raise Exception("Invalid argument: %s. Flags are not supported for tasks!" % name)
+                if "=" in name:
+                    pos = name.find("=")
+                    value = name[pos+1:]
+                    name = name[0:pos]
                     
-                    name = name[1:]
-                    for partname in name:
-                        current["params"][partname] = True
-                
+                    if not inTaskMode and self.__types[name] is bool:
+                        raise Exception("Invalid argument: %s. Boolean flag!" % name)
+                    
+                elif (not name in self.__types or not self.__types[name] is bool) and (index+1) < length and not args[index+1].startswith("-"):
+                    index += 1
+                    value = args[index]
+
+                elif inTaskMode:
+                    raise Exception("Invalid argument: %s. In task mode every arguments needs to have a value!" % name)
+                    
                 else:
-                    if current:
-                        self.__tasks.append(current)
-
-                    current = {}
-                    current["task"] = name
-                    current["params"] = {}
+                    value = True
                     
-                    inTaskMode = True
-                    
-                index += 1
-
-            if current:
-                self.__tasks.append(current)
+                current["params"][name] = value
             
-            if self.__tasks and self.__tasks[0]["task"] is None:
-                self.__options = self.__tasks.pop(0)["params"]
+            elif name.startswith("-"):
+                if inTaskMode:
+                    raise Exception("Invalid argument: %s. Flags are not supported for tasks!" % name)
                 
-            for name in list(self.__options):
-                if name in self.__shortcuts:
-                    self.__options[self.__shortcuts[name]] = self.__options[name]
-                    del self.__options[name]
-                elif len(name) == 1:
-                    raise Exception("Invalid argument: %s" % name)
-                    
-        except Exception as error:
-            sys.stderr.write("Error: %s\n" % error)
-            raise
-            sys.exit(1)
+                name = name[1:]
+                for partname in name:
+                    current["params"][partname] = True
+            
+            else:
+                if current:
+                    self.__tasks.append(current)
+
+                current = {}
+                current["task"] = name
+                current["params"] = {}
+                
+                inTaskMode = True
+                
+            index += 1
+
+        if current:
+            self.__tasks.append(current)
+        
+        if self.__tasks and self.__tasks[0]["task"] is None:
+            self.__options = self.__tasks.pop(0)["params"]
+            
+        for name in list(self.__options):
+            if name in self.__shortcuts:
+                self.__options[self.__shortcuts[name]] = self.__options[name]
+                del self.__options[name]
+            elif len(name) == 1:
+                raise Exception("Invalid argument: %s" % name)
             
             
     def showHelp(self, indent=14):
