@@ -36,7 +36,7 @@ tagMatcher = re.compile(r"#([a-zA-Z][a-zA-Z0-9]+)(\((\S+)\))?(\s|$)")
 paramMatcher = re.compile(r"@([a-zA-Z0-9_][a-zA-Z0-9_\.]*[a-zA-Z0-9_]|[a-zA-Z0-9_]+)(\s*\{([a-zA-Z0-9_ \.\|\[\]]+?)(\s*\.{3}\s*)?((\s*\?\s*(\S+))|(\s*\?\s*))?\})?")
 
 # Matches links in own dialect
-linkMatcher = re.compile(r"\{((static|member|property|event)\:)?([a-zA-Z0-9_\.]+)?(\#([a-zA-Z0-9_]+))?\}")
+linkMatcher = re.compile(r"(\{((static|member|property|event)\:)?([a-zA-Z0-9_\.]+)?(\#([a-zA-Z0-9_]+))?\})")
 
 
 class CommentException(Exception):
@@ -141,7 +141,7 @@ class Comment():
         if self.variant == "doc" and self.__html is None:
             if markdown is None:
                 raise JasyError("Markdown is not supported by the system. Documentation comments could not be processed into HTML.")
-            
+
             self.__html = markdown(self.__originalText)
     
         return self.__html
@@ -393,10 +393,14 @@ class Comment():
         
         def formatTypes(match):
             
-            parsedSection = match.group(2)
-            parsedFile = match.group(3)
-            parsedItem = match.group(5)
+            parsedSection = match.group(3)
+            parsedFile = match.group(4)
+            parsedItem = match.group(6)
             
+            # Do not match {}
+            if parsedSection is None and parsedFile is None and parsedItem is None:
+                return match.group(1)
+
             # Minor corrections
             if parsedSection and not parsedItem:
                 parsedSection = ""
@@ -425,8 +429,10 @@ class Comment():
             # build final HTML
             return '<a%s><code>%s</code></a>' % (attr, label)
 
+
+        # TODO this should be done by parsing the markdown first...
+        # TODO we should integrate comment parsing into the markdown parser...
+        # TODO Right now is breaks certain json structures in code examples
+
         return linkMatcher.sub(formatTypes, text)
-        
-        
-        
         

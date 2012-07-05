@@ -32,10 +32,12 @@ try:
     codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
 
     def code2highlight(html):
+
         def unescape(html):
             html = html.replace('&lt;', '<')
             html = html.replace('&gt;', '>')
             html = html.replace('&amp;', '&')
+            html = html.replace('&quot;', '"')
             return html.replace('&#39;', "'")
     
         def replace(match):
@@ -46,7 +48,10 @@ try:
             lexer = get_lexer_by_name(language, tabsize=2)
             formatter = HtmlFormatter(linenos="table")
         
-            return highlight(unescape(code), lexer, formatter)
+            code = unescape(code)
+
+            # for some reason pygments escapes our code once again so we need to reverse it twice
+            return unescape(highlight(code, lexer, formatter))
         
         return codeblock.sub(replace, html)
         
