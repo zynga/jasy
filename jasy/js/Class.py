@@ -206,11 +206,11 @@ class Class(Item):
         return scope
         
         
-    def getApi(self):
-        field = "api[%s]" % self.id
+    def getApi(self, highlight=True):
+        field = "api[%s]-%s" % (self.id, highlight)
         apidata = self.project.getCache().read(field, self.mtime)
         if apidata is None:
-            apidata = ApiData(self.id)
+            apidata = ApiData(self.id, highlight)
             
             tree = self.__getTree(context="api")
             indent()

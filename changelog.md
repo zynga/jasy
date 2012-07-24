@@ -1,3 +1,9 @@
+Jasy 0.7.5
+==========
+
+- Added option to disable syntax highlighting in API data via `ApiWriter().write("data", highlight=True/False)`
+
+
 Jasy 0.7.4
 ==========
 

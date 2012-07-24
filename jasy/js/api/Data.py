@@ -29,13 +29,16 @@ class ApiData():
         
         "uses", "usedBy", 
         "includes", "includedBy", 
-        "implements", "implementedBy"
+        "implements", "implementedBy",
+        
+        "highlight"
     ]
-
-
-    def __init__(self, id):
+    
+    
+    def __init__(self, id, highlight=True):
         
         self.id = id
+        self.highlight = highlight
         
         splits = id.split(".")
         self.basename = splits.pop()
@@ -47,8 +50,8 @@ class ApiData():
             "name" : id,
             "line" : 1
         }
-
-
+        
+        
     def addSize(self, size):
         """ 
         Adds the statistics on different size aspects 
@@ -383,8 +386,9 @@ class ApiData():
         if callComment:
             
             if callComment.text:
-                self.main["doc"] = callComment.getHtml()
-                self.main["summary"] = extractSummary(callComment.getHtml())
+                html = callComment.getHtml(self.highlight)
+                self.main["doc"] = html
+                self.main["summary"] = extractSummary(html)
         
             if hasattr(callComment, "tags"):
                 self.main["tags"] = callComment.tags
@@ -403,8 +407,9 @@ class ApiData():
         if comment is None or not comment.text:
             entry["errornous"] = True
         else:
-            entry["doc"] = comment.getHtml()
-            entry["summary"] = extractSummary(comment.getHtml())
+            html = comment.getHtml(self.highlight)
+            entry["doc"] = html
+            entry["summary"] = extractSummary(html)
             
         if comment and comment.tags:
             entry["tags"] = comment.tags
@@ -465,9 +470,10 @@ class ApiData():
             
         # Root doc comment is optional for constructors
         comment = getDocComment(commentNode)
-        if comment and comment.getHtml():
-            entry["doc"] = comment.getHtml()
-            entry["summary"] = extractSummary(comment.getHtml())
+        if comment and comment.hasHtmlContent():
+            html = comment.getHtml(self.highlight)
+            entry["doc"] = html
+            entry["summary"] = extractSummary(html)
 
         if comment and comment.tags:
             entry["tags"] = comment.tags
@@ -535,9 +541,10 @@ class ApiData():
             elif comment.returns:
                 entry["type"] = comment.returns[0]
 
-            if comment.getHtml():
-                entry["doc"] = comment.getHtml()
-                entry["summary"] = extractSummary(comment.getHtml())
+            if comment.hasHtmlContent():
+                html = comment.getHtml(self.highlight)
+                entry["doc"] = html
+                entry["summary"] = extractSummary(html)
             else:
                 entry["errornous"] = True
                 
@@ -683,9 +690,10 @@ class ApiData():
             if comment.type:
                 entry["type"] = comment.type
                 
-            if comment.getHtml():
-                entry["doc"] = comment.getHtml()
-                entry["summary"] = extractSummary(comment.getHtml())
+            if comment.hasHtmlContent():
+                html = comment.getHtml(self.highlight)
+                entry["doc"] = html
+                entry["summary"] = extractSummary(html)
             else:
                 entry["errornous"] = True
                 
