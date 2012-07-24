@@ -290,7 +290,7 @@ class ApiWriter():
         return False
     
     
-    def write(self, distFolder, classFilter=None, callback="apiload", showInternals=False, showPrivates=False, printErrors=True):
+    def write(self, distFolder, classFilter=None, callback="apiload", showInternals=False, showPrivates=False, printErrors=True, highlightCode=True):
         
         
         #
@@ -308,7 +308,7 @@ class ApiWriter():
             indent()
             for className in classes:
                 if self.isIncluded(className, classFilter):
-                    apiData[className] = classes[className].getApi()
+                    apiData[className] = classes[className].getApi(highlightCode)
                     highlightedCode[className] = classes[className].getHighlightedCode()
                 
             outdent()
