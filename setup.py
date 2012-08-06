@@ -10,8 +10,8 @@ import sys
 major, minor = sys.version_info[:2]
 
 if major < 3:
-    print("Jasy requires Python 3")
-    sys.exit(1)
+  print("Jasy requires Python 3")
+  sys.exit(1)
 
 # Load distutils and switch to distribute afterwards
 from distutils.core import setup
@@ -20,77 +20,78 @@ from distutils.core import setup
 import jasy
 
 setup(
-      name = 'jasy',
-      version = jasy.__version__,
-      
-      author = 'Zynga Inc.',
-      author_email = 'germany@zynga.com',
-      
-      url = 'http://github.com/wpbasti/jasy',
-      download_url = "http://pypi.python.org/packages/source/j/jasy/jasy-%s.zip" % jasy.__version__,
-      
-      license = "Apache v2.0",
-      platforms = 'any',
-      
-      description = "Web Tooling Framework",
-      long_description = open('readme.md').read(),
-      
-      # Via: http://pypi.python.org/pypi?%3Aaction=list_classifiers
-      classifiers = [
-        
-        'Development Status :: 3 - Alpha',
-        'Environment :: Console',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
-        'Topic :: Documentation',
-        'Topic :: Software Development :: Build Tools',
-        'Topic :: Software Development :: Compilers',
-        'Topic :: Software Development :: Code Generators',
-        'Topic :: Software Development :: Internationalization',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-        'Topic :: Software Development :: Localization',
-        'Topic :: Software Development :: Testing'
-      
-      ],
-      
-      packages = [
-        'jasy',
-        'jasy.asset',
-        'jasy.asset.sprite',
-        'jasy.core',
-        'jasy.env',
-        'jasy.i18n',
-        'jasy.js',
-        'jasy.js.api',
-        'jasy.js.clean',
-        'jasy.js.optimize',
-        'jasy.js.output',
-        'jasy.js.parse',
-        'jasy.js.tokenize',
-        'jasy.js.util',
-        'jasy.test'
-      ],
-      
-      package_data = {
-        'jasy': [
-          'data/cldr/VERSION', 
-          'data/cldr/keys/*.xml', 
-          'data/cldr/main/*.xml', 
-          'data/cldr/supplemental/*.xml'
-        ]
-      },
-      
-      scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util", "bin/jasy.bat", "bin/jasy-test.bat", "bin/jasy-util.bat" ],
-      
-      data_files = [
-        ("doc/jasy-%s" % jasy.__version__, [
-          "changelog.md",
-          "license.md",
-          "readme.md",
-          "requirements.txt"
-         ]
-        )
-      ]
+  name = 'jasy',
+  version = jasy.__version__,
+
+  author = 'Zynga Inc.',
+  author_email = 'germany@zynga.com',
+
+  url = 'http://github.com/wpbasti/jasy',
+  download_url = "http://pypi.python.org/packages/source/j/jasy/jasy-%s.zip" % jasy.__version__,
+
+  license = "Apache v2.0",
+  platforms = 'any',
+
+  description = "Web Tooling Framework",
+  long_description = open('readme.md').read(),
+
+  # Via: http://pypi.python.org/pypi?%3Aaction=list_classifiers
+  classifiers = [
+
+    'Development Status :: 3 - Alpha',
+    'Environment :: Console',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: Apache Software License',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.2',
+    'Topic :: Documentation',
+    'Topic :: Software Development :: Build Tools',
+    'Topic :: Software Development :: Compilers',
+    'Topic :: Software Development :: Code Generators',
+    'Topic :: Software Development :: Internationalization',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+    'Topic :: Software Development :: Localization',
+    'Topic :: Software Development :: Testing'
+
+  ],
+
+  packages = [
+    'jasy',
+    'jasy.asset',
+    'jasy.asset.sprite',
+    'jasy.core',
+    'jasy.env',
+    'jasy.i18n',
+    'jasy.js',
+    'jasy.js.api',
+    'jasy.js.clean',
+    'jasy.js.optimize',
+    'jasy.js.output',
+    'jasy.js.parse',
+    'jasy.js.tokenize',
+    'jasy.js.util',
+    'jasy.test',
+    'jasy.server'
+  ],
+
+  package_data = {
+    'jasy': [
+      'data/cldr/VERSION', 
+      'data/cldr/keys/*.xml', 
+      'data/cldr/main/*.xml', 
+      'data/cldr/supplemental/*.xml'
+    ]
+  },
+
+  scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util", "bin/jasy.bat", "bin/jasy-test.bat", "bin/jasy-util.bat" ],
+
+  data_files = [
+    ("doc/jasy-%s" % jasy.__version__, [
+      "changelog.md",
+      "license.md",
+      "readme.md",
+      "requirements.txt"
+     ]
+    )
+  ]
 )
