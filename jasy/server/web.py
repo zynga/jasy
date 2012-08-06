@@ -4,16 +4,7 @@ import os
 import cherrypy
 from cherrypy.lib.static import serve_file
 import requests
-import logging
 import jasy
-
-
-#
-# LOGGING
-#
-
-logging.basicConfig(level=logging.DEBUG, format="%(message)s")
-logging.getLogger().handlers[0].setLevel(logging.DEBUG)
 
 
 #
