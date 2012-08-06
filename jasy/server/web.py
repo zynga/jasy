@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
-
 import os
+import jasy
+
 import cherrypy
 from cherrypy.lib.static import serve_file
+
 import requests
-import jasy
 
 
 #
@@ -82,9 +82,10 @@ class Root(object):
 		return "Jasy %s Server" % jasy.__version__
 
 	@cherrypy.expose()
-	def default(self, *args):
+	def default(self, *args, **query):
 		"""
-		This method returns the content of existing files on the file system
+		This method returns the content of existing files on the file system.
+		Query string might be used for cache busting and are otherwise ignored.
 		"""
 		
 		# Enable cross domain access
@@ -95,6 +96,7 @@ class Root(object):
 		if os.path.exists(target):
 			return serve_file(os.path.abspath(target))
 		else:
+			# Returns a classic 404
 			raise cherrypy.NotFound()
 
 
@@ -102,4 +104,8 @@ class Root(object):
 # START
 #
 
-cherrypy.quickstart(Root())
+def runServer():
+	cherrypy.quickstart(Root(), "", {
+	
+	})
+
