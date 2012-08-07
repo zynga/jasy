@@ -117,10 +117,7 @@ class Root(object):
 # START
 #
 
-def emptyAccess(**args):
-    pass
-    
-def emptyError(a, b, **args):
+def empty(*param, **args):
     pass
 
 def runServer(routes, port=8080):
@@ -130,8 +127,10 @@ def runServer(routes, port=8080):
 
     config = {
         "global" : {
+            "environment" : "production",
             "log.screen" : False,
-            "server.socket_port": port
+            "server.socket_port": port,
+            "engine.autoreload_on" : False
         },
         
         "/" : {
@@ -139,21 +138,29 @@ def runServer(routes, port=8080):
         }
         
     }
-
+    
     # Initialize global config
     cherrypy.config.update(config)
 
     # Somehow this screen disabling does not work
     # This hack to disable all access/error logging works
-    cherrypy.log.access = emptyAccess
-    cherrypy.log.error = emptyError
+    cherrypy.log.access = empty
+    cherrypy.log.error = empty
     cherrypy.log.screen = False
 
     # Initialize app
     app = cherrypy.tree.mount(Root(None), "", config)
+
+
+    def log():
+        pass
+    
+    cherrypy.engine.subscribe("main", log)
+
     
     # Start engine
     cherrypy.engine.start()
     cherrypy.engine.block()
+    
     
 
