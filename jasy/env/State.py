@@ -92,5 +92,5 @@ del Optimization
 # Global HTTP Server
 # ---------------------------------------------
 
-from jasy.server.web import runServer
+from jasy.server.Web import runServer
 
