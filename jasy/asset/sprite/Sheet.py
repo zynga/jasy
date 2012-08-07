@@ -10,7 +10,6 @@ from jasy.core.Logging import debug, warn
 try:
     import Image, ImageDraw
 except Exception as err:
-    warn("Python PIL is not installed. PIL is used to create sprite images. (%s)" % err)
     Image = None
 
 class SpriteSheet():
@@ -50,7 +49,7 @@ class SpriteSheet():
     def write(self, filename, debug=False):
 
         if Image is None:
-            raise JasyError("Missing PIL to create sprite sheets")
+            raise JasyError("Missing Python PIL to create sprite sheets!")
 
         img = Image.new('RGBA', (self.width, self.height))
         draw = ImageDraw.Draw(img)
