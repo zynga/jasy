@@ -136,7 +136,6 @@ def runServer(routes, port=8080):
         "/" : {
             "log.screen" : False
         }
-        
     }
     
     # Initialize global config
@@ -156,6 +155,10 @@ def runServer(routes, port=8080):
         pass
     
     cherrypy.engine.subscribe("main", log)
+
+
+    # Store server PID file to lock project
+    cherrypy.process.plugins.PIDFile(cherrypy.engine, os.path.abspath('jasyserver.pid')).subscribe()
 
     
     # Start engine
