@@ -86,3 +86,11 @@ jsOptimization = Optimization("variables", "declarations", "blocks", "privates")
 del Formatting
 del Optimization
 
+
+
+# ---------------------------------------------
+# Global HTTP Server
+# ---------------------------------------------
+
+from jasy.server.web import runServer
+
