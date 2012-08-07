@@ -14,9 +14,6 @@ from urllib.parse import urlparse
 requests_log = logging.getLogger("requests")
 requests_log.setLevel(logging.WARNING)
 
-# Disable global HTTP logger to stdout
-cherrypy.log.access_log.setLevel(logging.WARNING)
-cherrypy.log.screen = False
 
 
 
@@ -118,22 +115,43 @@ class Root(object):
 # START
 #
 
+def emptyAccess(**args):
+	pass
+	
+def emptyError(a, b, **args):
+	pass
+
 def runServer(routes, port=8080):
 	
 	logging.info("Started server at port: %s" % port)
 
 	config = {
-		"log" : {
-			"screen" : False
-		}
-	}
-	
-	def server():
-		cherrypy.quickstart(Root(routes), "", config)
-
-	
-	tasks = threading.Thread(target=server)
-	tasks.start()
+		"global" : {
+			"log.screen" : False
+		},
 		
+		"/" : {
+			"log.screen" : False
+		}
+		
+	}
+
+	# Somehow this screen disabling does not work
+	# This hack to disable all access/error logging works
+	cherrypy.log.access = emptyAccess
+	cherrypy.log.error = emptyError
+	cherrypy.log.screen = False
+
+	cherrypy.config.update({
+		"log.screen"  : False,
+		"server.socket_port": port
+	})
+	
+	# Initialize app
+	app = cherrypy.tree.mount(Root(None), "", config)
+	
+	# Start engine
+	cherrypy.engine.start()
+	cherrypy.engine.block()
 	
 
