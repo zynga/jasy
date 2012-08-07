@@ -1,15 +1,26 @@
 import os
 import jasy
+import logging
+import threading
 
 import cherrypy
-from cherrypy.lib.static import serve_file
-
 import requests
 
+from cherrypy.lib.static import serve_file as serveFile
+from cherrypy import log
+from urllib.parse import urlparse
 
-#
-# CROSS DOMAIN
-#
+# Disable logging HTTP request being created
+requests_log = logging.getLogger("requests")
+requests_log.setLevel(logging.WARNING)
+
+# Disable global HTTP logger to stdout
+cherrypy.log.access_log.setLevel(logging.WARNING)
+cherrypy.log.screen = False
+
+
+
+
 
 def enableCrossDomain():
 	# See also: https://developer.mozilla.org/En/HTTP_Access_Control
@@ -28,46 +39,39 @@ def enableCrossDomain():
 
 
 
+# These headers will be blocked between header copies
+blockHeaders = set(["content-encoding", "content-length", "connection", "keep-alive", "proxy-authenticate", "proxy-authorization", "transfer-encoding", "remote-addr", "host"])
 
 
-#
-# REMOTE
-#
 
-class Remote():
+def serveProxy(url, query, https=False):
+	"""
+	This method loads remote URLs and returns their content
+	"""
 
-	# These headers will be blocked between header copies
-	block = set(["content-encoding", "content-length", "connection", "keep-alive", "proxy-authenticate", "proxy-authorization", "transfer-encoding", "remote-addr", "host"])
+	# Prepare request
+	url = "http://%s" % url
+	headers = {name: cherrypy.request.headers[name] for name in cherrypy.request.headers if not name.lower() in blockHeaders}
 
-	@cherrypy.expose()
-	def default(self, *args, **query):
-		"""
-		This method loads remote URLs and returns their content
-		"""
-
-		# TODO: HTTPS, POST
-		
-		# Build header data
-		headers = {name: cherrypy.request.headers[name] for name in cherrypy.request.headers if not name.lower() in self.block}
-		url = "http://%s" % "/".join(args)
+	# Load URL from remote host
+	try:
 		result = requests.get(url, params=query, headers=headers)
-		
-		# Copy response headers to our reponse
-		for name in result.headers:
-			if not name in self.block:
-				cherrypy.response.headers[name] = result.headers[name]
+	except Exception as err:
+		raise cherrypy.HTTPError(403)
+	
+	# Copy response headers to our reponse
+	for name in result.headers:
+		if not name in blockHeaders:
+			cherrypy.response.headers[name] = result.headers[name]
 
-		# Apply headers for basic HTTP authentification
-		if "X-Proxy-Authorization" in result.headers:
-			cherrypy.response.headers["Authorization"] = result.headers["X-Proxy-Authorization"]
-			del cherrypy.response.headers["X-Proxy-Authorization"]
+	# Apply headers for basic HTTP authentification
+	if "X-Proxy-Authorization" in result.headers:
+		cherrypy.response.headers["Authorization"] = result.headers["X-Proxy-Authorization"]
+		del cherrypy.response.headers["X-Proxy-Authorization"]
 
-		# Enable cross domain access
-		enableCrossDomain()
-		
-		return result.content
-
-
+	return result.content
+	
+	
 
 #
 # ROOT
@@ -75,12 +79,10 @@ class Remote():
 
 class Root(object):
 	
-	remote = Remote()
-	
-	@cherrypy.expose()
-	def index(self):
-		return "Jasy %s Server" % jasy.__version__
-
+	def __init__(self, routes):
+		logging.info("Routes: %s " % routes)
+		pass
+		
 	@cherrypy.expose()
 	def default(self, *args, **query):
 		"""
@@ -88,24 +90,50 @@ class Root(object):
 		Query string might be used for cache busting and are otherwise ignored.
 		"""
 		
+		# Append special header to all responses
+		cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
+		
 		# Enable cross domain access
 		enableCrossDomain()
 		
-		target = os.path.join(*args)
+		# Root index page
+		if not args:
+			return "Jasy %s" % jasy.__version__
 		
-		if os.path.exists(target):
-			return serve_file(os.path.abspath(target))
+		# When it's a file name in the local folder... load it
+		path = os.path.join(*args)
+		if os.path.exists(path):
+			return serveFile(os.path.abspath(path))
+			
+		# Otherwise it might be a remote URL
 		else:
-			# Returns a classic 404
-			raise cherrypy.NotFound()
+			url = "/".join(args)
+			return serveProxy(url, query, False)
+		
+		# Returns a classic 404
+		raise cherrypy.NotFound()
 
 
 #
 # START
 #
 
-def runServer():
-	cherrypy.quickstart(Root(), "", {
+def runServer(routes, port=8080):
 	
-	})
+	logging.info("Started server at port: %s" % port)
+
+	config = {
+		"log" : {
+			"screen" : False
+		}
+	}
+	
+	def server():
+		cherrypy.quickstart(Root(routes), "", config)
+
+	
+	tasks = threading.Thread(target=server)
+	tasks.start()
+		
+	
 
