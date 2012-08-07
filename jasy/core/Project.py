@@ -140,7 +140,7 @@ class Project():
         try:
             self.__cache = Cache(self.__path)
         except IOError as err:
-            raise JasyError("Could not initialize project. Cache file could not be initialized! %s" % err)
+            raise JasyError("Could not initialize project. Cache file in %s could not be initialized! %s" % (self.__path, err))
         
         # Read name from manifest or use the basename of the project's path
         self.__name = getKey(config, "name", getProjectNameFromPath(self.__path))
