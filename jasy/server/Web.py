@@ -1,23 +1,24 @@
-import os
-import jasy
-import logging
-import threading
+import sys, os, atexit
 
-import cherrypy
-import requests
+import cherrypy, requests
 
 from cherrypy.lib.static import serve_file as serveFile
 from cherrypy import log
+
 from urllib.parse import urlparse
 
-from jasy.core.Logging import info, header
+from jasy.core.Logging import debug, info, error, header
+
+from jasy.env.State import session
+
 
 # Disable logging HTTP request being created
+import logging
 requests_log = logging.getLogger("requests")
 requests_log.setLevel(logging.WARNING)
 
 
-
+__all__ = ["runServer", "stopServer"]
 
 
 
@@ -79,7 +80,7 @@ def serveProxy(url, query, https=False):
 class Root(object):
     
     def __init__(self, routes):
-        logging.info("Routes: %s " % routes)
+        info("Routes: %s " % routes)
         pass
         
     @cherrypy.expose()
@@ -119,12 +120,47 @@ class Root(object):
 
 def empty(*param, **args):
     pass
+    
+    
+pidfile = "jasyserver.pid"
+    
+def lock():
+    # Store PID file
+    pid = str(os.getpid())
+    
+    debug("Jasy ")
+    if os.path.isfile(pidfile):
+        error("PID file (%s) already exists, exiting" % pidfile)
+        sys.exit(1)
+    else:
+        open(pidfile, 'w').write(pid)
+        
+        
+    def unlink():
+        print("Unlinking PID file...")
+        os.unlink(pidfile)
+        
 
-def runServer(routes, port=8080):
+    atexit.register(unlink)
+    
+    
+def release():
+    cherrypy.process.plugins.Daemonizer(cherrypy.engine).unsubscribe()
+    
+    
+    
+    
+    
+    
+
+def runServer(routes, port=8080, daemon=False):
     
     header("HTTP Server")
-    logging.info("Started server at port: %s" % port)
-
+    
+    # Lock jasy for executing other servers
+    lock()    
+    
+    # Shared configuration
     config = {
         "global" : {
             "environment" : "production",
@@ -156,14 +192,25 @@ def runServer(routes, port=8080):
     
     cherrypy.engine.subscribe("main", log)
 
-
     # Store server PID file to lock project
-    cherrypy.process.plugins.PIDFile(cherrypy.engine, os.path.abspath('jasyserver.pid')).subscribe()
+    #cherrypy.process.plugins.PIDFile(cherrypy.engine, os.path.abspath('jasyserver.pid')).subscribe()
+    
+    # This moves Jasy execution into the background
+    if daemon:
+        cherrypy.process.plugins.Daemonizer(cherrypy.engine).subscribe()
 
+    # Output user hints
+    info("Started server at port: %s" % port)
+    info("Process ID is: %s", os.getpid())
+    
+    session.pause()
     
     # Start engine
     cherrypy.engine.start()
     cherrypy.engine.block()
     
     
-
+    
+def stopServer():
+    pass
+    
