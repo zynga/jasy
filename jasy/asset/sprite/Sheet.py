@@ -9,8 +9,8 @@ from jasy.core.Logging import debug, warn
 
 try:
     import Image, ImageDraw
-except:
-    warn("Python PIL is not installed. PIL is used to create sprite images.")
+except Exception as err:
+    warn("Python PIL is not installed. PIL is used to create sprite images. (%s)" % err)
     Image = None
 
 class SpriteSheet():
