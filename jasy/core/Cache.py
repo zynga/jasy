@@ -41,7 +41,7 @@ class Cache:
                 return
                     
             if storedVersion is not None or storedHost is not None:
-                info("Jasy version or host has been changed. Recreating cache...")
+                debug("Jasy version or host has been changed. Recreating cache...")
                     
             self.__shelve["jasy-version"] = version
             self.__shelve["jasy-host"] = hostId
