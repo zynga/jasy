@@ -3,24 +3,28 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, os, jasy, time, threading
-
-import cherrypy, requests
-
-from cherrypy.lib.static import serve_file as serveFile
-from cherrypy import log
-
+import sys, os, jasy, time, threading, logging
 from urllib.parse import urlparse
 
 from jasy.core.Logging import debug, info, error, header
 from jasy.env.State import session
 from jasy.core.Lock import lock, release
 
+try:
+    import requests
+    
+    # Disable logging HTTP request being created
+    logging.getLogger("requests").setLevel(logging.WARNING)
+    
+except ImportError as err
+    requests = None
 
-# Disable logging HTTP request being created
-import logging
-requests_log = logging.getLogger("requests")
-requests_log.setLevel(logging.WARNING)
+try:
+    import cherrypy
+    from cherrypy.lib.static import serve_file as serveFile
+except ImportError as err:
+    cherrypy = None
+
 
 
 __all__ = ["serve"]
@@ -166,4 +170,7 @@ def serve(routes, port=8080):
     
     # Release created lock file
     release("http-%s" % port)
+    
+    # Resume session to continue work on next task (if given)
+    session.resume()
 
