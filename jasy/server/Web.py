@@ -6,9 +6,10 @@
 import sys, os, jasy, time, threading, logging
 from urllib.parse import urlparse
 
-from jasy.core.Logging import debug, info, error, header
+from jasy.core.Logging import debug, info, error, header, indent, outdent
 from jasy.env.State import session
 from jasy.core.Lock import lock, release
+from jasy.core.Util import getKey
 
 try:
     import requests
@@ -26,24 +27,12 @@ except ImportError as err:
     cherrypy = None
 
 
-
 __all__ = ["serve"]
 
 
-
-# These headers will be blocked between header copies
-__blockHeaders = set([
-    "content-encoding", 
-    "content-length", 
-    "connection", 
-    "keep-alive", 
-    "proxy-authenticate", 
-    "proxy-authorization", 
-    "transfer-encoding", 
-    "remote-addr", 
-    "host"
-])
-
+#
+# UTILITIES
+#
 
 def enableCrossDomain():
     # See also: https://developer.mozilla.org/En/HTTP_Access_Control
@@ -62,47 +51,79 @@ def enableCrossDomain():
 
 
 
-
-
-
-def serveProxy(url, query, https=False):
-    """
-    This method loads remote URLs and returns their content
-    """
-
-    # Prepare request
-    url = "http://%s" % url
-    headers = {name: cherrypy.request.headers[name] for name in cherrypy.request.headers if not name.lower() in __blockHeaders}
-
-    # Load URL from remote host
-    try:
-        result = requests.get(url, params=query, headers=headers)
-    except Exception as err:
-        raise cherrypy.HTTPError(403)
-    
-    # Copy response headers to our reponse
-    for name in result.headers:
-        if not name in __blockHeaders:
-            cherrypy.response.headers[name] = result.headers[name]
-
-    # Apply headers for basic HTTP authentification
-    if "X-Proxy-Authorization" in result.headers:
-        cherrypy.response.headers["Authorization"] = result.headers["X-Proxy-Authorization"]
-        del cherrypy.response.headers["X-Proxy-Authorization"]
-
-    return result.content
-    
-    
-
 #
-# ROOT
+# ROUTERS
 #
 
-class Root(object):
+class Proxy(object):
     
-    def __init__(self, routes):
-        info("Routes: %s " % routes)
-        pass
+    def __init__(self, id, config):
+        self.id = id
+        self.config = config
+        self.host = getKey(config, "host")
+
+        info('Proxy "%s" => "%s"', self.id, self.host)
+        
+        
+    # These headers will be blocked between header copies
+    __blockHeaders = set([
+        "content-encoding", 
+        "content-length", 
+        "connection", 
+        "keep-alive", 
+        "proxy-authenticate", 
+        "proxy-authorization", 
+        "transfer-encoding", 
+        "remote-addr", 
+        "host"
+    ])
+    
+    
+    @cherrypy.expose()
+    def default(self, *args, **query):
+        """
+        This method returns the content of existing files on the file system.
+        Query string might be used for cache busting and are otherwise ignored.
+        """
+        
+        # Append special header to all responses
+        cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
+        
+        # Enable cross domain access
+        enableCrossDomain()
+        
+        url = self.config["host"] + "/".join(args)
+        
+        # Prepare request
+        headers = {name: cherrypy.request.headers[name] for name in cherrypy.request.headers if not name.lower() in self.__blockHeaders}
+        
+        # Load URL from remote host
+        try:
+            result = requests.get(url, params=query, headers=headers)
+        except Exception as err:
+            raise cherrypy.HTTPError(403)
+
+        # Copy response headers to our reponse
+        for name in result.headers:
+            if not name in self.__blockHeaders:
+                cherrypy.response.headers[name] = result.headers[name]
+
+        # Apply headers for basic HTTP authentification
+        if "X-Proxy-Authorization" in result.headers:
+            cherrypy.response.headers["Authorization"] = result.headers["X-Proxy-Authorization"]
+            del cherrypy.response.headers["X-Proxy-Authorization"]
+
+        return result.content
+        
+        
+class Static(object):
+    
+    def __init__(self, id, config):
+        self.id = id
+        self.config = config
+        self.root = getKey(config, "root", ".")
+
+        info('Static "%s" => "%s"', self.id, self.root)
         
     @cherrypy.expose()
     def default(self, *args, **query):
@@ -117,29 +138,29 @@ class Root(object):
         # Enable cross domain access
         enableCrossDomain()
         
-        # Root index page
-        if not args:
-            return "Jasy %s" % jasy.__version__
-        
         # When it's a file name in the local folder... load it
-        path = os.path.join(*args)
+        if args:
+            path = os.path.join(*args)
+        else:
+            path = "index.html"
+        
+        path = os.path.join(self.root, path)
+        
+        # Check for existance first
         if os.path.exists(path):
             return serveFile(os.path.abspath(path))
             
-        # Otherwise it might be a remote URL
+        # Otherwise return a classic 404
         else:
-            url = "/".join(args)
-            return serveProxy(url, query, False)
+            raise cherrypy.NotFound(path)
         
-        # Returns a classic 404
-        raise cherrypy.NotFound()
 
 
 #
 # START
 #
 
-def serve(routes, port=8080):
+def serve(routes=None, port=8080):
     
     header("HTTP Server")
     
@@ -173,8 +194,22 @@ def serve(routes, port=8080):
     cherrypy.log.error = empty
     cherrypy.log.screen = False
 
+    # Initialize routing
+    info("Initialize routing...")
+    indent()
+    root = Static("/", {})
+    for key in routes:
+        entry = routes[key]
+        if "host" in entry:
+            node = Proxy(key + "/", entry)
+        else:
+            node = Static(key + "/", entry)
+            
+        setattr(root, key, node)
+    outdent()
+    
     # Finally start the server
-    app = cherrypy.tree.mount(Root(None), "", config)
+    app = cherrypy.tree.mount(root, "", config)
     cherrypy.engine.start()
     info("Started HTTP server at port %s... [PID=%s]", port, os.getpid())
     cherrypy.engine.block()
