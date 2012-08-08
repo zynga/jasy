@@ -9,7 +9,7 @@ from jasy.core.Logging import debug, warn
 
 try:
     import Image, ImageDraw
-except Exception as err:
+except ImportError as err:
     Image = None
 
 class SpriteSheet():

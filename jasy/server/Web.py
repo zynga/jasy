@@ -1,4 +1,9 @@
-import sys, os, atexit, jasy
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Zynga Inc.
+#
+
+import sys, os, jasy, time, threading
 
 import cherrypy, requests
 
@@ -8,8 +13,8 @@ from cherrypy import log
 from urllib.parse import urlparse
 
 from jasy.core.Logging import debug, info, error, header
-
 from jasy.env.State import session
+from jasy.core.Lock import lock, release
 
 
 # Disable logging HTTP request being created
@@ -18,7 +23,7 @@ requests_log = logging.getLogger("requests")
 requests_log.setLevel(logging.WARNING)
 
 
-__all__ = ["runServer", "stopServer"]
+__all__ = ["serve"]
 
 
 
@@ -118,49 +123,17 @@ class Root(object):
 # START
 #
 
-def empty(*param, **args):
-    pass
-    
-    
-pidfile = "jasyserver.pid"
-    
-def lock():
-    # Store PID file
-    pid = str(os.getpid())
-    
-    debug("Jasy ")
-    if os.path.isfile(pidfile):
-        error("PID file (%s) already exists, exiting" % pidfile)
-        sys.exit(1)
-    else:
-        open(pidfile, 'w').write(pid)
-        
-        
-    def unlink():
-        print("Unlinking PID file...")
-        os.unlink(pidfile)
-        
-
-    atexit.register(unlink)
-    
-    
-def release():
-    cherrypy.process.plugins.Daemonizer(cherrypy.engine).unsubscribe()
-    
-    
-    
-    
-    
-    
-
-def runServer(routes, port=8080, daemon=False):
+def serve(routes, port=8080):
     
     header("HTTP Server")
     
-    # Lock jasy for executing other servers
-    lock()    
+    # Lock jasy for executing other servers on the same port
+    lock("http-%s" % port)
     
-    # Shared configuration
+    # We need to pause the session to make room for other jasy executions
+    session.pause()
+
+    # Shared configuration (global/app)
     config = {
         "global" : {
             "environment" : "production",
@@ -174,43 +147,23 @@ def runServer(routes, port=8080, daemon=False):
         }
     }
     
-    # Initialize global config
+    # Update global config
     cherrypy.config.update(config)
 
     # Somehow this screen disabling does not work
     # This hack to disable all access/error logging works
+    def empty(*param, **args): pass
     cherrypy.log.access = empty
     cherrypy.log.error = empty
     cherrypy.log.screen = False
 
-    # Initialize app
+    # Finally start the server
     app = cherrypy.tree.mount(Root(None), "", config)
-
-
-    def log():
-        pass
-    
-    cherrypy.engine.subscribe("main", log)
-
-    # Store server PID file to lock project
-    #cherrypy.process.plugins.PIDFile(cherrypy.engine, os.path.abspath('jasyserver.pid')).subscribe()
-    
-    # This moves Jasy execution into the background
-    if daemon:
-        cherrypy.process.plugins.Daemonizer(cherrypy.engine).subscribe()
-
-    # Output user hints
-    info("Started server at port: %s" % port)
-    info("Process ID is: %s", os.getpid())
-    
-    session.pause()
-    
-    # Start engine
     cherrypy.engine.start()
+    info("Started HTTP server at port %s... [PID=%s]", port, os.getpid())
     cherrypy.engine.block()
+    info("Stopped HTTP server at port %s.", port)
     
-    
-    
-def stopServer():
-    pass
-    
+    # Release created lock file
+    release("http-%s" % port)
+
