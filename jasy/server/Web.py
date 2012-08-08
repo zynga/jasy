@@ -23,6 +23,8 @@ except ImportError as err:
 try:
     import cherrypy
     from cherrypy.lib.static import serve_file as serveFile
+    from cherrypy.lib.static import serve_file as serveFile
+    
 except ImportError as err:
     cherrypy = None
 
@@ -48,6 +50,16 @@ def enableCrossDomain():
     
     # Cache allowence for cross domain for 7 days
     cherrypy.response.headers["Access-Control-Max-Age"] = "604800"
+
+
+def findIndex(path):
+    all = ["index.html", "index.php"]
+    for candidate in all:
+        rel = os.path.join(path, candidate)
+        if os.path.exists(rel):
+            return candidate
+            
+    return None
 
 
 
@@ -148,7 +160,16 @@ class Static(object):
         
         # Check for existance first
         if os.path.exists(path):
-            return serveFile(os.path.abspath(path))
+            if os.path.isfile(path):
+                return serveFile(os.path.abspath(path))
+            else:
+                indexPath = findIndex(path)
+                if indexPath:
+                    print(path, "||", indexPath, "||", args)
+                        
+                    raise cherrypy.HTTPRedirect(indexPath)
+                else:
+                    raise cherrypy.NotFound(absPath)
             
         # Otherwise return a classic 404
         else:
