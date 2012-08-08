@@ -16,7 +16,7 @@ try:
     # Disable logging HTTP request being created
     logging.getLogger("requests").setLevel(logging.WARNING)
     
-except ImportError as err
+except ImportError as err:
     requests = None
 
 try:
