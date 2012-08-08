@@ -31,6 +31,20 @@ __all__ = ["serve"]
 
 
 
+# These headers will be blocked between header copies
+__blockHeaders = set([
+    "content-encoding", 
+    "content-length", 
+    "connection", 
+    "keep-alive", 
+    "proxy-authenticate", 
+    "proxy-authorization", 
+    "transfer-encoding", 
+    "remote-addr", 
+    "host"
+])
+
+
 def enableCrossDomain():
     # See also: https://developer.mozilla.org/En/HTTP_Access_Control
     
@@ -48,8 +62,6 @@ def enableCrossDomain():
 
 
 
-# These headers will be blocked between header copies
-blockHeaders = set(["content-encoding", "content-length", "connection", "keep-alive", "proxy-authenticate", "proxy-authorization", "transfer-encoding", "remote-addr", "host"])
 
 
 
@@ -60,7 +72,7 @@ def serveProxy(url, query, https=False):
 
     # Prepare request
     url = "http://%s" % url
-    headers = {name: cherrypy.request.headers[name] for name in cherrypy.request.headers if not name.lower() in blockHeaders}
+    headers = {name: cherrypy.request.headers[name] for name in cherrypy.request.headers if not name.lower() in __blockHeaders}
 
     # Load URL from remote host
     try:
@@ -70,7 +82,7 @@ def serveProxy(url, query, https=False):
     
     # Copy response headers to our reponse
     for name in result.headers:
-        if not name in blockHeaders:
+        if not name in __blockHeaders:
             cherrypy.response.headers[name] = result.headers[name]
 
     # Apply headers for basic HTTP authentification

@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import time
+import time, os
 
 from jasy.core.Logging import debug, info, error, header
 from jasy.env.State import session
@@ -83,7 +83,7 @@ def watch(path, callback):
     observer.schedule(JasyEventHandler(), ".", recursive=True)
     observer.start()
 
-    info("Started file system watcher for %s...", path)
+    info("Started file system watcher for %s... [PID=%s]", path, os.getpid())
     info("Use 'ulimit -n 1024' to increase number of possible open files")
 
     try:
