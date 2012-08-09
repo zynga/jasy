@@ -11,61 +11,42 @@ from jasy.env.State import session
 
 try:
     from watchdog.observers import Observer
-    from watchdog.events import LoggingEventHandler, FileSystemEventHandler
+    from watchdog.events import FileSystemEventHandler
 except ImportError as err:
     Observer = None
+    FileSystemEventHandler = None
 
 
 __all__ = ["watch"]
 
 
-from threading import Timer
+if FileSystemEventHandler:
 
+    class JasyEventHandler(FileSystemEventHandler):
 
-def debounce(wait):
-    """ Decorator that will postpone a functions
-        execution until after wait seconds
-        have elapsed since the last time it was invoked. """
-    def decorator(fn):
-        def debounced(*args, **kwargs):
-            def call_it():
-                fn(*args, **kwargs)
-            try:
-                debounced.t.cancel()
-            except(AttributeError):
-                pass
-            debounced.t = Timer(wait, call_it)
-            debounced.t.start()
-        return debounced
-    return decorator
+      def on_moved(self, event):
+        super(JasyEventHandler, self).on_moved(event)
 
+        what = 'directory' if event.is_directory else 'file'
+        info("Moved %s: from %s to %s", what, event.src_path, event.dest_path)
 
+      def on_created(self, event):
+        super(JasyEventHandler, self).on_created(event)
 
-class JasyEventHandler(FileSystemEventHandler):
+        what = 'directory' if event.is_directory else 'file'
+        info("Created %s: %s", what, event.src_path)
 
-  def on_moved(self, event):
-    super(JasyEventHandler, self).on_moved(event)
+      def on_deleted(self, event):
+        super(JasyEventHandler, self).on_deleted(event)
 
-    what = 'directory' if event.is_directory else 'file'
-    info("Moved %s: from %s to %s", what, event.src_path, event.dest_path)
+        what = 'directory' if event.is_directory else 'file'
+        info("Deleted %s: %s", what, event.src_path)
 
-  def on_created(self, event):
-    super(JasyEventHandler, self).on_created(event)
+      def on_modified(self, event):
+        super(JasyEventHandler, self).on_modified(event)
 
-    what = 'directory' if event.is_directory else 'file'
-    info("Created %s: %s", what, event.src_path)
-
-  def on_deleted(self, event):
-    super(JasyEventHandler, self).on_deleted(event)
-
-    what = 'directory' if event.is_directory else 'file'
-    info("Deleted %s: %s", what, event.src_path)
-
-  def on_modified(self, event):
-    super(JasyEventHandler, self).on_modified(event)
-
-    what = 'directory' if event.is_directory else 'file'
-    info("Modified %s: %s", what, event.src_path)
+        what = 'directory' if event.is_directory else 'file'
+        info("Modified %s: %s", what, event.src_path)
 
 
 def watch(path, callback):
