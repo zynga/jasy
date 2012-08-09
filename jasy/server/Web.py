@@ -128,7 +128,9 @@ class Proxy(object):
                 if self.auth["method"] == "basic":
                     headers["Authorization"] = b"Basic " + base64.b64encode(("%s:%s" % (self.auth["user"], self.auth["password"])).encode("ascii"))
                 
-            result = requests.get(url, params=query, headers=headers)
+            # We disable verifícation of SSL certificates to be more tolerant on test servers
+            result = requests.get(url, params=query, headers=headers, verify=False)
+            
         except Exception as err:
             if self.debug:
                 info("Request failed: %s", err)
