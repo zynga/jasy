@@ -73,8 +73,9 @@ class Proxy(object):
         self.id = id
         self.config = config
         self.host = getKey(config, "host")
+        self.debug = getKey(config, "debug", False)
 
-        info('Proxy "%s" => "%s"', self.id, self.host)
+        info('Proxy "%s" => "%s" [debug:%s]', self.id, self.host, self.debug)
         
         
     # These headers will be blocked between header copies
@@ -91,7 +92,7 @@ class Proxy(object):
     ])
     
     
-    @cherrypy.expose()
+    @cherrypy.expose
     def default(self, *args, **query):
         """
         This method returns the content of existing files on the file system.
@@ -111,6 +112,9 @@ class Proxy(object):
         
         # Load URL from remote host
         try:
+            if self.debug:
+                info("Requesting %s", url)
+                
             result = requests.get(url, params=query, headers=headers)
         except Exception as err:
             raise cherrypy.HTTPError(403)
@@ -134,10 +138,11 @@ class Static(object):
         self.id = id
         self.config = config
         self.root = getKey(config, "root", ".")
+        self.debug = getKey(config, "debug", False)
 
-        info('Static "%s" => "%s"', self.id, self.root)
+        info('Static "%s" => "%s" [debug:%s]', self.id, self.root, self.debug)
         
-    @cherrypy.expose()
+    @cherrypy.expose
     def default(self, *args, **query):
         """
         This method returns the content of existing files on the file system.
@@ -159,20 +164,17 @@ class Static(object):
         path = os.path.join(self.root, path)
         
         # Check for existance first
-        if os.path.exists(path):
-            if os.path.isfile(path):
-                return serveFile(os.path.abspath(path))
-            else:
-                indexPath = findIndex(path)
-                if indexPath:
-                    print(path, "||", indexPath, "||", args)
-                        
-                    raise cherrypy.HTTPRedirect(indexPath)
-                else:
-                    raise cherrypy.NotFound(absPath)
+        if os.path.isfile(path):
+            if self.debug:
+                info("Serving file %s", path)
+            
+            return serveFile(os.path.abspath(path))
             
         # Otherwise return a classic 404
         else:
+            if self.debug:
+                info("File not found %s", path)
+            
             raise cherrypy.NotFound(path)
         
 
@@ -233,7 +235,10 @@ def serve(routes=None, port=8080):
     app = cherrypy.tree.mount(root, "", config)
     cherrypy.engine.start()
     info("Started HTTP server at port %s... [PID=%s]", port, os.getpid())
+    indent()
     cherrypy.engine.block()
+
+    outdent()
     info("Stopped HTTP server at port %s.", port)
     
     # Release created lock file
