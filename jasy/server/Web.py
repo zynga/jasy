@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, os, jasy, time, threading, logging
+import sys, os, jasy, time, threading, logging, base64
 from urllib.parse import urlparse
 
 from jasy.core.Logging import debug, info, error, header, indent, outdent
@@ -74,6 +74,7 @@ class Proxy(object):
         self.config = config
         self.host = getKey(config, "host")
         self.debug = getKey(config, "debug", False)
+        self.auth = getKey(config, "auth")
 
         info('Proxy "%s" => "%s" [debug:%s]', self.id, self.host, self.debug)
         
@@ -115,19 +116,29 @@ class Proxy(object):
             if self.debug:
                 info("Requesting %s", url)
                 
+            # Apply headers for basic HTTP authentification
+            if "X-Proxy-Authorization" in headers:
+                headers["Authorization"] = headers["X-Proxy-Authorization"]
+                del headers["X-Proxy-Authorization"]                
+                
+            # Add headers for different authentification approaches
+            if self.auth:
+                
+                # Basic Auth
+                if self.auth["method"] == "basic":
+                    headers["Authorization"] = b"Basic " + base64.b64encode(("%s:%s" % (self.auth["user"], self.auth["password"])).encode("ascii"))
+                
             result = requests.get(url, params=query, headers=headers)
         except Exception as err:
+            if self.debug:
+                info("Request failed: %s", err)
+                
             raise cherrypy.HTTPError(403)
 
         # Copy response headers to our reponse
         for name in result.headers:
             if not name in self.__blockHeaders:
                 cherrypy.response.headers[name] = result.headers[name]
-
-        # Apply headers for basic HTTP authentification
-        if "X-Proxy-Authorization" in result.headers:
-            cherrypy.response.headers["Authorization"] = result.headers["X-Proxy-Authorization"]
-            del cherrypy.response.headers["X-Proxy-Authorization"]
 
         return result.content
         
