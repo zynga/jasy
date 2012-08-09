@@ -8,7 +8,6 @@ from urllib.parse import urlparse
 
 from jasy.core.Logging import debug, info, error, header, indent, outdent
 from jasy.env.State import session
-from jasy.core.Lock import lock, release
 from jasy.core.Util import getKey
 
 try:
@@ -200,9 +199,6 @@ def serve(routes=None, port=8080):
     
     header("HTTP Server")
     
-    # Lock jasy for executing other servers on the same port
-    lock("http-%s" % port)
-    
     # We need to pause the session to make room for other jasy executions
     session.pause()
 
@@ -226,8 +222,13 @@ def serve(routes=None, port=8080):
     # Somehow this screen disabling does not work
     # This hack to disable all access/error logging works
     def empty(*param, **args): pass
+    def inspect(*param, **args): 
+        if args["severity"] > 20:
+            error("Critical error occoured:")
+            error(param[0])
+    
     cherrypy.log.access = empty
-    cherrypy.log.error = empty
+    cherrypy.log.error = inspect
     cherrypy.log.screen = False
 
     # Initialize routing
@@ -246,6 +247,8 @@ def serve(routes=None, port=8080):
     
     # Finally start the server
     app = cherrypy.tree.mount(root, "", config)
+    cherrypy.process.plugins.PIDFile(cherrypy.engine, "jasylock-http-%s" % port).subscribe()
+    
     cherrypy.engine.start()
     info("Started HTTP server at port %s... [PID=%s]", port, os.getpid())
     indent()
@@ -253,9 +256,6 @@ def serve(routes=None, port=8080):
 
     outdent()
     info("Stopped HTTP server at port %s.", port)
-    
-    # Release created lock file
-    release("http-%s" % port)
     
     # Resume session to continue work on next task (if given)
     session.resume()
