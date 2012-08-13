@@ -18,6 +18,13 @@ basedir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), os.pardir))
 if os.path.exists(os.path.join(basedir, "jasy")):
     sys.path.insert(0, basedir)
 
+
+
+
+# ===========================================================================
+#   OPTIONS
+# ===========================================================================
+
 # Parse options
 from jasy.core.Options import Options
 from jasy.core.Logging import *
@@ -44,6 +51,13 @@ except Exception as optionError:
     error(optionError)
     sys.exit(1)
 
+
+
+
+# ===========================================================================
+#   LOGGING
+# ===========================================================================
+
 # Configure log level for root logger first (enable debug level when either logfile or console verbosity is activated)
 loglevel = logging.INFO
 if options.log or options.verbose is True:
@@ -67,6 +81,13 @@ if options.log:
     logfileHandler.setLevel(logging.DEBUG)
     logging.getLogger().addHandler(logfileHandler)        
 
+
+
+
+# ===========================================================================
+#   BOOT
+# ===========================================================================
+
 # Jasy Main
 import jasy
 
@@ -76,8 +97,16 @@ debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
 
 if options.version:
     sys.exit(0)
-    
+
+# Cleanup imported reference    
 del jasy
+
+
+
+
+# ===========================================================================
+#   PATH SETUP
+# ===========================================================================
 
 # Find Jasy Script
 def findJasyscript():
@@ -114,6 +143,13 @@ jasyscript = os.path.basename(jasyscript)
 # Extend path
 sys.path.insert(0, os.getcwd())
 
+
+
+
+# ===========================================================================
+#   OPTIONS
+# ===========================================================================
+
 # Quick mode globally disables repository updates
 if options.fast:
     from jasy.core.Repository import enableRepositoryUpdates
@@ -143,6 +179,13 @@ except JasyError as errobj:
 
 # Configuring jasy for remote calls
 setJasyCommand(os.path.abspath(sys.argv[0]))
+
+
+
+
+# ===========================================================================
+#   MAIN LOGIC
+# ===========================================================================
 
 def main():
     
@@ -175,10 +218,17 @@ def main():
         sys.exit(1)
 
     except KeyboardInterrupt:
-        error("Build interrupted!")
+        error("Jasy Stopped!")
         sys.exit(2)
 
     sys.exit(0)
+
+
+
+
+# ===========================================================================
+#   MAIN EXECUTION
+# ===========================================================================
 
 if options.stats:
     
