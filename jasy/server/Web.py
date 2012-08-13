@@ -109,16 +109,6 @@ class Proxy(object):
         Query string might be used for cache busting and are otherwise ignored.
         """
         
-        # TODO: Figure out GET vs. POST etc.
-
-        print("METHOD: %s" % cherrypy.request.method)
-
-        # Append special header to all responses
-        cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
-        
-        # Enable cross domain access
-        enableCrossDomain()
-        
         url = self.config["host"] + "/".join(args)
         result = None
 
@@ -176,6 +166,12 @@ class Proxy(object):
             if not name.lower() in self.__blockHeaders:
                 cherrypy.response.headers[name] = result.headers[name]
 
+        # Append special header to all responses
+        cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
+        
+        # Enable cross domain access to this server
+        enableCrossDomain()
+
         return result.content
         
         
@@ -199,7 +195,7 @@ class Static(object):
         # Append special header to all responses
         cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
         
-        # Enable cross domain access
+        # Enable cross domain access to this server
         enableCrossDomain()
         
         # When it's a file name in the local folder... load it
@@ -224,7 +220,6 @@ class Static(object):
             
             raise cherrypy.NotFound(path)
         
-
 
 #
 # START
