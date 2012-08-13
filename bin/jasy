@@ -6,7 +6,7 @@
 #
 
 # Import standard library stuff
-import sys, os, os.path, pkg_resources, logging
+import sys, os, logging
 
 # Version check
 if sys.version_info[0] < 3:
@@ -17,7 +17,6 @@ if sys.version_info[0] < 3:
 basedir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), os.pardir))
 if os.path.exists(os.path.join(basedir, "jasy")):
     sys.path.insert(0, basedir)
-
 
 
 
@@ -53,7 +52,6 @@ except Exception as optionError:
 
 
 
-
 # ===========================================================================
 #   LOGGING
 # ===========================================================================
@@ -83,7 +81,6 @@ if options.log:
 
 
 
-
 # ===========================================================================
 #   BOOT
 # ===========================================================================
@@ -100,7 +97,6 @@ if options.version:
 
 # Cleanup imported reference    
 del jasy
-
 
 
 
@@ -145,7 +141,6 @@ sys.path.insert(0, os.getcwd())
 
 
 
-
 # ===========================================================================
 #   OPTIONS
 # ===========================================================================
@@ -167,7 +162,6 @@ except JasyError as errobj:
 
 # Configuring jasy for remote calls
 setJasyCommand(os.path.abspath(sys.argv[0]))
-
 
 
 
@@ -210,7 +204,6 @@ def main():
         sys.exit(2)
 
     sys.exit(0)
-
 
 
 
