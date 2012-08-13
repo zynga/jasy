@@ -6,9 +6,9 @@
 import os, sys
 
 
-# ---------------------------------------------
-# Global permutation handling
-# ---------------------------------------------
+# ===========================================================================
+#   Global Permutation Handling
+# ===========================================================================
 
 __permutation = None
 
@@ -21,9 +21,10 @@ def setPermutation(use):
     __permutation = use
 
 
-# ---------------------------------------------
-# Global prefix handling
-# ---------------------------------------------
+
+# ===========================================================================
+#   Global Prefix Handling
+# ===========================================================================
 
 __prefix = None
 
@@ -51,24 +52,32 @@ def prependPrefix(path):
 
 
 
-# ---------------------------------------------
-# Global session object
-# ---------------------------------------------
+# ===========================================================================
+#   Session/Core
+# ===========================================================================
 
 from jasy.core.Logging import *
-
+from jasy.core.Error import JasyError
 from jasy.env.Session import Session
+
+# Globally available session object
 session = Session()
 
-from jasy.core.Error import JasyError
+
+
+# ===========================================================================
+#   Misc Utilities
+# ===========================================================================
+
 from jasy.core.Json import *
 from jasy.env.Task import *
 from jasy.env.File import *
 
 
-# ---------------------------------------------
-# Global asset manager
-# ---------------------------------------------
+
+# ===========================================================================
+#   Asset Managment
+# ===========================================================================
 
 from jasy.asset.Manager import AssetManager
 from jasy.asset.SpritePacker import SpritePacker
@@ -79,9 +88,10 @@ assetManager = AssetManager()
 del AssetManager
 
 
-# ---------------------------------------------
-# Global output configuration
-# ---------------------------------------------
+
+# ===========================================================================
+#   JavaScript Output
+# ===========================================================================
 
 from jasy.js.Resolver import Resolver
 from jasy.js.api.Writer import ApiWriter
@@ -101,9 +111,9 @@ from jasy.env.JavaScript import *
 
 
 
-# ---------------------------------------------
-# Global server
-# ---------------------------------------------
+# ===========================================================================
+#   Global Server
+# ===========================================================================
 
 from jasy.server.Web import serve
 from jasy.server.Watcher import watch
