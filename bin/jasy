@@ -5,7 +5,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-# Import standard library stuff
+# Import standard libraries
 import sys, os, logging
 
 # Importing PKG Resources which is mainly required to be loaded before Pygments
@@ -31,7 +31,6 @@ if os.path.exists(os.path.join(basedir, "jasy")):
 #   OPTIONS
 # ===========================================================================
 
-# Parse options
 from jasy.core.Options import Options
 from jasy.core.Logging import *
 
