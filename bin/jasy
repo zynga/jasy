@@ -71,12 +71,13 @@ if options.log or options.verbose is True:
 logging.basicConfig(level=loglevel, format="%(message)s")
 
 # Configure console handler to correct level
+rootHandler = logging.getLogger().handlers[0]
 if options.verbose is True:
-    logging.getLogger().handlers[0].setLevel(logging.DEBUG)
+    rootHandler.setLevel(logging.DEBUG)
 elif options.quiet is True:
-    logging.getLogger().handlers[0].setLevel(logging.WARN)
+    rootHandler.setLevel(logging.WARN)
 else:
-    logging.getLogger().handlers[0].setLevel(logging.INFO)
+    rootHandler.setLevel(logging.INFO)
 
 # Enable writing to logfile with debug level
 if options.log:
