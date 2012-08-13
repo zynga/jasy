@@ -83,7 +83,7 @@ class Proxy(object):
         self.enableMirror = getKey(config, "mirror", False)
 
         if self.enableMirror:
-            self.mirrorFile = Cache(os.getcwd(), "jasymirror-%s" % self.id, hashkeys=True)
+            self.mirror = Cache(os.getcwd(), "jasymirror-%s" % self.id, hashkeys=True)
 
         info('Proxy "%s" => "%s" [debug:%s|mirror:%s]', self.id, self.host, self.enableDebug, self.enableMirror)
         
@@ -111,6 +111,8 @@ class Proxy(object):
         
         # TODO: Figure out GET vs. POST etc.
 
+        print("METHOD: %s" % cherrypy.request.method)
+
         # Append special header to all responses
         cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
         
@@ -121,9 +123,9 @@ class Proxy(object):
         result = None
 
         # Try using offline mirror if feasible
-        if self.enableMirror:
+        if self.enableMirror and cherrypy.request.method == "GET":
             mirrorId = "%s[%s]" % (url, json.dumps(query, separators=(',',':'), sort_keys=True))
-            result = self.mirrorFile.read(mirrorId)
+            result = self.mirror.read(mirrorId)
             if result is not None and self.enableDebug:
                 info("Mirrored: %s" % url)
          
@@ -163,11 +165,11 @@ class Proxy(object):
                 raise cherrypy.HTTPError(403)
 
             # Storing result into mirror
-            if self.enableMirror:
+            if self.enableMirror and cherrypy.request.method == "GET":
 
                 # Wrap result into mirrorable entry
                 resultCopy = Result(result.headers, result.content)
-                self.mirrorFile.store(mirrorId, resultCopy)
+                self.mirror.store(mirrorId, resultCopy)
 
         # Copy response headers to our reponse
         for name in result.headers:
@@ -241,6 +243,7 @@ def serve(routes=None, port=8080):
             "environment" : "production",
             "log.screen" : False,
             "server.socket_port": port,
+            "server.socket_host": '0.0.0.0',
             "engine.autoreload_on" : False
         },
         
