@@ -131,7 +131,7 @@ class Proxy(object):
         if result is None:
 
             # Prepare headers
-            headers = {}#CaseInsensitiveDict()
+            headers = CaseInsensitiveDict()
             for name in cherrypy.request.headers:
                 if not name in self.__blockHeaders:
                     headers[name] = cherrypy.request.headers[name]
