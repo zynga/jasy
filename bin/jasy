@@ -8,6 +8,13 @@
 # Import standard library stuff
 import sys, os, logging
 
+# Importing PKG Resources which is mainly required to be loaded before Pygments
+# for omitting ugly side effect errors. Not required at all otherwise.
+try:
+    import pkg_resources
+except ImportError:
+    pass
+
 # Version check
 if sys.version_info[0] < 3:
     sys.stderr.write("Jasy requires Python 3!\n")
