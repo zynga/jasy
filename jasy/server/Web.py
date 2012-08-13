@@ -81,11 +81,12 @@ class Proxy(object):
         
         self.enableDebug = getKey(config, "debug", False)
         self.enableMirror = getKey(config, "mirror", False)
+        self.forceOffline = getKey(config, "offline", False)
 
         if self.enableMirror:
             self.mirror = Cache(os.getcwd(), "jasymirror-%s" % self.id, hashkeys=True)
 
-        info('Proxy "%s" => "%s" [debug:%s|mirror:%s]', self.id, self.host, self.enableDebug, self.enableMirror)
+        info('Proxy "%s" => "%s" [debug:%s|mirror:%s|forceOffline:%s]', self.id, self.host, self.enableDebug, self.enableMirror, self.forceOffline)
         
         
     # These headers will be blocked between header copies
@@ -119,60 +120,66 @@ class Proxy(object):
             if result is not None and self.enableDebug:
                 info("Mirrored: %s" % url)
          
-        # Load URL from remote server
-        if result is None:
+        # Check if we're in forced offline mode
+        if self.forceOffline and result is None:
+            info("[Offline Mode] : URL (%s) is not in Mirror - We can't deliver it" % url)
+            raise cherrypy.HTTPError(404)
+        else:
+            # Load URL from remote server
+            if result is None:
 
-            # Prepare headers
-            headers = CaseInsensitiveDict()
-            for name in cherrypy.request.headers:
-                if not name in self.__blockHeaders:
-                    headers[name] = cherrypy.request.headers[name]
-            
-            # Load URL from remote host
-            try:
-                if self.enableDebug:
-                    info("Requesting %s", url)
-                    
-                # Apply headers for basic HTTP authentification
-                if "X-Proxy-Authorization" in headers:
-                    headers["Authorization"] = headers["X-Proxy-Authorization"]
-                    del headers["X-Proxy-Authorization"]                
-                    
-                # Add headers for different authentification approaches
-                if self.auth:
-                    
-                    # Basic Auth
-                    if self.auth["method"] == "basic":
-                        headers["Authorization"] = b"Basic " + base64.b64encode(("%s:%s" % (self.auth["user"], self.auth["password"])).encode("ascii"))
-                    
-                # We disable verifícation of SSL certificates to be more tolerant on test servers
-                result = requests.get(url, params=query, headers=headers, verify=False)
+                # Prepare headers
+                headers = CaseInsensitiveDict()
+                for name in cherrypy.request.headers:
+                    if not name in self.__blockHeaders:
+                        headers[name] = cherrypy.request.headers[name]
                 
-            except Exception as err:
-                if self.enableDebug:
-                    info("Request failed: %s", err)
+                # Load URL from remote host
+                try:
+                    if self.enableDebug:
+                        info("Requesting %s", url)
+                        
+                    # Apply headers for basic HTTP authentification
+                    if "X-Proxy-Authorization" in headers:
+                        headers["Authorization"] = headers["X-Proxy-Authorization"]
+                        del headers["X-Proxy-Authorization"]                
+                        
+                    # Add headers for different authentification approaches
+                    if self.auth:
+                        
+                        # Basic Auth
+                        if self.auth["method"] == "basic":
+                            headers["Authorization"] = b"Basic " + base64.b64encode(("%s:%s" % (self.auth["user"], self.auth["password"])).encode("ascii"))
+                        
+                    # We disable verifícation of SSL certificates to be more tolerant on test servers
+                    result = requests.get(url, params=query, headers=headers, verify=False)
                     
-                raise cherrypy.HTTPError(403)
+                except Exception as err:
+                    if self.enableDebug:
+                        info("Request failed: %s", err)
+                        
+                    raise cherrypy.HTTPError(403)
 
-            # Storing result into mirror
-            if self.enableMirror and cherrypy.request.method == "GET":
+                # Storing result into mirror
+                if self.enableMirror and cherrypy.request.method == "GET":
 
-                # Wrap result into mirrorable entry
-                resultCopy = Result(result.headers, result.content)
-                self.mirror.store(mirrorId, resultCopy)
-
-        # Copy response headers to our reponse
-        for name in result.headers:
-            if not name.lower() in self.__blockHeaders:
-                cherrypy.response.headers[name] = result.headers[name]
-
-        # Append special header to all responses
-        cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
+                    # Wrap result into mirrorable entry
+                    resultCopy = Result(result.headers, result.content)
+                    self.mirror.store(mirrorId, resultCopy)
         
-        # Enable cross domain access to this server
-        enableCrossDomain()
 
-        return result.content
+            # Copy response headers to our reponse
+            for name in result.headers:
+                if not name.lower() in self.__blockHeaders:
+                    cherrypy.response.headers[name] = result.headers[name]
+
+            # Append special header to all responses
+            cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
+            
+            # Enable cross domain access to this server
+            enableCrossDomain()
+
+            return result.content
         
         
 class Static(object):
@@ -225,7 +232,7 @@ class Static(object):
 # START
 #
 
-def serve(routes=None, port=8080):
+def serve(routes=None, port=8080, host="127.0.0.1"):
     
     header("HTTP Server")
     
@@ -238,7 +245,7 @@ def serve(routes=None, port=8080):
             "environment" : "production",
             "log.screen" : False,
             "server.socket_port": port,
-            "server.socket_host": '0.0.0.0',
+            "server.socket_host": host,
             "engine.autoreload_on" : False
         },
         
