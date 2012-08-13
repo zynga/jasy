@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shelve, time, os, os.path, sys, pickle, dbm, uuid, hashlib
+import shelve, time, os, os.path, sys, pickle, dbm, uuid, hashlib, atexit
 
 from jasy.core.Logging import *
 from jasy import __version__ as version
@@ -27,6 +27,9 @@ class Cache:
         self.__hashkeys = hashkeys
 
         self.open()
+
+        # Be sure to correctly write down and close cache file on exit
+        atexit.register(self.close)
         
         
     def open(self):
