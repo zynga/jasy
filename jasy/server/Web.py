@@ -3,19 +3,24 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, os, jasy, time, threading, logging, base64
+import sys, os, jasy, logging, base64, json
 from urllib.parse import urlparse
+from collections import namedtuple
 
 from jasy.core.Logging import debug, info, error, header, indent, outdent
 from jasy.env.State import session
 from jasy.core.Util import getKey
+from jasy.core.Cache import Cache
+from jasy.core.Types import CaseInsensitiveDict
+
+Result = namedtuple('Result', ['headers', 'content'])
 
 try:
     import requests
     
     # Disable logging HTTP request being created
     logging.getLogger("requests").setLevel(logging.WARNING)
-    
+
 except ImportError as err:
     requests = None
 
@@ -72,14 +77,19 @@ class Proxy(object):
         self.id = id
         self.config = config
         self.host = getKey(config, "host")
-        self.debug = getKey(config, "debug", False)
         self.auth = getKey(config, "auth")
+        
+        self.enableDebug = getKey(config, "debug", False)
+        self.enableMirror = getKey(config, "mirror", False)
 
-        info('Proxy "%s" => "%s" [debug:%s]', self.id, self.host, self.debug)
+        if self.enableMirror:
+            self.mirrorFile = Cache(os.getcwd(), "jasymirror-%s" % self.id, hashkeys=True)
+
+        info('Proxy "%s" => "%s" [debug:%s|mirror:%s]', self.id, self.host, self.enableDebug, self.enableMirror)
         
         
     # These headers will be blocked between header copies
-    __blockHeaders = set([
+    __blockHeaders = CaseInsensitiveDict.fromkeys([
         "content-encoding", 
         "content-length", 
         "connection", 
@@ -99,6 +109,8 @@ class Proxy(object):
         Query string might be used for cache busting and are otherwise ignored.
         """
         
+        # TODO: Figure out GET vs. POST etc.
+
         # Append special header to all responses
         cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
         
@@ -106,39 +118,60 @@ class Proxy(object):
         enableCrossDomain()
         
         url = self.config["host"] + "/".join(args)
-        
-        # Prepare request
-        headers = {name: cherrypy.request.headers[name] for name in cherrypy.request.headers if not name.lower() in self.__blockHeaders}
-        
-        # Load URL from remote host
-        try:
-            if self.debug:
-                info("Requesting %s", url)
-                
-            # Apply headers for basic HTTP authentification
-            if "X-Proxy-Authorization" in headers:
-                headers["Authorization"] = headers["X-Proxy-Authorization"]
-                del headers["X-Proxy-Authorization"]                
-                
-            # Add headers for different authentification approaches
-            if self.auth:
-                
-                # Basic Auth
-                if self.auth["method"] == "basic":
-                    headers["Authorization"] = b"Basic " + base64.b64encode(("%s:%s" % (self.auth["user"], self.auth["password"])).encode("ascii"))
-                
-            # We disable verifícation of SSL certificates to be more tolerant on test servers
-            result = requests.get(url, params=query, headers=headers, verify=False)
+        result = None
+
+        # Try using offline mirror if feasible
+        if self.enableMirror:
+            mirrorId = "%s[%s]" % (url, json.dumps(query, separators=(',',':'), sort_keys=True))
+            result = self.mirrorFile.read(mirrorId)
+            if result is not None and self.enableDebug:
+                info("Mirrored: %s" % url)
+         
+        # Load URL from remote server
+        if result is None:
+
+            # Prepare headers
+            headers = {}#CaseInsensitiveDict()
+            for name in cherrypy.request.headers:
+                if not name in self.__blockHeaders:
+                    headers[name] = cherrypy.request.headers[name]
             
-        except Exception as err:
-            if self.debug:
-                info("Request failed: %s", err)
+            # Load URL from remote host
+            try:
+                if self.enableDebug:
+                    info("Requesting %s", url)
+                    
+                # Apply headers for basic HTTP authentification
+                if "X-Proxy-Authorization" in headers:
+                    headers["Authorization"] = headers["X-Proxy-Authorization"]
+                    del headers["X-Proxy-Authorization"]                
+                    
+                # Add headers for different authentification approaches
+                if self.auth:
+                    
+                    # Basic Auth
+                    if self.auth["method"] == "basic":
+                        headers["Authorization"] = b"Basic " + base64.b64encode(("%s:%s" % (self.auth["user"], self.auth["password"])).encode("ascii"))
+                    
+                # We disable verifícation of SSL certificates to be more tolerant on test servers
+                result = requests.get(url, params=query, headers=headers, verify=False)
                 
-            raise cherrypy.HTTPError(403)
+            except Exception as err:
+                if self.enableDebug:
+                    info("Request failed: %s", err)
+                    
+                raise cherrypy.HTTPError(403)
+
+            # Storing result into mirror
+            if self.enableMirror:
+
+                # Wrap result into mirrorable entry
+                resultCopy = Result(result.headers, result.content)
+                self.mirrorFile.store(mirrorId, resultCopy)
 
         # Copy response headers to our reponse
         for name in result.headers:
-            if not name in self.__blockHeaders:
+            if not name.lower() in self.__blockHeaders:
                 cherrypy.response.headers[name] = result.headers[name]
 
         return result.content
@@ -150,9 +183,9 @@ class Static(object):
         self.id = id
         self.config = config
         self.root = getKey(config, "root", ".")
-        self.debug = getKey(config, "debug", False)
+        self.enableDebug = getKey(config, "debug", False)
 
-        info('Static "%s" => "%s" [debug:%s]', self.id, self.root, self.debug)
+        info('Static "%s" => "%s" [debug:%s]', self.id, self.root, self.enableDebug)
         
     @cherrypy.expose
     def default(self, *args, **query):
@@ -177,14 +210,14 @@ class Static(object):
         
         # Check for existance first
         if os.path.isfile(path):
-            if self.debug:
+            if self.enableDebug:
                 info("Serving file %s", path)
             
             return serveFile(os.path.abspath(path))
             
         # Otherwise return a classic 404
         else:
-            if self.debug:
+            if self.enableDebug:
                 info("File not found %s", path)
             
             raise cherrypy.NotFound(path)
@@ -238,9 +271,9 @@ def serve(routes=None, port=8080):
     for key in routes:
         entry = routes[key]
         if "host" in entry:
-            node = Proxy(key + "/", entry)
+            node = Proxy(key, entry)
         else:
-            node = Static(key + "/", entry)
+            node = Static(key, entry)
             
         setattr(root, key, node)
     outdent()
