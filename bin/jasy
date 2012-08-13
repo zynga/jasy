@@ -155,24 +155,12 @@ if options.fast:
     from jasy.core.Repository import enableRepositoryUpdates
     enableRepositoryUpdates(False)
 
+# Error handling
+from jasy.core.Error import JasyError
+
 # Global environment
 try:
-    
-    # Basics
-    from jasy.core.Error import JasyError
-    from jasy.core.Json import *
-    from jasy.env.Task import *
     from jasy.env.State import *
-    from jasy.env.File import *
-
-    # User API
-    from jasy.js.Resolver import Resolver
-    from jasy.js.api.Writer import ApiWriter
-    from jasy.asset.SpritePacker import SpritePacker
-
-    # Environment Addons
-    from jasy.env.JavaScript import *
-    
 except JasyError as errobj:
     error("%s" % errobj)
     sys.exit(1)

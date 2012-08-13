@@ -4,7 +4,6 @@
 #
 
 import os, sys
-from jasy.core.Logging import *
 
 
 # ---------------------------------------------
@@ -51,13 +50,20 @@ def prependPrefix(path):
         return path
 
 
+
 # ---------------------------------------------
 # Global session object
 # ---------------------------------------------
 
-from jasy.env.Session import Session
+from jasy.core.Logging import *
 
+from jasy.env.Session import Session
 session = Session()
+
+from jasy.core.Error import JasyError
+from jasy.core.Json import *
+from jasy.env.Task import *
+from jasy.env.File import *
 
 
 # ---------------------------------------------
@@ -65,6 +71,7 @@ session = Session()
 # ---------------------------------------------
 
 from jasy.asset.Manager import AssetManager
+from jasy.asset.SpritePacker import SpritePacker
 
 assetManager = AssetManager()
 
@@ -76,20 +83,26 @@ del AssetManager
 # Global output configuration
 # ---------------------------------------------
 
+from jasy.js.Resolver import Resolver
+from jasy.js.api.Writer import ApiWriter
+
 from jasy.js.output.Optimization import Optimization
 from jasy.js.output.Formatting import Formatting
 
 jsFormatting = Formatting()
 jsOptimization = Optimization("variables", "declarations", "blocks", "privates")
 
-# Remove classes after using them
+# Unimport classes
 del Formatting
 del Optimization
+
+# Handy utility methods to process class lists
+from jasy.env.JavaScript import *
 
 
 
 # ---------------------------------------------
-# Global HTTP Server
+# Global server
 # ---------------------------------------------
 
 from jasy.server.Web import serve
