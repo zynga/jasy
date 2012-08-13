@@ -99,6 +99,7 @@ import jasy
 info("Jasy %s" % jasy.__version__)
 debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
 
+# For simple version info we just leave here
 if options.version:
     sys.exit(0)
 
