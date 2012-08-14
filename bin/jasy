@@ -98,6 +98,7 @@ import jasy
 # Print out some info
 info("Jasy %s" % jasy.__version__)
 debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
+jasyCommand = os.path.abspath(sys.argv[0])
 
 # For simple version info we just leave here
 if options.version:
@@ -169,7 +170,7 @@ except JasyError as errobj:
     sys.exit(1)
 
 # Configuring jasy for remote calls
-setJasyCommand(os.path.abspath(sys.argv[0]))
+setJasyCommand(jasyCommand)
 
 
 
@@ -177,9 +178,47 @@ setJasyCommand(os.path.abspath(sys.argv[0]))
 #   BUILT-IN TASKS
 # ===========================================================================
 
+def getFirstSubFolder(start):
+    for root, dirs, files in os.walk(start):
+        for directory in dirs:
+            if not directory.startswith("."):
+                return directory
+
+    return None
+
 @task("Initializes a new project")
-def init(name="myproject", platform="core", template="basic"):
-    info("Initializing new project '%s' from %s@%s...", name, template, platform)
+def init(name="myproject", origin=None, skeleton=None):
+    header("Initializing new project")
+
+    if origin is None:
+        originProject = session.getMain()
+    else:
+        originProject = session.getProjectByName(origin)
+        if originProject is None:
+            raise JasyError("Unknown project to start with: %s!" % origin)
+
+    destPath = os.path.abspath(name)
+
+    skeletonDir = originProject.getConfigValue("skeletonDir", "skeleton")
+    if not os.path.isdir(skeletonDir):
+        raise JasyError('The project "%s" offers no skeletons!' % originProject.getName())
+
+    # For convenience: Use first skeleton in skeleton folder if no other selection was applied
+    if skeleton is None:
+        skeleton = getFirstSubFolder(skeletonDir)
+
+    # Finally we have the skeleton path (the root folder to copy for our app)
+    skeletonPath = os.path.join(originProject.getPath(), skeletonDir, skeleton)
+    if not os.path.isdir(skeletonPath):
+        raise JasyError('Skeleton "%s" does not exist in project "%s"' % (skeleton, origin))
+
+    # Prechecks done
+    info('Creating "%s" from %s@%s...', name, skeleton, originProject.getName())
+
+    indent()
+    info('Skeleton Folder: %s', skeletonPath)
+    info('Destination Folder: %s', destPath)
+    outdent()
 
 
 
