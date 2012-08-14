@@ -28,12 +28,12 @@ def about():
     header("About")
 
     printBasicInfo()
-    
+
     info("Command: %s", jasy.env.Task.getCommand())
     info("Version: %s", jasy.__version__)
 
 
-@task("Utility for troubleshooting the Jasy environment")
+@task("Troubleshooting the Jasy environment")
 def doctor():
     header("Doctor")
 
