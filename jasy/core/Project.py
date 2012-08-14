@@ -461,6 +461,9 @@ class Project():
     
     def getPackage(self):
         return self.__package
+
+    def getConfigValue(self, key, default=None):
+        return getKey(self.__config, key, default)
         
     def toRelativeUrl(self, path, prefix="", subpath="source"):
         root = os.path.join(self.__path, subpath)
