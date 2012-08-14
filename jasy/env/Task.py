@@ -102,7 +102,7 @@ def executeTask(taskname, **kwargs):
 def printTasks(indent=16):
     """Prints out a list of all avaible tasks and their descriptions"""
     
-    for name in __taskRegistry:
+    for name in sorted(__taskRegistry):
         obj = __taskRegistry[name]
         
         formattedName = name

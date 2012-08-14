@@ -169,7 +169,10 @@ class Session():
         
         
     def getMain(self):
-        return self.__projects[-1]
+        if self.__projects:
+            return self.__projects[-1]
+        else:
+            return None
     
     
     

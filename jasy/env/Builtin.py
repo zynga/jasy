@@ -6,6 +6,8 @@
 import shutil, os, jasy
 from jasy.env.Task import task
 from jasy.core.Logging import *
+from jasy.env.State import session
+
 
 def getFirstSubFolder(start):
     for root, dirs, files in os.walk(start):
@@ -30,7 +32,7 @@ def doctor():
 @task("Shows this help screen")
 def help():
     header("Help")
-    
+
     print("Jasy is powerful Python3 based Web Tooling Framework")
     print("Copyright (c) 2011-2012 Zynga Inc. %s" % colorize("http://zynga.com/", "underline"))
     print("Visit %s for details." % colorize("https://github.com/zynga/jasy", "underline"))

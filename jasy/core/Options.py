@@ -95,7 +95,7 @@ class Options:
             
     def printOptions(self, indent=16):
 
-        for name in self.__defaults:
+        for name in sorted(self.__defaults):
             col = len(name)
             msg = "  --%s" % name
             
