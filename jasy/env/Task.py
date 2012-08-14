@@ -85,19 +85,19 @@ def addTask(task):
         
     __taskRegistry[task.name] = task
 
-def executeTask(name, **kwargs):
+def executeTask(taskname, **kwargs):
     """Executes the given task by name with any optional named arguments"""
     
-    if name in __taskRegistry:
+    if taskname in __taskRegistry:
         try:
-            __taskRegistry[name](**kwargs)
+            __taskRegistry[taskname](**kwargs)
         except JasyError as err:
             raise
         except:
-            error("Unexpected error! Could not finish task %s successfully!" % name)
+            error("Unexpected error! Could not finish task %s successfully!" % taskname)
             raise
     else:
-        raise JasyError("No such task: %s" % name)
+        raise JasyError("No such task: %s" % taskname)
 
 def printTasks(indent=16):
     """Prints out a list of all avaible tasks and their descriptions"""
