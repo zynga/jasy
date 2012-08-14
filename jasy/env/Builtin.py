@@ -9,6 +9,12 @@ from jasy.core.Logging import *
 from jasy.env.State import session
 
 
+def printBasicInfo():
+    print("Jasy is powerful Python3 based Web Tooling Framework")
+    print("Copyright (c) 2011-2012 Zynga Inc. %s" % colorize("http://zynga.com/", "underline"))
+    print("Visit %s for details." % colorize("https://github.com/zynga/jasy", "underline"))
+    print()
+
 def getFirstSubFolder(start):
     for root, dirs, files in os.walk(start):
         for directory in dirs:
@@ -20,6 +26,9 @@ def getFirstSubFolder(start):
 @task("Print outs the Jasy about page")
 def about():
     header("About")
+
+    printBasicInfo()
+    
     info("Command: %s", jasy.env.Task.getCommand())
     info("Version: %s", jasy.__version__)
 
@@ -33,11 +42,8 @@ def doctor():
 def help():
     header("Help")
 
-    print("Jasy is powerful Python3 based Web Tooling Framework")
-    print("Copyright (c) 2011-2012 Zynga Inc. %s" % colorize("http://zynga.com/", "underline"))
-    print("Visit %s for details." % colorize("https://github.com/zynga/jasy", "underline"))
-
-    print()
+    printBasicInfo()
+    
     print(colorize(colorize("Usage", "underline"), "bold"))
     import jasy.env.Task
     print("  $ jasy [<options...>] <task1> [<args...>] [<task2> [<args...>]]")
