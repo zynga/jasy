@@ -98,7 +98,7 @@ import jasy
 # Print out some info
 info("Jasy %s" % jasy.__version__)
 debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
-jasyCommand = os.path.abspath(sys.argv[0])
+command = os.path.abspath(sys.argv[0])
 
 # For simple version info we just leave here
 if options.version:
@@ -167,8 +167,10 @@ except JasyError as errobj:
     error("%s" % errobj)
     sys.exit(1)
 
-# Configuring Jasy for remote task calls
-setJasyCommand(jasyCommand)
+# Configuring for remote task calls
+import jasy.env.Task
+jasy.env.Task.setCommand(command)
+jasy.env.Task.setOptions(options)
 
 # Importing built-in tasks
 import jasy.env.Builtin

@@ -70,7 +70,7 @@ session = Session()
 # ===========================================================================
 
 from jasy.core.Json import *
-from jasy.env.Task import *
+from jasy.env.Task import task, executeTask, runTask
 from jasy.env.File import *
 
 

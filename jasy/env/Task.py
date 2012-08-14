@@ -9,7 +9,7 @@ from jasy.core.Error import JasyError
 from jasy.core.Logging import *
 
 
-__all__ = ["task", "executeTask", "runTask", "printTasks", "setJasyCommand"]
+__all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOptions", "getOptions"]
 
 
 class Task:
@@ -114,11 +114,22 @@ def printTasks(indent=16):
 
 
 # Jasy reference for executing remote tasks
-__jasyCommand = None
+__command = None
+__options = None
 
-def setJasyCommand(cmd):
-    global __jasyCommand
-    __jasyCommand = cmd
+def setCommand(cmd):
+    global __command
+    __command = cmd
+
+
+def setOptions(options):
+    global __options
+    __options = options
+
+
+def getOptions():
+    global __options
+    return __options
 
 
 # Remote run support
@@ -137,7 +148,7 @@ def runTask(project, task, **kwargs):
         params.append("--prefix=%s" % getPrefix())
 
     # Full list of args to pass to subprocess
-    args = [__jasyCommand, task] + params
+    args = [__command, task] + params
 
     # Change into sub folder and execute jasy task
     oldPath = os.getcwd()
@@ -155,5 +166,6 @@ def runTask(project, task, **kwargs):
     # Error handling
     if returnValue != 0:
         raise JasyError("Executing of sub task %s from project %s failed" % (task, project))
+
 
 

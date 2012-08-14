@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shutil, os
+import shutil, os, jasy
 from jasy.env.Task import task
 from jasy.core.Logging import *
 
@@ -30,10 +30,11 @@ def doctor():
 @task("Shows this help screen")
 def help():
     header("Help")
+    import jasy.env.Task
     info("Usage: jasy [options...] task1 [flags...] [task2 [flags...]]")
-    options.showHelp()
+    jasy.env.Task.getOptions().showHelp()
     print("Tasks: ")
-    printTasks()
+    jasy.env.Task.printTasks()
 
 
 @task("Initializes a new project")
