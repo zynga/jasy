@@ -17,7 +17,7 @@ def getFirstSubFolder(start):
 
 @task("Print outs the Jasy about page")
 def about():
-    header("About Jasy")
+    header("About")
     info("Command: %s", jasy.env.Task.getCommand())
     info("Version: %s", jasy.__version__)
 
@@ -30,6 +30,7 @@ def doctor():
 @task("Shows this help screen")
 def help():
     header("Help")
+    
     print("Jasy is powerful Python3 based Web Tooling Framework")
     print("Copyright (c) 2011-2012 Zynga Inc. %s" % colorize("http://zynga.com/", "underline"))
     print("Visit %s for details." % colorize("https://github.com/zynga/jasy", "underline"))
@@ -52,7 +53,7 @@ def help():
 
 @task("Initializes a new project")
 def init(name="myproject", origin=None, skeleton=None):
-    header("Initializing new project")
+    header("Create")
 
     if origin is None:
         originProject = session.getMain()
