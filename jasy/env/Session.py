@@ -34,6 +34,8 @@ class Session():
         self.__fields = {}
         
         if os.path.exists("jasyproject.json"):
+            header("Initializing project")
+
             try:
                 # TODO: Figure out version of current project
                 version = None

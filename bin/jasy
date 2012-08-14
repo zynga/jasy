@@ -124,9 +124,10 @@ if jasyscript is None or not os.path.isfile(jasyscript):
     warn("Cannot find any Jasy script with task definitions (%s)!" % options.file)
 
 # Change to root directory of jasyscript before executing it
-oldcwd = os.getcwd()
-os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
-jasyscript = os.path.basename(jasyscript)
+if jasyscript:
+    oldcwd = os.getcwd()
+    os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
+    jasyscript = os.path.basename(jasyscript)
 
 # Extend path
 sys.path.insert(0, os.getcwd())
@@ -136,8 +137,6 @@ sys.path.insert(0, os.getcwd())
 # ===========================================================================
 #   INITIALIZATION
 # ===========================================================================
-
-header("Initializing...")
 
 # Quick mode globally disables repository updates
 if options.fast:
@@ -172,8 +171,9 @@ def main():
     
     try:
         # execute build script
-        buildfile = open(jasyscript, "r")
-        retval = exec(buildfile.read(), globals())
+        if jasyscript:
+            buildfile = open(jasyscript, "r")
+            retval = exec(buildfile.read(), globals())
 
         # list all tasks when none is given
         tasks = options.getTasks()
