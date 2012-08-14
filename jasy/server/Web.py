@@ -81,12 +81,12 @@ class Proxy(object):
         
         self.enableDebug = getKey(config, "debug", False)
         self.enableMirror = getKey(config, "mirror", False)
-        self.forceOffline = getKey(config, "offline", False)
+        self.enableOffline = getKey(config, "offline", False)
 
         if self.enableMirror:
             self.mirror = Cache(os.getcwd(), "jasymirror-%s" % self.id, hashkeys=True)
 
-        info('Proxy "%s" => "%s" [debug:%s|mirror:%s|forceOffline:%s]', self.id, self.host, self.enableDebug, self.enableMirror, self.forceOffline)
+        info('Proxy "%s" => "%s" [debug:%s|mirror:%s|offline:%s]', self.id, self.host, self.enableDebug, self.enableMirror, self.enableOffline)
         
         
     # These headers will be blocked between header copies
@@ -121,8 +121,8 @@ class Proxy(object):
                 info("Mirrored: %s" % url)
          
         # Check if we're in forced offline mode
-        if self.forceOffline and result is None:
-            info("[Offline Mode] : URL (%s) is not in Mirror - We can't deliver it" % url)
+        if self.enableOffline and result is None:
+            info("Offline: %s" % url)
             raise cherrypy.NotFound(url)
         
         # Load URL from remote server
@@ -137,7 +137,7 @@ class Proxy(object):
             # Load URL from remote host
             try:
                 if self.enableDebug:
-                    info("Requesting %s", url)
+                    info("Requesting: %s", url)
                     
                 # Apply headers for basic HTTP authentification
                 if "X-Proxy-Authorization" in headers:
@@ -216,14 +216,14 @@ class Static(object):
         # Check for existance first
         if os.path.isfile(path):
             if self.enableDebug:
-                info("Serving file %s", path)
+                info("Serving file: %s", path)
             
             return serveFile(os.path.abspath(path))
             
         # Otherwise return a classic 404
         else:
             if self.enableDebug:
-                info("File not found %s", path)
+                info("File not found: %s", path)
             
             raise cherrypy.NotFound(path)
         
