@@ -7,6 +7,7 @@ import shutil, os, jasy
 from jasy.env.Task import task
 from jasy.core.Logging import *
 from jasy.env.State import session
+from jasy.core.Error import JasyError
 
 
 def printBasicInfo():
@@ -65,6 +66,8 @@ def init(name="myproject", origin=None, skeleton=None):
 
     if origin is None:
         originProject = session.getMain()
+        if originProject is None:
+            raise JasyError("No projects registered!")
     else:
         originProject = session.getProjectByName(origin)
         if originProject is None:
