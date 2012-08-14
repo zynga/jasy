@@ -104,8 +104,6 @@ jasyCommand = os.path.abspath(sys.argv[0])
 if options.version:
     sys.exit(0)
 
-# Cleanup imported reference    
-del jasy
 
 
 
@@ -162,14 +160,14 @@ if options.fast:
 # Error handling
 from jasy.core.Error import JasyError
 
-# Global environment
+# Import global environment
 try:
     from jasy.env.State import *
 except JasyError as errobj:
     error("%s" % errobj)
     sys.exit(1)
 
-# Configuring jasy for remote calls
+# Configuring Jasy for remote task calls
 setJasyCommand(jasyCommand)
 
 
@@ -178,6 +176,8 @@ setJasyCommand(jasyCommand)
 #   BUILT-IN TASKS
 # ===========================================================================
 
+import shutil
+
 def getFirstSubFolder(start):
     for root, dirs, files in os.walk(start):
         for directory in dirs:
@@ -185,6 +185,27 @@ def getFirstSubFolder(start):
                 return directory
 
     return None
+
+@task("Print outs the Jasy about page")
+def about():
+    header("About")
+    info("Command: %s", jasyCommand)
+    info("Version: %s", jasy.__version__)
+
+
+@task("Utility for troubleshooting the Jasy environment")
+def doctor():
+    header("Doctor")
+
+
+@task("Shows this help screen")
+def help():
+    header("Help")
+    info("Usage: jasy [options...] task1 [flags...] [task2 [flags...]]")
+    options.showHelp()
+    print("Tasks: ")
+    printTasks()
+
 
 @task("Initializes a new project")
 def init(name="myproject", origin=None, skeleton=None):
@@ -224,9 +245,9 @@ def init(name="myproject", origin=None, skeleton=None):
     outdent()
 
     info("Copying folder...")
-    import shutil
     shutil.copytree(skeletonPath, destinationPath)
 
+    info("Patching files...")
 
 
     info("Your application %s was created successfully!", name)
@@ -250,11 +271,8 @@ def main():
         tasks = options.getTasks()
         
         if not tasks or options.help:
-            header("Help")
-            info("Usage: jasy [options...] task1 [flags...] [task2 [flags...]]")
-            options.showHelp()
-            print("Tasks: ")
-            printTasks()
+
+            executeTask("help")
             
             if options.help:
                 sys.exit(0)
