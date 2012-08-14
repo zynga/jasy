@@ -197,8 +197,6 @@ def init(name="myproject", origin=None, skeleton=None):
         if originProject is None:
             raise JasyError("Unknown project to start with: %s!" % origin)
 
-    destPath = os.path.abspath(name)
-
     skeletonDir = originProject.getConfigValue("skeletonDir", "skeleton")
     if not os.path.isdir(skeletonDir):
         raise JasyError('The project "%s" offers no skeletons!' % originProject.getName())
@@ -212,13 +210,26 @@ def init(name="myproject", origin=None, skeleton=None):
     if not os.path.isdir(skeletonPath):
         raise JasyError('Skeleton "%s" does not exist in project "%s"' % (skeleton, origin))
 
+    # Figuring out destination folder
+    destinationPath = os.path.abspath(name)
+    if os.path.exists(destinationPath):
+        raise JasyError("Cannot create project in %s. File or folder exists!" % destinationPath)
+
     # Prechecks done
     info('Creating "%s" from %s@%s...', name, skeleton, originProject.getName())
 
     indent()
     info('Skeleton Folder: %s', skeletonPath)
-    info('Destination Folder: %s', destPath)
+    info('Destination Folder: %s', destinationPath)
     outdent()
+
+    info("Copying folder...")
+    import shutil
+    shutil.copytree(skeletonPath, destinationPath)
+
+
+
+    info("Your application %s was created successfully!", name)
 
 
 
