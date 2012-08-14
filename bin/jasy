@@ -92,16 +92,10 @@ if options.log:
 #   BOOT
 # ===========================================================================
 
-# Jasy Main
-import jasy
-
-# Print out some info
-info("Jasy %s" % jasy.__version__)
-debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
-command = os.path.abspath(sys.argv[0])
-
 # For simple version info we just leave here
 if options.version:
+    import jasy
+    print("Jasy %s" % jasy.__version__)
     sys.exit(0)
 
 
@@ -110,6 +104,8 @@ if options.version:
 # ===========================================================================
 #   PATH SETUP
 # ===========================================================================
+
+command = os.path.abspath(sys.argv[0])
 
 # Find Jasy Script
 def findJasyscript():

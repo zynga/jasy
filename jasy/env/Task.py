@@ -121,11 +121,13 @@ def setCommand(cmd):
     global __command
     __command = cmd
 
+def getCommand():
+    global __command
+    return __command
 
 def setOptions(options):
     global __options
     __options = options
-
 
 def getOptions():
     global __options

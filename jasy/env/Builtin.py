@@ -18,7 +18,7 @@ def getFirstSubFolder(start):
 @task("Print outs the Jasy about page")
 def about():
     header("About")
-    info("Command: %s", jasyCommand)
+    info("Command: %s", jasy.env.Task.getCommand())
     info("Version: %s", jasy.__version__)
 
 
