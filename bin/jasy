@@ -95,7 +95,7 @@ if options.log:
 
 
 # ===========================================================================
-#   PATH SETUP
+#   PATHS
 # ===========================================================================
 
 # Keep reference to executed jasy command
@@ -121,16 +121,11 @@ else:
     jasyscript = os.path.abspath(os.path.expanduser(jasyscript))
     
 if jasyscript is None or not os.path.isfile(jasyscript):
-    error("Cannot find any Jasy script with task definitions (%s)!" % options.file)
-    sys.exit(1)
-
-header("Initializing...")
+    warn("Cannot find any Jasy script with task definitions (%s)!" % options.file)
 
 # Change to root directory of jasyscript before executing it
 oldcwd = os.getcwd()
 os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
-if os.getcwd() != oldcwd:
-    info("Running from %s" % os.getcwd())
 jasyscript = os.path.basename(jasyscript)
 
 # Extend path
@@ -139,8 +134,10 @@ sys.path.insert(0, os.getcwd())
 
 
 # ===========================================================================
-#   OPTIONS
+#   INITIALIZATION
 # ===========================================================================
+
+header("Initializing...")
 
 # Quick mode globally disables repository updates
 if options.fast:
@@ -168,7 +165,7 @@ import jasy.env.Builtin
 
 
 # ===========================================================================
-#   MAIN LOGIC
+#   MAIN
 # ===========================================================================
 
 def main():
