@@ -56,6 +56,12 @@ except Exception as optionError:
     error(optionError)
     sys.exit(1)
 
+# For simple version info we just leave here
+if options.version:
+    import jasy
+    print("Jasy %s" % jasy.__version__)
+    sys.exit(0)
+
 
 
 # ===========================================================================
@@ -89,22 +95,10 @@ if options.log:
 
 
 # ===========================================================================
-#   BOOT
-# ===========================================================================
-
-# For simple version info we just leave here
-if options.version:
-    import jasy
-    print("Jasy %s" % jasy.__version__)
-    sys.exit(0)
-
-
-
-
-# ===========================================================================
 #   PATH SETUP
 # ===========================================================================
 
+# Keep reference to executed jasy command
 command = os.path.abspath(sys.argv[0])
 
 # Find Jasy Script

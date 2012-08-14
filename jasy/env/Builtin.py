@@ -30,11 +30,24 @@ def doctor():
 @task("Shows this help screen")
 def help():
     header("Help")
+    print("Jasy is powerful Python3 based Web Tooling Framework")
+    print("Copyright (c) 2011-2012 Zynga Inc. %s" % colorize("http://zynga.com/", "underline"))
+    print("Visit %s for details." % colorize("https://github.com/zynga/jasy", "underline"))
+
+    print()
+    print(colorize(colorize("Usage", "underline"), "bold"))
     import jasy.env.Task
-    info("Usage: jasy [options...] task1 [flags...] [task2 [flags...]]")
-    jasy.env.Task.getOptions().showHelp()
-    print("Tasks: ")
+    print("  $ jasy [<options...>] <task1> [<args...>] [<task2> [<args...>]]")
+
+    print()
+    print(colorize(colorize("Global Options", "underline"), "bold"))
+    jasy.env.Task.getOptions().printOptions()
+
+    print()
+    print(colorize(colorize("Available Tasks", "underline"), "bold"))
     jasy.env.Task.printTasks()
+
+    print()
 
 
 @task("Initializes a new project")

@@ -105,12 +105,12 @@ def printTasks(indent=16):
     for name in __taskRegistry:
         obj = __taskRegistry[name]
         
-        formattedName = colorize(name, "bold")
+        formattedName = name
         if obj.desc:
             space = (indent - len(name)) * " "
-            print("  %s: %s%s" % (formattedName, space, colorize(obj.desc, "magenta")))
+            print("    %s: %s%s" % (formattedName, space, colorize(obj.desc, "magenta")))
         else:
-            print("  %s" % formattedName)
+            print("    %s" % formattedName)
 
 
 # Jasy reference for executing remote tasks
