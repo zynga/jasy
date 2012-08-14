@@ -81,11 +81,12 @@ class Proxy(object):
         
         self.enableDebug = getKey(config, "debug", False)
         self.enableMirror = getKey(config, "mirror", False)
+        self.forceOffline = getKey(config, "offline", False)
 
         if self.enableMirror:
             self.mirror = Cache(os.getcwd(), "jasymirror-%s" % self.id, hashkeys=True)
 
-        info('Proxy "%s" => "%s" [debug:%s|mirror:%s]', self.id, self.host, self.enableDebug, self.enableMirror)
+        info('Proxy "%s" => "%s" [debug:%s|mirror:%s|forceOffline:%s]', self.id, self.host, self.enableDebug, self.enableMirror, self.forceOffline)
         
         
     # These headers will be blocked between header copies
@@ -119,6 +120,11 @@ class Proxy(object):
             if result is not None and self.enableDebug:
                 info("Mirrored: %s" % url)
          
+        # Check if we're in forced offline mode
+        if self.forceOffline and result is None:
+            info("[Offline Mode] : URL (%s) is not in Mirror - We can't deliver it" % url)
+            raise cherrypy.NotFound(url)
+        
         # Load URL from remote server
         if result is None:
 
@@ -160,6 +166,7 @@ class Proxy(object):
                 # Wrap result into mirrorable entry
                 resultCopy = Result(result.headers, result.content)
                 self.mirror.store(mirrorId, resultCopy)
+        
 
         # Copy response headers to our reponse
         for name in result.headers:
@@ -225,7 +232,7 @@ class Static(object):
 # START
 #
 
-def serve(routes=None, port=8080):
+def serve(routes=None, port=8080, host="127.0.0.1"):
     
     header("HTTP Server")
     
@@ -238,7 +245,7 @@ def serve(routes=None, port=8080):
             "environment" : "production",
             "log.screen" : False,
             "server.socket_port": port,
-            "server.socket_host": '0.0.0.0',
+            "server.socket_host": host,
             "engine.autoreload_on" : False
         },
         
