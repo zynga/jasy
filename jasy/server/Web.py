@@ -123,63 +123,63 @@ class Proxy(object):
         # Check if we're in forced offline mode
         if self.forceOffline and result is None:
             info("[Offline Mode] : URL (%s) is not in Mirror - We can't deliver it" % url)
-            raise cherrypy.HTTPError(404)
-        else:
-            # Load URL from remote server
-            if result is None:
+            raise cherrypy.NotFound(url)
+        
+        # Load URL from remote server
+        if result is None:
 
-                # Prepare headers
-                headers = CaseInsensitiveDict()
-                for name in cherrypy.request.headers:
-                    if not name in self.__blockHeaders:
-                        headers[name] = cherrypy.request.headers[name]
-                
-                # Load URL from remote host
-                try:
-                    if self.enableDebug:
-                        info("Requesting %s", url)
-                        
-                    # Apply headers for basic HTTP authentification
-                    if "X-Proxy-Authorization" in headers:
-                        headers["Authorization"] = headers["X-Proxy-Authorization"]
-                        del headers["X-Proxy-Authorization"]                
-                        
-                    # Add headers for different authentification approaches
-                    if self.auth:
-                        
-                        # Basic Auth
-                        if self.auth["method"] == "basic":
-                            headers["Authorization"] = b"Basic " + base64.b64encode(("%s:%s" % (self.auth["user"], self.auth["password"])).encode("ascii"))
-                        
-                    # We disable verifícation of SSL certificates to be more tolerant on test servers
-                    result = requests.get(url, params=query, headers=headers, verify=False)
+            # Prepare headers
+            headers = CaseInsensitiveDict()
+            for name in cherrypy.request.headers:
+                if not name in self.__blockHeaders:
+                    headers[name] = cherrypy.request.headers[name]
+            
+            # Load URL from remote host
+            try:
+                if self.enableDebug:
+                    info("Requesting %s", url)
                     
-                except Exception as err:
-                    if self.enableDebug:
-                        info("Request failed: %s", err)
-                        
-                    raise cherrypy.HTTPError(403)
+                # Apply headers for basic HTTP authentification
+                if "X-Proxy-Authorization" in headers:
+                    headers["Authorization"] = headers["X-Proxy-Authorization"]
+                    del headers["X-Proxy-Authorization"]                
+                    
+                # Add headers for different authentification approaches
+                if self.auth:
+                    
+                    # Basic Auth
+                    if self.auth["method"] == "basic":
+                        headers["Authorization"] = b"Basic " + base64.b64encode(("%s:%s" % (self.auth["user"], self.auth["password"])).encode("ascii"))
+                    
+                # We disable verifícation of SSL certificates to be more tolerant on test servers
+                result = requests.get(url, params=query, headers=headers, verify=False)
+                
+            except Exception as err:
+                if self.enableDebug:
+                    info("Request failed: %s", err)
+                    
+                raise cherrypy.HTTPError(403)
 
-                # Storing result into mirror
-                if self.enableMirror and cherrypy.request.method == "GET":
+            # Storing result into mirror
+            if self.enableMirror and cherrypy.request.method == "GET":
 
-                    # Wrap result into mirrorable entry
-                    resultCopy = Result(result.headers, result.content)
-                    self.mirror.store(mirrorId, resultCopy)
+                # Wrap result into mirrorable entry
+                resultCopy = Result(result.headers, result.content)
+                self.mirror.store(mirrorId, resultCopy)
         
 
-            # Copy response headers to our reponse
-            for name in result.headers:
-                if not name.lower() in self.__blockHeaders:
-                    cherrypy.response.headers[name] = result.headers[name]
+        # Copy response headers to our reponse
+        for name in result.headers:
+            if not name.lower() in self.__blockHeaders:
+                cherrypy.response.headers[name] = result.headers[name]
 
-            # Append special header to all responses
-            cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
-            
-            # Enable cross domain access to this server
-            enableCrossDomain()
+        # Append special header to all responses
+        cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
+        
+        # Enable cross domain access to this server
+        enableCrossDomain()
 
-            return result.content
+        return result.content
         
         
 class Static(object):
