@@ -96,29 +96,36 @@ def init(name="myproject", origin=None, skeleton=None):
     info('Creating "%s" from %s@%s...', name, skeleton, originProject.getName())
 
     indent()
-    info('Skeleton Folder: %s', skeletonPath)
-    info('Destination Folder: %s', destinationPath)
+    info('Skeleton: %s', skeletonPath)
+    info('Destination: %s', destinationPath)
     outdent()
 
-    info("Copying folder...")
+    info("Copying files...")
     shutil.copytree(skeletonPath, destinationPath)
 
     from string import Template
     
     info("Patching files...")
+    indent()
     for dirpath, dirnames, filenames in os.walk(destinationPath):
+        relpath = os.path.relpath(dirpath, destinationPath)
         for filename in filenames:
             filepath = os.path.join(dirpath, filename)
-            print("FILE %s" % filepath)
+            debug("Processing %s..." % filepath)
 
-            filehandle = open(filepath, "r")
-            filetemplate = Template(filehandle.read())
-            filehandle.close()
+            filehandle = open(filepath, "r+")
+            filecontent = filehandle.read()
+            filetemplate = Template(filecontent)
             
-            filehandle = open(filepath, "w")
-            filehandle.write(filetemplate.substitute(name="xxx"))
+            resultcontent = filetemplate.substitute(name="xxx")
+            if resultcontent != filecontent:
+                info("Updating %s...", os.path.normpath(os.path.join(relpath, filename)))
+                
+                filehandle.seek(0)
+                filehandle.write(resultcontent)
+                
             filehandle.close()
-            
+    outdent()
 
-    info("Your application %s was created successfully!", name)
+    info('Your application "%s" was created successfully!', name)
 
