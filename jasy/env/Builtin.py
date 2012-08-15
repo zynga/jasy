@@ -118,6 +118,12 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
     indent()
     for dirpath, dirnames, filenames in os.walk(destinationPath):
         relpath = os.path.relpath(dirpath, destinationPath)
+
+        # Filter dotted directories like .git, .bzr, .hg, .svn, etc.
+        for dirname in dirnames:
+            if dirname.startswith("."):
+                dirnames.remove(dirname)
+        
         for filename in filenames:
             filepath = os.path.join(dirpath, filename)
             filerel = os.path.normpath(os.path.join(relpath, filename))
