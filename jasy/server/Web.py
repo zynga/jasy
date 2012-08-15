@@ -273,14 +273,15 @@ def serve(routes=None, port=8080, host="127.0.0.1"):
     info("Initialize routing...")
     indent()
     root = Static("/", {})
-    for key in routes:
-        entry = routes[key]
-        if "host" in entry:
-            node = Proxy(key, entry)
-        else:
-            node = Static(key, entry)
+    if routes:
+        for key in routes:
+            entry = routes[key]
+            if "host" in entry:
+                node = Proxy(key, entry)
+            else:
+                node = Static(key, entry)
             
-        setattr(root, key, node)
+            setattr(root, key, node)
     outdent()
     
     # Finally start the server

@@ -4,6 +4,8 @@
 #
 
 import shutil, os, jasy
+from string import Template
+
 from jasy.env.Task import task
 from jasy.core.Logging import *
 from jasy.env.State import session
@@ -11,7 +13,7 @@ from jasy.core.Error import JasyError
 
 
 def printBasicInfo():
-    print("Jasy is powerful Python3 based Web Tooling Framework")
+    print("Jasy is powerful web tooling framework inspired by SCons")
     print("Copyright (c) 2011-2012 Zynga Inc. %s" % colorize("http://zynga.com/", "underline"))
     print("Visit %s for details." % colorize("https://github.com/zynga/jasy", "underline"))
     print()
@@ -61,9 +63,9 @@ def help():
     print()
 
 
-@task("Initializes a new project")
-def init(name="myproject", origin=None, skeleton=None):
-    header("Create")
+@task("Creates a new project")
+def create(name="myproject", origin=None, skeleton=None, **argv):
+    header("Create project")
 
     if origin is None:
         originProject = session.getMain()
@@ -100,11 +102,18 @@ def init(name="myproject", origin=None, skeleton=None):
     info('Destination: %s', destinationPath)
     outdent()
 
+    # Copying files to destination
     info("Copying files...")
     shutil.copytree(skeletonPath, destinationPath)
 
-    from string import Template
+    # Build data for template substitution
+    data = argv
+    data["name"] = name
+    data["origin"] = originProject.getName()
+    data["skeleton"] = os.path.basename(skeletonPath)
+    data["jasy"] = "Jasy %s" % jasy.__version__
     
+    # Patching files recursively
     info("Patching files...")
     indent()
     for dirpath, dirnames, filenames in os.walk(destinationPath):
@@ -113,18 +122,27 @@ def init(name="myproject", origin=None, skeleton=None):
             filepath = os.path.join(dirpath, filename)
             debug("Processing %s..." % filepath)
 
-            filehandle = open(filepath, "r+")
+            filehandle = open(filepath, "r")
             filecontent = filehandle.read()
-            filetemplate = Template(filecontent)
+
+            # Check for binary aka has no null bytes
+            if '\0' in filecontent:
+                info("Ignore binary file: %s")
+                continue
             
-            resultcontent = filetemplate.substitute(name="xxx")
+            filehandle.close()
+
+            # Initialize template and produce result
+            filetemplate = Template(filecontent)
+            resultcontent = filetemplate.substitute(**data)
+
             if resultcontent != filecontent:
                 info("Updating %s...", os.path.normpath(os.path.join(relpath, filename)))
                 
-                filehandle.seek(0)
+                filehandle = open(filepath, "w")
                 filehandle.write(resultcontent)
+                filehandle.close()
                 
-            filehandle.close()
     outdent()
 
     info('Your application "%s" was created successfully!', name)
