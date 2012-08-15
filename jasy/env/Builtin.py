@@ -140,14 +140,14 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
             filehandle.close()
 
             # Initialize template and produce result
+            filetemplate = Template(filecontent)
+
             try:
-                filetemplate = Template(filecontent)
+                resultcontent = filetemplate.substitute(**data)
             except ValueError as ex:
                 warn("Ignoring unsupported file: %s (%s)", filerel, ex)
                 continue
                 
-            resultcontent = filetemplate.substitute(**data)
-
             if resultcontent != filecontent:
                 info("Updating %s...", filerel)
                 
