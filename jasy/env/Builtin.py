@@ -120,14 +120,21 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
         relpath = os.path.relpath(dirpath, destinationPath)
         for filename in filenames:
             filepath = os.path.join(dirpath, filename)
-            debug("Processing %s..." % filepath)
+            filerel = os.path.normpath(os.path.join(relpath, filename))
+            
+            debug("Processing %s..." % filerel)
 
             filehandle = open(filepath, "r")
-            filecontent = filehandle.read()
+            
+            try:
+                filecontent = filehandle.read()
+            except UnicodeDecodeError:
+                info("Ignore non utf-8 file: %s", filerel)
+                continue
 
             # Check for binary aka has no null bytes
             if '\0' in filecontent:
-                info("Ignore binary file: %s")
+                info("Ignore binary file: %s", filerel)
                 continue
             
             filehandle.close()
@@ -137,7 +144,7 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
             resultcontent = filetemplate.substitute(**data)
 
             if resultcontent != filecontent:
-                info("Updating %s...", os.path.normpath(os.path.join(relpath, filename)))
+                info("Updating %s...", filerel)
                 
                 filehandle = open(filepath, "w")
                 filehandle.write(resultcontent)
