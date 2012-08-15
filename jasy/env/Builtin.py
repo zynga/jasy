@@ -24,6 +24,7 @@ def getFirstSubFolder(start):
 
     return None
 
+
 @task("Print outs the Jasy about page")
 def about():
     header("About")
@@ -102,8 +103,22 @@ def init(name="myproject", origin=None, skeleton=None):
     info("Copying folder...")
     shutil.copytree(skeletonPath, destinationPath)
 
+    from string import Template
+    
     info("Patching files...")
+    for dirpath, dirnames, filenames in os.walk(destinationPath):
+        for filename in filenames:
+            filepath = os.path.join(dirpath, filename)
+            print("FILE %s" % filepath)
 
+            filehandle = open(filepath, "r")
+            filetemplate = Template(filehandle.read())
+            filehandle.close()
+            
+            filehandle = open(filepath, "w")
+            filehandle.write(filetemplate.substitute(name="xxx"))
+            filehandle.close()
+            
 
     info("Your application %s was created successfully!", name)
 
