@@ -129,18 +129,23 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
             try:
                 filecontent = filehandle.read()
             except UnicodeDecodeError:
-                info("Ignore non utf-8 file: %s", filerel)
+                warn("Ignoring non utf-8 file: %s", filerel)
                 continue
 
             # Check for binary aka has no null bytes
             if '\0' in filecontent:
-                info("Ignore binary file: %s", filerel)
+                debug("Ignoring binary file: %s", filerel)
                 continue
             
             filehandle.close()
 
             # Initialize template and produce result
-            filetemplate = Template(filecontent)
+            try:
+                filetemplate = Template(filecontent)
+            except ValueError as ex:
+                warn("Ignoring unsupported file: %s (%s)", filerel, ex)
+                continue
+                
             resultcontent = filetemplate.substitute(**data)
 
             if resultcontent != filecontent:
