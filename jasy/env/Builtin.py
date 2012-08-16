@@ -3,17 +3,17 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shutil, os, re, jasy
+import shutil, os, re, tempfile, jasy
 
 from jasy.env.Task import task
 from jasy.core.Logging import *
 from jasy.env.State import session
 from jasy.core.Error import JasyError
 from jasy.core.Repository import isRepository, updateRepository
+from jasy.core.Project import getProjectFromPath
 
 
-fieldPatternDefault = re.compile(r"\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
-fieldPatternAlt = re.compile(r"\$\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
+fieldPattern = re.compile(r"\$\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
 
 
 def printBasicInfo():
@@ -74,8 +74,13 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
 
     if origin is None:
         originProject = session.getMain()
+
         if originProject is None:
-            raise JasyError("No projects registered!")
+            raise JasyError("Auto discovery failed! No Jasy projects registered!")
+
+        originPath = originProject.getPath()
+        originName = originProject.getName()
+
     else:
 
         # Origin can be either:
@@ -86,19 +91,33 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
         if isRepository(origin):
             info("Using repository clone: %s", origin)
 
-            isRepository
+            tempDirectory = tempfile.TemporaryDirectory()
+            originPath = tempDirectory.name
+            originName = "repository"
 
-            return
+            print("Using Temp directory: %s" % originPath)
+            print("Cloning...")
+
+            updateRepository(url, version, path)
+
+            print("Done!")
+
+        else:
+
+            originProject = session.getProjectByName(origin)
+            if originProject is not None:
+                originPath = originProject.getPath()
+                originName = origin
+
+            elif os.path.isdir(origin):
+                originPath = origin
+                originProject = getProjectFromPath(originPath)
+                originName = originProject.getName()
 
 
-
-        originProject = session.getProjectByName(origin)
-        if originProject is None:
-            raise JasyError("Unknown project to start with: %s!" % origin)
-
-    skeletonDir = originProject.getConfigValue("skeletonDir", "skeleton")
+    skeletonDir = os.path.join(originPath, originProject.getConfigValue("skeletonDir", "skeleton"))
     if not os.path.isdir(skeletonDir):
-        raise JasyError('The project "%s" offers no skeletons!' % originProject.getName())
+        raise JasyError('The project "%s" offers no skeletons!' % originName)
 
     # For convenience: Use first skeleton in skeleton folder if no other selection was applied
     if skeleton is None:
@@ -107,7 +126,7 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
     # Finally we have the skeleton path (the root folder to copy for our app)
     skeletonPath = os.path.join(originProject.getPath(), skeletonDir, skeleton)
     if not os.path.isdir(skeletonPath):
-        raise JasyError('Skeleton "%s" does not exist in project "%s"' % (skeleton, origin))
+        raise JasyError('Skeleton "%s" does not exist in project "%s"' % (skeleton, originName))
 
     # Figuring out destination folder
     destinationPath = os.path.abspath(name)
@@ -115,7 +134,7 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
         raise JasyError("Cannot create project in %s. File or folder exists!" % destinationPath)
 
     # Prechecks done
-    info('Creating "%s" from %s@%s...', name, skeleton, originProject.getName())
+    info('Creating "%s" from %s@%s...', name, skeleton, originName)
 
     indent()
     info('Skeleton: %s', skeletonPath)
@@ -182,14 +201,6 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
                 continue
 
             fileContent = "".join(fileContent)
-
-            # Differeniate pattern to use depending on file extensions
-            # The most convenient pattern might not work in some files as
-            # it is already used for internal variable access etc.
-            # if os.path.splitext(fileName)[1] in (".sh"):
-            fieldPattern = fieldPatternAlt
-            #else:
-            #    fieldPattern = fieldPatternDefault
 
             # Update content with available data
             try:
