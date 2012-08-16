@@ -137,7 +137,17 @@ def getOptions():
 # Remote run support
 def runTask(project, task, **kwargs):
 
-    header("Running %s of project %s..." % (task, project))
+    remote = session.getProjectByName(project)
+    if remote is not None:
+        remotePath = remote.getPath()
+        remoteName = remote.getName()
+    elif os.path.isdir(project):
+        remotePath = project
+        remoteName = os.path.basename(project)
+    else:
+        raise JasyError("Unknown project or invalid path: %s" % project)
+
+    header("Running %s of project %s..." % (task, remoteName))
 
     import subprocess
 
@@ -154,11 +164,7 @@ def runTask(project, task, **kwargs):
 
     # Change into sub folder and execute jasy task
     oldPath = os.getcwd()
-    remote = session.getProjectByName(project)
-    if remote is None:
-        raise JasyError("Unknown project %s" % project)
-
-    os.chdir(remote.getPath())
+    os.chdir(remotePath)
     returnValue = subprocess.call(args, shell=sys.platform == "win32")
     os.chdir(oldPath)
 
