@@ -5,7 +5,7 @@
 
 import shutil, os, re, tempfile, jasy
 
-from jasy.env.Task import task
+from jasy.env.Task import task, runTask
 from jasy.core.Logging import *
 from jasy.env.State import session
 from jasy.core.Error import JasyError
@@ -44,12 +44,12 @@ def about():
 
 @task("Troubleshooting the Jasy environment")
 def doctor():
-    header("Doctor")
+    header("Troubleshooting Environment")
 
 
 @task("Shows this help screen")
 def help():
-    header("Help")
+    header("Showing Help")
 
     printBasicInfo()
     
@@ -70,9 +70,18 @@ def help():
 
 @task("Creates a new project")
 def create(name="myproject", origin=None, skeleton=None, **argv):
-    header("Create project")
+    header("Creating project")
+
+    # Origin can be either:
+    # 1) None, which means a skeleton from the current main project
+    # 2) An repository URL
+    # 1) A project name known inside the current session
+    # 2) relative or absolute folder path
+
 
     if origin is None:
+        info("Using this project")
+
         originProject = session.getMain()
 
         if originProject is None:
@@ -83,33 +92,32 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
 
     else:
 
-        # Origin can be either:
-        # 1) project name inside current project
-        # 2) relative or absolute folder path
-        # 3) repository URL
-
         if isRepository(origin):
-            info("Using repository clone: %s", origin)
+            info("Using remote skeleton")
+            indent()
 
             tempDirectory = tempfile.TemporaryDirectory()
             originPath = tempDirectory.name
-            originName = "repository"
+            originUrl = origin
+            originVersion = None
 
-            print("Using Temp directory: %s" % originPath)
-            print("Cloning...")
+            updateRepository(originUrl, originVersion, originPath)
 
-            updateRepository(url, version, path)
+            outdent()
 
-            print("Done!")
+            originProject = getProjectFromPath(originPath)
+            originName = originProject.getName()
 
         else:
 
             originProject = session.getProjectByName(origin)
             if originProject is not None:
+                info("Using project's skeleton")
                 originPath = originProject.getPath()
                 originName = origin
 
             elif os.path.isdir(origin):
+                info("Using local skeleton")
                 originPath = origin
                 originProject = getProjectFromPath(originPath)
                 originName = originProject.getName()
@@ -134,11 +142,11 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
         raise JasyError("Cannot create project in %s. File or folder exists!" % destinationPath)
 
     # Prechecks done
-    info('Creating "%s" from %s@%s...', name, skeleton, originName)
+    info('Creating %s from %s@%s...', colorize(name, "bold"), colorize(skeleton, "cyan"), colorize(originName, "bold"))
 
     indent()
-    info('Skeleton: %s', skeletonPath)
-    info('Destination: %s', destinationPath)
+    info('Skeleton: %s', colorize(skeletonPath, "grey"))
+    info('Destination: %s', colorize(destinationPath, "grey"))
     outdent()
 
     # Copying files to destination
@@ -211,7 +219,7 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
 
             # Only write file if there where any changes applied
             if resultContent != fileContent:
-                info("Updating: %s...", fileRel)
+                info("Updating: %s...", colorize(fileRel, "bold"))
                 
                 fileHandle = open(filePath, "w", encoding="utf-8", errors="surrogateescape")
                 fileHandle.write(resultContent)
@@ -219,5 +227,10 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
                 
     outdent()
 
-    info('Your application "%s" was created successfully!', name)
+    info("Pre-Initializing project...")
+
+    runTask(destinationPath, "help")
+
+    info('Your application %s was created and pre-initialized successfully!', colorize(name, "bold"))
+
 
