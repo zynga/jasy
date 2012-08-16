@@ -3,7 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import types, os, sys
+import types, os, sys, subprocess
+
 from jasy.env.State import setPrefix, session, getPrefix
 from jasy.core.Error import JasyError
 from jasy.core.Logging import *
@@ -148,8 +149,6 @@ def runTask(project, task, **kwargs):
         raise JasyError("Unknown project or invalid path: %s" % project)
 
     header("Running %s of project %s..." % (task, remoteName))
-
-    import subprocess
 
     # Pauses this session to allow sub process fully accessing the same projects
     session.pause()
