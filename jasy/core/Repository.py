@@ -171,9 +171,7 @@ def updateGitRepository(url, version, path, update=True):
 
     info("Cloning %s", colorize("%s @ " % url, "bold") + colorize(version, "magenta"))
 
-    if not os.path.isdir(path):
-        os.makedirs(path)
-        
+    os.makedirs(path)
     os.chdir(path)
     
     try:
