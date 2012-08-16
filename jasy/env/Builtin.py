@@ -9,6 +9,7 @@ from jasy.env.Task import task
 from jasy.core.Logging import *
 from jasy.env.State import session
 from jasy.core.Error import JasyError
+from jasy.core.Repository import isRepository, updateRepository
 
 
 fieldPatternDefault = re.compile(r"\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
@@ -76,6 +77,21 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
         if originProject is None:
             raise JasyError("No projects registered!")
     else:
+
+        # Origin can be either:
+        # 1) project name inside current project
+        # 2) relative or absolute folder path
+        # 3) repository URL
+
+        if isRepository(origin):
+            info("Using repository clone: %s", origin)
+
+            isRepository
+
+            return
+
+
+
         originProject = session.getProjectByName(origin)
         if originProject is None:
             raise JasyError("Unknown project to start with: %s!" % origin)
@@ -170,10 +186,10 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
             # Differeniate pattern to use depending on file extensions
             # The most convenient pattern might not work in some files as
             # it is already used for internal variable access etc.
-            if os.path.splitext(fileName)[1] in (".sh"):
-                fieldPattern = fieldPatternAlt
-            else:
-                fieldPattern = fieldPatternDefault
+            # if os.path.splitext(fileName)[1] in (".sh"):
+            fieldPattern = fieldPatternAlt
+            #else:
+            #    fieldPattern = fieldPatternDefault
 
             # Update content with available data
             try:
