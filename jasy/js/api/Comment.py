@@ -111,7 +111,7 @@ class Comment():
             raise CommentException("Invalid comment text: %s" % text, lineNo)
 
         if "\n" in text:
-            # Outdent indention
+            # Outdent indentation
             text = self.__outdent(text, indent, lineNo)
 
         else:
@@ -209,7 +209,7 @@ class Comment():
                         # Only warn for doc comments, otherwise it might just be code commented out 
                         # which is sometimes formatted pretty crazy when commented out
                         if self.variant == "doc":
-                            warn("Invalid indention in doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
+                            warn("Invalid indentation in doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
                         
                     else:
                         lines[lineNo] = line[outdentStringLen:]
