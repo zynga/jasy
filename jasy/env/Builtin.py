@@ -11,7 +11,9 @@ from jasy.env.State import session
 from jasy.core.Error import JasyError
 
 
-fieldPattern = re.compile(r"\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
+fieldPatternDefault = re.compile(r"\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
+fieldPatternAlt = re.compile(r"\#{([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
+
 
 def printBasicInfo():
     print("Jasy is powerful web tooling framework inspired by SCons")
@@ -162,10 +164,16 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
                 continue
 
             fileContent = "".join(fileContent)
+
+            if os.path.splitext(fileName)[1] in (".sh"):
+                fieldPattern = fieldPatternAlt
+            else:
+                fieldPattern = fieldPatternDefault
+
             try:
                 resultContent = fieldPattern.sub(convertPlaceholder, fileContent)
             except ValueError as ex:
-                warn("Unable to patch file %s: %s!", fileRel, ex)
+                warn("Unable to process file %s: %s!", fileRel, ex)
                 continue
 
             if resultContent != fileContent:
