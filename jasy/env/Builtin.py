@@ -158,34 +158,31 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
         originPath = originProject.getPath()
         originName = originProject.getName()
 
+    elif isRepository(origin):
+        info("Using remote skeleton")
+        indent()
+        tempDirectory = tempfile.TemporaryDirectory()
+        originPath = tempDirectory.name
+        originUrl = origin
+        originVersion = None
+
+        updateRepository(originUrl, originVersion, originPath)
+
+        outdent()
+
+        originProject = getProjectFromPath(originPath)
+        originName = originProject.getName()
+
     else:
+        originProject = session.getProjectByName(origin)
+        if originProject is not None:
+            originPath = originProject.getPath()
+            originName = origin
 
-        if isRepository(origin):
-            info("Using remote skeleton")
-            indent()
-            tempDirectory = tempfile.TemporaryDirectory()
-            originPath = tempDirectory.name
-            originUrl = origin
-            originVersion = None
-
-            updateRepository(originUrl, originVersion, originPath)
-
-            outdent()
-
+        elif os.path.isdir(origin):
+            originPath = origin
             originProject = getProjectFromPath(originPath)
-            originName = originProject.getName()
-
-        else:
-
-            originProject = session.getProjectByName(origin)
-            if originProject is not None:
-                originPath = originProject.getPath()
-                originName = origin
-
-            elif os.path.isdir(origin):
-                originPath = origin
-                originProject = getProjectFromPath(originPath)
-                originName = originProject.getName()    
+            originName = originProject.getName()    
 
     # Figure out the skeleton root folder
     skeletonDir = os.path.join(originPath, originProject.getConfigValue("skeletonDir", "skeleton"))
