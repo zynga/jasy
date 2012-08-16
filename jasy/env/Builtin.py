@@ -3,8 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shutil, os, jasy
-from string import Template
+import shutil, os, re, jasy
 
 from jasy.env.Task import task
 from jasy.core.Logging import *
@@ -12,11 +11,14 @@ from jasy.env.State import session
 from jasy.core.Error import JasyError
 
 
+fieldPattern = re.compile(r"\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
+
 def printBasicInfo():
     print("Jasy is powerful web tooling framework inspired by SCons")
     print("Copyright (c) 2011-2012 Zynga Inc. %s" % colorize("http://zynga.com/", "underline"))
     print("Visit %s for details." % colorize("https://github.com/zynga/jasy", "underline"))
     print()
+
 
 def getFirstSubFolder(start):
     for root, dirs, files in os.walk(start):
@@ -113,53 +115,65 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
     data["skeleton"] = os.path.basename(skeletonPath)
     data["jasy"] = "Jasy %s" % jasy.__version__
     
+    # Convert method with access to local data
+    def convertPlaceholder(mo):
+        field = mo.group(1)
+        if field in data:
+            return data[field]
+
+        raise ValueError('No value for placeholder "%s"' % field)
+
     # Patching files recursively
     info("Patching files...")
     indent()
-    for dirpath, dirnames, filenames in os.walk(destinationPath):
-        relpath = os.path.relpath(dirpath, destinationPath)
+    for dirPath, dirNames, fileNames in os.walk(destinationPath):
+        relpath = os.path.relpath(dirPath, destinationPath)
 
         # Filter dotted directories like .git, .bzr, .hg, .svn, etc.
-        for dirname in dirnames:
+        for dirname in dirNames:
             if dirname.startswith("."):
-                dirnames.remove(dirname)
+                dirNames.remove(dirname)
         
-        for filename in filenames:
-            filepath = os.path.join(dirpath, filename)
-            filerel = os.path.normpath(os.path.join(relpath, filename))
+        for fileName in fileNames:
+            filePath = os.path.join(dirPath, fileName)
+            fileRel = os.path.normpath(os.path.join(relpath, fileName))
             
-            debug("Processing %s..." % filerel)
+            debug("Processing: %s..." % fileRel)
 
-            filehandle = open(filepath, "r")
+            fileHandle = open(filePath, "r", encoding="utf-8", errors="surrogateescape")
+            fileContent = []
             
             try:
-                filecontent = filehandle.read()
-            except UnicodeDecodeError:
-                warn("Ignoring non utf-8 file: %s", filerel)
+                isBinary = False
+
+                for line in fileHandle:
+                    if '\0' in line:
+                        isBinary = True
+                        break 
+                    else:
+                        fileContent.append(line)
+        
+                if isBinary:
+                    debug("Ignoring binary file: %s", fileRel)
+                    continue
+
+            except UnicodeDecodeError as ex:
+                warn("Can't process file: %s: %s", fileRel, ex)
                 continue
 
-            # Check for binary aka has no null bytes
-            if '\0' in filecontent:
-                debug("Ignoring binary file: %s", filerel)
-                continue
-            
-            filehandle.close()
-
-            # Initialize template and produce result
-            filetemplate = Template(filecontent)
-
+            fileContent = "".join(fileContent)
             try:
-                resultcontent = filetemplate.substitute(**data)
+                resultContent = fieldPattern.sub(convertPlaceholder, fileContent)
             except ValueError as ex:
-                warn("Ignoring unsupported file: %s (%s)", filerel, ex)
+                warn("Unable to patch file %s: %s!", fileRel, ex)
                 continue
+
+            if resultContent != fileContent:
+                info("Updating: %s...", fileRel)
                 
-            if resultcontent != filecontent:
-                info("Updating %s...", filerel)
-                
-                filehandle = open(filepath, "w")
-                filehandle.write(resultcontent)
-                filehandle.close()
+                fileHandle = open(filePath, "w", encoding="utf-8", errors="surrogateescape")
+                fileHandle.write(resultContent)
+                fileHandle.close()
                 
     outdent()
 
