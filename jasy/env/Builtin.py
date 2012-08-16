@@ -163,7 +163,6 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
         if isRepository(origin):
             info("Using remote skeleton")
             indent()
-
             tempDirectory = tempfile.TemporaryDirectory()
             originPath = tempDirectory.name
             originUrl = origin
@@ -188,7 +187,7 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
                 originProject = getProjectFromPath(originPath)
                 originName = originProject.getName()    
 
-
+    # Figure out the skeleton root folder
     skeletonDir = os.path.join(originPath, originProject.getConfigValue("skeletonDir", "skeleton"))
     if not os.path.isdir(skeletonDir):
         raise JasyError('The project "%s" offers no skeletons! %s' % (originName, skeletonDir))
@@ -215,6 +214,7 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
     # Copying files to destination
     info("Copying files...")
     shutil.copytree(skeletonPath, destinationPath)
+    debug("Files were copied successfully.")
 
     # Build data for template substitution
     data = argv
