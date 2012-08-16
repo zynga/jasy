@@ -145,6 +145,8 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
             fileHandle = open(filePath, "r", encoding="utf-8", errors="surrogateescape")
             fileContent = []
             
+            # Parse file line by line to detect binary files early and omit
+            # fully loading them into memory
             try:
                 isBinary = False
 
@@ -165,17 +167,22 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
 
             fileContent = "".join(fileContent)
 
+            # Differeniate pattern to use depending on file extensions
+            # The most convenient pattern might not work in some files as
+            # it is already used for internal variable access etc.
             if os.path.splitext(fileName)[1] in (".sh"):
                 fieldPattern = fieldPatternAlt
             else:
                 fieldPattern = fieldPatternDefault
 
+            # Update content with available data
             try:
                 resultContent = fieldPattern.sub(convertPlaceholder, fileContent)
             except ValueError as ex:
                 warn("Unable to process file %s: %s!", fileRel, ex)
                 continue
 
+            # Only write file if there where any changes applied
             if resultContent != fileContent:
                 info("Updating: %s...", fileRel)
                 
