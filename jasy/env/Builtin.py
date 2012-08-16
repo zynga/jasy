@@ -12,7 +12,7 @@ from jasy.core.Error import JasyError
 
 
 fieldPatternDefault = re.compile(r"\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
-fieldPatternAlt = re.compile(r"\#{([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
+fieldPatternAlt = re.compile(r"\$\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
 
 
 def printBasicInfo():
