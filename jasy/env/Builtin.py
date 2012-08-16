@@ -24,6 +24,7 @@ def printBasicInfo():
 
 
 def getFirstSubFolder(start):
+
     for root, dirs, files in os.walk(start):
         for directory in dirs:
             if not directory.startswith("."):
@@ -32,133 +33,7 @@ def getFirstSubFolder(start):
     return None
 
 
-@task("Print outs the Jasy about page")
-def about():
-    header("About")
-
-    printBasicInfo()
-
-    info("Command: %s", jasy.env.Task.getCommand())
-    info("Version: %s", jasy.__version__)
-
-
-@task("Troubleshooting the Jasy environment")
-def doctor():
-    header("Troubleshooting Environment")
-
-
-@task("Shows this help screen")
-def help():
-    header("Showing Help")
-
-    printBasicInfo()
-    
-    print(colorize(colorize("Usage", "underline"), "bold"))
-    import jasy.env.Task
-    print("  $ jasy [<options...>] <task1> [<args...>] [<task2> [<args...>]]")
-
-    print()
-    print(colorize(colorize("Global Options", "underline"), "bold"))
-    jasy.env.Task.getOptions().printOptions()
-
-    print()
-    print(colorize(colorize("Available Tasks", "underline"), "bold"))
-    jasy.env.Task.printTasks()
-
-    print()
-
-
-@task("Creates a new project")
-def create(name="myproject", origin=None, skeleton=None, **argv):
-    header("Creating project")
-
-    # Origin can be either:
-    # 1) None, which means a skeleton from the current main project
-    # 2) An repository URL
-    # 1) A project name known inside the current session
-    # 2) relative or absolute folder path
-
-
-    if origin is None:
-        info("Using this project")
-
-        originProject = session.getMain()
-
-        if originProject is None:
-            raise JasyError("Auto discovery failed! No Jasy projects registered!")
-
-        originPath = originProject.getPath()
-        originName = originProject.getName()
-
-    else:
-
-        if isRepository(origin):
-            info("Using remote skeleton")
-            indent()
-
-            tempDirectory = tempfile.TemporaryDirectory()
-            originPath = tempDirectory.name
-            originUrl = origin
-            originVersion = None
-
-            updateRepository(originUrl, originVersion, originPath)
-
-            outdent()
-
-            originProject = getProjectFromPath(originPath)
-            originName = originProject.getName()
-
-        else:
-
-            originProject = session.getProjectByName(origin)
-            if originProject is not None:
-                info("Using project's skeleton")
-                originPath = originProject.getPath()
-                originName = origin
-
-            elif os.path.isdir(origin):
-                info("Using local skeleton")
-                originPath = origin
-                originProject = getProjectFromPath(originPath)
-                originName = originProject.getName()
-
-
-    skeletonDir = os.path.join(originPath, originProject.getConfigValue("skeletonDir", "skeleton"))
-    if not os.path.isdir(skeletonDir):
-        raise JasyError('The project "%s" offers no skeletons!' % originName)
-
-    # For convenience: Use first skeleton in skeleton folder if no other selection was applied
-    if skeleton is None:
-        skeleton = getFirstSubFolder(skeletonDir)
-
-    # Finally we have the skeleton path (the root folder to copy for our app)
-    skeletonPath = os.path.join(originProject.getPath(), skeletonDir, skeleton)
-    if not os.path.isdir(skeletonPath):
-        raise JasyError('Skeleton "%s" does not exist in project "%s"' % (skeleton, originName))
-
-    # Figuring out destination folder
-    destinationPath = os.path.abspath(name)
-    if os.path.exists(destinationPath):
-        raise JasyError("Cannot create project in %s. File or folder exists!" % destinationPath)
-
-    # Prechecks done
-    info('Creating %s from %s@%s...', colorize(name, "bold"), colorize(skeleton, "cyan"), colorize(originName, "bold"))
-
-    indent()
-    info('Skeleton: %s', colorize(skeletonPath, "grey"))
-    info('Destination: %s', colorize(destinationPath, "grey"))
-    outdent()
-
-    # Copying files to destination
-    info("Copying files...")
-    shutil.copytree(skeletonPath, destinationPath)
-
-    # Build data for template substitution
-    data = argv
-    data["name"] = name
-    data["origin"] = originProject.getName()
-    data["skeleton"] = os.path.basename(skeletonPath)
-    data["jasy"] = "Jasy %s" % jasy.__version__
+def massFilePatcher(path, data):
     
     # Convert method with access to local data
     def convertPlaceholder(mo):
@@ -171,8 +46,8 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
     # Patching files recursively
     info("Patching files...")
     indent()
-    for dirPath, dirNames, fileNames in os.walk(destinationPath):
-        relpath = os.path.relpath(dirPath, destinationPath)
+    for dirPath, dirNames, fileNames in os.walk(path):
+        relpath = os.path.relpath(dirPath, path)
 
         # Filter dotted directories like .git, .bzr, .hg, .svn, etc.
         for dirname in dirNames:
@@ -227,10 +102,133 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
                 
     outdent()
 
+
+@task("Print outs the Jasy about page")
+def about():
+    header("About")
+
+    printBasicInfo()
+
+    info("Command: %s", jasy.env.Task.getCommand())
+    info("Version: %s", jasy.__version__)
+
+
+@task("Troubleshooting the Jasy environment")
+def doctor():
+    header("Troubleshooting Environment")
+
+
+@task("Shows this help screen")
+def help():
+    header("Showing Help")
+
+    printBasicInfo()
+    
+    print(colorize(colorize("Usage", "underline"), "bold"))
+    import jasy.env.Task
+    print("  $ jasy [<options...>] <task1> [<args...>] [<task2> [<args...>]]")
+
+    print()
+    print(colorize(colorize("Global Options", "underline"), "bold"))
+    jasy.env.Task.getOptions().printOptions()
+
+    print()
+    print(colorize(colorize("Available Tasks", "underline"), "bold"))
+    jasy.env.Task.printTasks()
+
+    print()
+
+
+@task("Creates a new project")
+def create(name="myproject", origin=None, skeleton=None, **argv):
+    header("Creating project")
+
+    # Origin can be either:
+    # 1) None, which means a skeleton from the current main project
+    # 2) An repository URL
+    # 1) A project name known inside the current session
+    # 2) relative or absolute folder path
+
+    if origin is None:
+        originProject = session.getMain()
+
+        if originProject is None:
+            raise JasyError("Auto discovery failed! No Jasy projects registered!")
+
+        originPath = originProject.getPath()
+        originName = originProject.getName()
+
+    else:
+
+        if isRepository(origin):
+            info("Using remote skeleton")
+            indent()
+
+            tempDirectory = tempfile.TemporaryDirectory()
+            originPath = tempDirectory.name
+            originUrl = origin
+            originVersion = None
+
+            updateRepository(originUrl, originVersion, originPath)
+
+            outdent()
+
+            originProject = getProjectFromPath(originPath)
+            originName = originProject.getName()
+
+        else:
+
+            originProject = session.getProjectByName(origin)
+            if originProject is not None:
+                originPath = originProject.getPath()
+                originName = origin
+
+            elif os.path.isdir(origin):
+                originPath = origin
+                originProject = getProjectFromPath(originPath)
+                originName = originProject.getName()    
+
+
+    skeletonDir = os.path.join(originPath, originProject.getConfigValue("skeletonDir", "skeleton"))
+    if not os.path.isdir(skeletonDir):
+        raise JasyError('The project "%s" offers no skeletons! %s' % (originName, skeletonDir))
+
+    # For convenience: Use first skeleton in skeleton folder if no other selection was applied
+    if skeleton is None:
+        skeleton = getFirstSubFolder(skeletonDir)
+
+    # Finally we have the skeleton path (the root folder to copy for our app)
+    skeletonPath = os.path.join(originPath, skeletonDir, skeleton)
+    if not os.path.isdir(skeletonPath):
+        raise JasyError('Skeleton "%s" does not exist in project "%s"' % (skeleton, originName))
+
+    # Figuring out destination folder
+    destinationPath = os.path.abspath(name)
+    if os.path.exists(destinationPath):
+        raise JasyError("Cannot create project in %s. File or folder exists!" % destinationPath)
+
+    # Prechecks done
+    info('Creating %s from %s %s...', colorize(name, "bold"), colorize(skeleton + " @", "bold"), colorize(originName, "magenta"))
+    debug('Skeleton: %s', colorize(skeletonPath, "grey"))
+    debug('Destination: %s', colorize(destinationPath, "grey"))
+
+    # Copying files to destination
+    info("Copying files...")
+    shutil.copytree(skeletonPath, destinationPath)
+
+    # Build data for template substitution
+    data = argv
+    data["name"] = name
+    data["origin"] = originName
+    data["skeleton"] = os.path.basename(skeletonPath)
+    data["jasy"] = "Jasy %s" % jasy.__version__
+
+    # Do actual replacement of placeholders
+    massFilePatcher(destinationPath, data)
+
+    # Execute help once to load/prepare all depend projects
     info("Pre-Initializing project...")
-
     runTask(destinationPath, "help")
-
     info('Your application %s was created and pre-initialized successfully!', colorize(name, "bold"))
 
 

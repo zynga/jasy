@@ -148,7 +148,7 @@ def runTask(project, task, **kwargs):
     else:
         raise JasyError("Unknown project or invalid path: %s" % project)
 
-    header("Running %s of project %s..." % (task, remoteName))
+    info("Running %s of project %s...", colorize(task, "bold"), colorize(remoteName, "bold"))
 
     # Pauses this session to allow sub process fully accessing the same projects
     session.pause()
