@@ -5,12 +5,13 @@
 
 import shutil, os, re, tempfile, jasy
 
-from jasy.env.Task import task, runTask
 from jasy.core.Logging import *
+from jasy.env.Task import task, runTask
 from jasy.env.State import session
 from jasy.core.Error import JasyError
 from jasy.core.Repository import isRepository, updateRepository
 from jasy.core.Project import getProjectFromPath
+from jasy.core.Util import getKey
 
 
 fieldPattern = re.compile(r"\$\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
@@ -141,13 +142,23 @@ def help():
 
 @task("Creates a new project")
 def create(name="myproject", origin=None, skeleton=None, **argv):
+
     header("Creating project")
+
+    #
+    # Initial Checks
+    #
+
+    # Figuring out destination folder
+    destinationPath = os.path.abspath(name)
+    if os.path.exists(destinationPath):
+        raise JasyError("Cannot create project in %s. File or folder exists!" % destinationPath)
 
     # Origin can be either:
     # 1) None, which means a skeleton from the current main project
     # 2) An repository URL
-    # 1) A project name known inside the current session
-    # 2) relative or absolute folder path
+    # 3) A project name known inside the current session
+    # 4) Relative or absolute folder path
 
     if origin is None:
         originProject = session.getMain()
@@ -160,15 +171,20 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
 
     elif isRepository(origin):
         info("Using remote skeleton")
-        indent()
+
         tempDirectory = tempfile.TemporaryDirectory()
-        originPath = tempDirectory.name
+        originPath = os.path.join(tempDirectory.name, "clone")
         originUrl = origin
-        originVersion = None
+        originVersion = getKey(argv, "origin-version")
 
-        updateRepository(originUrl, originVersion, originPath)
-
+        indent()
+        originRevision = updateRepository(originUrl, originVersion, originPath)
         outdent()
+
+        if originRevision is None:
+            raise JasyError("Could not clone origin repository!")
+
+        debug("Cloned revision: %s" % originRevision)
 
         originProject = getProjectFromPath(originPath)
         originName = originProject.getName()
@@ -187,7 +203,7 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
     # Figure out the skeleton root folder
     skeletonDir = os.path.join(originPath, originProject.getConfigValue("skeletonDir", "skeleton"))
     if not os.path.isdir(skeletonDir):
-        raise JasyError('The project "%s" offers no skeletons! %s' % (originName, skeletonDir))
+        raise JasyError('The project %s offers no skeletons!' % originName)
 
     # For convenience: Use first skeleton in skeleton folder if no other selection was applied
     if skeleton is None:
@@ -196,12 +212,12 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
     # Finally we have the skeleton path (the root folder to copy for our app)
     skeletonPath = os.path.join(originPath, skeletonDir, skeleton)
     if not os.path.isdir(skeletonPath):
-        raise JasyError('Skeleton "%s" does not exist in project "%s"' % (skeleton, originName))
+        raise JasyError('Skeleton %s does not exist in project "%s"' % (skeleton, originName))
 
-    # Figuring out destination folder
-    destinationPath = os.path.abspath(name)
-    if os.path.exists(destinationPath):
-        raise JasyError("Cannot create project in %s. File or folder exists!" % destinationPath)
+
+    #
+    # Actual Work
+    #
 
     # Prechecks done
     info('Creating %s from %s %s...', colorize(name, "bold"), colorize(skeleton + " @", "bold"), colorize(originName, "magenta"))
@@ -222,6 +238,7 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
 
     # Do actual replacement of placeholders
     massFilePatcher(destinationPath, data)
+    debug("Files were patched successfully.")
 
     # Execute help once to load/prepare all depend projects
     info("Pre-Initializing project...")
