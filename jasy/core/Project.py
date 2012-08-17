@@ -157,6 +157,11 @@ class Project():
         # Store config
         self.__config = config
         
+        # Load project configuration
+        libraryFilePath = os.path.join(self.__path, "jasylibrary.py")
+        if os.path.exists(libraryFilePath):
+            self.__library = libraryFilePath
+
         # This section is a must for non jasy projects
         if not "content" in config and not isJasyProject:
             raise JasyError("Missing 'content' section for compat project!")
@@ -165,7 +170,7 @@ class Project():
     #
     # Project Scan/Init
     #
-    
+
     def scan(self):
         
         config = self.__config
@@ -443,6 +448,11 @@ class Project():
     def getFields(self):
         """ Return the project defined fields which may be configured by the build script """
         return self.__fields
+
+
+    def getLibrary(self):
+        """Returns the project library aka shared methods for that project to be used internally and by other projects"""
+        return self.__library
 
 
     def getClassByName(self, className):

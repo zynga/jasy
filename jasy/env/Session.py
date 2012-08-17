@@ -13,7 +13,7 @@ from jasy.core.Project import Project, getProjectFromPath, getProjectDependencie
 from jasy.core.Permutation import Permutation
 
 from jasy.core.Error import JasyError
-from jasy.env.State import setPermutation, header
+from jasy.env.State import setPermutation, header, loadLibrary
 from jasy.core.Json import toJson
 from jasy.core.Logging import *
 
@@ -119,6 +119,11 @@ class Session():
             # Append to session list
             self.__projects.append(project)
             
+            # Import library
+            library = project.getLibrary()
+            if library:
+                loadLibrary(project.getName(), library)
+
             # Import project defined fields which might be configured using "activateField()"
             fields = project.getFields()
             for name in fields:

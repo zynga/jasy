@@ -52,6 +52,28 @@ def prependPrefix(path):
 
 
 
+def loadLibrary(dest, path):
+    class Shared(object): pass
+    shared = Shared
+    counter = 0
+
+    # Method for being used as a decorator to share methods to the outside
+    def share(func):
+        nonlocal counter
+
+        setattr(shared, func.__name__, func)
+        counter += 1
+
+    # Execute given file. Sharing existing global environment
+    # but add additional decorator for allowing to define shared methods
+    exec(open(path).read(), globals(), {"share":share})
+
+    # Export destination name as global    
+    info("Importing %s shared methods under %s...", counter, dest)
+    globals()[dest] = shared
+
+
+
 # ===========================================================================
 #   Session/Core
 # ===========================================================================
