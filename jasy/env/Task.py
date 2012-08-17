@@ -144,6 +144,19 @@ def printTasks(indent=16):
         else:
             print("    %s" % formattedName)
 
+        if obj.availableArgs or obj.hasFlexArgs:
+            text = ""
+            if obj.availableArgs:
+                text += "--%s <var>" % " <var> --".join(obj.availableArgs)
+
+            if obj.hasFlexArgs:
+                if text:
+                    text += " ..."
+                else:
+                    text += "--<name> <var>"
+
+            print("      %s" % (colorize(text, "grey")))
+
 
 # Jasy reference for executing remote tasks
 __command = None
