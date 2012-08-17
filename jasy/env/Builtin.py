@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shutil, os, tempfile, jasy
+import shutil, os, tempfile, re, jasy
 
 from jasy.core.Logging import *
 from jasy.env.Task import task, runTask
@@ -13,6 +13,8 @@ from jasy.core.Repository import isRepository, updateRepository
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
 
+
+validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 
 def printBasicInfo():
     print("Jasy is powerful web tooling framework inspired by SCons")
@@ -67,7 +69,11 @@ def doctor():
 def create(name="myproject", origin=None, skeleton=None, **argv):
     """Creates a new project"""
 
-    header("Creating project")
+    header("Creating project %s" % name)
+
+    if not validProjectName.match(name):
+        raise JasyError("Invalid project name: %s" % name)
+
 
     #
     # Initial Checks
