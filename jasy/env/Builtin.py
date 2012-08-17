@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shutil, os, re, tempfile, jasy
+import shutil, os, tempfile, jasy
 
 from jasy.core.Logging import *
 from jasy.env.Task import task, runTask
@@ -11,97 +11,14 @@ from jasy.env.State import session
 from jasy.core.Error import JasyError
 from jasy.core.Repository import isRepository, updateRepository
 from jasy.core.Project import getProjectFromPath
-from jasy.core.Util import getKey
-
-
-fieldPattern = re.compile(r"\$\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
+from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
 
 
 def printBasicInfo():
     print("Jasy is powerful web tooling framework inspired by SCons")
-    print("Copyright (c) 2011-2012 Zynga Inc. %s" % colorize("http://zynga.com/", "underline"))
+    print("Copyright (c) 2010-2012 Zynga Inc. %s" % colorize("http://zynga.com/", "underline"))
     print("Visit %s for details." % colorize("https://github.com/zynga/jasy", "underline"))
     print()
-
-
-def getFirstSubFolder(start):
-
-    for root, dirs, files in os.walk(start):
-        for directory in dirs:
-            if not directory.startswith("."):
-                return directory
-
-    return None
-
-
-def massFilePatcher(path, data):
-    
-    # Convert method with access to local data
-    def convertPlaceholder(mo):
-        field = mo.group(1)
-        if field in data:
-            return data[field]
-
-        raise ValueError('No value for placeholder "%s"' % field)
-
-    # Patching files recursively
-    info("Patching files...")
-    indent()
-    for dirPath, dirNames, fileNames in os.walk(path):
-        relpath = os.path.relpath(dirPath, path)
-
-        # Filter dotted directories like .git, .bzr, .hg, .svn, etc.
-        for dirname in dirNames:
-            if dirname.startswith("."):
-                dirNames.remove(dirname)
-        
-        for fileName in fileNames:
-            filePath = os.path.join(dirPath, fileName)
-            fileRel = os.path.normpath(os.path.join(relpath, fileName))
-            
-            debug("Processing: %s..." % fileRel)
-
-            fileHandle = open(filePath, "r", encoding="utf-8", errors="surrogateescape")
-            fileContent = []
-            
-            # Parse file line by line to detect binary files early and omit
-            # fully loading them into memory
-            try:
-                isBinary = False
-
-                for line in fileHandle:
-                    if '\0' in line:
-                        isBinary = True
-                        break 
-                    else:
-                        fileContent.append(line)
-        
-                if isBinary:
-                    debug("Ignoring binary file: %s", fileRel)
-                    continue
-
-            except UnicodeDecodeError as ex:
-                warn("Can't process file: %s: %s", fileRel, ex)
-                continue
-
-            fileContent = "".join(fileContent)
-
-            # Update content with available data
-            try:
-                resultContent = fieldPattern.sub(convertPlaceholder, fileContent)
-            except ValueError as ex:
-                warn("Unable to process file %s: %s!", fileRel, ex)
-                continue
-
-            # Only write file if there where any changes applied
-            if resultContent != fileContent:
-                info("Updating: %s...", colorize(fileRel, "bold"))
-                
-                fileHandle = open(filePath, "w", encoding="utf-8", errors="surrogateescape")
-                fileHandle.write(resultContent)
-                fileHandle.close()
-                
-    outdent()
 
 
 @task
@@ -114,13 +31,6 @@ def about():
 
     info("Command: %s", jasy.env.Task.getCommand())
     info("Version: %s", jasy.__version__)
-
-
-@task
-def doctor():
-    """Troubleshooting the Jasy environment"""
-
-    header("Troubleshooting Environment")
 
 
 @task
@@ -144,6 +54,13 @@ def help():
     jasy.env.Task.printTasks()
 
     print()
+
+
+@task
+def doctor():
+    """Troubleshooting the Jasy environment"""
+
+    header("Troubleshooting Environment")
 
 
 @task
@@ -205,7 +122,10 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
         elif os.path.isdir(origin):
             originPath = origin
             originProject = getProjectFromPath(originPath)
-            originName = originProject.getName()    
+            originName = originProject.getName()
+
+        else:
+            raise JasyError("Invalid value for origin: %s" % origin)
 
     # Figure out the skeleton root folder
     skeletonDir = os.path.join(originPath, originProject.getConfigValue("skeletonDir", "skeleton"))
