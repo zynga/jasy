@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import types, os, sys, subprocess
+import types, os, sys, inspect, subprocess
 
 from jasy.env.State import setPrefix, session, getPrefix
 from jasy.core.Error import JasyError
@@ -14,40 +14,59 @@ __all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOpt
 
 
 class Task:
-    __doc__ = ""
-    __slots__ = ["__func", "name", "desc", "args", "__doc__"]
+
+    __slots__ = ["func", "name", "curry", "availableArgs", "hasFlexArgs", "__doc__"]
 
     
-    def __init__(self, func, desc="", **kwargs):
-        name = func.__name__
-        self.__func = func
-        
-        self.name = name
-        self.desc = desc
-        self.args = kwargs
-        
+    def __init__(self, func, **curry):
+        """Creates a task bound to the given function and currying in static parameters"""
+
+        self.func = func
+        self.name = func.__name__
+
+        # The are curried in arguments which are being merged with 
+        # dynamic command line arguments on each execution
+        self.curry = curry
+
+        # Extract doc from function and attach it to the task
+        self.__doc__ = inspect.getdoc(func)
+
+        # Analyse arguments for help screen
+        result = inspect.getfullargspec(func)        
+        self.availableArgs = result.args
+        self.hasFlexArgs = result.varkw is not None
+
+        # Register task globally
         addTask(self)
         
 
     def __call__(self, **kwargs):
         
         merged = {}
-        merged.update(self.args)
+        merged.update(self.curry)
         merged.update(kwargs)
+
+
+        #
+        # SUPPORT SOME DEFAULT FEATURES CONTROLLED BY TASK PARAMETERS
+        #
         
-        # Use prefix from arguments if available
-        # Use no prefix for cleanup tasks
-        # Fallback to task name (e.g. "build" task => "build" folder)
+        # Allow overriding of prefix via task or cmdline parameter.
+        # By default use name of the task (no prefix for cleanup tasks)
         if "prefix" in merged:
             setPrefix(merged["prefix"])
-            del merged["prefix"]
         elif "clean" in self.name:
             setPrefix(None)
         else:
             setPrefix(self.name)
         
+
+        #
+        # EXECUTE ATTACHED FUNCTION
+        #
+
         # Execute internal function
-        return self.__func(**merged)
+        return self.func(**merged)
 
 
     def __repr__(self):
@@ -55,19 +74,31 @@ class Task:
 
 
 
-def task(func, **kwargs):
+
+def task(*args, **kwargs):
     """ Specifies that this function is a task. """
     
-    if isinstance(func, Task):
-        return func
+    if len(args) == 1:
 
-    elif isinstance(func, types.FunctionType):
-        return Task(func)
+        func = args[0]
+
+        if isinstance(func, Task):
+            return func
+
+        elif isinstance(func, types.FunctionType):
+            return Task(func)
+
+        # Compat to old Jasy 0.7.x task declaration
+        elif type(func) is str:
+            return task(**kwargs)
+
+        else:
+            raise JasyError("Invalid task")
     
     else:
-        # Used for called task() (to pass in prefixes, descriptions, etc.)
-        def wrapper(finalfunc):
-            return Task(finalfunc, func, **kwargs)
+
+        def wrapper(func):
+            return Task(func, **kwargs)
             
         return wrapper
 
@@ -105,11 +136,11 @@ def printTasks(indent=16):
     
     for name in sorted(__taskRegistry):
         obj = __taskRegistry[name]
-        
+
         formattedName = name
-        if obj.desc:
+        if obj.__doc__:
             space = (indent - len(name)) * " "
-            print("    %s: %s%s" % (formattedName, space, colorize(obj.desc, "magenta")))
+            print("    %s: %s%s" % (formattedName, space, colorize(obj.__doc__, "magenta")))
         else:
             print("    %s" % formattedName)
 

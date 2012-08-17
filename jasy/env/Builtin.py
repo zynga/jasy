@@ -104,8 +104,10 @@ def massFilePatcher(path, data):
     outdent()
 
 
-@task("Print outs the Jasy about page")
+@task
 def about():
+    """Print outs the Jasy about page"""
+
     header("About")
 
     printBasicInfo()
@@ -114,13 +116,17 @@ def about():
     info("Version: %s", jasy.__version__)
 
 
-@task("Troubleshooting the Jasy environment")
+@task
 def doctor():
+    """Troubleshooting the Jasy environment"""
+
     header("Troubleshooting Environment")
 
 
-@task("Shows this help screen")
+@task
 def help():
+    """Shows this help screen"""
+
     header("Showing Help")
 
     printBasicInfo()
@@ -140,8 +146,9 @@ def help():
     print()
 
 
-@task("Creates a new project")
+@task
 def create(name="myproject", origin=None, skeleton=None, **argv):
+    """Creates a new project"""
 
     header("Creating project")
 
