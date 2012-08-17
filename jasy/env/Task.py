@@ -55,6 +55,7 @@ class Task:
         # By default use name of the task (no prefix for cleanup tasks)
         if "prefix" in merged:
             setPrefix(merged["prefix"])
+            del merged["prefix"]
         elif "clean" in self.name:
             setPrefix(None)
         else:
