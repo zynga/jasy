@@ -143,7 +143,7 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
         skeleton = getFirstSubFolder(skeletonDir)
 
     # Finally we have the skeleton path (the root folder to copy for our app)
-    skeletonPath = os.path.join(originPath, skeletonDir, skeleton)
+    skeletonPath = os.path.join(skeletonDir, skeleton)
     if not os.path.isdir(skeletonPath):
         raise JasyError('Skeleton %s does not exist in project "%s"' % (skeleton, originName))
 
