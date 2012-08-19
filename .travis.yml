@@ -1,6 +1,7 @@
 language: python
 branches:
-  - jasy08
+  only:
+    - jasy08
 python:
   - 3.2
 script:
