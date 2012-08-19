@@ -1,0 +1,7 @@
+language: python
+branches:
+  - jasy08
+python:
+  - 3.2
+script:
+  - bin/jasy create --name mytest --origin https://github.com/zynga/core.git --skeleton application
