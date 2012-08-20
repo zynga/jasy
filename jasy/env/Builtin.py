@@ -173,9 +173,26 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
     massFilePatcher(destinationPath, data)
     debug("Files were patched successfully.")
 
+    # Change to directory before continuing
+    os.chdir(destinationPath)
+
+    # Execute custom logic
+    if os.path.exists("jasycreate.py"):
+        info("Starting configuration...")
+        import jasy.env.Scripting as config
+
+        try:
+            exec(open("jasycreate.py").read(), globals(), {"config" : config})
+        except Exception as err:
+            raise JasyError("Could not execute custom jasycreate.py script: %s!" % err)
+
+        info("Writing configuration...")
+        config.write()
+        os.remove("jasycreate.py")
+
     # Execute help once to load/prepare all depend projects
     info("Pre-Initializing project...")
     runTask(destinationPath, "help")
+
+    # Done
     info('Your application %s was created and pre-initialized successfully!', colorize(name, "bold"))
-
-
