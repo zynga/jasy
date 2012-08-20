@@ -66,7 +66,7 @@ def doctor():
 
 
 @task
-def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **argv):
+def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", initialize=True, **argv):
     """Creates a new project"""
 
     header("Creating project %s" % name)
@@ -191,8 +191,12 @@ def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **
         os.remove("jasycreate.py")
 
     # Execute help once to load/prepare all depend projects
-    info("Pre-Initializing project...")
-    runTask(destinationPath, "help")
+    if initialize:
+        info("Pre-Initializing project...")
+        runTask(destinationPath, "help")
 
-    # Done
-    info('Your application %s was created and pre-initialized successfully!', colorize(name, "bold"))
+        info('Your application %s was created and pre-initialized successfully!', colorize(name, "bold"))
+
+    else:
+        info('Your application %s was created successfully!', colorize(name, "bold"))
+
