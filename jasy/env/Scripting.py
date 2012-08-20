@@ -53,6 +53,7 @@ def ask(question, fieldName, acceptType=None, required=True, defaultValue=None):
         if fieldValue == "" or fieldValue is None:
             continue
 
+        # Parse value for easy type checks
         try:
             parsedValue = eval(fieldValue)
         except:
@@ -60,13 +61,17 @@ def ask(question, fieldName, acceptType=None, required=True, defaultValue=None):
         else:
             fieldValue = parsedValue
 
+            # Convert tuples/sets into JSON compatible array
+            if type(fieldValue) in (tuple, set):
+                fieldValue = list(fieldValue)
+
         if acceptType is None:
             break
 
         if matchesType(fieldValue, acceptType):
             break
 
-        print(colorize("  - Invalid value: %s" % fieldValue, "red"))
+        print(colorize("  - Invalid value: %s" % str(fieldValue), "red"))
 
 
     # Safe current value
