@@ -131,8 +131,6 @@ if jasyscript:
     os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
     jasyscript = os.path.basename(jasyscript)
 
-# Extend path
-sys.path.insert(0, os.getcwd())
 
 
 
