@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/dadicool/jasy.png?branch=jasy08)](http://travis-ci.org/dadicool/jasy)
+
 Jasy - Web Tooling Framework
 ============================
 
