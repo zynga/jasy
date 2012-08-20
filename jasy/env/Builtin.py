@@ -66,7 +66,7 @@ def doctor():
 
 
 @task
-def create(name="myproject", origin=None, skeleton=None, **argv):
+def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **argv):
     """Creates a new project"""
 
     header("Creating project %s" % name)
@@ -186,8 +186,8 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
         except Exception as err:
             raise JasyError("Could not execute custom jasycreate.py script: %s!" % err)
 
-        info("Writing configuration...")
-        config.write()
+        info("Writing configuration as %s...", configFormat)
+        config.write("jasyscript.%s" % configFormat)
         os.remove("jasycreate.py")
 
     # Execute help once to load/prepare all depend projects

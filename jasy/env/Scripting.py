@@ -79,8 +79,12 @@ def ask(question, fieldName, acceptType=None, required=True, defaultValue=None):
 
 
 def save(fieldName, value):
+    """Saves the given value under the given field"""
+
     __config[fieldName] = value
 
 
 def write(filename="jasyscript.yaml", indent=2, encoding="utf-8"):
+    """Uses config writer to write the configuration file to the application"""
+    
     writeConfig(__config, filename, indent=indent, encoding=encoding)
