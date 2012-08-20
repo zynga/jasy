@@ -161,6 +161,8 @@ class Project():
         libraryFilePath = os.path.join(self.__path, "jasylibrary.py")
         if os.path.exists(libraryFilePath):
             self.__library = libraryFilePath
+        else:
+            self.__library = None
 
         # This section is a must for non jasy projects
         if not "content" in config and not isJasyProject:
