@@ -1,6 +1,6 @@
 import sys, types, json, shutil, yaml, os
 from jasy.core.Logging import *
-
+from jasy.core.Config import writeConfig
 
 __config = {}
 
@@ -77,15 +77,5 @@ def save(fieldName, value):
     __config[fieldName] = value
 
 
-def write(fileName="jasyscript.yaml", indent=2, encoding="utf-8"):
-    fileExt = os.path.splitext(fileName)[1]
-    fileHandle = open(fileName, mode="w", encoding="utf-8")
-
-    if fileExt == ".json":
-        json.dump(__config, fileHandle, indent=indent, ensure_ascii=False)
-    elif fileExt == ".yaml":
-        yaml.dump(__config, fileHandle, default_flow_style=False, indent=indent, allow_unicode=True)
-    else:
-        raise JasyError("Unsupported file type: %s" % fileExt)
-
-
+def write(filename="jasyscript.yaml", indent=2, encoding="utf-8"):
+    writeConfig(__config, filename, indent=indent, encoding=encoding)
