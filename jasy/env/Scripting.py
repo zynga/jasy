@@ -1,7 +1,8 @@
-import sys, types, json, shutil, yaml, os
+import sys, types, shutil, os
+
 from jasy.core.Logging import *
-from jasy.core.Config import writeConfig, loadConfig, removeConfig
 from jasy.core.Error import JasyError
+from jasy.core.Config import writeConfig, loadConfig, removeConfig
 from jasy.core.Util import getKey
 
 __config = {}
@@ -58,7 +59,7 @@ def execute(fileName):
     try:
         fileHandle = open(fileName, "r", encoding="utf-8")
         exec(fileHandle.read(), globals(), env)
-        
+
         fileHandle.close()
         os.remove("jasycreate.py")
 
@@ -165,7 +166,7 @@ def set(fieldName, value):
         __config[fieldName] = value
 
 
-def write(filename="jasyscript.yaml", indent=2, encoding="utf-8"):
+def write(filename, indent=2, encoding="utf-8"):
     """Uses config writer to write the configuration file to the application"""
 
     writeConfig(__config, filename, indent=indent, encoding=encoding)
