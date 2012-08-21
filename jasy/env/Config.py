@@ -251,6 +251,8 @@ class Config:
         else:
             self.__config[fieldName] = value
 
+        return True
+
 
     def write(self, indent=2, encoding="utf-8"):
         """
