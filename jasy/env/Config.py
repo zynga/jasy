@@ -12,24 +12,35 @@ from jasy.core.Util import getKey
 
 __all__ = [ "Config" ]
 
-class Util:
+class FileIO:
     """
     Small utility class for simple file operations etc.
-
-    - cp(src, dst): Copies a file
-    - cpdir(src, dst): Copies a directory
-    - mkdir(name): Creates directory (works recursively)
-    - mv(src, dst): Moves files or directories
-    - rmdir(name): Removes a directory (works recursively)
-    - rm(name): Removes the given file     
     """
 
-    cp = shutil.copy2
-    cpdir = shutil.copytree
-    mkdir = os.makedirs
-    mv = shutil.move
-    rmdir = shutil.rmtree
-    rm = os.remove    
+    def cp(self, src, dst):
+        """Copies a file"""
+        return shutil.copy2(src, dst)
+
+    def cpdir(self, src, dst):
+        """Copies a directory"""
+        return shutil.copytree(src, dst)
+
+    def mkdir(self, name):
+        """Creates directory (works recursively)"""
+        return os.makedirs(name)
+
+    def mv(self, src, dst):
+        """Moves files or directories"""
+        return shutil.move(src, dst)
+
+    def rm(self, name):
+        """Removes the given file"""
+        return os.remove(name)
+
+    def rmdir(self, name):
+        """Removes a directory (works recursively)"""
+        return shutil.rmtree(name)
+
 
 
 class Config:
@@ -83,7 +94,7 @@ class Config:
 
         env = {
             "config" : self,
-            "util" : Util()
+            "io" : FileIO()
         }
 
         try:
