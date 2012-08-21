@@ -180,17 +180,11 @@ def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **
     import jasy.env.Scripting as config
 
     # Import configuration questions
-    #if os.path.exists("jasycreate.yaml"):
-    #    config.import(open("jasycreate.yaml", "r", encoding="utf-8").read())
-    #elif os.path.exists("jasycreate.json"):
-    #    config.import(open("jasycreate.json", "r", encoding="utf-8").read())
+    config.read("jasycreate")
 
     # Execute custom logic (might have configuration as well)
     if os.path.exists("jasycreate.py"):
-        print("EXEC")
         config.execute("jasycreate.py")
-        os.remove("jasycreate.py")
-
 
     # Write
     info("Writing configuration as %s...", configFormat)
