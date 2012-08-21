@@ -13,8 +13,6 @@ import jasy.core.File
 
 __all__ = [ "Config" ]
 
-
-
 class Config:
     """
     Wrapper around JSON/YAML with easy to use import tools for using question files,
@@ -37,6 +35,16 @@ class Config:
 
         for key in argv:
             self.set(key, argv[key])
+
+
+    def load(self, fileName):
+        """
+        Imports the values of the given file
+        """
+
+        data = loadConfig(fileName)
+        for key in data:
+            self.set(key, data[key])
 
 
     def read(self, fileName, force=False):

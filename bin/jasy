@@ -158,6 +158,13 @@ import jasy.env.Task
 jasy.env.Task.setCommand(command)
 jasy.env.Task.setOptions(options)
 
+# Import config object
+from jasy.env.Config import Config
+
+if jasyscript:
+    config = Config("jasyscript")
+    config.load("jasyscript")
+
 # Importing built-in tasks
 import jasy.env.Builtin
 
@@ -172,7 +179,7 @@ def main():
     try:
         # execute build script
         if jasyscript:
-            buildfile = open(jasyscript, "r")
+            buildfile = open(jasyscript, "r", encoding="utf-8")
             retval = exec(buildfile.read(), globals())
 
         # list all tasks when none is given
