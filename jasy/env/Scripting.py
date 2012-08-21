@@ -1,13 +1,34 @@
 import sys, types, json, shutil, yaml, os
 from jasy.core.Logging import *
-from jasy.core.Config import writeConfig
+from jasy.core.Config import writeConfig, loadConfig, removeConfig
 from jasy.core.Error import JasyError
+from jasy.core.Util import getKey
 
 __config = {}
 
+def read(fileName):
+    """
+    Reads the given configuration file with questions and deletes the file afterwards.
+    """
+
+    data = loadConfig(fileName)
+    for entry in data:
+        question = entry["question"]
+        name = entry["name"]
+        accept = getKey(entry, "accept", None)
+        required = getKey(entry, "required", True)
+        default = getKey(entry, "default", None)
+
+        ask(question, name, accept, required, default)
+
+    removeConfig(fileName)
+
+
 def execute(fileName):
     """
-    Executes the given script for configuration proposes. Offers a nice little API:
+    Executes the given script for configuration proposes and deletes the file afterwards.
+
+    Offers a nice little API:
 
     Configuration:
     - ask(question, field): Asks the user for a value of the given field
@@ -35,7 +56,12 @@ def execute(fileName):
     }
 
     try:
-        exec(open(fileName, encoding="utf-8").read(), globals(), env)
+        fileHandle = open(fileName, "r", encoding="utf-8")
+        exec(fileHandle.read(), globals(), env)
+        
+        fileHandle.close()
+        os.remove("jasycreate.py")
+
     except Exception as err:
         raise JasyError("Could not execute custom configuration script: %s!" % err)
 
