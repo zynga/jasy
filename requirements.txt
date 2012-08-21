@@ -5,3 +5,4 @@ misaka
 msgpack-python
 requests
 cherrypy
+pyyaml
