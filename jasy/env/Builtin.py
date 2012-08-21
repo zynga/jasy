@@ -12,7 +12,7 @@ from jasy.core.Error import JasyError
 from jasy.core.Repository import isRepository, updateRepository
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
-
+import jasy.env.Config
 
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 
@@ -168,18 +168,17 @@ def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **
     os.chdir(destinationPath)
 
     info("Starting configuration...")
-    import jasy.env.Scripting as config
 
     # Import configuration questions
-    config.read("jasycreate")
+    jasy.env.Config.read("jasycreate")
 
     # Execute custom logic (might have configuration as well)
     if os.path.exists("jasycreate.py"):
-        config.execute("jasycreate.py")
+        jasy.env.Config.execute("jasycreate.py")
 
     # Write
     info("Writing configuration as %s...", configFormat)
-    config.write("jasyscript.%s" % configFormat)
+    jasy.env.Config.write("jasyscript.%s" % configFormat)
 
     # Done
     info('Your application %s was created successfully!', colorize(name, "bold"))
