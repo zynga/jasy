@@ -12,7 +12,7 @@ from jasy.core.Error import JasyError
 from jasy.core.Repository import isRepository, updateRepository
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
-import jasy.env.Config
+from jasy.env.Config import Config
 
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 
@@ -154,11 +154,12 @@ def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **
     debug("Files were copied successfully.")
 
     # Build data for template substitution
-    data = argv
+    data = {}
+    data.update(argv)
     data["name"] = name
     data["origin"] = originName
     data["skeleton"] = os.path.basename(skeletonPath)
-    data["jasy"] = "Jasy %s" % jasy.__version__
+    data["jasy"] = jasy.__version__
 
     # Do actual replacement of placeholders
     massFilePatcher(destinationPath, data)
@@ -167,18 +168,13 @@ def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **
     # Change to directory before continuing
     os.chdir(destinationPath)
 
+    # Create configuration file from question configs and custom scripts
     info("Starting configuration...")
-
-    # Import configuration questions
-    jasy.env.Config.read("jasycreate")
-
-    # Execute custom logic (might have configuration as well)
-    if os.path.exists("jasycreate.py"):
-        jasy.env.Config.execute("jasycreate.py")
-
-    # Write
-    info("Writing configuration as %s...", configFormat)
-    jasy.env.Config.write("jasyscript.%s" % configFormat)
+    config = Config("jasyscript.%s" % configFormat)
+    config.inject(**argv)
+    config.read("jasycreate")
+    config.execute("jasycreate.py")
+    config.write()
 
     # Done
     info('Your application %s was created successfully!', colorize(name, "bold"))
