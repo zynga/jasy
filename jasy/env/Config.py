@@ -1,3 +1,8 @@
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Zynga Inc.
+#
+
 import sys, types, shutil, os
 
 from jasy.core.Logging import *

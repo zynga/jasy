@@ -16,20 +16,12 @@ from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
 
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 
-def printBasicInfo():
-    print("Jasy is powerful web tooling framework inspired by SCons")
-    print("Copyright (c) 2010-2012 Zynga Inc. %s" % colorize("http://zynga.com/", "underline"))
-    print("Visit %s for details." % colorize("https://github.com/zynga/jasy", "underline"))
-    print()
-
-
 @task
 def about():
     """Print outs the Jasy about page"""
 
     header("About")
-
-    printBasicInfo()
+    jasy.info()
 
     info("Command: %s", jasy.env.Task.getCommand())
     info("Version: %s", jasy.__version__)
@@ -40,8 +32,7 @@ def help():
     """Shows this help screen"""
 
     header("Showing Help")
-
-    printBasicInfo()
+    jasy.info()
     
     print(colorize(colorize("Usage", "underline"), "bold"))
     import jasy.env.Task
