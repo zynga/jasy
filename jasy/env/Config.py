@@ -171,7 +171,7 @@ class Config:
         return getKey(current, splits[-1])        
 
 
-    def ask(self, question, name, accept=None, required=True, default=None, force=False):
+    def ask(self, question, name, accept=None, required=True, default=None, force=False, parse=True):
         """
         Asks the user for value for the given configuration field
 
@@ -203,13 +203,24 @@ class Config:
             # Fallback to default if no value is given and field is not required
             if not required and value == "":
                 value = default
+
+            # Try setting the current value
+            if self.set(name, value, accept=accept, parse=parse):
                 break
 
-            # Incomplete value => Ask user again
-            if value == "" or value is None:
-                continue
 
-            # Parse value for easy type checks
+
+    def set(self, fieldName, value, accept=None, parse=True):
+        """
+        Saves the given value under the given field
+        """
+
+        # Incomplete value => Invalid
+        if value == "" or value is None:
+            return False
+
+        # Parse value for easy type checks
+        if parse:
             try:
                 parsedValue = eval(value)
             except:
@@ -221,23 +232,10 @@ class Config:
                 if type(value) in (tuple, set):
                     value = list(value)
 
-            # If no type checks are needed
-            if accept is None:
-                break
-
-            if self.matchesType(value, accept):
-                break
-
+        # Check for given type
+        if accept is not None and not self.matchesType(value, accept):
             print(colorize("  - Invalid value: %s" % str(value), "red"))
-
-        # Safe current value
-        self.set(name, value)
-
-
-    def set(self, fieldName, value):
-        """
-        Saves the given value under the given field
-        """
+            return False
 
         if "." in fieldName:
             splits = fieldName.split(".")
