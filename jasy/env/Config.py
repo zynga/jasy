@@ -3,43 +3,15 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, types, shutil, os
+import sys, shutil, os
 
 from jasy.core.Logging import *
 from jasy.core.Error import JasyError
 from jasy.core.Config import writeConfig, loadConfig, removeConfig
 from jasy.core.Util import getKey
+import jasy.core.File
 
 __all__ = [ "Config" ]
-
-class FileIO:
-    """
-    Small utility class for simple file operations etc.
-    """
-
-    def cp(self, src, dst):
-        """Copies a file"""
-        return shutil.copy2(src, dst)
-
-    def cpdir(self, src, dst):
-        """Copies a directory"""
-        return shutil.copytree(src, dst)
-
-    def mkdir(self, name):
-        """Creates directory (works recursively)"""
-        return os.makedirs(name)
-
-    def mv(self, src, dst):
-        """Moves files or directories"""
-        return shutil.move(src, dst)
-
-    def rm(self, name):
-        """Removes the given file"""
-        return os.remove(name)
-
-    def rmdir(self, name):
-        """Removes a directory (works recursively)"""
-        return shutil.rmtree(name)
 
 
 
@@ -94,7 +66,7 @@ class Config:
 
         env = {
             "config" : self,
-            "io" : FileIO()
+            "file" : jasy.core.File
         }
 
         try:
