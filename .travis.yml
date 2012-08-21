@@ -5,4 +5,4 @@ branches:
 python:
   - 3.2
 script:
-  - ln -s `which python` python3; env PATH="$PATH:`pwd`" bin/jasy create --name mytest --origin https://github.com/zynga/core.git --skeleton application
+  - ln -s `which python` python3; env PATH="$PATH:`pwd`" bin/jasy create --name mytest --origin https://github.com/zynga/core.git --skeleton application --user.age 34 --user.name Alex --incr 6,7,8 --foo-bar hello --pi 3.17
