@@ -16,20 +16,20 @@ class Util:
     """
     Small utility class for simple file operations etc.
 
-    - copy(src, dst): Copies a file
-    - copydir(src, dst): Copies a directory
+    - cp(src, dst): Copies a file
+    - cpdir(src, dst): Copies a directory
     - mkdir(name): Creates directory (works recursively)
-    - move(src, dst): Moves files or directories
+    - mv(src, dst): Moves files or directories
     - rmdir(name): Removes a directory (works recursively)
-    - remove(name): Removes the given file     
+    - rm(name): Removes the given file     
     """
 
-    copy = shutil.copy2
-    copydir = shutil.copytree
+    cp = shutil.copy2
+    cpdir = shutil.copytree
     mkdir = os.makedirs
-    move = shutil.move
+    mv = shutil.move
     rmdir = shutil.rmtree
-    remove = os.remove    
+    rm = os.remove    
 
 
 class Config:
