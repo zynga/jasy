@@ -66,7 +66,7 @@ def doctor():
 
 
 @task
-def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", initialize=True, **argv):
+def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **argv):
     """Creates a new project"""
 
     header("Creating project %s" % name)
@@ -176,27 +176,26 @@ def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", in
     # Change to directory before continuing
     os.chdir(destinationPath)
 
-    # Execute custom logic
+    info("Starting configuration...")
+    import jasy.env.Scripting as config
+
+    # Import configuration questions
+    #if os.path.exists("jasycreate.yaml"):
+    #    config.import(open("jasycreate.yaml", "r", encoding="utf-8").read())
+    #elif os.path.exists("jasycreate.json"):
+    #    config.import(open("jasycreate.json", "r", encoding="utf-8").read())
+
+    # Execute custom logic (might have configuration as well)
     if os.path.exists("jasycreate.py"):
-        info("Starting configuration...")
-        import jasy.env.Scripting as config
-
-        try:
-            exec(open("jasycreate.py").read(), globals(), {"config" : config})
-        except Exception as err:
-            raise JasyError("Could not execute custom jasycreate.py script: %s!" % err)
-
-        info("Writing configuration as %s...", configFormat)
-        config.write("jasyscript.%s" % configFormat)
+        print("EXEC")
+        config.execute("jasycreate.py")
         os.remove("jasycreate.py")
 
-    # Execute help once to load/prepare all depend projects
-    if initialize:
-        info("Pre-Initializing project...")
-        runTask(destinationPath, "help")
 
-        info('Your application %s was created and pre-initialized successfully!', colorize(name, "bold"))
+    # Write
+    info("Writing configuration as %s...", configFormat)
+    config.write("jasyscript.%s" % configFormat)
 
-    else:
-        info('Your application %s was created successfully!', colorize(name, "bold"))
+    # Done
+    info('Your application %s was created successfully!', colorize(name, "bold"))
 

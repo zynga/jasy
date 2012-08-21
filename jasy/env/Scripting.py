@@ -1,8 +1,44 @@
 import sys, types, json, shutil, yaml, os
 from jasy.core.Logging import *
 from jasy.core.Config import writeConfig
+from jasy.core.Error import JasyError
 
 __config = {}
+
+def execute(fileName):
+    """
+    Executes the given script for configuration proposes. Offers a nice little API:
+
+    Configuration:
+    - ask(question, field): Asks the user for a value of the given field
+    - set(field, value): Sets the value of the given field
+
+    File Handling:
+    - copy(src, dst): Copies a file
+    - copydir(src, dst): Copies a directory
+    - mkdir(name): Creates directory (works recursively)
+    - move(src, dst): Moves files or directories
+    - rmdir(name): Removes a directory (works recursively)
+    - remove(name): Removes the given file 
+    """
+
+    env = {
+        "ask" : ask,
+        "set" : set,
+
+        "copy" : shutil.copy2,
+        "copydir" : shutil.copytree,
+        "mkdir" : os.makedirs,
+        "move" : shutil.move,
+        "rmdir" : shutil.rmtree,
+        "remove" : os.remove
+    }
+
+    try:
+        exec(open(fileName, encoding="utf-8").read(), globals(), env)
+    except Exception as err:
+        raise JasyError("Could not execute custom configuration script: %s!" % err)
+
 
 
 def matchesType(value, expected):
@@ -31,54 +67,60 @@ def matchesType(value, expected):
     return False
     
 
-def ask(question, fieldName, acceptType=None, required=True, defaultValue=None):
+def ask(question, name, accept=None, required=True, default=None):
     """
     Asks the user for value for the given configuration field
 
     - question (str): Question to ask the user
-    - fieldName (str): Name of field to store value in
-    - acceptType (str): Any of the supported types to validate for (see matchesType)
+    - name (str): Name of field to store value in
+    - accept (str): Any of the supported types to validate for (see matchesType)
     - required (bool): Whether the field is required
-    - defaultValue (any): Default value whenever user has given no value
+    - default (any): Default value whenever user has given no value
     """
 
     while True:
-        sys.stdout.write("- %s? %s: " % (question, colorize("[%s]" % acceptType, "grey")))
-        fieldValue = input().strip()
+        msg = "- %s?" % question
+        if accept is not None:
+            msg += colorize(" [%s]" % accept, "grey")
+        if default is not None:
+            msg += colorize(" (%s)" % default, "magenta")
+        msg += ": "
 
-        if not required and fieldValue == "":
-            fieldValue = defaultValue
+        sys.stdout.write(msg)
+        value = input().strip()
+
+        if not required and value == "":
+            value = default
             break
 
-        if fieldValue == "" or fieldValue is None:
+        if value == "" or value is None:
             continue
 
         # Parse value for easy type checks
         try:
-            parsedValue = eval(fieldValue)
+            parsedValue = eval(value)
         except:
             pass
         else:
-            fieldValue = parsedValue
+            value = parsedValue
 
             # Convert tuples/sets into JSON compatible array
-            if type(fieldValue) in (tuple, set):
-                fieldValue = list(fieldValue)
+            if type(value) in (tuple, set):
+                value = list(value)
 
-        if acceptType is None:
+        if accept is None:
             break
 
-        if matchesType(fieldValue, acceptType):
+        if matchesType(value, accept):
             break
 
-        print(colorize("  - Invalid value: %s" % str(fieldValue), "red"))
-
+        print(colorize("  - Invalid value: %s" % str(value), "red"))
 
     # Safe current value
-    save(fieldName, fieldValue)
+    set(name, value)
 
 
-def save(fieldName, value):
+def set(fieldName, value):
     """Saves the given value under the given field"""
 
 
