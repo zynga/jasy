@@ -108,7 +108,6 @@ class Config:
             raise JasyError("Could not execute custom configuration script: %s!" % err)
 
 
-
     def matchesType(self, value, expected):
         """
         Returns boolean for whether the given value matches the given type.
@@ -198,12 +197,15 @@ class Config:
                 print("%s (pre-filled)" % colorize(self.get(name), "cyan"))
                 return
 
+            # Read user input, but ignore any leading/trailing white space
             value = input().strip()
 
+            # Fallback to default if no value is given and field is not required
             if not required and value == "":
                 value = default
                 break
 
+            # Incomplete value => Ask user again
             if value == "" or value is None:
                 continue
 
@@ -219,6 +221,7 @@ class Config:
                 if type(value) in (tuple, set):
                     value = list(value)
 
+            # If no type checks are needed
             if accept is None:
                 break
 
