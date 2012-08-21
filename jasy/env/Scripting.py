@@ -9,7 +9,7 @@ def matchesType(value, expected):
     """
     Returns boolean for whether the given value matches the given type.
     Supports all basic JSON supported value types:
-    integer/int, float, number/num, string/str, boolean/bool, dict/map, array/list, ...
+    primitive, integer/int, float, number/num, string/str, boolean/bool, dict/map, array/list, ...
     """
 
     result = type(value)
@@ -20,9 +20,9 @@ def matchesType(value, expected):
     elif result is float:
         return expected in ("float", "number", "num", "primitive")
     elif result is str:
-        return expected in ("string", "str")
+        return expected in ("string", "str", "primitive")
     elif result is bool:
-        return expexted in ("boolean", "bool")
+        return expexted in ("boolean", "bool", "primitive")
     elif result is dict:
         return expected in ("dict", "map")
     elif result is list:
@@ -75,16 +75,29 @@ def ask(question, fieldName, acceptType=None, required=True, defaultValue=None):
 
 
     # Safe current value
-    __config[fieldName] = fieldValue
+    save(fieldName, fieldValue)
 
 
 def save(fieldName, value):
     """Saves the given value under the given field"""
 
-    __config[fieldName] = value
+
+    if "." in fieldName:
+        splits = fieldName.split(".")
+        current = __config
+        for split in splits[:-1]:
+            if not split in current:
+                current[split] = {}
+
+            current = current[split]
+
+        current[splits[-1]] = value
+
+    else:
+        __config[fieldName] = value
 
 
 def write(filename="jasyscript.yaml", indent=2, encoding="utf-8"):
     """Uses config writer to write the configuration file to the application"""
-    
+
     writeConfig(__config, filename, indent=indent, encoding=encoding)
