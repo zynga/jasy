@@ -9,7 +9,7 @@ from jasy.core.Logging import *
 from jasy.core.Error import JasyError
 from jasy.core.Config import writeConfig, loadConfig, findConfig
 from jasy.core.Util import getKey
-import jasy.core.File
+import jasy.core.File as File
 
 __all__ = [ "Config" ]
 
@@ -68,7 +68,7 @@ class Config:
 
             self.ask(question, name, accept=accept, required=required, default=default, force=force)
 
-        jasy.core.File.rm(configFile)
+        File.rm(configFile)
 
 
     def execute(self, fileName, optional=False, encoding="utf-8"):
@@ -81,14 +81,14 @@ class Config:
 
         env = {
             "config" : self,
-            "file" : jasy.core.File
+            "file" : File
         }
 
         try:
             fileHandle = open(fileName, "r", encoding=encoding)
             exec(fileHandle.read(), globals(), env)
             fileHandle.close()
-            jasy.core.File.rm("jasycreate.py")
+            File.rm("jasycreate.py")
 
         except Exception as err:
             raise JasyError("Could not execute custom configuration script: %s!" % err)
