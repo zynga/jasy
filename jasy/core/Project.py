@@ -121,7 +121,7 @@ class Project():
 
         # Load project configuration
         self.__config = Config(config)
-        self.__config.loadValues("jasyproject")
+        self.__config.loadValues("jasyproject", optional=True)
 
         # Initialize cache
         try:
