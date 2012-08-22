@@ -171,8 +171,8 @@ def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **
     info("Starting configuration...")
     config = Config("jasyscript.%s" % configFormat)
     config.inject(**argv)
-    config.read("jasycreate")
-    config.execute("jasycreate.py")
+    config.read("jasycreate", optional=True)
+    config.execute("jasycreate.py", optional=True)
     config.write()
 
     # Done

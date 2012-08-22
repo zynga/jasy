@@ -7,7 +7,7 @@ import sys, shutil, os
 
 from jasy.core.Logging import *
 from jasy.core.Error import JasyError
-from jasy.core.Config import writeConfig, loadConfig, removeConfig
+from jasy.core.Config import writeConfig, loadConfig, findConfig
 from jasy.core.Util import getKey
 import jasy.core.File
 
@@ -37,22 +37,26 @@ class Config:
             self.set(key, argv[key])
 
 
-    def load(self, fileName):
+    def load(self, fileName, encoding="utf-8"):
         """
         Imports the values of the given file
         """
 
-        data = loadConfig(fileName)
+        data = loadConfig(fileName, encoding=encoding)
         for key in data:
             self.set(key, data[key])
 
 
-    def read(self, fileName, force=False):
+    def read(self, fileName, force=False, optional=False, encoding="utf-8"):
         """
         Reads the given configuration file with questions and deletes the file afterwards.
         """
 
-        data = loadConfig(fileName)
+        configFile = findConfig(fileName)
+        if configFile is None and not optional:
+            raise JasyError("Could not find configuration file: %s" % configFile)
+
+        data = loadConfig(configFile, encoding=encoding)
         for entry in data:
             question = entry["question"]
             name = entry["name"]
@@ -64,13 +68,16 @@ class Config:
 
             self.ask(question, name, accept=accept, required=required, default=default, force=force)
 
-        removeConfig(fileName)
+        jasy.core.File.rm(configFile)
 
 
-    def execute(self, fileName):
+    def execute(self, fileName, optional=False, encoding="utf-8"):
         """
         Executes the given script for configuration proposes and deletes the file afterwards.
         """
+
+        if not os.path.exists(fileName):
+            return
 
         env = {
             "config" : self,
@@ -78,11 +85,10 @@ class Config:
         }
 
         try:
-            fileHandle = open(fileName, "r", encoding="utf-8")
+            fileHandle = open(fileName, "r", encoding=encoding)
             exec(fileHandle.read(), globals(), env)
-
             fileHandle.close()
-            os.remove("jasycreate.py")
+            jasy.core.File.rm("jasycreate.py")
 
         except Exception as err:
             raise JasyError("Could not execute custom configuration script: %s!" % err)

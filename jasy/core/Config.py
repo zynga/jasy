@@ -24,15 +24,6 @@ def findConfig(fileName):
         return None
 
 
-def removeConfig(fileName):
-    configName = findConfig(fileName)
-    if configName is not None:
-        os.remove(configName)
-        return True
-
-    return False
-
-
 def loadConfig(fileName, encoding="utf-8"):
     configName = findConfig(fileName)
     if configName is None:
