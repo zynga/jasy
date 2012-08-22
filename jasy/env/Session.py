@@ -13,7 +13,7 @@ from jasy.core.Project import Project, getProjectFromPath, getProjectDependencie
 from jasy.core.Permutation import Permutation
 
 from jasy.core.Error import JasyError
-from jasy.env.State import setPermutation, header, loadLibrary
+from jasy.env.State import setPermutation, header
 from jasy.core.Json import toJson
 from jasy.core.Logging import *
 
@@ -33,7 +33,7 @@ class Session():
         self.__projectByName = {}
         self.__fields = {}
         
-        if os.path.exists("jasyproject.json"):
+        if os.path.exists("jasyproject.yaml") or os.path.exists("jasyproject.json"):
             header("Initializing project")
 
             try:
@@ -46,6 +46,9 @@ class Session():
                 outdent(True)
                 error(jasyerr)
                 raise JasyError("Critical: Could not initialize session!")
+
+        else:
+            warn("Not a valid Jasy project!")
     
     
     def clean(self):
@@ -119,11 +122,6 @@ class Session():
             # Append to session list
             self.__projects.append(project)
             
-            # Import library
-            library = project.getLibrary()
-            if library:
-                loadLibrary(project.getName(), library)
-
             # Import project defined fields which might be configured using "activateField()"
             fields = project.getFields()
             for name in fields:
