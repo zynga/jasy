@@ -65,15 +65,21 @@ class Config:
     def loadValues(self, fileName, optional=False, encoding="utf-8"):
         """
         Imports the values of the given file
+        Returns True when the file was found and processed.
         """
 
         configFile = findConfig(fileName)
-        if configFile is None and not optional:
-            raise JasyError("Could not find configuration file: %s" % configFile)
+        if configFile is None:
+            if optional:
+                return False
+            else:
+                raise JasyError("Could not find configuration file: %s" % configFile)
 
         data = loadConfig(configFile, encoding=encoding)
         for key in data:
             self.set(key, data[key])
+
+        return True
 
 
     def readQuestions(self, fileName, force=False, autoDelete=True, optional=False, encoding="utf-8"):
@@ -83,7 +89,7 @@ class Config:
         """
 
         configFile = findConfig(fileName)
-        if configFile is None
+        if configFile is None:
             if optional:
                 return False
             else:
