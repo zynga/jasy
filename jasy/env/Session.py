@@ -33,22 +33,14 @@ class Session():
         self.__projectByName = {}
         self.__fields = {}
         
-        if os.path.exists("jasyproject.yaml") or os.path.exists("jasyproject.json"):
-            header("Initializing project")
+        header("Initializing project")
 
-            try:
-                # TODO: Figure out version of current project
-                version = None
-                project = getProjectFromPath(".", version=version)
-                
-                self.addProject(project)
-            except JasyError as jasyerr:
-                outdent(True)
-                error(jasyerr)
-                raise JasyError("Critical: Could not initialize session!")
-
-        else:
-            warn("Not a valid Jasy project!")
+        try:
+            self.addProject(getProjectFromPath("."))
+        except JasyError as err:
+            outdent(True)
+            error(err)
+            raise JasyError("Critical: Could not initialize session!")
     
     
     def clean(self):
