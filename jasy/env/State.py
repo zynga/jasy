@@ -79,7 +79,7 @@ def loadLibrary(objectName, fileName, encoding="utf-8"):
     exec(compile(code, os.path.abspath(fileName), "exec"), {"share" : share})
 
     # Export destination name as global    
-    info("Importing %s shared methods under %s...", counter, objectName)
+    debug("Importing %s shared methods under %s...", counter, objectName)
     globals()[objectName] = exportedModule
 
 
