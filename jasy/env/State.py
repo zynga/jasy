@@ -52,12 +52,15 @@ def prependPrefix(path):
 
 
 
-
 # ===========================================================================
-#   Global Prefix Handling
+#   Project Library Handling
 # ===========================================================================
 
 def loadLibrary(objectName, fileName):
+    """
+    Creates a new global object (inside global state) with the given name 
+    containing all @share'd functions and fields loaded from the given file.
+    """
 
     # Create internal class object for storing shared methods
     class Shared(object): pass
