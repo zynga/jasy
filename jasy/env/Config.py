@@ -76,7 +76,7 @@ class Config:
             if optional:
                 return False
             else:
-                raise JasyError("Could not find configuration file: %s" % configFile)
+                raise JasyError("Could not find configuration file (values): %s" % configFile)
 
         data = loadConfig(configFile, encoding=encoding)
         for key in data:
@@ -96,7 +96,7 @@ class Config:
             if optional:
                 return False
             else:
-                raise JasyError("Could not find configuration file: %s" % configFile)
+                raise JasyError("Could not find configuration file (questions): %s" % configFile)
 
         data = loadConfig(configFile, encoding=encoding)
         for entry in data:
