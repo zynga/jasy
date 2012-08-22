@@ -1,0 +1,22 @@
+name: core
+package: ''
+fields:
+  debug:
+    check: Boolean
+    default: false
+    detect: core.detect.Param
+  engine:
+    check:
+    - webkit
+    - gecko
+    - trident
+    - presto
+    detect: core.detect.Engine
+  es5:
+    check: Boolean
+    default: false
+    detect: core.detect.ES5
+  locale:
+    check: String
+    default: en
+    detect: core.detect.Locale
