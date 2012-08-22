@@ -56,7 +56,7 @@ def doctor():
 
 
 @task
-def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **argv):
+def create(name="myproject", origin=None, skeleton=None, **argv):
     """Creates a new project"""
 
     header("Creating project %s" % name)
@@ -173,7 +173,7 @@ def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **
     config.injectValues(**argv)
     config.readQuestions("jasycreate", optional=True)
     config.executeScript("jasycreate.py", optional=True)
-    config.write("jasyscript.%s" % configFormat)
+    config.write("jasyscript.yaml")
 
     # Done
     info('Your application %s was created successfully!', colorize(name, "bold"))
