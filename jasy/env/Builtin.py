@@ -170,9 +170,9 @@ def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **
     # Create configuration file from question configs and custom scripts
     info("Starting configuration...")
     config = Config()
-    config.inject(**argv)
-    config.read("jasycreate", optional=True)
-    config.execute("jasycreate.py", optional=True)
+    config.injectValues(**argv)
+    config.readQuestions("jasycreate", optional=True)
+    config.executeScript("jasycreate.py", optional=True)
     config.write("jasyscript.%s" % configFormat)
 
     # Done

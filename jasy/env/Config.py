@@ -13,6 +13,32 @@ import jasy.core.File as File
 
 __all__ = [ "Config" ]
 
+def matchesType(value, expected):
+    """
+    Returns boolean for whether the given value matches the given type.
+    Supports all basic JSON supported value types:
+    primitive, integer/int, float, number/num, string/str, boolean/bool, dict/map, array/list, ...
+    """
+
+    result = type(value)
+    expected = expected.lower()
+
+    if result is int:
+        return expected in ("integer", "number", "int", "num", "primitive")
+    elif result is float:
+        return expected in ("float", "number", "num", "primitive")
+    elif result is str:
+        return expected in ("string", "str", "primitive")
+    elif result is bool:
+        return expexted in ("boolean", "bool", "primitive")
+    elif result is dict:
+        return expected in ("dict", "map")
+    elif result is list:
+        return expected in ("array", "list")
+
+    return False
+
+
 class Config:
     """
     Wrapper around JSON/YAML with easy to use import tools for using question files,
@@ -27,7 +53,7 @@ class Config:
         self.__data = {}
 
 
-    def inject(self, **argv):
+    def injectValues(self, **argv):
         """
         Injects a list of arguments into the configuration file
         """
@@ -36,7 +62,7 @@ class Config:
             self.set(key, argv[key])
 
 
-    def load(self, fileName, optional=False, encoding="utf-8"):
+    def loadValues(self, fileName, optional=False, encoding="utf-8"):
         """
         Imports the values of the given file
         """
@@ -50,14 +76,18 @@ class Config:
             self.set(key, data[key])
 
 
-    def read(self, fileName, force=False, optional=False, encoding="utf-8"):
+    def readQuestions(self, fileName, force=False, autoDelete=True, optional=False, encoding="utf-8"):
         """
-        Reads the given configuration file with questions and deletes the file afterwards.
+        Reads the given configuration file with questions and deletes the file afterwards (by default).
+        Returns True when the file was found and processed.
         """
 
         configFile = findConfig(fileName)
-        if configFile is None and not optional:
-            raise JasyError("Could not find configuration file: %s" % configFile)
+        if configFile is None
+            if optional:
+                return False
+            else:
+                raise JasyError("Could not find configuration file: %s" % configFile)
 
         data = loadConfig(configFile, encoding=encoding)
         for entry in data:
@@ -71,16 +101,23 @@ class Config:
 
             self.ask(question, name, accept=accept, required=required, default=default, force=force)
 
-        File.rm(configFile)
+        if autoDelete:
+            File.rm(configFile)
+
+        return True
 
 
-    def execute(self, fileName, optional=False, encoding="utf-8"):
+    def executeScript(self, fileName, autoDelete=True, optional=False, encoding="utf-8"):
         """
-        Executes the given script for configuration proposes and deletes the file afterwards.
+        Executes the given script for configuration proposes and deletes the file afterwards (by default).
+        Returns True when the file was found and processed.
         """
 
         if not os.path.exists(fileName):
-            return
+            if optional:
+                return False
+            else:
+                raise JasyError("Could not find configuration script: %s" % configFile)
 
         env = {
             "config" : self,
@@ -91,39 +128,20 @@ class Config:
             fileHandle = open(fileName, "r", encoding=encoding)
             exec(fileHandle.read(), globals(), env)
             fileHandle.close()
-            File.rm("jasycreate.py")
+
+            if autoDelete:
+                File.rm("jasycreate.py")
 
         except Exception as err:
             raise JasyError("Could not execute custom configuration script: %s!" % err)
 
+        return True
 
-    def matchesType(self, value, expected):
-        """
-        Returns boolean for whether the given value matches the given type.
-        Supports all basic JSON supported value types:
-        primitive, integer/int, float, number/num, string/str, boolean/bool, dict/map, array/list, ...
-        """
-
-        result = type(value)
-        expected = expected.lower()
-
-        if result is int:
-            return expected in ("integer", "number", "int", "num", "primitive")
-        elif result is float:
-            return expected in ("float", "number", "num", "primitive")
-        elif result is str:
-            return expected in ("string", "str", "primitive")
-        elif result is bool:
-            return expexted in ("boolean", "bool", "primitive")
-        elif result is dict:
-            return expected in ("dict", "map")
-        elif result is list:
-            return expected in ("array", "list")
-
-        return False
-        
 
     def has(self, name):
+        """
+        Returns whether there is a value for the given field name.
+        """
 
         if not "." in name:
             return name in self.__data
@@ -198,7 +216,6 @@ class Config:
                 break
 
 
-
     def set(self, fieldName, value, accept=None, parse=True):
         """
         Saves the given value under the given field
@@ -222,7 +239,7 @@ class Config:
                     value = list(value)
 
         # Check for given type
-        if accept is not None and not self.matchesType(value, accept):
+        if accept is not None and not matchesType(value, accept):
             print(colorize("  - Invalid value: %s" % str(value), "red"))
             return False
 

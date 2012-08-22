@@ -163,7 +163,7 @@ from jasy.env.Config import Config
 
 if jasyscript:
     config = Config()
-    config.load("jasyscript", optional=True)
+    config.loadValues("jasyscript", optional=True)
 
 # Importing built-in tasks
 import jasy.env.Builtin
