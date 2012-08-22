@@ -48,12 +48,12 @@ class Config:
     command line arguments, etc.
     """
 
-    def __init__(self):
+    def __init__(self, data=None):
         """
         Initialized configuration object with destination file name.
         """
 
-        self.__data = {}
+        self.__data = data or {}
 
 
     def injectValues(self, **argv):
@@ -162,13 +162,13 @@ class Config:
         return True
 
 
-    def get(self, name):
+    def get(self, name, default=None):
         """
         Returns the value of the given field or None when field is not set 
         """
 
         if not "." in name:
-            return getKey(self.__data, name)
+            return getKey(self.__data, name, default)
 
         splits = name.split(".")
         current = self.__data
@@ -179,7 +179,7 @@ class Config:
             else:
                 return None
 
-        return getKey(current, splits[-1])        
+        return getKey(current, splits[-1], default)        
 
 
     def ask(self, question, name, accept=None, required=True, default=None, force=False, parse=True):
@@ -219,6 +219,10 @@ class Config:
             if not required and value == "":
                 value = default
 
+            # Don't accept empty values
+            if value == "":
+                continue
+
             # Try setting the current value
             if self.set(name, value, accept=accept, parse=parse):
                 break
@@ -229,8 +233,8 @@ class Config:
         Saves the given value under the given field
         """
 
-        # Incomplete value => Invalid
-        if value == "" or value is None:
+        # Don't accept None value
+        if value is None:
             return False
 
         # Parse value for easy type checks
