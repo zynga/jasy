@@ -82,6 +82,8 @@ def loadLibrary(objectName, fileName, encoding="utf-8"):
     debug("Importing %s shared methods under %s...", counter, objectName)
     globals()[objectName] = exportedModule
 
+    return counter
+
 
 
 # ===========================================================================
