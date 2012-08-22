@@ -199,15 +199,19 @@ class Config:
             msg = "- %s?" % question
             if accept is not None:
                 msg += colorize(" [%s]" % accept, "grey")
-            if default is not None:
-                msg += colorize(" (%s)" % default, "magenta")
+
+            if default is None:
+                msg += colorize(" (%s)" % name, "magenta")
+            else:
+                msg += colorize(" (%s=%s)" % (name, default), "magenta")
+
             msg += ": "
 
             sys.stdout.write(msg)
 
             # Do not ask user for solved items
             if not force and self.has(name):
-                print("%s (pre-filled)" % colorize(self.get(name), "cyan"))
+                print("%s %s" % (self.get(name), colorize("(pre-filled)", "cyan")))
                 return
 
             # Read user input, but ignore any leading/trailing white space
