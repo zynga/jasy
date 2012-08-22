@@ -179,8 +179,8 @@ def main():
     try:
         # execute build script
         if jasyscript:
-            buildfile = open(jasyscript, "r", encoding="utf-8")
-            retval = exec(buildfile.read(), globals())
+            code = open(jasyscript, "r", encoding="utf-8").read()
+            exec(compile(code, os.path.abspath(jasyscript), "exec"), globals())
 
         # list all tasks when none is given
         tasks = options.getTasks()

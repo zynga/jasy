@@ -130,16 +130,11 @@ class Config:
             "file" : File
         }
 
-        try:
-            fileHandle = open(fileName, "r", encoding=encoding)
-            exec(fileHandle.read(), globals(), env)
-            fileHandle.close()
+        code = open(fileName, "r", encoding=encoding).read()
+        exec(compile(code, os.path.abspath(fileName), "exec"), globals(), env)
 
-            if autoDelete:
-                File.rm("jasycreate.py")
-
-        except Exception as err:
-            raise JasyError("Could not execute custom configuration script: %s!" % err)
+        if autoDelete:
+            File.rm("jasycreate.py")
 
         return True
 
