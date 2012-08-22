@@ -162,8 +162,8 @@ jasy.env.Task.setOptions(options)
 from jasy.env.Config import Config
 
 if jasyscript:
-    config = Config("jasyscript")
-    config.load("jasyscript")
+    config = Config()
+    config.load("jasyscript", optional=True)
 
 # Importing built-in tasks
 import jasy.env.Builtin

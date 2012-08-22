@@ -169,11 +169,11 @@ def create(name="myproject", origin=None, skeleton=None, configFormat="yaml", **
 
     # Create configuration file from question configs and custom scripts
     info("Starting configuration...")
-    config = Config("jasyscript.%s" % configFormat)
+    config = Config()
     config.inject(**argv)
     config.read("jasycreate", optional=True)
     config.execute("jasycreate.py", optional=True)
-    config.write()
+    config.write("jasyscript.%s" % configFormat)
 
     # Done
     info('Your application %s was created successfully!', colorize(name, "bold"))

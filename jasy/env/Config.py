@@ -19,13 +19,12 @@ class Config:
     command line arguments, etc.
     """
 
-    def __init__(self, fileName):
+    def __init__(self):
         """
         Initialized configuration object with destination file name.
         """
 
-        self.__config = {}
-        self.__fileName = fileName
+        self.__data = {}
 
 
     def inject(self, **argv):
@@ -37,12 +36,16 @@ class Config:
             self.set(key, argv[key])
 
 
-    def load(self, fileName, encoding="utf-8"):
+    def load(self, fileName, optional=False, encoding="utf-8"):
         """
         Imports the values of the given file
         """
 
-        data = loadConfig(fileName, encoding=encoding)
+        configFile = findConfig(fileName)
+        if configFile is None and not optional:
+            raise JasyError("Could not find configuration file: %s" % configFile)
+
+        data = loadConfig(configFile, encoding=encoding)
         for key in data:
             self.set(key, data[key])
 
@@ -123,10 +126,10 @@ class Config:
     def has(self, name):
 
         if not "." in name:
-            return name in self.__config
+            return name in self.__data
 
         splits = name.split(".")
-        current = self.__config
+        current = self.__data
 
         for split in splits:
             if split in current:
@@ -143,10 +146,10 @@ class Config:
         """
 
         if not "." in name:
-            return getKey(self.__config, name)
+            return getKey(self.__data, name)
 
         splits = name.split(".")
-        current = self.__config
+        current = self.__data
 
         for split in splits[:-1]:
             if split in current:
@@ -225,7 +228,7 @@ class Config:
 
         if "." in fieldName:
             splits = fieldName.split(".")
-            current = self.__config
+            current = self.__data
             for split in splits[:-1]:
                 if not split in current:
                     current[split] = {}
@@ -235,14 +238,14 @@ class Config:
             current[splits[-1]] = value
 
         else:
-            self.__config[fieldName] = value
+            self.__data[fieldName] = value
 
         return True
 
 
-    def write(self, indent=2, encoding="utf-8"):
+    def write(self, fileName, indent=2, encoding="utf-8"):
         """
         Uses config writer to write the configuration file to the application
         """
 
-        writeConfig(self.__config, self.__fileName, indent=indent, encoding=encoding)
+        writeConfig(self.__data, fileName, indent=indent, encoding=encoding)
