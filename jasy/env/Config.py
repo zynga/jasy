@@ -3,15 +3,18 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, shutil, os
+import sys, os
 
 from jasy.core.Logging import *
 from jasy.core.Error import JasyError
 from jasy.core.Config import writeConfig, loadConfig, findConfig
 from jasy.core.Util import getKey
+
 import jasy.core.File as File
 
+
 __all__ = [ "Config" ]
+
 
 def matchesType(value, expected):
     """
