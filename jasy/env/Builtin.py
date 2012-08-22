@@ -35,7 +35,6 @@ def help():
     jasy.info()
     
     print(colorize(colorize("Usage", "underline"), "bold"))
-    import jasy.env.Task
     print("  $ jasy [<options...>] <task1> [<args...>] [<task2> [<args...>]]")
 
     print()
