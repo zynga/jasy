@@ -4,3 +4,4 @@ recursive-include jasy/data *
 include license.md
 include readme.md
 include changelog.md
+include requirements.txt
