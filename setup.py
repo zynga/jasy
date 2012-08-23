@@ -118,7 +118,10 @@ setup(
   platforms = 'any',
 
   description = "Web Tooling Framework",
-  long_description = open('readme.md').read(),
+  long_description = """Jasy is a powerful Python3-based tooling framework. It makes it 
+                        easy to manage heavy web projects. Its main goal is to offer 
+                        an API which could be used by developers to write their custom 
+                        build/deployment scripts.""",
 
   # Via: http://pypi.python.org/pypi?%3Aaction=list_classifiers
   classifiers = [
