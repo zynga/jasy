@@ -23,7 +23,7 @@ except ImportError:
   uses = "distutils"
 
 
-
+print(sys.argv[1])
 
 
 if uses == "distribute":
@@ -31,6 +31,15 @@ if uses == "distribute":
   extra = {
 
     "test_suite" : "jasy.test",
+
+    "install_requires" : [ 
+      "distribute",
+      "Pygments>=1.5", 
+      "polib>=1.0", 
+      "requests>=0.13", 
+      "CherryPy>=3.2", 
+      "PyYAML>=3" 
+    ],
 
     "extras_require" : {
       "jsdoc" : ["misaka"],
@@ -41,15 +50,6 @@ if uses == "distribute":
     "dependency_links" : [
       "https://github.com/sloonz/pil-py3k",
       "https://github.com/wpbasti/watchdog"
-    ],
-
-    "install_requires" : [ 
-      "distribute",
-      "Pygments>=1.5", 
-      "polib>=1.0", 
-      "requests>=0.13", 
-      "CherryPy>=3.2", 
-      "PyYAML>=3" 
     ],
 
     "include_package_data" : True,
