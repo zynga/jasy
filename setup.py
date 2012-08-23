@@ -45,7 +45,7 @@ if uses == "distribute":
     },
 
     "dependency_links" : [
-      "https://github.com/sloonz/pil-py3k",
+      "https://github.com/zynga/pil-py3k",
       "https://github.com/wpbasti/watchdog"
     ]
 
