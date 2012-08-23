@@ -31,7 +31,6 @@ if uses == "distribute":
     "test_suite" : "jasy.test",
 
     "install_requires" : [ 
-      "distribute",
       "Pygments>=1.5", 
       "polib>=1.0", 
       "requests>=0.13", 
