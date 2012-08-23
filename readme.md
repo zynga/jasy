@@ -11,24 +11,7 @@ build/deployment scripts.
 
 ## Installation
 
-### Using Binary Packages
-
-There are [pre-built packages available for either Windows or Mac](https://github.com/zynga/jasy/downloads) 
-users. For instructions take a look at [the specific documentation](https://github.com/zynga/jasy/wiki/Installation-using-binary-packages). 
-
-
-### Custom Installation
-
-You can also install Jasy on your own. Jasy has a few dependencies
-like Python 3, Misaka (Markdown), Polib (Translations), etc. For
-details have a look at [the official documentation](https://github.com/zynga/jasy/wiki/Installation).
-
-
-### Cloning via Git
-
-Otherwise feel free to install using setup.py or running jasy locally from the inside the cloned folder. Both should work fine.
-
-*Please be aware that the `master` branch is unstable. If you require stability check out one of the release tags like "0.6.1".*
+For details have a look at [the official documentation](https://github.com/zynga/jasy/wiki/Installation).
 
 
 ## Authors
