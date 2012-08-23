@@ -2,7 +2,6 @@ Pygments
 polib
 -e git://github.com/sloonz/pil-py3k.git#egg=pil
 misaka
-msgpack-python
 requests
 cherrypy
 pyyaml

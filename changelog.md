@@ -195,7 +195,7 @@ Jasy 0.5-beta2
 Jasy 0.5-beta1
 ==============
 
-- Initial release with support for generating API data as JSON/MsgPack files
+- Initial release with support for generating API data as JSON files
 - Support for generating session based API data with class/interface linking 
 - Changed checksum computing to SHA1 to bring it in sync with changes in Core library
 - Improved installation process with dependency handling etc.
