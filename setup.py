@@ -16,27 +16,89 @@ if sys.version < "3.2":
 # - Distribute is a fork of the Setuptools project (http://packages.python.org/distribute/)
 try:
   from setuptools import setup
+  uses = "distribute"
 except ImportError:
   print("Jasy prefers distribute over distutils for installing dependencies!")
   from distutils.core import setup
-  
-# Import Jasy for version info etc.
-import jasy
+  uses = "distutils"
 
-# Basic non native requirements
-install_requires = [ 
-  "Pygments>=1.5", 
-  "polib>=1.0", 
-  "requests>=0.13", 
-  "CherryPy>=3.2", 
-  "PyYAML>=3" 
- ]
+
+
+
+
+if uses == "distribute":
+
+  extra = {
+
+    "test_suite" : "jasy.test",
+
+    "extras_require" : {
+      "jsdoc" : ["misaka"],
+      "daemon" : ["watchdog"],
+      "sprites" : ["pil"]
+    },
+
+    "dependency_links" : [
+      "https://github.com/sloonz/pil-py3k",
+      "https://github.com/wpbasti/watchdog"
+    ],
+
+    "install_requires" : [ 
+      "distribute",
+      "Pygments>=1.5", 
+      "polib>=1.0", 
+      "requests>=0.13", 
+      "CherryPy>=3.2", 
+      "PyYAML>=3" 
+    ],
+
+    "include_package_data" : True,
+
+    "package_data" : {
+      'jasy': [
+        'data/cldr/VERSION', 
+        'data/cldr/keys/*.xml', 
+        'data/cldr/main/*.xml', 
+        'data/cldr/supplemental/*.xml'
+      ]
+    },    
+
+  }
+
+
+else:
+
+  extra = {
+
+    "package_data" : {
+      'jasy': [
+        'data/cldr/VERSION', 
+        'data/cldr/keys/*.xml', 
+        'data/cldr/main/*.xml', 
+        'data/cldr/supplemental/*.xml'
+      ]
+    },
+
+    "data_files" : [
+      ("jasy", [
+        "changelog.md",
+        "license.md",
+        "readme.md",
+        "requirements.txt"
+       ]
+      )
+    ]
+
+  }
+
 
 # Integrate batch script for win32 only
+extra["scripts"] = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util" ]
 if sys.platform == "win32":
-  scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util", "bin/jasy.bat", "bin/jasy-test.bat", "bin/jasy-util.bat" ]
-else:
-  scripts = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util" ]
+  extra["scripts"] += [ "bin/jasy.bat", "bin/jasy-test.bat", "bin/jasy-util.bat" ]
+
+# Import Jasy for version info etc.
+import jasy
 
 # Run setup
 setup(
@@ -57,21 +119,6 @@ setup(
 
   description = "Web Tooling Framework",
   long_description = open('readme.md').read(),
-
-  install_requires = install_requires,
-
-  test_suite = "jasy.test",
-
-  extras_require = {
-    "jsdoc" : ["misaka"],
-    "daemon" : ["watchdog"],
-    "sprites" : ["pil"]
-  },
-
-  dependency_links = [
-    "https://github.com/sloonz/pil-py3k",
-    "https://github.com/wpbasti/watchdog"
-  ],
 
   # Via: http://pypi.python.org/pypi?%3Aaction=list_classifiers
   classifiers = [
@@ -117,24 +164,5 @@ setup(
     'jasy.server'
   ],
 
-  package_data = {
-    'jasy': [
-      'data/cldr/VERSION', 
-      'data/cldr/keys/*.xml', 
-      'data/cldr/main/*.xml', 
-      'data/cldr/supplemental/*.xml'
-    ]
-  },
-
-  scripts = scripts,
-
-  data_files = [
-    ("jasy", [
-      "changelog.md",
-      "license.md",
-      "readme.md",
-      "requirements.txt"
-     ]
-    )
-  ]
+  **extra
 )
