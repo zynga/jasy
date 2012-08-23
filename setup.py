@@ -23,8 +23,6 @@ except ImportError:
   uses = "distutils"
 
 
-print(sys.argv[1])
-
 
 if uses == "distribute":
 
@@ -50,46 +48,14 @@ if uses == "distribute":
     "dependency_links" : [
       "https://github.com/sloonz/pil-py3k",
       "https://github.com/wpbasti/watchdog"
-    ],
-
-    "include_package_data" : True,
-
-    "package_data" : {
-      'jasy': [
-        'data/cldr/VERSION', 
-        'data/cldr/keys/*.xml', 
-        'data/cldr/main/*.xml', 
-        'data/cldr/supplemental/*.xml'
-      ]
-    },    
-
-  }
-
-
-else:
-
-  extra = {
-
-    "package_data" : {
-      'jasy': [
-        'data/cldr/VERSION', 
-        'data/cldr/keys/*.xml', 
-        'data/cldr/main/*.xml', 
-        'data/cldr/supplemental/*.xml'
-      ]
-    },
-
-    "data_files" : [
-      ("jasy", [
-        "changelog.md",
-        "license.md",
-        "readme.md",
-        "requirements.txt"
-       ]
-      )
     ]
 
   }
+
+else:
+
+  extra = {}
+
 
 
 # Integrate batch script for win32 only
@@ -166,6 +132,25 @@ setup(
     'jasy.test',
     'jasy.server'
   ],
+
+  package_data = {
+    'jasy': [
+      'data/cldr/VERSION', 
+      'data/cldr/keys/*.xml', 
+      'data/cldr/main/*.xml', 
+      'data/cldr/supplemental/*.xml'
+    ]
+  },
+
+  data_files = [
+    ("jasy", [
+      "changelog.md",
+      "license.md",
+      "readme.md",
+      "requirements.txt"
+     ]
+    )
+  ],  
 
   **extra
 )
