@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/dadicool/jasy.png?branch=jasy08)](http://travis-ci.org/dadicool/jasy)
+[![Build Status](https://secure.travis-ci.org/zynga/jasy.png?branch=jasy08)](http://travis-ci.org/zynga/jasy)
 
 Jasy - Web Tooling Framework
 ============================
