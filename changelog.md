@@ -10,7 +10,7 @@ Jasy 0.8-beta1
 - Skeletons might have placeholders which are dynamically replaced with custom values e.g. name of the project. 
   - The placeholder format is defined as `$${name}` to reduce conflicts with existing templating solutions
   - File patcher should work stable even with non UTF-8 files and supports detection of binary files
-- Skeletons are able to define configuration questions to the user (`ask()`, `set()`).
+- Skeletons are able to define configuration questions to the user (`ask()`, `set()`)
   - Stores configuration values as *YAML* (`jasyscript.yaml`) or *JSON* (`jasyscript.json`).
   - Questions can be answered interactively via prompt or passed in as command line arguments (`--name value`).
   - Questions can be combined with custom logic when using a custom post-creation script (`jasycreate.py`).
@@ -39,8 +39,8 @@ Jasy 0.8-beta1
 
 - Started implementation of file system watcher to allow auto rebuilding based on file system changes
   - Based on Watchdog with [custom port for Python 3](https://github.com/wpbasti/watchdog) - still broken regarding *FSEvents* on *Mac OS * unfortunately
-- Added auto-installing non-native dependencies (*Pygments*, *polib*, *requests*, *CherryPy*, *PyYAML*).
-	- Kept dependencies containing native code optional (*Misaka*, *PIL*)
+- Added auto-installing non-native dependencies (*Pygments*, *polib*, *requests*, *CherryPy*, *PyYAML*)
+  - Kept dependencies containing native code optional (*Misaka*, *PIL*)
 - Added support for *YAML* throughthrough *Jasy* for config files and others (jasyproject.yaml)
 - Added nice `about` task showing version, copyright and homepage
 - Added support for showing optional task arguments in *Jasy*'s help screen
