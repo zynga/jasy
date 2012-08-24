@@ -37,9 +37,6 @@ def loadConfig(fileName, encoding="utf-8"):
         return json.load(fileHandle)
 
     elif fileExt == ".yaml":
-        if yaml is None:
-            raise JasyError("Unable to safe YAML. Python module is missing!")
-
         return yaml.load(fileHandle)
 
 
@@ -51,9 +48,6 @@ def writeConfig(data, fileName, indent=2, encoding="utf-8"):
         json.dump(data, fileHandle, indent=indent, ensure_ascii=False)
     
     elif fileExt == ".yaml":
-        if yaml is None:
-            raise JasyError("Unable to safe YAML. Python module is missing!")
-
         yaml.dump(data, fileHandle, default_flow_style=False, indent=indent, allow_unicode=True)
 
     else:
