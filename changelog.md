@@ -1,7 +1,48 @@
 Jasy 0.8-beta1
 ==============
 
+## Major New Features
 
+- Added scaffolding support
+  - Creating new projects from scratch
+
+
+- Added integrated web server (based on CherryPy) with support for:
+  - Delivering static files
+  - Proxying remote URLs and caching them locally
+- Added support for projects to offer shared tooling features (via `jasylibrary.py`)
+- Started implementation of file system watcher to allow auto rebuilding based on file system changes.
+
+
+## Minor New Features
+
+- Added number of built-in tasks: about, help, create and doctor (not implemented yet)
+- Added support for YAML for config files (jasyproject.yaml)
+- Added nice `about` task showing version, copyright and homepage
+- Added auto-installing non-native dependencies (Pygments, polib, requests, CherryPy, PyYAML). Kept dependencies containing native code optional (Misaka, PIL)
+- Added [Travis.ci integration](http://travis-ci.org/#!/zynga/jasy) for testing scaffolding support
+- Added support for showing optional task arguments in Jasy's help screen
+
+
+## Improvements/Fixes
+
+- Improved "jasy" script to allow built-in tasks (execution outside of any Jasy project)
+- Better error handling in "jasyscript.py" and other scripts indirectly executed by Jasy by setting a correct file name during `compile`for debugging.
+- Jasy options and parameters on help screen are sorted now.
+- Fixed issues with missing "pkg_resources" when installing Python on Mac via standard distribution
+- Moved "jasy" command and prefix handling into Task module.
+- Removed dependency and usage references to msgpack (never actually used anywhere in the code)
+- Correctly close all `jasycache` files even if not managed by the session when Jasy is closed/crashed.
+
+
+## Internals
+
+- Added optional support for hashing keys of `Cache` object transparently to reduce key sizes
+- Added new `jasy.core.Config` class for transparently supporting JSON/YAML formats with correct Unicode handling
+- Added new module `jasy.core.File` for simplifying typical unix like file system operations (`cp`, `mv`, `mkdir`, ...)
+- Reworked `jasy.core.Project` to use new `jasy.core.Config` class instead of custom config file loading.
+- Added `jasy.core.Types` for a collection of new types to work with. First added type is a `CaseInsensitiveDict` which is useful for dealing with HTTP headers.
+- Added new utility methods to `jasy.core.Util`: `debounce` (useful for debouncing method calls), `getFirstSubFolder` (returns the first sub folder in the given path), `massFilePatcher` (is able to patch placeholders in all files of the given directory with actual content)
 
 
 Jasy 0.7.5
