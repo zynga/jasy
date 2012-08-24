@@ -1,19 +1,19 @@
 Jasy 0.8-beta1
 ==============
 
-### Major New Features
+### New Features
 
 - Added scaffolding support:
   - Creating new projects from scratch. Each project is able to offer one or more skeletons.
-  - These "origin" projects can be available locally or can be auto-cloned from a remote repository (GIT only at the moment)
+  - These "origin" projects can be available locally or can be auto-cloned from a remote repository (*GIT* only at the moment)
   - Skeletons are able to define configuration questions to the user (`ask()`, `set()`).
   - Stores configuration values as *YAML* (`jasyscript.yaml`) or *JSON* (`jasyscript.json`).
   - Questions can be answered interactively via prompt or passed in as command line arguments (`--name value`).
   - Questions can be combined with custom logic when using a custom post-creation script (`jasycreate.py`).
   - The custom script also has user friendly methods for renaming files, creating directories etc. (via `file` object)
-  - Questions support type checks (basics like String, Number, etc.)
+  - Questions support type checks (basics like `String`, `Number`, etc.)
   - Questions are able to define default values.
-  - All field names might use kind of namespaces ("." in the field name) to create a structured configuration file.
+  - All field names might use kind of namespaces (`.` in the field name) to create a structured configuration file.
 - Added integrated web server:
   - Based on *CherryPy*
   - Each to configure custom top-level routing
@@ -25,43 +25,40 @@ Jasy 0.8-beta1
   - Additional offline mode omits proxying of requests which are not available in the local cache.
 - Added shared tooling libraries:
   - Support for projects to offer tooling features to other projects (via `jasylibrary.py`)
-  - Using "@share" decorator to only share specific methods to the outside
+  - Using `"@share"` decorator to only share specific methods to the outside
   - All shared methods from each project are namespaced under an object with the name of the project.
 - Started implementation of file system watcher to allow auto rebuilding based on file system changes
-  - Based on Watchdog (custom port for Python 3: https://github.com/wpbasti/watchdog) - still broken regarding *FSEvents* on *Mac OS X*
-
-
-### Other New Features
-
-- Added number of built-in tasks: `about`, `help`, `create` and `doctor` (not implemented yet)
-- Added support for *YAML* for config files (jasyproject.yaml)
+  - Based on Watchdog with [custom port for Python 3](https://github.com/wpbasti/watchdog) - still broken regarding *FSEvents* on *Mac OS X* unfortunately
+- Added auto-installing non-native dependencies (*Pygments*, *polib*, *requests*, *CherryPy*, *PyYAML*). 
+  - Kept dependencies containing native code optional (*Misaka*, *PIL*)
+- Added support for *YAML* throughthrough Jasy for config files and others (jasyproject.yaml)
 - Added nice `about` task showing version, copyright and homepage
-- Added auto-installing non-native dependencies (*Pygments*, *polib*, *requests*, *CherryPy*, *PyYAML*). Kept dependencies containing native code optional (*Misaka*, *PIL*)
-- Added [Travis.ci integration](http://travis-ci.org/#!/zynga/jasy) for testing scaffolding support
 - Added support for showing optional task arguments in Jasy's help screen
+- Added support for "built-in" tasks to be able to execute jasy without actually having a Jasy project ready to use.
+- Added [Travis.ci integration](http://travis-ci.org/#!/zynga/jasy) for testing scaffolding support (and more later on).
 
 
-### Improvements/Fixes
+### Improvements & Fixes
 
 - Tasks documentation is now being implemented using doc strings on the function blocks instead of a custom string inside the `@task()` decorator.
-- Improved "jasy" script to allow built-in tasks (execution outside of any Jasy project)
-- Better error handling in "jasyscript.py" and other scripts indirectly executed by Jasy by setting a correct file name during `compile`for debugging.
+- Improved `jasy` script to allow built-in tasks (execution outside of any Jasy project)
+- Better error handling in `jasyscript.py` and other scripts indirectly executed by Jasy by setting a correct file name during `compile`for debugging.
 - Jasy options and parameters on help screen are sorted now.
-- Fixed issues with missing "pkg_resources" when installing Python on Mac via standard distribution
-- Moved "jasy" command and prefix handling into Task module.
+- Fixed issues with missing `pkg_resources` when installing *Python on Mac* via standard (python.org) distribution
+- Moved `jasy` script and prefix handling into Task module.
 - Removed dependency and usage references to msgpack (never actually used anywhere in the code)
 - Correctly close all `jasycache` files even if not managed by the session when Jasy is closed/crashed.
 - Switched over from `distutils` to `distribute` for `setup.py`.
-- Install `.bat` files on Windows only.
+- Install `.bat` files on *Windows* only.
 
 
 ### Internals
 
 - Added optional support for hashing keys of `Cache` object transparently to reduce key sizes
-- Added new `jasy.core.Config` class for transparently supporting JSON/YAML formats with correct Unicode handling
+- Added new `jasy.core.Config` class for transparently supporting *JSON*/*YAML* formats with correct Unicode handling
 - Added new module `jasy.core.File` for simplifying typical unix like file system operations (`cp`, `mv`, `mkdir`, ...)
 - Reworked `jasy.core.Project` to use new `jasy.core.Config` class instead of custom config file loading.
-- Added `jasy.core.Types` for a collection of new types to work with. First added type is a `CaseInsensitiveDict` which is useful for dealing with HTTP headers.
+- Added `jasy.core.Types` for a collection of new types to work with. First added type is a `CaseInsensitiveDict` which is useful for dealing with *HTTP* headers.
 - Added new utility methods to `jasy.core.Util`: `debounce` (useful for debouncing method calls), `getFirstSubFolder` (returns the first sub folder in the given path), `massFilePatcher` (is able to patch placeholders in all files of the given directory with actual content)
 
 
