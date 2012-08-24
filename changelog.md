@@ -3,27 +3,47 @@ Jasy 0.8-beta1
 
 ### Major New Features
 
-- Added scaffolding support
-  - Creating new projects from scratch
-- Added integrated web server (based on CherryPy) with support for:
-  - Delivering static files
-  - Proxying remote URLs and caching them locally
-- Added support for projects to offer shared tooling features (via `jasylibrary.py`)
-- Started implementation of file system watcher to allow auto rebuilding based on file system changes.
+- Added scaffolding support:
+  - Creating new projects from scratch. Each project is able to offer one or more skeletons.
+  - These "origin" projects can be available locally or can be auto-cloned from a remote repository (GIT only at the moment)
+  - Skeletons are able to define configuration questions to the user (`ask()`, `set()`).
+  - Stores configuration values as *YAML* (`jasyscript.yaml`) or *JSON* (`jasyscript.json`).
+  - Questions can be answered interactively via prompt or passed in as command line arguments (`--name value`).
+  - Questions can be combined with custom logic when using a custom post-creation script (`jasycreate.py`).
+  - The custom script also has user friendly methods for renaming files, creating directories etc. (via `file` object)
+  - Questions support type checks (basics like String, Number, etc.)
+  - Questions are able to define default values.
+  - All field names might use kind of namespaces ("." in the field name) to create a structured configuration file.
+- Added integrated web server:
+  - Based on *CherryPy*
+  - Each to configure custom top-level routing
+  - Delivering static files from the file system
+  - Automatically adds *CORS* header to every response so that the Jasy based server could be accessed from other domains/hosts.
+  - Supports remapping local paths to different paths on the server
+  - Proxying remote URLs (omitting cross-domain oddities)
+  - Caching remote *GET* requests and deliver them locally.
+  - Additional offline mode omits proxying of requests which are not available in the local cache.
+- Added shared tooling libraries:
+  - Support for projects to offer tooling features to other projects (via `jasylibrary.py`)
+  - Using "@share" decorator to only share specific methods to the outside
+  - All shared methods from each project are namespaced under an object with the name of the project.
+- Started implementation of file system watcher to allow auto rebuilding based on file system changes
+  - Based on Watchdog (custom port for Python 3: https://github.com/wpbasti/watchdog) - still broken regarding *FSEvents* on *Mac OS X*
 
 
-### Minor New Features
+### Other New Features
 
-- Added number of built-in tasks: about, help, create and doctor (not implemented yet)
-- Added support for YAML for config files (jasyproject.yaml)
+- Added number of built-in tasks: `about`, `help`, `create` and `doctor` (not implemented yet)
+- Added support for *YAML* for config files (jasyproject.yaml)
 - Added nice `about` task showing version, copyright and homepage
-- Added auto-installing non-native dependencies (Pygments, polib, requests, CherryPy, PyYAML). Kept dependencies containing native code optional (Misaka, PIL)
+- Added auto-installing non-native dependencies (*Pygments*, *polib*, *requests*, *CherryPy*, *PyYAML*). Kept dependencies containing native code optional (*Misaka*, *PIL*)
 - Added [Travis.ci integration](http://travis-ci.org/#!/zynga/jasy) for testing scaffolding support
 - Added support for showing optional task arguments in Jasy's help screen
 
 
 ### Improvements/Fixes
 
+- Tasks documentation is now being implemented using doc strings on the function blocks instead of a custom string inside the `@task()` decorator.
 - Improved "jasy" script to allow built-in tasks (execution outside of any Jasy project)
 - Better error handling in "jasyscript.py" and other scripts indirectly executed by Jasy by setting a correct file name during `compile`for debugging.
 - Jasy options and parameters on help screen are sorted now.
@@ -31,6 +51,8 @@ Jasy 0.8-beta1
 - Moved "jasy" command and prefix handling into Task module.
 - Removed dependency and usage references to msgpack (never actually used anywhere in the code)
 - Correctly close all `jasycache` files even if not managed by the session when Jasy is closed/crashed.
+- Switched over from `distutils` to `distribute` for `setup.py`.
+- Install `.bat` files on Windows only.
 
 
 ### Internals
