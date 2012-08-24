@@ -33,17 +33,23 @@ class AssetManager:
     """
     
     def __init__(self):
+        # Stores manager contextual asset information (like relative paths)
         self.__data = {}
-        
-        header("Preparing assets")
         
         # Registry for profiles aka asset groups
         self.__profiles = []
         
         # Initialize storage pool
-        assets = self.__assets = {}
+        self.__assets = None
+
+
+    def index(self):
+        
+        if self.__assets is not None:
+            return self.__assets
         
         # Loop though all projects and merge assets
+        assets = self.__assets = {}
         for project in session.getProjects():
             assets.update(project.assets)
         
@@ -51,12 +57,14 @@ class AssetManager:
         self.__processAnimations()
         
         info("Initialized %s assets" % len(assets))
+        return assets
+
 
 
     def __processSprites(self):
         """Processes jasysprite.json files to merge sprite data into asset registry"""
         
-        assets = self.__assets
+        assets = self.index()
         configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
         
         if configs:
@@ -126,7 +134,7 @@ class AssetManager:
     def __processAnimations(self):
         """Processes jasyanimation.json files to merge animation data into asset registry"""
         
-        assets = self.__assets
+        assets = self.index()
         configs = [fileId for fileId in assets if assets[fileId].isImageAnimationConfig()]
         
         if configs:
@@ -222,7 +230,7 @@ class AssetManager:
 
         # Then export all relative paths to main project and add this to the runtime data
         main = session.getMain()
-        assets = self.__assets
+        assets = self.index()
         data = self.__data
 
         for fileId in assets:
@@ -237,12 +245,14 @@ class AssetManager:
 
     def addBuildProfile(self, urlPrefix="asset", override=False):
         
+        self.index()
+        
         # First create a new profile with optional (CDN-) URL prefix
         profileId = self.addProfile("build", urlPrefix)
 
         # Then export all relative paths to main project and add this to the runtime data
         main = session.getMain()
-        assets = self.__assets
+        assets = self.index()
         data = self.__data
 
         for fileId in assets:
@@ -254,7 +264,7 @@ class AssetManager:
 
     
     def addRuntimeData(self, runtime):
-        assets = self.__assets
+        assets = self.index()
         data = self.__data
         
         for fileId in runtime:
@@ -324,7 +334,7 @@ class AssetManager:
     def deploy(self, classes, assetFolder="asset"):
         """Deploys all asset files to the destination asset folder"""
 
-        assets = self.__assets
+        assets = self.index()
         projects = session.getProjects()
 
         copyAssetFolder = prependPrefix(assetFolder)
@@ -354,7 +364,7 @@ class AssetManager:
         """Exports asset data for the source version using assets from their original paths."""
         
         # Processing assets
-        assets = self.__assets
+        assets = self.index()
         data = self.__data
         
         result = {}

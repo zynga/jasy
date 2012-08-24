@@ -93,12 +93,11 @@ class Options:
                 raise Exception("Invalid argument: %s" % name)
             
             
-    def showHelp(self, indent=14):
+    def printOptions(self, indent=16):
 
-        print("Options:")
-        for name in self.__defaults:
+        for name in sorted(self.__defaults):
             col = len(name)
-            msg = colorize("  --%s" % name, "bold")
+            msg = "  --%s" % name
             
             for shortcut in self.__shortcuts:
                 if self.__shortcuts[shortcut] == name:

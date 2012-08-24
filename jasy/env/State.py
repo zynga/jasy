@@ -4,12 +4,11 @@
 #
 
 import os, sys
-from jasy.core.Logging import *
 
 
-# ---------------------------------------------
-# Global permutation handling
-# ---------------------------------------------
+# ===========================================================================
+#   Global Permutation Handling
+# ===========================================================================
 
 __permutation = None
 
@@ -22,9 +21,10 @@ def setPermutation(use):
     __permutation = use
 
 
-# ---------------------------------------------
-# Global prefix handling
-# ---------------------------------------------
+
+# ===========================================================================
+#   Global Prefix Handling
+# ===========================================================================
 
 __prefix = None
 
@@ -51,20 +51,70 @@ def prependPrefix(path):
         return path
 
 
-# ---------------------------------------------
-# Global session object
-# ---------------------------------------------
 
+# ===========================================================================
+#   Project Library Handling
+# ===========================================================================
+
+def loadLibrary(objectName, fileName, encoding="utf-8"):
+    """
+    Creates a new global object (inside global state) with the given name 
+    containing all @share'd functions and fields loaded from the given file.
+    """
+
+    # Create internal class object for storing shared methods
+    class Shared(object): pass
+    exportedModule = Shared()
+    counter = 0
+
+    # Method for being used as a decorator to share methods to the outside
+    def share(func):
+        nonlocal counter
+        setattr(exportedModule, func.__name__, func)
+        counter += 1
+
+    # Execute given file. Using clean new global environment
+    # but add additional decorator for allowing to define shared methods
+    code = open(fileName, "r", encoding=encoding).read()
+    exec(compile(code, os.path.abspath(fileName), "exec"), {"share" : share})
+
+    # Export destination name as global    
+    debug("Importing %s shared methods under %s...", counter, objectName)
+    globals()[objectName] = exportedModule
+
+    return counter
+
+
+
+# ===========================================================================
+#   Session/Core
+# ===========================================================================
+
+from jasy.core.Logging import *
+from jasy.core.Error import JasyError
 from jasy.env.Session import Session
 
+# Globally available session object
 session = Session()
 
 
-# ---------------------------------------------
-# Global asset manager
-# ---------------------------------------------
+
+# ===========================================================================
+#   Misc Utilities
+# ===========================================================================
+
+from jasy.core.Json import *
+from jasy.env.Task import task, executeTask, runTask
+from jasy.env.File import *
+
+
+
+# ===========================================================================
+#   Asset Managment
+# ===========================================================================
 
 from jasy.asset.Manager import AssetManager
+from jasy.asset.SpritePacker import SpritePacker
 
 assetManager = AssetManager()
 
@@ -72,9 +122,13 @@ assetManager = AssetManager()
 del AssetManager
 
 
-# ---------------------------------------------
-# Global output configuration
-# ---------------------------------------------
+
+# ===========================================================================
+#   JavaScript Output
+# ===========================================================================
+
+from jasy.js.Resolver import Resolver
+from jasy.js.api.Writer import ApiWriter
 
 from jasy.js.output.Optimization import Optimization
 from jasy.js.output.Formatting import Formatting
@@ -82,7 +136,19 @@ from jasy.js.output.Formatting import Formatting
 jsFormatting = Formatting()
 jsOptimization = Optimization("variables", "declarations", "blocks", "privates")
 
-# Remove classes after using them
+# Unimport classes
 del Formatting
 del Optimization
+
+# Handy utility methods to process class lists
+from jasy.env.JavaScript import *
+
+
+
+# ===========================================================================
+#   Global Server
+# ===========================================================================
+
+from jasy.server.Web import serve
+from jasy.server.Watcher import watch
 

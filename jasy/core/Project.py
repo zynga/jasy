@@ -10,6 +10,8 @@ from jasy.core.Repository import isRepository, getRepositoryType, getRepositoryF
 from jasy.core.Error import JasyError
 from jasy.core.Util import getKey
 from jasy.core.Logging import *
+from jasy.env.Config import Config
+from jasy.env.State import setPermutation, header, loadLibrary
 
 # Item types
 from jasy.core.Item import Item
@@ -118,62 +120,39 @@ class Project():
         self.translations = {}
 
         # Load project configuration
-        configFilePath = os.path.join(self.__path, "jasyproject.json")
-        isJasyProject = os.path.exists(configFilePath)
-        if isJasyProject:
-            try:
-                storedConfig = json.load(open(configFilePath))
-            except ValueError as err:
-                raise JasyError("Could not parse jasyproject.json at %s: %s" % (configFilePath, err))
-                
-            if config:
-                for key in storedConfig:
-                    if not key in config:
-                        config[key] = storedConfig[key]
-            else:
-                config = storedConfig
-                
-        if config is None:
-            raise JasyError("Could not initialize project configuration in %s!" % self.__path)
-            
+        self.__config = Config(config)
+        self.__config.loadValues(os.path.join(self.__path, "jasyproject"), optional=True)
+
         # Initialize cache
         try:
             self.__cache = Cache(self.__path)
         except IOError as err:
-            raise JasyError("Could not initialize project. Cache file could not be initialized! %s" % err)
+            raise JasyError("Could not initialize project. Cache file in %s could not be initialized! %s" % (self.__path, err))
         
         # Read name from manifest or use the basename of the project's path
-        self.__name = getKey(config, "name", getProjectNameFromPath(self.__path))
+        self.__name = self.__config.get("name", getProjectNameFromPath(self.__path))
             
         # Read requires
-        self.__requires = getKey(config, "requires", {})
+        self.__requires = self.__config.get("requires", {})
         
         # Defined whenever no package is defined and classes/assets are not stored in the toplevel structure.
-        self.__package = getKey(config, "package", self.__name if isJasyProject else None)
+        self.__package = self.__config.get("package", self.__name if self.__config.has("name") else None)
 
-        # Read fields (for injecting data into the project and build permuations)
-        self.__fields = getKey(config, "fields", {})
+        # Read fields (for injecting data into the project and build permutations)
+        self.__fields = self.__config.get("fields", {})
 
-        # Store config
-        self.__config = config
-        
-        # This section is a must for non jasy projects
-        if not "content" in config and not isJasyProject:
-            raise JasyError("Missing 'content' section for compat project!")
 
 
     #
     # Project Scan/Init
     #
-    
+
     def scan(self):
         
-        config = self.__config
-            
         # Processing custom content section. Only supports classes and assets.
-        if "content" in config:
+        if self.__config.has("content"):
             self.kind = "manual"
-            self.__addContent(config["content"])
+            self.__addContent(self.__config.get("content"))
 
         # Application projects
         elif self.__hasDir("source"):
@@ -209,10 +188,17 @@ class Project():
             if content:
                 summary.append("%s %s" % (len(content), section))
 
+        # Import library methods
+        libraryPath = os.path.join(self.__path, "jasylibrary.py")
+        if os.path.exists(libraryPath):
+            methodNumber = loadLibrary(self.__name, libraryPath)
+            summary.append("%s methods" % methodNumber)
+
+        # Print out
         if summary:
-            info("Scanned %s %s: %s" % (colorize(self.getName(), "bold"), colorize("[%s]" % self.kind, "grey"), colorize(", ".join(summary), "green")))
+            info("Scanned %s %s: %s" % (colorize(self.__name, "bold"), colorize("[%s]" % self.kind, "grey"), colorize(", ".join(summary), "green")))
         else:
-            error("Project %s is empty!", self.getName())
+            error("Project %s is empty!", self.__name)
 
 
 
@@ -323,6 +309,8 @@ class Project():
         else:
             fileId = ""
 
+
+
         # Structure files  
         if fileExtension in classExtensions and distname == "classes":
             fileId += os.path.splitext(relPath)[0]
@@ -341,7 +329,7 @@ class Project():
             fileId += relPath
             construct = Asset
             dist = self.assets
-            
+
         # Only assets keep unix style paths identifiers
         if construct != Asset:
             fileId = fileId.replace("/", ".")
@@ -461,6 +449,9 @@ class Project():
     
     def getPackage(self):
         return self.__package
+
+    def getConfigValue(self, key, default=None):
+        return self.__config.get(key, default)
         
     def toRelativeUrl(self, path, prefix="", subpath="source"):
         root = os.path.join(self.__path, subpath)

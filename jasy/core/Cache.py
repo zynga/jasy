@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shelve, time, os, os.path, sys, pickle, dbm, uuid
+import shelve, time, os, os.path, sys, pickle, dbm, uuid, hashlib, atexit
 
 from jasy.core.Logging import *
 from jasy import __version__ as version
@@ -21,11 +21,15 @@ class Cache:
     
     __shelve = None
     
-    def __init__(self, path):
+    def __init__(self, path, filename="jasycache", hashkeys=False):
         self.__transient = {}
-        self.__file = os.path.join(path, "jasycache")
-        
+        self.__file = os.path.join(path, filename)
+        self.__hashkeys = hashkeys
+
         self.open()
+
+        # Be sure to correctly write down and close cache file on exit
+        atexit.register(self.close)
         
         
     def open(self):
@@ -41,7 +45,7 @@ class Cache:
                 return
                     
             if storedVersion is not None or storedHost is not None:
-                info("Jasy version or host has been changed. Recreating cache...")
+                debug("Jasy version or host has been changed. Recreating cache...")
                     
             self.__shelve["jasy-version"] = version
             self.__shelve["jasy-host"] = hostId
@@ -67,7 +71,7 @@ class Cache:
                 self.clear()
                 
             else:
-                raise error
+                raise dbmerror
     
     
     def clear(self):
@@ -93,6 +97,9 @@ class Cache:
         time to be valid (useful for comparing with file modification times).
         """
         
+        if self.__hashkeys:
+            key = hashlib.sha1(key.encode("ascii")).hexdigest()
+
         if key in self.__transient:
             return self.__transient[key]
         
@@ -120,6 +127,9 @@ class Cache:
         to the time of an other files modification date etc.
         Transient enables in-memory cache for the given value
         """
+        
+        if self.__hashkeys:
+            key = hashlib.sha1(key.encode("ascii")).hexdigest()
         
         self.__transient[key] = value
         if transient:

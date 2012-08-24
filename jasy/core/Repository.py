@@ -170,6 +170,7 @@ def updateGitRepository(url, version, path, update=True):
             return revision
 
     info("Cloning %s", colorize("%s @ " % url, "bold") + colorize(version, "magenta"))
+
     os.makedirs(path)
     os.chdir(path)
     

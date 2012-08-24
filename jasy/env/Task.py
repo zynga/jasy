@@ -3,40 +3,56 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import types, os, sys
+import types, os, sys, inspect, subprocess
+
 from jasy.env.State import setPrefix, session, getPrefix
 from jasy.core.Error import JasyError
 from jasy.core.Logging import *
 
 
-__all__ = ["task", "executeTask", "runTask", "printTasks", "setJasyCommand"]
+__all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOptions", "getOptions"]
 
 
 class Task:
-    __doc__ = ""
-    __slots__ = ["__func", "name", "desc", "args", "__doc__"]
+
+    __slots__ = ["func", "name", "curry", "availableArgs", "hasFlexArgs", "__doc__"]
 
     
-    def __init__(self, func, desc="", **kwargs):
-        name = func.__name__
-        self.__func = func
-        
-        self.name = name
-        self.desc = desc
-        self.args = kwargs
-        
+    def __init__(self, func, **curry):
+        """Creates a task bound to the given function and currying in static parameters"""
+
+        self.func = func
+        self.name = func.__name__
+
+        # The are curried in arguments which are being merged with 
+        # dynamic command line arguments on each execution
+        self.curry = curry
+
+        # Extract doc from function and attach it to the task
+        self.__doc__ = inspect.getdoc(func)
+
+        # Analyse arguments for help screen
+        result = inspect.getfullargspec(func)        
+        self.availableArgs = result.args
+        self.hasFlexArgs = result.varkw is not None
+
+        # Register task globally
         addTask(self)
         
 
     def __call__(self, **kwargs):
         
         merged = {}
-        merged.update(self.args)
+        merged.update(self.curry)
         merged.update(kwargs)
+
+
+        #
+        # SUPPORT SOME DEFAULT FEATURES CONTROLLED BY TASK PARAMETERS
+        #
         
-        # Use prefix from arguments if available
-        # Use no prefix for cleanup tasks
-        # Fallback to task name (e.g. "build" task => "build" folder)
+        # Allow overriding of prefix via task or cmdline parameter.
+        # By default use name of the task (no prefix for cleanup tasks)
         if "prefix" in merged:
             setPrefix(merged["prefix"])
             del merged["prefix"]
@@ -45,8 +61,13 @@ class Task:
         else:
             setPrefix(self.name)
         
+
+        #
+        # EXECUTE ATTACHED FUNCTION
+        #
+
         # Execute internal function
-        return self.__func(**merged)
+        return self.func(**merged)
 
 
     def __repr__(self):
@@ -54,19 +75,31 @@ class Task:
 
 
 
-def task(func, **kwargs):
+
+def task(*args, **kwargs):
     """ Specifies that this function is a task. """
     
-    if isinstance(func, Task):
-        return func
+    if len(args) == 1:
 
-    elif isinstance(func, types.FunctionType):
-        return Task(func)
+        func = args[0]
+
+        if isinstance(func, Task):
+            return func
+
+        elif isinstance(func, types.FunctionType):
+            return Task(func)
+
+        # Compat to old Jasy 0.7.x task declaration
+        elif type(func) is str:
+            return task(**kwargs)
+
+        else:
+            raise JasyError("Invalid task")
     
     else:
-        # Used for called task() (to pass in prefixes, descriptions, etc.)
-        def wrapper(finalfunc):
-            return Task(finalfunc, func, **kwargs)
+
+        def wrapper(func):
+            return Task(func, **kwargs)
             
         return wrapper
 
@@ -85,48 +118,82 @@ def addTask(task):
         
     __taskRegistry[task.name] = task
 
-def executeTask(name, **kwargs):
+def executeTask(taskname, **kwargs):
     """Executes the given task by name with any optional named arguments"""
     
-    if name in __taskRegistry:
+    if taskname in __taskRegistry:
         try:
-            __taskRegistry[name](**kwargs)
+            __taskRegistry[taskname](**kwargs)
         except JasyError as err:
             raise
         except:
-            error("Unexpected error! Could not finish task %s successfully!" % name)
+            error("Unexpected error! Could not finish task %s successfully!" % taskname)
             raise
     else:
-        raise JasyError("No such task: %s" % name)
+        raise JasyError("No such task: %s" % taskname)
 
 def printTasks(indent=16):
     """Prints out a list of all avaible tasks and their descriptions"""
     
-    for name in __taskRegistry:
+    for name in sorted(__taskRegistry):
         obj = __taskRegistry[name]
-        
-        formattedName = colorize(name, "bold")
-        if obj.desc:
+
+        formattedName = name
+        if obj.__doc__:
             space = (indent - len(name)) * " "
-            print("  %s: %s%s" % (formattedName, space, colorize(obj.desc, "magenta")))
+            print("    %s: %s%s" % (formattedName, space, colorize(obj.__doc__, "magenta")))
         else:
-            print("  %s" % formattedName)
+            print("    %s" % formattedName)
+
+        if obj.availableArgs or obj.hasFlexArgs:
+            text = ""
+            if obj.availableArgs:
+                text += "--%s <var>" % " <var> --".join(obj.availableArgs)
+
+            if obj.hasFlexArgs:
+                if text:
+                    text += " ..."
+                else:
+                    text += "--<name> <var>"
+
+            print("      %s" % (colorize(text, "grey")))
 
 
 # Jasy reference for executing remote tasks
-__jasyCommand = None
+__command = None
+__options = None
 
-def setJasyCommand(cmd):
-    global __jasyCommand
-    __jasyCommand = cmd
+def setCommand(cmd):
+    global __command
+    __command = cmd
+
+def getCommand():
+    global __command
+    return __command
+
+def setOptions(options):
+    global __options
+    __options = options
+
+def getOptions():
+    global __options
+    return __options
 
 
 # Remote run support
 def runTask(project, task, **kwargs):
 
-    header("Running %s of project %s..." % (task, project))
+    remote = session.getProjectByName(project)
+    if remote is not None:
+        remotePath = remote.getPath()
+        remoteName = remote.getName()
+    elif os.path.isdir(project):
+        remotePath = project
+        remoteName = os.path.basename(project)
+    else:
+        raise JasyError("Unknown project or invalid path: %s" % project)
 
-    import subprocess
+    info("Running %s of project %s...", colorize(task, "bold"), colorize(remoteName, "bold"))
 
     # Pauses this session to allow sub process fully accessing the same projects
     session.pause()
@@ -137,15 +204,11 @@ def runTask(project, task, **kwargs):
         params.append("--prefix=%s" % getPrefix())
 
     # Full list of args to pass to subprocess
-    args = [__jasyCommand, task] + params
+    args = [__command, task] + params
 
     # Change into sub folder and execute jasy task
     oldPath = os.getcwd()
-    remote = session.getProjectByName(project)
-    if remote is None:
-        raise JasyError("Unknown project %s" % project)
-
-    os.chdir(remote.getPath())
+    os.chdir(remotePath)
     returnValue = subprocess.call(args, shell=sys.platform == "win32")
     os.chdir(oldPath)
 
@@ -155,5 +218,6 @@ def runTask(project, task, **kwargs):
     # Error handling
     if returnValue != 0:
         raise JasyError("Executing of sub task %s from project %s failed" % (task, project))
+
 
 

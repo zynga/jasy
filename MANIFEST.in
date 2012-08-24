@@ -1,7 +1,7 @@
-#recursive-include bin *
-#recursive-include jasy *.py
-#recursive-include test *.py
-#include license.md
-#include readme.md
-#include test.py
-#global-exclude build
+recursive-include bin *
+recursive-include jasy *.py
+recursive-include jasy/data *
+include license.md
+include readme.md
+include changelog.md
+include requirements.txt

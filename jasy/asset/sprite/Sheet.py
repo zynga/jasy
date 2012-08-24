@@ -3,14 +3,13 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, math
 from jasy.core.Error import JasyError
 from jasy.core.Logging import debug, warn
 
+# Make PIL (native module) optional
 try:
     import Image, ImageDraw
-except:
-    warn("Python PIL is not installed. PIL is used to create sprite images.")
+except ImportError as err:
     Image = None
 
 class SpriteSheet():
@@ -50,7 +49,7 @@ class SpriteSheet():
     def write(self, filename, debug=False):
 
         if Image is None:
-            raise JasyError("Missing PIL to create sprite sheets")
+            raise JasyError("Missing Python PIL which is required to create sprite sheets!")
 
         img = Image.new('RGBA', (self.width, self.height))
         draw = ImageDraw.Draw(img)

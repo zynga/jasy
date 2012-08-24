@@ -3,16 +3,10 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import re, copy, json
+import re, copy, json, polib
 from jasy.core.Error import JasyError
 from jasy.core.Logging import *
 
-try:
-    import polib
-except ImportError:
-    warn("Polib is no installed. Polib is needed to extract translation text from PO files!")
-    polib = None
-    
 from jasy.js.parse.Node import Node
 
 __all__ = ["TranslationError", "Translation", "hasText"]
@@ -57,9 +51,6 @@ class Translation:
         if files:
             debug("Load %s translation files..." % len(files))
             for path in files:
-                if not polib:
-                    raise JasyError("Could not parse PO file %s Polib is not installed omn the system!" % path)
-                
                 pofile = polib.pofile(path)
                 # print("Process: %s" % path)
                 for entry in pofile:

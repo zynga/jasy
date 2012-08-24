@@ -5,8 +5,15 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-# Import standard library stuff
-import sys, os, os.path, pkg_resources, logging
+# Import standard libraries
+import sys, os, logging
+
+# Importing PKG Resources which is mainly required to be loaded before Pygments
+# for omitting ugly side effect errors. Not required at all otherwise.
+try:
+    import pkg_resources
+except ImportError:
+    pass
 
 # Version check
 if sys.version_info[0] < 3:
@@ -18,7 +25,12 @@ basedir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), os.pardir))
 if os.path.exists(os.path.join(basedir, "jasy")):
     sys.path.insert(0, basedir)
 
-# Parse options
+
+
+# ===========================================================================
+#   OPTIONS
+# ===========================================================================
+
 from jasy.core.Options import Options
 from jasy.core.Logging import *
 
@@ -31,10 +43,12 @@ options = Options()
 options.add("verbose", short="v", help="Print more detailed status messages to stdout")
 options.add("quiet", short="q", help="Don't print status messages to stdout")
 options.add("log", accept=str, help="Write debug messages to given logfile")
+
 options.add("file", accept=str, value="jasyscript.py", help="Use the given jasy script")
-options.add("version", short="V", help="Print version info only")
 options.add("fast", short="f", help="Prevents repository updates")
 options.add("stats", help="Show statistics after run")
+
+options.add("version", short="V", help="Print version info only")
 options.add("help", short="h", help="Shows available options")
 
 try:
@@ -43,6 +57,18 @@ except Exception as optionError:
     logging.basicConfig(format="%(message)s")
     error(optionError)
     sys.exit(1)
+
+# For simple version info we just leave here
+if options.version:
+    import jasy
+    print("Jasy %s" % jasy.__version__)
+    sys.exit(0)
+
+
+
+# ===========================================================================
+#   LOGGING
+# ===========================================================================
 
 # Configure log level for root logger first (enable debug level when either logfile or console verbosity is activated)
 loglevel = logging.INFO
@@ -53,12 +79,13 @@ if options.log or options.verbose is True:
 logging.basicConfig(level=loglevel, format="%(message)s")
 
 # Configure console handler to correct level
+rootHandler = logging.getLogger().handlers[0]
 if options.verbose is True:
-    logging.getLogger().handlers[0].setLevel(logging.DEBUG)
+    rootHandler.setLevel(logging.DEBUG)
 elif options.quiet is True:
-    logging.getLogger().handlers[0].setLevel(logging.WARN)
+    rootHandler.setLevel(logging.WARN)
 else:
-    logging.getLogger().handlers[0].setLevel(logging.INFO)
+    rootHandler.setLevel(logging.INFO)
 
 # Enable writing to logfile with debug level
 if options.log:
@@ -67,17 +94,14 @@ if options.log:
     logfileHandler.setLevel(logging.DEBUG)
     logging.getLogger().addHandler(logfileHandler)        
 
-# Jasy Main
-import jasy
 
-# Print out some info
-info("Jasy %s" % jasy.__version__)
-debug("Jasy Path: %s" % os.path.dirname(os.path.abspath(jasy.__file__)))
 
-if options.version:
-    sys.exit(0)
-    
-del jasy
+# ===========================================================================
+#   PATHS
+# ===========================================================================
+
+# Keep reference to executed jasy command
+command = os.path.abspath(sys.argv[0])
 
 # Find Jasy Script
 def findJasyscript():
@@ -97,69 +121,73 @@ if jasyscript == "jasyscript.py":
     jasyscript = findJasyscript()
 else:
     jasyscript = os.path.abspath(os.path.expanduser(jasyscript))
-    
-if jasyscript is None or not os.path.isfile(jasyscript):
-    error("Cannot find any Jasy script with task definitions (%s)!" % options.file)
-    sys.exit(1)
-
-header("Initializing...")
+    if jasyscript is None or not os.path.isfile(jasyscript):
+        error("Cannot find any Jasy script with task definitions in %s!" % options.file)
+        sys.exit(1)
 
 # Change to root directory of jasyscript before executing it
-oldcwd = os.getcwd()
-os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
-if os.getcwd() != oldcwd:
-    info("Running from %s" % os.getcwd())
-jasyscript = os.path.basename(jasyscript)
+if jasyscript:
+    oldcwd = os.getcwd()
+    os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
+    jasyscript = os.path.basename(jasyscript)
 
-# Extend path
-sys.path.insert(0, os.getcwd())
+
+
+
+# ===========================================================================
+#   INITIALIZATION
+# ===========================================================================
 
 # Quick mode globally disables repository updates
 if options.fast:
     from jasy.core.Repository import enableRepositoryUpdates
     enableRepositoryUpdates(False)
 
-# Global environment
+# Error handling
+from jasy.core.Error import JasyError
+
+# Import global environment
 try:
-    
-    # Basics
-    from jasy.core.Error import JasyError
-    from jasy.core.Json import *
-    from jasy.env.Task import *
     from jasy.env.State import *
-    from jasy.env.File import *
-
-    # User API
-    from jasy.js.Resolver import Resolver
-    from jasy.js.api.Writer import ApiWriter
-    from jasy.asset.SpritePacker import SpritePacker
-
-    # Environment Addons
-    from jasy.env.JavaScript import *
-    
 except JasyError as errobj:
     error("%s" % errobj)
     sys.exit(1)
 
-# Configuring jasy for remote calls
-setJasyCommand(os.path.abspath(sys.argv[0]))
+# Configuring for remote task calls
+import jasy.env.Task
+jasy.env.Task.setCommand(command)
+jasy.env.Task.setOptions(options)
+
+# Import config object
+from jasy.env.Config import Config
+
+if jasyscript:
+    config = Config()
+    config.loadValues("jasyscript", optional=True)
+
+# Importing built-in tasks
+import jasy.env.Builtin
+
+
+
+# ===========================================================================
+#   MAIN
+# ===========================================================================
 
 def main():
     
     try:
         # execute build script
-        buildfile = open(jasyscript, "r")
-        retval = exec(buildfile.read(), globals())
+        if jasyscript:
+            code = open(jasyscript, "r", encoding="utf-8").read()
+            exec(compile(code, os.path.abspath(jasyscript), "exec"), globals())
 
         # list all tasks when none is given
         tasks = options.getTasks()
         
         if not tasks or options.help:
-            header("Help")
-            info("Usage: jasy [options...] task1 [flags...] [task2 [flags...]]")
-            options.showHelp()
-            print("Tasks: ")
-            printTasks()
+
+            executeTask("help")
             
             if options.help:
                 sys.exit(0)
@@ -175,10 +203,16 @@ def main():
         sys.exit(1)
 
     except KeyboardInterrupt:
-        error("Build interrupted!")
+        error("Jasy Stopped!")
         sys.exit(2)
 
     sys.exit(0)
+
+
+
+# ===========================================================================
+#   MAIN EXECUTION
+# ===========================================================================
 
 if options.stats:
     
