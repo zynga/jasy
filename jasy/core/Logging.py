@@ -32,7 +32,8 @@ __colors = {
 }
 
 def colorize(text, color="red"):
-    # Not supported on console on Windows
+    # Not supported on console on Windows native
+    # Note: Cygwin has a different platform value
     if sys.platform == "win32":
         return text
         

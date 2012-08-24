@@ -2,6 +2,7 @@
 # Jasy - Web Tooling Framework
 # Copyright 2010-2012 Zynga Inc.
 #
+
 class BlockNode():
     
     def __init__(self, parent, x, y, w, h):

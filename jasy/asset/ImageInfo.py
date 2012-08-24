@@ -4,6 +4,7 @@
 #
 
 import struct, hashlib
+
 from jasy.core.Logging import error
 
 """
@@ -63,9 +64,6 @@ class GifFile(ImgFile):
 
 # http://www.libmng.com/pub/png/spec/1.2/png-1.2-pdg.html#Structure
 class PngFile(ImgFile):
-    def __init__(self, filename):
-        ImgFile.__init__(self, filename)
-
     def type(self):
         return "png"
 

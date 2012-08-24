@@ -3,11 +3,12 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
+from os.path import basename, splitext
+
 from jasy.asset.ImageInfo import ImgInfo
 from jasy.core.Item import Item
 from jasy.core.Util import getKey
 from jasy.core.Logging import debug
-from os.path import basename, splitext
 
 extensions = {
     ".png" : "image",

@@ -1,10 +1,11 @@
-import os, json
-from jasy.core.Error import JasyError
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Zynga Inc.
+#
 
-try:
-    import yaml
-except ImportError:
-    yaml = None
+import os, json, yaml
+
+from jasy.core.Error import JasyError
 
 
 def findConfig(fileName):
@@ -40,7 +41,6 @@ def loadConfig(fileName, encoding="utf-8"):
             raise JasyError("Unable to safe YAML. Python module is missing!")
 
         return yaml.load(fileHandle)
-        
 
 
 def writeConfig(data, fileName, indent=2, encoding="utf-8"):

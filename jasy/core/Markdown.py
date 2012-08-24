@@ -6,6 +6,11 @@
 import re
 from jasy.core.Logging import debug
 
+from pygments import highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import get_lexer_by_name
+
+
 __all__ = ["markdown", "markdown2html", "code2highlight"]
 
 
@@ -19,45 +24,36 @@ try:
         return misaka.html(markdownStr, misakaExt, misakaRender)
 
 except:
-    debug("Misaka is needed to convert Markdown to HTML! Markdown support is disabled.")
+    debug("Misaka is needed to convert Markdown to HTML!")
     markdown2html = None
 
 
-try:
-    from pygments import highlight
-    from pygments.formatters import HtmlFormatter
-    from pygments.lexers import get_lexer_by_name
+# By http://misaka.61924.nl/#toc_3
+codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
 
-    # By http://misaka.61924.nl/#toc_3
-    codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
+def code2highlight(html):
 
-    def code2highlight(html):
+    def unescape(html):
+        html = html.replace('&lt;', '<')
+        html = html.replace('&gt;', '>')
+        html = html.replace('&amp;', '&')
+        html = html.replace('&quot;', '"')
+        return html.replace('&#39;', "'")
 
-        def unescape(html):
-            html = html.replace('&lt;', '<')
-            html = html.replace('&gt;', '>')
-            html = html.replace('&amp;', '&')
-            html = html.replace('&quot;', '"')
-            return html.replace('&#39;', "'")
+    def replace(match):
+        language, classname, code = match.groups()
+        if language is None:
+            language = classname if classname else "javascript"
     
-        def replace(match):
-            language, classname, code = match.groups()
-            if language is None:
-                language = classname if classname else "javascript"
-        
-            lexer = get_lexer_by_name(language, tabsize=2)
-            formatter = HtmlFormatter(linenos="table")
-        
-            code = unescape(code)
+        lexer = get_lexer_by_name(language, tabsize=2)
+        formatter = HtmlFormatter(linenos="table")
+    
+        code = unescape(code)
 
-            # for some reason pygments escapes our code once again so we need to reverse it twice
-            return unescape(highlight(code, lexer, formatter))
-        
-        return codeblock.sub(replace, html)
-        
-except:
-    debug("Pygments is missing. Pygments is used to highlight code! Feature will be disabled.")
-    code2highlight = None
+        # for some reason pygments escapes our code once again so we need to reverse it twice
+        return unescape(highlight(code, lexer, formatter))
+    
+    return codeblock.sub(replace, html)
 
 
 # If both is available we can offer a merged "markdown" command

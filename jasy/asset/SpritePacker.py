@@ -5,7 +5,6 @@
 
 from jasy.asset.ImageInfo import ImgInfo
 from jasy.asset.sprite.Block import Block
-
 from jasy.asset.sprite.BlockPacker import BlockPacker
 from jasy.asset.sprite.File import SpriteFile
 from jasy.asset.sprite.Sheet import SpriteSheet
@@ -13,7 +12,6 @@ from jasy.asset.sprite.Sheet import SpriteSheet
 from jasy.core.Logging import *
 
 import os, json, itertools, math
-
 
 
 class PackerScore():

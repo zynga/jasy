@@ -2,6 +2,7 @@
 # Jasy - Web Tooling Framework
 # Copyright 2010-2012 Zynga Inc.
 #
+
 class Block():
 
     def __init__(self, w, h, image, rotated=False):

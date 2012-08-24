@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, os, jasy, logging, base64, json
+import sys, os, jasy, logging, base64, json, requests
 from urllib.parse import urlparse
 from collections import namedtuple
 
@@ -15,22 +15,12 @@ from jasy.core.Types import CaseInsensitiveDict
 
 Result = namedtuple('Result', ['headers', 'content'])
 
-try:
-    import requests
-    
-    # Disable logging HTTP request being created
-    logging.getLogger("requests").setLevel(logging.WARNING)
+# Disable logging HTTP request being created
+logging.getLogger("requests").setLevel(logging.WARNING)
 
-except ImportError as err:
-    requests = None
-
-try:
-    import cherrypy
-    from cherrypy.lib.static import serve_file as serveFile
-    from cherrypy.lib.static import serve_file as serveFile
-    
-except ImportError as err:
-    cherrypy = None
+import cherrypy
+from cherrypy.lib.static import serve_file as serveFile
+from cherrypy.lib.static import serve_file as serveFile
 
 
 __all__ = ["serve"]

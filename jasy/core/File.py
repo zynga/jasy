@@ -3,12 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shutil, os, json
-
-try:
-    import yaml
-except ImportError:
-    yaml = None
+import shutil, os, json, yaml
 
 def cp(src, dst):
     """Copies a file"""
