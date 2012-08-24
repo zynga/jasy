@@ -9,36 +9,34 @@ Jasy 0.8-beta1
   - These "origin" projects can be available locally or can be auto-cloned from a remote repository (*GIT* only at the moment)
 - Skeletons might have placeholders which are dynamically replaced with custom values e.g. name of the project. 
   - The placeholder format is defined as `$${name}` to reduce conflicts with existing templating solutions
-  - File patcher should work stable even with non UTF-8 files and supports detection of binary files
+  - File patcher can handle non UTF-8 files and supports detection of binary files
 - Skeletons are able to define configuration questions to the user (`ask()`, `set()`)
   - Stores configuration values as *YAML* (`jasyscript.yaml`) or *JSON* (`jasyscript.json`).
-  - Questions can be answered interactively via prompt or passed in as command line arguments (`--name value`).
+  - Questions can be answered interactively via prompt or passed in as command line arguments (`--key value`).
   - Questions can be combined with custom logic when using a custom post-creation script (`jasycreate.py`).
   - The custom script also has user friendly methods for renaming files, creating directories etc. (via `file` object)
   - Questions support type checks (basics like `String`, `Number`, etc.)
   - Questions are able to define default values.
-  - All field names might use kind of namespaces (`.` in the field name) to create a structured configuration file.
+  - All fields can use namespace notation (namespace.key as a field name) to create a structured configuration file.
 
 ### Integrated web server
 
 - Based on *CherryPy*
-- Each to configure custom top-level routing
-- Delivering static files from the file system
+- Supports configurable custom top-level routing (i.e. route requests from: /src/target to: /destination/folder/target)
+- Delivers static files from the file system
 - Automatically adds *CORS* header to every response so that the *Jasy* based server could be accessed from other domains/hosts.
 - Supports remapping local paths to different paths on the server
-- Proxying remote URLs (omitting cross-domain oddities)
+- Proxying remote URLs (avoiding cross-domain oddities)
   - Caching remote *GET* requests and deliver them locally.
   - Additional offline mode omits proxying of requests which are not available in the local cache.
 
 ### Shared tooling libraries
-- Support for projects to offer tooling features to other projects (via `jasylibrary.py`)
+- Allows projects to offer tooling features to other projects (via `jasylibrary.py`)
 - Using `"@share"` decorator to only share specific methods to the outside
 - All shared methods from each project are namespaced under an object with the name of the project.
 
 ### Other
 
-- Started implementation of file system watcher to allow auto rebuilding based on file system changes
-  - Based on Watchdog with [custom port for Python 3](https://github.com/wpbasti/watchdog) - still broken regarding *FSEvents* on *Mac OS * unfortunately
 - Added auto-installing non-native dependencies (*Pygments*, *polib*, *requests*, *CherryPy*, *PyYAML*)
   - Kept dependencies containing native code optional (*Misaka*, *PIL*)
 - Added support for *YAML* throughthrough *Jasy* for config files and others (jasyproject.yaml)
@@ -46,7 +44,8 @@ Jasy 0.8-beta1
 - Added support for showing optional task arguments in *Jasy*'s help screen
 - Added support for "built-in" tasks to be able to execute jasy without actually having a *Jasy* project ready to use.
 - Added [Travis.ci integration](http://travis-ci.org/#!/zynga/jasy) for testing scaffolding support (and more later on).
-
+- [WIP] Started implementation of file system watcher to allow auto rebuilding based on file system changes
+  - Based on Watchdog with [custom port for Python 3](https://github.com/wpbasti/watchdog) - still broken regarding *FSEvents* on *Mac OS * unfortunately
 
 ## Improvements & Fixes
 
