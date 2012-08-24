@@ -1,12 +1,10 @@
 Jasy 0.8-beta1
 ==============
 
-## Major New Features
+### Major New Features
 
 - Added scaffolding support
   - Creating new projects from scratch
-
-
 - Added integrated web server (based on CherryPy) with support for:
   - Delivering static files
   - Proxying remote URLs and caching them locally
@@ -14,7 +12,7 @@ Jasy 0.8-beta1
 - Started implementation of file system watcher to allow auto rebuilding based on file system changes.
 
 
-## Minor New Features
+### Minor New Features
 
 - Added number of built-in tasks: about, help, create and doctor (not implemented yet)
 - Added support for YAML for config files (jasyproject.yaml)
@@ -24,7 +22,7 @@ Jasy 0.8-beta1
 - Added support for showing optional task arguments in Jasy's help screen
 
 
-## Improvements/Fixes
+### Improvements/Fixes
 
 - Improved "jasy" script to allow built-in tasks (execution outside of any Jasy project)
 - Better error handling in "jasyscript.py" and other scripts indirectly executed by Jasy by setting a correct file name during `compile`for debugging.
@@ -35,7 +33,7 @@ Jasy 0.8-beta1
 - Correctly close all `jasycache` files even if not managed by the session when Jasy is closed/crashed.
 
 
-## Internals
+### Internals
 
 - Added optional support for hashing keys of `Cache` object transparently to reduce key sizes
 - Added new `jasy.core.Config` class for transparently supporting JSON/YAML formats with correct Unicode handling
