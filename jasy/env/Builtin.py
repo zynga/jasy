@@ -56,7 +56,7 @@ def doctor():
 
 
 @task
-def create(name="myproject", origin=None, skeleton=None, **argv):
+def create(name="myproject", origin=None, version=None, skeleton=None, destination=None, **argv):
     """Creates a new project"""
 
     header("Creating project %s" % name)
@@ -70,9 +70,12 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
     #
 
     # Figuring out destination folder
-    destinationPath = os.path.abspath(name)
+    if destination is None:
+        destination = name
+
+    destinationPath = os.path.abspath(os.path.expanduser(destination))
     if os.path.exists(destinationPath):
-        raise JasyError("Cannot create project in %s. File or folder exists!" % destinationPath)
+        raise JasyError("Cannot create project %s in %s. File or folder exists!" % (name, destinationPath))
 
     # Origin can be either:
     # 1) None, which means a skeleton from the current main project
@@ -88,6 +91,7 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
 
         originPath = originProject.getPath()
         originName = originProject.getName()
+        originVersion = None
 
     elif isRepository(origin):
         info("Using remote skeleton")
@@ -95,7 +99,7 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
         tempDirectory = tempfile.TemporaryDirectory()
         originPath = os.path.join(tempDirectory.name, "clone")
         originUrl = origin
-        originVersion = getKey(argv, "origin-version")
+        originVersion = version
 
         indent()
         originRevision = updateRepository(originUrl, originVersion, originPath)
@@ -111,6 +115,8 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
 
     else:
         originProject = session.getProjectByName(origin)
+        originVersion = None
+
         if originProject is not None:
             originPath = originProject.getPath()
             originName = origin
@@ -152,17 +158,9 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
     shutil.copytree(skeletonPath, destinationPath)
     debug("Files were copied successfully.")
 
-    # Build data for template substitution
-    data = {}
-    data.update(argv)
-    data["name"] = name
-    data["origin"] = originName
-    data["skeleton"] = os.path.basename(skeletonPath)
-    data["jasy"] = jasy.__version__
-
-    # Do actual replacement of placeholders
-    massFilePatcher(destinationPath, data)
-    debug("Files were patched successfully.")
+    # Close origin project
+    if originProject:
+        originProject.close()
 
     # Change to directory before continuing
     os.chdir(destinationPath)
@@ -171,9 +169,19 @@ def create(name="myproject", origin=None, skeleton=None, **argv):
     info("Starting configuration...")
     config = Config()
     config.injectValues(**argv)
+    config.set("name", name)
+    config.set("jasy.version", jasy.__version__)
+    config.set("jasy.origin", originName)
+    config.set("jasy.origin-version", originVersion)
+    config.set("jasy.skeleton", os.path.basename(skeletonPath))
+    config.debug()
     config.readQuestions("jasycreate", optional=True)
     config.executeScript("jasycreate.py", optional=True)
     config.write("jasyscript.yaml")
+
+    # Do actual replacement of placeholders
+    massFilePatcher(destinationPath, config)
+    debug("Files were patched successfully.")
 
     # Done
     info('Your application %s was created successfully!', colorize(name, "bold"))
