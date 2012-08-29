@@ -68,7 +68,7 @@ def yamlToJson(yamlFile, jsonFile, encoding="utf-8", indent=2):
 
 
 
-fieldPattern = re.compile(r"\$\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
+fieldPattern = re.compile(r"\$\${([_a-z][_a-z0-9\.]*)}", re.IGNORECASE | re.VERBOSE)
 
 
 def massFilePatcher(path, data):
