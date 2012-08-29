@@ -57,22 +57,52 @@ class Config:
 
 
     def debug(self):
+        """
+        Prints data to the console
+        """
+
         print(self.__data)
 
 
-    def injectValues(self, **argv):
+    def export(self):
+        """
+        Returns a flat data structure of the internal data
+        """
+
+        result = {}
+
+        def recurse(data, prefix):
+            for key in data:
+                value = data[key]
+                if type(value) is dict:
+                    if prefix:
+                        recurse(value, prefix + key + ".")
+                    else:
+                        recurse(value, key + ".")
+                else:
+                    result[prefix + key] = value
+
+        recurse(self.__data, "")
+
+        return result
+
+
+    def injectValues(self, parse=True, **argv):
         """
         Injects a list of arguments into the configuration file, typically used for injecting command line arguments
         """
 
         for key in argv:
-            self.set(key, argv[key])
+            self.set(key, argv[key], parse=parse)
 
 
     def loadValues(self, fileName, optional=False, encoding="utf-8"):
         """
-        Imports the values of the given file
+        Imports the values of the given config file
         Returns True when the file was found and processed.
+
+        Note: Supports dotted names to store into sub trees
+        Note: This method overrides keys when they are already defined!
         """
 
         configFile = findConfig(fileName)
@@ -84,7 +114,7 @@ class Config:
 
         data = loadConfig(configFile, encoding=encoding)
         for key in data:
-            self.set(key, data[key], parse=False)
+            self.set(key, data[key])
 
         return True
 
@@ -232,7 +262,7 @@ class Config:
                 break
 
 
-    def set(self, fieldName, value, accept=None, parse=True):
+    def set(self, fieldName, value, accept=None, parse=False):
         """
         Saves the given value under the given field
         """
