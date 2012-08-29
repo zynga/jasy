@@ -168,14 +168,17 @@ def create(name="myproject", origin=None, version=None, skeleton=None, destinati
     # Create configuration file from question configs and custom scripts
     info("Starting configuration...")
     config = Config()
-    config.injectValues(**argv)
+
     config.set("name", name)
     config.set("jasy.version", jasy.__version__)
     config.set("jasy.origin", originName)
     config.set("jasy.origin-version", originVersion)
     config.set("jasy.skeleton", os.path.basename(skeletonPath))
+
+    config.injectValues(**argv)
     config.readQuestions("jasycreate", optional=True)
     config.executeScript("jasycreate.py", optional=True)
+
     config.write("jasyscript.yaml")
 
     # Do actual replacement of placeholders
