@@ -70,7 +70,8 @@ def massFilePatcher(path, data):
         if value is None and not data.has(field):
             raise ValueError('No value for placeholder "%s"' % field)
     
-        return value
+        # Requires value being a string
+        return str(value)
         
     # Patching files recursively
     info("Patching files...")
