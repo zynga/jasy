@@ -174,7 +174,6 @@ def create(name="myproject", origin=None, version=None, skeleton=None, destinati
     config.set("jasy.origin", originName)
     config.set("jasy.origin-version", originVersion)
     config.set("jasy.skeleton", os.path.basename(skeletonPath))
-    config.debug()
     config.readQuestions("jasycreate", optional=True)
     config.executeScript("jasycreate.py", optional=True)
     config.write("jasyscript.yaml")
