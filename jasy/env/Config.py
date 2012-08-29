@@ -262,7 +262,7 @@ class Config:
                 break
 
 
-    def set(self, fieldName, value, accept=None, parse=False):
+    def set(self, name, value, accept=None, parse=False):
         """
         Saves the given value under the given field
         """
@@ -289,8 +289,8 @@ class Config:
             print(colorize("  - Invalid value: %s" % str(value), "red"))
             return False
 
-        if "." in fieldName:
-            splits = fieldName.split(".")
+        if "." in name:
+            splits = name.split(".")
             current = self.__data
             for split in splits[:-1]:
                 if not split in current:
@@ -301,7 +301,7 @@ class Config:
             current[splits[-1]] = value
 
         else:
-            self.__data[fieldName] = value
+            self.__data[name] = value
 
         return True
 
