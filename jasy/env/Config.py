@@ -56,9 +56,13 @@ class Config:
         self.__data = data or {}
 
 
+    def debug(self):
+        print(self.__data)
+
+
     def injectValues(self, **argv):
         """
-        Injects a list of arguments into the configuration file
+        Injects a list of arguments into the configuration file, typically used for injecting command line arguments
         """
 
         for key in argv:
@@ -80,7 +84,7 @@ class Config:
 
         data = loadConfig(configFile, encoding=encoding)
         for key in data:
-            self.set(key, data[key])
+            self.set(key, data[key], parse=False)
 
         return True
 
