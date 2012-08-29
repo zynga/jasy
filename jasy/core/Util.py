@@ -64,11 +64,14 @@ def massFilePatcher(path, data):
     # Convert method with access to local data
     def convertPlaceholder(mo):
         field = mo.group(1)
-        if field in data:
-            return data[field]
+        value = data.get(field)
 
-        raise ValueError('No value for placeholder "%s"' % field)
-
+        # Verify that None means missing
+        if value is None and not data.has(field):
+            raise ValueError('No value for placeholder "%s"' % field)
+    
+        return value
+        
     # Patching files recursively
     info("Patching files...")
     indent()
