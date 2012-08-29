@@ -73,6 +73,8 @@ def loadLibrary(objectName, fileName, encoding="utf-8"):
         setattr(exportedModule, func.__name__, func)
         counter += 1
 
+        return func
+
     # Execute given file. Using clean new global environment
     # but add additional decorator for allowing to define shared methods
     code = open(fileName, "r", encoding=encoding).read()
