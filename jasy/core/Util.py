@@ -56,7 +56,19 @@ def getFirstSubFolder(start):
     return None
 
 
-fieldPattern = re.compile(r"\$\${([_a-z][_a-z0-9]*)}", re.IGNORECASE | re.VERBOSE)
+
+def json2yaml(jsonFile, yamlFile, encoding="utf-8", indent=2):
+    """Stores the given JSON file as a new YAML file"""
+    yaml.dump(json.load(open(jsonFile, "r", encoding="utf-8")), open(yamlFile, "w", encoding="utf-8"), indent=indent, default_flow_style=False, allow_unicode=True)
+
+def yamlToJson(yamlFile, jsonFile, encoding="utf-8", indent=2):
+    """Stores the given YAML file as a new JSON file"""
+    json.dump(yaml.load(open(yamlFile, "r", encoding="utf-8")), open(jsonFile, "w", encoding="utf-8"), indent=2, ensure_ascii=False)        
+
+
+
+
+fieldPattern = re.compile(r"\$\${([_a-z][_a-z0-9\.]*)}", re.IGNORECASE | re.VERBOSE)
 
 
 def massFilePatcher(path, data):
@@ -70,7 +82,8 @@ def massFilePatcher(path, data):
         if value is None and not data.has(field):
             raise ValueError('No value for placeholder "%s"' % field)
     
-        return value
+        # Requires value being a string
+        return str(value)
         
     # Patching files recursively
     info("Patching files...")

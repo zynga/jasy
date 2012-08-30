@@ -485,8 +485,9 @@ class Project():
     def close(self):
         """Closes the project which deletes the internal caches"""
         
-        self.__cache.close()
-        self.__cache = None
+        if self.__cache:
+            self.__cache.close()
+            self.__cache = None
         
         self.classes = None
         self.assets = None

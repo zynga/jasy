@@ -13,6 +13,10 @@ def cpdir(src, dst):
     """Copies a directory"""
     return shutil.copytree(src, dst)
 
+def exists(name):
+    """Returns whether the given file or folder exists"""
+    return os.path.exists(name)
+
 def mkdir(name):
     """Creates directory (works recursively)"""
     return os.makedirs(name)
@@ -28,12 +32,4 @@ def rm(name):
 def rmdir(name):
     """Removes a directory (works recursively)"""
     return shutil.rmtree(name)
-
-def json2yaml(jsonFile, yamlFile, encoding="utf-8", indent=2):
-    """Stores the given JSON file as a new YAML file"""
-    yaml.dump(json.load(open(jsonFile, "r", encoding="utf-8")), open(yamlFile, "w", encoding="utf-8"), indent=indent, default_flow_style=False, allow_unicode=True)
-
-def yamlToJson(yamlFile, jsonFile, encoding="utf-8", indent=2):
-    """Stores the given YAML file as a new JSON file"""
-    json.dump(yaml.load(open(yamlFile, "r", encoding="utf-8")), open(jsonFile, "w", encoding="utf-8"), indent=2, ensure_ascii=False)        
 
