@@ -1,3 +1,16 @@
+Jasy 0.8-beta2
+==============
+
+Mainly fixes bugs around scaffolding and interactive configuration support. Also a lot of updates to the wiki and Jasy's documentation.
+
+Other changes:
+
+- Added support for destination folder for created applications. 
+- Changed naming of built-in internatal variables. 
+- Added support for a flat export of `Config` objects. 
+- Cleanup of old binary package support.
+
+
 Jasy 0.8-beta1
 ==============
 
