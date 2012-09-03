@@ -326,7 +326,7 @@ class ApiWriter():
         #
         
         header("Processing API Data...")
-        data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates, printErrors=printErrors)
+        data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates, printErrors=printErrors, highlightCode=highlightCode)
         
         
         
@@ -358,13 +358,14 @@ class ApiWriter():
                 error("Could not write API data of: %s: %s", className, writeError)
                 continue
 
-        info("Saving highlighted code (%s files)...", len(highlightedCode))
-        for className in highlightedCode:
-            try:
-                writeFile(os.path.join(distFolder, "%s.html" % className), highlightedCode[className])
-            except TypeError as writeError:
-                error("Could not write highlighted code of: %s: %s", className, writeError)
-                continue
+        if highlightCode:
+            info("Saving highlighted code (%s files)...", len(highlightedCode))
+            for className in highlightedCode:
+                try:
+                    writeFile(os.path.join(distFolder, "%s.html" % className), highlightedCode[className])
+                except TypeError as writeError:
+                    error("Could not write highlighted code of: %s: %s", className, writeError)
+                    continue
 
         info("Writing index...")
         writeFile(os.path.join(distFolder, "meta-index.%s" % extension), encode(index, "meta-index"))
@@ -372,7 +373,7 @@ class ApiWriter():
         
 
 
-    def process(self, apiData, classFilter=None, internals=False, privates=False, printErrors=True):
+    def process(self, apiData, classFilter=None, internals=False, privates=False, printErrors=True, highlightCode=True):
         
         knownClasses = set(list(apiData))
 
@@ -640,7 +641,7 @@ class ApiWriter():
                     destApi.main["from"].append(className)
                 
                 else:
-                    destApi = apiData[destName] = ApiData(destName)
+                    destApi = apiData[destName] = ApiData(destName, highlight=highlightCode)
                     destApi.main = {
                         "type" : "Extend",
                         "name" : destName,
@@ -865,7 +866,7 @@ class ApiWriter():
             for split in splits[1:]:
                 if not packageName in apiData:
                     warn("Missing package documentation %s", packageName)
-                    apiData[packageName] = ApiData(packageName)
+                    apiData[packageName] = ApiData(packageName, highlight=highlightCode)
                     apiData[packageName].main = {
                         "type" : "Package",
                         "name" : packageName
