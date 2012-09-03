@@ -83,6 +83,28 @@ def isErrornous(data):
     return False
 
 
+def nodeError(node, message):
+
+    node["errornous"] = True
+
+    if not "errors" in node:
+        node["errors"] = []
+
+    # Some of these may not be objects but instances
+    line = 0
+    try:
+        line = node.line
+
+    except:
+        line = node["line"]
+
+    node["errors"].append({
+        "name": "foo",
+        "message": message,
+        "line": line
+    })
+
+
 def mergeMixin(className, mixinName, classApi, mixinApi):
     info("- Merging %s into %s", mixinName, className)
 
@@ -500,8 +522,7 @@ class ApiWriter():
                             if "type" in paramEntry:
                                 for paramTypeEntry in paramEntry["type"]:
                                     if not paramTypeEntry["name"] in knownClasses and not paramTypeEntry["name"] in additionalTypes and not ("builtin" in paramTypeEntry or "pseudo" in paramTypeEntry):
-                                        item["errornous"] = True
-                                        error('- Invalid param type "%s" in %s at line %s', paramTypeEntry["name"], className, item["line"])
+                                        nodeError(item, 'Invalid param type "%s" in %s' % (paramTypeEntry["name"], className))
 
                                     if not "pseudo" in paramTypeEntry and paramTypeEntry["name"] in knownClasses:
                                         paramTypeEntry["linkable"] = True
@@ -511,14 +532,13 @@ class ApiWriter():
                     if "returns" in item:
                         for returnTypeEntry in item["returns"]:
                             if not returnTypeEntry["name"] in knownClasses and not returnTypeEntry["name"] in additionalTypes and not ("builtin" in returnTypeEntry or "pseudo" in returnTypeEntry):
-                                item["errornous"] = True
-                                error('- Invalid return type "%s" in %s at line %s', returnTypeEntry["name"], className, item["line"])
+                                nodeError(item, 'Invalid return type "%s" in %s' % (returnTypeEntry["name"], className))
                             
                             if not "pseudo" in returnTypeEntry and returnTypeEntry["name"] in knownClasses:
                                 returnTypeEntry["linkable"] = True
                             
                 elif not item["type"] in builtinTypes and not item["type"] in pseudoTypes and not item["type"] in additionalTypes:
-                    error('- Invalid type "%s" in %s at line %s', item["type"], className, item["line"])
+                    nodeError(item, 'Invalid type "%s" in %s' % (item["type"], className))
             
             
             # Process doc
@@ -530,11 +550,11 @@ class ApiWriter():
                     if linkUrl.startswith("#"):
                         linkCheck = checkInternalLink(linkUrl[1:], className)
                         if linkCheck is not True:
-                            item["errornous"] = True
                             if sectionName:
-                                error("- %s in %s:%s~%s at line %s" % (linkCheck, sectionName, className, name, item["line"]))
+                                nodeError(item, "%s in %s:%s~%s" % (linkCheck, sectionName, className, name))
+
                             else:
-                                error("- %s in %s at line %s" % (linkCheck, className, item["line"]))
+                                nodeError(item, "%s in %s" % (linkCheck, className))
             
                 linkExtract.sub(processInternalLink, item["doc"])
 
@@ -721,6 +741,7 @@ class ApiWriter():
 
             if isErrornous(classApi.main):
                 errors.append({
+                    "errors": classApi.main["errors"],
                     "kind": "Main",
                     "name": None,
                     "line": 1
@@ -729,6 +750,7 @@ class ApiWriter():
             if hasattr(classApi, "construct"):
                 if isErrornous(classApi.construct):
                     errors.append({
+                        "errors": classApi.construct["errors"],
                         "kind": "Constructor",
                         "name": None,
                         "line": classApi.construct["line"]
@@ -740,6 +762,7 @@ class ApiWriter():
                     item = items[itemName]
                     if isErrornous(item):
                         errors.append({
+                            "errors": item["errors"],
                             "kind": itemMap[section],
                             "name": itemName,
                             "line": item["line"]
@@ -754,8 +777,13 @@ class ApiWriter():
                 if printErrors:
                     indent()
                     for entry in errorsSorted:
-                        if entry["name"]:
+                        if entry["errors"]:
+                            for err in entry["errors"]:
+                                warn("%s: %s (line %s) %s", entry["kind"], entry["name"], err["line"], err["message"])
+
+                        elif entry["name"]:
                             warn("%s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
+
                         else:
                             warn("%s (line %s)", entry["kind"], entry["line"])
                 
