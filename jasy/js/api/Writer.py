@@ -7,7 +7,7 @@ import json, copy, re
 
 from jasy.core.Error import JasyError
 from jasy.env.File import *
-from jasy.js.api.Data import ApiData
+from jasy.js.api.Data import ApiData, nodeError
 from jasy.js.api.Text import *
 from jasy.js.util import *
 from jasy.env.State import session, header
@@ -81,28 +81,6 @@ def isErrornous(data):
                 return True
                 
     return False
-
-
-def nodeError(node, message):
-
-    node["errornous"] = True
-
-    if not "errors" in node:
-        node["errors"] = []
-
-    # Some of these may not be objects but instances
-    line = 0
-    try:
-        line = node.line
-
-    except:
-        line = node["line"]
-
-    node["errors"].append({
-        "name": "foo",
-        "message": message,
-        "line": line
-    })
 
 
 def mergeMixin(className, mixinName, classApi, mixinApi):
@@ -311,7 +289,7 @@ class ApiWriter():
             
         return False
     
-    
+
     def write(self, distFolder, classFilter=None, callback="apiload", showInternals=False, showPrivates=False, printErrors=True, highlightCode=True):
         
         
@@ -330,9 +308,16 @@ class ApiWriter():
             indent()
             for className in classes:
                 if self.isIncluded(className, classFilter):
-                    apiData[className] = classes[className].getApi(highlightCode)
-                    highlightedCode[className] = classes[className].getHighlightedCode()
+
+                    data = classes[className].getApi(highlightCode)
+
+                    if not data.isEmpty:
+                        apiData[className] = data
+                        highlightedCode[className] = classes[className].getHighlightedCode()
                 
+                    else:
+                        info("Skipping %s, class is empty." % className)
+
             outdent()
         
         

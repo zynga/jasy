@@ -9,7 +9,7 @@ from jasy.core.Logging import *
 from jasy.core.Error import JasyError
 
 
-__all__ = ["ApiData"]
+__all__ = ["ApiData", "nodeError"]
 
 
 def nodeError(node, message):
@@ -47,7 +47,7 @@ class ApiData():
         "id", 
         "package", "basename", 
         "errors", "size", "assets", "permutations", 
-        "content",
+        "content", "isEmpty",
         
         "uses", "usedBy", 
         "includes", "includedBy", 
@@ -65,6 +65,7 @@ class ApiData():
         splits = id.split(".")
         self.basename = splits.pop()
         self.package = ".".join(splits)
+        self.isEmpty = False
         
         self.uses = set()
         self.main = {
@@ -281,7 +282,17 @@ class ApiData():
                 self.setMain("Native", result.parent, name)
                 success = True
 
+
                 if result[1].type == "object_init":
+
+                    # Ingore empty objects and do not produce namespaces for them
+                    #
+                    # e.g. some.namespace.foo = {};
+                    if len(result[1]) == 0:
+                        success = False
+                        self.isEmpty = True
+                        #self.addError(self.main, "Namespace is empty")
+
                     self.statics = {}
                     for prop in result[1]:
                         self.addEntry(prop[0].value, prop[1], prop, self.statics)
