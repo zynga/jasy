@@ -90,7 +90,7 @@ class Cache:
         self.__shelve["jasy-version"] = version
         
         
-    def read(self, key, timestamp=None):
+    def read(self, key, timestamp=None, inMemory=True):
         """ 
         Reads the given value from cache.
         Optionally support to check wether the value was stored after the given 
@@ -114,13 +114,15 @@ class Cache:
                 # print("LEN: %s = %s" % (key, len(rePacked)))
                 
                 # Copy over value to in-memory cache
-                self.__transient[key] = value
+                if inMemory:
+                    self.__transient[key] = value
+
                 return value
                 
         return None
         
     
-    def store(self, key, value, timestamp=None, transient=False):
+    def store(self, key, value, timestamp=None, transient=False, inMemory=True):
         """
         Stores the given value.
         Default timestamp goes to the current time. Can be modified
@@ -131,7 +133,9 @@ class Cache:
         if self.__hashkeys:
             key = hashlib.sha1(key.encode("ascii")).hexdigest()
         
-        self.__transient[key] = value
+        if inMemory:
+            self.__transient[key] = value
+
         if transient:
             return
         
