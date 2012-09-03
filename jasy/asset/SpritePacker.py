@@ -8,6 +8,7 @@ from jasy.asset.sprite.Block import Block
 from jasy.asset.sprite.BlockPacker import BlockPacker
 from jasy.asset.sprite.File import SpriteFile
 from jasy.asset.sprite.Sheet import SpriteSheet
+from jasy.core.Config import writeConfig
 
 from jasy.core.Logging import *
 
@@ -380,9 +381,8 @@ class SpritePacker():
 
         # Generate JSON
         info('Exporting data...')
-        script = os.path.join(self.base, path, 'jasysprite.json')
-        output = json.dumps(data, sort_keys=True, indent=2).encode('ascii')
-        open(script, 'wb').write(output)
+        script = os.path.join(self.base, path, 'jasysprite.yaml')
+        writeConfig(data, script)
 
 
 
