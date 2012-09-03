@@ -21,6 +21,20 @@ def setPermutation(use):
     __permutation = use
 
 
+# ===========================================================================
+#   Global Translation Handling
+# ===========================================================================
+
+__translation = None
+
+def getTranslation():
+    global __translation
+    return __translation
+
+def setTranslation(use):
+    global __translation
+    __translation = use
+
 
 # ===========================================================================
 #   Global Prefix Handling
