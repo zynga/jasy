@@ -97,7 +97,7 @@ class Asset(Item):
             return self.type
 
     def getParsedObject(self):
-        return loadConfig(self.getPath(self))
+        return loadConfig(self.getPath())
 
     
     def addImageSpriteData(self, id, left, top):

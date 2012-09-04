@@ -86,6 +86,7 @@ class SpritePacker():
         self.base = base
         self.files = []
         self.types = types
+        self.metaDataFormat = '.yaml';
     
     def clear(self):
         info("Cleaning sprite files...")
@@ -357,6 +358,10 @@ class SpritePacker():
 
         return (sheets, extraBlocks, 0)
 
+    # extension can be set to '.yaml' or '.json'
+    def setMetaDataFormat(self, extension='.yaml'):
+        self.metaDataFormat = extension;
+
 
     def generate(self, path='', autorotate=False, debug=False):
         """Generate sheets/variants"""
@@ -379,9 +384,9 @@ class SpritePacker():
             
         outdent()
 
-        # Generate JSON
+        # Generate JSON/YAML
         info('Exporting data...')
-        script = os.path.join(self.base, path, 'jasysprite.yaml')
+        script = os.path.join(self.base, path, 'jasysprite%s' % self.metaDataFormat)
         writeConfig(data, script)
 
 
