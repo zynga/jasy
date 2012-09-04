@@ -25,7 +25,9 @@ __all__ = ["Project", "getProjectFromPath", "getProjectDependencies"]
 
 
 classExtensions = (".js")
-translationExtensions = (".po")
+
+# Gettext .po files + ICU formats (http://userguide.icu-project.org/locale/localizing) (all formats but without .java support)
+translationExtensions = (".po", ".xlf", ".properties", ".txt")
 docFiles = ("package.md", "readme.md")
 repositoryFolder = re.compile(r"^([a-zA-Z0-9\.\ _-]+)-([a-f0-9]{40})$")
 
@@ -310,8 +312,6 @@ class Project():
         else:
             fileId = ""
 
-
-
         # Structure files  
         if fileExtension in classExtensions and distname == "classes":
             fileId += os.path.splitext(relPath)[0]
@@ -524,7 +524,7 @@ class Project():
         return self.assets
 
     def getTranslations(self):
-        """ Returns all translation files. Supports gettext style PO files with .po extension. """
+        """ Returns all translation objects """
         return self.translations
 
         
