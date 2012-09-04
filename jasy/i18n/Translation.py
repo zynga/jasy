@@ -202,7 +202,7 @@ class Translation:
                         
                 # Signature trc(context, msg, arg1, ...)
                 elif funcName == "trc":
-                    key = params[0].value
+                    key = "%s[C:%s]" % (params[1].value, params[0].value)
                     if key in table:
                         params[1].value = table[key]
 
@@ -214,27 +214,13 @@ class Translation:
                         
                 # Signature trn(msgSingular, msgPlural, int, arg1, ...)
                 elif funcName == "trn":
-                    print("table", table)
-
-                    key = params[0].value
+                    key = "%s[N:%s]" % (params[0].value, params[1].value)
                     if not key in table:
                         warn("Nonsupported text %s", key)
+                        outdent()
                         return
 
-
-                    if key in table:
-                        # params[0].value = table[key]
-
-                        # The value is type "str" is singular only cases and 
-                        # "dict" when plural forms are available
-                        # As for trn() we expect to have a "dict" data
-                        
-
-                        exported = json.dumps(table[key], separators=(',',':'), ensure_ascii=False)
-                        print(exported)
-
-
-                    # Use optimized trn() method
+                    # Use optimized trnc() method instead of trn()
                     funcNameNode.value = "trnc"
                     
                     # Remove first two string parameters
@@ -255,8 +241,6 @@ class Translation:
                         pluralEntry.append(pluralEntryValue)
                         container.append(pluralEntry)
 
-
-                    print(node)
 
 
                 outdent()

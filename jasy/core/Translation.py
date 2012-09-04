@@ -60,6 +60,7 @@ class Translation(Item):
         if self.__table is not None:
             return self.__table
 
+        # Flat data strucuture where the keys are unique
         table = {}
         path = self.getPath()
         format = self.getFormat()
@@ -71,12 +72,18 @@ class Translation(Item):
             info("Percent of translated messages: %s", po.percent_translated())
 
             for entry in po.translated_entries():
-                if not entry.msgid in table:
+                entryId = entry.msgid
+                if entry.msgctxt is not None:
+                    entryId += "[C:%s]" % entry.msgctxt
+                elif entry.msgid_plural != "":
+                    entryId += "[N:%s]" % entry.msgid_plural
+
+                if not entryId in table:
                     # TODO: Change to respect context correctly
                     if entry.msgstr != "":
-                        table[entry.msgid] = entry.msgstr
+                        table[entryId] = entry.msgstr
                     elif entry.msgstr_plural:
-                        table[entry.msgid] = entry.msgstr_plural
+                        table[entryId] = entry.msgstr_plural
 
         elif format is "xlf":
             raise JasyError("Parsing ICU/XLF files is currently not supported!")
