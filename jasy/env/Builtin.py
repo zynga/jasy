@@ -64,15 +64,15 @@ def doctor():
     for dist in dists:
         versions[dist.key] = dist.version
 
-    def checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction):
-        print('\t%s:' % name)
-        if name.lower() in keys:
+    def checkSingleInstallation(keys, versions, packageName, minVersion, installInstruction, updateInstruction):
+        print('\t%s:' % packageName)
+        if packageName.lower() in keys:
             print('\t   - Found installation')
             if StrictVersion(minVersion) > StrictVersion("0.0"):
-                if StrictVersion(versions[name.lower()]) >= StrictVersion(minVersion):
-                    print('\t   - Version is OK (needed: %s installed: %s)' % (minVersion, versions[name.lower()]))
+                if StrictVersion(versions[packageName.lower()]) >= StrictVersion(minVersion):
+                    print('\t   - Version is OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]))
                 else:
-                    print(colorize(colorize('\t   - Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[name.lower()]) , "red"), "bold"))
+                    print(colorize(colorize('\t   - Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
                     print('\t     -> %s' % updateInstruction)
         else:
             print(colorize(colorize('\t   - Did NOT find installation', "red"), "bold"))
@@ -80,60 +80,73 @@ def doctor():
         print('\n')
 
 
+    needs = [
+        {
+            "packageName": "Pygments",
+            "minVersion": "1.5",
+            "installInstruction": "Install the newest version of Pygments using '$ pip install Pygments'",
+            "updateInstruction": "Upgrade to the newest version of Pygments using '$ pip install --upgrade pygments'"
+        },
+        {
+            "packageName": "polib",
+            "minVersion": "1.0",
+            "installInstruction": "Install the newest version of polib using '$ pip install polib'",
+            "updateInstruction": "Upgrade to the newest version of polib using '$ pip install --upgrade polib'"
+        },
+        {
+            "packageName": "requests",
+            "minVersion": "0.13",
+            "installInstruction": "Install the newest version of requests using '$ pip install requests'",
+            "updateInstruction": "Upgrade to the newest version of requests using '$ pip install --upgrade requests'"
+        },
+        {
+            "packageName": "CherryPy",
+            "minVersion": "3.2",
+            "installInstruction": "Install the newest version of CherryPy using '$ pip install CherryPy'",
+            "updateInstruction": "Upgrade to the newest version of CherryPy using '$ pip install --upgrade CherryPy'"
+        },
+        {
+            "packageName": "PyYAML",
+            "minVersion": "3.0",
+            "installInstruction": "Install the newest version of PyYAML using '$ pip install PyYAML'",
+            "updateInstruction": "Upgrade to the newest version of PyYAML using '$ pip install --upgrade PyYAML'"
+        }
+    ]
+
+    optionals = [
+        {
+            "packageName": "misaka",
+            "minVersion": "0.0",
+            "installInstruction": "Install the newest version of misaka using '$ pip install misaka'",
+            "updateInstruction": ""
+        },
+        {
+            "packageName": "watchdog",
+            "minVersion": "0.0",
+            "installInstruction": "Install the jasy special version of watchdog using '$ pip install -e git+https://github.com/wpbasti/watchdog#egg=watchdog'",
+            "updateInstruction": ""
+        },
+        {
+            "packageName": "pil",
+            "minVersion": "0.0",
+            "installInstruction": "Install the jasy special version of pil using '$ pip install -e git+https://github.com/zynga/pil-py3k#egg=pip-py3k'",
+            "updateInstruction": ""
+        }
+    ]
+
+
     # Needed packages
     print("Needed installations: \n")
 
-    name = "Pygments"
-    minVersion = "1.5"
-    installInstruction = "Install the newest version of Pygments using '$ pip install Pygments'"
-    updateInstruction = "Upgrade to the newest version of Pygments using '$ pip install --upgrade pygments'"
-    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
-
-    name = "polib"
-    minVersion = "1.0"
-    installInstruction = "Install the newest version of polib using '$ pip install polib'"
-    updateInstruction = "Upgrade to the newest version of polib using '$ pip install --upgrade polib'"
-    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
-
-    name = "requests"
-    minVersion = "0.13"
-    installInstruction = "Install the newest version of requests using '$ pip install requests'"
-    updateInstruction = "Upgrade to the newest version of requests using '$ pip install --upgrade requests'"
-    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
-
-    name = "CherryPy"
-    minVersion = "3.2"
-    installInstruction = "Install the newest version of CherryPy using '$ pip install CherryPy'"
-    updateInstruction = "Upgrade to the newest version of CherryPy using '$ pip install --upgrade CherryPy'"
-    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
-
-    name = "PyYAML"
-    minVersion = "3.0"
-    installInstruction = "Install the newest version of PyYAML using '$ pip install PyYAML'"
-    updateInstruction = "Upgrade to the newest version of PyYAML using '$ pip install --upgrade PyYAML'"
-    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
+    for entry in needs:
+        checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installInstruction"], entry["updateInstruction"])
     
 
     # Optional packages
     print("Optional installations: \n")
 
-    name = "misaka"
-    minVersion = "0.0"
-    installInstruction = "Install the newest version of misaka using '$ pip install misaka'"
-    updateInstruction = ""
-    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
-
-    name = "watchdog"
-    minVersion = "0.0"
-    installInstruction = "Install the jasy special version of watchdog using '$ pip install -e git+https://github.com/wpbasti/watchdog#egg=watchdog'"
-    updateInstruction = ""
-    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
-
-    name = "pil"
-    minVersion = "0.0"
-    installInstruction = "Install the jasy special version of pil using '$ pip install -e git+https://github.com/zynga/pil-py3k#egg=pip-py3k'"
-    updateInstruction = ""
-    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
+    for entry in optionals:
+        checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installInstruction"], entry["updateInstruction"])
 
 
 @task
