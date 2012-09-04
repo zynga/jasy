@@ -132,7 +132,9 @@ class Translation:
 
     
     def __splitTemplate(self, replaceNode, patchParam, valueParams):
-        """ Split string into plus-expression(s) """
+        """ 
+        Split string into plus-expression(s) 
+        """
         
         mapper = { pos: value for pos, value in enumerate(valueParams) }
         
@@ -232,9 +234,9 @@ class Translation:
 
 
                     # Patch strings with dynamic values
-                    #if len(params) >= 3:
-                    #    self.__splitTemplate(params[0], params[0], params[3:])
-                    #    self.__splitTemplate(params[1], params[1], params[3:])
+                    if len(params) >= 3:
+                        self.__splitTemplate(params[0], params[0], params[3:])
+                        self.__splitTemplate(params[1], params[1], params[3:])
                     
                     # Replace the whole call with: int < 2 ? singularMessage : pluralMessage
                     hook = Node(None, "hook")
