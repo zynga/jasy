@@ -134,6 +134,10 @@ class Translation:
     def __splitTemplate(self, replaceNode, patchParam, valueParams):
         """ 
         Split string into plus-expression(s) 
+
+        - replaceNode: 
+        - patchParam: 
+        - valueParams: 
         """
         
         mapper = { pos: value for pos, value in enumerate(valueParams) }
@@ -159,12 +163,11 @@ class Translation:
             funcName = None
             
             if node[0].type == "identifier":
-                funcName = node[0].value
+                funcNameNode = node[0]
             elif node[0].type == "dot" and node[0][1].type == "identifier":
-                funcName = node[0][1].value
-            
+                funcNameNode = node[0][1]
 
-
+            funcName = funcNameNode.value
             if funcName in ("tr", "trc", "trn", "marktr"):
                 info("Found translation method: %s" % funcName)
                 indent()
@@ -185,7 +188,7 @@ class Translation:
                 elif (funcName == "trn" or funcName == "trc") and params[1].type != "string":
                     warn("Expecting translation string to be type string: %s at line %s" % (params[1].type, params[1].line))
 
-                # Signature tr(msg, arg1, arg2, ...)
+                # Signature tr(msg, arg1, ...)
                 elif funcName == "tr":
                     key = params[0].value
                     if key in table:
@@ -197,7 +200,7 @@ class Translation:
                         self.__splitTemplate(node, params[0], params[1:])
                         
                         
-                # Signature trc(hint, msg, arg1, arg2, ...)
+                # Signature trc(context, msg, arg1, ...)
                 elif funcName == "trc":
                     key = params[0].value
                     if key in table:
@@ -209,49 +212,52 @@ class Translation:
                         self.__splitTemplate(node, params[1], params[2:])
                         
                         
-                # Signature trn(msg, msg2, [...], int, arg1, arg2, ...)
+                # Signature trn(msgSingular, msgPlural, int, arg1, ...)
                 elif funcName == "trn":
-                    print("PARAMS-PRE:", params)
+                    print("table", table)
+
+                    key = params[0].value
+                    if not key in table:
+                        warn("Nonsupported text %s", key)
+                        return
 
 
-                    keySingular = params[0].value
-                    if keySingular in table:
-                        params[0].value = table[keySingular]
+                    if key in table:
+                        # params[0].value = table[key]
 
-                    keyPlural = params[1].value
-                    if keyPlural in table:
-
-                        pluralValues = table[keyPlural]
-
-
-                        # params[1].value = None
+                        # The value is type "str" is singular only cases and 
+                        # "dict" when plural forms are available
+                        # As for trn() we expect to have a "dict" data
                         
-                    # TODO: Multi plural support
-                    
-                    print("PARAMS-POST:", params)
-                    print("KEYS: %s -- %s" % (keySingular, keyPlural))
-                    print(table)
+
+                        exported = json.dumps(table[key], separators=(',',':'), ensure_ascii=False)
+                        print(exported)
 
 
-                    # Patch strings with dynamic values
-                    if len(params) >= 3:
-                        self.__splitTemplate(params[0], params[0], params[3:])
-                        self.__splitTemplate(params[1], params[1], params[3:])
+                    # Use optimized trn() method
+                    funcNameNode.value = "trnc"
                     
-                    # Replace the whole call with: int < 2 ? singularMessage : pluralMessage
-                    hook = Node(None, "hook")
-                    hook.parenthesized = True
-                    condition = Node(None, "le")
-                    condition.append(params[2])
-                    number = Node(None, "number")
-                    number.value = 1
-                    condition.append(number)
-                    
-                    hook.append(condition, "condition")
-                    hook.append(params[1], "elsePart")
-                    hook.append(params[0], "thenPart")
-                    
-                    node.parent.replace(node, hook)
+                    # Remove first two string parameters
+                    params.remove(params[0])
+                    params.remove(params[0])
+
+                    # Inject new object into params
+                    container = Node(None, "object_init")
+                    params.insert(0, container)
+
+                    for plural in table[key]:
+                        pluralEntry = Node(None, "property_init")
+                        pluralEntryIdentifier = Node(None, "identifier")
+                        pluralEntryIdentifier.value = plural
+                        pluralEntryValue = Node(None, "string")
+                        pluralEntryValue.value = table[key][plural]
+                        pluralEntry.append(pluralEntryIdentifier)
+                        pluralEntry.append(pluralEntryValue)
+                        container.append(pluralEntry)
+
+
+                    print(node)
+
 
                 outdent()
 

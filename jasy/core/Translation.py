@@ -72,10 +72,11 @@ class Translation(Item):
 
             for entry in po.translated_entries():
                 if not entry.msgid in table:
+                    # TODO: Change to respect context correctly
                     if entry.msgstr != "":
                         table[entry.msgid] = entry.msgstr
                     elif entry.msgstr_plural:
-                        table[entry.msgid_plural] = entry.msgstr_plural
+                        table[entry.msgid] = entry.msgstr_plural
 
         elif format is "xlf":
             raise JasyError("Parsing ICU/XLF files is currently not supported!")
