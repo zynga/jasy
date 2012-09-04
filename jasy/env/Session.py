@@ -23,9 +23,6 @@ __all__ = ["Session"]
 
 class Session():
 
-    __locales = None
-
-
     #
     # Core
     #
@@ -183,8 +180,13 @@ class Session():
     # Fields allow to inject data from the build into the running application
     #
     
-    def setLocales(self, locales):
-        self.__locales = locales
+    def setLocales(self, locales, default=None):
+        # Store locales as a special built-in field
+        self.__fields["locale"] = {
+            "values" : locales,
+            "default" : default or locales[0],
+            "detect" : "core.detect.Locale"
+        }
 
     def setField(self, name, value):
         """
@@ -281,10 +283,6 @@ class Session():
         fields = self.__fields
         values = { key:fields[key]["values"] for key in fields if "values" in fields[key] }
 
-        # Automatically add "locale" as a field with all possible localization values
-        if self.__locales:
-            values["locale"] = self.__locales
-               
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         names = sorted(values)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
