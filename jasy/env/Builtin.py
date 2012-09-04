@@ -64,7 +64,7 @@ def doctor():
     for dist in dists:
         versions[dist.key] = dist.version
 
-    def checkSingleInstallation(keys, versions, packageName, minVersion, installInstruction, updateInstruction):
+    def checkSingleInstallation(keys, versions, packageName, minVersion, installPath, updatePath):
         info('\t%s:' % packageName)
         if packageName.lower() in keys:
             info('\t   - Found installation')
@@ -73,10 +73,10 @@ def doctor():
                     info('\t   - Version is OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]))
                 else:
                     info(colorize(colorize('\t   - Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
-                    info('\t     -> %s' % updateInstruction)
+                    info('\t     -> Update to the newest version of %s using %s' % (packageName, updatePath))
         else:
             info(colorize(colorize('\t   - Did NOT find installation', "red"), "bold"))
-            info('\t     -> %s' % installInstruction)
+            info('\t     -> Install the newest version of %s using %s' % (packageName, installPath))
         info('\n')
 
 
@@ -84,32 +84,32 @@ def doctor():
         {
             "packageName": "Pygments",
             "minVersion": "1.5",
-            "installInstruction": "Install the newest version of Pygments using '$ pip install Pygments'",
-            "updateInstruction": "Upgrade to the newest version of Pygments using '$ pip install --upgrade pygments'"
+            "installPath": "'$ pip install Pygments'",
+            "updatePath": "'$ pip install --upgrade pygments'"
         },
         {
             "packageName": "polib",
             "minVersion": "1.0",
-            "installInstruction": "Install the newest version of polib using '$ pip install polib'",
-            "updateInstruction": "Upgrade to the newest version of polib using '$ pip install --upgrade polib'"
+            "installPath": "'$ pip install polib'",
+            "updatePath": "'$ pip install --upgrade polib'"
         },
         {
             "packageName": "requests",
             "minVersion": "0.13",
-            "installInstruction": "Install the newest version of requests using '$ pip install requests'",
-            "updateInstruction": "Upgrade to the newest version of requests using '$ pip install --upgrade requests'"
+            "installPath": "'$ pip install requests'",
+            "updatePath": "'$ pip install --upgrade requests'"
         },
         {
             "packageName": "CherryPy",
             "minVersion": "3.2",
-            "installInstruction": "Install the newest version of CherryPy using '$ pip install CherryPy'",
-            "updateInstruction": "Upgrade to the newest version of CherryPy using '$ pip install --upgrade CherryPy'"
+            "installPath": "'$ pip install CherryPy'",
+            "updatePath": "'$ pip install --upgrade CherryPy'"
         },
         {
             "packageName": "PyYAML",
             "minVersion": "3.0",
-            "installInstruction": "Install the newest version of PyYAML using '$ pip install PyYAML'",
-            "updateInstruction": "Upgrade to the newest version of PyYAML using '$ pip install --upgrade PyYAML'"
+            "installPath": "'$ pip install PyYAML'",
+            "updatePath": "'$ pip install --upgrade PyYAML'"
         }
     ]
 
@@ -117,20 +117,20 @@ def doctor():
         {
             "packageName": "misaka",
             "minVersion": "0.0",
-            "installInstruction": "Install the newest version of misaka using '$ pip install misaka'",
-            "updateInstruction": ""
+            "installPath": "'$ pip install misaka'",
+            "updatePath": ""
         },
         {
             "packageName": "watchdog",
             "minVersion": "0.0",
-            "installInstruction": "Install the jasy special version of watchdog using '$ pip install -e git+https://github.com/wpbasti/watchdog#egg=watchdog'",
-            "updateInstruction": ""
+            "installPath": "'$ pip install -e git+https://github.com/wpbasti/watchdog#egg=watchdog'",
+            "updatePath": ""
         },
         {
             "packageName": "pil",
             "minVersion": "0.0",
-            "installInstruction": "Install the jasy special version of pil using '$ pip install -e git+https://github.com/zynga/pil-py3k#egg=pip-py3k'",
-            "updateInstruction": ""
+            "installPath": "'$ pip install -e git+https://github.com/zynga/pil-py3k#egg=pip-py3k'",
+            "updatePath": ""
         }
     ]
 
@@ -139,14 +139,14 @@ def doctor():
     info("Needed installations: \n")
 
     for entry in needs:
-        checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installInstruction"], entry["updateInstruction"])
+        checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installPath"], entry["updatePath"])
     
 
     # Optional packages
     info("Optional installations: \n")
 
     for entry in optionals:
-        checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installInstruction"], entry["updateInstruction"])
+        checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installPath"], entry["updatePath"])
 
 
 @task
