@@ -55,7 +55,7 @@ def doctor():
 
     header("Troubleshooting Environment")
 
-    print('\n')
+    info('\n')
 
     dists = [dist for dist in pip.get_installed_distributions()]
     keys = [dist.key for dist in pip.get_installed_distributions()]
@@ -65,19 +65,19 @@ def doctor():
         versions[dist.key] = dist.version
 
     def checkSingleInstallation(keys, versions, packageName, minVersion, installInstruction, updateInstruction):
-        print('\t%s:' % packageName)
+        info('\t%s:' % packageName)
         if packageName.lower() in keys:
-            print('\t   - Found installation')
+            info('\t   - Found installation')
             if StrictVersion(minVersion) > StrictVersion("0.0"):
                 if StrictVersion(versions[packageName.lower()]) >= StrictVersion(minVersion):
-                    print('\t   - Version is OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]))
+                    info('\t   - Version is OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]))
                 else:
-                    print(colorize(colorize('\t   - Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
-                    print('\t     -> %s' % updateInstruction)
+                    info(colorize(colorize('\t   - Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
+                    info('\t     -> %s' % updateInstruction)
         else:
-            print(colorize(colorize('\t   - Did NOT find installation', "red"), "bold"))
-            print('\t     -> %s' % installInstruction)
-        print('\n')
+            info(colorize(colorize('\t   - Did NOT find installation', "red"), "bold"))
+            info('\t     -> %s' % installInstruction)
+        info('\n')
 
 
     needs = [
@@ -136,14 +136,14 @@ def doctor():
 
 
     # Needed packages
-    print("Needed installations: \n")
+    info("Needed installations: \n")
 
     for entry in needs:
         checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installInstruction"], entry["updateInstruction"])
     
 
     # Optional packages
-    print("Optional installations: \n")
+    info("Optional installations: \n")
 
     for entry in optionals:
         checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installInstruction"], entry["updateInstruction"])
