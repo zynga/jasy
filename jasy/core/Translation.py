@@ -66,13 +66,16 @@ class Translation(Item):
 
         # Decide infrastructure/parser to use based on file name
         if format is "gettext":
-            pofile = polib.pofile(path)
-            for entry in pofile:
+            po = polib.pofile(path)
+
+            info("Percent of translated messages: %s", po.percent_translated())
+
+            for entry in po.translated_entries():
                 if not entry.msgid in table:
                     if entry.msgstr != "":
                         table[entry.msgid] = entry.msgstr
                     elif entry.msgstr_plural:
-                        table[entry.msgid] = entry.msgstr_plural
+                        table[entry.msgid_plural] = entry.msgstr_plural
 
         elif format is "xlf":
             raise JasyError("Parsing ICU/XLF files is currently not supported!")

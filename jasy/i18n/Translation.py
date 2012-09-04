@@ -164,7 +164,8 @@ class Translation:
 
 
             if funcName in ("tr", "trc", "trn", "marktr"):
-                print("FOUND: %s" % funcName)
+                info("Found translation method: %s" % funcName)
+                indent()
 
                 params = node[1]
                 table = self.__table
@@ -184,16 +185,10 @@ class Translation:
 
                 # Signature tr(msg, arg1, arg2, ...)
                 elif funcName == "tr":
-                    print("IN TR HANDLER")
-
                     key = params[0].value
                     if key in table:
                         params[0].value = table[key]
                     
-                    print("KEY: %s" % key, key in table)
-                    print("PARAMS: %s" % len(params))
-                    print(table)
-
                     if len(params) == 1:
                         node.parent.replace(node, params[0])
                     else:
@@ -214,20 +209,32 @@ class Translation:
                         
                 # Signature trn(msg, msg2, [...], int, arg1, arg2, ...)
                 elif funcName == "trn":
+                    print("PARAMS-PRE:", params)
+
+
                     keySingular = params[0].value
                     if keySingular in table:
                         params[0].value = table[keySingular]
 
                     keyPlural = params[1].value
                     if keyPlural in table:
-                        params[1].value = table[keyPlural]
+
+                        pluralValues = table[keyPlural]
+
+
+                        # params[1].value = None
                         
                     # TODO: Multi plural support
                     
+                    print("PARAMS-POST:", params)
+                    print("KEYS: %s -- %s" % (keySingular, keyPlural))
+                    print(table)
+
+
                     # Patch strings with dynamic values
-                    if len(params) >= 3:
-                        self.__splitTemplate(params[0], params[0], params[3:])
-                        self.__splitTemplate(params[1], params[1], params[3:])
+                    #if len(params) >= 3:
+                    #    self.__splitTemplate(params[0], params[0], params[3:])
+                    #    self.__splitTemplate(params[1], params[1], params[3:])
                     
                     # Replace the whole call with: int < 2 ? singularMessage : pluralMessage
                     hook = Node(None, "hook")
@@ -243,6 +250,8 @@ class Translation:
                     hook.append(params[0], "thenPart")
                     
                     node.parent.replace(node, hook)
+
+                outdent()
 
 
                 
