@@ -79,7 +79,7 @@ class AssetManager:
             spriteBase = dirname(fileId)
                 
             try:
-                spriteConfig = asset.getParsedObject(asset);
+                spriteConfig = asset.getParsedObject();
             except ValueError as err:
                 raise JasyError("Could not parse jasysprite.json at %s: %s" % (fileId, err))
                 
