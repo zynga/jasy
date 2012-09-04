@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shutil, os, tempfile, re, jasy
+import shutil, os, tempfile, re, jasy, pip
 
 from jasy.core.Logging import *
 from jasy.env.Task import task, runTask
@@ -13,6 +13,7 @@ from jasy.core.Repository import isRepository, updateRepository
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
 from jasy.env.Config import Config
+from distutils.version import StrictVersion
 
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 
@@ -53,6 +54,86 @@ def doctor():
     """Troubleshooting the Jasy environment"""
 
     header("Troubleshooting Environment")
+
+    print('\n')
+
+    dists = [dist for dist in pip.get_installed_distributions()]
+    keys = [dist.key for dist in pip.get_installed_distributions()]
+    
+    versions = {}
+    for dist in dists:
+        versions[dist.key] = dist.version
+
+    def checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction):
+        print('\t%s:' % name)
+        if name.lower() in keys:
+            print('\t   - Found installation')
+            if StrictVersion(minVersion) > StrictVersion("0.0"):
+                if StrictVersion(versions[name.lower()]) >= StrictVersion(minVersion):
+                    print('\t   - Version is OK (needed: %s installed: %s)' % (minVersion, versions[name.lower()]))
+                else:
+                    print(colorize(colorize('\t   - Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[name.lower()]) , "red"), "bold"))
+                    print('\t     -> %s' % updateInstruction)
+        else:
+            print(colorize(colorize('\t   - Did NOT find installation', "red"), "bold"))
+            print('\t     -> %s' % installInstruction)
+        print('\n')
+
+
+    # Needed packages
+    print("Needed installations: \n")
+
+    name = "Pygments"
+    minVersion = "1.5"
+    installInstruction = "Install the newest version of Pygments using '$ pip install Pygments'"
+    updateInstruction = "Upgrade to the newest version of Pygments using '$ pip install --upgrade pygments'"
+    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
+
+    name = "polib"
+    minVersion = "1.0"
+    installInstruction = "Install the newest version of polib using '$ pip install polib'"
+    updateInstruction = "Upgrade to the newest version of polib using '$ pip install --upgrade polib'"
+    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
+
+    name = "requests"
+    minVersion = "0.13"
+    installInstruction = "Install the newest version of requests using '$ pip install requests'"
+    updateInstruction = "Upgrade to the newest version of requests using '$ pip install --upgrade requests'"
+    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
+
+    name = "CherryPy"
+    minVersion = "3.2"
+    installInstruction = "Install the newest version of CherryPy using '$ pip install CherryPy'"
+    updateInstruction = "Upgrade to the newest version of CherryPy using '$ pip install --upgrade CherryPy'"
+    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
+
+    name = "PyYAML"
+    minVersion = "3.0"
+    installInstruction = "Install the newest version of PyYAML using '$ pip install PyYAML'"
+    updateInstruction = "Upgrade to the newest version of PyYAML using '$ pip install --upgrade PyYAML'"
+    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
+    
+
+    # Optional packages
+    print("Optional installations: \n")
+
+    name = "misaka"
+    minVersion = "0.0"
+    installInstruction = "Install the newest version of misaka using '$ pip install misaka'"
+    updateInstruction = ""
+    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
+
+    name = "watchdog"
+    minVersion = "0.0"
+    installInstruction = "Install the jasy special version of watchdog using '$ pip install -e git+https://github.com/wpbasti/watchdog#egg=watchdog'"
+    updateInstruction = ""
+    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
+
+    name = "pil"
+    minVersion = "0.0"
+    installInstruction = "Install the jasy special version of pil using '$ pip install -e git+https://github.com/zynga/pil-py3k#egg=pip-py3k'"
+    updateInstruction = ""
+    checkSingleInstallation(keys, versions, name, minVersion, installInstruction, updateInstruction)
 
 
 @task
