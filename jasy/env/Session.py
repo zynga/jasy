@@ -400,7 +400,7 @@ class Session():
         Returns a set of all available translations 
         
         This is the sum of all projects so even if only one 
-        project supports fr_FR then it will be included here.
+        project supports "fr_FR" then it will be included here.
         """
         
         supported = set()
@@ -410,26 +410,35 @@ class Session():
         return supported
     
     
-    def getTranslation(self, locale):
+    def getTranslation(self, language):
         """ 
-        Returns a translation object for the given locale containing 
+        Returns a translation object for the given language containing 
         all relevant translation files for the current project set. 
         """
-        
-        # Prio: de_DE => de => C (default locale) => Code
-        check = [locale]
-        if "_" in locale:
-            check.append(locale[:locale.index("_")])
-        check.append("C")
-        
-        files = []
-        for entry in check:
+
+        relevantLanguages = self.expandLanguage(language)
+        items = []
+
+        # Loop structure is build to prefer finer language matching over project priority
+        for currentLanguage in relevantLanguages:
             for project in self.__projects:
-                translations = project.getTranslations()
-                if translations and entry in translations:
-                    files.append(translations[entry])
-        
-        return Translation(locale, files)
+                for translation in project.getTranslations().values():
+                    if translation.getLanguage() == currentLanguage:
+                        items.append(translation)
+
+        return Translation(language, items)
+
+
+    def expandLanguage(self, language):
+        # Priority Chain: 
+        # de_DE => de => C (default language) => code
+
+        all = [language]
+        if "_" in language:
+            all.append(language[:language.index("_")])
+        all.append("C")
+
+        return all        
         
         
         

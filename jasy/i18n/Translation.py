@@ -4,6 +4,7 @@
 #
 
 import re, copy, json, polib
+
 from jasy.core.Error import JasyError
 from jasy.core.Logging import *
 
@@ -39,26 +40,19 @@ class TranslationError(Exception):
 
 
 class Translation:
-    def __init__(self, locale, files=None, table=None):
-        self.__locale = locale
+    def __init__(self, language, items=None):
+        self.__language = language
 
-        debug("Initialize translation: %s" % locale)
+        debug("Initialize translation: %s" % language)
         self.__table = {}
 
-        if table:
-            self.__table.update(table)
-        
-        if files:
-            debug("Load %s translation files..." % len(files))
-            for path in files:
-                pofile = polib.pofile(path)
-                # print("Process: %s" % path)
-                for entry in pofile:
-                    if not entry.msgid in self.__table:
-                        if entry.msgstr != "":
-                            self.__table[entry.msgid] = entry.msgstr
-                        elif entry.msgstr_plural:
-                            self.__table[entry.msgid] = entry.msgstr_plural
+        print("Init Translation %s with Table: " % language, len(items))
+
+        if items:
+            debug("Load %s translations..." % len(items))
+            for translation in items:
+                print("Updating with translation %s" % translation.getPath())
+                self.__table.update(translation.getTable())
                         
         debug("Translation of %s entries ready" % len(self.__table))
         
@@ -74,14 +68,6 @@ class Translation:
     def patch(self, node):
         self.__recurser(node)
         
-    def load(self, pofile):
-        pass
-        # TODO
-        
-        
-    def __str__(self):
-        return "Translation(%s)" % self.__locale
-    
 
 
     #
@@ -163,7 +149,7 @@ class Translation:
 
         # Process children
         for child in list(node):
-            if child != None:
+            if child is not None:
                 self.__recurser(child)
                         
         
@@ -175,7 +161,11 @@ class Translation:
             elif node[0].type == "dot" and node[0][1].type == "identifier":
                 funcName = node[0][1].value
             
+
+
             if funcName in ("tr", "trc", "trn", "marktr"):
+                print("FOUND: %s" % funcName)
+
                 params = node[1]
                 table = self.__table
                 
@@ -194,10 +184,16 @@ class Translation:
 
                 # Signature tr(msg, arg1, arg2, ...)
                 elif funcName == "tr":
+                    print("IN TR HANDLER")
+
                     key = params[0].value
                     if key in table:
                         params[0].value = table[key]
-                        
+                    
+                    print("KEY: %s" % key, key in table)
+                    print("PARAMS: %s" % len(params))
+                    print(table)
+
                     if len(params) == 1:
                         node.parent.replace(node, params[0])
                     else:
@@ -232,7 +228,6 @@ class Translation:
                     if len(params) >= 3:
                         self.__splitTemplate(params[0], params[0], params[3:])
                         self.__splitTemplate(params[1], params[1], params[3:])
-                    
                     
                     # Replace the whole call with: int < 2 ? singularMessage : pluralMessage
                     hook = Node(None, "hook")
