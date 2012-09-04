@@ -359,8 +359,8 @@ class SpritePacker():
         return (sheets, extraBlocks, 0)
 
     # extension can be set to 'yaml' or 'json'
-    def setDataFormat(self, extension='yaml'):
-        self.dataFormat = extension;
+    def setDataFormat(self, format='yaml'):
+        self.dataFormat = format;
 
 
     def generate(self, path='', autorotate=False, debug=False):
