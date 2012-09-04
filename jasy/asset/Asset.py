@@ -9,6 +9,7 @@ from jasy.asset.ImageInfo import ImgInfo
 from jasy.core.Item import Item
 from jasy.core.Util import getKey
 from jasy.core.Logging import debug
+from jasy.core.Config import loadConfig
 
 extensions = {
     ".png" : "image",
@@ -94,6 +95,9 @@ class Asset(Item):
             return self.shortType
         else:
             return self.type
+
+    def getParsedObject(self):
+        return loadConfig(self.getPath())
 
     
     def addImageSpriteData(self, id, left, top):

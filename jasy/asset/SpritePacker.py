@@ -8,6 +8,7 @@ from jasy.asset.sprite.Block import Block
 from jasy.asset.sprite.BlockPacker import BlockPacker
 from jasy.asset.sprite.File import SpriteFile
 from jasy.asset.sprite.Sheet import SpriteSheet
+from jasy.core.Config import writeConfig
 
 from jasy.core.Logging import *
 
@@ -85,6 +86,7 @@ class SpritePacker():
         self.base = base
         self.files = []
         self.types = types
+        self.dataFormat = 'yaml';
     
     def clear(self):
         info("Cleaning sprite files...")
@@ -356,6 +358,10 @@ class SpritePacker():
 
         return (sheets, extraBlocks, 0)
 
+    # extension can be set to 'yaml' or 'json'
+    def setDataFormat(self, format='yaml'):
+        self.dataFormat = format;
+
 
     def generate(self, path='', autorotate=False, debug=False):
         """Generate sheets/variants"""
@@ -378,11 +384,10 @@ class SpritePacker():
             
         outdent()
 
-        # Generate JSON
+        # Generate JSON/YAML
         info('Exporting data...')
-        script = os.path.join(self.base, path, 'jasysprite.json')
-        output = json.dumps(data, sort_keys=True, indent=2).encode('ascii')
-        open(script, 'wb').write(output)
+        script = os.path.join(self.base, path, 'jasysprite.%s' % self.dataFormat)
+        writeConfig(data, script)
 
 
 
