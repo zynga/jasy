@@ -14,7 +14,7 @@ from jasy.core.Permutation import Permutation
 from jasy.core.Config import findConfig
 
 from jasy.core.Error import JasyError
-from jasy.env.State import setPermutation, header
+from jasy.env.State import setPermutation, setTranslation, header
 from jasy.core.Json import toJson
 from jasy.core.Logging import *
 
@@ -181,12 +181,27 @@ class Session():
     #
     
     def setLocales(self, locales, default=None):
-        # Store locales as a special built-in field
+        """
+        Store locales as a special built-in field with optional default value
+        """
+
         self.__fields["locale"] = {
             "values" : locales,
             "default" : default or locales[0],
             "detect" : "core.detect.Locale"
         }
+
+
+    def setDefaultLocale(self, locale):
+        """
+        Sets the default locale
+        """
+
+        if not "locale" in self.__fields:
+            raise JasyError("Define locales first!")
+
+        self.__fields["locale"]["default"] = locale
+
 
     def setField(self, name, value):
         """
@@ -302,6 +317,7 @@ class Session():
         for pos, current in enumerate(permutations):
             info(colorize("Permutation %s/%s:" % (pos+1, length), "bold"))
             setPermutation(current)
+            setTranslation(self.getTranslation(current.get("locale")))
             indent()
             yield current
             outdent()
