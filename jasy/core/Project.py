@@ -16,6 +16,7 @@ from jasy.env.State import setPermutation, header, loadLibrary
 # Item types
 from jasy.core.Item import Item
 from jasy.core.Doc import Doc
+from jasy.core.Translation import Translation
 from jasy.js.Class import Class
 from jasy.asset.Asset import Asset
 

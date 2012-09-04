@@ -208,7 +208,7 @@ class Class(Item):
         
     def getApi(self, highlight=True):
         field = "api[%s]-%s" % (self.id, highlight)
-        apidata = self.project.getCache().read(field, self.mtime)
+        apidata = self.project.getCache().read(field, self.mtime, inMemory=False)
         if apidata is None:
             apidata = ApiData(self.id, highlight)
             
@@ -227,7 +227,7 @@ class Class(Item):
             apidata.addSize(self.getSize())
             apidata.addFields(self.getFields())
             
-            self.project.getCache().store(field, apidata, self.mtime)
+            self.project.getCache().store(field, apidata, self.mtime, inMemory=False)
 
         return apidata
 
