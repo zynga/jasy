@@ -299,7 +299,6 @@ class Class(Item):
     def getCompressed(self, permutation=None, translation=None, optimization=None, formatting=None, context="compressed"):
         permutation = self.filterPermutation(permutation)
         translation = self.filterTranslation(translation)
-        print("TRANSLATION: ", translation)
         
         field = "compressed[%s]-%s-%s-%s-%s" % (self.id, permutation, translation, optimization, formatting)
         compressed = self.project.getCache().read(field, self.mtime)
