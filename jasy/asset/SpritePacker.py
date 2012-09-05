@@ -360,6 +360,7 @@ class SpritePacker():
 
     # extension can be set to 'yaml' or 'json'
     def setDataFormat(self, format='yaml'):
+        """Sets format (json or yaml) for metadata output"""
         self.dataFormat = format;
 
 
