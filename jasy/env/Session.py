@@ -5,7 +5,7 @@
 
 import itertools, time, atexit, json, os
 
-from jasy.i18n.Translation import Translation
+from jasy.core.Translation import Translation
 from jasy.i18n.LocaleData import *
 
 from jasy.core.Json import toJson
@@ -14,7 +14,7 @@ from jasy.core.Permutation import Permutation
 from jasy.core.Config import findConfig
 
 from jasy.core.Error import JasyError
-from jasy.env.State import setPermutation, setTranslation, header
+from jasy.env.State import getPermutation, setPermutation, setTranslation, header
 from jasy.core.Json import toJson
 from jasy.core.Logging import *
 
@@ -316,9 +316,9 @@ class Session():
         
         for pos, current in enumerate(permutations):
             info(colorize("Permutation %s/%s:" % (pos+1, length), "bold"))
-            setPermutation(current)
-            setTranslation(self.getTranslation(current.get("locale")))
             indent()
+            setPermutation(current)
+            setTranslation(self.getTranslationBundle())
             yield current
             outdent()
 
@@ -410,26 +410,41 @@ class Session():
         return supported
     
     
-    def getTranslation(self, language):
+    def getTranslationBundle(self):
         """ 
         Returns a translation object for the given language containing 
         all relevant translation files for the current project set. 
         """
 
+        language = getPermutation().get("locale")
+        if language is None:
+            return None
+
+        info("Creating translation bundle: %s", language)
+        indent()
+
+        # Initialize new Translation object with no project assigned
+        # This object is used to merge all seperate translation instances later on.
+        combined = Translation(None, id=language)
         relevantLanguages = self.expandLanguage(language)
-        items = []
 
         # Loop structure is build to prefer finer language matching over project priority
-        for currentLanguage in relevantLanguages:
+        for currentLanguage in reversed(relevantLanguages):
             for project in self.__projects:
                 for translation in project.getTranslations().values():
                     if translation.getLanguage() == currentLanguage:
-                        items.append(translation)
+                        info("Adding %s entries from %s @ %s...", len(translation.getTable()), currentLanguage, project.getName())
+                        combined += translation
 
-        return Translation(language, items)
+        debug("Combined number of translations: %s", len(combined.getTable()))
+        outdent()
+
+        return combined
 
 
     def expandLanguage(self, language):
+        """Expands the given language into a list of languages being used in priority order (highest first)"""
+
         # Priority Chain: 
         # de_DE => de => C (default language) => code
 
@@ -438,7 +453,7 @@ class Session():
             all.append(language[:language.index("_")])
         all.append("C")
 
-        return all        
+        return all
         
         
         

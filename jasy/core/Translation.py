@@ -48,11 +48,15 @@ class Translation(Item):
     with a conventient API.
     """
 
-    __table = None
+    def __add__(self, other):
+        self.table.update(other.getTable())
+        return self
 
-    def __init__(self, project, id=None):
+
+    def __init__(self, project, id=None, table=None):
         self.id = id
         self.project = project
+        self.table = table or {}
 
         # Extract language from file ID
         # Thinking of that all files are named like de.po, de.txt, de.properties, etc.
@@ -63,21 +67,9 @@ class Translation(Item):
         self.language = lang
 
 
-    def getLanguage(self):
-        """Returns the language of the translation file"""
-
-        return self.language        
-
-
-    def getFormat(self):
-        """Returns the format of the localization file"""
-
-        return getFormat(self.getPath())
-
-
-    def getTable(self):
-        if self.__table is not None:
-            return self.__table
+    def attach(self, path):
+        # Call Item's attach method first
+        super().attach(path)
 
         # Flat data strucuture where the keys are unique
         table = {}
@@ -87,17 +79,15 @@ class Translation(Item):
         # Decide infrastructure/parser to use based on file name
         if format is "gettext":
             po = polib.pofile(path)
-
-            info("Translated messages: %s%%", po.percent_translated())
+            info("Translated messages: %s=%s%%", self.language, po.percent_translated())
 
             for entry in po.translated_entries():
                 entryId = generateId(entry.msgid, entry.msgid_plural, entry.msgctxt)
-
                 if not entryId in table:
-                    # TODO: Change to respect context correctly
                     if entry.msgstr != "":
                         table[entryId] = entry.msgstr
                     elif entry.msgstr_plural:
+                        # This field contains all different plural cases (type=dict)
                         table[entryId] = entry.msgstr_plural
 
         elif format is "xlf":
@@ -109,9 +99,20 @@ class Translation(Item):
         elif format is "txt":
             raise JasyError("Parsing ICU/text files is currently not supported!")
                         
-        info("Translation of %s entries ready" % len(table))
+        info("Translation of %s entries ready" % len(table))        
+        self.table = table
 
-        self.__table = table
-        return table
+        return self
 
 
+    def getTable(self):
+        """Returns the translation table"""
+        return self.table
+
+    def getLanguage(self):
+        """Returns the language of the translation file"""
+        return self.language        
+
+    def getFormat(self):
+        """Returns the format of the localization file"""
+        return getFormat(self.getPath())

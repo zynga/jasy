@@ -14,6 +14,8 @@ import jasy.js.clean.DeadCode
 import jasy.js.clean.Unused
 import jasy.js.clean.Permutate
 
+import jasy.js.optimize.Translation
+
 import jasy.js.output.Optimization
 
 from jasy.core.Item import Item
@@ -24,7 +26,7 @@ from jasy.js.output.Compressor import Compressor
 
 from jasy.js.util import *
 
-from jasy.i18n.Translation import hasText
+from jasy.js.optimize.Translation import hasText
 
 from jasy.core.Logging import * 
 
@@ -309,7 +311,7 @@ class Class(Item):
                 tree = copy.deepcopy(tree)
             
                 if translation:
-                    translation.patch(tree)
+                    jasy.js.optimize.Translation.optimize(tree, translation)
 
                 if optimization:
                     try:
