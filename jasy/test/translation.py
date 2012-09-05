@@ -26,12 +26,11 @@ class Tests(unittest.TestCase):
             "Hello %1!": "Hallo: %1!",
             "Hello %1! %1!": "Hallo: %1! %1!",
             
-            "Chat (noum)": "Unterhaltung",
-            "Chat (noum) %1": "Unterhaltung %1",
+            "Chat[C:Chat (noum)]": "Unterhaltung",
+            "Chat %1[C:Chat (noum) %1]": "Unterhaltung %1",
             
-            "You have got a new mail": "Du hast eine neue E-Mail",
-            "You have got new mails": "Du hast neue E-Mails",
-            "You have got %1 new mails": "Du hast %1 neue E-Mail erhalten"
+            "You have got a new mail[N:You have got new mails]": {0:"Du hast eine neue E-Mail", 1:"Du hast neue E-Mails"},
+            "You have got a new mail[N:You have got %1 new mails]": {0:"Du hast eine neue E-Mail", 1:"Du hast %1 neue E-Mail erhalten"}
             
         })
         
@@ -132,7 +131,7 @@ class Tests(unittest.TestCase):
                 alert(trn("You have got a new mail", "You have got new mails", newMails));
             }
             '''),
-            'function wrapper(){alert((newMails<=1?"Du hast eine neue E-Mail":"Du hast neue E-Mails"))}'
+            'function wrapper(){alert(trnc({0:"Du hast eine neue E-Mail",1:"Du hast neue E-Mails"},newMails))}'
         )
 
     def test_trn2(self):
@@ -143,7 +142,7 @@ class Tests(unittest.TestCase):
                 alert(trn("You have got a new mail", "You have got %1 new mails", newMails, newMails));
             }
             '''),
-            'function wrapper(){alert((newMails<=1?"Du hast eine neue E-Mail":"Du hast "+newMails+" neue E-Mail erhalten"))}'
+            'function wrapper(){alert(trnc({0:"Du hast eine neue E-Mail",1:"Du hast "+newMails+" neue E-Mail erhalten"},newMails))}'
         )
 
 
