@@ -72,10 +72,10 @@ class Asset(Item):
         
 
     def isImageSpriteConfig(self):
-        return self.isText() and basename(self.id) == "jasysprite.yaml"
+        return self.isText() and (basename(self.id) == "jasysprite.yaml" or basename(self.id) == "jasysprite.json")
 
     def isImageAnimationConfig(self):
-        return self.isText() and basename(self.id) == "jasyanimation.yaml"
+        return self.isText() and (basename(self.id) == "jasyanimation.yaml" or basename(self.id) == "jasyanimation.json")
 
     def isText(self):
         return self.type == "text"
