@@ -56,6 +56,9 @@ class Translation:
                         
         debug("Translation of %s entries ready" % len(self.__table))
         
+
+    def __str__(self):
+        return self.__language
         
         
     #
@@ -75,8 +78,19 @@ class Translation:
     __replacer = re.compile("(%[0-9])")
     
 
-    def __rebuildAsSplitted(self, value, mapper):
-        """ The real splitter engine. Creates plus Node instances and cascade them automatically """
+    def __splitTemplate(self, patchParam, valueParams):
+        """ 
+        Split string into plus-expression(s) 
+
+        - patchParam: string node containing the placeholders
+        - valueParams: list of params to inject
+        """
+
+        value = patchParam.value
+
+        # Convert list with nodes into Python dict
+        # [a, b, c] => {0:a, 1:b, 2:c}
+        mapper = { pos: value for pos, value in enumerate(valueParams) }
         
         result = []
         splits = self.__replacer.split(value)
@@ -116,18 +130,6 @@ class Translation:
         return pair
 
     
-    def __splitTemplate(self, patchParam, valueParams):
-        """ 
-        Split string into plus-expression(s) 
-
-        - patchParam: string node containing the placeholders
-        - valueParams: list of params to inject
-        """
-
-        mapper = { pos: value for pos, value in enumerate(valueParams) }
-        return self.__rebuildAsSplitted(patchParam.value, mapper)
-    
-    
     def __recurser(self, node):
 
         # Process children
@@ -135,15 +137,20 @@ class Translation:
             if child is not None:
                 self.__recurser(child)
                         
-        
+        # Process all method calls
         if node.type == "call":
             funcName = None
             
+            # Uses global translation method (not typical)
             if node[0].type == "identifier":
                 funcNameNode = node[0]
+
+            # Uses namespaced translation method.
+            # Typically core.locale.Translation.tr() or Translation.tr()
             elif node[0].type == "dot" and node[0][1].type == "identifier":
                 funcNameNode = node[0][1]
 
+            # Gettext methods only at the moment
             funcName = funcNameNode.value
             if funcName in ("tr", "trc", "trn", "marktr"):
                 info("Found translation method %s in %s", funcName, node.line)
@@ -212,6 +219,7 @@ class Translation:
                     container = Node(None, "object_init")
                     params.insert(0, container)
 
+                    # Create new construction with all properties generated from the translation table
                     for plural in table[key]:
                         pluralEntry = Node(None, "property_init")
                         pluralEntryIdentifier = Node(None, "identifier")
@@ -222,6 +230,7 @@ class Translation:
                         pluralEntry.append(pluralEntryValue)
                         container.append(pluralEntry)
 
+                    # Replace strings with plus operations to omit complex client side string operation
                     if len(params) > 2:
                         allReplaced = True
                         for pluralEntry in container:
@@ -231,18 +240,13 @@ class Translation:
                             else:
                                 allReplaced = False
 
+                        # When all variables have been patched in all string with placeholder
+                        # we are able to remove the whole list of placeholder values afterwards
                         if allReplaced:
-                            print("CLEAN")
-                            print(params)
-
                             while len(params) > 2:
                                 params.pop()
 
-                            print("DONE")
-                            print(params)
-
-
-
+                        print(node)
 
                 outdent()
 
