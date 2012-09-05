@@ -9,6 +9,9 @@ from jasy.core.Item import Item
 from jasy.core.Logging import *
 
 
+__all__ = ["getFormat", "generateId", "Translation"]
+
+
 def getFormat(path):
     """
     Returns the file format of the translation. One of: gettext, xlf, properties and txt
