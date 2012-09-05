@@ -151,7 +151,7 @@ class Translation:
             # Gettext methods only at the moment
             funcName = funcNameNode.value
             if funcName in ("tr", "trc", "trn", "marktr"):
-                info("Found translation method %s in %s", funcName, node.line)
+                debug("Found translation method %s in %s", funcName, node.line)
                 indent()
 
                 params = node[1]
