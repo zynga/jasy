@@ -62,24 +62,9 @@ class Translation:
     # Public API
     #
 
-    def generate(self):
-        return "this.$$translation=%s;" % json.dumps(self.__generate({}), separators=(',',':'), ensure_ascii=False)
-
     def patch(self, node):
         self.__recurser(node)
         
-
-
-    #
-    # Generate :: Implementation
-    #
-    
-    def __generate(self, data):
-        for msgid in self.__table:
-            data[msgid] = self.__table[msgid]
-            
-        return data
-
 
 
     #
@@ -131,24 +116,16 @@ class Translation:
         return pair
 
     
-    def __splitTemplate(self, replaceNode, patchParam, valueParams):
+    def __splitTemplate(self, patchParam, valueParams):
         """ 
         Split string into plus-expression(s) 
 
-        - replaceNode: 
-        - patchParam: 
-        - valueParams: 
+        - patchParam: string node containing the placeholders
+        - valueParams: list of params to inject
         """
-        
+
         mapper = { pos: value for pos, value in enumerate(valueParams) }
-        
-        try:
-            pair = self.__rebuildAsSplitted(patchParam.value, mapper)
-        except TranslationError as ex:
-            raise TranslationError("Invalid translation usage in line %s. %s" % (replaceNode.line, ex))
-            
-        if pair:
-            replaceNode.parent.replace(replaceNode, pair)
+        return self.__rebuildAsSplitted(patchParam.value, mapper)
     
     
     def __recurser(self, node):
@@ -169,7 +146,7 @@ class Translation:
 
             funcName = funcNameNode.value
             if funcName in ("tr", "trc", "trn", "marktr"):
-                info("Found translation method: %s" % funcName)
+                info("Found translation method %s in %s", funcName, node.line)
                 indent()
 
                 params = node[1]
@@ -197,7 +174,9 @@ class Translation:
                     if len(params) == 1:
                         node.parent.replace(node, params[0])
                     else:
-                        self.__splitTemplate(node, params[0], params[1:])
+                        replacement = self.__splitTemplate(params[0], params[1:])
+                        if replacement:
+                            node.parent.replace(node, replacement)
                         
                         
                 # Signature trc(context, msg, arg1, ...)
@@ -209,9 +188,11 @@ class Translation:
                     if len(params) == 2:
                         node.parent.replace(node, params[1])
                     else:
-                        self.__splitTemplate(node, params[1], params[2:])
-                        
-                        
+                        replacement = self.__splitTemplate(params[1], params[2:])
+                        if replacement:
+                            node.parent.replace(node, replacement)
+
+
                 # Signature trn(msgSingular, msgPlural, int, arg1, ...)
                 elif funcName == "trn":
                     key = "%s[N:%s]" % (params[0].value, params[1].value)
@@ -240,6 +221,26 @@ class Translation:
                         pluralEntry.append(pluralEntryIdentifier)
                         pluralEntry.append(pluralEntryValue)
                         container.append(pluralEntry)
+
+                    if len(params) > 2:
+                        allReplaced = True
+                        for pluralEntry in container:
+                            replacement = self.__splitTemplate(pluralEntry[1], params[2:])
+                            if replacement:
+                                pluralEntry.replace(pluralEntry[1], replacement)
+                            else:
+                                allReplaced = False
+
+                        if allReplaced:
+                            print("CLEAN")
+                            print(params)
+
+                            while len(params) > 2:
+                                params.pop()
+
+                            print("DONE")
+                            print(params)
+
 
 
 
