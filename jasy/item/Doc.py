@@ -5,7 +5,7 @@
 
 from jasy.js.api.Data import ApiData
 from jasy.core.Markdown import markdown
-from jasy.core.Item import Item
+from jasy.item.Item import Item
 from jasy.core.Error import JasyError
 
 class Doc(Item):

@@ -289,7 +289,7 @@ class ApiWriter():
             
         return False
     
-    
+
     def write(self, distFolder, classFilter=None, callback="apiload", showInternals=False, showPrivates=False, printErrors=True, highlightCode=True):
         
         
@@ -308,9 +308,16 @@ class ApiWriter():
             indent()
             for className in classes:
                 if self.isIncluded(className, classFilter):
-                    apiData[className] = classes[className].getApi(highlightCode)
-                    highlightedCode[className] = classes[className].getHighlightedCode()
+
+                    data = classes[className].getApi(highlightCode)
+
+                    if not data.isEmpty:
+                        apiData[className] = data
+                        highlightedCode[className] = classes[className].getHighlightedCode()
                 
+                    else:
+                        info("Skipping %s, class is empty." % className)
+
             outdent()
         
         
@@ -319,7 +326,7 @@ class ApiWriter():
         #
         
         header("Processing API Data...")
-        data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates, printErrors=printErrors)
+        data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates, printErrors=printErrors, highlightCode=highlightCode)
         
         
         
@@ -351,13 +358,14 @@ class ApiWriter():
                 error("Could not write API data of: %s: %s", className, writeError)
                 continue
 
-        info("Saving highlighted code (%s files)...", len(highlightedCode))
-        for className in highlightedCode:
-            try:
-                writeFile(os.path.join(distFolder, "%s.html" % className), highlightedCode[className])
-            except TypeError as writeError:
-                error("Could not write highlighted code of: %s: %s", className, writeError)
-                continue
+        if highlightCode:
+            info("Saving highlighted code (%s files)...", len(highlightedCode))
+            for className in highlightedCode:
+                try:
+                    writeFile(os.path.join(distFolder, "%s.html" % className), highlightedCode[className])
+                except TypeError as writeError:
+                    error("Could not write highlighted code of: %s: %s", className, writeError)
+                    continue
 
         info("Writing index...")
         writeFile(os.path.join(distFolder, "meta-index.%s" % extension), encode(index, "meta-index"))
@@ -365,7 +373,7 @@ class ApiWriter():
         
 
 
-    def process(self, apiData, classFilter=None, internals=False, privates=False, printErrors=True):
+    def process(self, apiData, classFilter=None, internals=False, privates=False, printErrors=True, highlightCode=True):
         
         knownClasses = set(list(apiData))
 
@@ -501,7 +509,7 @@ class ApiWriter():
                                 for paramTypeEntry in paramEntry["type"]:
                                     if not paramTypeEntry["name"] in knownClasses and not paramTypeEntry["name"] in additionalTypes and not ("builtin" in paramTypeEntry or "pseudo" in paramTypeEntry):
                                         item["errornous"] = True
-                                        error('- Invalid param type "%s" in %s at line %s', paramTypeEntry["name"], className, item["line"])
+                                        error('Invalid param type "%s" in %s' % (paramTypeEntry["name"], className))
 
                                     if not "pseudo" in paramTypeEntry and paramTypeEntry["name"] in knownClasses:
                                         paramTypeEntry["linkable"] = True
@@ -512,13 +520,14 @@ class ApiWriter():
                         for returnTypeEntry in item["returns"]:
                             if not returnTypeEntry["name"] in knownClasses and not returnTypeEntry["name"] in additionalTypes and not ("builtin" in returnTypeEntry or "pseudo" in returnTypeEntry):
                                 item["errornous"] = True
-                                error('- Invalid return type "%s" in %s at line %s', returnTypeEntry["name"], className, item["line"])
+                                error('Invalid return type "%s" in %s' % (returnTypeEntry["name"], className))
                             
                             if not "pseudo" in returnTypeEntry and returnTypeEntry["name"] in knownClasses:
                                 returnTypeEntry["linkable"] = True
                             
                 elif not item["type"] in builtinTypes and not item["type"] in pseudoTypes and not item["type"] in additionalTypes:
-                    error('- Invalid type "%s" in %s at line %s', item["type"], className, item["line"])
+                    item["errornous"] = True
+                    error('Invalid type "%s" in %s' % (item["type"], className))
             
             
             # Process doc
@@ -531,10 +540,11 @@ class ApiWriter():
                         linkCheck = checkInternalLink(linkUrl[1:], className)
                         if linkCheck is not True:
                             item["errornous"] = True
+
                             if sectionName:
-                                error("- %s in %s:%s~%s at line %s" % (linkCheck, sectionName, className, name, item["line"]))
+                                error("%s in %s:%s~%s" % (linkCheck, sectionName, className, name))
                             else:
-                                error("- %s in %s at line %s" % (linkCheck, className, item["line"]))
+                                error("%s in %s" % (linkCheck, className))
             
                 linkExtract.sub(processInternalLink, item["doc"])
 
@@ -635,7 +645,7 @@ class ApiWriter():
                     destApi.main["from"].append(className)
                 
                 else:
-                    destApi = apiData[destName] = ApiData(destName)
+                    destApi = apiData[destName] = ApiData(destName, highlight=highlightCode)
                     destApi.main = {
                         "type" : "Extend",
                         "name" : destName,
@@ -852,7 +862,7 @@ class ApiWriter():
             for split in splits[1:]:
                 if not packageName in apiData:
                     warn("Missing package documentation %s", packageName)
-                    apiData[packageName] = ApiData(packageName)
+                    apiData[packageName] = ApiData(packageName, highlight=highlightCode)
                     apiData[packageName].main = {
                         "type" : "Package",
                         "name" : packageName

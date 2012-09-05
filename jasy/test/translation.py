@@ -9,7 +9,8 @@ sys.path.insert(0, jasyroot)
 import jasy.js.parse.Parser as Parser
 import jasy.js.parse.ScopeScanner as ScopeScanner
 import jasy.js.output.Compressor as Compressor
-import jasy.i18n.Translation as Translation
+import jasy.js.optimize.Translation as TranslationOptimizer
+import jasy.item.Translation as Translation
 
 
 class Tests(unittest.TestCase):
@@ -17,7 +18,7 @@ class Tests(unittest.TestCase):
     def process(self, code):
         node = Parser.parse(code)
 
-        translation = Translation.Translation("de_DE", table={
+        translation = Translation.Translation(None, id="de_DE", table={
             
             "Hello World": "Hallo Welt",
             "Short": "Kurz",
@@ -26,16 +27,15 @@ class Tests(unittest.TestCase):
             "Hello %1!": "Hallo: %1!",
             "Hello %1! %1!": "Hallo: %1! %1!",
             
-            "Chat (noum)": "Unterhaltung",
-            "Chat (noum) %1": "Unterhaltung %1",
+            "Chat[C:Chat (noum)]": "Unterhaltung",
+            "Chat %1[C:Chat (noum) %1]": "Unterhaltung %1",
             
-            "You have got a new mail": "Du hast eine neue E-Mail",
-            "You have got new mails": "Du hast neue E-Mails",
-            "You have got %1 new mails": "Du hast %1 neue E-Mail erhalten"
+            "You have got a new mail[N:You have got new mails]": {0:"Du hast eine neue E-Mail", 1:"Du hast neue E-Mails"},
+            "You have got a new mail[N:You have got %1 new mails]": {0:"Du hast eine neue E-Mail", 1:"Du hast %1 neue E-Mail erhalten"}
             
         })
         
-        translation.patch(node)
+        TranslationOptimizer.optimize(node, translation)
         
         return Compressor.Compressor().compress(node)        
 
@@ -132,7 +132,7 @@ class Tests(unittest.TestCase):
                 alert(trn("You have got a new mail", "You have got new mails", newMails));
             }
             '''),
-            'function wrapper(){alert((newMails<=1?"Du hast eine neue E-Mail":"Du hast neue E-Mails"))}'
+            'function wrapper(){alert(trnc({0:"Du hast eine neue E-Mail",1:"Du hast neue E-Mails"},newMails))}'
         )
 
     def test_trn2(self):
@@ -143,7 +143,7 @@ class Tests(unittest.TestCase):
                 alert(trn("You have got a new mail", "You have got %1 new mails", newMails, newMails));
             }
             '''),
-            'function wrapper(){alert((newMails<=1?"Du hast eine neue E-Mail":"Du hast "+newMails+" neue E-Mail erhalten"))}'
+            'function wrapper(){alert(trnc({0:"Du hast eine neue E-Mail",1:"Du hast "+newMails+" neue E-Mail erhalten"},newMails))}'
         )
 
 

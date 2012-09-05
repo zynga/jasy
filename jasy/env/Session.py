@@ -5,7 +5,7 @@
 
 import itertools, time, atexit, json, os
 
-from jasy.i18n.Translation import Translation
+from jasy.item.Translation import Translation
 from jasy.i18n.LocaleData import *
 
 from jasy.core.Json import toJson
@@ -14,7 +14,7 @@ from jasy.core.Permutation import Permutation
 from jasy.core.Config import findConfig
 
 from jasy.core.Error import JasyError
-from jasy.env.State import setPermutation, header
+from jasy.env.State import getPermutation, setPermutation, setTranslation, header
 from jasy.core.Json import toJson
 from jasy.core.Logging import *
 
@@ -22,6 +22,7 @@ __all__ = ["Session"]
 
 
 class Session():
+
     #
     # Core
     #
@@ -179,6 +180,29 @@ class Session():
     # Fields allow to inject data from the build into the running application
     #
     
+    def setLocales(self, locales, default=None):
+        """
+        Store locales as a special built-in field with optional default value
+        """
+
+        self.__fields["locale"] = {
+            "values" : locales,
+            "default" : default or locales[0],
+            "detect" : "core.detect.Locale"
+        }
+
+
+    def setDefaultLocale(self, locale):
+        """
+        Sets the default locale
+        """
+
+        if not "locale" in self.__fields:
+            raise JasyError("Define locales first!")
+
+        self.__fields["locale"]["default"] = locale
+
+
     def setField(self, name, value):
         """
         Statically configure the value of the given field.
@@ -273,7 +297,7 @@ class Session():
 
         fields = self.__fields
         values = { key:fields[key]["values"] for key in fields if "values" in fields[key] }
-               
+
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         names = sorted(values)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
@@ -292,8 +316,9 @@ class Session():
         
         for pos, current in enumerate(permutations):
             info(colorize("Permutation %s/%s:" % (pos+1, length), "bold"))
-            setPermutation(current)
             indent()
+            setPermutation(current)
+            setTranslation(self.getTranslationBundle())
             yield current
             outdent()
 
@@ -375,7 +400,7 @@ class Session():
         Returns a set of all available translations 
         
         This is the sum of all projects so even if only one 
-        project supports fr_FR then it will be included here.
+        project supports "fr_FR" then it will be included here.
         """
         
         supported = set()
@@ -385,26 +410,50 @@ class Session():
         return supported
     
     
-    def getTranslation(self, locale):
+    def getTranslationBundle(self):
         """ 
-        Returns a translation object for the given locale containing 
+        Returns a translation object for the given language containing 
         all relevant translation files for the current project set. 
         """
-        
-        # Prio: de_DE => de => C (default locale) => Code
-        check = [locale]
-        if "_" in locale:
-            check.append(locale[:locale.index("_")])
-        check.append("C")
-        
-        files = []
-        for entry in check:
+
+        language = getPermutation().get("locale")
+        if language is None:
+            return None
+
+        info("Creating translation bundle: %s", language)
+        indent()
+
+        # Initialize new Translation object with no project assigned
+        # This object is used to merge all seperate translation instances later on.
+        combined = Translation(None, id=language)
+        relevantLanguages = self.expandLanguage(language)
+
+        # Loop structure is build to prefer finer language matching over project priority
+        for currentLanguage in reversed(relevantLanguages):
             for project in self.__projects:
-                translations = project.getTranslations()
-                if translations and entry in translations:
-                    files.append(translations[entry])
-        
-        return Translation(locale, files)
+                for translation in project.getTranslations().values():
+                    if translation.getLanguage() == currentLanguage:
+                        info("Adding %s entries from %s @ %s...", len(translation.getTable()), currentLanguage, project.getName())
+                        combined += translation
+
+        debug("Combined number of translations: %s", len(combined.getTable()))
+        outdent()
+
+        return combined
+
+
+    def expandLanguage(self, language):
+        """Expands the given language into a list of languages being used in priority order (highest first)"""
+
+        # Priority Chain: 
+        # de_DE => de => C (default language) => code
+
+        all = [language]
+        if "_" in language:
+            all.append(language[:language.index("_")])
+        all.append("C")
+
+        return all
         
         
         

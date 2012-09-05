@@ -15,7 +15,8 @@ __all__ = ["ApiData"]
 class ApiData():
     """
     Container for all relevant API data. 
-    Automatically generated, filled and cached by jasy.js.Class.getApiDocs().
+    Automatically generated, filled and cached by jasy.item.Item
+jasy.item.Class.getApiDocs().
     """
 
 
@@ -25,7 +26,7 @@ class ApiData():
         "id", 
         "package", "basename", 
         "errors", "size", "assets", "permutations", 
-        "content",
+        "content", "isEmpty",
         
         "uses", "usedBy", 
         "includes", "includedBy", 
@@ -43,6 +44,7 @@ class ApiData():
         splits = id.split(".")
         self.basename = splits.pop()
         self.package = ".".join(splits)
+        self.isEmpty = False
         
         self.uses = set()
         self.main = {
@@ -94,6 +96,10 @@ class ApiData():
             raise jasyError
                 
         except Exception as error:
+            self.main["errors"] = ({
+                "line": 1,
+                "message": "%s" % error
+            })
             self.main["errornous"] = True
             self.warn("Error during processing file: %s" % error, 1)
     
@@ -200,7 +206,7 @@ class ApiData():
                             self.implements = [valueToString(entry) for entry in sectionValue]
 
                         else:
-                            self.warn('Invalid core.Class section "%s"' % sectionName, propertyInit.line) 
+                            self.warn('Invalid core.Class section "%s"' % sectionName, propertyInit.line)
                             
                 else:
                     self.warn("Invalid core.Class()", callNode.line)
@@ -255,7 +261,16 @@ class ApiData():
                 self.setMain("Native", result.parent, name)
                 success = True
 
+
                 if result[1].type == "object_init":
+
+                    # Ingore empty objects and do not produce namespaces for them
+                    #
+                    # e.g. some.namespace.foo = {};
+                    if len(result[1]) == 0:
+                        success = False
+                        self.isEmpty = True
+
                     self.statics = {}
                     for prop in result[1]:
                         self.addEntry(prop[0].value, prop[1], prop, self.statics)
@@ -326,7 +341,6 @@ class ApiData():
                     self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
                         
             else:
-                
                 self.warn("Invalid core.Main.addStatics()")
         
         
@@ -351,7 +365,6 @@ class ApiData():
                     self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                    
                         
             else:
-                
                 self.warn("Invalid core.Main.addMembers()")
 
 
@@ -377,7 +390,7 @@ class ApiData():
         
         callComment = getDocComment(mainNode)
 
-        self.main = {
+        entry = self.main = {
             "type" : mainType,
             "name" : exportName,
             "line" : mainNode.line
@@ -387,14 +400,15 @@ class ApiData():
             
             if callComment.text:
                 html = callComment.getHtml(self.highlight)
-                self.main["doc"] = html
-                self.main["summary"] = extractSummary(html)
+                entry["doc"] = html
+                entry["summary"] = extractSummary(html)
         
             if hasattr(callComment, "tags"):
-                self.main["tags"] = callComment.tags
+                entry["tags"] = callComment.tags
         
         if callComment is None or not callComment.text:
-            self.main["errornous"] = True
+            entry["errornous"] = True
+            self.warn('Missing comment on "%s" namespace' % exportName, mainNode.line)
 
 
     def addProperty(self, name, valueNode, commentNode, collection):
@@ -406,6 +420,8 @@ class ApiData():
         
         if comment is None or not comment.text:
             entry["errornous"] = True
+            self.warn('Missing or empty comment on property "%s"' % name, valueNode.line)
+
         else:
             html = comment.getHtml(self.highlight)
             entry["doc"] = html
@@ -495,6 +511,7 @@ class ApiData():
                     self.warn("Documentation for parameters of constructor are missing", valueNode.line)
                     for paramName in funcParams:
                         entry["params"][paramName]["errornous"] = True
+
                 else:
                     for paramName in funcParams:
                         if paramName in comment.params:
@@ -546,10 +563,12 @@ class ApiData():
                 entry["doc"] = html
                 entry["summary"] = extractSummary(html)
             else:
+                self.warn("Comment contains invalid HTML", commentNode.line)
                 entry["errornous"] = True
                 
         else:
-            entry["errornous"] = True
+            self.warn("Invalid doc comment", commentNode.line)
+            entry["errornous"] = True            
             
 
 

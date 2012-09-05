@@ -35,6 +35,9 @@ class Tests(unittest.TestCase):
     def test_combine_mixed_empty(self):
         self.assertEqual(self.process('4 + 3 + "x"'), '')
 
+    def test_combine_inner_out(self):
+        self.assertEqual(self.process('var s=x+"foo"+"bar"'), 'var s=x+"foobar";')
+
     def test_elseinline_return(self):
         self.assertEqual(self.process(
             '''

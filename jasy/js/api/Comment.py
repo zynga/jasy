@@ -78,6 +78,9 @@ class Comment():
     # Text of the comment converted to HTML (only for doc comment)
     __html = None
     
+    # Text of the comment converted to HTML including highlighting (only for doc comment)
+    __highlightedHTML = None
+
     
     def __init__(self, text, context=None, lineNo=0, indent="", fileId=None):
         # Store context (relation to code)
@@ -136,14 +139,16 @@ class Comment():
 
     def getHtml(self, highlight=True):
         """Returns the comment text converted to HTML"""
+
+        field = "__highlightedHTML" if highlight else "__html"
         
-        if self.variant == "doc" and self.__html is None:
+        if self.variant == "doc" and getattr(self, field, None) is None:
             if markdown is None:
                 raise JasyError("Markdown is not supported by the system. Documentation comments could not be processed into HTML.")
             
-            self.__html = markdown(self.__originalText, highlight)
+            setattr(self, field, markdown(self.__originalText, highlight))
     
-        return self.__html
+        return getattr(self, field, None)
     
     
     def hasHtmlContent(self):

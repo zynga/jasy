@@ -11,7 +11,7 @@ build/deployment scripts.
 
 ## Installation
 
-For details have a look at [the official documentation](https://github.com/zynga/jasy/wiki/Installation).
+For details have a look at [the official documentation](https://github.com/zynga/jasy/wiki).
 
 
 ## Authors

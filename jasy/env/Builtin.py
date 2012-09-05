@@ -33,7 +33,7 @@ def help():
 
     header("Showing Help")
     jasy.info()
-    
+
     print(colorize(colorize("Usage", "underline"), "bold"))
     print("  $ jasy [<options...>] <task1> [<args...>] [<task2> [<args...>]]")
 
@@ -90,6 +90,7 @@ def create(name="myproject", origin=None, version=None, skeleton=None, destinati
         originPath = originProject.getPath()
         originName = originProject.getName()
         originVersion = None
+        originRevision = None
 
     elif isRepository(origin):
         info("Using remote skeleton")
@@ -171,6 +172,7 @@ def create(name="myproject", origin=None, version=None, skeleton=None, destinati
     config.set("jasy.version", jasy.__version__)
     config.set("origin.name", originName)
     config.set("origin.version", originVersion)
+    config.set("origin.revision", originRevision)
     config.set("origin.skeleton", os.path.basename(skeletonPath))
 
     config.injectValues(**argv)

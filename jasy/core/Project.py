@@ -14,17 +14,23 @@ from jasy.env.Config import Config
 from jasy.env.State import setPermutation, header, loadLibrary
 
 # Item types
-from jasy.core.Item import Item
-from jasy.core.Doc import Doc
-from jasy.js.Class import Class
-from jasy.asset.Asset import Asset
+from jasy.item.Item import Item
+from jasy.item.Item
+jasy.item.Doc import Doc
+from jasy.item.Translation import Translation
+from jasy.item.Item
+jasy.item.Class import Class
+from jasy.item.Item
+jasy.item.Asset import Asset
 
 
 __all__ = ["Project", "getProjectFromPath", "getProjectDependencies"]
 
 
 classExtensions = (".js")
-translationExtensions = (".po")
+
+# Gettext .po files + ICU formats (http://userguide.icu-project.org/locale/localizing) (all formats but without .java support)
+translationExtensions = (".po", ".xlf", ".properties", ".txt")
 docFiles = ("package.md", "readme.md")
 repositoryFolder = re.compile(r"^([a-zA-Z0-9\.\ _-]+)-([a-f0-9]{40})$")
 
@@ -309,8 +315,6 @@ class Project():
         else:
             fileId = ""
 
-
-
         # Structure files  
         if fileExtension in classExtensions and distname == "classes":
             fileId += os.path.splitext(relPath)[0]
@@ -523,7 +527,7 @@ class Project():
         return self.assets
 
     def getTranslations(self):
-        """ Returns all translation files. Supports gettext style PO files with .po extension. """
+        """ Returns all translation objects """
         return self.translations
 
         

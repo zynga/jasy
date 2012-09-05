@@ -91,7 +91,15 @@ def __optimize(node, compressor):
         debug("Joining strings at line: %s", node.line)
         node[0].value = "%s%s" % (node[0].value, node[1].value)
         node[0].type = "string"
+
         node.parent.replace(node, node[0])
+
+    # Pre-combine last with last (special case e.g.: somevar + "hello" + "world")
+    elif node.type == "plus" and node[0].type == "plus" and node[0][1].type in ("number", "string") and node[1].type in ("number", "string"):
+        node[1].value = "%s%s" % (node[0][1].value, node[1].value)
+        node[1].type = "string"
+
+        node.replace(node[0], node[0][0])
 
 
     # Unwrap blocks

@@ -14,9 +14,11 @@ import jasy.js.clean.DeadCode
 import jasy.js.clean.Unused
 import jasy.js.clean.Permutate
 
+import jasy.js.optimize.Translation
+
 import jasy.js.output.Optimization
 
-from jasy.core.Item import Item
+from jasy.item.Item import Item
 from jasy.core.Permutation import getPermutation
 from jasy.js.api.Data import ApiData
 from jasy.js.MetaData import MetaData
@@ -24,7 +26,7 @@ from jasy.js.output.Compressor import Compressor
 
 from jasy.js.util import *
 
-from jasy.i18n.Translation import hasText
+from jasy.js.optimize.Translation import hasText
 
 from jasy.core.Logging import * 
 
@@ -208,7 +210,7 @@ class Class(Item):
         
     def getApi(self, highlight=True):
         field = "api[%s]-%s" % (self.id, highlight)
-        apidata = self.project.getCache().read(field, self.mtime)
+        apidata = self.project.getCache().read(field, self.mtime, inMemory=False)
         if apidata is None:
             apidata = ApiData(self.id, highlight)
             
@@ -227,7 +229,7 @@ class Class(Item):
             apidata.addSize(self.getSize())
             apidata.addFields(self.getFields())
             
-            self.project.getCache().store(field, apidata, self.mtime)
+            self.project.getCache().store(field, apidata, self.mtime, inMemory=False)
 
         return apidata
 
@@ -309,7 +311,7 @@ class Class(Item):
                 tree = copy.deepcopy(tree)
             
                 if translation:
-                    translation.patch(tree)
+                    jasy.js.optimize.Translation.optimize(tree, translation)
 
                 if optimization:
                     try:
