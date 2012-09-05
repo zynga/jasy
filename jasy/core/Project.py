@@ -14,11 +14,14 @@ from jasy.env.Config import Config
 from jasy.env.State import setPermutation, header, loadLibrary
 
 # Item types
-from jasy.core.Item import Item
-from jasy.core.Doc import Doc
-from jasy.core.Translation import Translation
-from jasy.js.Class import Class
-from jasy.asset.Asset import Asset
+from jasy.item.Item import Item
+from jasy.item.Item
+jasy.item.Doc import Doc
+from jasy.item.Translation import Translation
+from jasy.item.Item
+jasy.item.Class import Class
+from jasy.item.Item
+jasy.item.Asset import Asset
 
 
 __all__ = ["Project", "getProjectFromPath", "getProjectDependencies"]

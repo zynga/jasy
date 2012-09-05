@@ -18,7 +18,7 @@ import jasy.js.optimize.Translation
 
 import jasy.js.output.Optimization
 
-from jasy.core.Item import Item
+from jasy.item.Item import Item
 from jasy.core.Permutation import getPermutation
 from jasy.js.api.Data import ApiData
 from jasy.js.MetaData import MetaData

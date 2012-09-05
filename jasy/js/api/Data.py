@@ -15,7 +15,8 @@ __all__ = ["ApiData"]
 class ApiData():
     """
     Container for all relevant API data. 
-    Automatically generated, filled and cached by jasy.js.Class.getApiDocs().
+    Automatically generated, filled and cached by jasy.item.Item
+jasy.item.Class.getApiDocs().
     """
 
 

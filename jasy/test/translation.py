@@ -10,7 +10,7 @@ import jasy.js.parse.Parser as Parser
 import jasy.js.parse.ScopeScanner as ScopeScanner
 import jasy.js.output.Compressor as Compressor
 import jasy.js.optimize.Translation as TranslationOptimizer
-import jasy.core.Translation as Translation
+import jasy.item.Translation as Translation
 
 
 class Tests(unittest.TestCase):

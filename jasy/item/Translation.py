@@ -5,7 +5,7 @@
 
 import polib
 
-from jasy.core.Item import Item
+from jasy.item.Item import Item
 from jasy.core.Logging import *
 
 
