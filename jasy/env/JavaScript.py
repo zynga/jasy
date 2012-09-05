@@ -11,8 +11,7 @@ from jasy.core.Logging import *
 
 from jasy.env.File import writeFile
 
-from jasy.item.Item
-jasy.item.Class import ClassError
+from jasy.item.Class import ClassError
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
 

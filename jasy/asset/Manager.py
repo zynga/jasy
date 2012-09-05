@@ -9,8 +9,7 @@ from os.path import basename, dirname, relpath, normpath
 from jasy.env.File import *
 from jasy.core.Project import Project
 from jasy.env.State import session, getPermutation, prependPrefix
-from jasy.item.Item
-jasy.item.Asset import Asset
+from jasy.item.Asset import Asset
 from jasy.core.Error import JasyError
 from jasy.core.Util import sha1File, getKey
 from jasy.core.Logging import *
