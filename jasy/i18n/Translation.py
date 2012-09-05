@@ -39,6 +39,7 @@ def hasText(node):
 
 
 class Translation:
+    
     def __init__(self, language, items=None, table=None):
         self.__language = language
 

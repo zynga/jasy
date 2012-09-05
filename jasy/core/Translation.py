@@ -8,6 +8,40 @@ import polib
 from jasy.core.Item import Item
 from jasy.core.Logging import *
 
+
+def getFormat(path):
+    """
+    Returns the file format of the translation. One of: gettext, xlf, properties and txt
+    """
+
+    if path:
+        if path.endswith(".po"):
+            return "gettext"
+        elif path.endswith(".xlf"):
+            return "xlf"
+        elif path.endswith(".properties"):
+            return "property"
+        elif path.endswith(".txt"):
+            return "txt"
+
+    return None
+
+
+def generateId(basic, plural=None, context=None):
+    """
+    Returns a unique message ID based on info typically stored in the code: id, plural, context
+    """
+
+    result = basic
+
+    if context is not None:
+        result += "[C:%s]" % context
+    elif plural is not "":
+        result += "[N:%s]" % plural
+
+    return result
+
+
 class Translation(Item):
     """
     Internal instances mapping a translation file in different formats
@@ -30,30 +64,15 @@ class Translation(Item):
 
 
     def getLanguage(self):
-        """
-        Returns the language of the translation file
-        """
+        """Returns the language of the translation file"""
 
         return self.language        
 
 
     def getFormat(self):
-        """
-        Returns the file format of the translation. One of: gettext, xlf, properties and txt
-        """
+        """Returns the format of the localization file"""
 
-        path = self.getPath()
-        if path:
-            if path.endswith(".po"):
-                return "gettext"
-            elif path.endswith(".xlf"):
-                return "xlf"
-            elif path.endswith(".properties"):
-                return "property"
-            elif path.endswith(".txt"):
-                return "txt"
-
-        return None
+        return getFormat(self.getPath())
 
 
     def getTable(self):
@@ -69,14 +88,10 @@ class Translation(Item):
         if format is "gettext":
             po = polib.pofile(path)
 
-            info("Percent of translated messages: %s", po.percent_translated())
+            info("Translated messages: %s%%", po.percent_translated())
 
             for entry in po.translated_entries():
-                entryId = entry.msgid
-                if entry.msgctxt is not None:
-                    entryId += "[C:%s]" % entry.msgctxt
-                elif entry.msgid_plural != "":
-                    entryId += "[N:%s]" % entry.msgid_plural
+                entryId = generateId(entry.msgid, entry.msgid_plural, entry.msgctxt)
 
                 if not entryId in table:
                     # TODO: Change to respect context correctly
