@@ -291,7 +291,6 @@ class ApiData():
                     if len(result[1]) == 0:
                         success = False
                         self.isEmpty = True
-                        #self.addError(self.main, "Namespace is empty")
 
                     self.statics = {}
                     for prop in result[1]:
@@ -440,7 +439,7 @@ class ApiData():
         comment = getDocComment(commentNode)
         
         if comment is None or not comment.text:
-            self.addError(mainNode, 'Missing or empty comment on property "%s"' % name)
+            nodeError(entry, 'Missing or empty comment on property "%s"' % name)
 
         else:
             html = comment.getHtml(self.highlight)
