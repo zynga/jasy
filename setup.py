@@ -120,6 +120,7 @@ setup(
     'jasy.core',
     'jasy.env',
     'jasy.i18n',
+    'jasy.item',
     'jasy.js',
     'jasy.js.api',
     'jasy.js.clean',
