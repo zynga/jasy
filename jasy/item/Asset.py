@@ -64,11 +64,12 @@ class Asset(Item):
     __imageDimensionData = []
 
     def __init__(self, project, id=None):
-        self.id = id
+        # Call Item's init method first
+        super().__init__(project, id)
+
         self.extension = splitext(self.id.lower())[1]
         self.type = getKey(extensions, self.extension, "other")
         self.shortType = self.type[0]
-        self.project = project
         
 
     def isImageSpriteConfig(self):

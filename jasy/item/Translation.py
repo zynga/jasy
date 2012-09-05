@@ -57,9 +57,8 @@ class Translation(Item):
 
 
     def __init__(self, project, id=None, table=None):
-        self.id = id
-        self.project = project
-        self.table = table or {}
+        # Call Item's init method first
+        super().__init__(project, id)
 
         # Extract language from file ID
         # Thinking of that all files are named like de.po, de.txt, de.properties, etc.
@@ -68,6 +67,9 @@ class Translation(Item):
             lang = lang[lang.rfind(".")+1:]
 
         self.language = lang
+
+        # Initialize translation table
+        self.table = table or {}
 
 
     def attach(self, path):
