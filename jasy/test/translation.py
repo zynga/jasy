@@ -9,7 +9,8 @@ sys.path.insert(0, jasyroot)
 import jasy.js.parse.Parser as Parser
 import jasy.js.parse.ScopeScanner as ScopeScanner
 import jasy.js.output.Compressor as Compressor
-import jasy.i18n.Translation as Translation
+import jasy.js.optimize.Translation as TranslationOptimizer
+import jasy.core.Translation as Translation
 
 
 class Tests(unittest.TestCase):
@@ -17,7 +18,7 @@ class Tests(unittest.TestCase):
     def process(self, code):
         node = Parser.parse(code)
 
-        translation = Translation.Translation("de_DE", table={
+        translation = Translation.Translation(None, id="de_DE", table={
             
             "Hello World": "Hallo Welt",
             "Short": "Kurz",
@@ -34,7 +35,7 @@ class Tests(unittest.TestCase):
             
         })
         
-        translation.patch(node)
+        TranslationOptimizer.optimize(node, translation)
         
         return Compressor.Compressor().compress(node)        
 
