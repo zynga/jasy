@@ -3,14 +3,17 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import re, copy, json, polib
+import re, copy, polib
 
 from jasy.core.Error import JasyError
 from jasy.core.Logging import *
-
 from jasy.js.parse.Node import Node
 
-__all__ = ["TranslationError", "Translation", "hasText"]
+
+__all__ = ["Translation", "hasText"]
+
+
+translationFunctions = ("tr", "trc", "trn", "marktr")
 
 
 def hasText(node):
@@ -22,7 +25,7 @@ def hasText(node):
         elif node[0].type == "dot" and node[0][1].type == "identifier":
             funcName = node[0][1].value
         
-        if funcName in ("tr", "trc", "trn"):
+        if funcName in translationFunctions:
             return True
             
     # Process children
@@ -33,10 +36,6 @@ def hasText(node):
                 return True
     
     return False
-
-
-class TranslationError(Exception):
-    pass
 
 
 class Translation:
@@ -113,7 +112,7 @@ class Translation:
                 try:
                     repl = mapper[pos]
                 except KeyError:
-                    raise TranslationError("Invalid positional value: %s in %s" % (entry, value))
+                    raise JasyError("Invalid positional value: %s in %s" % (entry, value))
                 
                 copied = copy.deepcopy(mapper[pos])
                 if copied.type not in ("identifier", "call"):
@@ -150,7 +149,7 @@ class Translation:
 
             # Gettext methods only at the moment
             funcName = funcNameNode.value
-            if funcName in ("tr", "trc", "trn", "marktr"):
+            if funcName in translationFunctions:
                 debug("Found translation method %s in %s", funcName, node.line)
                 indent()
 
