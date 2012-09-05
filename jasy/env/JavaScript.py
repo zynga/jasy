@@ -11,8 +11,7 @@ from jasy.core.Logging import *
 
 from jasy.env.File import writeFile
 
-from jasy.item.Item
-jasy.item.Class import ClassError
+from jasy.item.Class import ClassError
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
 
@@ -154,10 +153,10 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
         assetCode = 'core.io.Asset.addData(%s);' % assetData
         result.append(packCode(assetCode))
 
-    translationData = translationManager.export(classes)
-    if translationData:
-        translationCode = 'core.locale.Translate.addData(%s);' % translationData
-        result.append(packCode(translationCode))        
+    #translationData = translationManager.export(classes)
+    #if translationData:
+    #    translationCode = 'core.locale.Translate.addData(%s);' % translationData
+    #    result.append(packCode(translationCode))        
 
     wrappedBootCode = "function(){%s}" % bootCode if bootCode else "null"
     loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loader, wrappedBootCode)

@@ -15,13 +15,10 @@ from jasy.env.State import setPermutation, header, loadLibrary
 
 # Item types
 from jasy.item.Item import Item
-from jasy.item.Item
-jasy.item.Doc import Doc
+from jasy.item.Doc import Doc
 from jasy.item.Translation import Translation
-from jasy.item.Item
-jasy.item.Class import Class
-from jasy.item.Item
-jasy.item.Asset import Asset
+from jasy.item.Class import Class
+from jasy.item.Asset import Asset
 
 
 __all__ = ["Project", "getProjectFromPath", "getProjectDependencies"]
