@@ -40,18 +40,18 @@ class TranslationError(Exception):
 
 
 class Translation:
-    def __init__(self, language, items=None):
+    def __init__(self, language, items=None, table=None):
         self.__language = language
 
         debug("Initialize translation: %s" % language)
         self.__table = {}
 
-        print("Init Translation %s with Table: " % language, len(items))
+        if table:
+            self.__table.update(table)
 
         if items:
             debug("Load %s translations..." % len(items))
             for translation in items:
-                print("Updating with translation %s" % translation.getPath())
                 self.__table.update(translation.getTable())
                         
         debug("Translation of %s entries ready" % len(self.__table))
@@ -78,15 +78,13 @@ class Translation:
     __replacer = re.compile("(%[0-9])")
     
 
-    def __splitTemplate(self, patchParam, valueParams):
+    def __splitTemplate(self, value, valueParams):
         """ 
         Split string into plus-expression(s) 
 
         - patchParam: string node containing the placeholders
         - valueParams: list of params to inject
         """
-
-        value = patchParam.value
 
         # Convert list with nodes into Python dict
         # [a, b, c] => {0:a, 1:b, 2:c}
@@ -181,7 +179,7 @@ class Translation:
                     if len(params) == 1:
                         node.parent.replace(node, params[0])
                     else:
-                        replacement = self.__splitTemplate(params[0], params[1:])
+                        replacement = self.__splitTemplate(params[0].value, params[1:])
                         if replacement:
                             node.parent.replace(node, replacement)
                         
@@ -195,7 +193,7 @@ class Translation:
                     if len(params) == 2:
                         node.parent.replace(node, params[1])
                     else:
-                        replacement = self.__splitTemplate(params[1], params[2:])
+                        replacement = self.__splitTemplate(params[1].value, params[2:])
                         if replacement:
                             node.parent.replace(node, replacement)
 
@@ -232,21 +230,15 @@ class Translation:
 
                     # Replace strings with plus operations to omit complex client side string operation
                     if len(params) > 2:
-                        allReplaced = True
                         for pluralEntry in container:
-                            replacement = self.__splitTemplate(pluralEntry[1], params[2:])
+                            replacement = self.__splitTemplate(pluralEntry[1].value, params[2:])
                             if replacement:
                                 pluralEntry.replace(pluralEntry[1], replacement)
-                            else:
-                                allReplaced = False
 
                         # When all variables have been patched in all string with placeholder
                         # we are able to remove the whole list of placeholder values afterwards
-                        if allReplaced:
-                            while len(params) > 2:
-                                params.pop()
-
-                        print(node)
+                        while len(params) > 2:
+                            params.pop()
 
                 outdent()
 
