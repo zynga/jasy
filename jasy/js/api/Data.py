@@ -9,29 +9,7 @@ from jasy.core.Logging import *
 from jasy.core.Error import JasyError
 
 
-__all__ = ["ApiData", "nodeError"]
-
-
-def nodeError(node, message):
-
-    node["errornous"] = True
-
-    if not "errors" in node:
-        node["errors"] = []
-
-    # Some of these may not be objects but instances
-    line = 0
-    try:
-        line = node.line
-
-    except:
-        line = node["line"]
-
-    node["errors"].append({
-        "name": "foo",
-        "message": message,
-        "line": line
-    })
+__all__ = ["ApiData"]
 
 
 class ApiData():
@@ -147,7 +125,7 @@ class ApiData():
                         self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
                         
                 else:
-                    nodeError(callNode, "Invalid core.Module()")
+                    self.warn("Invalid core.Module()", callNode.line)
 
 
             #
@@ -181,10 +159,10 @@ class ApiData():
                                 self.addEntry(memberEntry[0].value, memberEntry[1], memberEntry, self.members)
                         
                         else:
-                            nodeError(propertyInit, 'Invalid core.Interface section "%s"' % sectionName) 
+                            self.warn('Invalid core.Interface section "%s"' % sectionName, propertyInit.line) 
 
                 else:
-                    nodeError(callNode, "Invalid core.Interface()")
+                    self.warn("Invalid core.Interface()", callNode.line)
 
 
             #
@@ -227,10 +205,10 @@ class ApiData():
                             self.implements = [valueToString(entry) for entry in sectionValue]
 
                         else:
-                            nodeError(propertyInit, 'Invalid core.Class section "%s"' % sectionName) 
+                            self.warn('Invalid core.Class section "%s"' % sectionName, propertyInit.line)
                             
                 else:
-                    nodeError(callNode, "Invalid core.Class()")
+                    self.warn("Invalid core.Class()", callNode.line)
 
 
             #
@@ -362,7 +340,7 @@ class ApiData():
                     self.addEntry(staticsEntry[0].value, staticsEntry[1], staticsEntry, self.statics)
                         
             else:
-                nodeError(callNode, "Invalid core.Main.addStatics()")
+                self.warn("Invalid core.Main.addStatics()")
         
         
         #
@@ -386,7 +364,7 @@ class ApiData():
                     self.addEntry(membersEntry[0].value, membersEntry[1], membersEntry, self.members)                    
                         
             else:
-                nodeError(callNode, "Invalid core.Main.addMembers()")
+                self.warn("Invalid core.Main.addMembers()")
 
 
         return success
@@ -411,7 +389,7 @@ class ApiData():
         
         callComment = getDocComment(mainNode)
 
-        self.main = {
+        entry = self.main = {
             "type" : mainType,
             "name" : exportName,
             "line" : mainNode.line
@@ -421,14 +399,15 @@ class ApiData():
             
             if callComment.text:
                 html = callComment.getHtml(self.highlight)
-                self.main["doc"] = html
-                self.main["summary"] = extractSummary(html)
+                entry["doc"] = html
+                entry["summary"] = extractSummary(html)
         
             if hasattr(callComment, "tags"):
-                self.main["tags"] = callComment.tags
+                entry["tags"] = callComment.tags
         
         if callComment is None or not callComment.text:
-            nodeError(self.main, 'Missing comment on "%s" namespace' % exportName)
+            entry["errornous"] = True
+            self.warn('Missing comment on "%s" namespace' % exportName, mainNode.line)
 
 
     def addProperty(self, name, valueNode, commentNode, collection):
@@ -439,7 +418,8 @@ class ApiData():
         comment = getDocComment(commentNode)
         
         if comment is None or not comment.text:
-            nodeError(entry, 'Missing or empty comment on property "%s"' % name)
+            entry["errornous"] = True
+            self.warn('Missing or empty comment on property "%s"' % name, valueNode.line)
 
         else:
             html = comment.getHtml(self.highlight)
@@ -527,7 +507,7 @@ class ApiData():
             comment = getDocComment(commentNode)
             if comment:
                 if not comment.params:
-                    nodeError(valueNode, "Documentation for parameters of constructor are missing")
+                    self.warn("Documentation for parameters of constructor are missing", valueNode.line)
                     for paramName in funcParams:
                         entry["params"][paramName]["errornous"] = True
 
@@ -537,11 +517,10 @@ class ApiData():
                             entry["params"][paramName].update(comment.params[paramName])
                         else:
                             entry["params"][paramName]["errornous"] = True
-                            nodeError(valueNode, "Missing documentation for parameter %s in constructor" % paramName)
+                            self.warn("Missing documentation for parameter %s in constructor" % paramName, valueNode.line)
                             
             else:
                 entry["errornous"] = True
-                nodeError(valueNode, "Missing comment on constructor")
 
 
     def addEvent(self, name, valueNode, commentNode, collection):
@@ -583,10 +562,12 @@ class ApiData():
                 entry["doc"] = html
                 entry["summary"] = extractSummary(html)
             else:
-                nodeError(valueNode, "Comment contains invalid HTML")
+                self.warn("Comment contains invalid HTML", commentNode.line)
+                entry["errornous"] = True
                 
         else:
-            nodeError(valueNode, "Invalid doc comment")
+            self.warn("Invalid doc comment", commentNode.line)
+            entry["errornous"] = True            
             
 
 
@@ -733,14 +714,12 @@ class ApiData():
                 entry["summary"] = extractSummary(html)
             else:
                 entry["errornous"] = True
-                nodeError(entry, "Comment contains invalid HTML")
                 
             if comment.tags:
                 entry["tags"] = comment.tags
                 
         else:
             entry["errornous"] = True
-            nodeError(entry, "No suitable doc comment found for %s" % name)
         
         
         #
@@ -787,12 +766,12 @@ class ApiData():
                 if funcParams:
                     if not comment.params:
                         for paramName in funcParams:
-                            nodeError(entry, "Missing doc for function parameter %s" % paramName)
+                            entry["params"][paramName]["errornous"] = True
                             
                     else:
                         for paramName in funcParams:
                             if paramName in comment.params:
                                 entry["params"][paramName].update(comment.params[paramName])
                             else:
-                                nodeError(entry, "Missing doc for function parameter %s" % paramName)
+                                entry["params"][paramName]["errornous"] = True
 
