@@ -13,7 +13,6 @@ from jasy.core.Repository import isRepository, updateRepository
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
 from jasy.env.Config import Config
-from distutils.version import StrictVersion
 
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 
@@ -51,102 +50,7 @@ def help():
 
 @task
 def doctor():
-    """Troubleshooting the Jasy environment"""
-
-    header("Troubleshooting Environment")
-
-    info('\n')
-
-    dists = [dist for dist in pip.get_installed_distributions()]
-    keys = [dist.key for dist in pip.get_installed_distributions()]
-    
-    versions = {}
-    for dist in dists:
-        versions[dist.key] = dist.version
-
-    def checkSingleInstallation(keys, versions, packageName, minVersion, installPath, updatePath):
-        info('\t%s:' % packageName)
-        if packageName.lower() in keys:
-            info('\t   - Found installation')
-            if StrictVersion(minVersion) > StrictVersion("0.0"):
-                if StrictVersion(versions[packageName.lower()]) >= StrictVersion(minVersion):
-                    info('\t   - Version is OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]))
-                else:
-                    info(colorize(colorize('\t   - Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
-                    info('\t     -> Update to the newest version of %s using %s' % (packageName, updatePath))
-        else:
-            info(colorize(colorize('\t   - Did NOT find installation', "red"), "bold"))
-            info('\t     -> Install the newest version of %s using %s' % (packageName, installPath))
-        info('\n')
-
-
-    needs = [
-        {
-            "packageName": "Pygments",
-            "minVersion": "1.5",
-            "installPath": "'$ pip install Pygments'",
-            "updatePath": "'$ pip install --upgrade pygments'"
-        },
-        {
-            "packageName": "polib",
-            "minVersion": "1.0",
-            "installPath": "'$ pip install polib'",
-            "updatePath": "'$ pip install --upgrade polib'"
-        },
-        {
-            "packageName": "requests",
-            "minVersion": "0.13",
-            "installPath": "'$ pip install requests'",
-            "updatePath": "'$ pip install --upgrade requests'"
-        },
-        {
-            "packageName": "CherryPy",
-            "minVersion": "3.2",
-            "installPath": "'$ pip install CherryPy'",
-            "updatePath": "'$ pip install --upgrade CherryPy'"
-        },
-        {
-            "packageName": "PyYAML",
-            "minVersion": "3.0",
-            "installPath": "'$ pip install PyYAML'",
-            "updatePath": "'$ pip install --upgrade PyYAML'"
-        }
-    ]
-
-    optionals = [
-        {
-            "packageName": "misaka",
-            "minVersion": "0.0",
-            "installPath": "'$ pip install misaka'",
-            "updatePath": ""
-        },
-        {
-            "packageName": "watchdog",
-            "minVersion": "0.0",
-            "installPath": "'$ pip install -e git+https://github.com/wpbasti/watchdog#egg=watchdog'",
-            "updatePath": ""
-        },
-        {
-            "packageName": "pil",
-            "minVersion": "0.0",
-            "installPath": "'$ pip install -e git+https://github.com/zynga/pil-py3k#egg=pip-py3k'",
-            "updatePath": ""
-        }
-    ]
-
-
-    # Needed packages
-    info("Needed installations: \n")
-
-    for entry in needs:
-        checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installPath"], entry["updatePath"])
-    
-
-    # Optional packages
-    info("Optional installations: \n")
-
-    for entry in optionals:
-        checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installPath"], entry["updatePath"])
+    pass
 
 
 @task

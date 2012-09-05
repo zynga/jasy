@@ -65,7 +65,6 @@ if options.version:
     sys.exit(0)
 
 
-
 # ===========================================================================
 #   LOGGING
 # ===========================================================================
@@ -92,8 +91,24 @@ if options.log:
     logfileHandler = logging.FileHandler(options.log)
     logfileHandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
     logfileHandler.setLevel(logging.DEBUG)
-    logging.getLogger().addHandler(logfileHandler)        
+    logging.getLogger().addHandler(logfileHandler)  
 
+
+# ===========================================================================
+#   DOCTOR
+# ===========================================================================      
+
+# Check for "doctor" parameter. If it's set, the complete doctor routine will be executed, then exit
+for tasks in options.getTasks():
+    if tasks['task'] == 'doctor':
+        from jasy.env.Doctor import doCompleteDoctor
+        doCompleteDoctor()
+        sys.exit(1)
+
+# Execute the initialization "doctor" routine, only with error output
+from jasy.env.Doctor import doInitializationDoctor
+if not doInitializationDoctor():
+    sys.exit(1)
 
 
 # ===========================================================================
@@ -130,8 +145,6 @@ if jasyscript:
     oldcwd = os.getcwd()
     os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
     jasyscript = os.path.basename(jasyscript)
-
-
 
 
 # ===========================================================================
@@ -175,7 +188,6 @@ import jasy.env.Builtin
 # ===========================================================================
 
 def main():
-    
     try:
         # execute build script
         if jasyscript:
