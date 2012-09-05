@@ -7,7 +7,7 @@ import polib
 
 from jasy.item.Item import Item
 from jasy.core.Logging import *
-
+from jasy.core.Json import toJson
 
 __all__ = ["getFormat", "generateId", "Translation"]
 
@@ -109,6 +109,9 @@ class Translation(Item):
 
         return self
 
+    def export(self, classes):
+        """Exports the translation table as JSON"""
+        return toJson(self.getTable())
 
     def getTable(self):
         """Returns the translation table"""

@@ -153,10 +153,12 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
         assetCode = 'core.io.Asset.addData(%s);' % assetData
         result.append(packCode(assetCode))
 
-    #translationData = translationManager.export(classes)
-    #if translationData:
-    #    translationCode = 'core.locale.Translate.addData(%s);' % translationData
-    #    result.append(packCode(translationCode))        
+    translationBundle = session.getTranslationBundle()
+    if translationBundle:
+        translationData = translationBundle.export(classes)
+        if translationData:
+            translationCode = 'core.locale.Translate.addData(%s);' % translationData
+            result.append(packCode(translationCode))        
 
     wrappedBootCode = "function(){%s}" % bootCode if bootCode else "null"
     loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loader, wrappedBootCode)
