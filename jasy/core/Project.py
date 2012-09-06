@@ -97,7 +97,9 @@ def getProjectNameFromPath(path):
 class Project():
     
     kind = "none"
-    
+    scanned = False
+
+
     def __init__(self, path, config=None, version=None):
         """
         Constructor call of the project. 
@@ -151,6 +153,9 @@ class Project():
     #
 
     def scan(self):
+
+        if self.scanned:
+            return
         
         # Processing custom content section. Only supports classes and assets.
         if self.__config.has("content"):
@@ -203,7 +208,7 @@ class Project():
         else:
             error("Project %s is empty!", self.__name)
 
-
+        self.scanned = True
 
 
 
@@ -433,7 +438,6 @@ class Project():
         """ Return the project defined fields which may be configured by the build script """
         return self.__fields
 
-
     def getClassByName(self, className):
         """ Finds a class by its name."""
 
@@ -513,18 +517,34 @@ class Project():
     
     def getDocs(self):
         """Returns all package docs"""
+
+        if not self.scanned:
+            self.scan()
+
         return self.docs
 
     def getClasses(self):
         """ Returns all project JavaScript classes. Requires all files to have a "js" extension. """
+
+        if not self.scanned:
+            self.scan()
+
         return self.classes
 
     def getAssets(self):
         """ Returns all project asssets (images, stylesheets, static data, etc.). """
+
+        if not self.scanned:
+            self.scan()
+
         return self.assets
 
     def getTranslations(self):
         """ Returns all translation objects """
+
+        if not self.scanned:
+            self.scan()
+
         return self.translations
 
         
