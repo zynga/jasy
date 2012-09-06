@@ -8,7 +8,7 @@ from os.path import basename, dirname, relpath, normpath
 
 from jasy.env.File import *
 from jasy.core.Project import Project
-from jasy.env.State import session, getPermutation, prependPrefix
+from jasy.env.State import getPermutation, prependPrefix
 from jasy.item.Asset import Asset
 from jasy.core.Error import JasyError
 from jasy.core.Util import sha1File, getKey
@@ -32,7 +32,10 @@ class AssetManager:
     are added to the exported data later on.
     """
     
-    def __init__(self):
+    def __init__(self, session):
+        # Store session reference (one asset manager per session)
+        self.__session = session
+
         # Stores manager contextual asset information (like relative paths)
         self.__data = {}
         
@@ -50,7 +53,7 @@ class AssetManager:
         
         # Loop though all projects and merge assets
         assets = self.__assets = {}
-        for project in session.getProjects():
+        for project in self.__session.getProjects():
             assets.update(project.assets)
         
         self.__processSprites()
@@ -229,7 +232,7 @@ class AssetManager:
         profileId = self.addProfile("source", urlPrefix)
 
         # Then export all relative paths to main project and add this to the runtime data
-        main = session.getMain()
+        main = self.__session.getMain()
         assets = self.index()
         data = self.__data
 
@@ -251,7 +254,7 @@ class AssetManager:
         profileId = self.addProfile("build", urlPrefix)
 
         # Then export all relative paths to main project and add this to the runtime data
-        main = session.getMain()
+        main = self.__session.getMain()
         assets = self.index()
         data = self.__data
 
@@ -335,7 +338,7 @@ class AssetManager:
         """Deploys all asset files to the destination asset folder"""
 
         assets = self.index()
-        projects = session.getProjects()
+        projects = self.__session.getProjects()
 
         copyAssetFolder = prependPrefix(assetFolder)
         filterExpr = self.__compileFilterExpr(classes)
