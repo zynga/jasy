@@ -76,6 +76,9 @@ class Translation(Item):
         # Call Item's attach method first
         super().attach(path)
 
+        debug("Loading translation file: %s", path)
+        indent()
+
         # Flat data strucuture where the keys are unique
         table = {}
         path = self.getPath()
@@ -84,7 +87,7 @@ class Translation(Item):
         # Decide infrastructure/parser to use based on file name
         if format is "gettext":
             po = polib.pofile(path)
-            info("Translated messages: %s=%s%%", self.language, po.percent_translated())
+            debug("Translated messages: %s=%s%%", self.language, po.percent_translated())
 
             for entry in po.translated_entries():
                 entryId = generateId(entry.msgid, entry.msgid_plural, entry.msgctxt)
@@ -104,7 +107,9 @@ class Translation(Item):
         elif format is "txt":
             raise JasyError("Parsing ICU/text files is currently not supported!")
                         
-        info("Translation of %s entries ready" % len(table))        
+        debug("Translation of %s entries ready" % len(table))        
+        outdent()
+        
         self.table = table
 
         return self
