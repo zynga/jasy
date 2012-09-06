@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE supplementalData SYSTEM "../../common/dtd/ldmlSupplemental.dtd">
 <supplementalData>
-	<version number="$Revision: 5851 $" />
-	<generation date="$Date: 2011-05-06 01:09:30 -0500 (Fri, 06 May 2011) $" />
+	<version number="$Revision: 6187 $" />
+	<generation date="$Date: 2011-09-30 11:43:47 -0500 (Fri, 30 Sep 2011) $" />
 	<dayPeriodRuleSet>
 		<dayPeriodRules locales="root">  <!--  default for any locales not listed under other dayPeriods -->
 			<dayPeriodRule type="am" from="0:00" before="12:00" />
@@ -120,5 +120,14 @@
 			< 12:00 ≤ afternoon
 			< 17:00 ≤ evening
 			< 24:00 -->
+		<dayPeriodRules locales="ee">
+				<dayPeriodRule type="night" from="00:00" before="03:00"/><!-- zã -->
+				<dayPeriodRule type="earlyMorning" from="03:00" before="06:00"/><!-- fɔŋli -->
+				<dayPeriodRule type="morning" from="06:00" before="12:00"/><!-- ŋdi -->
+				<dayPeriodRule type="earlyAfternoon" from="12:00" before="15:00"/><!-- ŋdɔ -->
+				<dayPeriodRule type="afternoon" from="15:00" before="18:00"/><!-- ɣetrɔ -->
+				<dayPeriodRule type="evening" from="18:00" before="21:00"/><!-- fiẽ -->
+				<dayPeriodRule type="night" from="21:00" before="24:00"/><!-- zã -->
+		</dayPeriodRules>
 	</dayPeriodRuleSet>
 </supplementalData>

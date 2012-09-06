@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	<!DOCTYPE supplementalData SYSTEM "../../common/dtd/ldmlSupplemental.dtd">
 <supplementalData>
-	<version number="$Revision: 5989 $"/>
-	<generation date="$Date: 2011-07-08 15:38:27 -0500 (Fri, 08 Jul 2011) $"/>
+	<version number="$Revision: 6524 $"/>
+	<generation date="$Date: 2012-02-01 12:15:49 -0600 (Wed, 01 Feb 2012) $"/>
 	<likelySubtags>
 		<likelySubtag from="aa" to="aa_Latn_ET"/>
 		<!--{ Afar; ?; ? } => { Afar; Latin; Ethiopia }-->
@@ -80,6 +80,14 @@
 		<!--{ Chuukese; ?; ? } => { Chuukese; Latin; Micronesia }-->
 		<likelySubtag from="chr" to="chr_Cher_US"/>
 		<!--{ Cherokee; ?; ? } => { Cherokee; Cherokee; United States }-->
+		<likelySubtag from="ckb" to="ckb_Arab_IQ"/>
+                <!--{ Sorani Kurdish; ?; ? } => { Sorani Kurdish; Arabic; Iraq }-->
+                <likelySubtag from="ckb_Arab" to="ckb_Arab_IQ"/>
+                <!--{ Sorani Kurdish; Arabic; ? } => { Sorani Kurdish; Arabic; Iraq }-->
+                <likelySubtag from="ckb_IQ" to="ckb_Arab_IQ"/>
+                <!--{ Sorani Kurdish; ?; Iraq } => { Sorani Kurdish; Arabic; Iraq }-->
+                <likelySubtag from="ckb_IR" to="ckb_Arab_IR"/>
+                <!--{ Sorani Kurdish; ?; Iran } => { Sorani Kurdish; Arabic; Iran }-->
 		<likelySubtag from="cs" to="cs_Latn_CZ"/>
 		<!--{ Czech; ?; ? } => { Czech; Latin; Czech Republic }-->
 		<likelySubtag from="cy" to="cy_Latn_GB"/>
@@ -256,8 +264,10 @@
 		<!--{ Bafia; ?; ? } => { Bafia; Latin; Cameroon }-->
 		<likelySubtag from="ksh" to="ksh_Latn_DE"/>
 		<!--{ Colognian; ?; ? } => { Colognian; Latin; Germany }-->
-		<likelySubtag from="ku" to="ku_Arab_IQ"/>
-		<!--{ Kurdish; ?; ? } => { Kurdish; Arabic; Iraq }-->
+		<likelySubtag from="ku" to="ku_Latn_TR"/>
+		<!--{ Kurdish; ?; ? } => { Kurdish; Latin; Turkey }-->
+		<likelySubtag from="ku_Arab" to="ku_Arab_IQ"/>
+		<!--{ Kurdish; Arabic; ? } => { Kurdish; Arabic; Iraq }-->
 		<likelySubtag from="ku_Latn" to="ku_Latn_TR"/>
 		<!--{ Kurdish; Latin; ? } => { Kurdish; Latin; Turkey }-->
 		<likelySubtag from="ku_SY" to="ku_Latn_SY"/>
@@ -266,6 +276,8 @@
 		<!--{ Kurdish; ?; Turkey } => { Kurdish; Latin; Turkey }-->
 		<likelySubtag from="kum" to="kum_Cyrl_RU"/>
 		<!--{ Kumyk; ?; ? } => { Kumyk; Cyrillic; Russia }-->
+		<likelySubtag from="kv" to="kv_Cyrl_RU"/>
+		<!--{ Komi-Zyrian; ?; ? } => { Komi-Zyrian; Cyrillic; Russia }-->
 		<likelySubtag from="kw" to="kw_Latn_GB"/>
 		<!--{ Cornish; ?; ? } => { Cornish; Latin; United Kingdom }-->
 		<likelySubtag from="ky" to="ky_Cyrl_KG"/>
@@ -924,6 +936,8 @@
 		<!--{ ?; ?; Somalia } => { Somali; Latin; Somalia }-->
 		<likelySubtag from="und_SR" to="nl_Latn_SR"/>
 		<!--{ ?; ?; Suriname } => { Dutch; Latin; Suriname }-->
+		<likelySubtag from="und_SS" to="en_Latn_SS"/>
+		<!--{ ?; ?; South Sudan } => { English; Latin; South Sudan }-->
 		<likelySubtag from="und_ST" to="pt_Latn_ST"/>
 		<!--{ ?; ?; São Tomé and Príncipe } => { Portuguese; Latin; São Tomé and Príncipe }-->
 		<likelySubtag from="und_SV" to="es_Latn_SV"/>
@@ -1030,6 +1044,8 @@
 		<!--{ Yapese; ?; ? } => { Yapese; Latin; Micronesia }-->
 		<likelySubtag from="yav" to="yav_Latn_CM"/>
 		<!--{ Yangben; ?; ? } => { Yangben; Latin; Cameroon }-->
+    <likelySubtag from="yi" to="yi_Hebr_IL"/>
+    <!--{ Yiddish; ?; ? } => { Yiddish; Hebrew; Israel }-->
 		<likelySubtag from="yo" to="yo_Latn_NG"/>
 		<!--{ Yoruba; ?; ? } => { Yoruba; Latin; Nigeria }-->
 		<likelySubtag from="za" to="za_Latn_CN"/>

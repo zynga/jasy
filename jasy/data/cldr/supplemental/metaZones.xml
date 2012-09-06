@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE supplementalData SYSTEM "../../common/dtd/ldmlSupplemental.dtd">
 <supplementalData>
-	<version number="$Revision: 5938 $"/>
-	<generation date="$Date: 2011-06-27 15:48:12 -0500 (Mon, 27 Jun 2011) $"/>
+	<version number="$Revision: 6438 $"/>
+	<generation date="$Date: 2012-01-25 01:30:12 -0600 (Wed, 25 Jan 2012) $"/>
 
 	<metaZones>
 		<metazoneInfo>
@@ -88,6 +88,10 @@
 			</timezone>
 			<timezone type="Africa/Johannesburg">
 				<usesMetazone mzone="Africa_Southern"/>
+			</timezone>
+			<timezone type="Africa/Juba">
+				<usesMetazone to="2000-01-15 10:00" mzone="Africa_Central"/>
+				<usesMetazone from="2000-01-15 10:00" mzone="Africa_Eastern"/>
 			</timezone>
 			<timezone type="Africa/Kampala">
 				<usesMetazone mzone="Africa_Eastern"/>
@@ -470,6 +474,9 @@
 				<usesMetazone to="2000-10-29 07:00" mzone="America_Central"/>
 				<usesMetazone from="2000-10-29 07:00" mzone="America_Eastern"/>
 			</timezone>
+			<timezone type="America/Kralendijk">
+				<usesMetazone mzone="Atlantic"/>
+			</timezone>
 			<timezone type="America/La_Paz">
 				<usesMetazone mzone="Bolivia"/>
 			</timezone>
@@ -483,6 +490,9 @@
 				<usesMetazone to="1974-01-06 07:00" mzone="America_Eastern"/>
 				<usesMetazone to="1974-10-27 07:00" from="1974-01-06 07:00" mzone="America_Central"/>
 				<usesMetazone from="1974-10-27 07:00" mzone="America_Eastern"/>
+			</timezone>
+			<timezone type="America/Lower_Princes">
+				<usesMetazone mzone="Atlantic"/>
 			</timezone>
 			<timezone type="America/Maceio">
 				<usesMetazone mzone="Brasilia"/>
@@ -632,7 +642,8 @@
 				<usesMetazone to="2000-10-29 07:00" mzone="America_Central"/>
 				<usesMetazone to="2001-04-01 08:00" from="2000-10-29 07:00" mzone="America_Eastern"/>
 				<usesMetazone to="2006-10-29 07:00" from="2001-04-01 08:00" mzone="America_Central"/>
-				<usesMetazone from="2006-10-29 07:00" mzone="America_Eastern"/>
+				<usesMetazone to="2007-03-11 08:00" from="2006-10-29 07:00" mzone="America_Eastern"/>
+				<usesMetazone from="2007-03-11 08:00" mzone="America_Central"/>
 			</timezone>
 			<timezone type="America/Rio_Branco">
 				<usesMetazone to="2008-06-24 05:00" mzone="Acre"/>
@@ -856,6 +867,10 @@
 			<timezone type="Asia/Harbin">
 				<usesMetazone to="1980-04-30 15:30" mzone="Changbai"/>
 				<usesMetazone from="1980-04-30 15:30" mzone="China"/>
+			</timezone>
+			<timezone type="Asia/Hebron">
+				<usesMetazone to="1995-12-31 22:00" mzone="Israel"/>
+				<usesMetazone from="1995-12-31 22:00" mzone="Europe_Eastern"/>
 			</timezone>
 			<timezone type="Asia/Hong_Kong">
 				<usesMetazone mzone="Hong_Kong"/>
@@ -1203,7 +1218,7 @@
 			</timezone>
 			<timezone type="Europe/Minsk">
 				<usesMetazone to="1991-03-30 23:00" mzone="Moscow"/>
-				<usesMetazone from="1991-03-30 23:00" mzone="Europe_Eastern"/>
+				<usesMetazone to="2011-03-27 00:00" from="1991-03-30 23:00" mzone="Europe_Eastern"/>
 			</timezone>
 			<timezone type="Europe/Monaco">
 				<usesMetazone mzone="Europe_Central"/>
@@ -1465,7 +1480,7 @@
 			</timezone>
 		</metazoneInfo>
 
-		<mapTimezones type="metazones">
+		<mapTimezones type="metazones" typeVersion="2011n">
 			<mapZone other="Acre" territory="001" type="America/Rio_Branco"/>
 			<mapZone other="Afghanistan" territory="001" type="Asia/Kabul"/>
 			<mapZone other="Africa_Central" territory="001" type="Africa/Maputo"/>
@@ -1548,6 +1563,7 @@
 			<mapZone other="Atlantic" territory="AW" type="America/Aruba"/>
 			<mapZone other="Atlantic" territory="BB" type="America/Barbados"/>
 			<mapZone other="Atlantic" territory="BM" type="Atlantic/Bermuda"/>
+			<mapZone other="Atlantic" territory="BQ" type="America/Kralendijk"/>
 			<mapZone other="Atlantic" territory="DM" type="America/Dominica"/>
 			<mapZone other="Atlantic" territory="GD" type="America/Grenada"/>
 			<mapZone other="Atlantic" territory="GL" type="America/Thule"/>
@@ -1558,6 +1574,7 @@
 			<mapZone other="Atlantic" territory="MQ" type="America/Martinique"/>
 			<mapZone other="Atlantic" territory="MS" type="America/Montserrat"/>
 			<mapZone other="Atlantic" territory="PR" type="America/Puerto_Rico"/>
+			<mapZone other="Atlantic" territory="SX" type="America/Lower_Princes"/>
 			<mapZone other="Atlantic" territory="TT" type="America/Port_of_Spain"/>
 			<mapZone other="Atlantic" territory="VC" type="America/St_Vincent"/>
 			<mapZone other="Atlantic" territory="VG" type="America/Tortola"/>

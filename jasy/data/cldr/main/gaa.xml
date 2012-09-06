@@ -2,8 +2,8 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 5798 $"/>
-		<generation date="$Date: 2011-05-02 01:05:34 -0500 (Mon, 02 May 2011) $"/>
+		<version number="$Revision: 6443 $"/>
+		<generation date="$Date: 2012-01-25 13:51:07 -0600 (Wed, 25 Jan 2012) $"/>
 		<language type="gaa"/>
 	</identity>
 	<characters>
@@ -54,7 +54,7 @@
 				<days>
 					<dayContext type="format">
 						<dayWidth type="abbreviated">
-							<day type="sun" draft="unconfirmed">Ho</day>
+							<day type="sun" draft="unconfirmed">Hog</day>
 							<day type="mon" draft="unconfirmed">Dzu</day>
 							<day type="tue" draft="unconfirmed">Dzf</day>
 							<day type="wed" draft="unconfirmed">Sho</day>

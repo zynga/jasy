@@ -2,8 +2,8 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 5859 $"/>
-		<generation date="$Date: 2011-05-07 04:18:01 -0500 (Sat, 07 May 2011) $"/>
+		<version number="$Revision: 6546 $"/>
+		<generation date="$Date: 2012-02-07 12:32:35 -0600 (Tue, 07 Feb 2012) $"/>
 		<language type="trv"/>
 	</identity>
 	<localeDisplayNames>
@@ -262,9 +262,9 @@
 						<dateFormatItem id="ms" draft="provisional">mm:ss</dateFormatItem>
 						<dateFormatItem id="y" draft="provisional">y</dateFormatItem>
 						<dateFormatItem id="yM" draft="provisional">yyyy-M</dateFormatItem>
-						<dateFormatItem id="yMEd" draft="provisional">EEE, yyyy-M-d</dateFormatItem>
+						<dateFormatItem id="yMEd" draft="provisional">E, yyyy-M-d</dateFormatItem>
 						<dateFormatItem id="yMMM" draft="provisional">y MMM</dateFormatItem>
-						<dateFormatItem id="yMMMEd" draft="provisional">EEE, y MMM d</dateFormatItem>
+						<dateFormatItem id="yMMMEd" draft="provisional">E, y MMM d</dateFormatItem>
 						<dateFormatItem id="yMMMM" draft="provisional">y MMMM</dateFormatItem>
 						<dateFormatItem id="yQ" draft="provisional">yyyy Q</dateFormatItem>
 						<dateFormatItem id="yQQQ" draft="provisional">y QQQ</dateFormatItem>
@@ -413,30 +413,36 @@
 			</metazone>
 			<metazone type="Europe_Central">
 				<long>
-					<standard draft="provisional">Jikan Conow</standard>
+					<generic draft="provisional">Jikan Conow</generic>
+					<standard draft="provisional">Snegun Jikan Conow</standard>
 					<daylight draft="provisional">Jikan Conow o Karat Rbagan</daylight>
 				</long>
 				<short>
+					<generic draft="provisional">JC</generic>
 					<standard draft="provisional">JC</standard>
 					<daylight draft="provisional">JCKR</daylight>
 				</short>
 			</metazone>
 			<metazone type="Europe_Eastern">
 				<long>
-					<standard draft="provisional">Jikan Tonow</standard>
+					<generic draft="provisional">Jikan Tonow</generic>
+					<standard draft="provisional">Snegun Jikan Tonow</standard>
 					<daylight draft="provisional">Jikan Tonow o Karat Rbagan</daylight>
 				</long>
 				<short>
+					<generic draft="provisional">JT</generic>
 					<standard draft="provisional">JT</standard>
 					<daylight draft="provisional">JTKR</daylight>
 				</short>
 			</metazone>
 			<metazone type="Europe_Western">
 				<long>
-					<standard draft="provisional">Jikan Siow</standard>
+					<generic draft="provisional">Jikan Siow</generic>
+					<standard draft="provisional">Snegun Jikan Siow</standard>
 					<daylight draft="provisional">Jikan Siow o Karat Rbagan</daylight>
 				</long>
 				<short>
+					<generic draft="provisional">JS</generic>
 					<standard draft="provisional">JS</standard>
 					<daylight draft="provisional">JSKR</daylight>
 				</short>
@@ -456,28 +462,28 @@
 			<decimal draft="provisional">.</decimal>
 			<group draft="provisional">,</group>
 		</symbols>
-		<decimalFormats>
+		<decimalFormats numberSystem="latn">
 			<decimalFormatLength>
 				<decimalFormat>
 					<pattern draft="provisional">#,##0.###</pattern>
 				</decimalFormat>
 			</decimalFormatLength>
 		</decimalFormats>
-		<scientificFormats>
+		<scientificFormats numberSystem="latn">
 			<scientificFormatLength>
 				<scientificFormat>
 					<pattern draft="provisional">#E0</pattern>
 				</scientificFormat>
 			</scientificFormatLength>
 		</scientificFormats>
-		<percentFormats>
+		<percentFormats numberSystem="latn">
 			<percentFormatLength>
 				<percentFormat>
 					<pattern draft="provisional">#,##0%</pattern>
 				</percentFormat>
 			</percentFormatLength>
 		</percentFormats>
-		<currencyFormats>
+		<currencyFormats numberSystem="latn">
 			<currencyFormatLength>
 				<currencyFormat>
 					<pattern draft="provisional">¤ #,##0.00</pattern>
