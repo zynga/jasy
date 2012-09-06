@@ -8,6 +8,7 @@ import itertools, time, atexit, json, os
 from jasy.item.Translation import Translation
 from jasy.i18n.LocaleData import *
 
+from jasy.asset.Manager import AssetManager
 from jasy.core.Json import toJson
 from jasy.core.Project import Project, getProjectFromPath, getProjectDependencies
 from jasy.core.Permutation import Permutation
@@ -176,9 +177,11 @@ class Session():
             return None
 
 
+    __assetManager = None
+
     def getAssetManager(self):
         if not self.__assetManager:
-            self.__assetManager = AssetManager()
+            self.__assetManager = AssetManager(self)
 
         return self.__assetManager
     
