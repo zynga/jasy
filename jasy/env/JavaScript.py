@@ -103,7 +103,7 @@ def storeCompressed(classes, fileName, bootCode=""):
 
     outdent()
 
-    assetData = assetManager.export(classes)
+    assetData = session.getAssetManager().export(classes)
     if assetData:
         assetCode = 'core.io.Asset.addData(%s);' % assetData
         result.append(packCode(assetCode))
@@ -148,7 +148,7 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     result = []
     outdent()
     
-    assetData = assetManager.export(classes)
+    assetData = session.getAssetManager().export(classes)
     if assetData:
         assetCode = 'core.io.Asset.addData(%s);' % assetData
         result.append(packCode(assetCode))
