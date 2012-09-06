@@ -454,6 +454,15 @@ class Session():
         all.append("C")
 
         return all
+
+
+    def generateLocale(self):
+
+        permutation = getPermutation()
+        if permutation:
+            locale = permutation.get("locale")
+            if locale:
+                storeLocale(getLanguage(locale))
         
-        
+        storeLocale("de_DE")
         
