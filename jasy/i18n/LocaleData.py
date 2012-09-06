@@ -107,13 +107,17 @@ class Parser():
             "LANGUAGE" : self.__language,
             "TERRITORY" : self.__territory
         }
+
+
+        from jasy import datadir
+
         
         # Add keys (fallback to C-default locale)
-        path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), self.__language)
+        path = "%s.xml" % os.path.join(datadir, "cldr", "keys", self.__language)
         try:
             tree = xml.etree.ElementTree.parse(path)
         except IOError:
-            path = "%s.xml" % os.path.join(jasy.core.Info.cldrData("keys"), "C")
+            path = "%s.xml" % os.path.join(datadir, "cldr", "keys", "C")
             tree = xml.etree.ElementTree.parse(path)
             
         self.__data["key"] = {
@@ -122,7 +126,7 @@ class Parser():
         }
         
         # Add main CLDR data: Fallback chain for locales
-        main = jasy.core.Info.cldrData("main")
+        main = os.path.join(datadir, "cldr", "main")
         while True:
             path = "%s.xml" % os.path.join(main, locale)
             tree = xml.etree.ElementTree.parse(path)
@@ -188,7 +192,7 @@ class Parser():
     def __addSupplementals(self, territory):
         """ Converts data from supplemental folder """
         
-        supplemental = jasy.core.Info.cldrData("supplemental")
+        supplemental = os.path.join(datadir, "cldr", "supplemental")
 
         # Plurals
         path = os.path.join(supplemental, "plurals.xml")
