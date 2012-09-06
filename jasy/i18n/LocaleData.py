@@ -6,6 +6,7 @@
 import os, json, re, xml.etree.ElementTree
 from jasy.env.File import *
 from jasy.core.Logging import *
+from jasy import datadir
 
 __all__ = ["storeLocale"]
 
@@ -108,10 +109,6 @@ class Parser():
             "TERRITORY" : self.__territory
         }
 
-
-        from jasy import datadir
-
-        
         # Add keys (fallback to C-default locale)
         path = "%s.xml" % os.path.join(datadir, "cldr", "keys", self.__language)
         try:
