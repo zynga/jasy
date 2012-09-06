@@ -87,6 +87,8 @@ class Session():
             classes = project.getClasses()
             if className in classes:
                 return classes[className]
+
+        return None
     
     
     
@@ -107,13 +109,7 @@ class Session():
         
         result = getProjectDependencies(project)
         
-        info("Initializing projects...")
-        indent()
-        
         for project in result:
-            
-            # Scan project
-            project.scan()
             
             # Append to session list
             self.__projects.append(project)
@@ -139,8 +135,6 @@ class Session():
                         raise JasyError("Field '%s' uses unknown detection class %s." % (name, detect))
                 
                 self.__fields[name] = entry
-                
-        outdent()
         
         
     def getProjects(self):
@@ -180,6 +174,13 @@ class Session():
             return self.__projects[-1]
         else:
             return None
+
+
+    def getAssetManager(self):
+        if not self.__assetManager:
+            self.__assetManager = AssetManager()
+
+        return self.__assetManager
     
     
     
