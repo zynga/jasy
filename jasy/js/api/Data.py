@@ -111,18 +111,13 @@ class ApiData():
         
         try:
             if not self.__processTree(tree):
-                self.main["errornous"] = True
+                nodeError(self.main, "Unsupported File Format")
                 
         except JasyError as jasyError:
             raise jasyError
                 
         except Exception as error:
-            self.main["errors"] = ({
-                "line": 1,
-                "message": "%s" % error
-            })
-            self.main["errornous"] = True
-            self.warn("Error during processing file: %s" % error, 1)
+            nodeError(self.main, "Error during processing: %s" % error, 1)
     
     
     def __processTree(self, tree):
@@ -529,19 +524,16 @@ class ApiData():
             if comment:
                 if not comment.params:
                     nodeError(valueNode, "Documentation for parameters of constructor are missing")
-                    for paramName in funcParams:
-                        entry["params"][paramName]["errornous"] = True
 
                 else:
                     for paramName in funcParams:
                         if paramName in comment.params:
                             entry["params"][paramName].update(comment.params[paramName])
+
                         else:
-                            entry["params"][paramName]["errornous"] = True
                             nodeError(valueNode, "Missing documentation for parameter %s in constructor" % paramName)
                             
             else:
-                entry["errornous"] = True
                 nodeError(valueNode, "Missing comment on constructor")
 
 
@@ -733,14 +725,12 @@ class ApiData():
                 entry["doc"] = html
                 entry["summary"] = extractSummary(html)
             else:
-                entry["errornous"] = True
                 nodeError(entry, "Comment contains invalid HTML")
                 
             if comment.tags:
                 entry["tags"] = comment.tags
                 
         else:
-            entry["errornous"] = True
             nodeError(entry, "No suitable doc comment found for %s" % name)
         
         
