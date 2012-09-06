@@ -26,7 +26,7 @@ from jasy.js.output.Compressor import Compressor
 
 from jasy.js.util import *
 
-from jasy.js.optimize.Translation import hasText, collectTranslations
+
 
 from jasy.core.Logging import * 
 
@@ -276,7 +276,7 @@ class Class(Item):
         field = "translations[%s]" % (self.id)
         result = self.project.getCache().read(field, self.mtime)
         if result is None:
-            result = collectTranslations(self.__getTree(context="i18n"))
+            result = jasy.js.optimize.Translation.collectTranslations(self.__getTree(context="i18n"))
             self.project.getCache().store(field, result, self.mtime)
 
         return result
