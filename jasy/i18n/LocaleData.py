@@ -17,8 +17,8 @@ __all__ = ["storeLocale"]
 CLDR_DIR = os.path.join(datadir, "cldr")
 
 
-def storeLocale(locale):
-    Parser(locale).export()
+def storeLocale(locale, path):
+    Parser(locale).export(path)
     
     
 def camelCaseToUpper(input):
@@ -162,13 +162,13 @@ class Parser():
         outdent()
 
 
-    def export(self):
+    def export(self, path):
         info("Writing result...")
+        info("Target directory: %s", path)
         indent()
         
-        project = "foobar"
-        write(os.path.join(project, "jasyproject.yaml"), 'name: locale\npackage: ""\n')
-        count = self.__exportRecurser(self.__data, "locale", project)
+        write(os.path.join(path, "jasyproject.yaml"), 'name: locale\npackage: ""\n')
+        count = self.__exportRecurser(self.__data, "locale", path)
 
         info("Created %s classes", count)
         outdent()

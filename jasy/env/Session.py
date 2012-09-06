@@ -144,7 +144,15 @@ class Session():
         
         
     def getProjects(self):
-        """Returns all currently known projects."""
+        """
+        Returns all currently known and active projects. 
+        Injects locale project by current permutation value.
+        """
+
+        project = self.getLocaleProject()
+        if project:
+            return self.__projects + [project]
+
         return self.__projects
         
         
@@ -465,4 +473,32 @@ class Session():
                 storeLocale(getLanguage(locale))
         
         storeLocale("de_DE")
+
+
+    def getPermutatedLocale(self):
+        """Returns the current locale as defined in current permutation"""
+
+        permutation = getPermutation()
+        if permutation:
+            locale = permutation.get("locale")
+            if locale:
+                return locale
+
+        return None
         
+
+    def getLocaleProject(self, update=False):
+        locale = self.getPermutatedLocale()
+        if not locale:
+            return None
+
+        path = os.path.abspath(os.path.join(".jasy", "locale", locale))
+        if not os.path.exists(path) or update:
+            storeLocale(locale, path)
+
+        return getProjectFromPath(path)
+
+
+
+
+
