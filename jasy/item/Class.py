@@ -26,7 +26,7 @@ from jasy.js.output.Compressor import Compressor
 
 from jasy.js.util import *
 
-from jasy.js.optimize.Translation import hasText
+from jasy.js.optimize.Translation import hasText, collectTranslations
 
 from jasy.core.Logging import * 
 
@@ -272,13 +272,13 @@ class Class(Item):
         return fields
 
 
-    def usesTranslation(self):
-        field = "translation[%s]" % (self.id)
+    def getTranslations(self):
+        field = "translations[%s]" % (self.id)
         result = self.project.getCache().read(field, self.mtime)
         if result is None:
-            result = hasText(self.__getTree(context="i18n"))
+            result = collectTranslations(self.__getTree(context="i18n"))
             self.project.getCache().store(field, result, self.mtime)
-        
+
         return result
         
         
@@ -291,16 +291,12 @@ class Class(Item):
         return None
         
         
-    def filterTranslation(self, translation):
-        if translation and self.usesTranslation():
-            return translation
-            
-        return None
-        
-        
     def getCompressed(self, permutation=None, translation=None, optimization=None, formatting=None, context="compressed"):
         permutation = self.filterPermutation(permutation)
-        translation = self.filterTranslation(translation)
+
+        # Disable translation for caching / patching when not actually used
+        if translation and not self.getTranslations():
+            translation = None
         
         field = "compressed[%s]-%s-%s-%s-%s" % (self.id, permutation, translation, optimization, formatting)
         compressed = self.project.getCache().read(field, self.mtime)
