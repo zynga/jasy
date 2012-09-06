@@ -129,13 +129,7 @@ from jasy.env.File import *
 #   Asset Managment
 # ===========================================================================
 
-from jasy.asset.Manager import AssetManager
 from jasy.asset.SpritePacker import SpritePacker
-
-assetManager = AssetManager()
-
-# Remove class after using them
-del AssetManager
 
 
 

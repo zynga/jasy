@@ -15,7 +15,7 @@ from jasy.item.Class import ClassError
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
 
-from jasy.env.State import session, setPermutation, header, getPermutation, getTranslation, jsOptimization, jsFormatting, assetManager
+from jasy.env.State import session, setPermutation, header, getPermutation, getTranslation, jsOptimization, jsFormatting
 
 
 __all__ = ["storeKernel", "storeCompressed", "storeLoader"]
