@@ -485,7 +485,9 @@ class Parser():
                     store["format"][camelCaseToUpper(format)] = element.text
             
         # Currencies
-        currencies = self.__getStore(store, "currency")
+        currencies = self.__getStore(store, "currencyName")
+        currenciesSymbols = self.__getStore(store, "currencySymbol")
+
         for child in tree.findall("numbers/currencies/currency"):
             if not child.get("draft"):
                 short = child.get("type")
@@ -495,4 +497,8 @@ class Parser():
                         if not format in currencies:
                             currencies[short] = text
                         break
+
+                for symbolChild in child.findall("symbol"):
+                    currenciesSymbols[short] = symbolChild.text
+
                 
