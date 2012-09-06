@@ -6,6 +6,9 @@
 __version__ = "0.8-beta3"
 __author__ = "Sebastian Werner <info@sebastian-werner.net>"
 
+import os.path
+datadir = os.path.join(os.path.dirname(__file__), "data")
+
 def info():
     from jasy.core.Logging import colorize
 
