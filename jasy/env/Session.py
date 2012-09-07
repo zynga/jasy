@@ -109,12 +109,11 @@ class Session():
         """
         
         result = getProjectDependencies(project)
-        
         for project in result:
             
             # Append to session list
             self.__projects.append(project)
-            
+
             # Import project defined fields which might be configured using "activateField()"
             fields = project.getFields()
             for name in fields:
@@ -132,10 +131,9 @@ class Session():
                     
                 if "detect" in entry:
                     detect = entry["detect"]
-                    if not self.getClassByName(detect):
-                        raise JasyError("Field '%s' uses unknown detection class %s." % (name, detect))
                 
                 self.__fields[name] = entry
+
         
         
     def getProjects(self):
