@@ -174,9 +174,10 @@ class Proxy(object):
         
 class Static(object):
     
-    def __init__(self, id, config):
+    def __init__(self, id, config, contentTypes=None):
         self.id = id
         self.config = config
+        self.contentTypes = contentTypes
         self.root = getKey(config, "root", ".")
         self.enableDebug = getKey(config, "debug", False)
 
@@ -207,8 +208,18 @@ class Static(object):
         if os.path.isfile(path):
             if self.enableDebug:
                 info("Serving file: %s", path)
-            
-            return serveFile(os.path.abspath(path))
+
+            # Default content type to autodetection by Python mimetype API            
+            contenttype = None
+
+            # Support overriding by extensions
+            extension = os.path.splitext(path)[1]
+            if extension:
+                extension = extension.lower()[1:]
+                if extension in self.contentTypes:
+                    contentType = self.contentTypes[extension]
+
+            return serveFile(os.path.abspath(path), content_type=contentType)
             
         # Otherwise return a classic 404
         else:
@@ -291,13 +302,12 @@ def serve(routes=None, customContentTypes=None, port=8080, host="127.0.0.1"):
         }
     }
 
+    # Build dict of content types to override native mimetype detection
     contentTypes = {}
     contentTypes.update(additionalContentTypes)
     if customContentTypes:    
             contentTypes.update(customContentTypes)
 
-    config["/"]["tools.staticfile.content_types"] = contentTypes
-    
     # Update global config
     cherrypy.config.update(config)
 
@@ -316,14 +326,14 @@ def serve(routes=None, customContentTypes=None, port=8080, host="127.0.0.1"):
     # Initialize routing
     info("Initialize routing...")
     indent()
-    root = Static("/", {})
+    root = Static("/", {}, contentTypes=contentTypes)
     if routes:
         for key in routes:
             entry = routes[key]
             if "host" in entry:
                 node = Proxy(key, entry)
             else:
-                node = Static(key, entry)
+                node = Static(key, entry, contentTypes=contentTypes)
             
             setattr(root, key, node)
     outdent()
