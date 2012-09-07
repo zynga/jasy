@@ -7,7 +7,7 @@ import polib
 
 from jasy.item.Item import Item
 from jasy.core.Logging import *
-
+from jasy.core.Json import toJson
 
 __all__ = ["getFormat", "generateId", "Translation"]
 
@@ -39,7 +39,7 @@ def generateId(basic, plural=None, context=None):
 
     if context is not None:
         result += "[C:%s]" % context
-    elif plural is not "":
+    elif plural:
         result += "[N:%s]" % plural
 
     return result
@@ -76,6 +76,9 @@ class Translation(Item):
         # Call Item's attach method first
         super().attach(path)
 
+        debug("Loading translation file: %s", path)
+        indent()
+
         # Flat data strucuture where the keys are unique
         table = {}
         path = self.getPath()
@@ -84,7 +87,7 @@ class Translation(Item):
         # Decide infrastructure/parser to use based on file name
         if format is "gettext":
             po = polib.pofile(path)
-            info("Translated messages: %s=%s%%", self.language, po.percent_translated())
+            debug("Translated messages: %s=%s%%", self.language, po.percent_translated())
 
             for entry in po.translated_entries():
                 entryId = generateId(entry.msgid, entry.msgid_plural, entry.msgctxt)
@@ -104,11 +107,28 @@ class Translation(Item):
         elif format is "txt":
             raise JasyError("Parsing ICU/text files is currently not supported!")
                         
-        info("Translation of %s entries ready" % len(table))        
+        debug("Translation of %s entries ready" % len(table))        
+        outdent()
+        
         self.table = table
 
         return self
 
+    def export(self, classes):
+        """Exports the translation table as JSON based on the given set of classes"""
+
+        # Based on the given class list figure out which translations are actually used
+        relevantTranslations = set()
+        for classObj in classes:
+            classTranslations = classObj.getTranslations()
+            if classTranslations:
+                relevantTranslations.update(classTranslations)
+
+        # Produce new table which is filtered by relevant translations
+        table = self.table
+        result = { translationId: table[translationId] for translationId in relevantTranslations if translationId in table }
+
+        return toJson(result or None)
 
     def getTable(self):
         """Returns the translation table"""

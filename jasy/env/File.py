@@ -123,8 +123,4 @@ def writeFile(dst, content):
     handle = open(dst, mode="w", encoding="utf-8")
     handle.write(content)
     handle.close()
-    
-    
-def writeJson(dst, content):
-    return writeFile(dst, toJson(content))
 

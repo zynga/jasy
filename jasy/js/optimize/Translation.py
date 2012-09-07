@@ -8,13 +8,14 @@ import re, copy, polib
 from jasy.core.Error import JasyError
 from jasy.core.Logging import *
 from jasy.js.parse.Node import Node
+from jasy.item.Translation import generateId
 
 
 #
 # Public API
 #
 
-__all__ = ["hasText", "optimize"]
+__all__ = ["hasText", "optimize", "collectTranslations"]
 
 translationFunctions = ("tr", "trc", "trn", "marktr")
 
@@ -39,6 +40,55 @@ def hasText(node):
                 return True
     
     return False
+
+
+def parseParams(params, funcName):
+
+    basic = None
+    plural = None
+    context = None
+
+    if funcName == "tr" or funcName == "trn" or funcName == "marktr":
+        basic = params[0].value
+    elif funcName == "trc":
+        context = params[0].value
+        basic = params[1].value
+    
+    if funcName == "trn":
+        plural = params[1].value
+
+    return basic, plural, context
+
+
+
+def __collectionRecurser(node, collection):
+    if node.type == "call":
+        funcName = None
+        
+        if node[0].type == "identifier":
+            funcName = node[0].value
+        elif node[0].type == "dot" and node[0][1].type == "identifier":
+            funcName = node[0][1].value
+        
+        if funcName in translationFunctions:
+            translationId = generateId(*parseParams(node[1], funcName))
+            if translationId:
+                if translationId in collection:
+                    collection[translationId].append(node.line)
+                else:
+                    collection[translationId] = [node.line]
+
+    # Process children
+    for child in node:
+        if child != None:
+            __collectionRecurser(child, collection)
+
+    return collection
+
+
+def collectTranslations(node):
+    return __collectionRecurser(node, dict())
+
 
 
 def optimize(node, translation):

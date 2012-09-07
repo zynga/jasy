@@ -2,8 +2,8 @@
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
 <ldml>
 	<identity>
-		<version number="$Revision: 5968 $"/>
-		<generation date="$Date: 2011-07-05 15:52:21 -0500 (Tue, 05 Jul 2011) $"/>
+		<version number="$Revision: 6546 $"/>
+		<generation date="$Date: 2012-02-07 12:32:35 -0600 (Tue, 07 Feb 2012) $"/>
 		<language type="nds"/>
 	</identity>
 	<localeDisplayNames>
@@ -671,7 +671,6 @@
 			<territory type="053" draft="unconfirmed">Australien un Neeseeland</territory>
 			<territory type="054" draft="unconfirmed">Melanesien</territory>
 			<territory type="061" draft="unconfirmed">Polynesien</territory>
-			<territory type="062" draft="unconfirmed">Süüd-Zentralasien</territory>
 			<territory type="142" draft="unconfirmed">Asien</territory>
 			<territory type="143" draft="unconfirmed">Zentralasien</territory>
 			<territory type="145" draft="unconfirmed">Westasien</territory>
@@ -679,7 +678,6 @@
 			<territory type="151" draft="unconfirmed">Oosteuropa</territory>
 			<territory type="154" draft="unconfirmed">Noordeuropa</territory>
 			<territory type="155" draft="unconfirmed">Westeuropa</territory>
-			<territory type="172" draft="unconfirmed">Gemeenschop vun Unafhängige Staten</territory>
 			<territory type="419" draft="unconfirmed">Latienamerika</territory>
 			<territory type="AD" draft="unconfirmed">Andorra</territory>
 			<territory type="AE" draft="unconfirmed">Vereenigte Araabsche Emiraten</territory>
@@ -971,7 +969,6 @@
 			<type type="big5han" key="collation" draft="unconfirmed">Traditschonell Chineesch Sorteerregeln - Big5</type>
 			<type type="buddhist" key="calendar" draft="unconfirmed">Buddhistisch Klenner</type>
 			<type type="chinese" key="calendar" draft="unconfirmed">Chineesch Klenner</type>
-			<type type="direct" key="collation" draft="unconfirmed">Direkte Sorteerregeln</type>
 			<type type="gb2312han" key="collation" draft="unconfirmed">Vereenfacht Chineesch Sorteerregeln - GB2312</type>
 			<type type="gregorian" key="calendar" draft="unconfirmed">Gregoriaansch Klenner</type>
 			<type type="hebrew" key="calendar" draft="unconfirmed">Hebrääsch Klenner</type>
@@ -1087,28 +1084,28 @@
 			<infinity draft="unconfirmed">∞</infinity>
 			<nan draft="unconfirmed">NaN</nan>
 		</symbols>
-		<decimalFormats>
+		<decimalFormats numberSystem="latn">
 			<decimalFormatLength>
 				<decimalFormat>
 					<pattern draft="unconfirmed">#,##0.###</pattern>
 				</decimalFormat>
 			</decimalFormatLength>
 		</decimalFormats>
-		<scientificFormats>
+		<scientificFormats numberSystem="latn">
 			<scientificFormatLength>
 				<scientificFormat>
 					<pattern draft="unconfirmed">#E0</pattern>
 				</scientificFormat>
 			</scientificFormatLength>
 		</scientificFormats>
-		<percentFormats>
+		<percentFormats numberSystem="latn">
 			<percentFormatLength>
 				<percentFormat>
 					<pattern draft="unconfirmed">#,##0 %</pattern>
 				</percentFormat>
 			</percentFormatLength>
 		</percentFormats>
-		<currencyFormats>
+		<currencyFormats numberSystem="latn">
 			<currencyFormatLength>
 				<currencyFormat>
 					<pattern draft="unconfirmed">#,##0.00 ¤</pattern>

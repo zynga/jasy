@@ -142,7 +142,7 @@ class Proxy(object):
                         headers["Authorization"] = b"Basic " + base64.b64encode(("%s:%s" % (self.auth["user"], self.auth["password"])).encode("ascii"))
                     
                 # We disable verifícation of SSL certificates to be more tolerant on test servers
-                result = requests.get(url, params=query, headers=headers, verify=False)
+                result = requests.request(cherrypy.request.method, url, params=query, headers=headers, verify=False)
                 
             except Exception as err:
                 if self.enableDebug:
@@ -213,7 +213,7 @@ class Static(object):
         # Otherwise return a classic 404
         else:
             if self.enableDebug:
-                info("File not found: %s", path)
+                warn("File at location %s not found at %s!", path, os.path.abspath(path))
             
             raise cherrypy.NotFound(path)
         

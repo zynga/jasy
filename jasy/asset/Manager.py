@@ -8,7 +8,7 @@ from os.path import basename, dirname, relpath, normpath
 
 from jasy.env.File import *
 from jasy.core.Project import Project
-from jasy.env.State import session, getPermutation, prependPrefix
+from jasy.env.State import getPermutation, prependPrefix
 from jasy.item.Asset import Asset
 from jasy.core.Error import JasyError
 from jasy.core.Util import sha1File, getKey
@@ -32,7 +32,10 @@ class AssetManager:
     are added to the exported data later on.
     """
     
-    def __init__(self):
+    def __init__(self, session):
+        # Store session reference (one asset manager per session)
+        self.__session = session
+
         # Stores manager contextual asset information (like relative paths)
         self.__data = {}
         
@@ -43,28 +46,27 @@ class AssetManager:
         self.__assets = None
 
 
-    def index(self):
+    def index(self, context=None):
         
         if self.__assets is not None:
             return self.__assets
         
         # Loop though all projects and merge assets
         assets = self.__assets = {}
-        for project in session.getProjects():
+        for project in self.__session.getProjects():
             assets.update(project.assets)
         
         self.__processSprites()
         self.__processAnimations()
         
-        info("Initialized %s assets" % len(assets))
+        info("Initialized %s assets (by %s)", len(assets), context)
         return assets
-
 
 
     def __processSprites(self):
         """Processes jasysprite.json files to merge sprite data into asset registry"""
         
-        assets = self.index()
+        assets = self.index("sprites")
         configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
         
         if configs:
@@ -134,7 +136,7 @@ class AssetManager:
     def __processAnimations(self):
         """Processes jasyanimation.json files to merge animation data into asset registry"""
         
-        assets = self.index()
+        assets = self.index("animations")
         configs = [fileId for fileId in assets if assets[fileId].isImageAnimationConfig()]
         
         if configs:
@@ -229,8 +231,8 @@ class AssetManager:
         profileId = self.addProfile("source", urlPrefix)
 
         # Then export all relative paths to main project and add this to the runtime data
-        main = session.getMain()
-        assets = self.index()
+        main = self.__session.getMain()
+        assets = self.index("source-profile")
         data = self.__data
 
         for fileId in assets:
@@ -245,13 +247,13 @@ class AssetManager:
 
     def addBuildProfile(self, urlPrefix="asset", override=False):
         
-        self.index()
+        self.index("build-profile")
         
         # First create a new profile with optional (CDN-) URL prefix
         profileId = self.addProfile("build", urlPrefix)
 
         # Then export all relative paths to main project and add this to the runtime data
-        main = session.getMain()
+        main = self.__session.getMain()
         assets = self.index()
         data = self.__data
 
@@ -264,7 +266,7 @@ class AssetManager:
 
     
     def addRuntimeData(self, runtime):
-        assets = self.index()
+        assets = self.index("runtime-data")
         data = self.__data
         
         for fileId in runtime:
@@ -335,7 +337,7 @@ class AssetManager:
         """Deploys all asset files to the destination asset folder"""
 
         assets = self.index()
-        projects = session.getProjects()
+        projects = self.__session.getProjects()
 
         copyAssetFolder = prependPrefix(assetFolder)
         filterExpr = self.__compileFilterExpr(classes)
@@ -357,14 +359,14 @@ class AssetManager:
                 counter += 1
         
         info("Updated %s/%s files" % (counter, length))
-
+        
 
 
     def export(self, classes=None):
         """Exports asset data for the source version using assets from their original paths."""
         
         # Processing assets
-        assets = self.index()
+        assets = self.index("export")
         data = self.__data
         
         result = {}

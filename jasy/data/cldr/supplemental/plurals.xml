@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE supplementalData SYSTEM "../../common/dtd/ldmlSupplemental.dtd">
 <supplementalData>
-    <version number="$Revision: 6008 $"/>
-    <generation date="$Date: 2011-07-12 13:18:01 -0500 (Tue, 12 Jul 2011) $"/>
+    <version number="$Revision: 6155 $"/>
+    <generation date="$Date: 2011-09-21 13:21:12 -0500 (Wed, 21 Sep 2011) $"/>
     <plurals>
         <!-- if locale is known to have no plurals, there are no rules -->
         <pluralRules locales="az bm bo dz fa id ig ii hu ja jv ka kde kea km kn ko lo ms my sah ses sg th to tr vi wo yo zh"/> 
@@ -104,6 +104,11 @@
         </pluralRules>
         <pluralRules locales="gv">
             <pluralRule count="one">n mod 10 in 1..2 or n mod 20 is 0</pluralRule>
+        </pluralRules>
+        <pluralRules locales="gd">
+            <pluralRule count="one">n in 1,11</pluralRule>
+            <pluralRule count="two">n in 2,12</pluralRule>
+            <pluralRule count="few">n in 3..10,13..19</pluralRule>
         </pluralRules>
     </plurals>
 </supplementalData>

@@ -6,8 +6,9 @@
 import itertools, time, atexit, json, os
 
 from jasy.item.Translation import Translation
-from jasy.i18n.LocaleData import *
+from jasy.core.Locale import *
 
+from jasy.asset.Manager import AssetManager
 from jasy.core.Json import toJson
 from jasy.core.Project import Project, getProjectFromPath, getProjectDependencies
 from jasy.core.Permutation import Permutation
@@ -87,6 +88,8 @@ class Session():
             classes = project.getClasses()
             if className in classes:
                 return classes[className]
+
+        return None
     
     
     
@@ -107,13 +110,7 @@ class Session():
         
         result = getProjectDependencies(project)
         
-        info("Initializing projects...")
-        indent()
-        
         for project in result:
-            
-            # Scan project
-            project.scan()
             
             # Append to session list
             self.__projects.append(project)
@@ -139,12 +136,18 @@ class Session():
                         raise JasyError("Field '%s' uses unknown detection class %s." % (name, detect))
                 
                 self.__fields[name] = entry
-                
-        outdent()
         
         
     def getProjects(self):
-        """Returns all currently known projects."""
+        """
+        Returns all currently known and active projects. 
+        Injects locale project by current permutation value.
+        """
+
+        project = self.getLocaleProject()
+        if project:
+            return self.__projects + [project]
+
         return self.__projects
         
         
@@ -172,6 +175,19 @@ class Session():
             return self.__projects[-1]
         else:
             return None
+
+
+    __assetManager = None
+
+    def getAssetManager(self):
+        if not self.__assetManager:
+
+            for project in self.__projects:
+                project.scan()
+
+            self.__assetManager = AssetManager(self)
+
+        return self.__assetManager
     
     
     
@@ -433,7 +449,7 @@ class Session():
             for project in self.__projects:
                 for translation in project.getTranslations().values():
                     if translation.getLanguage() == currentLanguage:
-                        info("Adding %s entries from %s @ %s...", len(translation.getTable()), currentLanguage, project.getName())
+                        debug("Adding %s entries from %s @ %s...", len(translation.getTable()), currentLanguage, project.getName())
                         combined += translation
 
         debug("Combined number of translations: %s", len(combined.getTable()))
@@ -454,6 +470,43 @@ class Session():
         all.append("C")
 
         return all
+
+
+    def generateLocale(self):
+
+        permutation = getPermutation()
+        if permutation:
+            locale = permutation.get("locale")
+            if locale:
+                storeLocale(getLanguage(locale))
         
+        storeLocale("de_DE")
+
+
+    def getPermutatedLocale(self):
+        """Returns the current locale as defined in current permutation"""
+
+        permutation = getPermutation()
+        if permutation:
+            locale = permutation.get("locale")
+            if locale:
+                return locale
+
+        return None
         
-        
+
+    def getLocaleProject(self, update=False):
+        locale = self.getPermutatedLocale()
+        if not locale:
+            return None
+
+        path = os.path.abspath(os.path.join(".jasy", "locale", locale))
+        if not os.path.exists(path) or update:
+            storeLocale(locale, path)
+
+        return getProjectFromPath(path)
+
+
+
+
+

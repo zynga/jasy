@@ -1,4 +1,8 @@
-http://unicode.org/Public/cldr/2.0.1/
+This is CLDR data for Jasy's localization features.
+Exported from: http://unicode.org/Public/cldr/2.1
+Note: Latest CLDR data is available from: http://unicode.org/Public/cldr/latest/
 
-* keys is a custom added folder
-* main and supplemental are from CLDR main.zip
+* "main" and "supplemental" are part of CLDR
+* "keys" is a custom added/maintained folder
+
+

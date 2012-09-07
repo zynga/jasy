@@ -127,7 +127,8 @@ class Compressor:
     # Data
     #
     
-    __simple_property = re.compile("^[a-zA-Z_$][a-zA-Z0-9_$]*$")
+    __simple_property = re.compile(r"^[a-zA-Z_$][a-zA-Z0-9_$]*$")
+    __number_property = re.compile(r"^[0-9]+$")
 
     __simple = ["true", "false", "null", "this", "debugger"]
 
@@ -194,7 +195,10 @@ class Compressor:
         key = self.compress(node[0])
         value = self.compress(node[1])
 
-        if type(key) in [int,float]:
+        if type(key) in (int, float):
+            pass
+
+        elif self.__number_property.match(key):
             pass
 
         # Protect keywords and special characters

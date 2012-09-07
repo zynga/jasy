@@ -15,7 +15,7 @@ from jasy.item.Class import ClassError
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
 
-from jasy.env.State import session, setPermutation, header, getPermutation, getTranslation, jsOptimization, jsFormatting, assetManager
+from jasy.env.State import session, setPermutation, header, getPermutation, getTranslation, jsOptimization, jsFormatting
 
 
 __all__ = ["storeKernel", "storeCompressed", "storeLoader"]
@@ -70,7 +70,6 @@ def storeKernel(fileName, debug=False):
     resolver.addClassName("core.Env")
     resolver.addClassName("core.io.Asset")
     resolver.addClassName("core.io.Queue")
-    resolver.addClassName("core.locale.Translate")
     
     # Sort resulting class list
     classes = resolver.getSortedClasses()
@@ -103,7 +102,7 @@ def storeCompressed(classes, fileName, bootCode=""):
 
     outdent()
 
-    assetData = assetManager.export(classes)
+    assetData = session.getAssetManager().export(classes)
     if assetData:
         assetCode = 'core.io.Asset.addData(%s);' % assetData
         result.append(packCode(assetCode))
@@ -148,15 +147,17 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     result = []
     outdent()
     
-    assetData = assetManager.export(classes)
+    assetData = session.getAssetManager().export(classes)
     if assetData:
         assetCode = 'core.io.Asset.addData(%s);' % assetData
         result.append(packCode(assetCode))
 
-    #translationData = translationManager.export(classes)
-    #if translationData:
-    #    translationCode = 'core.locale.Translate.addData(%s);' % translationData
-    #    result.append(packCode(translationCode))        
+    translationBundle = session.getTranslationBundle()
+    if translationBundle:
+        translationData = translationBundle.export(classes)
+        if translationData:
+            translationCode = 'core.locale.Translate.addData(%s);' % translationData
+            result.append(packCode(translationCode))        
 
     wrappedBootCode = "function(){%s}" % bootCode if bootCode else "null"
     loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loader, wrappedBootCode)
