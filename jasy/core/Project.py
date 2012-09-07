@@ -204,7 +204,7 @@ class Project():
 
         # Print out
         if summary:
-            info("Scanned Project %s %s: %s" % (colorize(self.__name, "bold"), colorize("[%s]" % self.kind, "grey"), colorize(", ".join(summary), "green")))
+            info("Scanned project %s %s: %s" % (colorize(self.__name, "bold"), colorize("[%s]" % self.kind, "grey"), colorize(", ".join(summary), "green")))
         else:
             error("Project %s is empty!", colorize(self.__name, "bold"))
 
