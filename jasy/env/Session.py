@@ -35,6 +35,7 @@ class Session():
         self.__projects = []
         self.__projectByName = {}
         self.__fields = {}
+        self.__translations = {}
         
         if findConfig("jasyproject"):
 
@@ -444,6 +445,9 @@ class Session():
         if language is None:
             return None
 
+        if language in self.__translations:
+            return self.__translations[language]
+
         info("Creating translation bundle: %s", language)
         indent()
 
@@ -463,6 +467,7 @@ class Session():
         debug("Combined number of translations: %s", len(combined.getTable()))
         outdent()
 
+        self.__translations[language] = combined
         return combined
 
 
