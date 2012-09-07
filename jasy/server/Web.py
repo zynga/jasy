@@ -222,7 +222,7 @@ class Static(object):
 # START
 #
 
-def serve(routes=None, port=8080, host="127.0.0.1"):
+def serve(routes=None, contentTypes=None, port=8080, host="127.0.0.1"):
     
     header("HTTP Server")
     
@@ -243,6 +243,9 @@ def serve(routes=None, port=8080, host="127.0.0.1"):
             "log.screen" : False
         }
     }
+
+    if contentTypes:
+        config["/"]["tools.staticfile.content_types"] = contentTypes
     
     # Update global config
     cherrypy.config.update(config)
