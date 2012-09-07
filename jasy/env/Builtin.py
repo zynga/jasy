@@ -50,6 +50,9 @@ def help():
 
 @task
 def doctor():
+    """Verification and tests for Jasy environment"""
+
+    # This is mainly a placeholder (used by help screen)
     pass
 
 
