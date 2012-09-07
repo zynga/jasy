@@ -53,7 +53,7 @@ def storeKernel(fileName, debug=False):
     exclude it from the real other generated output files.
     """
     
-    header("Storing kernel...")
+    header("Storing kernel")
     
     # This exports all field values from the session
     fields = session.exportFields()

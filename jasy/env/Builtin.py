@@ -31,7 +31,7 @@ def about():
 def help():
     """Shows this help screen"""
 
-    header("Showing Help")
+    header("Help")
     jasy.info()
 
     print(colorize(colorize("Usage", "underline"), "bold"))
