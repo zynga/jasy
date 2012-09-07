@@ -181,6 +181,8 @@ if jasyscript:
 # Importing built-in tasks
 import jasy.env.Builtin
 
+# Enabling execution of shell commands
+from jasy.core.Repository import executeCommand
 
 
 # ===========================================================================
