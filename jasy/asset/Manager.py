@@ -46,7 +46,7 @@ class AssetManager:
         self.__assets = None
 
 
-    def index(self):
+    def index(self, context=None):
         
         if self.__assets is not None:
             return self.__assets
@@ -59,15 +59,14 @@ class AssetManager:
         self.__processSprites()
         self.__processAnimations()
         
-        info("Initialized %s assets" % len(assets))
+        info("Initialized %s assets (by %s)", len(assets), context)
         return assets
-
 
 
     def __processSprites(self):
         """Processes jasysprite.json files to merge sprite data into asset registry"""
         
-        assets = self.index()
+        assets = self.index("sprites")
         configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
         
         if configs:
@@ -137,7 +136,7 @@ class AssetManager:
     def __processAnimations(self):
         """Processes jasyanimation.json files to merge animation data into asset registry"""
         
-        assets = self.index()
+        assets = self.index("animations")
         configs = [fileId for fileId in assets if assets[fileId].isImageAnimationConfig()]
         
         if configs:
@@ -233,7 +232,7 @@ class AssetManager:
 
         # Then export all relative paths to main project and add this to the runtime data
         main = self.__session.getMain()
-        assets = self.index()
+        assets = self.index("source-profile")
         data = self.__data
 
         for fileId in assets:
@@ -248,7 +247,7 @@ class AssetManager:
 
     def addBuildProfile(self, urlPrefix="asset", override=False):
         
-        self.index()
+        self.index("build-profile")
         
         # First create a new profile with optional (CDN-) URL prefix
         profileId = self.addProfile("build", urlPrefix)
@@ -267,7 +266,7 @@ class AssetManager:
 
     
     def addRuntimeData(self, runtime):
-        assets = self.index()
+        assets = self.index("runtime-data")
         data = self.__data
         
         for fileId in runtime:
@@ -360,14 +359,14 @@ class AssetManager:
                 counter += 1
         
         info("Updated %s/%s files" % (counter, length))
-
+        
 
 
     def export(self, classes=None):
         """Exports asset data for the source version using assets from their original paths."""
         
         # Processing assets
-        assets = self.index()
+        assets = self.index("export")
         data = self.__data
         
         result = {}

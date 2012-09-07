@@ -181,6 +181,10 @@ class Session():
 
     def getAssetManager(self):
         if not self.__assetManager:
+
+            for project in self.__projects:
+                project.scan()
+
             self.__assetManager = AssetManager(self)
 
         return self.__assetManager
