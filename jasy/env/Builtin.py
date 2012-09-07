@@ -57,7 +57,7 @@ def doctor():
 
 
 @task
-def create(name="myproject", origin=None, version=None, skeleton=None, destination=None, **argv):
+def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, **argv):
     """Creates a new project"""
 
     header("Creating project %s" % name)

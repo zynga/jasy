@@ -104,6 +104,20 @@ def task(*args, **kwargs):
         return wrapper
 
 
+# Camelize utility
+
+import re
+REGEXP_DASHES = re.compile(r"\-+([\S]+)?")
+
+def camelize(str):
+
+    def helper(match):
+        result = match.group(1)
+        return result[0].upper() + result[1:].lower()
+
+    return REGEXP_DASHES.sub(helper, str)
+
+
 
 # Local task managment
 __taskRegistry = {}
@@ -120,10 +134,11 @@ def addTask(task):
 
 def executeTask(taskname, **kwargs):
     """Executes the given task by name with any optional named arguments"""
-    
+
     if taskname in __taskRegistry:
         try:
-            __taskRegistry[taskname](**kwargs)
+            camelCaseArgs = { camelize(key) : kwargs[key] for key in kwargs }
+            __taskRegistry[taskname](**camelCaseArgs)
         except JasyError as err:
             raise
         except:
