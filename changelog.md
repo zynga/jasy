@@ -1,3 +1,38 @@
+Jasy 0.8-beta3
+==============
+
+## New Features
+
+- (Re-)Added support for Localization based on industry standard CLDR data
+- Updated included CLDR data from 2.0 to 2.1
+- Support for gettext-based translations with full support of context hints and multi plural forms.
+- Support for in-place replacement of translations to reduce overhead of translations in application code (no mapping, no method calls and placeholder inlining)
+- Added support for "jasy doctor" to check environment of Jasy installation
+- Added `executeCommand` method to easily call external tools from `jasyscript.py`
+- Allow tasks for having dashes in parameter names e.g. `--origin-version` and translate them dynamically into camelCase variant for task parameters.
+- The Jasy Webserver has got support for custom mime types (plus it automatically supports all modern mime types supported by HTML5Boilerplate)
+- The Webserver now supports mirroring non-GET requests.
+
+## Changes
+
+- Moved `AssetManager` back to the global `session` instance. That's a move back to how this was implemented in Jasy 0.6.x. Please update your `jasyscript.py` to use `session.getAssetManager()` instead of the global `assetManager`.
+- Postponed project scanning and Asset initialization to allow for dyanically added projects (like "locale" projects) and improved start time for non-producing tasks (e.g. `distclean`, `clean`, `server`)
+- Reduced size of generated kernel by ~30% through split of Core library classes into Jasy specific and application specific classes (core.io.Asset => core.io.Asset + jasy.Asset, ...).
+- Added `jasy.datadir` which points to Jasy internal data directory
+- Moved all *item* types indexed by projects into new Python package `jasy.item`. The types `Class`, `Asset`, `Doc`, `Item` and `Translation` are now placed in the same sub folder/package.
+- Using new `jasy.core.Config` API for reading and writing image sprite and animation data. This means that we support YAML for both formats now as well. Changed default export format of `SpritePacker` to YAML. Configurable via new method `setDataFormat`.
+- Added preliminary support for other translations formats like `.xlf`, `.txt`, and `.properties` files of the ICU standard: http://userguide.icu-project.org/locale/localizing
+- Jasy now remembers the checkout revision of the origin project during `jasy create` and stores that information into the `jasyscript.yaml` of the created project.
+- Implemented translation patching as an typical "optimizer" module and moved it into "jasy.js.optimizer" package.
+- Splitted JS Comments `getHtml()` method store to differ between caching highlighted and non-highlighted version.
+- Support for empty classes in API Browser (will be completely dropped)
+- Improved API doc generation when highlighting is disabled (also disables generation of HTML pages from code)
+- Added new `inMemory` cache handling to prevent memory caching of objects which are typically modified in-place later on.
+- Added new method `write()` to `jasy.core.File` for unified file writing.
+- Improved compression of "+" assignments further. We now also combine strings across typical AST boundaries.
+- Improved compression of numbers as keys in dictionaries. These are now always compressed without quotes saving some bytes.
+
+
 Jasy 0.8-beta2
 ==============
 
