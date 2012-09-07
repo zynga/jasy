@@ -217,12 +217,59 @@ class Static(object):
             
             raise cherrypy.NotFound(path)
         
+# 
+# ADDITIONAL MIME TYPES
+# 
+
+additionalContentTypes = {
+    "js": "application/javascript",
+    "jsonp": "application/javascript",
+    "json": "application/json",
+    "oga": "audio/ogg",
+    "ogg": "audio/ogg",
+    "m4a": "audio/mp4",
+    "f4a": "audio/mp4",
+    "f4b": "audio/mp4",
+    "ogv": "video/ogg",
+    "mp4": "video/mp4",
+    "m4v": "video/mp4",
+    "f4v": "video/mp4",
+    "f4p": "video/mp4",
+    "webm": "video/webm",
+    "flv": "video/x-flv",
+    "svg": "image/svg+xml",
+    "svgz": "image/svg+xml",
+    "eot": "application/vnd.ms-fontobject",
+    "ttf": "application/x-font-ttf",
+    "ttc": "application/x-font-ttf",
+    "otf": "font/opentype",
+    "woff": "application/x-font-woff",
+    "ico": "image/x-icon",
+    "webp": "image/webp",
+    "appcache": "text/cache-manifest",
+    "manifest": "text/cache-manifest",
+    "htc": "text/x-component",
+    "rss": "application/xml",
+    "atom": "application/xml",
+    "xml": "application/xml",
+    "rdf": "application/xml",
+    "crx": "application/x-chrome-extension",
+    "oex": "application/x-opera-extension",
+    "xpi": "application/x-xpinstall",
+    "safariextz": "application/octet-stream",
+    "webapp": "application/x-web-app-manifest+json",
+    "vcf": "text/x-vcard",
+    "swf": "application/x-shockwave-flash",
+    "vtt": "text/vtt"
+}
+
+
 
 #
 # START
 #
 
-def serve(routes=None, contentTypes=None, port=8080, host="127.0.0.1"):
+def serve(routes=None, customContentTypes=None, port=8080, host="127.0.0.1"):
     
     header("HTTP Server")
     
@@ -244,8 +291,12 @@ def serve(routes=None, contentTypes=None, port=8080, host="127.0.0.1"):
         }
     }
 
-    if contentTypes:
-        config["/"]["tools.staticfile.content_types"] = contentTypes
+    contentTypes = {}
+    contentTypes.update(additionalContentTypes)
+    if customContentTypes:    
+            contentTypes.update(customContentTypes)
+
+    config["/"]["tools.staticfile.content_types"] = contentTypes
     
     # Update global config
     cherrypy.config.update(config)
