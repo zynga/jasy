@@ -147,7 +147,7 @@ class Parser():
         files.append(os.path.join(main, "root.xml"))
 
         # Finally import all these files in order
-        for path in files:
+        for path in reversed(files):
             info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
             tree = xml.etree.ElementTree.parse(path)
 
