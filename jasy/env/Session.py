@@ -449,7 +449,7 @@ class Session():
             for project in self.__projects:
                 for translation in project.getTranslations().values():
                     if translation.getLanguage() == currentLanguage:
-                        info("Adding %s entries from %s @ %s...", len(translation.getTable()), currentLanguage, project.getName())
+                        debug("Adding %s entries from %s @ %s...", len(translation.getTable()), currentLanguage, project.getName())
                         combined += translation
 
         debug("Combined number of translations: %s", len(combined.getTable()))

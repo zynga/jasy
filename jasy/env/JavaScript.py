@@ -70,7 +70,6 @@ def storeKernel(fileName, debug=False):
     resolver.addClassName("core.Env")
     resolver.addClassName("core.io.Asset")
     resolver.addClassName("core.io.Queue")
-    resolver.addClassName("core.locale.Translate")
     
     # Sort resulting class list
     classes = resolver.getSortedClasses()
