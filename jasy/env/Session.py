@@ -472,17 +472,6 @@ class Session():
         return all
 
 
-    def generateLocale(self):
-
-        permutation = getPermutation()
-        if permutation:
-            locale = permutation.get("locale")
-            if locale:
-                storeLocale(getLanguage(locale))
-        
-        storeLocale("de_DE")
-
-
     def getPermutatedLocale(self):
         """Returns the current locale as defined in current permutation"""
 
@@ -496,13 +485,18 @@ class Session():
         
 
     def getLocaleProject(self, update=False):
+        """
+        Returns a locale project for the currently configured locale. 
+        Returns None if locale is not set to a valid value.
+        """
+
         locale = self.getPermutatedLocale()
         if not locale:
             return None
 
         path = os.path.abspath(os.path.join(".jasy", "locale", locale))
         if not os.path.exists(path) or update:
-            storeLocale(locale, path)
+            LocaleParser(locale).export(path)
 
         return getProjectFromPath(path)
 
