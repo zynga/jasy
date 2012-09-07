@@ -119,7 +119,6 @@ setup(
     'jasy.asset.sprite',
     'jasy.core',
     'jasy.env',
-    'jasy.i18n',
     'jasy.item',
     'jasy.js',
     'jasy.js.api',

@@ -6,7 +6,7 @@
 import itertools, time, atexit, json, os
 
 from jasy.item.Translation import Translation
-from jasy.i18n.LocaleData import *
+from jasy.core.Locale import *
 
 from jasy.asset.Manager import AssetManager
 from jasy.core.Json import toJson
