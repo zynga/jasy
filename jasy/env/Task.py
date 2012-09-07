@@ -8,6 +8,7 @@ import types, os, sys, inspect, subprocess
 from jasy.env.State import setPrefix, session, getPrefix
 from jasy.core.Error import JasyError
 from jasy.core.Logging import *
+from jasy.core.Util import camelize
 
 
 __all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOptions", "getOptions"]
@@ -102,20 +103,6 @@ def task(*args, **kwargs):
             return Task(func, **kwargs)
             
         return wrapper
-
-
-# Camelize utility
-
-import re
-REGEXP_DASHES = re.compile(r"\-+([\S]+)?")
-
-def camelize(str):
-
-    def helper(match):
-        result = match.group(1)
-        return result[0].upper() + result[1:].lower()
-
-    return REGEXP_DASHES.sub(helper, str)
 
 
 

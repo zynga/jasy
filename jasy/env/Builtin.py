@@ -92,7 +92,6 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
 
         originPath = originProject.getPath()
         originName = originProject.getName()
-        originVersion = None
         originRevision = None
 
     elif isRepository(origin):
@@ -101,7 +100,6 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
         tempDirectory = tempfile.TemporaryDirectory()
         originPath = os.path.join(tempDirectory.name, "clone")
         originUrl = origin
-        originVersion = version
 
         indent()
         originRevision = updateRepository(originUrl, originVersion, originPath)

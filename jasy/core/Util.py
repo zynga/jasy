@@ -28,6 +28,21 @@ def getKey(data, key, default=None):
         return default
 
 
+REGEXP_DASHES = re.compile(r"\-+([\S]+)?")
+
+def __camelizeHelper(match):
+    result = match.group(1)
+    return result[0].upper() + result[1:].lower()
+
+def camelize(str):
+    """
+    Returns a camelized version of the incoming string: foo-bar-baz => fooBarBaz
+    """
+    
+    return REGEXP_DASHES.sub(__camelizeHelper, str)
+
+
+
 def debounce(wait):
     """ Decorator that will postpone a functions
         execution until after wait seconds
