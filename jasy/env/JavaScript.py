@@ -153,7 +153,7 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
         assetCode = 'jasy.Asset.addData(%s);' % assetData
         result.append(packCode(assetCode))
 
-    translationBundle = session.getTranslationBundle()
+    translationBundle = getTranslation()
     if translationBundle:
         translationData = translationBundle.export(classes)
         if translationData:
