@@ -51,7 +51,7 @@ class Session():
     def clean(self):
         """Clears all caches of known projects"""
 
-        header("Cleaning session...")
+        header("Cleaning session")
         
         for project in self.__projects:
             project.clean()
@@ -178,10 +178,20 @@ class Session():
     __assetManager = None
 
     def getAssetManager(self):
+        """
+        Returns the session's asset manager for caching and processing assets
+        """
+
         if not self.__assetManager:
+
+            header("Initializing Assets")
+            info("Processing projects...")
+            indent()
 
             for project in self.__projects:
                 project.scan()
+
+            outdent()
 
             self.__assetManager = AssetManager(self)
 
@@ -323,7 +333,7 @@ class Session():
     def permutate(self):
         """ Generator method for permutations for improving output capabilities """
         
-        header("Processing permutations...")
+        header("Processing permutations")
         
         permutations = self.getPermutations()
         length = len(permutations)
