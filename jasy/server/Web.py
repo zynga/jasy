@@ -210,7 +210,7 @@ class Static(object):
                 info("Serving file: %s", path)
 
             # Default content type to autodetection by Python mimetype API            
-            contenttype = None
+            contentType = None
 
             # Support overriding by extensions
             extension = os.path.splitext(path)[1]
