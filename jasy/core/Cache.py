@@ -42,7 +42,7 @@ class Cache:
             storedVersion = jasy.core.Util.getKey(self.__shelve, "jasy-version")
             storedHost = jasy.core.Util.getKey(self.__shelve, "jasy-host")
             
-            if storedVersion == version and storedHost == hostId:
+            if storedVersion == jasy.__version__ and storedHost == hostId:
                 return
                     
             if storedVersion is not None or storedHost is not None:

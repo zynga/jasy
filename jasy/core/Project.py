@@ -3,17 +3,15 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, json, re
+import os, re
 
 import jasy.core.Cache
 import jasy.core.Repository
 import jasy.core.Error
+import jasy.env.Config
 
 from jasy.core.Util import getKey
 from jasy.core.Logging import *
-
-from jasy.env.Config import Config
-from jasy.env.State import setPermutation
 
 # Item types
 from jasy.item.Item import Item
@@ -21,6 +19,7 @@ from jasy.item.Doc import Doc
 from jasy.item.Translation import Translation
 from jasy.item.Class import Class
 from jasy.item.Asset import Asset
+
 
 
 __all__ = ["Project", "getProjectFromPath", "getProjectDependencies"]
@@ -145,7 +144,7 @@ class Project():
         self.translations = {}
 
         # Load project configuration
-        self.__config = Config(config)
+        self.__config = jasy.env.Config.Config(config)
         self.__config.loadValues(os.path.join(self.__path, "jasyproject"), optional=True)
 
         # Initialize cache
