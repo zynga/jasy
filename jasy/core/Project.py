@@ -5,11 +5,13 @@
 
 import os, json, re
 
-from jasy.core.Cache import Cache
-from jasy.core.Repository import isRepository, getRepositoryType, getRepositoryFolder, updateRepository
-from jasy.core.Error import JasyError
+import jasy.core.Cache
+import jasy.core.Repository
+import jasy.core.Error
+
 from jasy.core.Util import getKey
 from jasy.core.Logging import *
+
 from jasy.env.Config import Config
 from jasy.env.State import setPermutation
 
@@ -128,7 +130,7 @@ class Project():
         """
         
         if not os.path.isdir(path):
-            raise JasyError("Invalid project path: %s" % path)
+            raise jasy.core.Error.JasyError("Invalid project path: %s" % path)
         
         # Only store and work with full path
         self.__path = os.path.abspath(os.path.expanduser(path))
@@ -148,9 +150,9 @@ class Project():
 
         # Initialize cache
         try:
-            self.__cache = Cache(self.__path)
+            self.__cache = jasy.core.Cache.Cache(self.__path)
         except IOError as err:
-            raise JasyError("Could not initialize project. Cache file in %s could not be initialized! %s" % (self.__path, err))
+            raise jasy.core.Error.JasyError("Could not initialize project. Cache file in %s could not be initialized! %s" % (self.__path, err))
         
         # Read name from manifest or use the basename of the project's path
         self.__name = self.__config.get("name", getProjectNameFromPath(self.__path))
@@ -232,7 +234,7 @@ class Project():
         full = os.path.join(self.__path, directory)
         if os.path.exists(full):
             if not os.path.isdir(full):
-                raise JasyError("Expecting %s to be a directory: %s" % full)
+                raise jasy.core.Error.JasyError("Expecting %s to be a directory: %s" % full)
             
             return True
         
@@ -246,12 +248,12 @@ class Project():
         for fileId in content:
             fileContent = content[fileId]
             if len(fileContent) == 0:
-                raise JasyError("Empty content!")
+                raise jasy.core.Error.JasyError("Empty content!")
                 
             # If the user defines a file extension for JS public idenfiers 
             # (which is not required) we filter them out
             if fileId.endswith(".js"):
-                raise JasyError("JavaScript files should define the exported name, not a file name: %s" % fileId)
+                raise jasy.core.Error.JasyError("JavaScript files should define the exported name, not a file name: %s" % fileId)
 
             fileExtension = os.path.splitext(fileContent[0])[1]
             
@@ -274,7 +276,7 @@ class Project():
                 
             # Check for duplication
             if fileId in dist:
-                raise JasyError("Item ID was registered before: %s" % fileId)
+                raise jasy.core.Error.JasyError("Item ID was registered before: %s" % fileId)
             
             # Create instance
             item = construct(self, fileId).attach(filePath)
@@ -354,7 +356,7 @@ class Project():
 
         # Check for duplication
         if fileId in dist and not override:
-            raise JasyError("Item ID was registered before: %s" % fileId)
+            raise jasy.core.Error.JasyError("Item ID was registered before: %s" % fileId)
 
         # Create instance
         item = construct(self, fileId).attach(fullPath)
@@ -400,16 +402,16 @@ class Project():
 
             revision = None
             
-            if isRepository(source):
-                kind = kind or getRepositoryType(source)
-                path = os.path.abspath(os.path.join(prefix, getRepositoryFolder(source, version, kind)))
+            if jasy.core.Repository.isRepository(source):
+                kind = kind or jasy.core.Repository.getRepositoryType(source)
+                path = os.path.abspath(os.path.join(prefix, jasy.core.Repository.getRepositoryFolder(source, version, kind)))
                 
                 # Only clone and update when the folder is unique in this session
                 # This reduces git/hg/svn calls which are typically quite expensive
                 if not path in projects:
-                    revision = updateRepository(source, version, path)
+                    revision = jasy.core.Repository.updateRepository(source, version, path)
                     if revision is None:
-                        raise JasyError("Could not update repository %s" % source)
+                        raise jasy.core.Error.JasyError("Could not update repository %s" % source)
             
             else:
                 kind = "local"

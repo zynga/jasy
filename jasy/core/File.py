@@ -3,6 +3,10 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
+"""
+A module consisting of some often used file system actions in easy to use unix tradition.
+"""
+
 import shutil, os
 from jasy.core.Error import JasyError
 
