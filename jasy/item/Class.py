@@ -44,7 +44,7 @@ defaultOptimization = jasy.js.output.Optimization.Optimization("declarations", "
 defaultPermutation = getPermutation({"debug" : False})
 
 
-__all__ = ["Class", "Error"]
+__all__ = ["Class", "ClassError"]
 
 
 def collectFields(node, keys=None):
