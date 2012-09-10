@@ -55,7 +55,7 @@ def getProjectDependencies(project):
         name = project.getName()
 
         # List of required projects
-        info("Getting requirements of %s...", name)
+        info("Getting requirements of %s...", colorize(name, "bold"))
         indent()
         requires = project.getRequires()
         outdent()
