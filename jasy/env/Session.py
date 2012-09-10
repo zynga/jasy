@@ -15,7 +15,7 @@ from jasy.core.Permutation import Permutation
 from jasy.core.Config import findConfig
 
 from jasy.core.Error import JasyError
-from jasy.env.State import getPermutation, setPermutation, setTranslation, header
+from jasy.env.State import getPermutation, setPermutation, setTranslation, header, loadLibrary
 from jasy.core.Json import toJson
 from jasy.core.Logging import *
 
@@ -114,6 +114,11 @@ class Session():
             
             # Append to session list
             self.__projects.append(project)
+
+            # Import library methods
+            libraryPath = os.path.join(project.getPath(), "jasylibrary.py")
+            if os.path.exists(libraryPath):
+                loadLibrary(project.getName(), libraryPath)
 
             # Import project defined fields which might be configured using "activateField()"
             fields = project.getFields()

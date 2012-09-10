@@ -11,7 +11,7 @@ from jasy.core.Error import JasyError
 from jasy.core.Util import getKey
 from jasy.core.Logging import *
 from jasy.env.Config import Config
-from jasy.env.State import setPermutation, header, loadLibrary
+from jasy.env.State import setPermutation, header
 
 # Item types
 from jasy.item.Item import Item
@@ -195,12 +195,6 @@ class Project():
             content = getattr(self, section, None)
             if content:
                 summary.append("%s %s" % (len(content), section))
-
-        # Import library methods
-        libraryPath = os.path.join(self.__path, "jasylibrary.py")
-        if os.path.exists(libraryPath):
-            methodNumber = loadLibrary(self.__name, libraryPath)
-            summary.append("%s methods" % methodNumber)
 
         # Print out
         if summary:
