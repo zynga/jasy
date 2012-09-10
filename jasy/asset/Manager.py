@@ -45,12 +45,6 @@ class AssetManager:
         # Initialize storage pool
         self.__assets = None
 
-
-    def index(self, context=None):
-        
-        if self.__assets is not None:
-            return self.__assets
-        
         # Loop though all projects and merge assets
         assets = self.__assets = {}
         for project in self.__session.getProjects():
@@ -59,14 +53,13 @@ class AssetManager:
         self.__processSprites()
         self.__processAnimations()
         
-        info("Initialized %s assets (by %s)", len(assets), context)
-        return assets
+        info("Activated %s assets", len(assets))
 
 
     def __processSprites(self):
         """Processes jasysprite.json files to merge sprite data into asset registry"""
         
-        assets = self.index("sprites")
+        assets = self.__assets
         configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
         
         if configs:
@@ -136,7 +129,7 @@ class AssetManager:
     def __processAnimations(self):
         """Processes jasyanimation.json files to merge animation data into asset registry"""
         
-        assets = self.index("animations")
+        assets = self.__assets
         configs = [fileId for fileId in assets if assets[fileId].isImageAnimationConfig()]
         
         if configs:
@@ -232,7 +225,7 @@ class AssetManager:
 
         # Then export all relative paths to main project and add this to the runtime data
         main = self.__session.getMain()
-        assets = self.index("source-profile")
+        assets = self.__assets
         data = self.__data
 
         for fileId in assets:
@@ -247,14 +240,12 @@ class AssetManager:
 
     def addBuildProfile(self, urlPrefix="asset", override=False):
         
-        self.index("build-profile")
-        
         # First create a new profile with optional (CDN-) URL prefix
         profileId = self.addProfile("build", urlPrefix)
 
         # Then export all relative paths to main project and add this to the runtime data
         main = self.__session.getMain()
-        assets = self.index()
+        assets = self.__assets
         data = self.__data
 
         for fileId in assets:
@@ -266,7 +257,7 @@ class AssetManager:
 
     
     def addRuntimeData(self, runtime):
-        assets = self.index("runtime-data")
+        assets = self.__assets
         data = self.__data
         
         for fileId in runtime:
@@ -336,7 +327,7 @@ class AssetManager:
     def deploy(self, classes, assetFolder="asset"):
         """Deploys all asset files to the destination asset folder"""
 
-        assets = self.index()
+        assets = self.__assets
         projects = self.__session.getProjects()
 
         copyAssetFolder = prependPrefix(assetFolder)
@@ -366,7 +357,7 @@ class AssetManager:
         """Exports asset data for the source version using assets from their original paths."""
         
         # Processing assets
-        assets = self.index("export")
+        assets = self.__assets
         data = self.__data
         
         result = {}

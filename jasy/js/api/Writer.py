@@ -297,7 +297,7 @@ class ApiWriter():
         # Collecting
         #
         
-        header("Collecting API Data...")
+        header("Collecting API Data")
         
         apiData = {}
         highlightedCode = {}
@@ -325,7 +325,7 @@ class ApiWriter():
         # Processing
         #
         
-        header("Processing API Data...")
+        header("Processing API Data")
         data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates, printErrors=printErrors, highlightCode=highlightCode)
         
         
@@ -334,7 +334,7 @@ class ApiWriter():
         # Writing
         #
 
-        header("Storing API data...")
+        header("Storing API data")
         writeCounter = 0
         extension = "js" if callback else "json"
 

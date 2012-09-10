@@ -8,6 +8,7 @@ import types, os, sys, inspect, subprocess
 from jasy.env.State import setPrefix, session, getPrefix
 from jasy.core.Error import JasyError
 from jasy.core.Logging import *
+from jasy.core.Util import camelize
 
 
 __all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOptions", "getOptions"]
@@ -120,10 +121,11 @@ def addTask(task):
 
 def executeTask(taskname, **kwargs):
     """Executes the given task by name with any optional named arguments"""
-    
+
     if taskname in __taskRegistry:
         try:
-            __taskRegistry[taskname](**kwargs)
+            camelCaseArgs = { camelize(key) : kwargs[key] for key in kwargs }
+            __taskRegistry[taskname](**camelCaseArgs)
         except JasyError as err:
             raise
         except:

@@ -235,7 +235,7 @@ if options.stats:
     import cProfile
     cProfile.run("main()", "jasyprofile.txt")
     
-    header("Analysing data...")
+    header("Analysing data")
     import pstats
     stats = pstats.Stats("jasyprofile.txt")
     

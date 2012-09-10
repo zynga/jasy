@@ -53,7 +53,7 @@ def storeKernel(fileName, debug=False):
     exclude it from the real other generated output files.
     """
     
-    header("Storing kernel...")
+    header("Storing kernel")
     
     # This exports all field values from the session
     fields = session.exportFields()
@@ -68,8 +68,9 @@ def storeKernel(fileName, debug=False):
     # We need the permutation here because the field configuration might rely on detection classes
     resolver = Resolver()
     resolver.addClassName("core.Env")
-    resolver.addClassName("core.io.Asset")
     resolver.addClassName("core.io.Queue")
+    resolver.addClassName("jasy.Asset")
+    resolver.addClassName("jasy.Translate")
     
     # Sort resulting class list
     classes = resolver.getSortedClasses()
@@ -104,7 +105,7 @@ def storeCompressed(classes, fileName, bootCode=""):
 
     assetData = session.getAssetManager().export(classes)
     if assetData:
-        assetCode = 'core.io.Asset.addData(%s);' % assetData
+        assetCode = 'jasy.Asset.addData(%s);' % assetData
         result.append(packCode(assetCode))
 
     if bootCode:
@@ -149,14 +150,14 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     
     assetData = session.getAssetManager().export(classes)
     if assetData:
-        assetCode = 'core.io.Asset.addData(%s);' % assetData
+        assetCode = 'jasy.Asset.addData(%s);' % assetData
         result.append(packCode(assetCode))
 
-    translationBundle = session.getTranslationBundle()
+    translationBundle = getTranslation()
     if translationBundle:
         translationData = translationBundle.export(classes)
         if translationData:
-            translationCode = 'core.locale.Translate.addData(%s);' % translationData
+            translationCode = 'jasy.Translate.addData(%s);' % translationData
             result.append(packCode(translationCode))        
 
     wrappedBootCode = "function(){%s}" % bootCode if bootCode else "null"

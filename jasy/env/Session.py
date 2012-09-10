@@ -15,7 +15,7 @@ from jasy.core.Permutation import Permutation
 from jasy.core.Config import findConfig
 
 from jasy.core.Error import JasyError
-from jasy.env.State import getPermutation, setPermutation, setTranslation, header
+from jasy.env.State import getPermutation, setPermutation, setTranslation, header, loadLibrary
 from jasy.core.Json import toJson
 from jasy.core.Logging import *
 
@@ -35,6 +35,7 @@ class Session():
         self.__projects = []
         self.__projectByName = {}
         self.__fields = {}
+        self.__translations = {}
         
         if findConfig("jasyproject"):
 
@@ -42,16 +43,26 @@ class Session():
 
             try:
                 self.addProject(getProjectFromPath("."))
+
             except JasyError as err:
                 outdent(True)
                 error(err)
                 raise JasyError("Critical: Could not initialize session!")
-    
+
+            info("Active projects:") 
+            indent()
+
+            for project in self.__projects:
+                info("%s @ %s", colorize(project.getName(), "bold"), colorize(project.version, "magenta"))
+
+            outdent()
+
+
     
     def clean(self):
         """Clears all caches of known projects"""
 
-        header("Cleaning session...")
+        header("Cleaning session")
         
         for project in self.__projects:
             project.clean()
@@ -109,12 +120,16 @@ class Session():
         """
         
         result = getProjectDependencies(project)
-        
         for project in result:
             
             # Append to session list
             self.__projects.append(project)
-            
+
+            # Import library methods
+            libraryPath = os.path.join(project.getPath(), "jasylibrary.py")
+            if os.path.exists(libraryPath):
+                loadLibrary(project.getName(), libraryPath)
+
             # Import project defined fields which might be configured using "activateField()"
             fields = project.getFields()
             for name in fields:
@@ -132,10 +147,9 @@ class Session():
                     
                 if "detect" in entry:
                     detect = entry["detect"]
-                    if not self.getClassByName(detect):
-                        raise JasyError("Field '%s' uses unknown detection class %s." % (name, detect))
                 
                 self.__fields[name] = entry
+
         
         
     def getProjects(self):
@@ -180,10 +194,20 @@ class Session():
     __assetManager = None
 
     def getAssetManager(self):
+        """
+        Returns the session's asset manager for caching and processing assets
+        """
+
         if not self.__assetManager:
+
+            header("Initializing Assets")
+            info("Processing projects...")
+            indent()
 
             for project in self.__projects:
                 project.scan()
+
+            outdent()
 
             self.__assetManager = AssetManager(self)
 
@@ -325,7 +349,7 @@ class Session():
     def permutate(self):
         """ Generator method for permutations for improving output capabilities """
         
-        header("Processing permutations...")
+        header("Processing permutations")
         
         permutations = self.getPermutations()
         length = len(permutations)
@@ -436,6 +460,9 @@ class Session():
         if language is None:
             return None
 
+        if language in self.__translations:
+            return self.__translations[language]
+
         info("Creating translation bundle: %s", language)
         indent()
 
@@ -455,6 +482,7 @@ class Session():
         debug("Combined number of translations: %s", len(combined.getTable()))
         outdent()
 
+        self.__translations[language] = combined
         return combined
 
 
@@ -472,17 +500,6 @@ class Session():
         return all
 
 
-    def generateLocale(self):
-
-        permutation = getPermutation()
-        if permutation:
-            locale = permutation.get("locale")
-            if locale:
-                storeLocale(getLanguage(locale))
-        
-        storeLocale("de_DE")
-
-
     def getPermutatedLocale(self):
         """Returns the current locale as defined in current permutation"""
 
@@ -496,13 +513,18 @@ class Session():
         
 
     def getLocaleProject(self, update=False):
+        """
+        Returns a locale project for the currently configured locale. 
+        Returns None if locale is not set to a valid value.
+        """
+
         locale = self.getPermutatedLocale()
         if not locale:
             return None
 
         path = os.path.abspath(os.path.join(".jasy", "locale", locale))
         if not os.path.exists(path) or update:
-            storeLocale(locale, path)
+            LocaleParser(locale).export(path)
 
         return getProjectFromPath(path)
 

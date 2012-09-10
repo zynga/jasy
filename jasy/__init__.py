@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-__version__ = "0.8-beta3"
+__version__ = "0.8-beta4"
 __author__ = "Sebastian Werner <info@sebastian-werner.net>"
 
 import os.path

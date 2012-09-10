@@ -31,7 +31,7 @@ def about():
 def help():
     """Shows this help screen"""
 
-    header("Showing Help")
+    header("Help")
     jasy.info()
 
     print(colorize(colorize("Usage", "underline"), "bold"))
@@ -50,11 +50,14 @@ def help():
 
 @task
 def doctor():
+    """Verification and tests for Jasy environment"""
+
+    # This is mainly a placeholder (used by help screen)
     pass
 
 
 @task
-def create(name="myproject", origin=None, version=None, skeleton=None, destination=None, **argv):
+def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, **argv):
     """Creates a new project"""
 
     header("Creating project %s" % name)
@@ -89,7 +92,6 @@ def create(name="myproject", origin=None, version=None, skeleton=None, destinati
 
         originPath = originProject.getPath()
         originName = originProject.getName()
-        originVersion = None
         originRevision = None
 
     elif isRepository(origin):
@@ -98,7 +100,6 @@ def create(name="myproject", origin=None, version=None, skeleton=None, destinati
         tempDirectory = tempfile.TemporaryDirectory()
         originPath = os.path.join(tempDirectory.name, "clone")
         originUrl = origin
-        originVersion = version
 
         indent()
         originRevision = updateRepository(originUrl, originVersion, originPath)

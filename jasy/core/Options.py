@@ -7,6 +7,10 @@ import sys
 from jasy.core.Logging import *
 
 class Options:
+    """
+    More flexible alternative to the standard python option parser module
+    which solves the requirements to have arbirary tasks and custom parameters for each task.
+    """
     
     __slots__ = ["__tasks", "__options", "__defaults", "__types", "__shortcuts", "__help"]
     
