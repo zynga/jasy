@@ -10,7 +10,7 @@ from jasy.env.File import *
 from jasy.js.api.Data import ApiData
 from jasy.js.api.Text import *
 from jasy.js.util import *
-from jasy.env.State import session, header
+from jasy.env.State import session
 from jasy.core.Json import toJson
 from jasy.core.Logging import *
 
