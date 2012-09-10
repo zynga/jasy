@@ -79,7 +79,7 @@ class Resolver():
         if self.__included:
             return self.__included
         
-        info("Detecting dependencies...")
+        info("Detecting class dependencies...")
         indent()
         
         collection = set()
