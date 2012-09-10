@@ -15,7 +15,7 @@ from jasy.core.Permutation import Permutation
 from jasy.core.Config import findConfig
 
 from jasy.core.Error import JasyError
-from jasy.env.State import getPermutation, setPermutation, setTranslation, header, loadLibrary
+from jasy.env.State import getPermutation, setPermutation, setTranslation, loadLibrary
 from jasy.core.Json import toJson
 from jasy.core.Logging import *
 

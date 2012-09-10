@@ -15,7 +15,10 @@ from jasy.item.Class import ClassError
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
 
-from jasy.env.State import session, setPermutation, header, getPermutation, getTranslation, jsOptimization, jsFormatting
+from jasy.env.State import session, setPermutation, getPermutation, getTranslation
+#jsOptimization, jsFormatting
+
+import jasy.core.Json
 
 
 __all__ = ["storeKernel", "storeCompressed", "storeLoader"]
@@ -40,7 +43,7 @@ def packCode(code):
     return packed
 
 
-def storeKernel(fileName, debug=False):
+def storeKernel(fileName, debug=False, optimization=None, formatting=None):
     """
     Writes a so-called kernel script to the given location. This script contains
     data about possible permutations based on current session values. It optionally
@@ -74,14 +77,14 @@ def storeKernel(fileName, debug=False):
     
     # Sort resulting class list
     classes = resolver.getSortedClasses()
-    storeCompressed(classes, fileName)
+    storeCompressed(classes, fileName, optimization=optimization, formatting=formatting)
     
     setPermutation(None)
     
     return classes
 
 
-def storeCompressed(classes, fileName, bootCode=""):
+def storeCompressed(classes, fileName, bootCode=None, optimization=None, formatting=None):
     """
     Combines the compressed result of the stored class list
     
@@ -96,7 +99,7 @@ def storeCompressed(classes, fileName, bootCode=""):
     
     try:
         for classObj in classes:
-            result.append(classObj.getCompressed(getPermutation(), getTranslation(), jsOptimization, jsFormatting))
+            result.append(classObj.getCompressed(getPermutation(), getTranslation(), optimization, formatting))
             
     except ClassError as error:
         raise JasyError("Error during class compression! %s" % error)
@@ -105,7 +108,7 @@ def storeCompressed(classes, fileName, bootCode=""):
 
     assetData = session.getAssetManager().export(classes)
     if assetData:
-        assetCode = 'jasy.Asset.addData(%s);' % assetData
+        assetCode = 'jasy.Asset.addData(%s);' % jasy.core.Json.toJson(assetData)
         result.append(packCode(assetCode))
 
     if bootCode:
@@ -150,7 +153,7 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     
     assetData = session.getAssetManager().export(classes)
     if assetData:
-        assetCode = 'jasy.Asset.addData(%s);' % assetData
+        assetCode = 'jasy.Asset.addData(%s);' % jasy.core.Json.toJson(assetData)
         result.append(packCode(assetCode))
 
     translationBundle = getTranslation()

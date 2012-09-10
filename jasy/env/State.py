@@ -3,7 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, sys
+import os.path
+from jasy.core.Logging import *
 
 
 # ===========================================================================
@@ -99,66 +100,15 @@ def loadLibrary(objectName, fileName, encoding="utf-8"):
     globals()[objectName] = exportedModule
 
     return counter
-
+    
 
 
 # ===========================================================================
-#   Session/Core
+#   Start Session
 # ===========================================================================
 
-from jasy.core.Logging import *
-from jasy.core.Error import JasyError
 from jasy.env.Session import Session
 
 # Globally available session object
 session = Session()
-
-
-
-# ===========================================================================
-#   Misc Utilities
-# ===========================================================================
-
-from jasy.core.Json import *
-from jasy.env.Task import task, executeTask, runTask
-from jasy.env.File import *
-
-
-
-# ===========================================================================
-#   Asset Managment
-# ===========================================================================
-
-from jasy.asset.SpritePacker import SpritePacker
-
-
-
-# ===========================================================================
-#   JavaScript Output
-# ===========================================================================
-
-from jasy.js.Resolver import Resolver
-from jasy.js.api.Writer import ApiWriter
-
-from jasy.js.output.Optimization import Optimization
-from jasy.js.output.Formatting import Formatting
-
-jsFormatting = Formatting()
-jsOptimization = Optimization("variables", "declarations", "blocks", "privates")
-
-# Unimport classes
-del Formatting
-del Optimization
-
-# Handy utility methods to process class lists
-from jasy.env.JavaScript import *
-
-
-
-# ===========================================================================
-#   Global Server
-# ===========================================================================
-
-from jasy.server.Web import serve
-from jasy.server.Watcher import watch
 

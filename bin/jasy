@@ -181,6 +181,73 @@ if jasyscript:
 # Importing built-in tasks
 import jasy.env.Builtin
 
+
+
+
+
+
+
+
+# ===========================================================================
+#   Session/Core
+# ===========================================================================
+
+from jasy.core.Logging import *
+from jasy.core.Error import JasyError
+
+
+
+
+# ===========================================================================
+#   Misc Utilities
+# ===========================================================================
+
+from jasy.core.Json import *
+from jasy.env.Task import task, executeTask, runTask
+from jasy.env.File import *
+
+
+
+# ===========================================================================
+#   Asset Managment
+# ===========================================================================
+
+from jasy.asset.SpritePacker import SpritePacker
+
+
+
+# ===========================================================================
+#   JavaScript Output
+# ===========================================================================
+
+from jasy.js.Resolver import Resolver
+from jasy.js.api.Writer import ApiWriter
+
+# from jasy.js.output.Optimization import Optimization
+# from jasy.js.output.Formatting import Formatting
+# 
+# jsFormatting = Formatting()
+# jsOptimization = Optimization("variables", "declarations", "blocks", "privates")
+# 
+# # Unimport classes
+# del Formatting
+# del Optimization
+
+# Handy utility methods to process class lists
+from jasy.env.JavaScript import *
+
+
+
+# ===========================================================================
+#   Global Server
+# ===========================================================================
+
+from jasy.server.Web import serve
+from jasy.server.Watcher import watch
+
+
+
+
 # Enabling execution of shell commands
 from jasy.core.Repository import executeCommand
 

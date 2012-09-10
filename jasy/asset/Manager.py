@@ -6,7 +6,8 @@
 import re, json, os, fnmatch
 from os.path import basename, dirname, relpath, normpath
 
-from jasy.env.File import *
+import jasy.core.File
+
 from jasy.core.Project import Project
 from jasy.env.State import getPermutation, prependPrefix
 from jasy.item.Asset import Asset
@@ -342,11 +343,11 @@ class AssetManager:
             if not filterExpr.match(fileId):
                 length -= 1
                 continue
-            
+
             srcFile = assets[fileId].getPath()
             dstFile = os.path.join(copyAssetFolder, fileId.replace("/", os.sep))
             
-            if updateFile(srcFile, dstFile):
+            if jasy.core.File.syncfile(srcFile, dstFile):
                 counter += 1
         
         info("Updated %s/%s files" % (counter, length))
@@ -384,15 +385,12 @@ class AssetManager:
         if not result:
             return None
 
-        # Exporting data
-        json = toJson({
+        info("Exported %s assets", len(result))
+
+        return {
             "assets" : self.__structurize(result),
             "profiles" : self.__profiles,
             "sprites" : self.__sprites
-        })
-        
-        info("Exported %s assets", len(result))
-        
-        return json
+        }
         
 

@@ -11,7 +11,7 @@ from jasy.core.Error import JasyError
 from jasy.core.Util import getKey
 from jasy.core.Logging import *
 from jasy.env.Config import Config
-from jasy.env.State import setPermutation, header
+from jasy.env.State import setPermutation
 
 # Item types
 from jasy.item.Item import Item
