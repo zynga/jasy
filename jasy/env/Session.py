@@ -9,20 +9,11 @@ import jasy.core.Locale
 import jasy.core.Config
 import jasy.core.Json
 import jasy.core.Error
-
+import jasy.core.Project
+import jasy.core.Permutation
 import jasy.asset.Manager
-
 import jasy.item.Translation
-
-
-
-
-
-
-from jasy.core.Project import Project, getProjectFromPath, getProjectDependencies
-from jasy.core.Permutation import Permutation
-from jasy.env.State import getPermutation, setPermutation, setTranslation, loadLibrary
-
+import jasy.env.State
 
 from jasy.core.Logging import *
 
@@ -49,7 +40,7 @@ class Session():
             header("Initializing project")
 
             try:
-                self.addProject(getProjectFromPath("."))
+                self.addProject(jasy.core.Project.getProjectFromPath("."))
 
             except jasy.core.Error.JasyError as err:
                 outdent(True)
@@ -126,7 +117,7 @@ class Session():
         - project: Instance of Project to append to the list
         """
         
-        result = getProjectDependencies(project)
+        result = jasy.core.Project.getProjectDependencies(project)
         for project in result:
             
             # Append to session list
@@ -135,7 +126,7 @@ class Session():
             # Import library methods
             libraryPath = os.path.join(project.getPath(), "jasylibrary.py")
             if os.path.exists(libraryPath):
-                loadLibrary(project.getName(), libraryPath)
+                jasy.env.State.loadLibrary(project.getName(), libraryPath)
 
             # Import project defined fields which might be configured using "activateField()"
             fields = project.getFields()
@@ -348,7 +339,7 @@ class Session():
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         names = sorted(values)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
-        permutations = [Permutation(combi) for combi in combinations]
+        permutations = [jasy.core.Permutation.Permutation(combi) for combi in combinations]
 
         return permutations
 
@@ -364,8 +355,8 @@ class Session():
         for pos, current in enumerate(permutations):
             info(colorize("Permutation %s/%s:" % (pos+1, length), "bold"))
             indent()
-            setPermutation(current)
-            setTranslation(self.getTranslationBundle())
+            jasy.env.State.setPermutation(current)
+            jasy.env.State.setTranslation(self.getTranslationBundle())
             yield current
             outdent()
 
@@ -463,7 +454,7 @@ class Session():
         all relevant translation files for the current project set. 
         """
 
-        language = getPermutation().get("locale")
+        language = jasy.env.State.getPermutation().get("locale")
         if language is None:
             return None
 
@@ -510,7 +501,7 @@ class Session():
     def getPermutatedLocale(self):
         """Returns the current locale as defined in current permutation"""
 
-        permutation = getPermutation()
+        permutation = jasy.env.State.getPermutation()
         if permutation:
             locale = permutation.get("locale")
             if locale:
@@ -533,7 +524,7 @@ class Session():
         if not os.path.exists(path) or update:
             jasy.core.Locale.LocaleParser(locale).export(path)
 
-        return getProjectFromPath(path)
+        return jasy.core.Project.getProjectFromPath(path)
 
 
 

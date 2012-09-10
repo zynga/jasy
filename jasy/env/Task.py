@@ -5,8 +5,10 @@
 
 import types, os, sys, inspect, subprocess
 
-from jasy.env.State import setPrefix, session, getPrefix
-from jasy.core.Error import JasyError
+import jasy.core.Error
+import jasy.env.State
+
+from jasy.env.State import session
 from jasy.core.Logging import *
 from jasy.core.Util import camelize
 
@@ -55,12 +57,12 @@ class Task:
         # Allow overriding of prefix via task or cmdline parameter.
         # By default use name of the task (no prefix for cleanup tasks)
         if "prefix" in merged:
-            setPrefix(merged["prefix"])
+            jasy.env.State.setPrefix(merged["prefix"])
             del merged["prefix"]
         elif "clean" in self.name:
-            setPrefix(None)
+            jasy.env.State.setPrefix(None)
         else:
-            setPrefix(self.name)
+            jasy.env.State.setPrefix(self.name)
         
 
         #
@@ -95,7 +97,7 @@ def task(*args, **kwargs):
             return task(**kwargs)
 
         else:
-            raise JasyError("Invalid task")
+            raise jasy.core.Error.JasyError("Invalid task")
     
     else:
 
@@ -126,13 +128,13 @@ def executeTask(taskname, **kwargs):
         try:
             camelCaseArgs = { camelize(key) : kwargs[key] for key in kwargs }
             __taskRegistry[taskname](**camelCaseArgs)
-        except JasyError as err:
+        except jasy.core.Error.JasyError as err:
             raise
         except:
             error("Unexpected error! Could not finish task %s successfully!" % taskname)
             raise
     else:
-        raise JasyError("No such task: %s" % taskname)
+        raise jasy.core.Error.JasyError("No such task: %s" % taskname)
 
 def printTasks(indent=16):
     """Prints out a list of all avaible tasks and their descriptions"""
@@ -193,7 +195,7 @@ def runTask(project, task, **kwargs):
         remotePath = project
         remoteName = os.path.basename(project)
     else:
-        raise JasyError("Unknown project or invalid path: %s" % project)
+        raise jasy.core.Error.JasyError("Unknown project or invalid path: %s" % project)
 
     info("Running %s of project %s...", colorize(task, "bold"), colorize(remoteName, "bold"))
 
@@ -203,7 +205,7 @@ def runTask(project, task, **kwargs):
     # Build parameter list from optional arguments
     params = ["--%s=%s" % (key, kwargs[key]) for key in kwargs]
     if not "prefix" in kwargs:
-        params.append("--prefix=%s" % getPrefix())
+        params.append("--prefix=%s" % jasy.env.State.getPrefix())
 
     # Full list of args to pass to subprocess
     args = [__command, task] + params
@@ -219,7 +221,7 @@ def runTask(project, task, **kwargs):
 
     # Error handling
     if returnValue != 0:
-        raise JasyError("Executing of sub task %s from project %s failed" % (task, project))
+        raise jasy.core.Error.JasyError("Executing of sub task %s from project %s failed" % (task, project))
 
 
 
