@@ -5,18 +5,25 @@
 
 import itertools, time, atexit, json, os
 
-from jasy.item.Translation import Translation
-from jasy.core.Locale import *
+import jasy.core.Locale
+import jasy.core.Config
+import jasy.core.Json
+import jasy.core.Error
 
-from jasy.asset.Manager import AssetManager
-from jasy.core.Json import toJson
+import jasy.asset.Manager
+
+import jasy.item.Translation
+
+
+
+
+
+
 from jasy.core.Project import Project, getProjectFromPath, getProjectDependencies
 from jasy.core.Permutation import Permutation
-from jasy.core.Config import findConfig
-
-from jasy.core.Error import JasyError
 from jasy.env.State import getPermutation, setPermutation, setTranslation, loadLibrary
-from jasy.core.Json import toJson
+
+
 from jasy.core.Logging import *
 
 __all__ = ["Session"]
@@ -37,17 +44,17 @@ class Session():
         self.__fields = {}
         self.__translations = {}
         
-        if findConfig("jasyproject"):
+        if jasy.core.Config.findConfig("jasyproject"):
 
             header("Initializing project")
 
             try:
                 self.addProject(getProjectFromPath("."))
 
-            except JasyError as err:
+            except jasy.core.Error.JasyError as err:
                 outdent(True)
                 error(err)
-                raise JasyError("Critical: Could not initialize session!")
+                raise jasy.core.Error.JasyError("Critical: Could not initialize session!")
 
             info("Active projects:") 
             indent()
@@ -136,14 +143,14 @@ class Session():
                 entry = fields[name]
 
                 if name in self.__fields:
-                    raise JasyError("Field '%s' was already defined!" % (name))
+                    raise jasy.core.Error.JasyError("Field '%s' was already defined!" % (name))
 
                 if "check" in entry:
                     check = entry["check"]
                     if check in ["Boolean", "String", "Number"] or type(check) == list:
                         pass
                     else:
-                        raise JasyError("Unsupported check: '%s' for field '%s'" % (check, name))
+                        raise jasy.core.Error.JasyError("Unsupported check: '%s' for field '%s'" % (check, name))
                     
                 if "detect" in entry:
                     detect = entry["detect"]
@@ -209,7 +216,7 @@ class Session():
 
             outdent()
 
-            self.__assetManager = AssetManager(self)
+            self.__assetManager = jasy.asset.Manager.AssetManager(self)
 
         return self.__assetManager
     
@@ -238,7 +245,7 @@ class Session():
         """
 
         if not "locale" in self.__fields:
-            raise JasyError("Define locales first!")
+            raise jasy.core.Error.JasyError("Define locales first!")
 
         self.__fields["locale"]["default"] = locale
 
@@ -397,12 +404,12 @@ class Session():
                         values.remove(source["default"])
                         values.insert(0, source["default"])
                     
-                    content.append(toJson(values))
+                    content.append(jasy.core.Json.toJson(values))
             
                 else:
                     # EXPORT STRUCT 2
                     content.append("2")
-                    content.append(toJson(values[0]))
+                    content.append(jasy.core.Json.toJson(values[0]))
 
             # Has no relevance for permutation, just insert the test
             else:
@@ -415,7 +422,7 @@ class Session():
                     
                     # Add default value if available
                     if "default" in source:
-                        content.append(toJson(source["default"]))
+                        content.append(jasy.core.Json.toJson(source["default"]))
                 
                 else:
                     # Has no detection and no permutation. Ignore it completely
@@ -468,7 +475,7 @@ class Session():
 
         # Initialize new Translation object with no project assigned
         # This object is used to merge all seperate translation instances later on.
-        combined = Translation(None, id=language)
+        combined = jasy.item.Translation.Translation(None, id=language)
         relevantLanguages = self.expandLanguage(language)
 
         # Loop structure is build to prefer finer language matching over project priority
@@ -524,7 +531,7 @@ class Session():
 
         path = os.path.abspath(os.path.join(".jasy", "locale", locale))
         if not os.path.exists(path) or update:
-            LocaleParser(locale).export(path)
+            jasy.core.Locale.LocaleParser(locale).export(path)
 
         return getProjectFromPath(path)
 

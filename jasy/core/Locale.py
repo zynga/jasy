@@ -4,11 +4,11 @@
 #
 
 import os, json, re, xml.etree.ElementTree
-from jasy.env.File import *
+
 from jasy.core.Logging import *
 from jasy import datadir, __version__
-from jasy.core.Project import Project
-from jasy.core.File import write
+
+import jasy.core.File
 
 __all__ = ["LocaleParser"]
 
@@ -167,7 +167,7 @@ class LocaleParser():
         info("Target directory: %s", path)
         indent()
         
-        write(os.path.join(path, "jasyproject.yaml"), 'name: locale\npackage: ""\n')
+        jasy.core.File.write(os.path.join(path, "jasyproject.yaml"), 'name: locale\npackage: ""\n')
         count = self.__exportRecurser(self.__data, "locale", path)
 
         info("Created %s classes", count)
@@ -198,7 +198,7 @@ class LocaleParser():
                 result = CLASS_TEMPLATE % (__version__, name, json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False))
                 filename = "%s.js" % name.replace(".", os.path.sep)
                 
-                write(os.path.join(project, "src", filename), result)
+                jasy.core.File.write(os.path.join(project, "src", filename), result)
                 counter += 1
 
         return counter

@@ -8,7 +8,7 @@ from os.path import basename, dirname, relpath, normpath
 
 import jasy.core.File
 
-from jasy.core.Project import Project
+#from jasy.core.Project import Project
 from jasy.env.State import getPermutation, prependPrefix
 from jasy.item.Asset import Asset
 from jasy.core.Error import JasyError
