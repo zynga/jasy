@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, copy, zlib, re
+import os, copy, zlib, fnmatch
 
 from jasy.core.Error import JasyError
 
@@ -149,10 +149,9 @@ class Class(Item):
             if name != self.id and name in classes and classes[name].kind == "class":
                 result.add(classes[name])
             elif "*" in name:
-                slashName = name.replace(".","/").replace('"','')
-                recom = re.compile(slashName);
+                slashName = name.replace(".","/")
                 for className in classes:
-                    if recom.match(className.replace(".","/").replace('"','')) is not None:
+                    if fnmatch.fnmatch(className.replace(".","/"), slashName):
                             if className != self.id:
                                 result.add(classes[className])
             elif warnings:
