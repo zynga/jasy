@@ -151,8 +151,8 @@ class Class(Item):
             elif "*" in name:
                 slashName = name.replace(".","/")
                 for className in classes:
-                    if fnmatch.fnmatch(className.replace(".","/"), slashName):
-                            if className != self.id:
+                    if className != self.id:
+                        if fnmatch.fnmatch(className.replace(".","/"), slashName):
                                 result.add(classes[className])
             elif warnings:
                 warn("- Missing class (required): %s in %s", name, self.id)
