@@ -116,9 +116,9 @@ class Session():
             self.__projects.append(project)
 
             # Import library methods
-            libraryPath = os.path.join(self.__path, "jasylibrary.py")
+            libraryPath = os.path.join(project.getPath(), "jasylibrary.py")
             if os.path.exists(libraryPath):
-                loadLibrary(self.__name, libraryPath)
+                loadLibrary(project.getName(), libraryPath)
 
             # Import project defined fields which might be configured using "activateField()"
             fields = project.getFields()
