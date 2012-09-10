@@ -42,56 +42,74 @@ def getProjectFromPath(path, config=None, version=None):
         projects[path] = Project(path, config, version)
 
     return projects[path]
-    
-    
+
+
 def getProjectDependencies(project):
     """ Returns a sorted list of projects depending on the given project (including the given one) """
-    
+
+    #info("Resolving project dependencies...")
+    #indent()
+
     def __resolve(project):
 
         name = project.getName()
 
-        if name in names:
-            debug("Ignore already known project %s", name)
-            return
-
-        names[name] = project
-        result.insert(0, project)
-
-        if project.version:
-            info("Processing %s @ %s", colorize(name, "bold"), colorize(project.version, "magenta"))
-        else:
-            info("Processing %s", colorize(name, "bold"))
-
+        # List of required projects
+        info("Getting requirements of %s...", name)
         indent()
         requires = project.getRequires()
+        outdent()
 
-        for require in reversed(requires):
-            __resolve(require)
+        if not requires:
+            return
+
+        debug("Processing %s requirements...", len(requires))
+        indent()
+
+        # Adding all project in reverse order.
+        # Adding all local ones first before going down to their requirements
+        for requiredProject in reversed(requires):
+            requiredName = requiredProject.getName()
+            if not requiredName in names:
+                debug("Adding: %s %s (via %s)", requiredName, requiredProject.version, project.getName())
+                names[requiredName] = True
+                result.append(requiredProject)
+            else:
+                debug("Blocking: %s %s (via %s)", requiredName, requiredProject.version, project.getName())
+
+        # Process all requirements of added projects
+        for requiredProject in requires:
+            if requiredProject.hasRequires():
+                __resolve(requiredProject)
 
         outdent()
 
-    result= []
-    names = {}
-    
-    info("Detecting dependencies...")
-    indent()
+    result = [project]
+    names = {
+        project.getName() : True
+    }
 
     __resolve(project)
-    
-    outdent()
+
+    #outdent()
 
     return result
 
 
-def getProjectNameFromPath(path):
-    basename = os.path.basename(path)
 
-    clone = repositoryFolder.match(basename)
+def getProjectNameFromPath(path):
+    name = os.path.basename(path)
+
+    # Remove folder SHA1 postfix when cloned via git etc.
+    clone = repositoryFolder.match(name)
     if clone is not None:
-        return clone.group(1)
-    else:
-        return basename
+        name = clone.group(1)
+
+    # Slashes are often used as a separator to optional data
+    if "-" in name:
+        name = name[:name.index("-")]
+
+    return name
 
 
 class Project():
@@ -195,12 +213,6 @@ class Project():
             content = getattr(self, section, None)
             if content:
                 summary.append("%s %s" % (len(content), section))
-
-        # Import library methods
-        libraryPath = os.path.join(self.__path, "jasylibrary.py")
-        if os.path.exists(libraryPath):
-            methodNumber = loadLibrary(self.__name, libraryPath)
-            summary.append("%s methods" % methodNumber)
 
         # Print out
         if summary:
@@ -355,6 +367,10 @@ class Project():
     #
     # ESSENTIALS
     #
+
+    def hasRequires(self):
+        return len(self.__requires) > 0
+
     
     def getRequires(self, prefix="external"):
         """
@@ -377,6 +393,10 @@ class Project():
                 config = None
                 version = None
                 kind = None
+
+            # Versions are expected being string type
+            if version is not None:
+                version = str(version)
 
             revision = None
             

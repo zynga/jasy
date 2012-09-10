@@ -43,11 +43,21 @@ class Session():
 
             try:
                 self.addProject(getProjectFromPath("."))
+
             except JasyError as err:
                 outdent(True)
                 error(err)
                 raise JasyError("Critical: Could not initialize session!")
-    
+
+            info("Active projects:") 
+            indent()
+
+            for project in self.__projects:
+                info("%s @ %s", colorize(project.getName(), "bold"), colorize(project.version, "magenta"))
+
+            outdent()
+
+
     
     def clean(self):
         """Clears all caches of known projects"""
@@ -114,6 +124,11 @@ class Session():
             
             # Append to session list
             self.__projects.append(project)
+
+            # Import library methods
+            libraryPath = os.path.join(project.getPath(), "jasylibrary.py")
+            if os.path.exists(libraryPath):
+                methodNumber = loadLibrary(project.getName(), libraryPath)
 
             # Import project defined fields which might be configured using "activateField()"
             fields = project.getFields()
