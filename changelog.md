@@ -1,3 +1,13 @@
+Jasy 0.8-beta4
+==============
+
+## Changes
+
+- Changed project scanning to prefer projects nearer to sort order e.g. "core" wins over "apibrowser/core" even if placed before/behind.
+- Changed `jasylibrary.py` initialization so that methods are automatically imported one project dependencies are solved (works like importing fields from the projects)
+
+
+
 Jasy 0.8-beta3
 ==============
 
