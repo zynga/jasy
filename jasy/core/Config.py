@@ -4,11 +4,15 @@
 #
 
 import os, json, yaml
-
-from jasy.core.Error import JasyError
+import jasy.core.Error
 
 
 def findConfig(fileName):
+    """
+    Returns the name of a config file based on the given base file name (without extension).
+    Returns either a filename which endswith .json, .yaml or None
+    """
+
     fileExt = os.path.splitext(fileName)[1]
 
     # Auto discovery
@@ -26,6 +30,11 @@ def findConfig(fileName):
 
 
 def loadConfig(fileName, encoding="utf-8"):
+    """
+    Loads the given configuration file (filename without extension) and 
+    returns the parsed object structure 
+    """
+
     configName = findConfig(fileName)
     if configName is None:
         raise JasyError("Unsupported config file: %s" % fileName)
@@ -41,6 +50,11 @@ def loadConfig(fileName, encoding="utf-8"):
 
 
 def writeConfig(data, fileName, indent=2, encoding="utf-8"):
+    """
+    Writes the given data structure to the given file name. Based on the given extension
+    a different file format is choosen. Currently use either .yaml or .json.
+    """
+
     fileHandle = open(fileName, mode="w", encoding=encoding)
 
     fileExt = os.path.splitext(fileName)[1]
@@ -51,5 +65,5 @@ def writeConfig(data, fileName, indent=2, encoding="utf-8"):
         yaml.dump(data, fileHandle, default_flow_style=False, indent=indent, allow_unicode=True)
 
     else:
-        raise JasyError("Unsupported config type: %s" % fileExt)
+        raise jasy.core.Error.JasyError("Unsupported config type: %s" % fileExt)
 

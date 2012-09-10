@@ -6,8 +6,9 @@
 import shelve, time, os, os.path, sys, pickle, dbm, uuid, hashlib, atexit
 
 from jasy.core.Logging import *
-from jasy import __version__ as version
-from jasy.core.Util import getKey
+
+import jasy
+import jasy.core.Util
 
 hostId = uuid.getnode()
 
@@ -38,8 +39,8 @@ class Cache:
         try:
             self.__shelve = shelve.open(self.__file, flag="c")
             
-            storedVersion = getKey(self.__shelve, "jasy-version")
-            storedHost = getKey(self.__shelve, "jasy-host")
+            storedVersion = jasy.core.Util.getKey(self.__shelve, "jasy-version")
+            storedHost = jasy.core.Util.getKey(self.__shelve, "jasy-host")
             
             if storedVersion == version and storedHost == hostId:
                 return
@@ -49,7 +50,7 @@ class Cache:
             
             self.clear()
 
-            self.__shelve["jasy-version"] = version
+            self.__shelve["jasy-version"] = jasy.__version__
             self.__shelve["jasy-host"] = hostId
             
         except dbm.error as dbmerror:
