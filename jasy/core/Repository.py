@@ -133,7 +133,7 @@ def updateGitRepository(url, version, path, update=True):
             
             if update and (version == "master" or "refs/heads/" in version):
                 if __enableUpdates:
-                    info("Updating %s", colorize("%s @ " % url, "grey") + colorize(version, "magenta"))
+                    info("Updating %s", colorize("%s @ " % url, "bold") + colorize(version, "magenta"))
                     
                     try:
                         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", version], "Could not fetch updated revision!")
@@ -255,6 +255,8 @@ def expandGitVersion(version=None):
     if version is None:
         version = "master"
     
+    version = str(version)
+
     if version.startswith("refs/"):
         pass
     elif re.compile(r"^[a-f0-9]{40}$").match(version):
