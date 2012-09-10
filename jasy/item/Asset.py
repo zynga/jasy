@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from os.path import basename, splitext
+import os.path
 
 from jasy.asset.ImageInfo import ImgInfo
 from jasy.item.Item import Item
@@ -67,16 +67,16 @@ class Asset(Item):
         # Call Item's init method first
         super().__init__(project, id)
 
-        self.extension = splitext(self.id.lower())[1]
+        self.extension = os.path.splitext(self.id.lower())[1]
         self.type = getKey(extensions, self.extension, "other")
         self.shortType = self.type[0]
         
 
     def isImageSpriteConfig(self):
-        return self.isText() and (basename(self.id) == "jasysprite.yaml" or basename(self.id) == "jasysprite.json")
+        return self.isText() and (os.path.basename(self.id) == "jasysprite.yaml" or os.path.basename(self.id) == "jasysprite.json")
 
     def isImageAnimationConfig(self):
-        return self.isText() and (basename(self.id) == "jasyanimation.yaml" or basename(self.id) == "jasyanimation.json")
+        return self.isText() and (os.path.basename(self.id) == "jasyanimation.yaml" or os.path.basename(self.id) == "jasyanimation.json")
 
     def isText(self):
         return self.type == "text"
