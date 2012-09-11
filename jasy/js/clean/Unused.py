@@ -3,8 +3,9 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from jasy.js.parse.Node import Node
+import jasy.js.parse.Node as Node
 import jasy.js.parse.ScopeScanner as ScopeScanner
+
 from jasy.core.Logging import *
 
 __all__ = ["cleanup", "Error"]
@@ -141,7 +142,7 @@ def __recurser(node, unused):
                     
                     # If we have only one child, we replace the whole var statement with just the init block
                     elif len(node) == 1:
-                        semicolon = Node(init.tokenizer, "semicolon")
+                        semicolon = Node.Node(init.tokenizer, "semicolon")
                         semicolon.append(init, "expression")
 
                         # Protect non-expressions with parens
@@ -159,7 +160,7 @@ def __recurser(node, unused):
                         
                         node.remove(decl)
                         nodePos = node.parent.index(node)
-                        semicolon = Node(init.tokenizer, "semicolon")
+                        semicolon = Node.Node(init.tokenizer, "semicolon")
                         semicolon.append(init, "expression")
 
                         # Protect non-expressions with parens

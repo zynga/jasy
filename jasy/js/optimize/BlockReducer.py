@@ -3,9 +3,11 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from jasy.js.parse.Node import Node
-from jasy.js.output.Compressor import Compressor
-from jasy.js.parse.Lang import expressionOrder, expressions
+import jasy.js.parse.Node as Node
+import jasy.js.output.Compressor as Compressor
+
+import jasy.js.parse.Lang
+
 from jasy.core.Logging import *
 
 
@@ -20,7 +22,7 @@ class Error(Exception):
 def optimize(node):
     debug("Reducing block complexity...")
     indent()
-    result = __optimize(node, Compressor())
+    result = __optimize(node, Compressor.Compressor())
     outdent()
     return result
     
@@ -108,7 +110,7 @@ def __optimize(node, compressor):
             pass
         elif len(node) == 0:
             debug("Replace empty block with semicolon at line: %s", node.line)
-            repl = Node(node.tokenizer, "semicolon")
+            repl = Node.Node(node.tokenizer, "semicolon")
             node.parent.replace(node, repl)
             node = repl
         elif len(node) == 1:
@@ -154,7 +156,7 @@ def __optimize(node, compressor):
                 node.replace(condition, condition[0])
                 condition = condition[0]
             else:
-                repl = Node(None, "not")
+                repl = Node.Node(None, "not")
                 node.replace(condition, repl)
                 repl.append(condition)
                 fixParens(condition)
@@ -206,7 +208,7 @@ def reworkElse(node, elsePart):
     # into a block and move the else statements to this newly
     # established block
     if not target.type in ("block", "script"):
-        newBlock = Node(None, "block")
+        newBlock = Node.Node(None, "block")
         
         # Replace node with newly created block and put ourself into it
         node.parent.replace(node, newBlock)
@@ -299,11 +301,11 @@ def cleanParens(node):
         # parens aroudn an expression
         node.parenthesized = False
     
-    elif node.type in expressions and parent.type == "return":
+    elif node.type in jasy.js.parse.Lang.expressions and parent.type == "return":
         # Returns never need parens around the expression
         node.parenthesized = False
         
-    elif node.type in expressions and parent.type == "list" and parent.parent.type == "call":
+    elif node.type in jasy.js.parse.Lang.expressions and parent.type == "list" and parent.parent.type == "call":
         # Parameters don't need to be wrapped in parans
         node.parenthesized = False
         
@@ -320,9 +322,9 @@ def cleanParens(node):
         # x+(+x) => x++x => FAIL
         pass
         
-    elif node.type in expressions and parent.type in expressions:
-        prio = expressionOrder[node.type]
-        parentPrio = expressionOrder[node.parent.type]
+    elif node.type in jasy.js.parse.Lang.expressions and parent.type in jasy.js.parse.Lang.expressions:
+        prio = jasy.js.parse.Lang.expressionOrder[node.type]
+        parentPrio = jasy.js.parse.Lang.expressionOrder[node.parent.type]
         
         # Only higher priorities are optimized. Others are just to complex e.g.
         # "hello" + (3+4) + "world" is not allowed to be translated to 
@@ -342,9 +344,9 @@ def fixParens(node):
     """
     parent = node.parent
     
-    if parent.type in expressions:
-        prio = expressionOrder[node.type]
-        parentPrio = expressionOrder[node.parent.type]
+    if parent.type in jasy.js.parse.Lang.expressions:
+        prio = jasy.js.parse.Lang.expressionOrder[node.type]
+        parentPrio = jasy.js.parse.Lang.expressionOrder[node.parent.type]
         
         needsParens = prio < parentPrio
         if needsParens:
@@ -381,7 +383,7 @@ def combineToCommaExpression(node):
     if counter == 1:
         return node
     
-    comma = Node(node.tokenizer, "comma")
+    comma = Node.Node(node.tokenizer, "comma")
     
     for child in list(node):
         if child is None:
@@ -391,7 +393,7 @@ def combineToCommaExpression(node):
         if hasattr(child, "expression"):
             comma.append(child.expression)
             
-    semicolon = Node(node.tokenizer, "semicolon")
+    semicolon = Node.Node(node.tokenizer, "semicolon")
     semicolon.append(comma, "expression")
     
     parent = node.parent
@@ -421,10 +423,10 @@ def compactIf(node, thenPart, condition):
     else:
         # Has expression => Translate IF using a AND or OR operator
         if condition.type == "not":
-            replacement = Node(thenPart.tokenizer, "or")
+            replacement = Node.Node(thenPart.tokenizer, "or")
             condition = condition[0]
         else:
-            replacement = Node(thenPart.tokenizer, "and")
+            replacement = Node.Node(thenPart.tokenizer, "and")
 
         replacement.append(condition)
         replacement.append(thenExpression)
@@ -509,7 +511,7 @@ def combineExpressions(condition, thenExpression, elseExpression):
     """ Combines then and else expression using a hook statement. """
     
     hook = createHook(condition, thenExpression, elseExpression)
-    semicolon = Node(condition.tokenizer, "semicolon")
+    semicolon = Node.Node(condition.tokenizer, "semicolon")
     semicolon.append(hook, "expression")
     
     fixParens(condition)
@@ -522,7 +524,7 @@ def combineExpressions(condition, thenExpression, elseExpression):
 def createReturn(value):
     """ Creates a return statement with the given value """
     
-    ret = Node(value.tokenizer, "return")
+    ret = Node.Node(value.tokenizer, "return")
     ret.append(value, "value")
     return ret
 
@@ -530,7 +532,7 @@ def createReturn(value):
 def createHook(condition, thenPart, elsePart):
     """ Creates a hook expression with the given then/else parts """
     
-    hook = Node(condition.tokenizer, "hook")
+    hook = Node.Node(condition.tokenizer, "hook")
     hook.append(condition, "condition")
     hook.append(thenPart, "thenPart")
     hook.append(elsePart, "elsePart")
