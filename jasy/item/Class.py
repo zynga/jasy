@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, copy, zlib
+import os, copy, zlib, fnmatch, re
 
 from jasy.core.Error import JasyError
 
@@ -148,6 +148,12 @@ class Class(Item):
         for name in meta.requires:
             if name != self.id and name in classes and classes[name].kind == "class":
                 result.add(classes[name])
+            elif "*" in name:
+                reobj = re.compile(fnmatch.translate(name))
+                for className in classes:
+                    if className != self.id:
+                        if reobj.match(className):
+                            result.add(classes[className])
             elif warnings:
                 warn("- Missing class (required): %s in %s", name, self.id)
 
