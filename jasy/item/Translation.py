@@ -4,10 +4,10 @@
 #
 
 import polib
+import jasy.item.Item as Item
+import jasy.core.Json as Json
 
-from jasy.item.Item import Item
 from jasy.core.Logging import *
-from jasy.core.Json import toJson
 
 __all__ = ["getFormat", "generateId", "Translation"]
 
@@ -45,7 +45,7 @@ def generateId(basic, plural=None, context=None):
     return result
 
 
-class Translation(Item):
+class Translation(Item.Item):
     """
     Internal instances mapping a translation file in different formats
     with a conventient API.
@@ -128,7 +128,7 @@ class Translation(Item):
         table = self.table
         result = { translationId: table[translationId] for translationId in relevantTranslations if translationId in table }
 
-        return toJson(result or None)
+        return Json.toJson(result or None)
 
     def getTable(self):
         """Returns the translation table"""

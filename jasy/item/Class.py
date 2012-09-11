@@ -5,29 +5,22 @@
 
 import os, copy, zlib
 
-from jasy.core.Error import JasyError
-
 import jasy.js.parse.Parser as Parser
 import jasy.js.parse.ScopeScanner as ScopeScanner
-
 import jasy.js.clean.DeadCode
 import jasy.js.clean.Unused
 import jasy.js.clean.Permutate
-
 import jasy.js.optimize.Translation
-
 import jasy.js.output.Optimization
+import jasy.js.api.Data
+import jasy.core.Permutation
+import jasy.item.Item
 
-from jasy.item.Item import Item
-from jasy.core.Permutation import getPermutation
-from jasy.js.api.Data import ApiData
 from jasy.js.MetaData import MetaData
 from jasy.js.output.Compressor import Compressor
 
+from jasy.core.Error import JasyError
 from jasy.js.util import *
-
-
-
 from jasy.core.Logging import * 
 
 try:
@@ -41,7 +34,7 @@ except:
 aliases = {}
 
 defaultOptimization = jasy.js.output.Optimization.Optimization("declarations", "blocks", "variables")
-defaultPermutation = getPermutation({"debug" : False})
+defaultPermutation = jasy.core.Permutation.getPermutation({"debug" : False})
 
 
 __all__ = ["Class", "ClassError"]
@@ -75,7 +68,7 @@ class ClassError(Exception):
         return "Error processing class %s: %s" % (self.__inst, self.__msg)
 
 
-class Class(Item):
+class Class(jasy.item.Item.Item):
     
     kind = "class"
     
@@ -212,7 +205,7 @@ class Class(Item):
         field = "api[%s]-%s" % (self.id, highlight)
         apidata = self.project.getCache().read(field, self.mtime, inMemory=False)
         if apidata is None:
-            apidata = ApiData(self.id, highlight)
+            apidata = jasy.js.api.Data.ApiData(self.id, highlight)
             
             tree = self.__getTree(context="api")
             indent()
