@@ -29,14 +29,14 @@ def getKey(data, key, default=None):
 
 REGEXP_DASHES = re.compile(r"\-+([\S]+)?")
 
-def __camelizeHelper(match):
-    result = match.group(1)
-    return result[0].upper() + result[1:].lower()
-
 def camelize(str):
     """
     Returns a camelized version of the incoming string: foo-bar-baz => fooBarBaz
     """
+
+    def __camelizeHelper(match):
+        result = match.group(1)
+        return result[0].upper() + result[1:].lower()
     
     return REGEXP_DASHES.sub(__camelizeHelper, str)
 
@@ -49,17 +49,6 @@ def getFirstSubFolder(start):
                 return directory
 
     return None
-
-
-
-def json2yaml(jsonFile, yamlFile, encoding="utf-8", indent=2):
-    """Stores the given JSON file as a new YAML file"""
-    yaml.dump(json.load(open(jsonFile, "r", encoding="utf-8")), open(yamlFile, "w", encoding="utf-8"), indent=indent, default_flow_style=False, allow_unicode=True)
-
-def yamlToJson(yamlFile, jsonFile, encoding="utf-8", indent=2):
-    """Stores the given YAML file as a new JSON file"""
-    json.dump(yaml.load(open(yamlFile, "r", encoding="utf-8")), open(jsonFile, "w", encoding="utf-8"), indent=2, ensure_ascii=False)        
-
 
 
 
