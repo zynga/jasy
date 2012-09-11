@@ -3,16 +3,19 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import json, copy, re
+import copy, re, os
 
-from jasy.core.Error import JasyError
-from jasy.env.File import *
-from jasy.js.api.Data import ApiData
-from jasy.js.api.Text import *
+import jasy.js.api.Data as Data
+import jasy.js.api.Text as Text
+import jasy.core.Json as Json
+
 from jasy.js.util import *
-from jasy.env.State import session
-from jasy.core.Json import toJson
 from jasy.core.Logging import *
+
+from jasy.env.File import writeFile
+from jasy.env.State import session
+from jasy.core.Error import JasyError
+
 
 __all__ = ["ApiWriter"]
 
@@ -340,9 +343,9 @@ class ApiWriter():
 
         def encode(content, name):
             if callback:
-                return "%s(%s,'%s');" % (callback, toJson(content), name)
+                return "%s(%s,'%s');" % (callback, Json.toJson(content), name)
             else:
-                return toJson(content)
+                return Json.toJson(content)
 
         info("Saving class data (%s files)...", len(data))
         for className in data:
@@ -645,7 +648,7 @@ class ApiWriter():
                     destApi.main["from"].append(className)
                 
                 else:
-                    destApi = apiData[destName] = ApiData(destName, highlight=highlightCode)
+                    destApi = apiData[destName] = Data.ApiData(destName, highlight=highlightCode)
                     destApi.main = {
                         "type" : "Extend",
                         "name" : destName,
@@ -862,7 +865,7 @@ class ApiWriter():
             for split in splits[1:]:
                 if not packageName in apiData:
                     warn("Missing package documentation %s", packageName)
-                    apiData[packageName] = ApiData(packageName, highlight=highlightCode)
+                    apiData[packageName] = Data.ApiData(packageName, highlight=highlightCode)
                     apiData[packageName].main = {
                         "type" : "Package",
                         "name" : packageName
@@ -886,7 +889,7 @@ class ApiWriter():
                 
                 classMain = apiData[className].main
                 if "doc" in classMain and classMain["doc"]:
-                    summary = extractSummary(classMain["doc"])
+                    summary = Text.extractSummary(classMain["doc"])
                     if summary:
                         entry["summary"] = summary
                         

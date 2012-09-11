@@ -4,7 +4,7 @@
 #
 
 import re
-from jasy.core.Logging import warn
+from jasy.core.Logging import *
 
 __all__ = ["extractSummary"]
 
