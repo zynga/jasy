@@ -4,6 +4,7 @@
 #
 
 import time
+
 from jasy.core.Logging import *
 from jasy.env.State import getPermutation
 

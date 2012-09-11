@@ -3,13 +3,16 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
+import jasy.js.Sorter
+
 from jasy.core.Logging import *
 from jasy.env.State import session, getPermutation
-from jasy.js.Sorter import Sorter
 
 __all__ = ["Resolver"]
 
 class Resolver():
+    """Resolves dependencies between JavaScript files"""
+
     def __init__(self):
         # Keep permutation reference
         self.__permutation = getPermutation()
@@ -100,7 +103,9 @@ class Resolver():
         
         
     def getSortedClasses(self):
-        return Sorter(self).getSortedClasses()
+        """ Returns a list of sorted classes """
+
+        return jasy.js.Sorter.Sorter(self).getSortedClasses()
 
 
     def __resolveDependencies(self, classObj, collection):

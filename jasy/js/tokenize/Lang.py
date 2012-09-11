@@ -3,8 +3,9 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-# JavaScript 1.7 keywords
+"""JavaScript 1.7 keywords"""
 keywords = [
+    
     "break",
     "case", "catch", "const", "continue",
     "debugger", "default", "delete", "do",

@@ -170,9 +170,6 @@ def __scanScope(node):
         if not name in data.accessed:
             data.unused.add(name)
     
-    # print("Quit Scope [Line:%s]" % node.line)
-    # data.output()
-    
     return data
     
     

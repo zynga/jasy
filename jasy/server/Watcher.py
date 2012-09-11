@@ -5,9 +5,8 @@
 
 import time, os
 
-from jasy.core.Logging import debug, info, error, header
+from jasy.core.Logging import *
 from jasy.env.State import session
-
 
 try:
     from watchdog.observers import Observer

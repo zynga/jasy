@@ -3,24 +3,21 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, os, jasy, logging, base64, json, requests
+import sys, os, jasy, logging, base64, json, requests, cherrypy
+import jasy.core.Cache
+
 from urllib.parse import urlparse
 from collections import namedtuple
 
-from jasy.core.Logging import debug, info, error, header, indent, outdent
+from jasy.core.Logging import *
 from jasy.env.State import session
-from jasy.core.Util import getKey
-from jasy.core.Cache import Cache
 from jasy.core.Types import CaseInsensitiveDict
+from jasy.core.Util import getKey
 
 Result = namedtuple('Result', ['headers', 'content'])
 
 # Disable logging HTTP request being created
 logging.getLogger("requests").setLevel(logging.WARNING)
-
-import cherrypy
-from cherrypy.lib.static import serve_file as serveFile
-from cherrypy.lib.static import serve_file as serveFile
 
 
 __all__ = ["serve"]
@@ -74,7 +71,7 @@ class Proxy(object):
         self.enableOffline = getKey(config, "offline", False)
 
         if self.enableMirror:
-            self.mirror = Cache(os.getcwd(), "jasymirror-%s" % self.id, hashkeys=True)
+            self.mirror = jasy.core.Cache.Cache(os.getcwd(), ".jasy/mirror-%s" % self.id, hashkeys=True)
 
         info('Proxy "%s" => "%s" [debug:%s|mirror:%s|offline:%s]', self.id, self.host, self.enableDebug, self.enableMirror, self.enableOffline)
         
@@ -219,7 +216,7 @@ class Static(object):
                 if extension in self.contentTypes:
                     contentType = self.contentTypes[extension]
 
-            return serveFile(os.path.abspath(path), content_type=contentType)
+            return cherrypy.lib.static.serve_file(os.path.abspath(path), content_type=contentType)
             
         # Otherwise return a classic 404
         else:

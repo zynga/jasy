@@ -10,11 +10,12 @@
 #   - Sebastian Werner <info@sebastian-werner.net> (Python Port) (2010)
 #
 
-import re
-from copy import copy
-from jasy.js.tokenize.Lang import keywords
-from jasy.js.api.Comment import Comment, CommentException
-from jasy.core.Logging import error
+import re, copy
+
+import jasy.js.tokenize.Lang
+import jasy.js.api.Comment
+
+from jasy.core.Logging import *
 
 __all__ = [ "Tokenizer" ]
 
@@ -220,8 +221,8 @@ class Tokenizer(object):
                 text = text.replace("*\/", "*/")
                 
                 try:
-                    self.comments.append(Comment(text, mode, commentStartLine, indent, self.fileId))
-                except CommentException as commentError:
+                    self.comments.append(jasy.js.api.Comment.Comment(text, mode, commentStartLine, indent, self.fileId))
+                except jasy.js.api.Comment.CommentException as commentError:
                     error("Ignoring comment in %s: %s", self.fileId, commentError)
                     
                     
@@ -252,8 +253,8 @@ class Tokenizer(object):
                     text += ch
                     
                 try:
-                    self.comments.append(Comment(text, mode, self.line-1, "", self.fileId))
-                except CommentException:
+                    self.comments.append(jasy.js.api.Comment.Comment(text, mode, self.line-1, "", self.fileId))
+                except jasy.js.api.Comment.CommentException:
                     error("Ignoring comment in %s: %s", self.fileId, commentError)
 
             # check for whitespace, also for special cases like 0xA0
@@ -509,7 +510,7 @@ class Tokenizer(object):
         self.cursor -= 1
 
         identifier = input[token.start:self.cursor]
-        if identifier in keywords:
+        if identifier in jasy.js.tokenize.Lang.keywords:
             token.type = identifier
         else:
             token.type = "identifier"
@@ -591,7 +592,7 @@ class Tokenizer(object):
         return {
             "cursor" : self.cursor,
             "tokenIndex": self.tokenIndex,
-            "tokens": copy(self.tokens),
+            "tokens": copy.copy(self.tokens),
             "lookahead": self.lookahead,
             "scanNewlines": self.scanNewlines,
             "line": self.line
@@ -601,7 +602,7 @@ class Tokenizer(object):
     def rewind(self, point):
         self.cursor = point["cursor"]
         self.tokenIndex = point["tokenIndex"]
-        self.tokens = copy(point["tokens"])
+        self.tokens = copy.copy(point["tokens"])
         self.lookahead = point["lookahead"]
         self.scanNewline = point["scanNewline"]
         self.line = point["line"]

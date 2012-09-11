@@ -89,8 +89,11 @@ class Cache:
             self.__shelve = None
 
         debug("Clearing cache file %s..." % self.__file)
+        
         self.__shelve = shelve.open(self.__file, flag="n")
-        self.__shelve["jasy-version"] = version
+
+        self.__shelve["jasy-version"] = jasy.__version__
+        self.__shelve["jasy-host"] = hostId
         
         
     def read(self, key, timestamp=None, inMemory=True):
