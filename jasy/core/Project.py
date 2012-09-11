@@ -6,7 +6,7 @@
 import os, re
 
 import jasy.core.Cache
-import jasy.core.Repository
+import jasy.vcs.Repository as Repository
 import jasy.env.Config
 import jasy.item.Abstract
 import jasy.item.Doc
@@ -396,14 +396,14 @@ class Project():
 
             revision = None
             
-            if jasy.core.Repository.isRepository(source):
-                kind = kind or jasy.core.Repository.getRepositoryType(source)
-                path = os.path.abspath(os.path.join(prefix, jasy.core.Repository.getRepositoryFolder(source, version, kind)))
+            if Repository.isUrl(source):
+                kind = kind or Repository.getType(source)
+                path = os.path.abspath(os.path.join(prefix, Repository.getTargetFolder(source, version, kind)))
                 
                 # Only clone and update when the folder is unique in this session
                 # This reduces git/hg/svn calls which are typically quite expensive
                 if not path in projects:
-                    revision = jasy.core.Repository.updateRepository(source, version, path)
+                    revision = Repository.update(source, version, path)
                     if revision is None:
                         raise UserError("Could not update repository %s" % source)
             

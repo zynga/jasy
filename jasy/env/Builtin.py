@@ -9,10 +9,11 @@ from jasy.core.Logging import *
 from jasy.env.Task import task, runTask
 from jasy.env.State import session
 from jasy import UserError
-from jasy.core.Repository import isRepository, updateRepository
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
 from jasy.env.Config import Config
+
+import jasy.vcs.Repository as Repository
 
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 
@@ -94,7 +95,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
         originName = originProject.getName()
         originRevision = None
 
-    elif isRepository(origin):
+    elif Repository.isUrl(origin):
         info("Using remote skeleton")
 
         tempDirectory = tempfile.TemporaryDirectory()
@@ -102,7 +103,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
         originUrl = origin
 
         indent()
-        originRevision = updateRepository(originUrl, originVersion, originPath)
+        originRevision = Repository.update(originUrl, originVersion, originPath)
         outdent()
 
         if originRevision is None:

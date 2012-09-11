@@ -5,13 +5,17 @@
 
 import os.path, re, urllib.parse
 
+from jasy.core.Util import executeCommand
+from jasy.core.Logging import *
+
+
 __versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?$")
 __branchParser = re.compile("^ref:.*/([a-zA-Z0-9_-]+)$")
 __gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
 __gitHash = re.compile(r"^[a-f0-9]{40}$")
 
 
-def updateRepository(url, version, path, update=True):
+def update(url, version, path, update=True):
     """Clones the given repository URL (optionally with overriding/update features)"""
 
     old = os.getcwd()
@@ -119,7 +123,7 @@ def getBranch(path=None):
 
 
 
-def isRepositoryUrl(url):
+def isUrl(url):
     """Figures out whether the given string is a valid Git repository URL"""
 
     # Detects these urls correctly

@@ -12,23 +12,23 @@ from jasy.core.Util import executeCommand
 
 __enableUpdates = True
 
-def enableRepositoryUpdates(enabled):
+def enableUpdates(enabled):
     global __enableUpdates
     __enableUpdates = enabled
 
 
-def isRepository(url):
-    return Git.isRepositoryUrl(url)
+def isUrl(url):
+    return Git.isUrl(url)
 
 
-def getRepositoryType(url):
-    if Git.isRepositoryUrl(url):
+def getType(url):
+    if Git.isUrl(url):
         return "git"
     else:
         return None
 
 
-def getRepositoryFolder(url, version=None, kind=None):
+def getTargetFolder(url, version=None, kind=None):
 
     if kind == "git" or Git.isRepositoryUrl(url):
 
@@ -45,13 +45,13 @@ def getRepositoryFolder(url, version=None, kind=None):
     return "%s-%s-%s" % (folder, version, hash)
 
 
-def updateRepository(url, version=None, path=None, update=True):
+def update(url, version=None, path=None, update=True):
 
     revision = None
 
-    if Git.isRepositoryUrl(url):
+    if Git.isUrl(url):
         version = Git.expandVersion(version)
-        revision = Git.updateRepository(url, version, path, update)
+        revision = Git.update(url, version, path, update)
 
     return revision
 
