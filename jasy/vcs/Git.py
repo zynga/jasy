@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os.path, re, urllib.parse
+import os.path, re, urllib.parse, shutil
 
 from jasy.core.Util import executeCommand
 from jasy.core.Logging import *

@@ -16,6 +16,7 @@ import jasy.item.Asset
 
 from jasy.core.Util import getKey
 from jasy.core.Logging import *
+from jasy import UserError
 
 
 __all__ = ["Project", "getProjectFromPath", "getProjectDependencies"]

@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import re
+import re, os.path
 
 from jasy.env.State import session
 from jasy.core.Project import getProjectFromPath
