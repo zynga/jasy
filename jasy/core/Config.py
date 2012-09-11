@@ -4,7 +4,7 @@
 #
 
 import os, json, yaml
-import jasy.core.Error
+from jasy import UserError
 
 
 def findConfig(fileName):
@@ -65,5 +65,5 @@ def writeConfig(data, fileName, indent=2, encoding="utf-8"):
         yaml.dump(data, fileHandle, default_flow_style=False, indent=indent, allow_unicode=True)
 
     else:
-        raise jasy.core.Error.UserError("Unsupported config type: %s" % fileExt)
+        raise UserError("Unsupported config type: %s" % fileExt)
 

@@ -5,13 +5,12 @@
 
 import types, os, sys, inspect, subprocess
 
-import jasy.core.Error
 import jasy.env.State
 
 from jasy.env.State import session
 from jasy.core.Logging import *
 from jasy.core.Util import camelize
-
+from jasy import UserError
 
 __all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOptions", "getOptions"]
 
@@ -97,7 +96,7 @@ def task(*args, **kwargs):
             return task(**kwargs)
 
         else:
-            raise jasy.core.Error.UserError("Invalid task")
+            raise UserError("Invalid task")
     
     else:
 
@@ -128,13 +127,13 @@ def executeTask(taskname, **kwargs):
         try:
             camelCaseArgs = { camelize(key) : kwargs[key] for key in kwargs }
             __taskRegistry[taskname](**camelCaseArgs)
-        except jasy.core.Error.UserError as err:
+        except UserError as err:
             raise
         except:
             error("Unexpected error! Could not finish task %s successfully!" % taskname)
             raise
     else:
-        raise jasy.core.Error.UserError("No such task: %s" % taskname)
+        raise UserError("No such task: %s" % taskname)
 
 def printTasks(indent=16):
     """Prints out a list of all avaible tasks and their descriptions"""
@@ -195,7 +194,7 @@ def runTask(project, task, **kwargs):
         remotePath = project
         remoteName = os.path.basename(project)
     else:
-        raise jasy.core.Error.UserError("Unknown project or invalid path: %s" % project)
+        raise UserError("Unknown project or invalid path: %s" % project)
 
     info("Running %s of project %s...", colorize(task, "bold"), colorize(remoteName, "bold"))
 
@@ -221,7 +220,7 @@ def runTask(project, task, **kwargs):
 
     # Error handling
     if returnValue != 0:
-        raise jasy.core.Error.UserError("Executing of sub task %s from project %s failed" % (task, project))
+        raise UserError("Executing of sub task %s from project %s failed" % (task, project))
 
 
 

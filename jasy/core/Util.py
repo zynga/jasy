@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import re, os, hashlib
+import re, os, hashlib, tempfile, subprocess, sys
 
 from jasy.core.Logging import *
 
