@@ -146,7 +146,7 @@ class Comment():
         field = "__highlightedHTML" if highlight else "__html"
         
         if self.variant == "doc" and getattr(self, field, None) is None:
-            if markdown is None:
+            if Markdown.markdown is None:
                 raise JasyError("Markdown is not supported by the system. Documentation comments could not be processed into HTML.")
             
             setattr(self, field, Markdown.markdown(self.__originalText, highlight))
