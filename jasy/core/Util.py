@@ -8,6 +8,30 @@ import re, os, hashlib
 from jasy.core.Logging import *
 
 
+def executeCommand(args, msg):
+    """Executes the given process and outputs message when errors happen."""
+
+    debug("Executing command: %s", " ".join(args))
+    indent()
+    
+    # Using shell on Windows to resolve binaries like "git"
+    output = tempfile.TemporaryFile(mode="w+t")
+    returnValue = subprocess.call(args, stdout=output, stderr=output, shell=sys.platform == "win32")
+    if returnValue != 0:
+        raise Exception("Error during executing shell command: %s" % msg)
+        
+    output.seek(0)
+    result = output.read().strip("\n\r")
+    output.close()
+    
+    for line in result.splitlines():
+        debug(line)
+    
+    outdent()
+    
+    return result
+
+
 def sha1File(f, block_size=2**20):
     sha1 = hashlib.sha1()
     while True:

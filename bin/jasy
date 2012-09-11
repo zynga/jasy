@@ -98,16 +98,16 @@ if options.log:
 #   DOCTOR
 # ===========================================================================      
 
+import jasy.env.Doctor
+
 # Check for "doctor" parameter. If it's set, the complete doctor routine will be executed, then exit
 for tasks in options.getTasks():
     if tasks['task'] == 'doctor':
-        from jasy.env.Doctor import doCompleteDoctor
-        doCompleteDoctor()
+        jasy.env.Doctor.doCompleteDoctor()
         sys.exit(1)
 
 # Execute the initialization "doctor" routine, only with error output
-from jasy.env.Doctor import doInitializationDoctor
-if not doInitializationDoctor():
+if not jasy.env.Doctor.doInitializationDoctor():
     sys.exit(1)
 
 
@@ -244,12 +244,7 @@ from jasy.env.JavaScript import *
 
 from jasy.server.Web import serve
 from jasy.server.Watcher import watch
-
-
-
-
-# Enabling execution of shell commands
-from jasy.core.Repository import executeCommand
+from jasy.core.Util import executeCommand
 
 
 # ===========================================================================
