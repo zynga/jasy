@@ -876,15 +876,8 @@ def Variables(tokenizer, staticContext, letBlock=None):
             if tokenizer.token.assignOp:
                 raise SyntaxError("Invalid variable initialization", tokenizer)
 
-            # Parse the init as a normal assignment.
-            id = builder.PRIMARY_build(childNode.tokenizer, "identifier")
-            assignmentNode = builder.ASSIGN_build(tokenizer)
-            builder.ASSIGN_addOperand(assignmentNode, id)
-            builder.ASSIGN_addOperand(assignmentNode, AssignExpression(tokenizer, staticContext))
-            builder.ASSIGN_finish(assignmentNode)
-            
-            # But only add the rhs as the initializer.
-            builder.DECL_setInitializer(childNode, assignmentNode[1])
+            initializerNode = AssignExpression(tokenizer, staticContext)
+            builder.DECL_setInitializer(childNode, initializerNode)
 
         builder.DECL_finish(childNode)
         
