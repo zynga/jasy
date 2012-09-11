@@ -242,8 +242,7 @@ from jasy.env.JavaScript import *
 #   Global Server
 # ===========================================================================
 
-from jasy.server.Web import serve
-from jasy.server.Watcher import watch
+from jasy.http.Server import serve
 from jasy.core.Util import executeCommand
 
 
