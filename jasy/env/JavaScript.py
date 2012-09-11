@@ -6,25 +6,25 @@
 import os, random
 
 from jasy import UserError
+
 from jasy.core.Permutation import Permutation
 from jasy.core.Logging import *
 
-from jasy.env.File import writeFile
+import jasy.core.File as File
 
 from jasy.item.Class import ClassError
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
 
-from jasy.env.State import session, setPermutation, getPermutation, getTranslation
-#jsOptimization, jsFormatting
+from jasy.env.State import session, setPermutation, getPermutation, getTranslation, prependPrefix
 
 import jasy.core.Json
 
-
-__all__ = ["storeKernel", "storeCompressed", "storeLoader"]
-
 from jasy.js.parse.Parser import parse
 from jasy.js.output.Compressor import Compressor
+
+
+__all__ = ["storeKernel", "storeCompressed", "storeLoader"]
 
 
 compressor = Compressor()
@@ -115,7 +115,7 @@ def storeCompressed(classes, fileName, bootCode=None, optimization=None, formatt
         wrappedBootCode = "(function(){%s})();" % bootCode
         result.append(packCode(wrappedBootCode))
 
-    writeFile(fileName, "".join(result))
+    File.write(prependPrefix(fileName), "".join(result))
 
 
 def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
@@ -167,6 +167,6 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loader, wrappedBootCode)
     result.append(packCode(loaderCode))
 
-    writeFile(fileName, "".join(result))
+    File.write(prependPrefix(fileName), "".join(result))
 
 
