@@ -84,7 +84,7 @@ class VanillaBuilder:
         node.append(expression, "label")
 
     def CASE_initializeStatements(self, node, tokenizer):
-        node.append(Node(tokenizer, "block"), "statements")
+        node.append(jasy.js.parse.Node.Node(tokenizer, "block"), "statements")
 
     def CASE_addStatement(self, node, statement):
         node.statements.append(statement)
@@ -96,7 +96,7 @@ class VanillaBuilder:
         return jasy.js.parse.Node.Node(tokenizer, "default")
 
     def DEFAULT_initializeStatements(self, node, tokenizer):
-        node.append(Node(tokenizer, "block"), "statements")
+        node.append(jasy.js.parse.Node.Node(tokenizer, "block"), "statements")
 
     def DEFAULT_addStatement(self, node, statement):
         node.statements.append(statement)
@@ -325,7 +325,7 @@ class VanillaBuilder:
         node.name = identifier
 
     def FUNCTION_initParams(self, node, tokenizer):
-        node.append(Node(tokenizer, "list"), "params")
+        node.append(jasy.js.parse.Node.Node(tokenizer, "list"), "params")
         
     def FUNCTION_wrapParam(self, tokenizer):
         param = jasy.js.parse.Node.Node(tokenizer)
