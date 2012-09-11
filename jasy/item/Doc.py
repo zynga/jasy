@@ -7,7 +7,7 @@ import jasy.js.api.Data as Data
 import jasy.core.Markdown as Markdown
 import jasy.item.Abstract as Abstract
 
-from jasy.core.Error import JasyError
+from jasy import UserError
 
 class DocItem(Abstract.AbstractItem):
     
@@ -18,7 +18,7 @@ class DocItem(Abstract.AbstractItem):
         apidata = self.project.getCache().read(field, self.getModificationTime())
         
         if Markdown.markdown is None:
-            raise JasyError("Missing Markdown feature to convert package docs into HTML.")
+            raise UserError("Missing Markdown feature to convert package docs into HTML.")
         
         if apidata is None:
             apidata = Data.ApiData(self.id)

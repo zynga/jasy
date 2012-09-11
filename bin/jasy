@@ -157,12 +157,12 @@ if options.fast:
     enableRepositoryUpdates(False)
 
 # Error handling
-from jasy.core.Error import JasyError
+from jasy import UserError
 
 # Import global environment
 try:
     from jasy.env.State import *
-except JasyError as errobj:
+except UserError as errobj:
     error("%s" % errobj)
     sys.exit(1)
 
@@ -193,7 +193,7 @@ import jasy.env.Builtin
 # ===========================================================================
 
 from jasy.core.Logging import *
-from jasy.core.Error import JasyError
+from jasy import UserError
 
 
 
@@ -279,7 +279,7 @@ def main():
         for entry in tasks:
             executeTask(entry["task"], **entry["params"])
     
-    except JasyError as errobj:
+    except UserError as errobj:
         error("%s" % errobj)
         sys.exit(1)
 

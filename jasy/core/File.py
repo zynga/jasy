@@ -8,7 +8,7 @@ A module consisting of some often used file system actions in easy to use unix t
 """
 
 import shutil, os
-from jasy.core.Error import JasyError
+from jasy import UserError
 
 def cp(src, dst):
     """Copies a file"""
@@ -32,7 +32,7 @@ def mkdir(name):
     if os.path.isdir(name):
         return
     elif os.path.exists(name):
-        raise JasyError("Error creating directory %s - File exists!" % name)
+        raise UserError("Error creating directory %s - File exists!" % name)
 
     return os.makedirs(name)
 

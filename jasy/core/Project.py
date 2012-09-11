@@ -125,7 +125,7 @@ class Project():
         """
         
         if not os.path.isdir(path):
-            raise jasy.core.Error.JasyError("Invalid project path: %s" % path)
+            raise jasy.core.Error.UserError("Invalid project path: %s" % path)
         
         # Only store and work with full path
         self.__path = os.path.abspath(os.path.expanduser(path))
@@ -147,7 +147,7 @@ class Project():
         try:
             self.__cache = jasy.core.Cache.Cache(self.__path)
         except IOError as err:
-            raise jasy.core.Error.JasyError("Could not initialize project. Cache file in %s could not be initialized! %s" % (self.__path, err))
+            raise jasy.core.Error.UserError("Could not initialize project. Cache file in %s could not be initialized! %s" % (self.__path, err))
         
         # Read name from manifest or use the basename of the project's path
         self.__name = self.__config.get("name", getProjectNameFromPath(self.__path))
@@ -229,7 +229,7 @@ class Project():
         full = os.path.join(self.__path, directory)
         if os.path.exists(full):
             if not os.path.isdir(full):
-                raise jasy.core.Error.JasyError("Expecting %s to be a directory: %s" % full)
+                raise jasy.core.Error.UserError("Expecting %s to be a directory: %s" % full)
             
             return True
         
@@ -243,12 +243,12 @@ class Project():
         for fileId in content:
             fileContent = content[fileId]
             if len(fileContent) == 0:
-                raise jasy.core.Error.JasyError("Empty content!")
+                raise jasy.core.Error.UserError("Empty content!")
                 
             # If the user defines a file extension for JS public idenfiers 
             # (which is not required) we filter them out
             if fileId.endswith(".js"):
-                raise jasy.core.Error.JasyError("JavaScript files should define the exported name, not a file name: %s" % fileId)
+                raise jasy.core.Error.UserError("JavaScript files should define the exported name, not a file name: %s" % fileId)
 
             fileExtension = os.path.splitext(fileContent[0])[1]
             
@@ -271,7 +271,7 @@ class Project():
                 
             # Check for duplication
             if fileId in dist:
-                raise jasy.core.Error.JasyError("Item ID was registered before: %s" % fileId)
+                raise jasy.core.Error.UserError("Item ID was registered before: %s" % fileId)
             
             # Create instance
             item = construct(self, fileId).attach(filePath)
@@ -351,7 +351,7 @@ class Project():
 
         # Check for duplication
         if fileId in dist and not override:
-            raise jasy.core.Error.JasyError("Item ID was registered before: %s" % fileId)
+            raise jasy.core.Error.UserError("Item ID was registered before: %s" % fileId)
 
         # Create instance
         item = construct(self, fileId).attach(fullPath)
@@ -406,7 +406,7 @@ class Project():
                 if not path in projects:
                     revision = jasy.core.Repository.updateRepository(source, version, path)
                     if revision is None:
-                        raise jasy.core.Error.JasyError("Could not update repository %s" % source)
+                        raise jasy.core.Error.UserError("Could not update repository %s" % source)
             
             else:
                 kind = "local"

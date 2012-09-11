@@ -9,7 +9,7 @@ import jasy.core.File
 import jasy.item.Asset
 
 from jasy.env.State import getPermutation, prependPrefix
-from jasy.core.Error import JasyError
+from jasy import UserError
 from jasy.core.Logging import *
 
 __all__ = ["AssetManager"]
@@ -74,7 +74,7 @@ class AssetManager:
             try:
                 spriteConfig = asset.getParsedObject();
             except ValueError as err:
-                raise JasyError("Could not parse jasysprite.json at %s: %s" % (fileId, err))
+                raise UserError("Could not parse jasysprite.json at %s: %s" % (fileId, err))
                 
             indent()
             for spriteImage in spriteConfig:
@@ -113,7 +113,7 @@ class AssetManager:
                         debug("Checksum Compare: %s <=> %s", fileChecksum[0:6], storedChecksum[0:6])
                         
                         if storedChecksum != fileChecksum:
-                            raise JasyError("Sprite Sheet is not up-to-date. Checksum of %s differs.", singleId)
+                            raise UserError("Sprite Sheet is not up-to-date. Checksum of %s differs.", singleId)
         
             outdent()
             debug("Deleting sprite config from assets: %s", fileId)
@@ -143,14 +143,14 @@ class AssetManager:
             try:
                 config = json.loads(asset.getText())
             except ValueError as err:
-                raise JasyError("Could not parse jasyanimation.json at %s: %s" % (fileId, err))
+                raise UserError("Could not parse jasyanimation.json at %s: %s" % (fileId, err))
             
             for relPath in config:
                 imageId = "%s/%s" % (base, relPath)
                 data = config[relPath]
                 
                 if not imageId in assets:
-                    raise JasyError("Unknown asset %s in %s" % (imageId, fileId))
+                    raise UserError("Unknown asset %s in %s" % (imageId, fileId))
                 
                 animationAsset = assets[imageId]
                 
@@ -170,7 +170,7 @@ class AssetManager:
                     frames = len(layout)
                     
                 else:
-                    raise JasyError("Invalid image frame data for: %s" % imageId)
+                    raise UserError("Invalid image frame data for: %s" % imageId)
 
                 debug("  - Animation %s has %s frames", imageId, frames)
 
@@ -189,7 +189,7 @@ class AssetManager:
         profiles = self.__profiles
         for entry in profiles:
             if entry["name"] == name:
-                raise JasyError("Asset profile %s was already defined!" % name)
+                raise UserError("Asset profile %s was already defined!" % name)
         
         profile = {
             "name" : name
@@ -294,7 +294,7 @@ class AssetManager:
                 if not split in current:
                     current[split] = {}
                 elif type(current[split]) != dict:
-                    raise JasyError("Invalid asset structure. Folder names must not be identical to any filename without extension: \"%s\" in %s" % (split, fileId))
+                    raise UserError("Invalid asset structure. Folder names must not be identical to any filename without extension: \"%s\" in %s" % (split, fileId))
                     
                 current = current[split]
             

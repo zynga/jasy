@@ -37,7 +37,7 @@ def loadConfig(fileName, encoding="utf-8"):
 
     configName = findConfig(fileName)
     if configName is None:
-        raise JasyError("Unsupported config file: %s" % fileName)
+        raise UserError("Unsupported config file: %s" % fileName)
 
     fileHandle = open(configName, mode="r", encoding=encoding)    
 
@@ -65,5 +65,5 @@ def writeConfig(data, fileName, indent=2, encoding="utf-8"):
         yaml.dump(data, fileHandle, default_flow_style=False, indent=indent, allow_unicode=True)
 
     else:
-        raise jasy.core.Error.JasyError("Unsupported config type: %s" % fileExt)
+        raise jasy.core.Error.UserError("Unsupported config type: %s" % fileExt)
 

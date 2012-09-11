@@ -19,7 +19,7 @@ import jasy.item.Abstract
 from jasy.js.MetaData import MetaData
 from jasy.js.output.Compressor import Compressor
 
-from jasy.core.Error import JasyError
+from jasy import UserError
 from jasy.js.util import *
 from jasy.core.Logging import * 
 
@@ -229,7 +229,7 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
         source = self.project.getCache().read(field, self.mtime)
         if source is None:
             if highlight is None:
-                raise JasyError("Could not highlight JavaScript code! Please install Pygments.")
+                raise UserError("Could not highlight JavaScript code! Please install Pygments.")
             
             lexer = JavascriptLexer(tabsize=2)
             formatter = HtmlFormatter(full=True, style="autumn", linenos="table", lineanchors="line")

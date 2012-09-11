@@ -42,10 +42,10 @@ class Session():
             try:
                 self.addProject(jasy.core.Project.getProjectFromPath("."))
 
-            except jasy.core.Error.JasyError as err:
+            except jasy.core.Error.UserError as err:
                 outdent(True)
                 error(err)
-                raise jasy.core.Error.JasyError("Critical: Could not initialize session!")
+                raise jasy.core.Error.UserError("Critical: Could not initialize session!")
 
             info("Active projects:") 
             indent()
@@ -134,14 +134,14 @@ class Session():
                 entry = fields[name]
 
                 if name in self.__fields:
-                    raise jasy.core.Error.JasyError("Field '%s' was already defined!" % (name))
+                    raise jasy.core.Error.UserError("Field '%s' was already defined!" % (name))
 
                 if "check" in entry:
                     check = entry["check"]
                     if check in ["Boolean", "String", "Number"] or type(check) == list:
                         pass
                     else:
-                        raise jasy.core.Error.JasyError("Unsupported check: '%s' for field '%s'" % (check, name))
+                        raise jasy.core.Error.UserError("Unsupported check: '%s' for field '%s'" % (check, name))
                     
                 if "detect" in entry:
                     detect = entry["detect"]
@@ -236,7 +236,7 @@ class Session():
         """
 
         if not "locale" in self.__fields:
-            raise jasy.core.Error.JasyError("Define locales first!")
+            raise jasy.core.Error.UserError("Define locales first!")
 
         self.__fields["locale"]["default"] = locale
 

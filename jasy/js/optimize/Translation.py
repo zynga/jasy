@@ -8,7 +8,7 @@ import re, copy, polib
 import jasy.js.parse.Node as Node
 import jasy.item.Translation as Translation
 
-from jasy.core.Error import JasyError
+from jasy import UserError
 from jasy.core.Logging import *
 
 
@@ -140,7 +140,7 @@ def __splitTemplate(value, valueParams):
             try:
                 repl = mapper[pos]
             except KeyError:
-                raise JasyError("Invalid positional value: %s in %s" % (entry, value))
+                raise UserError("Invalid positional value: %s in %s" % (entry, value))
             
             copied = copy.deepcopy(mapper[pos])
             if copied.type not in ("identifier", "call"):

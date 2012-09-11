@@ -14,7 +14,7 @@ from jasy.core.Logging import *
 
 from jasy.env.File import writeFile
 from jasy.env.State import session
-from jasy.core.Error import JasyError
+from jasy import UserError
 
 
 __all__ = ["ApiWriter"]

@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from jasy.core.Error import JasyError
+from jasy import UserError
 from jasy.core.Logging import debug, warn
 
 # Make PIL (native module) optional
@@ -49,7 +49,7 @@ class SpriteSheet():
     def write(self, filename, debug=False):
 
         if Image is None:
-            raise JasyError("Missing Python PIL which is required to create sprite sheets!")
+            raise UserError("Missing Python PIL which is required to create sprite sheets!")
 
         img = Image.new('RGBA', (self.width, self.height))
         draw = ImageDraw.Draw(img)

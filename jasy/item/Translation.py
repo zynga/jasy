@@ -97,13 +97,13 @@ class TranslationItem(jasy.item.Abstract.AbstractItem):
                         table[entryId] = entry.msgstr_plural
 
         elif format is "xlf":
-            raise JasyError("Parsing ICU/XLF files is currently not supported!")
+            raise UserError("Parsing ICU/XLF files is currently not supported!")
 
         elif format is "properties":
-            raise JasyError("Parsing ICU/Property files is currently not supported!")
+            raise UserError("Parsing ICU/Property files is currently not supported!")
 
         elif format is "txt":
-            raise JasyError("Parsing ICU/text files is currently not supported!")
+            raise UserError("Parsing ICU/text files is currently not supported!")
                         
         debug("Translation of %s entries ready" % len(table))        
         outdent()

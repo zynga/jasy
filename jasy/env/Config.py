@@ -6,7 +6,7 @@
 import sys, os
 
 from jasy.core.Logging import *
-from jasy.core.Error import JasyError
+from jasy import UserError
 from jasy.core.Config import writeConfig, loadConfig, findConfig
 from jasy.core.Util import getKey
 
@@ -110,7 +110,7 @@ class Config:
             if optional:
                 return False
             else:
-                raise JasyError("Could not find configuration file (values): %s" % configFile)
+                raise UserError("Could not find configuration file (values): %s" % configFile)
 
         data = loadConfig(configFile, encoding=encoding)
         for key in data:
@@ -130,7 +130,7 @@ class Config:
             if optional:
                 return False
             else:
-                raise JasyError("Could not find configuration file (questions): %s" % configFile)
+                raise UserError("Could not find configuration file (questions): %s" % configFile)
 
         data = loadConfig(configFile, encoding=encoding)
         for entry in data:
@@ -160,7 +160,7 @@ class Config:
             if optional:
                 return False
             else:
-                raise JasyError("Could not find configuration script: %s" % configFile)
+                raise UserError("Could not find configuration script: %s" % configFile)
 
         env = {
             "config" : self,

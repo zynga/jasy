@@ -5,7 +5,7 @@
 
 import os, random
 
-from jasy.core.Error import JasyError
+from jasy import UserError
 from jasy.core.Permutation import Permutation
 from jasy.core.Logging import *
 
@@ -102,7 +102,7 @@ def storeCompressed(classes, fileName, bootCode=None, optimization=None, formatt
             result.append(classObj.getCompressed(getPermutation(), getTranslation(), optimization, formatting))
             
     except ClassError as error:
-        raise JasyError("Error during class compression! %s" % error)
+        raise UserError("Error during class compression! %s" % error)
 
     outdent()
 

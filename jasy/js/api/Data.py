@@ -7,7 +7,7 @@ import jasy.js.api.Text as Text
 
 from jasy.js.util import *
 from jasy.core.Logging import *
-from jasy.core.Error import JasyError
+from jasy import UserError
 
 
 __all__ = ["ApiData"]
@@ -92,8 +92,8 @@ class ApiData():
             if not self.__processTree(tree):
                 self.main["errornous"] = True
                 
-        except JasyError as jasyError:
-            raise jasyError
+        except UserError as UserError:
+            raise UserError
                 
         except Exception as error:
             self.main["errors"] = ({

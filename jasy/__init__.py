@@ -17,3 +17,9 @@ def info():
     print("Visit %s for details." % colorize("https://github.com/zynga/jasy", "underline"))
     print()
 
+
+class UserError(Exception):
+    """
+    Standard Jasy error class raised whenever something happens which the system understands (somehow excepected)
+    """
+    pass

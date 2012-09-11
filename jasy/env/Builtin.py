@@ -8,7 +8,7 @@ import shutil, os, tempfile, re, jasy, pip
 from jasy.core.Logging import *
 from jasy.env.Task import task, runTask
 from jasy.env.State import session
-from jasy.core.Error import JasyError
+from jasy import UserError
 from jasy.core.Repository import isRepository, updateRepository
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
@@ -63,7 +63,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     header("Creating project %s" % name)
 
     if not validProjectName.match(name):
-        raise JasyError("Invalid project name: %s" % name)
+        raise UserError("Invalid project name: %s" % name)
 
 
     #
@@ -76,7 +76,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
 
     destinationPath = os.path.abspath(os.path.expanduser(destination))
     if os.path.exists(destinationPath):
-        raise JasyError("Cannot create project %s in %s. File or folder exists!" % (name, destinationPath))
+        raise UserError("Cannot create project %s in %s. File or folder exists!" % (name, destinationPath))
 
     # Origin can be either:
     # 1) None, which means a skeleton from the current main project
@@ -88,7 +88,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
         originProject = session.getMain()
 
         if originProject is None:
-            raise JasyError("Auto discovery failed! No Jasy projects registered!")
+            raise UserError("Auto discovery failed! No Jasy projects registered!")
 
         originPath = originProject.getPath()
         originName = originProject.getName()
@@ -106,7 +106,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
         outdent()
 
         if originRevision is None:
-            raise JasyError("Could not clone origin repository!")
+            raise UserError("Could not clone origin repository!")
 
         debug("Cloned revision: %s" % originRevision)
 
@@ -127,12 +127,12 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
             originName = originProject.getName()
 
         else:
-            raise JasyError("Invalid value for origin: %s" % origin)
+            raise UserError("Invalid value for origin: %s" % origin)
 
     # Figure out the skeleton root folder
     skeletonDir = os.path.join(originPath, originProject.getConfigValue("skeletonDir", "skeleton"))
     if not os.path.isdir(skeletonDir):
-        raise JasyError('The project %s offers no skeletons!' % originName)
+        raise UserError('The project %s offers no skeletons!' % originName)
 
     # For convenience: Use first skeleton in skeleton folder if no other selection was applied
     if skeleton is None:
@@ -141,7 +141,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     # Finally we have the skeleton path (the root folder to copy for our app)
     skeletonPath = os.path.join(skeletonDir, skeleton)
     if not os.path.isdir(skeletonPath):
-        raise JasyError('Skeleton %s does not exist in project "%s"' % (skeleton, originName))
+        raise UserError('Skeleton %s does not exist in project "%s"' % (skeleton, originName))
 
 
     #
