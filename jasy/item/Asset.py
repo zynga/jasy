@@ -5,11 +5,12 @@
 
 import os.path
 
-from jasy.asset.ImageInfo import ImgInfo
-from jasy.item.Item import Item
+import jasy.asset.ImageInfo
+import jasy.item.Item
+
 from jasy.core.Util import getKey
-from jasy.core.Logging import debug
 from jasy.core.Config import loadConfig
+from jasy.core.Logging import *
 
 extensions = {
     ".png" : "image",
@@ -55,7 +56,7 @@ extensions = {
 }
 
 
-class Asset(Item):
+class Asset(jasy.item.Item.Item):
     
     kind = "asset"
 
@@ -126,7 +127,7 @@ class Asset(Item):
             if self.__imageDimensionData:
                 image = self.__imageDimensionData[:]
             else:
-                info = ImgInfo(self.getPath()).getInfo()
+                info = jasy.asset.ImageInfo.ImgInfo(self.getPath()).getInfo()
                 if info is None:
                     raise Exception("Invalid image: %s" % fileId)
 
