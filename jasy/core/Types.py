@@ -4,8 +4,8 @@
 #
 
 class CaseInsensitiveDict(dict):
-    """A case-insensitive dict subclass.
-    
+    """
+    A case-insensitive dict subclass.
     Each key is changed on entry to str(key).title().
     """
     

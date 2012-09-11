@@ -3,91 +3,15 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import subprocess, os, hashlib, shutil, re, tempfile, sys
-from urllib.parse import urlparse
-from jasy.core.Logging import *
-from jasy.core.Util import executeCommand
+import os.path, re, urllib.parse
 
-__all__ = [
-    "enableRepositoryUpdates", "isRepository", "getRepositoryType", "getRepositoryFolder", "updateRepository",
-    "getGitBranch"
-]
-
-__nullDevice = open(os.devnull, 'w')
-__gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
-__gitHash = re.compile(r"^[a-f0-9]{40}$")
 __versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?$")
 __branchParser = re.compile("^ref:.*/([a-zA-Z0-9_-]+)$")
-__enableUpdates = True
+__gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
+__gitHash = re.compile(r"^[a-f0-9]{40}$")
 
 
-
-# ======================================================
-#   PUBLIC API
-# ======================================================
-
-def enableRepositoryUpdates(enabled):
-    global __enableUpdates
-    __enableUpdates = enabled
-
-
-
-def isRepository(url):
-    # TODO: Support for svn, hg, etc.
-    return isGitRepositoryUrl(url)
-
-
-
-def getRepositoryType(url):
-    if isGitRepositoryUrl(url):
-        return "git"
-
-    # TODO: Support for svn, hg, etc.
-    else:
-        return None
-
-
-def getRepositoryFolder(url, version=None, kind=None):
-
-    if kind == "git" or isGitRepositoryUrl(url):
-
-        version = expandGitVersion(version)
-
-        folder = url[url.rindex("/")+1:]
-        if folder.endswith(".git"):
-            folder = folder[:-4]
-
-        identifier = "%s@%s" % (url, version)
-        version = version[version.rindex("/")+1:]
-
-    # TODO: Support for svn, hg, etc.
-
-    return "%s-%s-%s" % (folder, version, hashlib.sha1(identifier.encode("utf-8")).hexdigest())
-
-
-
-def updateRepository(url, version=None, path=None, update=True):
-
-    revision = None
-
-    if isGitRepositoryUrl(url):
-        version = expandGitVersion(version)
-        revision = updateGitRepository(url, version, path, update)
-
-    # TODO: Support for svn, hg, etc.
-
-    return revision
-
-
-
-
-
-
-# ======================================================
-#   GIT SUPPORT
-# ======================================================
-
-def updateGitRepository(url, version, path, update=True):
+def updateRepository(url, version, path, update=True):
     """Clones the given repository URL (optionally with overriding/update features)"""
 
     old = os.getcwd()
@@ -177,7 +101,7 @@ def updateGitRepository(url, version, path, update=True):
 
 
 
-def getGitBranch(path=None):
+def getBranch(path=None):
     """Returns the name of the git branch"""
 
     if path is None:
@@ -195,7 +119,7 @@ def getGitBranch(path=None):
 
 
 
-def isGitRepositoryUrl(url):
+def isRepositoryUrl(url):
     """Figures out whether the given string is a valid Git repository URL"""
 
     # Detects these urls correctly
@@ -212,7 +136,7 @@ def isGitRepositoryUrl(url):
     if not url.endswith(".git"):
         return False
         
-    parsed = urlparse(url)
+    parsed = urllib.parse.urlparse(url)
     if parsed.scheme in ("git", "https"):
         return not parsed.params and not parsed.query and not parsed.fragment
     elif not parsed.scheme and parsed.path == url and __gitAccountUrl.match(url) != None:
@@ -222,7 +146,7 @@ def isGitRepositoryUrl(url):
     
     
     
-def expandGitVersion(version=None):
+def expandVersion(version=None):
     if version is None:
         version = "master"
     
@@ -239,4 +163,6 @@ def expandGitVersion(version=None):
         version = "refs/heads/" + version
         
     return version
+
+
 

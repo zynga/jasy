@@ -6,7 +6,6 @@
 import sys, os, jasy, logging, base64, json, requests, cherrypy
 import jasy.core.Cache
 
-from urllib.parse import urlparse
 from collections import namedtuple
 
 from jasy.core.Logging import *
