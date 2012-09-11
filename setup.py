@@ -128,8 +128,9 @@ setup(
     'jasy.js.parse',
     'jasy.js.tokenize',
     'jasy.js.util',
+    'jasy.server',
     'jasy.test',
-    'jasy.server'
+    'jasy.vcs',
   ],
 
   package_data = {
