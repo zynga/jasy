@@ -4,17 +4,13 @@
 #
 
 import re, json, os, fnmatch
-from os.path import basename, dirname, relpath, normpath
 
 import jasy.core.File
+import jasy.item.Asset
 
-#from jasy.core.Project import Project
 from jasy.env.State import getPermutation, prependPrefix
 from jasy.core.Error import JasyError
-from jasy.core.Util import sha1File, getKey
 from jasy.core.Logging import *
-
-import jasy.item.Asset
 
 __all__ = ["AssetManager"]
 
@@ -73,7 +69,7 @@ class AssetManager:
             debug("Processing %s...", fileId)
             
             asset = assets[fileId]
-            spriteBase = dirname(fileId)
+            spriteBase = os.path.dirname(fileId)
                 
             try:
                 spriteConfig = asset.getParsedObject();
@@ -142,7 +138,7 @@ class AssetManager:
             debug("Processing %s...", fileId)
         
             asset = assets[fileId]
-            base = dirname(fileId)
+            base = os.path.dirname(fileId)
                 
             try:
                 config = json.loads(asset.getText())
@@ -159,9 +155,9 @@ class AssetManager:
                 animationAsset = assets[imageId]
                 
                 if "rows" in data or "columns" in data:
-                    rows = getKey(data, "rows", 1)
-                    columns = getKey(data, "columns", 1)
-                    frames = getKey(data, "frames")
+                    rows = Util.getKey(data, "rows", 1)
+                    columns = Util.getKey(data, "columns", 1)
+                    frames = Util.getKey(data, "frames")
                     
                     animationAsset.addImageAnimationData(columns, rows, frames)
                     
