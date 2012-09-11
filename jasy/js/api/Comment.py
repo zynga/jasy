@@ -4,10 +4,13 @@
 #
 
 import re
-from jasy.core.Markdown import markdown
+
+import jasy.core.Markdown as Markdown
+
 from jasy.core.Error import JasyError
 from jasy.js.util import *
-from jasy.core.Logging import error, warn
+from jasy.core.Logging import *
+
 
 __all__ = ["CommentException", "Comment"]
 
@@ -146,7 +149,7 @@ class Comment():
             if markdown is None:
                 raise JasyError("Markdown is not supported by the system. Documentation comments could not be processed into HTML.")
             
-            setattr(self, field, markdown(self.__originalText, highlight))
+            setattr(self, field, Markdown.markdown(self.__originalText, highlight))
     
         return getattr(self, field, None)
     
