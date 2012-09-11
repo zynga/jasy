@@ -3,10 +3,9 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import jasy
 import jasy.core.Create
 
-from jasy.core.Logging import info
+from jasy.core.Logging import *
 from jasy.env.Task import task
 
 
