@@ -3,12 +3,10 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shutil, os, tempfile, re, jasy, pip
-
+import jasy
 import jasy.core.Create
 
-from jasy import UserError
-from jasy.core.Logging import *
+from jasy.core.Logging import info
 from jasy.env.Task import task
 
 
