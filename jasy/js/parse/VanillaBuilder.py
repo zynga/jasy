@@ -10,7 +10,7 @@
 #   - Sebastian Werner <info@sebastian-werner.net> (Python Port) (2010)
 #
 
-from jasy.js.parse.Node import Node
+import jasy.js.parse.Node
 
 class VanillaBuilder:
     """The vanilla AST builder."""
@@ -46,7 +46,7 @@ class VanillaBuilder:
             currNode.comments.extend(prevComments)
     
     def IF_build(self, tokenizer):
-        return Node(tokenizer, "if")
+        return jasy.js.parse.Node.Node(tokenizer, "if")
 
     def IF_setCondition(self, node, expression):
         node.append(expression, "condition")
@@ -61,7 +61,7 @@ class VanillaBuilder:
         pass
 
     def SWITCH_build(self, tokenizer):
-        node = Node(tokenizer, "switch")
+        node = jasy.js.parse.Node.Node(tokenizer, "switch")
         node.defaultIndex = -1
         return node
 
@@ -78,7 +78,7 @@ class VanillaBuilder:
         pass
 
     def CASE_build(self, tokenizer):
-        return Node(tokenizer, "case")
+        return jasy.js.parse.Node.Node(tokenizer, "case")
 
     def CASE_setLabel(self, node, expression):
         node.append(expression, "label")
@@ -93,7 +93,7 @@ class VanillaBuilder:
         pass
 
     def DEFAULT_build(self, tokenizer):
-        return Node(tokenizer, "default")
+        return jasy.js.parse.Node.Node(tokenizer, "default")
 
     def DEFAULT_initializeStatements(self, node, tokenizer):
         node.append(Node(tokenizer, "block"), "statements")
@@ -105,7 +105,7 @@ class VanillaBuilder:
         pass
 
     def FOR_build(self, tokenizer):
-        node = Node(tokenizer, "for")
+        node = jasy.js.parse.Node.Node(tokenizer, "for")
         node.isLoop = True
         node.isEach = False
         return node
@@ -143,7 +143,7 @@ class VanillaBuilder:
         pass
 
     def WHILE_build(self, tokenizer):
-        node = Node(tokenizer, "while")
+        node = jasy.js.parse.Node.Node(tokenizer, "while")
         node.isLoop = True
         return node
 
@@ -157,7 +157,7 @@ class VanillaBuilder:
         pass
 
     def DO_build(self, tokenizer):
-        node = Node(tokenizer, "do")
+        node = jasy.js.parse.Node.Node(tokenizer, "do")
         node.isLoop = True
         return node
 
@@ -171,7 +171,7 @@ class VanillaBuilder:
         pass
 
     def BREAK_build(self, tokenizer):
-        return Node(tokenizer, "break")
+        return jasy.js.parse.Node.Node(tokenizer, "break")
 
     def BREAK_setLabel(self, node, label):
         node.label = label
@@ -184,7 +184,7 @@ class VanillaBuilder:
         pass
 
     def CONTINUE_build(self, tokenizer):
-        return Node(tokenizer, "continue")
+        return jasy.js.parse.Node.Node(tokenizer, "continue")
 
     def CONTINUE_setLabel(self, node, label):
         node.label = label
@@ -197,7 +197,7 @@ class VanillaBuilder:
         pass
 
     def TRY_build(self, tokenizer):
-        node = Node(tokenizer, "try")
+        node = jasy.js.parse.Node.Node(tokenizer, "try")
         return node
 
     def TRY_setTryBlock(self, node, statement):
@@ -216,11 +216,11 @@ class VanillaBuilder:
         pass
 
     def CATCH_build(self, tokenizer):
-        node = Node(tokenizer, "catch")
+        node = jasy.js.parse.Node.Node(tokenizer, "catch")
         return node
         
     def CATCH_wrapException(self, tokenizer):
-        node = Node(tokenizer, "exception")
+        node = jasy.js.parse.Node.Node(tokenizer, "exception")
         node.value = tokenizer.token.value
         return node
 
@@ -237,7 +237,7 @@ class VanillaBuilder:
         pass
 
     def THROW_build(self, tokenizer):
-        return Node(tokenizer, "throw")
+        return jasy.js.parse.Node.Node(tokenizer, "throw")
 
     def THROW_setException(self, node, expression):
         node.append(expression, "exception")
@@ -246,7 +246,7 @@ class VanillaBuilder:
         pass
 
     def RETURN_build(self, tokenizer):
-        return Node(tokenizer, "return")
+        return jasy.js.parse.Node.Node(tokenizer, "return")
 
     def RETURN_setValue(self, node, expression):
         node.append(expression, "value")
@@ -255,7 +255,7 @@ class VanillaBuilder:
         pass
 
     def YIELD_build(self, tokenizer):
-        return Node(tokenizer, "yield")
+        return jasy.js.parse.Node.Node(tokenizer, "yield")
 
     def YIELD_setValue(self, node, expression):
         node.append(expression, "value")
@@ -264,7 +264,7 @@ class VanillaBuilder:
         pass
 
     def GENERATOR_build(self, tokenizer):
-        return Node(tokenizer, "generator")
+        return jasy.js.parse.Node.Node(tokenizer, "generator")
 
     def GENERATOR_setExpression(self, node, expression):
         node.append(expression, "expression")
@@ -276,7 +276,7 @@ class VanillaBuilder:
         pass
 
     def WITH_build(self, tokenizer):
-        return Node(tokenizer, "with")
+        return jasy.js.parse.Node.Node(tokenizer, "with")
 
     def WITH_setObject(self, node, expression):
         node.append(expression, "object")
@@ -288,10 +288,10 @@ class VanillaBuilder:
         pass
 
     def DEBUGGER_build(self, tokenizer):
-        return Node(tokenizer, "debugger")
+        return jasy.js.parse.Node.Node(tokenizer, "debugger")
 
     def SEMICOLON_build(self, tokenizer):
-        return Node(tokenizer, "semicolon")
+        return jasy.js.parse.Node.Node(tokenizer, "semicolon")
 
     def SEMICOLON_setExpression(self, node, expression):
         node.append(expression, "expression")
@@ -300,7 +300,7 @@ class VanillaBuilder:
         pass
 
     def LABEL_build(self, tokenizer):
-        return Node(tokenizer, "label")
+        return jasy.js.parse.Node.Node(tokenizer, "label")
 
     def LABEL_setLabel(self, node, label):
         node.label = label
@@ -312,7 +312,7 @@ class VanillaBuilder:
         pass
 
     def FUNCTION_build(self, tokenizer):
-        node = Node(tokenizer)
+        node = jasy.js.parse.Node.Node(tokenizer)
         if node.type != "function":
             if tokenizer.token.value == "get":
                 node.type = "getter"
@@ -328,7 +328,7 @@ class VanillaBuilder:
         node.append(Node(tokenizer, "list"), "params")
         
     def FUNCTION_wrapParam(self, tokenizer):
-        param = Node(tokenizer)
+        param = jasy.js.parse.Node.Node(tokenizer)
         param.value = tokenizer.token.value
         return param
         
@@ -353,7 +353,7 @@ class VanillaBuilder:
         pass
 
     def VAR_build(self, tokenizer):
-        return Node(tokenizer, "var")
+        return jasy.js.parse.Node.Node(tokenizer, "var")
 
     def VAR_addDecl(self, node, childNode, childContext=None):
         node.append(childNode)
@@ -362,7 +362,7 @@ class VanillaBuilder:
         pass
 
     def CONST_build(self, tokenizer):
-        return Node(tokenizer, "const")
+        return jasy.js.parse.Node.Node(tokenizer, "const")
 
     def CONST_addDecl(self, node, childNode, childContext=None):
         node.append(childNode)
@@ -371,7 +371,7 @@ class VanillaBuilder:
         pass
 
     def LET_build(self, tokenizer):
-        return Node(tokenizer, "let")
+        return jasy.js.parse.Node.Node(tokenizer, "let")
 
     def LET_addDecl(self, node, childNode, childContext=None):
         node.append(childNode)
@@ -380,7 +380,7 @@ class VanillaBuilder:
         pass
 
     def DECL_build(self, tokenizer):
-        return Node(tokenizer, "declaration")
+        return jasy.js.parse.Node.Node(tokenizer, "declaration")
 
     def DECL_setNames(self, node, expression):
         node.append(expression, "names")
@@ -398,7 +398,7 @@ class VanillaBuilder:
         pass
 
     def LETBLOCK_build(self, tokenizer):
-        node = Node(tokenizer, "let_block")
+        node = jasy.js.parse.Node.Node(tokenizer, "let_block")
         return node
 
     def LETBLOCK_setVariables(self, node, childNode):
@@ -414,7 +414,7 @@ class VanillaBuilder:
         pass
 
     def BLOCK_build(self, tokenizer, id):
-        node = Node(tokenizer, "block")
+        node = jasy.js.parse.Node.Node(tokenizer, "block")
         # node.id = id
         return node
 
@@ -428,7 +428,7 @@ class VanillaBuilder:
         pass
 
     def EXPRESSION_build(self, tokenizer, tokenType):
-        return Node(tokenizer, tokenType)
+        return jasy.js.parse.Node.Node(tokenizer, tokenType)
 
     def EXPRESSION_addOperand(self, node, childNode):
         node.append(childNode)
@@ -437,7 +437,7 @@ class VanillaBuilder:
         pass
 
     def ASSIGN_build(self, tokenizer):
-        return Node(tokenizer, "assign")
+        return jasy.js.parse.Node.Node(tokenizer, "assign")
 
     def ASSIGN_addOperand(self, node, childNode):
         node.append(childNode)
@@ -449,7 +449,7 @@ class VanillaBuilder:
         pass
 
     def HOOK_build(self, tokenizer):
-        return Node(tokenizer, "hook")
+        return jasy.js.parse.Node.Node(tokenizer, "hook")
 
     def HOOK_setCondition(self, node, expression):
         node.append(expression, "condition")
@@ -464,7 +464,7 @@ class VanillaBuilder:
         pass
 
     def OR_build(self, tokenizer):
-        return Node(tokenizer, "or")
+        return jasy.js.parse.Node.Node(tokenizer, "or")
 
     def OR_addOperand(self, node, childNode):
         node.append(childNode)
@@ -473,7 +473,7 @@ class VanillaBuilder:
         pass
 
     def AND_build(self, tokenizer):
-        return Node(tokenizer, "and")
+        return jasy.js.parse.Node.Node(tokenizer, "and")
 
     def AND_addOperand(self, node, childNode):
         node.append(childNode)
@@ -482,7 +482,7 @@ class VanillaBuilder:
         pass
 
     def BITWISEOR_build(self, tokenizer):
-        return Node(tokenizer, "bitwise_or")
+        return jasy.js.parse.Node.Node(tokenizer, "bitwise_or")
 
     def BITWISEOR_addOperand(self, node, childNode):
         node.append(childNode)
@@ -491,7 +491,7 @@ class VanillaBuilder:
         pass
 
     def BITWISEXOR_build(self, tokenizer):
-        return Node(tokenizer, "bitwise_xor")
+        return jasy.js.parse.Node.Node(tokenizer, "bitwise_xor")
 
     def BITWISEXOR_addOperand(self, node, childNode):
         node.append(childNode)
@@ -500,7 +500,7 @@ class VanillaBuilder:
         pass
 
     def BITWISEAND_build(self, tokenizer):
-        return Node(tokenizer, "bitwise_and")
+        return jasy.js.parse.Node.Node(tokenizer, "bitwise_and")
 
     def BITWISEAND_addOperand(self, node, childNode):
         node.append(childNode)
@@ -510,7 +510,7 @@ class VanillaBuilder:
 
     def EQUALITY_build(self, tokenizer):
         # NB: tokenizer.token.type must be "eq", "ne", "strict_eq", or "strict_ne".
-        return Node(tokenizer)
+        return jasy.js.parse.Node.Node(tokenizer)
 
     def EQUALITY_addOperand(self, node, childNode):
         node.append(childNode)
@@ -520,7 +520,7 @@ class VanillaBuilder:
 
     def RELATIONAL_build(self, tokenizer):
         # NB: tokenizer.token.type must be "lt", "le", "ge", or "gt".
-        return Node(tokenizer)
+        return jasy.js.parse.Node.Node(tokenizer)
 
     def RELATIONAL_addOperand(self, node, childNode):
         node.append(childNode)
@@ -530,7 +530,7 @@ class VanillaBuilder:
 
     def SHIFT_build(self, tokenizer):
         # NB: tokenizer.token.type must be "lsh", "rsh", or "ursh".
-        return Node(tokenizer)
+        return jasy.js.parse.Node.Node(tokenizer)
 
     def SHIFT_addOperand(self, node, childNode):
         node.append(childNode)
@@ -540,7 +540,7 @@ class VanillaBuilder:
 
     def ADD_build(self, tokenizer):
         # NB: tokenizer.token.type must be "plus" or "minus".
-        return Node(tokenizer)
+        return jasy.js.parse.Node.Node(tokenizer)
 
     def ADD_addOperand(self, node, childNode):
         node.append(childNode)
@@ -550,7 +550,7 @@ class VanillaBuilder:
 
     def MULTIPLY_build(self, tokenizer):
         # NB: tokenizer.token.type must be "mul", "div", or "mod".
-        return Node(tokenizer)
+        return jasy.js.parse.Node.Node(tokenizer)
 
     def MULTIPLY_addOperand(self, node, childNode):
         node.append(childNode)
@@ -566,7 +566,7 @@ class VanillaBuilder:
         elif tokenizer.token.type == "minus":
             tokenizer.token.type = "unary_minus"
             
-        return Node(tokenizer)
+        return jasy.js.parse.Node.Node(tokenizer)
 
     def UNARY_addOperand(self, node, childNode):
         node.append(childNode)
@@ -578,7 +578,7 @@ class VanillaBuilder:
         pass
 
     def MEMBER_build(self, tokenizer, tokenType=None):
-        node = Node(tokenizer, tokenType)
+        node = jasy.js.parse.Node.Node(tokenizer, tokenType)
         if node.type == "identifier":
             node.value = tokenizer.token.value
         return node
@@ -594,7 +594,7 @@ class VanillaBuilder:
 
     def PRIMARY_build(self, tokenizer, tokenType):
         # NB: tokenizer.token.type must be "null", "this", "true", "false", "identifier", "number", "string", or "regexp".
-        node = Node(tokenizer, tokenType)
+        node = jasy.js.parse.Node.Node(tokenizer, tokenType)
         if tokenType in ("identifier", "string", "regexp", "number"):
             node.value = tokenizer.token.value
             
@@ -604,7 +604,7 @@ class VanillaBuilder:
         pass
 
     def ARRAYINIT_build(self, tokenizer):
-        return Node(tokenizer, "array_init")
+        return jasy.js.parse.Node.Node(tokenizer, "array_init")
 
     def ARRAYINIT_addElement(self, node, childNode):
         node.append(childNode)
@@ -613,7 +613,7 @@ class VanillaBuilder:
         pass
 
     def ARRAYCOMP_build(self, tokenizer):
-        return Node(tokenizer, "array_comp")
+        return jasy.js.parse.Node.Node(tokenizer, "array_comp")
     
     def ARRAYCOMP_setExpression(self, node, expression):
         node.append(expression, "expression")
@@ -625,7 +625,7 @@ class VanillaBuilder:
         pass
 
     def COMPTAIL_build(self, tokenizer):
-        return Node(tokenizer, "comp_tail")
+        return jasy.js.parse.Node.Node(tokenizer, "comp_tail")
 
     def COMPTAIL_setGuard(self, node, expression):
         node.append(expression, "guard")
@@ -637,7 +637,7 @@ class VanillaBuilder:
         pass
 
     def OBJECTINIT_build(self, tokenizer):
-        return Node(tokenizer, "object_init")
+        return jasy.js.parse.Node.Node(tokenizer, "object_init")
 
     def OBJECTINIT_addProperty(self, node, childNode):
         node.append(childNode)
@@ -646,7 +646,7 @@ class VanillaBuilder:
         pass
 
     def PROPERTYINIT_build(self, tokenizer):
-        return Node(tokenizer, "property_init")
+        return jasy.js.parse.Node.Node(tokenizer, "property_init")
 
     def PROPERTYINIT_addOperand(self, node, childNode):
         node.append(childNode)
@@ -655,7 +655,7 @@ class VanillaBuilder:
         pass
 
     def COMMA_build(self, tokenizer):
-        return Node(tokenizer, "comma")
+        return jasy.js.parse.Node.Node(tokenizer, "comma")
 
     def COMMA_addOperand(self, node, childNode):
         node.append(childNode)
@@ -664,7 +664,7 @@ class VanillaBuilder:
         pass
 
     def LIST_build(self, tokenizer):
-        return Node(tokenizer, "list")
+        return jasy.js.parse.Node.Node(tokenizer, "list")
 
     def LIST_addOperand(self, node, childNode):
         node.append(childNode)
