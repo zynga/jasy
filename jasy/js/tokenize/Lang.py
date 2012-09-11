@@ -4,7 +4,7 @@
 #
 
 """JavaScript 1.7 keywords"""
-keywords = [
+keywords = set([
     
     "break",
     "case", "catch", "const", "continue",
@@ -20,4 +20,4 @@ keywords = [
     "var", "void",
     "yield",
     "while", "with"
-]
+])
