@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from jasy.js.parse.Node import Node
+import jasy.js.parse.Node as Node
 from jasy.core.Logging import *
 
 __all__ = ["optimize", "Error"]
@@ -104,7 +104,7 @@ def __combineVarStatements(node):
     # Only size-saving when there are multiple for-in loops, but no other var statement or first
     # "free" var declaration is after for-loops.
     if not firstVar:
-        firstVar = Node(None, "var")
+        firstVar = Node.Node(None, "var")
         node.insert(0, firstVar)
     
     __patchVarStatements(node, firstVar)
@@ -182,8 +182,8 @@ def __cleanFirst(first):
 
 
 def __createSimpleAssignment(identifier, valueNode):
-    assignNode = Node(None, "assign")
-    identNode = Node(None, "identifier")
+    assignNode = Node.Node(None, "assign")
+    identNode = Node.Node(None, "identifier")
     identNode.value = identifier
     assignNode.append(identNode)
     assignNode.append(valueNode)
@@ -192,7 +192,7 @@ def __createSimpleAssignment(identifier, valueNode):
     
     
 def __createMultiAssignment(names, valueNode):
-    assignNode = Node(None, "assign")
+    assignNode = Node.Node(None, "assign")
     assignNode.append(names)
     assignNode.append(valueNode)
 
@@ -200,14 +200,14 @@ def __createMultiAssignment(names, valueNode):
 
 
 def __createDeclaration(name):
-    declNode = Node(None, "declaration")
+    declNode = Node.Node(None, "declaration")
     declNode.name = name
     declNode.readOnly = False
     return declNode
 
 
 def __createIdentifier(value):
-    identifier = Node(None, "identifier")
+    identifier = Node.Node(None, "identifier")
     identifier.value = value
     return identifier    
 
@@ -233,8 +233,8 @@ def __patchVarStatements(node, firstVarStatement):
             
 def __rebuildAsAssignment(node, firstVarStatement):
     """Rebuilds the items of a var statement into a assignment list and moves declarations to the given var statement"""
-    assignment = Node(node.tokenizer, "semicolon")
-    assignmentList = Node(node.tokenizer, "comma")
+    assignment = Node.Node(node.tokenizer, "semicolon")
+    assignmentList = Node.Node(node.tokenizer, "comma")
     assignment.append(assignmentList, "expression")
 
     # Casting to list() creates a copy during the process (keeps loop stable)

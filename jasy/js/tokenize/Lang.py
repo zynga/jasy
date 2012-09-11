@@ -5,7 +5,6 @@
 
 """JavaScript 1.7 keywords"""
 keywords = set([
-    
     "break",
     "case", "catch", "const", "continue",
     "debugger", "default", "delete", "do",

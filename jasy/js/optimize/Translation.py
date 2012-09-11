@@ -5,10 +5,11 @@
 
 import re, copy, polib
 
+import jasy.js.parse.Node as Node
+import jasy.item.Translation as Translation
+
 from jasy.core.Error import JasyError
 from jasy.core.Logging import *
-from jasy.js.parse.Node import Node
-from jasy.item.Translation import generateId
 
 
 #
@@ -71,7 +72,7 @@ def __collectionRecurser(node, collection):
             funcName = node[0][1].value
         
         if funcName in translationFunctions:
-            translationId = generateId(*parseParams(node[1], funcName))
+            translationId = Translation.generateId(*parseParams(node[1], funcName))
             if translationId:
                 if translationId in collection:
                     collection[translationId].append(node.line)
@@ -121,14 +122,14 @@ def __splitTemplate(value, valueParams):
     if len(splits) == 1:
         return None
     
-    pair = Node(None, "plus")
+    pair = Node.Node(None, "plus")
 
     for entry in splits:
         if entry == "":
             continue
             
         if len(pair) == 2:
-            newPair = Node(None, "plus")
+            newPair = Node.Node(None, "plus")
             newPair.append(pair)
             pair = newPair
 
@@ -147,7 +148,7 @@ def __splitTemplate(value, valueParams):
             pair.append(copied)
             
         else:
-            child = Node(None, "string")
+            child = Node.Node(None, "string")
             child.value = entry
             pair.append(child)
             
@@ -246,15 +247,15 @@ def __recurser(node, table):
                 params.remove(params[0])
 
                 # Inject new object into params
-                container = Node(None, "object_init")
+                container = Node.Node(None, "object_init")
                 params.insert(0, container)
 
                 # Create new construction with all properties generated from the translation table
                 for plural in table[key]:
-                    pluralEntry = Node(None, "property_init")
-                    pluralEntryIdentifier = Node(None, "identifier")
+                    pluralEntry = Node.Node(None, "property_init")
+                    pluralEntryIdentifier = Node.Node(None, "identifier")
                     pluralEntryIdentifier.value = plural
-                    pluralEntryValue = Node(None, "string")
+                    pluralEntryValue = Node.Node(None, "string")
                     pluralEntryValue.value = table[key][plural]
                     pluralEntry.append(pluralEntryIdentifier)
                     pluralEntry.append(pluralEntryValue)
