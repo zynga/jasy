@@ -9,24 +9,20 @@ import jasy.core.Cache
 import jasy.core.Repository
 import jasy.core.Error
 import jasy.env.Config
+import jasy.item.Abstract
+import jasy.item.Doc
+import jasy.item.Translation
+import jasy.item.Class
+import jasy.item.Asset
 
 from jasy.core.Util import getKey
 from jasy.core.Logging import *
-
-# Item types
-from jasy.item.Item import Item
-from jasy.item.Doc import Doc
-from jasy.item.Translation import Translation
-from jasy.item.Class import Class
-from jasy.item.Asset import Asset
-
 
 
 __all__ = ["Project", "getProjectFromPath", "getProjectDependencies"]
 
 
 classExtensions = (".js")
-
 # Gettext .po files + ICU formats (http://userguide.icu-project.org/locale/localizing) (all formats but without .java support)
 translationExtensions = (".po", ".xlf", ".properties", ".txt")
 docFiles = ("package.md", "readme.md")
@@ -333,24 +329,24 @@ class Project():
         # Structure files  
         if fileExtension in classExtensions and distname == "classes":
             fileId += os.path.splitext(relPath)[0]
-            construct = Class
+            construct = jasy.item.Class.ClassItem
             dist = self.classes
         elif fileExtension in translationExtensions and distname == "translations":
             fileId += os.path.splitext(relPath)[0]
-            construct = Translation
+            construct = jasy.item.Translation.TranslationItem
             dist = self.translations
         elif fileName in docFiles:
             fileId += os.path.dirname(relPath)
             fileId = fileId.strip("/") # edge case when top level directory
-            construct = Doc
+            construct = jasy.item.Doc.DocItem
             dist = self.docs
         else:
             fileId += relPath
-            construct = Asset
+            construct = jasy.item.Asset.AssetItem
             dist = self.assets
 
         # Only assets keep unix style paths identifiers
-        if construct != Asset:
+        if construct != jasy.item.Asset.AssetItem:
             fileId = fileId.replace("/", ".")
 
         # Check for duplication

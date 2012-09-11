@@ -6,7 +6,7 @@
 import os.path
 
 import jasy.asset.ImageInfo
-import jasy.item.Item
+import jasy.item.Abstract
 
 from jasy.core.Util import getKey
 from jasy.core.Config import loadConfig
@@ -56,7 +56,7 @@ extensions = {
 }
 
 
-class Asset(jasy.item.Item.Item):
+class AssetItem(jasy.item.Abstract.AbstractItem):
     
     kind = "asset"
 

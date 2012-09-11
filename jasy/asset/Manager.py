@@ -10,10 +10,11 @@ import jasy.core.File
 
 #from jasy.core.Project import Project
 from jasy.env.State import getPermutation, prependPrefix
-from jasy.item.Asset import Asset
 from jasy.core.Error import JasyError
 from jasy.core.Util import sha1File, getKey
 from jasy.core.Logging import *
+
+import jasy.item.Asset
 
 __all__ = ["AssetManager"]
 
@@ -94,7 +95,7 @@ class AssetManager:
                         singleAsset = assets[singleId]
                     else:
                         info("Creating new asset: %s", singleId)
-                        singleAsset = Asset(None)
+                        singleAsset = jasy.item.Asset.AssetItem(None)
                         assets[singleId] = singleAsset
                         
                     if not spriteImageId in sprites:

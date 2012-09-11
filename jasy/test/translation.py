@@ -18,7 +18,7 @@ class Tests(unittest.TestCase):
     def process(self, code):
         node = Parser.parse(code)
 
-        translation = Translation.Translation(None, id="de_DE", table={
+        translation = Translation.TranslationItem(None, id="de_DE", table={
             
             "Hello World": "Hallo Welt",
             "Short": "Kurz",

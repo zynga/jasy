@@ -8,7 +8,7 @@ import os
 from jasy.core.Error import JasyError
 from jasy.core.Util import sha1File
 
-class Item:
+class AbstractItem:
     
     id = None
     project = None

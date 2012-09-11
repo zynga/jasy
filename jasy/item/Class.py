@@ -14,7 +14,7 @@ import jasy.js.optimize.Translation
 import jasy.js.output.Optimization
 import jasy.js.api.Data
 import jasy.core.Permutation
-import jasy.item.Item
+import jasy.item.Abstract
 
 from jasy.js.MetaData import MetaData
 from jasy.js.output.Compressor import Compressor
@@ -35,9 +35,6 @@ aliases = {}
 
 defaultOptimization = jasy.js.output.Optimization.Optimization("declarations", "blocks", "variables")
 defaultPermutation = jasy.core.Permutation.getPermutation({"debug" : False})
-
-
-__all__ = ["Class", "ClassError"]
 
 
 def collectFields(node, keys=None):
@@ -68,7 +65,7 @@ class ClassError(Exception):
         return "Error processing class %s: %s" % (self.__inst, self.__msg)
 
 
-class Class(jasy.item.Item.Item):
+class ClassItem(jasy.item.Abstract.AbstractItem):
     
     kind = "class"
     

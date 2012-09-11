@@ -5,11 +5,11 @@
 
 import jasy.js.api.Data as Data
 import jasy.core.Markdown as Markdown
-import jasy.item.Item as Item
+import jasy.item.Abstract as Abstract
 
 from jasy.core.Error import JasyError
 
-class Doc(Item.Item):
+class DocItem(Abstract.AbstractItem):
     
     kind = "doc"
     
