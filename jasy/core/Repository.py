@@ -271,6 +271,9 @@ def expandGitVersion(version=None):
 
 
 def cleanGitRepository():
-    executeCommand(["git", "clean"], "Could not clean up GIT repository!")
+    executeCommand(["git", "clean", "-d", "-f"], "Could not clean GIT repository!")
+
+def distcleanGitRepository():
+    executeCommand(["git", "clean", "-d", "-f", "-x"], "Could not clean GIT repository!")
 
 

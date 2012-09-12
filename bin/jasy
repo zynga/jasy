@@ -182,7 +182,7 @@ if jasyscript:
 import jasy.env.Builtin
 
 # Enable execution of shell commands, Allow cleaning up git repository
-from jasy.core.Repository import executeCommand, cleanGitRepository
+from jasy.core.Repository import executeCommand, cleanGitRepository, distcleanGitRepository
 
 
 # ===========================================================================
