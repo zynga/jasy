@@ -177,7 +177,7 @@ def __recurser(node, table):
             funcNameNode = node[0][1]
 
         # Gettext methods only at the moment
-        funcName = funcNameNode.value
+        funcName = funcNameNode and funcNameNode.value
         if funcName in translationFunctions:
             debug("Found translation method %s in %s", funcName, node.line)
             indent()
