@@ -71,7 +71,7 @@ optionals = [
 def doCompleteDoctor():
     """Checks for uninstalled or too old versions of requirements and gives a complete output"""
 
-    header("Troubleshooting Environment")
+    header("Doctor")
 
 
     dists = [dist for dist in pip.get_installed_distributions()]
@@ -98,15 +98,16 @@ def doCompleteDoctor():
         outdent()
 
 
-    # Needed packages
-    info(colorize(colorize("Needed installations:", "bold"), "underline"))
+    # Required packages
+    info(colorize("Required Packages:", "bold"))
     indent()
     for entry in needs:
         checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installPath"], entry["updatePath"])
     outdent()
 
     # Optional packages
-    info(colorize(colorize("Optional installations:", "bold"), "underline"))
+    info("")
+    info(colorize("Optional Packages:", "bold"))
     indent()
     for entry in optionals:
         checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installPath"], entry["updatePath"])
