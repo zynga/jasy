@@ -26,16 +26,18 @@ class Session():
     # Core
     #
 
-    def __init__(self, api):
+    def __init__(self):
         atexit.register(self.close)
 
-        self.__api = api
         self.__timestamp = time.time()
         self.__projects = []
         self.__projectByName = {}
         self.__fields = {}
         self.__translations = {}
         
+
+    def init(self):
+
         if jasy.core.Config.findConfig("jasyproject"):
 
             header("Initializing project")
@@ -54,8 +56,7 @@ class Session():
             for project in self.__projects:
                 info("%s @ %s", colorize(project.getName(), "bold"), colorize(project.version, "magenta"))
 
-            outdent()
-
+            outdent()        
 
     
     def clean(self):
@@ -101,6 +102,15 @@ class Session():
 
         return None
     
+
+    def setApi(self, api):
+        """
+        Configures the API object to assign methods and objects to. 
+        Typically that's the user environment of jasyscript.py.
+        """
+
+        self.__api = api
+
     
     
     

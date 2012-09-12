@@ -179,12 +179,13 @@ def main():
             api = {}
 
             # Initialize session with that API
-            import jasy.env.State as State
-            State.initSession(api)
+            from jasy.env.State import session
+            session.setApi(api)
+            session.init()
 
             # Making available some local variables
             api["config"] = config
-            api["session"] = State.session
+            api["session"] = session
 
             # Make all methods and classes from Context available
             import jasy.env.Context as Context
