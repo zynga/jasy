@@ -221,7 +221,6 @@ def showapi():
     Console.header("Official API")
 
     from jasy.core.Util import generateApiScreen
-
     Console.info(generateApiScreen(frozenApi))
 
 
@@ -251,21 +250,20 @@ def main():
         api["session"] = session
         api["config"] = config
 
-        # Execute user script / register tasks
+        # Initialize session
+        session.init(autoInit=True, userApi=api, updateRepositories=not options.fast)
+
+        # Make all methods and classes from Context available
+        import jasy.env.Context as Context
+        for key in dir(Context):
+            if not key.startswith("__"):
+                api[key] = getattr(Context, key)
+
+        # Protect API for documentation reasons
+        import copy
+        frozenApi = copy.copy(api)
+
         if jasyscript:
-
-            # Initialize session
-            session.init(autoInit=True, userApi=api, updateRepositories=not options.fast)
-
-            # Make all methods and classes from Context available
-            import jasy.env.Context as Context
-            for key in dir(Context):
-                if not key.startswith("__"):
-                    api[key] = getattr(Context, key)
-
-            # Protect API for documentation reasons
-            import copy
-            frozenApi = copy.copy(api)
 
             # Execute the jasyscript.py in a clean environment
             code = open(jasyscript, "r", encoding="utf-8").read()
