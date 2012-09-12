@@ -155,22 +155,29 @@ api = None
 #   BUILT-IN TASKS
 # ===========================================================================
 
-from jasy.env.Task import task
+import jasy.env.Task as Task
 
-@task
+Task.setCommand(command)
+Task.setOptions(options)
+
+@Task.task
 def about():
     """Print outs the Jasy about page"""
+
+    import jasy
 
     header("About")
     jasy.info()
 
-    info("Command: %s", jasy.env.Task.getCommand())
+    info("Command: %s", Task.getCommand())
     info("Version: %s", jasy.__version__)
 
 
-@task
+@Task.task
 def help():
     """Shows this help screen"""
+
+    import jasy
 
     header("Help")
     jasy.info()
@@ -180,34 +187,36 @@ def help():
 
     print()
     print(colorize(colorize("Global Options", "underline"), "bold"))
-    jasy.env.Task.getOptions().printOptions()
+    Task.getOptions().printOptions()
 
     print()
     print(colorize(colorize("Available Tasks", "underline"), "bold"))
-    jasy.env.Task.printTasks()
+    Task.printTasks()
 
     print()
 
 
-@task
+@Task.task
 def doctor():
-    """Verification and tests for Jasy environment"""
+    """Checks Jasy environment and prints offers support for installing missing packages"""
 
     # This is a placeholder task to show up in the jasy task list
     # The handling itself is directly implemented in "bin/jasy"
     pass
 
 
-@task
+@Task.task
 def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, **argv):
-    """Creates a new project"""
+    """Creates a new project based on a local or remote skeleton"""
 
     import jasy.core.Create as Create
     return Create.create(name, origin, originVersion, skeleton, destination, **argv)
 
 
-@task
+@Task.task
 def showapi():
+    """Shows the official API available in jasyscript.py"""
+
     header("Official API")
 
     for key in sorted(api):
@@ -263,14 +272,9 @@ def main():
                     api[key] = getattr(Context, key)
 
         # Setting up task infrastructure
-        import jasy.env.Task as Task
-
-        Task.setCommand(command)
-        Task.setOptions(options)
 
         # Execute the jasyscript.py in a clean environment
         if jasyscript:
-
             code = open(jasyscript, "r", encoding="utf-8").read()
             exec(compile(code, os.path.abspath(jasyscript), "exec"), api)
 
