@@ -41,7 +41,7 @@ def getProjectFromPath(path, config=None, version=None):
     return projects[path]
 
 
-def getProjectDependencies(project):
+def getProjectDependencies(project, checkoutDirectory="external", updateRepositories=True):
     """ Returns a sorted list of projects depending on the given project (including the given one) """
 
     #info("Resolving project dependencies...")
@@ -54,7 +54,7 @@ def getProjectDependencies(project):
         # List of required projects
         info("Getting requirements of %s...", colorize(name, "bold"))
         indent()
-        requires = project.getRequires()
+        requires = project.getRequires(checkoutDirectory, updateRepositories)
         outdent()
 
         if not requires:
@@ -369,7 +369,7 @@ class Project():
         return len(self.__requires) > 0
 
     
-    def getRequires(self, prefix="external"):
+    def getRequires(self, checkoutDirectory="external", updateRepositories=True):
         """
         Return the project requirements as project instances
         """
@@ -399,12 +399,12 @@ class Project():
             
             if Repository.isUrl(source):
                 kind = kind or Repository.getType(source)
-                path = os.path.abspath(os.path.join(prefix, Repository.getTargetFolder(source, version, kind)))
+                path = os.path.abspath(os.path.join(checkoutDirectory, Repository.getTargetFolder(source, version, kind)))
                 
                 # Only clone and update when the folder is unique in this session
                 # This reduces git/hg/svn calls which are typically quite expensive
                 if not path in projects:
-                    revision = Repository.update(source, version, path)
+                    revision = Repository.update(source, version, path, updateRepositories)
                     if revision is None:
                         raise UserError("Could not update repository %s" % source)
             

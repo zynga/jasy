@@ -36,9 +36,12 @@ class Session():
         self.__translations = {}
         
 
-    def init(self):
+    def init(self, autoInit=True, updateRepositories=True, userApi=None):
 
-        if jasy.core.Config.findConfig("jasyproject"):
+        self.__userApi = userApi
+        self.__updateRepositories = updateRepositories
+
+        if autoInit and jasy.core.Config.findConfig("jasyproject"):
 
             header("Initializing project")
 
@@ -101,15 +104,7 @@ class Session():
                 return classes[className]
 
         return None
-    
 
-    def setApi(self, api):
-        """
-        Configures the API object to assign methods and objects to. 
-        Typically that's the user environment of jasyscript.py.
-        """
-
-        self.__api = api
 
     
     
@@ -128,7 +123,7 @@ class Session():
         - project: Instance of Project to append to the list
         """
         
-        result = jasy.core.Project.getProjectDependencies(project)
+        result = jasy.core.Project.getProjectDependencies(project, "external", self.__update)
         for project in result:
             
             # Append to session list

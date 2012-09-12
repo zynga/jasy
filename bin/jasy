@@ -147,16 +147,6 @@ if jasyscript:
     jasyscript = os.path.basename(jasyscript)
 
 
-# ===========================================================================
-#   INITIALIZATION
-# ===========================================================================
-
-# Quick mode globally disables repository updates
-#if options.fast:
-    #from jasy.core.Repository import enableRepositoryUpdates
-    #session.enableRepositoryUpdates(False)
-
-
 
 # ===========================================================================
 #   MAIN ROUTINE
@@ -178,10 +168,9 @@ def main():
             # Prepare public API
             api = {}
 
-            # Initialize session with that API
+            # Initialize session
             from jasy.env.State import session
-            session.setApi(api)
-            session.init()
+            session.init(autoInit=True, userApi=api, updateRepositories=not options.fast)
 
             # Making available some local variables
             api["config"] = config
@@ -189,12 +178,12 @@ def main():
 
             # Make all methods and classes from Context available
             import jasy.env.Context as Context
-
             for key in dir(Context):
                 if not key.startswith("__"):
                     api[key] = getattr(Context, key)
 
 
+            # TEST
             info("Public API: ")
             indent()
             for key in sorted(api):
