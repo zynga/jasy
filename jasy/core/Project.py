@@ -13,6 +13,7 @@ import jasy.item.Doc
 import jasy.item.Translation
 import jasy.item.Class
 import jasy.item.Asset
+import jasy.core.File as File
 
 from jasy.core.Util import getKey
 from jasy.core.Logging import *
@@ -145,7 +146,8 @@ class Project():
 
         # Initialize cache
         try:
-            self.__cache = jasy.core.Cache.Cache(self.__path)
+            File.mkdir(os.path.join(self.__path, ".jasy"))
+            self.__cache = jasy.core.Cache.Cache(self.__path, filename=".jasy/cache")
         except IOError as err:
             raise UserError("Could not initialize project. Cache file in %s could not be initialized! %s" % (self.__path, err))
         
