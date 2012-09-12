@@ -183,22 +183,32 @@ def main():
                     api[key] = getattr(Context, key)
 
 
-            # TEST
-            info("Public API: ")
-            indent()
-            for key in sorted(api):
-                doc = api[key].__doc__
 
-                if doc:
-                    if "\n" in doc:
-                        doc = doc[:doc.index("\n")]
+            from jasy.env.Task import task
 
-                    if ". " in doc:
-                        doc = doc[:doc.index(". ")]
+            @task
+            def showapi():
+                header("Official API")
 
-                info("%s: %s", colorize(key, "bold"), doc)
+                # TEST
+                info("Public API: ")
+                indent()
+                for key in sorted(api):
+                    if key.startswith("__"):
+                        continue
 
-            outdent()                    
+                    doc = api[key].__doc__
+
+                    if doc:
+                        if "\n" in doc:
+                            doc = doc[:doc.index("\n")]
+
+                        if ". " in doc:
+                            doc = doc[:doc.index(". ")]
+
+                    info("%s: %s", colorize(key, "bold"), doc)
+
+                outdent()                    
 
         # Setting up task infrastructure
         import jasy.env.Task as Task
