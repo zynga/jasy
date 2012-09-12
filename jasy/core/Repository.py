@@ -269,3 +269,8 @@ def expandGitVersion(version=None):
         
     return version
 
+
+def cleanGitRepository():
+    executeCommand(["git", "clean"], "Could not clean up GIT repository!")
+
+
