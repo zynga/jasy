@@ -132,7 +132,7 @@ class Session():
             # Import library methods
             libraryPath = os.path.join(project.getPath(), "jasylibrary.py")
             if os.path.exists(libraryPath):
-                self.loadLibrary(project.getName(), libraryPath)
+                self.loadLibrary(project.getName(), libraryPath, doc="Library of project %s" % project.getName())
 
             # Import project defined fields which might be configured using "activateField()"
             fields = project.getFields()
@@ -156,15 +156,19 @@ class Session():
 
 
 
-    def loadLibrary(self, objectName, fileName, encoding="utf-8"):
+    def loadLibrary(self, objectName, fileName, encoding="utf-8", doc=None):
         """
         Creates a new global object (inside global state) with the given name 
         containing all @share'd functions and fields loaded from the given file.
         """
 
+        if objectName in self.__userApi:
+            raise UserError("Could not import library %s as the object name %s is already used." % (fileName, objectName))
+
         # Create internal class object for storing shared methods
         class Shared(object): pass
         exportedModule = Shared()
+        exportedModule.__doc__ = doc or "Imported from %s" % os.path.relpath(fileName, os.getcwd())
         counter = 0
 
         # Method for being used as a decorator to share methods to the outside

@@ -3,6 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
+"""Global environment which is used by jasyscript.py files"""
+
 # Modules
 import jasy.core.Logging as Logging
 
@@ -11,7 +13,6 @@ from jasy.asset.SpritePacker import SpritePacker
 from jasy.js.Resolver import Resolver
 from jasy.js.api.Writer import ApiWriter
 from jasy.env.Config import Config
-from jasy import UserError
 
 # Commands
 # TODO: Move them into modules

@@ -151,3 +151,57 @@ def massFilePatcher(path, data):
                 fileHandle.close()
                 
     outdent()
+
+
+
+def generateApiScreen(api):
+    """Returns a stringified output for the given API set"""
+
+    import types, inspect
+    import jasy.env.Task as Task
+
+    result = []
+
+    for key in sorted(api):
+
+        if key.startswith("__"):
+            continue
+
+        value = api[key]
+
+        if type(value) is Task.Task:
+            continue
+
+        msg = colorize(key, "bold")
+
+        if type(value) in (types.FunctionType, types.LambdaType):
+            argsspec = inspect.getfullargspec(value)     
+            argmsg = "(%s" % ", ".join(argsspec.args)
+
+            if argsspec.varkw is not None:
+                if argsspec.args:
+                    argmsg += ", "
+
+                argmsg += "..."
+
+            argmsg += ")"
+
+            msg += colorize(argmsg, "grey")
+
+        doc = value.__doc__
+
+        if doc:
+            if "\n" in doc:
+                doc = doc[:doc.index("\n")]
+
+            if ". " in doc:
+                doc = doc[:doc.index(". ")]
+
+            doc = doc.strip()
+            if doc:
+                msg += ":\n  %s" % doc
+
+        result.append(msg)
+
+    return "\n".join(result)    
+

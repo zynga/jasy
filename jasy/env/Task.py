@@ -17,7 +17,7 @@ __all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOpt
 
 class Task:
 
-    __slots__ = ["func", "name", "curry", "availableArgs", "hasFlexArgs", "__doc__"]
+    __slots__ = ["func", "name", "curry", "availableArgs", "hasFlexArgs", "__doc__", "__name__"]
 
     
     def __init__(self, func, **curry):
@@ -25,6 +25,11 @@ class Task:
 
         self.func = func
         self.name = func.__name__
+
+        self.__name__ = "Task %s" % func.__name__
+
+        # Circular reference to connect both, function and task
+        func.task = self
 
         # The are curried in arguments which are being merged with 
         # dynamic command line arguments on each execution

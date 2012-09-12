@@ -220,20 +220,9 @@ def showapi():
 
     header("Official API")
 
-    for key in sorted(api):
-        if key.startswith("__"):
-            continue
+    from jasy.core.Util import generateApiScreen
 
-        doc = api[key].__doc__
-
-        if doc:
-            if "\n" in doc:
-                doc = doc[:doc.index("\n")]
-
-            if ". " in doc:
-                doc = doc[:doc.index(". ")]
-
-        info("%s: %s", colorize(key, "bold"), doc)
+    info(generateApiScreen(frozenApi))
 
 
 
@@ -241,7 +230,11 @@ def showapi():
 #   MAIN ROUTINE
 # ===========================================================================
 
+frozenApi = None
+
 def main():
+    global frozenApi
+
     from jasy import UserError
 
     try:
@@ -270,11 +263,15 @@ def main():
                 if not key.startswith("__"):
                     api[key] = getattr(Context, key)
 
+            # Protect API for documentation reasons
+            import copy
+            frozenApi = copy.copy(api)
+
             # Execute the jasyscript.py in a clean environment
             code = open(jasyscript, "r", encoding="utf-8").read()
             exec(compile(code, os.path.abspath(jasyscript), "exec"), api)
 
-        # list all tasks when none is given
+        # Run help when no tasks are given
         tasks = options.getTasks()
         if not tasks or options.help:
 
@@ -285,11 +282,10 @@ def main():
             else:
                 sys.exit(1)
 
-        # all arguments are processed as a list of task to execute in order
+        # All arguments are processed as a list of task to execute in order
         for entry in tasks:
-
             Task.executeTask(entry["task"], **entry["params"])
-    
+
     except UserError as errobj:
         error("%s" % errobj)
         sys.exit(1)
