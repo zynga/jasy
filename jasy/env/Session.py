@@ -123,7 +123,7 @@ class Session():
         - project: Instance of Project to append to the list
         """
         
-        result = jasy.core.Project.getProjectDependencies(project, "external", self.__update)
+        result = jasy.core.Project.getProjectDependencies(project, "external", self.__updateRepositories)
         for project in result:
             
             # Append to session list
@@ -182,7 +182,7 @@ class Session():
 
         # Export destination name as global    
         debug("Importing %s shared methods under %s...", counter, objectName)
-        self.__api[objectName] = exportedModule
+        self.__userApi[objectName] = exportedModule
 
         return counter
         
