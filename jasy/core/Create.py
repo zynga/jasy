@@ -3,13 +3,15 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import re, os.path
+import re, os.path, shutil
 
 from jasy.env.State import session
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
 from jasy.env.Config import Config
-
+from jasy.core.Logging import *
+from jasy import UserError
+import jasy
 import jasy.vcs.Repository as Repository
 
 
@@ -21,6 +23,8 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     if not validProjectName.match(name):
         raise UserError("Invalid project name: %s" % name)
 
+
+    print("FOO: %s" % argv["foo"])
 
     #
     # Initial Checks
@@ -72,6 +76,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     else:
         originProject = session.getProjectByName(origin)
         originVersion = None
+        originRevision = None
 
         if originProject is not None:
             originPath = originProject.getPath()

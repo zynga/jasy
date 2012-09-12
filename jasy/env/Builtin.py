@@ -54,5 +54,5 @@ def doctor():
 def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, **argv):
     """Creates a new project"""
 
-    return jasy.core.Create.create(**argv)
+    return jasy.core.Create.create(name, origin, originVersion, skeleton, destination, **argv)
 
