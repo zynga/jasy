@@ -152,9 +152,9 @@ if jasyscript:
 # ===========================================================================
 
 # Quick mode globally disables repository updates
-if options.fast:
-    from jasy.core.Repository import enableRepositoryUpdates
-    enableRepositoryUpdates(False)
+#if options.fast:
+    #from jasy.core.Repository import enableRepositoryUpdates
+    #session.enableRepositoryUpdates(False)
 
 # Error handling
 from jasy import UserError
@@ -168,60 +168,18 @@ except UserError as errobj:
 
 # Configuring for remote task calls
 import jasy.env.Task
-jasy.env.Task.setCommand(command)
-jasy.env.Task.setOptions(options)
-
-# Import config object
 from jasy.env.Config import Config
-
-if jasyscript:
-    config = Config()
-    config.loadValues("jasyscript", optional=True)
-
-# Importing built-in tasks
 import jasy.env.Builtin
-
-
-
-
-
-
-
-
-# ===========================================================================
-#   Session/Core
-# ===========================================================================
-
 from jasy.core.Logging import *
 from jasy import UserError
-
-
-
-
-# ===========================================================================
-#   Misc Utilities
-# ===========================================================================
-
 from jasy.core.Json import *
 from jasy.env.Task import task, executeTask, runTask
 from jasy.env.File import *
-
-
-
-# ===========================================================================
-#   Asset Managment
-# ===========================================================================
-
 from jasy.asset.SpritePacker import SpritePacker
-
-
-
-# ===========================================================================
-#   JavaScript Output
-# ===========================================================================
-
 from jasy.js.Resolver import Resolver
 from jasy.js.api.Writer import ApiWriter
+from jasy.http.Server import serve
+from jasy.core.Util import executeCommand
 
 # from jasy.js.output.Optimization import Optimization
 # from jasy.js.output.Formatting import Formatting
@@ -238,22 +196,22 @@ from jasy.env.JavaScript import *
 
 
 
-# ===========================================================================
-#   Global Server
-# ===========================================================================
-
-from jasy.http.Server import serve
-from jasy.core.Util import executeCommand
 
 
 # ===========================================================================
-#   MAIN
+#   MAIN ROUTINE
 # ===========================================================================
 
 def main():
     try:
+        jasy.env.Task.setCommand(command)
+        jasy.env.Task.setOptions(options)
+
         # execute build script
         if jasyscript:
+            config = Config()
+            config.loadValues("jasyscript", optional=True)
+
             code = open(jasyscript, "r", encoding="utf-8").read()
             exec(compile(code, os.path.abspath(jasyscript), "exec"), globals())
 
@@ -286,7 +244,7 @@ def main():
 
 
 # ===========================================================================
-#   MAIN EXECUTION
+#   START
 # ===========================================================================
 
 if options.stats:

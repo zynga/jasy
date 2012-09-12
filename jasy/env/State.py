@@ -107,8 +107,7 @@ def loadLibrary(objectName, fileName, encoding="utf-8"):
 #   Start Session
 # ===========================================================================
 
-from jasy.env.Session import Session
-
 # Globally available session object
-session = Session()
+import jasy.env.Session as Session
+session = Session.Session()
 
