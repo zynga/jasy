@@ -149,10 +149,88 @@ if jasyscript:
 
 
 # ===========================================================================
+#   BUILT-IN TASKS
+# ===========================================================================
+
+from jasy.env.Task import task
+
+@task
+def about():
+    """Print outs the Jasy about page"""
+
+    header("About")
+    jasy.info()
+
+    info("Command: %s", jasy.env.Task.getCommand())
+    info("Version: %s", jasy.__version__)
+
+
+@task
+def help():
+    """Shows this help screen"""
+
+    header("Help")
+    jasy.info()
+
+    print(colorize(colorize("Usage", "underline"), "bold"))
+    print("  $ jasy [<options...>] <task1> [<args...>] [<task2> [<args...>]]")
+
+    print()
+    print(colorize(colorize("Global Options", "underline"), "bold"))
+    jasy.env.Task.getOptions().printOptions()
+
+    print()
+    print(colorize(colorize("Available Tasks", "underline"), "bold"))
+    jasy.env.Task.printTasks()
+
+    print()
+
+
+@task
+def doctor():
+    """Verification and tests for Jasy environment"""
+
+    # This is a placeholder task to show up in the jasy task list
+    # The handling itself is directly implemented in "bin/jasy"
+    pass
+
+
+@task
+def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, **argv):
+    """Creates a new project"""
+
+    return jasy.core.Create.create(name, origin, originVersion, skeleton, destination, **argv)
+
+
+api = None
+
+@task
+def showapi():
+    header("Official API")
+
+    for key in sorted(api):
+        if key.startswith("__"):
+            continue
+
+        doc = api[key].__doc__
+
+        if doc:
+            if "\n" in doc:
+                doc = doc[:doc.index("\n")]
+
+            if ". " in doc:
+                doc = doc[:doc.index(". ")]
+
+        info("%s: %s", colorize(key, "bold"), doc)
+
+
+
+# ===========================================================================
 #   MAIN ROUTINE
 # ===========================================================================
 
 def main():
+    global api
     from jasy import UserError
 
     try:
@@ -181,34 +259,6 @@ def main():
             for key in dir(Context):
                 if not key.startswith("__"):
                     api[key] = getattr(Context, key)
-
-
-
-            from jasy.env.Task import task
-
-            @task
-            def showapi():
-                header("Official API")
-
-                # TEST
-                info("Public API: ")
-                indent()
-                for key in sorted(api):
-                    if key.startswith("__"):
-                        continue
-
-                    doc = api[key].__doc__
-
-                    if doc:
-                        if "\n" in doc:
-                            doc = doc[:doc.index("\n")]
-
-                        if ". " in doc:
-                            doc = doc[:doc.index(". ")]
-
-                    info("%s: %s", colorize(key, "bold"), doc)
-
-                outdent()                    
 
         # Setting up task infrastructure
         import jasy.env.Task as Task
