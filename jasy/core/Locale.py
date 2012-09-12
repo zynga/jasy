@@ -5,7 +5,7 @@
 
 import os, json, re, xml.etree.ElementTree
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from jasy import datadir, __version__
 
 import jasy.core.File
@@ -97,8 +97,8 @@ class LocaleParser():
     """Parses CLDR locales into JavaScript files"""
 
     def __init__(self, locale):
-        info("Parsing CLDR files for %s..." % locale)
-        indent()
+        Console.info("Parsing CLDR files for %s..." % locale)
+        Console.indent()
 
         splits = locale.split("_")
 
@@ -120,11 +120,11 @@ class LocaleParser():
         # Add keys (fallback to C-default locale)
         path = "%s.xml" % os.path.join(CLDR_DIR, "keys", self.__language)
         try:
-            info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
+            Console.info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
             tree = xml.etree.ElementTree.parse(path)
         except IOError:
             path = "%s.xml" % os.path.join(CLDR_DIR, "keys", "C")
-            info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
+            Console.info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
             tree = xml.etree.ElementTree.parse(path)
             
         self.__data["key"] = {
@@ -148,7 +148,7 @@ class LocaleParser():
 
         # Finally import all these files in order
         for path in reversed(files):
-            info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
+            Console.info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
             tree = xml.etree.ElementTree.parse(path)
 
             self.__addDisplayNames(tree)
@@ -159,19 +159,19 @@ class LocaleParser():
         # Add supplemental CLDR data
         self.__addSupplementals(self.__territory)
 
-        outdent()
+        Console.outdent()
 
 
     def export(self, path):
-        info("Writing result...")
-        info("Target directory: %s", path)
-        indent()
+        Console.info("Writing result...")
+        Console.info("Target directory: %s", path)
+        Console.indent()
         
         jasy.core.File.write(os.path.join(path, "jasyproject.yaml"), 'name: locale\npackage: ""\n')
         count = self.__exportRecurser(self.__data, "locale", path)
 
-        info("Created %s classes", count)
-        outdent()
+        Console.info("Created %s classes", count)
+        Console.outdent()
 
 
     def __exportRecurser(self, data, prefix, project):
@@ -223,7 +223,7 @@ class LocaleParser():
 
         # Plurals
         path = os.path.join(supplemental, "plurals.xml")
-        info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
+        Console.info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
         tree = xml.etree.ElementTree.parse(path)
         self.__data["Plural"] = {}
         for item in tree.findall("plurals/pluralRules"):
@@ -236,7 +236,7 @@ class LocaleParser():
         
         # Telephone Codes
         path = os.path.join(supplemental, "telephoneCodeData.xml")
-        info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
+        Console.info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
         tree = xml.etree.ElementTree.parse(path)
         for item in tree.findall("telephoneCodeData/codesByTerritory"):
             territoryId = item.get("territory")
@@ -248,7 +248,7 @@ class LocaleParser():
         
         # Postal Codes
         path = os.path.join(supplemental, "postalCodeData.xml")
-        info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
+        Console.info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
         tree = xml.etree.ElementTree.parse(path)
         for item in tree.findall("postalCodeData/postCodeRegex"):
             territoryId = item.get("territoryId")
@@ -258,7 +258,7 @@ class LocaleParser():
         
         # Supplemental Data
         path = os.path.join(supplemental, "supplementalData.xml")
-        info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
+        Console.info("Processing %s..." % os.path.relpath(path, CLDR_DIR))
         tree = xml.etree.ElementTree.parse(path)
         
         # :: Calendar Preference

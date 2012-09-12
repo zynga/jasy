@@ -7,7 +7,7 @@ import polib
 import jasy.item.Abstract
 import jasy.core.Json as Json
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 
 def getFormat(path):
@@ -74,8 +74,8 @@ class TranslationItem(jasy.item.Abstract.AbstractItem):
         # Call Item's attach method first
         super().attach(path)
 
-        debug("Loading translation file: %s", path)
-        indent()
+        Console.debug("Loading translation file: %s", path)
+        Console.indent()
 
         # Flat data strucuture where the keys are unique
         table = {}
@@ -85,7 +85,7 @@ class TranslationItem(jasy.item.Abstract.AbstractItem):
         # Decide infrastructure/parser to use based on file name
         if format is "gettext":
             po = polib.pofile(path)
-            debug("Translated messages: %s=%s%%", self.language, po.percent_translated())
+            Console.debug("Translated messages: %s=%s%%", self.language, po.percent_translated())
 
             for entry in po.translated_entries():
                 entryId = generateId(entry.msgid, entry.msgid_plural, entry.msgctxt)
@@ -105,8 +105,8 @@ class TranslationItem(jasy.item.Abstract.AbstractItem):
         elif format is "txt":
             raise UserError("Parsing ICU/text files is currently not supported!")
                         
-        debug("Translation of %s entries ready" % len(table))        
-        outdent()
+        Console.debug("Translation of %s entries ready" % len(table))        
+        Console.outdent()
         
         self.table = table
 

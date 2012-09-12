@@ -4,7 +4,7 @@
 #
 
 import sys
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 class Options:
     """
@@ -106,7 +106,7 @@ class Options:
             for shortcut in self.__shortcuts:
                 if self.__shortcuts[shortcut] == name:
                     col += len(" [-%s]" % shortcut)
-                    msg += colorize(" [-%s]" % shortcut, "grey")
+                    msg += Console.colorize(" [-%s]" % shortcut, "grey")
                     
             if name in self.__help:
                 msg += ": "
@@ -114,7 +114,7 @@ class Options:
                 if diff > 0:
                     msg += " " * diff
                     
-                msg += colorize(self.__help[name], "magenta")
+                msg += Console.colorize(self.__help[name], "magenta")
             
             print(msg)
         

@@ -6,7 +6,7 @@
 """Global environment which is used by jasyscript.py files"""
 
 # Modules
-import jasy.core.Logging as Logging
+import jasy.core.Console as Console
 
 # Classes
 from jasy.asset.SpritePacker import SpritePacker

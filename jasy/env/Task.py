@@ -8,7 +8,7 @@ import types, os, sys, inspect, subprocess
 import jasy.env.State
 
 from jasy.env.State import session
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from jasy.core.Util import camelize
 from jasy import UserError
 
@@ -119,9 +119,9 @@ def addTask(task):
     """Registers the given task with its name"""
     
     if task.name in __taskRegistry:
-        debug("Overriding task: %s" % task.name)
+        Console.debug("Overriding task: %s" % task.name)
     else:
-        debug("Registering task: %s" % task.name)
+        Console.debug("Registering task: %s" % task.name)
         
     __taskRegistry[task.name] = task
 
@@ -135,7 +135,7 @@ def executeTask(taskname, **kwargs):
         except UserError as err:
             raise
         except:
-            error("Unexpected error! Could not finish task %s successfully!" % taskname)
+            Console.error("Unexpected error! Could not finish task %s successfully!" % taskname)
             raise
     else:
         raise UserError("No such task: %s" % taskname)
@@ -149,7 +149,7 @@ def printTasks(indent=16):
         formattedName = name
         if obj.__doc__:
             space = (indent - len(name)) * " "
-            print("    %s: %s%s" % (formattedName, space, colorize(obj.__doc__, "magenta")))
+            print("    %s: %s%s" % (formattedName, space, Console.colorize(obj.__doc__, "magenta")))
         else:
             print("    %s" % formattedName)
 
@@ -164,7 +164,7 @@ def printTasks(indent=16):
                 else:
                     text += "--<name> <var>"
 
-            print("      %s" % (colorize(text, "grey")))
+            print("      %s" % (Console.colorize(text, "grey")))
 
 
 # Jasy reference for executing remote tasks
@@ -201,7 +201,7 @@ def runTask(project, task, **kwargs):
     else:
         raise UserError("Unknown project or invalid path: %s" % project)
 
-    info("Running %s of project %s...", colorize(task, "bold"), colorize(remoteName, "bold"))
+    Console.info("Running %s of project %s...", Console.colorize(task, "bold"), Console.colorize(remoteName, "bold"))
 
     # Pauses this session to allow sub process fully accessing the same projects
     session.pause()

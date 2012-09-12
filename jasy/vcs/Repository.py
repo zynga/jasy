@@ -7,7 +7,7 @@ import hashlib
 
 import jasy.vcs.Git as Git
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from jasy.core.Util import executeCommand
 
 __enableUpdates = True

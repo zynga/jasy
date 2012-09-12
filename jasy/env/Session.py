@@ -15,7 +15,7 @@ import jasy.item.Translation
 import jasy.env.State
 
 from jasy import UserError
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 __all__ = ["Session"]
 
@@ -43,29 +43,29 @@ class Session():
 
         if autoInit and jasy.core.Config.findConfig("jasyproject"):
 
-            header("Initializing project")
+            Console.header("Initializing project")
 
             try:
                 self.addProject(jasy.core.Project.getProjectFromPath("."))
 
             except UserError as err:
-                outdent(True)
-                error(err)
+                Console.outdent(True)
+                Console.error(err)
                 raise UserError("Critical: Could not initialize session!")
 
-            info("Active projects (%s):", len(self.__projects))
-            indent()
+            Console.info("Active projects (%s):", len(self.__projects))
+            Console.indent()
 
             for project in self.__projects:
-                info("%s @ %s", colorize(project.getName(), "bold"), colorize(project.version, "magenta"))
+                Console.info("%s @ %s", Console.colorize(project.getName(), "bold"), Console.colorize(project.version, "magenta"))
 
-            outdent()        
+            Console.outdent()        
 
     
     def clean(self):
         """Clears all caches of known projects"""
 
-        header("Cleaning session")
+        Console.header("Cleaning session")
         
         for project in self.__projects:
             project.clean()
@@ -74,7 +74,7 @@ class Session():
     def close(self):
         """Closes the session and stores cache to the harddrive."""
 
-        debug("Closing session...")
+        Console.debug("Closing session...")
         for project in self.__projects:
             project.close()
         
@@ -185,7 +185,7 @@ class Session():
         exec(compile(code, os.path.abspath(fileName), "exec"), {"share" : share})
 
         # Export destination name as global    
-        debug("Importing %s shared methods under %s...", counter, objectName)
+        Console.debug("Importing %s shared methods under %s...", counter, objectName)
         self.__userApi[objectName] = exportedModule
 
         return counter
@@ -245,14 +245,14 @@ class Session():
 
         if not self.__assetManager:
 
-            header("Initializing Assets")
-            info("Processing projects...")
-            indent()
+            Console.header("Initializing Assets")
+            Console.info("Processing projects...")
+            Console.indent()
 
             for project in self.__projects:
                 project.scan()
 
-            outdent()
+            Console.outdent()
 
             self.__assetManager = jasy.asset.Manager.AssetManager(self)
 
@@ -394,18 +394,18 @@ class Session():
     def permutate(self):
         """ Generator method for permutations for improving output capabilities """
         
-        header("Processing permutations")
+        Console.header("Processing permutations")
         
         permutations = self.getPermutations()
         length = len(permutations)
         
         for pos, current in enumerate(permutations):
-            info(colorize("Permutation %s/%s:" % (pos+1, length), "bold"))
-            indent()
+            Console.info(Console.colorize("Permutation %s/%s:" % (pos+1, length), "bold"))
+            Console.indent()
             self.setCurrentPermutation(current)
             self.setCurrentTranslation(self.getTranslationBundle())
             yield current
-            outdent()
+            Console.outdent()
 
 
     def exportFields(self):
@@ -506,8 +506,8 @@ class Session():
         if language in self.__translations:
             return self.__translations[language]
 
-        info("Creating translation bundle: %s", language)
-        indent()
+        Console.info("Creating translation bundle: %s", language)
+        Console.indent()
 
         # Initialize new Translation object with no project assigned
         # This object is used to merge all seperate translation instances later on.
@@ -519,11 +519,11 @@ class Session():
             for project in self.__projects:
                 for translation in project.getTranslations().values():
                     if translation.getLanguage() == currentLanguage:
-                        debug("Adding %s entries from %s @ %s...", len(translation.getTable()), currentLanguage, project.getName())
+                        Console.debug("Adding %s entries from %s @ %s...", len(translation.getTable()), currentLanguage, project.getName())
                         combined += translation
 
-        debug("Combined number of translations: %s", len(combined.getTable()))
-        outdent()
+        Console.debug("Combined number of translations: %s", len(combined.getTable()))
+        Console.outdent()
 
         self.__translations[language] = combined
         return combined
@@ -610,10 +610,10 @@ class Session():
     def setCurrentPrefix(self, path):
         if path is None:
             self.__prefix = None
-            debug("Resetting prefix to working directory")
+            Console.debug("Resetting prefix to working directory")
         else:
             self.__prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
-            debug("Setting prefix to: %s" % self.__prefix)
+            Console.debug("Setting prefix to: %s" % self.__prefix)
         
     def getCurrentPrefix(self):
         return self.__prefix

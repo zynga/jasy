@@ -4,7 +4,7 @@
 #
 
 from jasy import UserError
-from jasy.core.Logging import debug, warn
+import jasy.core.Console as Console
 
 # Make PIL (native module) optional
 try:
@@ -62,7 +62,7 @@ class SpriteSheet():
 
             x, y = block.fit.x, block.fit.y
             if block.rotated:
-                debug('%s is rotated' % block.image.src)
+                Console.debug('%s is rotated' % block.image.src)
                 res = res.rotate(90)
 
             img.paste(res, (x, y))

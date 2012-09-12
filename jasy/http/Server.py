@@ -8,7 +8,7 @@ import jasy.core.Cache
 
 from collections import namedtuple
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from jasy.env.State import session
 from jasy.core.Types import CaseInsensitiveDict
 from jasy.core.Util import getKey
@@ -72,7 +72,7 @@ class Proxy(object):
         if self.enableMirror:
             self.mirror = jasy.core.Cache.Cache(os.getcwd(), ".jasy/mirror-%s" % self.id, hashkeys=True)
 
-        info('Proxy "%s" => "%s" [debug:%s|mirror:%s|offline:%s]', self.id, self.host, self.enableDebug, self.enableMirror, self.enableOffline)
+        Console.info('Proxy "%s" => "%s" [debug:%s|mirror:%s|offline:%s]', self.id, self.host, self.enableDebug, self.enableMirror, self.enableOffline)
         
         
     # These headers will be blocked between header copies
@@ -104,11 +104,11 @@ class Proxy(object):
             mirrorId = "%s[%s]" % (url, json.dumps(query, separators=(',',':'), sort_keys=True))
             result = self.mirror.read(mirrorId)
             if result is not None and self.enableDebug:
-                info("Mirrored: %s" % url)
+                Console.info("Mirrored: %s" % url)
          
         # Check if we're in forced offline mode
         if self.enableOffline and result is None:
-            info("Offline: %s" % url)
+            Console.info("Offline: %s" % url)
             raise cherrypy.NotFound(url)
         
         # Load URL from remote server
@@ -123,7 +123,7 @@ class Proxy(object):
             # Load URL from remote host
             try:
                 if self.enableDebug:
-                    info("Requesting: %s", url)
+                    Console.info("Requesting: %s", url)
                     
                 # Apply headers for basic HTTP authentification
                 if "X-Proxy-Authorization" in headers:
@@ -142,7 +142,7 @@ class Proxy(object):
                 
             except Exception as err:
                 if self.enableDebug:
-                    info("Request failed: %s", err)
+                    Console.info("Request failed: %s", err)
                     
                 raise cherrypy.HTTPError(403)
 
@@ -177,7 +177,7 @@ class Static(object):
         self.root = getKey(config, "root", ".")
         self.enableDebug = getKey(config, "debug", False)
 
-        info('Static "%s" => "%s" [debug:%s]', self.id, self.root, self.enableDebug)
+        Console.info('Static "%s" => "%s" [debug:%s]', self.id, self.root, self.enableDebug)
         
     @cherrypy.expose
     def default(self, *args, **query):
@@ -203,7 +203,7 @@ class Static(object):
         # Check for existance first
         if os.path.isfile(path):
             if self.enableDebug:
-                info("Serving file: %s", path)
+                Console.info("Serving file: %s", path)
 
             # Default content type to autodetection by Python mimetype API            
             contentType = None
@@ -220,7 +220,7 @@ class Static(object):
         # Otherwise return a classic 404
         else:
             if self.enableDebug:
-                warn("File at location %s not found at %s!", path, os.path.abspath(path))
+                Console.warn("File at location %s not found at %s!", path, os.path.abspath(path))
             
             raise cherrypy.NotFound(path)
         
@@ -278,7 +278,7 @@ additionalContentTypes = {
 
 def serve(routes=None, customContentTypes=None, port=8080, host="127.0.0.1"):
     
-    header("HTTP Server")
+    Console.header("HTTP Server")
     
     # We need to pause the session to make room for other jasy executions
     session.pause()
@@ -312,16 +312,16 @@ def serve(routes=None, customContentTypes=None, port=8080, host="127.0.0.1"):
     def empty(*param, **args): pass
     def inspect(*param, **args): 
         if args["severity"] > 20:
-            error("Critical error occoured:")
-            error(param[0])
+            Console.error("Critical error occoured:")
+            Console.error(param[0])
     
     cherrypy.log.access = empty
     cherrypy.log.error = inspect
     cherrypy.log.screen = False
 
     # Initialize routing
-    info("Initialize routing...")
-    indent()
+    Console.info("Initialize routing...")
+    Console.indent()
     root = Static("/", {}, contentTypes=contentTypes)
     if routes:
         for key in routes:
@@ -332,19 +332,19 @@ def serve(routes=None, customContentTypes=None, port=8080, host="127.0.0.1"):
                 node = Static(key, entry, contentTypes=contentTypes)
             
             setattr(root, key, node)
-    outdent()
+    Console.outdent()
     
     # Finally start the server
     app = cherrypy.tree.mount(root, "", config)
     cherrypy.process.plugins.PIDFile(cherrypy.engine, "jasylock-http-%s" % port).subscribe()
     
     cherrypy.engine.start()
-    info("Started HTTP server at port %s... [PID=%s]", port, os.getpid())
-    indent()
+    Console.info("Started HTTP server at port %s... [PID=%s]", port, os.getpid())
+    Console.indent()
     cherrypy.engine.block()
 
-    outdent()
-    info("Stopped HTTP server at port %s.", port)
+    Console.outdent()
+    Console.info("Stopped HTTP server at port %s.", port)
     
     # Resume session to continue work on next task (if given)
     session.resume()

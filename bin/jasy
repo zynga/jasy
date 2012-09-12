@@ -32,7 +32,7 @@ if os.path.exists(os.path.join(basedir, "jasy")):
 # ===========================================================================
 
 from jasy.core.Options import Options
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 args = sys.argv[1:]
 if args and "jasyscript.py" in args[0]:
@@ -55,7 +55,7 @@ try:
     options.parse(args)
 except Exception as optionError:
     logging.basicConfig(format="%(message)s")
-    error(optionError)
+    Console.error(optionError)
     sys.exit(1)
 
 # For simple version info we just leave here
@@ -137,7 +137,7 @@ if jasyscript == "jasyscript.py":
 else:
     jasyscript = os.path.abspath(os.path.expanduser(jasyscript))
     if jasyscript is None or not os.path.isfile(jasyscript):
-        error("Cannot find any Jasy script with task definitions in %s!" % options.file)
+        Console.error("Cannot find any Jasy script with task definitions in %s!" % options.file)
         sys.exit(1)
 
 # Change to root directory of jasyscript before executing it
@@ -167,11 +167,11 @@ def about():
 
     import jasy
 
-    header("About")
+    Console.header("About")
     jasy.info()
 
-    info("Command: %s", Task.getCommand())
-    info("Version: %s", jasy.__version__)
+    Console.info("Command: %s", Task.getCommand())
+    Console.info("Version: %s", jasy.__version__)
 
 
 @Task.task
@@ -180,18 +180,18 @@ def help():
 
     import jasy
 
-    header("Help")
+    Console.header("Help")
     jasy.info()
 
-    print(colorize(colorize("Usage", "underline"), "bold"))
+    print(Console.colorize(Console.colorize("Usage", "underline"), "bold"))
     print("  $ jasy [<options...>] <task1> [<args...>] [<task2> [<args...>]]")
 
     print()
-    print(colorize(colorize("Global Options", "underline"), "bold"))
+    print(Console.colorize(Console.colorize("Global Options", "underline"), "bold"))
     Task.getOptions().printOptions()
 
     print()
-    print(colorize(colorize("Available Tasks", "underline"), "bold"))
+    print(Console.colorize(Console.colorize("Available Tasks", "underline"), "bold"))
     Task.printTasks()
 
     print()
@@ -218,11 +218,11 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
 def showapi():
     """Shows the official API available in jasyscript.py"""
 
-    header("Official API")
+    Console.header("Official API")
 
     from jasy.core.Util import generateApiScreen
 
-    info(generateApiScreen(frozenApi))
+    Console.info(generateApiScreen(frozenApi))
 
 
 
@@ -287,11 +287,11 @@ def main():
             Task.executeTask(entry["task"], **entry["params"])
 
     except UserError as errobj:
-        error("%s" % errobj)
+        Console.error("%s" % errobj)
         sys.exit(1)
 
     except KeyboardInterrupt:
-        error("Jasy Stopped!")
+        Console.error("Jasy Stopped!")
         sys.exit(2)
 
     sys.exit(0)
@@ -304,12 +304,12 @@ def main():
 
 if options.stats:
     
-    info("Running in profiling mode...")
+    Console.info("Running in profiling mode...")
     
     import cProfile
     cProfile.run("main()", "jasyprofile.txt")
     
-    header("Analysing data")
+    Console.header("Analysing data")
     import pstats
     stats = pstats.Stats("jasyprofile.txt")
     

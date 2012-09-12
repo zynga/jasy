@@ -9,7 +9,7 @@ import jasy.core.Markdown as Markdown
 
 from jasy import UserError
 from jasy.js.util import *
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 
 __all__ = ["CommentException", "Comment"]
@@ -181,7 +181,7 @@ class Comment():
                 # Only warn for doc comments, otherwise it might just be code commented out 
                 # which is sometimes formatted pretty crazy when commented out
                 if self.variant == "doc":
-                    warn("Could not outdent doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
+                    Console.warn("Could not outdent doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
                     
                 return text
                 
@@ -217,7 +217,7 @@ class Comment():
                         # Only warn for doc comments, otherwise it might just be code commented out 
                         # which is sometimes formatted pretty crazy when commented out
                         if self.variant == "doc":
-                            warn("Invalid indentation in doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
+                            Console.warn("Invalid indentation in doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
                         
                     else:
                         lines[lineNo] = line[outdentStringLen:]

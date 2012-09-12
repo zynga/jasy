@@ -5,7 +5,7 @@
 
 import time, os
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from jasy.env.State import session
 
 try:
@@ -27,33 +27,33 @@ if FileSystemEventHandler:
         super(JasyEventHandler, self).on_moved(event)
 
         what = 'directory' if event.is_directory else 'file'
-        info("Moved %s: from %s to %s", what, event.src_path, event.dest_path)
+        Console.info("Moved %s: from %s to %s", what, event.src_path, event.dest_path)
 
       def on_created(self, event):
         super(JasyEventHandler, self).on_created(event)
 
         what = 'directory' if event.is_directory else 'file'
-        info("Created %s: %s", what, event.src_path)
+        Console.info("Created %s: %s", what, event.src_path)
 
       def on_deleted(self, event):
         super(JasyEventHandler, self).on_deleted(event)
 
         what = 'directory' if event.is_directory else 'file'
-        info("Deleted %s: %s", what, event.src_path)
+        Console.info("Deleted %s: %s", what, event.src_path)
 
       def on_modified(self, event):
         super(JasyEventHandler, self).on_modified(event)
 
         what = 'directory' if event.is_directory else 'file'
-        info("Modified %s: %s", what, event.src_path)
+        Console.info("Modified %s: %s", what, event.src_path)
 
 
 def watch(path, callback):
     
-    header("Build Daemon")
+    Console.header("Build Daemon")
     
     if Observer is None:
-        error("You need to install Watchdog for supporting file system watchers")
+        Console.error("You need to install Watchdog for supporting file system watchers")
 
     # We need to pause the session to make room for other jasy executions
     session.pause()
@@ -63,8 +63,8 @@ def watch(path, callback):
     observer.schedule(JasyEventHandler(), ".", recursive=True)
     observer.start()
 
-    info("Started file system watcher for %s... [PID=%s]", path, os.getpid())
-    info("Use 'ulimit -n 1024' to increase number of possible open files")
+    Console.info("Started file system watcher for %s... [PID=%s]", path, os.getpid())
+    Console.info("Use 'ulimit -n 1024' to increase number of possible open files")
 
     try:
         while True:
@@ -72,6 +72,6 @@ def watch(path, callback):
     except KeyboardInterrupt:
         observer.stop()
 
-    info("Stopped file system watcher for %s...", path)
+    Console.info("Stopped file system watcher for %s...", path)
     observer.join()
 

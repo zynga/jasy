@@ -5,10 +5,9 @@
 
 import shelve, time, os, os.path, sys, pickle, dbm, uuid, hashlib, atexit
 
-from jasy.core.Logging import *
-
 import jasy
 import jasy.core.Util
+import jasy.core.Console as Console
 
 hostId = uuid.getnode()
 
@@ -46,7 +45,7 @@ class Cache:
                 return
                     
             if storedVersion is not None or storedHost is not None:
-                debug("Jasy version or host has been changed. Recreating cache...")
+                Console.debug("Jasy version or host has been changed. Recreating cache...")
             
             self.clear()
 
@@ -64,13 +63,13 @@ class Cache:
                 raise IOError("Cache file is locked by another process!")
                 
             elif "type could not be determined" in str(dbmerror):
-                error("Could not detect cache file format: %s" % self.__file)
-                warn("Recreating cache database...")
+                Console.error("Could not detect cache file format: %s" % self.__file)
+                Console.warn("Recreating cache database...")
                 self.clear()
                 
             elif "module is not available" in str(dbmerror):
-                error("Unsupported cache file format: %s" % self.__file)
-                warn("Recreating cache database...")
+                Console.error("Unsupported cache file format: %s" % self.__file)
+                Console.warn("Recreating cache database...")
                 self.clear()
                 
             else:
@@ -83,12 +82,12 @@ class Cache:
         """
         
         if self.__shelve != None:
-            debug("Closing cache file %s..." % self.__file)
+            Console.debug("Closing cache file %s..." % self.__file)
             
             self.__shelve.close()
             self.__shelve = None
 
-        debug("Clearing cache file %s..." % self.__file)
+        Console.debug("Clearing cache file %s..." % self.__file)
         
         self.__shelve = shelve.open(self.__file, flag="n")
 
@@ -152,7 +151,7 @@ class Cache:
             self.__shelve[key+"-timestamp"] = timestamp
             self.__shelve[key] = value
         except pickle.PicklingError as err:
-            error("Failed to store enty: %s" % key)
+            Console.error("Failed to store enty: %s" % key)
 
         
     def sync(self):

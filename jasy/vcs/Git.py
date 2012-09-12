@@ -6,7 +6,7 @@
 import os.path, re, urllib.parse, shutil
 
 from jasy.core.Util import executeCommand
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 
 __versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?$")
@@ -23,7 +23,7 @@ def update(url, version, path, update=True):
     if os.path.exists(path) and os.path.exists(os.path.join(path, ".git")):
         
         if not os.path.exists(os.path.join(path, ".git", "HEAD")):
-            error("Invalid git clone. Cleaning up...")
+            Console.error("Invalid git clone. Cleaning up...")
             shutil.rmtree(path)
 
         else:
@@ -32,7 +32,7 @@ def update(url, version, path, update=True):
             
             if update and (version == "master" or "refs/heads/" in version):
                 if __enableUpdates:
-                    info("Updating %s", colorize("%s @ " % url, "bold") + colorize(version, "magenta"))
+                    Console.info("Updating %s", Console.colorize("%s @ " % url, "bold") + Console.colorize(version, "magenta"))
                     
                     try:
                         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", version], "Could not fetch updated revision!")
@@ -40,35 +40,35 @@ def update(url, version, path, update=True):
                         newRevision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
                         
                         if revision != newRevision:
-                            indent()
-                            info("Updated from %s to %s", revision[:10], newRevision[:10])
+                            Console.indent()
+                            Console.info("Updated from %s to %s", revision[:10], newRevision[:10])
                             revision = newRevision
-                            outdent()
+                            Console.outdent()
                         
                     except Exception:
-                        error("Error during git transaction! Could not update clone.")
-                        error("Please verify that the host is reachable or disable automatic branch updates.")
+                        Console.error("Error during git transaction! Could not update clone.")
+                        Console.error("Please verify that the host is reachable or disable automatic branch updates.")
                         
                         os.chdir(old)
                         return
                         
                     except KeyboardInterrupt:
                         print()
-                        error("Git transaction was aborted by user!")
+                        Console.error("Git transaction was aborted by user!")
                         
                         os.chdir(old)
                         return                            
                     
                 else:
-                    debug("Updates disabled")
+                    Console.debug("Updates disabled")
                 
             else:
-                debug("Using existing clone")
+                Console.debug("Using existing clone")
 
             os.chdir(old)
             return revision
 
-    info("Cloning %s", colorize("%s @ " % url, "bold") + colorize(version, "magenta"))
+    Console.info("Cloning %s", Console.colorize("%s @ " % url, "bold") + Console.colorize(version, "magenta"))
 
     os.makedirs(path)
     os.chdir(path)
@@ -81,10 +81,10 @@ def update(url, version, path, update=True):
         revision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
         
     except Exception:
-        error("Error during git transaction! Intitial clone required for continuing!")
-        error("Please verify that the host is reachable.")
+        Console.error("Error during git transaction! Intitial clone required for continuing!")
+        Console.error("Please verify that the host is reachable.")
 
-        error("Cleaning up...")
+        Console.error("Cleaning up...")
         os.chdir(old)
         shutil.rmtree(path)
 
@@ -92,9 +92,9 @@ def update(url, version, path, update=True):
         
     except KeyboardInterrupt:
         print()
-        error("Git transaction was aborted by user!")
+        Console.error("Git transaction was aborted by user!")
         
-        error("Cleaning up...")
+        Console.error("Cleaning up...")
         os.chdir(old)
         shutil.rmtree(path)
         

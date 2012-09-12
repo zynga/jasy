@@ -4,7 +4,7 @@
 #
 
 import zlib, string, re
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 __all__ = ["optimize", "Error"]
 
@@ -27,21 +27,21 @@ class Error(Exception):
 
 def optimize(node, contextId=""):
     
-    debug("Crypting private fields...")
-    indent()
+    Console.debug("Crypting private fields...")
+    Console.indent()
     
     coll = __search(node)
 
     repl = {}
     for name in coll:
         repl[name] = "__%s" % __encode("%s.%s" % (contextId, name[2:]))
-        debug("Replacing private field %s with %s (context: %s)", name, repl[name], contextId)
+        Console.debug("Replacing private field %s with %s (context: %s)", name, repl[name], contextId)
     
-    debug("Found %s private fields" % len(repl))
+    Console.debug("Found %s private fields" % len(repl))
     modified, reduction = __replace(node, repl)
     
-    debug("Reduced size by %s bytes" % reduction)
-    outdent()
+    Console.debug("Reduced size by %s bytes" % reduction)
+    Console.outdent()
     
     return modified
     

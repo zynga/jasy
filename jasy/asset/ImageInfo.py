@@ -5,7 +5,7 @@
 
 import struct, hashlib
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 """
 Contains image format detection classes. Once the format is detect it supports image size detection, too.
@@ -18,7 +18,7 @@ class ImgFile(object):
         try:
             self.fp = open(filename, "rb")
         except IOError as err:
-            error("Could not open file: %s" % filename)
+            Console.error("Could not open file: %s" % filename)
             raise err
 
     def verify(self):

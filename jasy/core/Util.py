@@ -5,14 +5,14 @@
 
 import re, os, hashlib, tempfile, subprocess, sys
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 
 def executeCommand(args, msg):
     """Executes the given process and outputs message when errors happen."""
 
-    debug("Executing command: %s", " ".join(args))
-    indent()
+    Console.debug("Executing command: %s", " ".join(args))
+    Console.indent()
     
     # Using shell on Windows to resolve binaries like "git"
     output = tempfile.TemporaryFile(mode="w+t")
@@ -25,9 +25,9 @@ def executeCommand(args, msg):
     output.close()
     
     for line in result.splitlines():
-        debug(line)
+        Console.debug(line)
     
-    outdent()
+    Console.outdent()
     
     return result
 
@@ -94,8 +94,8 @@ def massFilePatcher(path, data):
         return str(value)
         
     # Patching files recursively
-    info("Patching files...")
-    indent()
+    Console.info("Patching files...")
+    Console.indent()
     for dirPath, dirNames, fileNames in os.walk(path):
         relpath = os.path.relpath(dirPath, path)
 
@@ -108,7 +108,7 @@ def massFilePatcher(path, data):
             filePath = os.path.join(dirPath, fileName)
             fileRel = os.path.normpath(os.path.join(relpath, fileName))
             
-            debug("Processing: %s..." % fileRel)
+            Console.debug("Processing: %s..." % fileRel)
 
             fileHandle = open(filePath, "r", encoding="utf-8", errors="surrogateescape")
             fileContent = []
@@ -126,11 +126,11 @@ def massFilePatcher(path, data):
                         fileContent.append(line)
         
                 if isBinary:
-                    debug("Ignoring binary file: %s", fileRel)
+                    Console.debug("Ignoring binary file: %s", fileRel)
                     continue
 
             except UnicodeDecodeError as ex:
-                warn("Can't process file: %s: %s", fileRel, ex)
+                Console.warn("Can't process file: %s: %s", fileRel, ex)
                 continue
 
             fileContent = "".join(fileContent)
@@ -139,18 +139,18 @@ def massFilePatcher(path, data):
             try:
                 resultContent = fieldPattern.sub(convertPlaceholder, fileContent)
             except ValueError as ex:
-                warn("Unable to process file %s: %s!", fileRel, ex)
+                Console.warn("Unable to process file %s: %s!", fileRel, ex)
                 continue
 
             # Only write file if there where any changes applied
             if resultContent != fileContent:
-                info("Updating: %s...", colorize(fileRel, "bold"))
+                Console.info("Updating: %s...", Console.colorize(fileRel, "bold"))
                 
                 fileHandle = open(filePath, "w", encoding="utf-8", errors="surrogateescape")
                 fileHandle.write(resultContent)
                 fileHandle.close()
                 
-    outdent()
+    Console.outdent()
 
 
 
@@ -172,7 +172,7 @@ def generateApiScreen(api):
         if type(value) is Task.Task:
             continue
 
-        msg = colorize(key, "bold")
+        msg = Console.colorize(key, "bold")
 
         if type(value) in (types.FunctionType, types.LambdaType):
             argsspec = inspect.getfullargspec(value)     
@@ -186,7 +186,7 @@ def generateApiScreen(api):
 
             argmsg += ")"
 
-            msg += colorize(argmsg, "grey")
+            msg += Console.colorize(argmsg, "grey")
 
         doc = value.__doc__
 

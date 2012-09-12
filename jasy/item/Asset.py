@@ -10,7 +10,7 @@ import jasy.item.Abstract
 
 from jasy.core.Util import getKey
 from jasy.core.Config import loadConfig
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 extensions = {
     ".png" : "image",
@@ -103,7 +103,7 @@ class AssetItem(jasy.item.Abstract.AbstractItem):
 
     
     def addImageSpriteData(self, id, left, top):
-        debug("Registering sprite location for %s: %s@%sx%s", self.id, id, left, top)
+        Console.debug("Registering sprite location for %s: %s@%sx%s", self.id, id, left, top)
         self.__imageSpriteData = [id, left, top]
         
     
@@ -117,7 +117,7 @@ class AssetItem(jasy.item.Abstract.AbstractItem):
     
     
     def addImageDimensionData(self, width, height):
-        debug("Adding dimension data for %s: %sx%s", self.id, width, height)
+        Console.debug("Adding dimension data for %s: %sx%s", self.id, width, height)
         self.__imageDimensionData = [width, height]
     
     

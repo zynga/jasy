@@ -9,7 +9,7 @@ from jasy.env.State import session
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
 from jasy.env.Config import Config
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from jasy import UserError
 import jasy
 import jasy.vcs.Repository as Repository
@@ -18,7 +18,7 @@ import jasy.vcs.Repository as Repository
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 
 def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, **argv):
-    header("Creating project %s" % name)
+    Console.header("Creating project %s" % name)
 
     if not validProjectName.match(name):
         raise UserError("Invalid project name: %s" % name)
@@ -55,20 +55,20 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
         originRevision = None
 
     elif Repository.isUrl(origin):
-        info("Using remote skeleton")
+        Console.info("Using remote skeleton")
 
         tempDirectory = tempfile.TemporaryDirectory()
         originPath = os.path.join(tempDirectory.name, "clone")
         originUrl = origin
 
-        indent()
+        Console.indent()
         originRevision = Repository.update(originUrl, originVersion, originPath)
-        outdent()
+        Console.outdent()
 
         if originRevision is None:
             raise UserError("Could not clone origin repository!")
 
-        debug("Cloned revision: %s" % originRevision)
+        Console.debug("Cloned revision: %s" % originRevision)
 
         originProject = getProjectFromPath(originPath)
         originName = originProject.getName()
@@ -110,14 +110,14 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     #
 
     # Prechecks done
-    info('Creating %s from %s %s...', colorize(name, "bold"), colorize(skeleton + " @", "bold"), colorize(originName, "magenta"))
-    debug('Skeleton: %s', colorize(skeletonPath, "grey"))
-    debug('Destination: %s', colorize(destinationPath, "grey"))
+    Console.info('Creating %s from %s %s...', Console.colorize(name, "bold"), Console.colorize(skeleton + " @", "bold"), Console.colorize(originName, "magenta"))
+    Console.debug('Skeleton: %s', Console.colorize(skeletonPath, "grey"))
+    Console.debug('Destination: %s', Console.colorize(destinationPath, "grey"))
 
     # Copying files to destination
-    info("Copying files...")
+    Console.info("Copying files...")
     shutil.copytree(skeletonPath, destinationPath)
-    debug("Files were copied successfully.")
+    Console.debug("Files were copied successfully.")
 
     # Close origin project
     if originProject:
@@ -127,7 +127,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     os.chdir(destinationPath)
 
     # Create configuration file from question configs and custom scripts
-    info("Starting configuration...")
+    Console.info("Starting configuration...")
     config = Config()
 
     config.set("name", name)
@@ -145,7 +145,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
 
     # Do actual replacement of placeholders
     massFilePatcher(destinationPath, config)
-    debug("Files were patched successfully.")
+    Console.debug("Files were patched successfully.")
 
     # Done
-    info('Your application %s was created successfully!', colorize(name, "bold"))
+    Console.info('Your application %s was created successfully!', Console.colorize(name, "bold"))

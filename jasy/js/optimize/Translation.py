@@ -9,7 +9,7 @@ import jasy.js.parse.Node as Node
 import jasy.item.Translation as Translation
 
 from jasy import UserError
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 
 #
@@ -180,8 +180,8 @@ def __recurser(node, table):
         # Gettext methods only at the moment
         funcName = funcNameNode.value
         if funcName in translationFunctions:
-            debug("Found translation method %s in %s", funcName, node.line)
-            indent()
+            Console.debug("Found translation method %s in %s", funcName, node.line)
+            Console.indent()
 
             params = node[1]
             
@@ -196,7 +196,7 @@ def __recurser(node, table):
                 
             # Error handling
             elif (funcName == "trn" or funcName == "trc") and params[1].type != "string":
-                warn("Expecting translation string to be type string: %s at line %s" % (params[1].type, params[1].line))
+                Console.warn("Expecting translation string to be type string: %s at line %s" % (params[1].type, params[1].line))
 
             # Signature tr(msg, arg1, ...)
             elif funcName == "tr":
@@ -234,7 +234,7 @@ def __recurser(node, table):
             elif funcName == "trn":
                 key = "%s[N:%s]" % (params[0].value, params[1].value)
                 if not key in table:
-                    outdent()
+                    Console.outdent()
                     return counter
 
                 counter += 1
@@ -273,6 +273,6 @@ def __recurser(node, table):
                     while len(params) > 2:
                         params.pop()
 
-            outdent()
+            Console.outdent()
 
     return counter

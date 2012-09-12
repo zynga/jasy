@@ -4,7 +4,7 @@
 #
 
 import shutil, json, base64, os, re, random, sys, mimetypes, http.client, urllib.parse, hashlib
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 __all__ = ["requestUrl", "uploadData"]
 
@@ -16,7 +16,7 @@ __all__ = ["requestUrl", "uploadData"]
 def requestUrl(url, content_type="text/plain", headers=None, method="GET", port=None, body="", user=None, password=None):
     """Generic HTTP request wrapper with support for basic authentification and automatic parsing of response content"""
     
-    info("Opening %s request to %s..." % (method, url))
+    Console.info("Opening %s request to %s..." % (method, url))
 
     parsed = urllib.parse.urlparse(url)
     
@@ -32,21 +32,21 @@ def requestUrl(url, content_type="text/plain", headers=None, method="GET", port=
     else:
         request.putrequest(method, parsed.path)
     
-    request.putheader("Content-Type", content_type)
-    request.putheader("Content-Length", str(len(body)))
+    request.putConsole.header("Content-Type", content_type)
+    request.putConsole.header("Content-Length", str(len(body)))
 
     if user is not None and password is not None:
         auth = "Basic %s" % base64.b64encode(("%s:%s" % (user, password)).encode("utf-8")).decode("utf-8")
-        request.putheader("Authorization", auth)
+        request.putConsole.header("Authorization", auth)
         
     request.endheaders()
     
     if body:
-        info("Sending data (%s bytes)..." % len(body))
+        Console.info("Sending data (%s bytes)..." % len(body))
     else:
-        info("Sending request...")
+        Console.info("Sending request...")
 
-    indent()
+    Console.indent()
 
     request.send(body)
 
@@ -58,10 +58,10 @@ def requestUrl(url, content_type="text/plain", headers=None, method="GET", port=
     res_success = False
     
     if res_code >= 200 and res_code <= 300:
-        debug("HTTP Success!")
+        Console.debug("HTTP Success!")
         res_success = True
     else:
-        error("HTTP Failure Code: %s!", res_code)
+        Console.error("HTTP Failure Code: %s!", res_code)
         
     if "Content-Type" in res_headers:
         res_type = res_headers["Content-Type"]
@@ -76,11 +76,11 @@ def requestUrl(url, content_type="text/plain", headers=None, method="GET", port=
             res_content = json.loads(res_content)
             
             if "error" in res_content:
-                error("Error %s: %s", res_content["error"], res_content["reason"])
+                Console.error("Error %s: %s", res_content["error"], res_content["reason"])
             elif "reason" in res_content:
-                info("Success: %s" % res_content["reason"])
+                Console.info("Success: %s" % res_content["reason"])
                 
-    outdent()
+    Console.outdent()
     
     return res_success, res_headers, res_content
 

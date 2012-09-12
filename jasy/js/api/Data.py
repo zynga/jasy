@@ -6,7 +6,7 @@
 import jasy.js.api.Text as Text
 
 from jasy.js.util import *
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from jasy import UserError
 
 
@@ -383,7 +383,7 @@ class ApiData():
 
 
     def warn(self, message, line):
-        warn("%s at line %s in %s" % (message, line, self.id))
+        Console.warn("%s at line %s in %s" % (message, line, self.id))
 
 
     def setMain(self, mainType, mainNode, exportName):

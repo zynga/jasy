@@ -15,7 +15,7 @@ import re, copy
 import jasy.js.tokenize.Lang
 import jasy.js.api.Comment
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 __all__ = [ "Tokenizer" ]
 
@@ -223,7 +223,7 @@ class Tokenizer(object):
                 try:
                     self.comments.append(jasy.js.api.Comment.Comment(text, mode, commentStartLine, indent, self.fileId))
                 except jasy.js.api.Comment.CommentException as commentError:
-                    error("Ignoring comment in %s: %s", self.fileId, commentError)
+                    Console.error("Ignoring comment in %s: %s", self.fileId, commentError)
                     
                     
             elif ch == "/" and next == "/":
@@ -255,7 +255,7 @@ class Tokenizer(object):
                 try:
                     self.comments.append(jasy.js.api.Comment.Comment(text, mode, self.line-1, "", self.fileId))
                 except jasy.js.api.Comment.CommentException:
-                    error("Ignoring comment in %s: %s", self.fileId, commentError)
+                    Console.error("Ignoring comment in %s: %s", self.fileId, commentError)
 
             # check for whitespace, also for special cases like 0xA0
             elif ch in "\xA0 \t":

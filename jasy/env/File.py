@@ -7,7 +7,7 @@ import os, shutil, json
 
 from jasy.env.State import session
 from jasy.core.Json import toJson
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 __all__ = ["removeDir", "removeFile", "makeDir", "copyDir", "copyFile", "updateFile", "writeFile"]
 
@@ -17,7 +17,7 @@ def removeDir(dirname):
     
     dirname = session.prependCurrentPrefix(dirname)
     if os.path.exists(dirname):
-        info("Deleting folder %s" % dirname)
+        Console.info("Deleting folder %s" % dirname)
         shutil.rmtree(dirname)
 
 
@@ -26,7 +26,7 @@ def removeFile(filename):
     
     filename = session.prependCurrentPrefix(filename)
     if os.path.exists(filename):
-        info("Deleting file %s" % filename)
+        Console.info("Deleting file %s" % filename)
         os.remove(filename)
 
 
@@ -84,7 +84,7 @@ def copyFile(src, dst):
     try:
         shutil.copy2(src, dst)
     except IOError as ex:
-        error("Could not write file %s: %s" % (dst, ex))
+        Console.error("Could not write file %s: %s" % (dst, ex))
         
     return True
 

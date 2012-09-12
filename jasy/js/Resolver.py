@@ -5,7 +5,7 @@
 
 import jasy.js.Sorter
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from jasy.env.State import session
 
 __all__ = ["Resolver"]
@@ -38,7 +38,7 @@ class Resolver():
         if not className in self.__classes:
             raise Exception("Unknown Class: %s" % className)
             
-        debug("Adding class: %s", className)
+        Console.debug("Adding class: %s", className)
         self.__required.append(self.__classes[className])
         
         del self.__included[:]
@@ -82,8 +82,8 @@ class Resolver():
         if self.__included:
             return self.__included
         
-        info("Detecting class dependencies...")
-        indent()
+        Console.info("Detecting class dependencies...")
+        Console.indent()
         
         collection = set()
         for classObj in self.__required:
@@ -96,8 +96,8 @@ class Resolver():
         
         self.__included = collection
 
-        outdent()
-        debug("Including %s classes", len(collection))
+        Console.outdent()
+        Console.debug("Including %s classes", len(collection))
         
         return self.__included
         

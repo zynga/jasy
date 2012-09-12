@@ -3,13 +3,13 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from distutils.version import StrictVersion
 
 try:
     import pip
 except ImportError:
-    error("pip is required to run JASY!")
+    Console.error("pip is required to run JASY!")
     sys.exit(1)
 
 
@@ -71,7 +71,7 @@ optionals = [
 def doCompleteDoctor():
     """Checks for uninstalled or too old versions of requirements and gives a complete output"""
 
-    header("Doctor")
+    Console.header("Doctor")
 
 
     dists = [dist for dist in pip.get_installed_distributions()]
@@ -82,36 +82,36 @@ def doCompleteDoctor():
         versions[dist.key] = dist.version
 
     def checkSingleInstallation(keys, versions, packageName, minVersion, installPath, updatePath):
-        info('%s:' % packageName)
-        indent()
+        Console.info('%s:' % packageName)
+        Console.indent()
         if packageName.lower() in keys:
-            info(colorize('Found installation', "green"))
+            Console.info(Console.colorize('Found installation', "green"))
             if StrictVersion(minVersion) > StrictVersion("0.0"):
                 if StrictVersion(versions[packageName.lower()]) >= StrictVersion(minVersion):
-                    info(colorize('Version is OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]), "green"))
+                    Console.info(Console.colorize('Version is OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]), "green"))
                 else:
-                    info(colorize(colorize('- Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
-                    info('  -> Update to the newest version of %s using %s' % (packageName, updatePath))
+                    Console.info(Console.colorize(Console.colorize('- Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
+                    Console.info('  -> Update to the newest version of %s using %s' % (packageName, updatePath))
         else:
-            info(colorize(colorize('Did NOT find installation', "red"), "bold"))
-            info('  -> Install the newest version of %s using %s' % (packageName, installPath))
-        outdent()
+            Console.info(Console.colorize(Console.colorize('Did NOT find installation', "red"), "bold"))
+            Console.info('  -> Install the newest version of %s using %s' % (packageName, installPath))
+        Console.outdent()
 
 
     # Required packages
-    info(colorize("Required Packages:", "bold"))
-    indent()
+    Console.info(Console.colorize("Required Packages:", "bold"))
+    Console.indent()
     for entry in needs:
         checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installPath"], entry["updatePath"])
-    outdent()
+    Console.outdent()
 
     # Optional packages
-    info("")
-    info(colorize("Optional Packages:", "bold"))
-    indent()
+    Console.info("")
+    Console.info(Console.colorize("Optional Packages:", "bold"))
+    Console.indent()
     for entry in optionals:
         checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installPath"], entry["updatePath"])
-    outdent()
+    Console.outdent()
 
 
 def doInitializationDoctor():
@@ -128,18 +128,18 @@ def doInitializationDoctor():
         if packageName.lower() in keys:
             if StrictVersion(minVersion) > StrictVersion("0.0"):
                 if StrictVersion(versions[packageName.lower()]) < StrictVersion(minVersion):
-                    info(colorize(colorize('JASY requirement error: "%s"' % packageName, "red"), "bold"))
-                    indent()
-                    info(colorize(colorize('- Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
-                    info('  -> Update to the newest version of %s using %s' % (packageName, updatePath))
-                    outdent()
+                    Console.info(Console.colorize(Console.colorize('JASY requirement error: "%s"' % packageName, "red"), "bold"))
+                    Console.indent()
+                    Console.info(Console.colorize(Console.colorize('- Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
+                    Console.info('  -> Update to the newest version of %s using %s' % (packageName, updatePath))
+                    Console.outdent()
                     return False
         else:
-            info(colorize(colorize('JASY requirement error: "%s"' % packageName, "red"), "bold"))
-            indent()
-            info(colorize(colorize('Did NOT find installation', "red"), "bold"))
-            info('  -> Install the newest version of %s using %s' % (packageName, installPath))
-            outdent()
+            Console.info(Console.colorize(Console.colorize('JASY requirement error: "%s"' % packageName, "red"), "bold"))
+            Console.indent()
+            Console.info(Console.colorize(Console.colorize('Did NOT find installation', "red"), "bold"))
+            Console.info('  -> Install the newest version of %s using %s' % (packageName, installPath))
+            Console.outdent()
             return False
 
         return True

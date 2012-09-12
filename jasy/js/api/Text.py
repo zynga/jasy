@@ -4,7 +4,7 @@
 #
 
 import re
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 __all__ = ["extractSummary"]
 
@@ -30,7 +30,7 @@ def extractSummary(text):
             return summary
             
     else:
-        warn("Unable to extract summary for: %s", text)
+        Console.warn("Unable to extract summary for: %s", text)
     
     return None
     

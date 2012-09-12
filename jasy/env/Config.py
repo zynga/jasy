@@ -5,7 +5,7 @@
 
 import sys, os
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from jasy import UserError
 from jasy.core.Config import writeConfig, loadConfig, findConfig
 from jasy.core.Util import getKey
@@ -230,12 +230,12 @@ class Config:
         while True:
             msg = "- %s?" % question
             if accept is not None:
-                msg += colorize(" [%s]" % accept, "grey")
+                msg += Console.colorize(" [%s]" % accept, "grey")
 
             if default is None:
-                msg += colorize(" (%s)" % name, "magenta")
+                msg += Console.colorize(" (%s)" % name, "magenta")
             else:
-                msg += colorize(" (%s=%s)" % (name, default), "magenta")
+                msg += Console.colorize(" (%s=%s)" % (name, default), "magenta")
 
             msg += ": "
 
@@ -243,7 +243,7 @@ class Config:
 
             # Do not ask user for solved items
             if not force and self.has(name):
-                print("%s %s" % (self.get(name), colorize("(pre-filled)", "cyan")))
+                print("%s %s" % (self.get(name), Console.colorize("(pre-filled)", "cyan")))
                 return
 
             # Read user input, but ignore any leading/trailing white space
@@ -286,7 +286,7 @@ class Config:
 
         # Check for given type
         if accept is not None and not matchesType(value, accept):
-            print(colorize("  - Invalid value: %s" % str(value), "red"))
+            print(Console.colorize("  - Invalid value: %s" % str(value), "red"))
             return False
 
         if "." in name:

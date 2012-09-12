@@ -9,7 +9,7 @@ import jasy.core.File
 import jasy.item.Asset
 
 from jasy import UserError
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 __all__ = ["AssetManager"]
 
@@ -50,7 +50,7 @@ class AssetManager:
         self.__processSprites()
         self.__processAnimations()
         
-        info("Activated %s assets", len(assets))
+        Console.info("Activated %s assets", len(assets))
 
 
     def __processSprites(self):
@@ -60,12 +60,12 @@ class AssetManager:
         configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
         
         if configs:
-            info("Processing %s image sprite configs...", len(configs))
+            Console.info("Processing %s image sprite configs...", len(configs))
         
         sprites = []
-        indent()
+        Console.indent()
         for fileId in configs:
-            debug("Processing %s...", fileId)
+            Console.debug("Processing %s...", fileId)
             
             asset = assets[fileId]
             spriteBase = os.path.dirname(fileId)
@@ -75,12 +75,12 @@ class AssetManager:
             except ValueError as err:
                 raise UserError("Could not parse jasysprite.json at %s: %s" % (fileId, err))
                 
-            indent()
+            Console.indent()
             for spriteImage in spriteConfig:
                 spriteImageId = "%s/%s" % (spriteBase, spriteImage)
                 
                 singleRelPaths = spriteConfig[spriteImage]
-                debug("Image %s combines %s images", spriteImageId, len(singleRelPaths))
+                Console.debug("Image %s combines %s images", spriteImageId, len(singleRelPaths))
 
                 for singleRelPath in singleRelPaths:
                     singleId = "%s/%s" % (spriteBase, singleRelPath)
@@ -89,7 +89,7 @@ class AssetManager:
                     if singleId in assets:
                         singleAsset = assets[singleId]
                     else:
-                        info("Creating new asset: %s", singleId)
+                        Console.info("Creating new asset: %s", singleId)
                         singleAsset = jasy.item.Asset.AssetItem(None)
                         assets[singleId] = singleAsset
                         
@@ -109,16 +109,16 @@ class AssetManager:
                         fileChecksum = singleAsset.getChecksum()
                         storedChecksum = singleData["checksum"]
                         
-                        debug("Checksum Compare: %s <=> %s", fileChecksum[0:6], storedChecksum[0:6])
+                        Console.debug("Checksum Compare: %s <=> %s", fileChecksum[0:6], storedChecksum[0:6])
                         
                         if storedChecksum != fileChecksum:
                             raise UserError("Sprite Sheet is not up-to-date. Checksum of %s differs.", singleId)
         
-            outdent()
-            debug("Deleting sprite config from assets: %s", fileId)
+            Console.outdent()
+            Console.debug("Deleting sprite config from assets: %s", fileId)
             del assets[fileId]
             
-        outdent()
+        Console.outdent()
         self.__sprites = sprites
         
         
@@ -130,11 +130,11 @@ class AssetManager:
         configs = [fileId for fileId in assets if assets[fileId].isImageAnimationConfig()]
         
         if configs:
-            info("Processing %s image animation configs...", len(configs))
+            Console.info("Processing %s image animation configs...", len(configs))
         
-        indent()
+        Console.indent()
         for fileId in configs:
-            debug("Processing %s...", fileId)
+            Console.debug("Processing %s...", fileId)
         
             asset = assets[fileId]
             base = os.path.dirname(fileId)
@@ -171,12 +171,12 @@ class AssetManager:
                 else:
                     raise UserError("Invalid image frame data for: %s" % imageId)
 
-                debug("  - Animation %s has %s frames", imageId, frames)
+                Console.debug("  - Animation %s has %s frames", imageId, frames)
 
-            debug("  - Deleting animation config from assets: %s", fileId)
+            Console.debug("  - Deleting animation config from assets: %s", fileId)
             del assets[fileId]
             
-        outdent()
+        Console.outdent()
         
     
     
@@ -259,7 +259,7 @@ class AssetManager:
         
         for fileId in runtime:
             if not fileId in assets:
-                debug("Unknown asset: %s" % fileId)
+                Console.debug("Unknown asset: %s" % fileId)
                 continue
         
             if not fileId in data:
@@ -298,7 +298,7 @@ class AssetManager:
                 current = current[split]
             
             # Create entry
-            debug("Adding %s..." % fileId)
+            Console.debug("Adding %s..." % fileId)
             current[basename] = data[fileId]
         
         return root
@@ -315,7 +315,7 @@ class AssetManager:
         
         # Compile filter expressions
         matcher = "^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints])
-        debug("Compiled asset matcher: %s" % matcher)
+        Console.debug("Compiled asset matcher: %s" % matcher)
         
         return re.compile(matcher)
         
@@ -330,7 +330,7 @@ class AssetManager:
         copyAssetFolder = self.__session.prependCurrentPrefix(assetFolder)
         filterExpr = self.__compileFilterExpr(classes)
         
-        info("Deploying assets...")
+        Console.info("Deploying assets...")
         
         counter = 0
         length = len(assets)
@@ -346,7 +346,7 @@ class AssetManager:
             if jasy.core.File.syncfile(srcFile, dstFile):
                 counter += 1
         
-        info("Updated %s/%s files" % (counter, length))
+        Console.info("Updated %s/%s files" % (counter, length))
         
 
 
@@ -381,7 +381,7 @@ class AssetManager:
         if not result:
             return None
 
-        info("Exported %s assets", len(result))
+        Console.info("Exported %s assets", len(result))
 
         return {
             "assets" : self.__structurize(result),

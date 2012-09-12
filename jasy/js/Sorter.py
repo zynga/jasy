@@ -5,7 +5,7 @@
 
 import time
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from jasy.env.State import session
 
 __all__ = ["Sorter"]
@@ -37,8 +37,8 @@ class Sorter:
         """ Returns the sorted class list (caches result) """
 
         if not self.__sortedClasses:
-            debug("Sorting classes...")
-            indent()
+            Console.debug("Sorting classes...")
+            Console.indent()
             
             classNames = self.__names
             for className in classNames:
@@ -48,10 +48,10 @@ class Sorter:
             requiredClasses = self.__resolver.getRequiredClasses()
             for classObj in requiredClasses:
                 if not classObj in result:
-                    debug("Start adding with: %s", classObj)
+                    Console.debug("Start adding with: %s", classObj)
                     self.__addSorted(classObj, result)
 
-            outdent()
+            Console.outdent()
             self.__sortedClasses = result
 
         return self.__sortedClasses
@@ -136,7 +136,7 @@ class Sorter:
             depName = depObj.getId()
             
             if depName in classMeta.breaks:
-                debug("Manual Break: %s => %s" % (classObj, depObj))
+                Console.debug("Manual Break: %s => %s" % (classObj, depObj))
                 pass
             
             elif depObj in loadDeps:

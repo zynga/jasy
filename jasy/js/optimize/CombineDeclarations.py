@@ -4,7 +4,7 @@
 #
 
 import jasy.js.parse.Node as Node
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 __all__ = ["optimize", "Error"]
 
@@ -20,10 +20,10 @@ class Error(Exception):
         
         
 def optimize(node):
-    debug("Combining declarations...")
-    indent()
+    Console.debug("Combining declarations...")
+    Console.indent()
     result = __optimize(node)
-    outdent()
+    Console.outdent()
     return result
     
 
@@ -64,7 +64,7 @@ def __combineSiblings(node):
         if child.type == "for" and prevChild.type == "var":
             setup = getattr(child, "setup", None)
             if setup and setup.type == "var":
-                debug("Removing for-loop setup section at line %s" % setup.line)
+                Console.debug("Removing for-loop setup section at line %s" % setup.line)
                 child.remove(setup)
                 child = setup    
 
@@ -276,7 +276,7 @@ def __rebuildAsAssignment(node, firstVarStatement):
     # Edge case. Not yet found if this happen realistically
     else:
         if hasattr(node, "rel"):
-            warn("Remove related node (%s) from parent: %s" % (node.rel, node))
+            Console.warn("Remove related node (%s) from parent: %s" % (node.rel, node))
             
         node.parent.remove(node)
         

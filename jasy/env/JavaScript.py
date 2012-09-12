@@ -8,7 +8,7 @@ import os, random
 from jasy import UserError
 
 from jasy.core.Permutation import Permutation
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 import jasy.core.File as File
 
@@ -56,7 +56,7 @@ def storeKernel(fileName, debug=False, optimization=None, formatting=None):
     exclude it from the real other generated output files.
     """
     
-    header("Storing kernel")
+    Console.header("Storing kernel")
     
     # This exports all field values from the session
     fields = session.exportFields()
@@ -93,8 +93,8 @@ def storeCompressed(classes, fileName, bootCode=None, optimization=None, formatt
     - bootCode: Code to execute once all the classes are loaded
     """
     
-    info("Merging compressed output of %s classes...", len(classes))
-    indent()
+    Console.info("Merging compressed output of %s classes...", len(classes))
+    Console.indent()
     result = []
     
     try:
@@ -104,7 +104,7 @@ def storeCompressed(classes, fileName, bootCode=None, optimization=None, formatt
     except ClassError as error:
         raise UserError("Error during class compression! %s" % error)
 
-    outdent()
+    Console.outdent()
 
     assetData = session.getAssetManager().export(classes)
     if assetData:
@@ -130,8 +130,8 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     - urlPrefix: Prepends the given URL prefix to all class URLs to load
     """
     
-    info("Generating loader for %s classes...", len(classes))
-    indent()
+    Console.info("Generating loader for %s classes...", len(classes))
+    Console.indent()
     
     main = session.getMain()
     files = []
@@ -149,7 +149,7 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     
     loader = '"%s"' % '","'.join(files)
     result = []
-    outdent()
+    Console.outdent()
     
     assetData = session.getAssetManager().export(classes)
     if assetData:

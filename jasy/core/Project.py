@@ -16,7 +16,7 @@ import jasy.item.Asset
 import jasy.core.File as File
 
 from jasy.core.Util import getKey
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 from jasy import UserError
 
 
@@ -53,34 +53,34 @@ def getProjectDependencies(project, checkoutDirectory="external", updateReposito
         name = project.getName()
 
         # List of required projects
-        info("Getting requirements of %s...", colorize(name, "bold"))
-        indent()
+        Console.info("Getting requirements of %s...", Console.colorize(name, "bold"))
+        Console.indent()
         requires = project.getRequires(checkoutDirectory, updateRepositories)
-        outdent()
+        Console.outdent()
 
         if not requires:
             return
 
-        debug("Processing %s requirements...", len(requires))
-        indent()
+        Console.debug("Processing %s requirements...", len(requires))
+        Console.indent()
 
         # Adding all project in reverse order.
         # Adding all local ones first before going down to their requirements
         for requiredProject in reversed(requires):
             requiredName = requiredProject.getName()
             if not requiredName in names:
-                debug("Adding: %s %s (via %s)", requiredName, requiredProject.version, project.getName())
+                Console.debug("Adding: %s %s (via %s)", requiredName, requiredProject.version, project.getName())
                 names[requiredName] = True
                 result.append(requiredProject)
             else:
-                debug("Blocking: %s %s (via %s)", requiredName, requiredProject.version, project.getName())
+                Console.debug("Blocking: %s %s (via %s)", requiredName, requiredProject.version, project.getName())
 
         # Process all requirements of added projects
         for requiredProject in requires:
             if requiredProject.hasRequires():
                 __resolve(requiredProject)
 
-        outdent()
+        Console.outdent()
 
     result = [project]
     names = {
@@ -215,9 +215,9 @@ class Project():
 
         # Print out
         if summary:
-            info("Scanned project %s %s: %s" % (colorize(self.__name, "bold"), colorize("[%s]" % self.kind, "grey"), colorize(", ".join(summary), "green")))
+            Console.info("Scanned project %s %s: %s" % (Console.colorize(self.__name, "bold"), Console.colorize("[%s]" % self.kind, "grey"), Console.colorize(", ".join(summary), "green")))
         else:
-            error("Project %s is empty!", colorize(self.__name, "bold"))
+            Console.error("Project %s is empty!", Console.colorize(self.__name, "bold"))
 
         self.scanned = True
 
@@ -239,9 +239,9 @@ class Project():
         
         
     def __addContent(self, content):
-        debug("Adding manual content")
+        Console.debug("Adding manual content")
         
-        indent()
+        Console.indent()
         for fileId in content:
             fileContent = content[fileId]
             if len(fileContent) == 0:
@@ -277,16 +277,16 @@ class Project():
             
             # Create instance
             item = construct(self, fileId).attach(filePath)
-            debug("Registering %s %s" % (item.kind, fileId))
+            Console.debug("Registering %s %s" % (item.kind, fileId))
             dist[fileId] = item
             
-        outdent()
+        Console.outdent()
         
         
     def __addDir(self, directory, distname):
         
-        debug("Scanning directory: %s" % directory)
-        indent()
+        Console.debug("Scanning directory: %s" % directory)
+        Console.indent()
         
         path = os.path.join(self.__path, directory)
         if not os.path.exists(path):
@@ -314,7 +314,7 @@ class Project():
                 
                 self.addFile(relPath, fullPath, distname)
         
-        outdent()
+        Console.outdent()
 
 
     def addFile(self, relPath, fullPath, distname, override=False):
@@ -357,7 +357,7 @@ class Project():
 
         # Create instance
         item = construct(self, fileId).attach(fullPath)
-        debug("Registering %s %s" % (item.kind, fileId))
+        Console.debug("Registering %s %s" % (item.kind, fileId))
         dist[fileId] = item
         
         
@@ -503,7 +503,7 @@ class Project():
     def clean(self):
         """Clears the cache of the project"""
         
-        info("Clearing cache of %s..." % self.__name)
+        Console.info("Clearing cache of %s..." % self.__name)
         self.__cache.clear()
         
     def close(self):

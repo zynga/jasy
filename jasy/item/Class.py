@@ -21,7 +21,7 @@ from jasy.js.output.Compressor import Compressor
 
 from jasy import UserError
 from jasy.js.util import *
-from jasy.core.Logging import * 
+import jasy.core.Console as Console 
 
 try:
     from pygments import highlight
@@ -74,12 +74,12 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
         field = "tree[%s]" % self.id
         tree = self.project.getCache().read(field, self.mtime)
         if not tree:
-            info("Processing class %s %s...", colorize(self.id, "bold"), colorize("[%s]" % context, "cyan"))
+            Console.info("Processing class %s %s...", Console.colorize(self.id, "bold"), Console.colorize("[%s]" % context, "cyan"))
             
-            indent()
+            Console.indent()
             tree = Parser.parse(self.getText(), self.id)
             ScopeScanner.scan(tree)
-            outdent()
+            Console.outdent()
             
             self.project.getCache().store(field, tree, self.mtime, True)
         
@@ -95,14 +95,14 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
             tree = copy.deepcopy(self.__getTree("%s:plain" % context))
 
             # Logging
-            msg = "Processing class %s" % colorize(self.id, "bold")
+            msg = "Processing class %s" % Console.colorize(self.id, "bold")
             if permutation:
-                msg += colorize(" (%s)" % permutation, "grey")
+                msg += Console.colorize(" (%s)" % permutation, "grey")
             if context:
-                msg += colorize(" [%s]" % context, "cyan")
+                msg += Console.colorize(" [%s]" % context, "cyan")
                 
-            info("%s..." % msg)
-            indent()
+            Console.info("%s..." % msg)
+            Console.indent()
 
             # Apply permutation
             if permutation:
@@ -114,7 +114,7 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
             jasy.js.clean.Unused.cleanup(tree)
         
             self.project.getCache().store(field, tree, self.mtime, True)
-            outdent()
+            Console.outdent()
 
         return tree
 
@@ -139,7 +139,7 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
             if name != self.id and name in classes and classes[name].kind == "class":
                 result.add(classes[name])
             elif warnings:
-                warn("- Missing class (required): %s in %s", name, self.id)
+                Console.warn("- Missing class (required): %s in %s", name, self.id)
 
         # Globally modified names (mostly relevant when working without namespaces)
         for name in scope.shared:
@@ -176,7 +176,7 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
             if name != self.id and name in classes and classes[name].kind == "class":
                 result.remove(classes[name])
             elif warnings:
-                warn("- Missing class (optional): %s in %s", name, self.id)
+                Console.warn("- Missing class (optional): %s in %s", name, self.id)
         
         return result
         
@@ -205,9 +205,9 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
             apidata = jasy.js.api.Data.ApiData(self.id, highlight)
             
             tree = self.__getTree(context="api")
-            indent()
+            Console.indent()
             apidata.scanTree(tree)
-            outdent()
+            Console.outdent()
             
             metaData = self.getMetaData()
             apidata.addAssets(metaData.assets)
