@@ -3,22 +3,14 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os.path
-from jasy.core.Logging import *
-
-
-
-
-
-# ===========================================================================
-#   Project Library Handling
-# ===========================================================================
-
 def loadLibrary(objectName, fileName, encoding="utf-8"):
     """
     Creates a new global object (inside global state) with the given name 
     containing all @share'd functions and fields loaded from the given file.
     """
+
+    import os.path
+    from jasy.core.Logging import debug
 
     # Create internal class object for storing shared methods
     class Shared(object): pass
@@ -44,11 +36,6 @@ def loadLibrary(objectName, fileName, encoding="utf-8"):
 
     return counter
     
-
-
-# ===========================================================================
-#   Start Session
-# ===========================================================================
 
 # Globally available session object
 import jasy.env.Session as Session
