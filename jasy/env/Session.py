@@ -21,12 +21,17 @@ __all__ = ["Session"]
 
 
 class Session():
+    """
+    Manages all projects, fields, permutations, translations etc. Mainly like
+    the main managment infrastructure. 
+    """
 
     #
     # Core
     #
 
     def __init__(self):
+
         atexit.register(self.close)
 
         self.__timestamp = time.time()
