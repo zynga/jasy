@@ -156,46 +156,12 @@ if jasyscript:
     #from jasy.core.Repository import enableRepositoryUpdates
     #session.enableRepositoryUpdates(False)
 
-# Error handling
-from jasy import UserError
-
-# Import global environment
-try:
-    from jasy.env.State import *
-except UserError as errobj:
-    error("%s" % errobj)
-    sys.exit(1)
-
-# Configuring for remote task calls
-import jasy.env.Task
-from jasy.env.Config import Config
-import jasy.env.Builtin
-from jasy.core.Logging import *
-from jasy import UserError
-from jasy.core.Json import *
-from jasy.env.Task import task, executeTask, runTask
-from jasy.env.File import *
-from jasy.asset.SpritePacker import SpritePacker
-from jasy.js.Resolver import Resolver
-from jasy.js.api.Writer import ApiWriter
-from jasy.http.Server import serve
-from jasy.core.Util import executeCommand
-
-# from jasy.js.output.Optimization import Optimization
-# from jasy.js.output.Formatting import Formatting
-# 
-# jsFormatting = Formatting()
-# jsOptimization = Optimization("variables", "declarations", "blocks", "privates")
-# 
-# # Unimport classes
-# del Formatting
-# del Optimization
-
-# Handy utility methods to process class lists
-from jasy.env.JavaScript import *
 
 
+import jasy.env.Task as Task
 
+Task.setCommand(command)
+Task.setOptions(options)
 
 
 # ===========================================================================
@@ -204,23 +170,34 @@ from jasy.env.JavaScript import *
 
 def main():
     try:
-        jasy.env.Task.setCommand(command)
-        jasy.env.Task.setOptions(options)
-
+        
         # execute build script
         if jasyscript:
+            from jasy.env.Config import Config
             config = Config()
             config.loadValues("jasyscript", optional=True)
 
+            # Make all methods and classes from Context available
+            import jasy.env.Context as Context
+
+            api = {}
+            for key in dir(Context):
+                if not key.startswith("__"):
+                    api[key] = getattr(Context, key)
+
+            # Add some local variables
+            api["config"] = config
+
+            # Execute the jasyscript.py in a clean environment
             code = open(jasyscript, "r", encoding="utf-8").read()
-            exec(compile(code, os.path.abspath(jasyscript), "exec"), globals())
+            exec(compile(code, os.path.abspath(jasyscript), "exec"), api)
 
         # list all tasks when none is given
         tasks = options.getTasks()
         
         if not tasks or options.help:
 
-            executeTask("help")
+            Task.executeTask("help")
             
             if options.help:
                 sys.exit(0)
@@ -229,7 +206,7 @@ def main():
 
         # all arguments are processed as a list of task to execute in order
         for entry in tasks:
-            executeTask(entry["task"], **entry["params"])
+            Task.executeTask(entry["task"], **entry["params"])
     
     except UserError as errobj:
         error("%s" % errobj)
