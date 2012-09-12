@@ -47,7 +47,7 @@ class Session():
                 error(err)
                 raise UserError("Critical: Could not initialize session!")
 
-            info("Active projects:") 
+            info("Active projects (%s):", len(self.__projects))
             indent()
 
             for project in self.__projects:
@@ -355,8 +355,8 @@ class Session():
         for pos, current in enumerate(permutations):
             info(colorize("Permutation %s/%s:" % (pos+1, length), "bold"))
             indent()
-            jasy.env.State.setPermutation(current)
-            jasy.env.State.setTranslation(self.getTranslationBundle())
+            self.setCurrentPermutation(current)
+            self.setCurrentTranslation(self.getTranslationBundle())
             yield current
             outdent()
 
@@ -365,14 +365,12 @@ class Session():
         """
         Converts data from values to a compact data structure for being used to 
         compute a checksum in JavaScript.
+
+        Export structures:
+        1. [ name, 1, test, [value1, ...] ]
+        2. [ name, 2, value ]
+        3. [ name, 3, test, default? ]
         """
-        
-        #
-        # Export structures:
-        # 1. [ name, 1, test, [value1, ...] ]
-        # 2. [ name, 2, value ]
-        # 3. [ name, 3, test, default? ]
-        #
         
         export = []
         for key in sorted(self.__fields):
@@ -454,7 +452,7 @@ class Session():
         all relevant translation files for the current project set. 
         """
 
-        language = jasy.env.State.getPermutation().get("locale")
+        language = self.getCurrentPermutation().get("locale")
         if language is None:
             return None
 
@@ -501,7 +499,7 @@ class Session():
     def getPermutatedLocale(self):
         """Returns the current locale as defined in current permutation"""
 
-        permutation = jasy.env.State.getPermutation()
+        permutation = self.getCurrentPermutation()
         if permutation:
             locale = permutation.get("locale")
             if locale:
@@ -529,4 +527,53 @@ class Session():
 
 
 
+
+    #
+    # Permutation Handling
+    #
+
+    __permutation = None
+
+    def getCurrentPermutation(self):
+        return self.__permutation
+
+    def setCurrentPermutation(self, use):
+        self.__permutation = use
+
+
+    #
+    # Translation Handling
+    #
+
+    __translation = None
+
+    def getCurrentTranslation(self):
+        return self.__translation
+
+    def setCurrentTranslation(self, use):
+        self.__translation = use
+
+
+    #
+    # Prefix Handling
+    #
+
+    __prefix = None
+
+    def setCurrentPrefix(self, path):
+        if path is None:
+            self.__prefix = None
+            debug("Resetting prefix to working directory")
+        else:
+            self.__prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
+            debug("Setting prefix to: %s" % self.__prefix)
+        
+    def getCurrentPrefix(self):
+        return self.__prefix
+        
+    def prependCurrentPrefix(self, path):
+        if self.__prefix and not os.path.isabs(path):
+            return os.path.join(self.__prefix, path)
+        else:
+            return path
 

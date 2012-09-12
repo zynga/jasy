@@ -56,12 +56,12 @@ class Task:
         # Allow overriding of prefix via task or cmdline parameter.
         # By default use name of the task (no prefix for cleanup tasks)
         if "prefix" in merged:
-            jasy.env.State.setPrefix(merged["prefix"])
+            session.setCurrentPrefix(merged["prefix"])
             del merged["prefix"]
         elif "clean" in self.name:
-            jasy.env.State.setPrefix(None)
+            session.setCurrentPrefix(None)
         else:
-            jasy.env.State.setPrefix(self.name)
+            session.setCurrentPrefix(self.name)
         
 
         #

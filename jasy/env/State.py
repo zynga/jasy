@@ -7,63 +7,6 @@ import os.path
 from jasy.core.Logging import *
 
 
-# ===========================================================================
-#   Global Permutation Handling
-# ===========================================================================
-
-__permutation = None
-
-def getPermutation():
-    global __permutation
-    return __permutation
-
-def setPermutation(use):
-    global __permutation
-    __permutation = use
-
-
-# ===========================================================================
-#   Global Translation Handling
-# ===========================================================================
-
-__translation = None
-
-def getTranslation():
-    global __translation
-    return __translation
-
-def setTranslation(use):
-    global __translation
-    __translation = use
-
-
-# ===========================================================================
-#   Global Prefix Handling
-# ===========================================================================
-
-__prefix = None
-
-def setPrefix(path):
-    global __prefix
-
-    if path is None:
-        __prefix = None
-        debug("Resetting prefix to working directory")
-    else:
-        __prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
-        debug("Setting prefix to: %s" % __prefix)
-    
-def getPrefix():
-    global __prefix
-    return __prefix
-    
-def prependPrefix(path):
-    global __prefix
-    
-    if __prefix and not os.path.isabs(path):
-        return os.path.join(__prefix, path)
-    else:
-        return path
 
 
 

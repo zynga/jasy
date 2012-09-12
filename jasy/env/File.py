@@ -5,7 +5,7 @@
 
 import os, shutil, json
 
-from jasy.env.State import prependPrefix
+from jasy.env.State import session
 from jasy.core.Json import toJson
 from jasy.core.Logging import *
 
@@ -13,7 +13,7 @@ from jasy.core.Logging import *
 def removeDir(dirname):
     """Removes the given directory"""
     
-    dirname = prependPrefix(dirname)
+    dirname = session.prependCurrentPrefix(dirname)
     if os.path.exists(dirname):
         info("Deleting folder %s" % dirname)
         shutil.rmtree(dirname)
@@ -22,7 +22,7 @@ def removeDir(dirname):
 def removeFile(filename):
     """Removes the given file"""
     
-    filename = prependPrefix(filename)
+    filename = session.prependCurrentPrefix(filename)
     if os.path.exists(filename):
         info("Deleting file %s" % filename)
         os.remove(filename)
@@ -34,7 +34,7 @@ def makeDir(dirname):
     if dirname == "":
         return
         
-    dirname = prependPrefix(dirname)
+    dirname = session.prependCurrentPrefix(dirname)
     if not os.path.exists(dirname):
         os.makedirs(dirname)
 
@@ -45,7 +45,7 @@ def copyDir(src, dst):
     Merges the existing directory structure with the folder to copy.
     """
     
-    dst = prependPrefix(dst)
+    dst = session.prependCurrentPrefix(dst)
     srcLength = len(src)
     counter = 0
     
@@ -73,7 +73,7 @@ def copyFile(src, dst):
     if not os.path.isfile(src):
         raise Exception("No such file: %s" % src)
 
-    dst = prependPrefix(dst)
+    dst = session.prependCurrentPrefix(dst)
 
     # First test for existance of destination directory
     makeDir(os.path.dirname(dst))
@@ -93,7 +93,7 @@ def updateFile(src, dst):
     if not os.path.isfile(src):
         raise Exception("No such file: %s" % src)
     
-    dst = prependPrefix(dst)
+    dst = session.prependCurrentPrefix(dst)
     
     try:
         dst_mtime = os.path.getmtime(dst)
@@ -114,7 +114,7 @@ def updateFile(src, dst):
 def writeFile(dst, content):
     """Writes the content to the destination file name"""
     
-    dst = prependPrefix(dst)
+    dst = session.prependCurrentPrefix(dst)
     
     # First test for existance of destination directory
     makeDir(os.path.dirname(dst))

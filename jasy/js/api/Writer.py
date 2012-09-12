@@ -13,7 +13,7 @@ import jasy.core.File as File
 from jasy.js.util import *
 from jasy.core.Logging import *
 
-from jasy.env.State import session, prependPrefix
+from jasy.env.State import session
 from jasy import UserError
 
 
@@ -356,7 +356,7 @@ class ApiWriter():
                 else:
                     classExport = classData.export()
 
-                File.write(prependPrefix(os.path.join(distFolder, "%s.%s" % (className, extension))), encode(classExport, className))
+                File.write(session.prependCurrentPrefix(os.path.join(distFolder, "%s.%s" % (className, extension))), encode(classExport, className))
             except TypeError as writeError:
                 error("Could not write API data of: %s: %s", className, writeError)
                 continue
@@ -365,14 +365,14 @@ class ApiWriter():
             info("Saving highlighted code (%s files)...", len(highlightedCode))
             for className in highlightedCode:
                 try:
-                    File.write(prependPrefix(os.path.join(distFolder, "%s.html" % className)), highlightedCode[className])
+                    File.write(session.prependCurrentPrefix(os.path.join(distFolder, "%s.html" % className)), highlightedCode[className])
                 except TypeError as writeError:
                     error("Could not write highlighted code of: %s: %s", className, writeError)
                     continue
 
         info("Writing index...")
-        File.write(prependPrefix(os.path.join(distFolder, "meta-index.%s" % extension)), encode(index, "meta-index"))
-        File.write(prependPrefix(os.path.join(distFolder, "meta-search.%s" % extension)), encode(search, "meta-search"))
+        File.write(session.prependCurrentPrefix(os.path.join(distFolder, "meta-index.%s" % extension)), encode(index, "meta-index"))
+        File.write(session.prependCurrentPrefix(os.path.join(distFolder, "meta-search.%s" % extension)), encode(search, "meta-search"))
         
 
 

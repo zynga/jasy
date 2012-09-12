@@ -8,7 +8,6 @@ import re, json, os, fnmatch
 import jasy.core.File
 import jasy.item.Asset
 
-from jasy.env.State import getPermutation, prependPrefix
 from jasy import UserError
 from jasy.core.Logging import *
 
@@ -312,7 +311,7 @@ class AssetManager:
         # Merge asset hints from all classes and remove duplicates
         hints = set()
         for classObj in classes:
-            hints.update(classObj.getMetaData(getPermutation()).assets)
+            hints.update(classObj.getMetaData(self.__session.getCurrentPermutation()).assets)
         
         # Compile filter expressions
         matcher = "^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints])
@@ -328,7 +327,7 @@ class AssetManager:
         assets = self.__assets
         projects = self.__session.getProjects()
 
-        copyAssetFolder = prependPrefix(assetFolder)
+        copyAssetFolder = self.__session.prependCurrentPrefix(assetFolder)
         filterExpr = self.__compileFilterExpr(classes)
         
         info("Deploying assets...")
