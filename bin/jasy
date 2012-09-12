@@ -146,8 +146,9 @@ if jasyscript:
     os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
     jasyscript = os.path.basename(jasyscript)
 
-api = None
-
+# Prepare public API
+# This object is used for the official API the jasyscript.py is using
+api = {}
 
 
 
@@ -241,29 +242,27 @@ def showapi():
 # ===========================================================================
 
 def main():
-    global api
     from jasy import UserError
 
     try:
-        
-        # Importing task script
+
+        # Import session instance
+        from jasy.env.State import session
+
+        # Create config object
+        import jasy.env.Config as Config
+        config = Config.Config()
+        config.loadValues("jasyscript", optional=True)
+
+        # Export session/config objects to user API
+        api["session"] = session
+        api["config"] = config
+
+        # Execute user script / register tasks
         if jasyscript:
 
-            # Loading task configuration
-            from jasy.env.Config import Config
-            config = Config()
-            config.loadValues("jasyscript", optional=True)
-
-            # Prepare public API
-            api = {}
-
             # Initialize session
-            from jasy.env.State import session
             session.init(autoInit=True, userApi=api, updateRepositories=not options.fast)
-
-            # Making available some local variables
-            api["config"] = config
-            api["session"] = session
 
             # Make all methods and classes from Context available
             import jasy.env.Context as Context
@@ -288,7 +287,7 @@ def main():
 
         # all arguments are processed as a list of task to execute in order
         for entry in tasks:
-            
+
             Task.executeTask(entry["task"], **entry["params"])
     
     except UserError as errobj:
