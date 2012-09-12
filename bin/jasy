@@ -271,17 +271,12 @@ def main():
                 if not key.startswith("__"):
                     api[key] = getattr(Context, key)
 
-        # Setting up task infrastructure
-
-        # Execute the jasyscript.py in a clean environment
-        if jasyscript:
+            # Execute the jasyscript.py in a clean environment
             code = open(jasyscript, "r", encoding="utf-8").read()
             exec(compile(code, os.path.abspath(jasyscript), "exec"), api)
 
-
         # list all tasks when none is given
         tasks = options.getTasks()
-        
         if not tasks or options.help:
 
             Task.executeTask("help")
@@ -293,6 +288,7 @@ def main():
 
         # all arguments are processed as a list of task to execute in order
         for entry in tasks:
+            
             Task.executeTask(entry["task"], **entry["params"])
     
     except UserError as errobj:
