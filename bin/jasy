@@ -146,6 +146,9 @@ if jasyscript:
     os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
     jasyscript = os.path.basename(jasyscript)
 
+api = None
+
+
 
 
 # ===========================================================================
@@ -199,10 +202,9 @@ def doctor():
 def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, **argv):
     """Creates a new project"""
 
-    return jasy.core.Create.create(name, origin, originVersion, skeleton, destination, **argv)
+    import jasy.core.Create as Create
+    return Create.create(name, origin, originVersion, skeleton, destination, **argv)
 
-
-api = None
 
 @task
 def showapi():
