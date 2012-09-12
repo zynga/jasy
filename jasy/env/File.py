@@ -6,7 +6,6 @@
 import os, shutil, json
 
 from jasy.env.State import session
-from jasy.core.Json import toJson
 import jasy.core.Console as Console
 
 __all__ = ["removeDir", "removeFile", "makeDir", "copyDir", "copyFile", "updateFile", "writeFile"]
