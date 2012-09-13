@@ -248,7 +248,7 @@ class Session():
 
         if not self.__assetManager:
 
-            Console.header("Initializing Assets")
+            Console.header("Preparing Asset Usage")
             Console.info("Processing projects...")
             Console.indent()
 

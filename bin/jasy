@@ -194,7 +194,7 @@ def init():
         code = open(jasyscript, "r", encoding="utf-8").read()
         exec(compile(code, os.path.abspath(jasyscript), "exec"), api)
 
-    duration = '{0:.3g}'.format(time.time() - start)
+    duration = '{0:.2g}'.format(time.time() - start)
     Console.info("Initialization completed in %ss", duration)
 
 
