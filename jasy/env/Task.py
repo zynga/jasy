@@ -5,10 +5,9 @@
 
 import types, os, sys, inspect, subprocess
 
-import jasy.env.State
+import jasy.core.Console as Console
 
 from jasy.env.State import session
-import jasy.core.Console as Console
 from jasy.core.Util import camelize
 from jasy import UserError
 
@@ -213,7 +212,7 @@ def runTask(project, task, **kwargs):
     # Build parameter list from optional arguments
     params = ["--%s=%s" % (key, kwargs[key]) for key in kwargs]
     if not "prefix" in kwargs:
-        params.append("--prefix=%s" % jasy.env.State.getPrefix())
+        params.append("--prefix=%s" % session.getPrefix())
 
     # Full list of args to pass to subprocess
     args = [__command, task] + params
