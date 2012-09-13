@@ -20,7 +20,7 @@ __all__ = ["create"]
 
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 
-def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, **argv):
+def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, session=None, **argv):
     Console.header("Creating project %s" % name)
 
     if not validProjectName.match(name):
@@ -46,7 +46,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     # 4) Relative or absolute folder path
 
     if origin is None:
-        originProject = session.getMain()
+        originProject = session and session.getMain()
 
         if originProject is None:
             raise UserError("Auto discovery failed! No Jasy projects registered!")
@@ -75,7 +75,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
         originName = originProject.getName()
 
     else:
-        originProject = session.getProjectByName(origin)
+        originProject = session and session.getProjectByName(origin)
         originVersion = None
         originRevision = None
 

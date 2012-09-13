@@ -211,7 +211,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     """Creates a new project based on a local or remote skeleton"""
 
     import jasy.env.Create as Create
-    return Create.create(name, origin, originVersion, skeleton, destination, **argv)
+    return Create.create(name, origin, originVersion, skeleton, destination, session, **argv)
 
 
 @Task.task
@@ -231,15 +231,16 @@ def showapi():
 
 frozenApi = None
 
+# Import session instance
+from jasy.env.State import session
+
+
 def main():
     global frozenApi
 
     from jasy import UserError
 
     try:
-
-        # Import session instance
-        from jasy.env.State import session
 
         # Create config object
         import jasy.core.Config as Config
