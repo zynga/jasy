@@ -48,8 +48,6 @@ class Session():
 
         if autoInit and jasy.core.Config.findConfig("jasyproject"):
 
-            Console.header("Initializing project")
-
             try:
                 self.addProject(jasy.core.Project.getProjectFromPath("."))
 

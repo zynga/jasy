@@ -146,129 +146,61 @@ if jasyscript:
     os.chdir(os.path.dirname(os.path.join(oldcwd, jasyscript)))
     jasyscript = os.path.basename(jasyscript)
 
-# Prepare public API
-# This object is used for the official API the jasyscript.py is using
-api = {}
-
-
-
-# ===========================================================================
-#   BUILT-IN TASKS
-# ===========================================================================
-
-import jasy.env.Task as Task
-
-Task.setCommand(command)
-Task.setOptions(options)
-
-@Task.task
-def about():
-    """Print outs the Jasy about page"""
-
-    import jasy
-
-    Console.header("About")
-    jasy.info()
-
-    Console.info("Command: %s", Task.getCommand())
-    Console.info("Version: %s", jasy.__version__)
-
-
-@Task.task
-def help():
-    """Shows this help screen"""
-
-    import jasy
-
-    Console.header("Help")
-    jasy.info()
-
-    print(Console.colorize(Console.colorize("Usage", "underline"), "bold"))
-    print("  $ jasy [<options...>] <task1> [<args...>] [<task2> [<args...>]]")
-
-    print()
-    print(Console.colorize(Console.colorize("Global Options", "underline"), "bold"))
-    Task.getOptions().printOptions()
-
-    print()
-    print(Console.colorize(Console.colorize("Available Tasks", "underline"), "bold"))
-    Task.printTasks()
-
-    print()
-
-
-@Task.task
-def doctor():
-    """Checks Jasy environment and prints offers support for installing missing packages"""
-
-    # This is a placeholder task to show up in the jasy task list
-    # The handling itself is directly implemented in "bin/jasy"
-    pass
-
-
-@Task.task
-def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, **argv):
-    """Creates a new project based on a local or remote skeleton"""
-
-    import jasy.core.Create as Create
-    return Create.create(name, origin, originVersion, skeleton, destination, session, **argv)
-
-
-@Task.task
-def showapi():
-    """Shows the official API available in jasyscript.py"""
-
-    Console.header("Official API")
-
-    from jasy.core.Util import generateApiScreen
-    Console.info(generateApiScreen(frozenApi))
-
 
 
 # ===========================================================================
 #   MAIN ROUTINE
 # ===========================================================================
 
-frozenApi = None
+import time
+import jasy.env.Task as Task
+from jasy import UserError
 
-# Import session instance
-from jasy.env.State import session
+def init():
+
+    start = time.time()
+
+    Console.header("Initializing")
+
+    Task.setCommand(command)
+    Task.setOptions(options)
+
+    # Prepare public API
+    # This object is used for the official API the jasyscript.py is using
+    api = {}
+
+    # Create config object
+    import jasy.core.Config as Config
+    config = Config.Config()
+    config.loadValues("jasyscript", optional=True)
+
+    # Initialize session
+    from jasy.env.State import session
+    session.init(autoInit=True, userApi=api, updateRepositories=not options.fast)
+
+    # Make all methods and classes from Context available
+    import jasy.env.Context as Context
+
+    for key in dir(Context):
+        if not key.startswith("__"):
+            api[key] = getattr(Context, key)
+
+    # Let context know about the methods/classes it has (e.g. for showapi() task)
+    setattr(Context, "__api__", api)    
+
+    # Execute the jasyscript.py in a clean environment
+    if jasyscript:
+
+        code = open(jasyscript, "r", encoding="utf-8").read()
+        exec(compile(code, os.path.abspath(jasyscript), "exec"), api)
+
+    duration = '{0:.3g}'.format(time.time() - start)
+    Console.info("Initialization completed in %ss", duration)
 
 
 def main():
-    global frozenApi
-
-    from jasy import UserError
 
     try:
-
-        # Create config object
-        import jasy.core.Config as Config
-        config = Config.Config()
-        config.loadValues("jasyscript", optional=True)
-
-        # Export session/config objects to user API
-        api["session"] = session
-        api["config"] = config
-
-        # Initialize session
-        session.init(autoInit=True, userApi=api, updateRepositories=not options.fast)
-
-        # Make all methods and classes from Context available
-        import jasy.env.Context as Context
-        for key in dir(Context):
-            if not key.startswith("__"):
-                api[key] = getattr(Context, key)
-
-        # Protect API for documentation reasons
-        import copy
-        frozenApi = copy.copy(api)
-
-        if jasyscript:
-
-            # Execute the jasyscript.py in a clean environment
-            code = open(jasyscript, "r", encoding="utf-8").read()
-            exec(compile(code, os.path.abspath(jasyscript), "exec"), api)
 
         # Run help when no tasks are given
         tasks = options.getTasks()
@@ -293,13 +225,13 @@ def main():
         Console.error("Jasy Stopped!")
         sys.exit(2)
 
-    sys.exit(0)
-
 
 
 # ===========================================================================
 #   START
 # ===========================================================================
+
+init()
 
 if options.stats:
     
@@ -319,3 +251,5 @@ if options.stats:
 else:
     
     main()
+
+sys.exit(0)
