@@ -14,28 +14,17 @@ import jasy.env.Task as Task
 import jasy.vcs.Repository as Repository
 
 # Classes
+from jasy.core.OutputManager import OutputManager
+from jasy.core.FileManager import FileManager
 from jasy.asset.Manager import AssetManager
 from jasy.asset.SpritePacker import SpritePacker
 from jasy.js.Resolver import Resolver
 from jasy.js.api.Writer import ApiWriter
-from jasy.core.OutputManager import OutputManager
-from jasy.core.FileManager import FileManager
+from jasy.http.Server import Server
 
 # Commands
-# TODO: Move them into modules
-from jasy.env.Task import task, executeTask, runTask
-from jasy.http.Server import serve
+from jasy.env.Task import task
 from jasy.core.Util import executeCommand
-
-# from jasy.js.output.Optimization import Optimization
-# from jasy.js.output.Formatting import Formatting
-# 
-# jsFormatting = Formatting()
-# jsOptimization = Optimization("variables", "declarations", "blocks", "privates")
-# 
-# # Unimport classes
-# del Formatting
-# del Optimization
 
 
 @task
@@ -94,8 +83,6 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
 @task
 def showapi():
     """Shows the official API available in jasyscript.py"""
-
-    Console.header("Official API")
 
     from jasy.core.Util import generateApiScreen
     Console.info(generateApiScreen(__api__))

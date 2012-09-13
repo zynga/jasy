@@ -170,10 +170,10 @@ class Proxy(object):
         
 class Static(object):
     
-    def __init__(self, id, config, contentTypes=None):
+    def __init__(self, id, config, mimeTypes=None):
         self.id = id
         self.config = config
-        self.contentTypes = contentTypes
+        self.mimeTypes = mimeTypes
         self.root = getKey(config, "root", ".")
         self.enableDebug = getKey(config, "debug", False)
 
@@ -212,8 +212,8 @@ class Static(object):
             extension = os.path.splitext(path)[1]
             if extension:
                 extension = extension.lower()[1:]
-                if extension in self.contentTypes:
-                    contentType = self.contentTypes[extension]
+                if extension in self.mimeTypes:
+                    contentType = self.mimeTypes[extension]
 
             return cherrypy.lib.static.serve_file(os.path.abspath(path), content_type=contentType)
             
@@ -276,69 +276,85 @@ additionalContentTypes = {
 # START
 #
 
-def serve(routes=None, customContentTypes=None, port=8080, host="127.0.0.1"):
+class Server:
     """Starts the built-in HTTP server inside the project's root directory"""
-    
-    # Shared configuration (global/app)
-    config = {
-        "global" : {
-            "environment" : "production",
-            "log.screen" : False,
-            "server.socket_port": port,
-            "server.socket_host": host,
-            "engine.autoreload_on" : False
-        },
-        
-        "/" : {
-            "log.screen" : False
+
+    def __init__(self, port=8080, host="127.0.0.1", mimeTypes=None):
+
+        Console.info("Initializing server...")
+        Console.indent()
+
+        # Shared configuration (global/app)
+        self.__config = {
+            "global" : {
+                "environment" : "production",
+                "log.screen" : False,
+                "server.socket_port": port,
+                "server.socket_host": host,
+                "engine.autoreload_on" : False
+            },
+            
+            "/" : {
+                "log.screen" : False
+            }
         }
-    }
 
-    # Build dict of content types to override native mimetype detection
-    contentTypes = {}
-    contentTypes.update(additionalContentTypes)
-    if customContentTypes:    
-            contentTypes.update(customContentTypes)
+        self.__port = port
 
-    # Update global config
-    cherrypy.config.update(config)
+        # Build dict of content types to override native mimetype detection
+        combinedTypes = {}
+        combinedTypes.update(additionalContentTypes)
+        if mimeTypes:    
+            combinedTypes.update(mimeTypes)
 
-    # Somehow this screen disabling does not work
-    # This hack to disable all access/error logging works
-    def empty(*param, **args): pass
-    def inspect(*param, **args): 
-        if args["severity"] > 20:
-            Console.error("Critical error occoured:")
-            Console.error(param[0])
-    
-    cherrypy.log.access = empty
-    cherrypy.log.error = inspect
-    cherrypy.log.screen = False
+        # Update global config
+        cherrypy.config.update(self.__config)
 
-    # Initialize routing
-    Console.info("Initialize routing...")
-    Console.indent()
-    root = Static("/", {}, contentTypes=contentTypes)
-    if routes:
+        # Somehow this screen disabling does not work
+        # This hack to disable all access/error logging works
+        def empty(*param, **args): pass
+        def inspect(*param, **args): 
+            if args["severity"] > 20:
+                Console.error("Critical error occoured:")
+                Console.error(param[0])
+        
+        cherrypy.log.access = empty
+        cherrypy.log.error = inspect
+        cherrypy.log.screen = False
+
+        # Basic routing
+        self.__root = Static("/", {}, mimeTypes=combinedTypes)
+
+        Console.outdent()
+
+
+    def setRoutes(self, routes):
+
+        Console.info("Adding routes...")
+        Console.indent()        
+
         for key in routes:
             entry = routes[key]
             if "host" in entry:
                 node = Proxy(key, entry)
             else:
-                node = Static(key, entry, contentTypes=contentTypes)
+                node = Static(key, entry, mimeTypes=combinedTypes)
             
-            setattr(root, key, node)
-    Console.outdent()
-    
-    # Finally start the server
-    app = cherrypy.tree.mount(root, "", config)
-    cherrypy.process.plugins.PIDFile(cherrypy.engine, "jasylock-http-%s" % port).subscribe()
-    
-    cherrypy.engine.start()
-    Console.info("Started HTTP server at port %s... [PID=%s]", port, os.getpid())
-    Console.indent()
-    cherrypy.engine.block()
+            setattr(self.__root, key, node)
 
-    Console.outdent()
-    Console.info("Stopped HTTP server at port %s.", port)
+        Console.outdent()
+
+
+    def start(self):
+
+        app = cherrypy.tree.mount(self.__root, "", self.__config)
+        cherrypy.process.plugins.PIDFile(cherrypy.engine, ".jasy/server-%s" % self.__port).subscribe()
+        
+        cherrypy.engine.start()
+        Console.info("Started HTTP server at port %s... [PID=%s]", self.__port, os.getpid())
+        Console.indent()
+        cherrypy.engine.block()
+
+        Console.outdent()
+        Console.info("Stopped HTTP server at port %s.", self.__port)  
 

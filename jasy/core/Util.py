@@ -196,6 +196,9 @@ def generateApiScreen(api):
             if ". " in doc:
                 doc = doc[:doc.index(". ")]
 
+            if ".\n" in doc:
+                doc = doc[:doc.index(".\n")]
+
             doc = doc.replace("\n", " ")
             doc = re.sub(" +", " ", doc)
 
