@@ -343,12 +343,13 @@ class ApiWriter():
         Console.header("Storing API data")
         writeCounter = 0
         extension = "js" if callback else "json"
+        compress = True
 
         def encode(content, name):
             if callback:
-                return "%s(%s,'%s');" % (callback, Json.toJson(content), name)
+                return "%s(%s,'%s');" % (callback, Json.toJson(content, compress=compress), name)
             else:
-                return Json.toJson(content)
+                return Json.toJson(content, compress=compress)
 
         Console.info("Saving class data (%s files)...", len(data))
         for className in data:
