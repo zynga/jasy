@@ -12,8 +12,6 @@ import jasy.core.File as File
 
 from jasy.js.util import *
 import jasy.core.Console as Console
-
-from jasy.env.State import session
 from jasy import UserError
 
 
@@ -277,6 +275,11 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
 
 
 class ApiWriter():
+
+    def __init__(self, session):
+
+        self.__session = session
+
     
     def isIncluded(self, className, classFilter):
         
@@ -305,7 +308,7 @@ class ApiWriter():
         apiData = {}
         highlightedCode = {}
         
-        for project in session.getProjects():
+        for project in self.__session.getProjects():
             classes = project.getClasses()
             Console.info("Loading API of project %s: %s...", Console.colorize(project.getName(), "bold"), Console.colorize("%s classes" % len(classes), "cyan"))
             Console.indent()
@@ -356,7 +359,7 @@ class ApiWriter():
                 else:
                     classExport = classData.export()
 
-                File.write(session.prependCurrentPrefix(os.path.join(distFolder, "%s.%s" % (className, extension))), encode(classExport, className))
+                File.write(self.__session.prependCurrentPrefix(os.path.join(distFolder, "%s.%s" % (className, extension))), encode(classExport, className))
             except TypeError as writeError:
                 Console.error("Could not write API data of: %s: %s", className, writeError)
                 continue
@@ -365,14 +368,14 @@ class ApiWriter():
             Console.info("Saving highlighted code (%s files)...", len(highlightedCode))
             for className in highlightedCode:
                 try:
-                    File.write(session.prependCurrentPrefix(os.path.join(distFolder, "%s.html" % className)), highlightedCode[className])
+                    File.write(self.__session.prependCurrentPrefix(os.path.join(distFolder, "%s.html" % className)), highlightedCode[className])
                 except TypeError as writeError:
                     Console.error("Could not write highlighted code of: %s: %s", className, writeError)
                     continue
 
         Console.info("Writing index...")
-        File.write(session.prependCurrentPrefix(os.path.join(distFolder, "meta-index.%s" % extension)), encode(index, "meta-index"))
-        File.write(session.prependCurrentPrefix(os.path.join(distFolder, "meta-search.%s" % extension)), encode(search, "meta-search"))
+        File.write(self.__session.prependCurrentPrefix(os.path.join(distFolder, "meta-index.%s" % extension)), encode(index, "meta-index"))
+        File.write(self.__session.prependCurrentPrefix(os.path.join(distFolder, "meta-search.%s" % extension)), encode(search, "meta-search"))
         
 
 
@@ -849,7 +852,7 @@ class ApiWriter():
         Console.indent()
         
         # Inject existing package docs into api data
-        for project in session.getProjects():
+        for project in self.__session.getProjects():
             docs = project.getDocs()
             
             for packageName in docs:

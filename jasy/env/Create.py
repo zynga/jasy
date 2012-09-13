@@ -4,15 +4,18 @@
 #
 
 import re, os.path, shutil
+import jasy
 
 from jasy.env.State import session
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
 from jasy.core.Config import Config
-import jasy.core.Console as Console
 from jasy import UserError
-import jasy
+
+import jasy.core.Console as Console
 import jasy.vcs.Repository as Repository
+
+__all__ = ["create"]
 
 
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
@@ -21,7 +24,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     Console.header("Creating project %s" % name)
 
     if not validProjectName.match(name):
-        raise UserError("Invalid project name: %s" % name)
+        raise UserError("Invalid project name: %s (Use lowercase characters and numbers only for broadest compabibility)" % name)
 
 
     #
@@ -147,3 +150,4 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
 
     # Done
     Console.info('Your application %s was created successfully!', Console.colorize(name, "bold"))
+
