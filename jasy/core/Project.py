@@ -6,17 +6,19 @@
 import os, re
 
 import jasy.core.Cache
+import jasy.core.Config as Config
+import jasy.core.File as File
+import jasy.core.Console as Console
+
 import jasy.vcs.Repository as Repository
-import jasy.env.Config
+
 import jasy.item.Abstract
 import jasy.item.Doc
 import jasy.item.Translation
 import jasy.item.Class
 import jasy.item.Asset
-import jasy.core.File as File
 
 from jasy.core.Util import getKey
-import jasy.core.Console as Console
 from jasy import UserError
 
 
@@ -141,7 +143,7 @@ class Project():
         self.translations = {}
 
         # Load project configuration
-        self.__config = jasy.env.Config.Config(config)
+        self.__config = Config.Config(config)
         self.__config.loadValues(os.path.join(self.__path, "jasyproject"), optional=True)
 
         # Initialize cache

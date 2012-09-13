@@ -242,7 +242,7 @@ def main():
         from jasy.env.State import session
 
         # Create config object
-        import jasy.env.Config as Config
+        import jasy.core.Config as Config
         config = Config.Config()
         config.loadValues("jasyscript", optional=True)
 

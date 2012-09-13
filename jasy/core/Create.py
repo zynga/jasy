@@ -8,7 +8,7 @@ import re, os.path, shutil
 from jasy.env.State import session
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
-from jasy.env.Config import Config
+from jasy.core.Config import Config
 import jasy.core.Console as Console
 from jasy import UserError
 import jasy
