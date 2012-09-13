@@ -6,7 +6,6 @@
 import re, os.path, shutil
 import jasy
 
-from jasy.env.State import session
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
 from jasy.core.Config import Config

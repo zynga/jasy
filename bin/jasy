@@ -210,7 +210,7 @@ def doctor():
 def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, **argv):
     """Creates a new project based on a local or remote skeleton"""
 
-    import jasy.env.Create as Create
+    import jasy.core.Create as Create
     return Create.create(name, origin, originVersion, skeleton, destination, session, **argv)
 
 
