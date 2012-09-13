@@ -24,8 +24,6 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
         raise UserError("Invalid project name: %s" % name)
 
 
-    print("FOO: %s" % argv["foo"])
-
     #
     # Initial Checks
     #
