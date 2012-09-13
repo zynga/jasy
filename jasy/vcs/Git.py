@@ -169,9 +169,9 @@ def expandVersion(version=None):
     return version
 
 
-def cleanGitRepository():
+def cleanRepository():
     return executeCommand(["git", "clean", "-d", "-f"], "Could not clean GIT repository!")
 
-def distcleanGitRepository():
+def distcleanRepository():
     return executeCommand(["git", "clean", "-d", "-f", "-x"], "Could not distclean GIT repository!")
 

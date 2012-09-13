@@ -187,9 +187,13 @@ def getOptions():
     global __options
     return __options
 
-
-# Remote run support
 def runTask(project, task, **kwargs):
+    """
+    Executes the given task of the given projects. 
+    
+    This happens inside a new sandboxed session during which the 
+    current session is paused/resumed automatically.
+    """
 
     remote = session.getProjectByName(project)
     if remote is not None:

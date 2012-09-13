@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import hashlib
+import hashlib, os
 
 import jasy.vcs.Git as Git
 
@@ -56,7 +56,25 @@ def update(url, version=None, path=None, update=True):
     return revision
 
 
+def cleanRepository(path=None):
+    
+    old = os.getcwd()
+    os.chdir(path)
+
+    if os.path.exists(".git"):
+        Git.cleanRepository()
+
+    os.chrdir(old)
 
 
+def distcleanRepository(path=None):
+
+    old = os.getcwd()
+    os.chdir(path)
+
+    if os.path.exists(".git"):
+        Git.distcleanRepository()
+
+    os.chrdir(old)
 
 

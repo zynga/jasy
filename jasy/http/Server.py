@@ -277,6 +277,7 @@ additionalContentTypes = {
 #
 
 def serve(routes=None, customContentTypes=None, port=8080, host="127.0.0.1"):
+    """Starts the built-in HTTP server inside the project's root directory"""
     
     Console.header("HTTP Server")
     
