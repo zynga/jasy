@@ -303,7 +303,8 @@ class ApiWriter():
         # Collecting
         #
         
-        Console.header("Collecting API Data")
+        Console.info("Collecting API Data...")
+        Console.indent()
         
         apiData = {}
         highlightedCode = {}
@@ -326,12 +327,14 @@ class ApiWriter():
 
             Console.outdent()
         
+        Console.outdent()
+
         
         #
         # Processing
         #
         
-        Console.header("Processing API Data")
+        Console.info("Processing API Data...")
         data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates, printErrors=printErrors, highlightCode=highlightCode)
         
         
@@ -340,7 +343,9 @@ class ApiWriter():
         # Writing
         #
 
-        Console.header("Storing API data")
+        Console.info("Storing API data...")
+        Console.indent()
+
         writeCounter = 0
         extension = "js" if callback else "json"
         compress = True
@@ -378,6 +383,8 @@ class ApiWriter():
         File.write(self.__session.expandFileName(os.path.join(distFolder, "meta-index.%s" % extension)), encode(index, "meta-index"))
         File.write(self.__session.expandFileName(os.path.join(distFolder, "meta-search.%s" % extension)), encode(search, "meta-search"))
         
+        Console.outdent()
+
 
 
     def process(self, apiData, classFilter=None, internals=False, privates=False, printErrors=True, highlightCode=True):

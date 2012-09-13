@@ -73,7 +73,6 @@ def doCompleteDoctor():
 
     Console.header("Doctor")
 
-
     dists = [dist for dist in pip.get_installed_distributions()]
     keys = [dist.key for dist in pip.get_installed_distributions()]
     

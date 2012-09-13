@@ -6,7 +6,6 @@
 import os
 
 import jasy.core.Console as Console
-import jasy.core.File as File
 import jasy.core.Json as Json
 
 from jasy.core.Permutation import Permutation
@@ -19,6 +18,8 @@ from jasy import UserError
 
 from jasy.js.output.Optimization import Optimization
 from jasy.js.output.Formatting import Formatting
+
+from jasy.core.FileManager import FileManager
 
 compressor = Compressor()
 packCache = {}
@@ -42,8 +43,9 @@ class OutputManager:
     def __init__(self, session, assetManager=None, compressionLevel=1, formattingLevel=0):
 
         self.__session = session
+
         self.__assetManager = assetManager
-        self.__compressionLevel = compressionLevel
+        self.__fileManager = FileManager(session)
 
         self.__scriptOptimization = Optimization()
 
@@ -60,9 +62,6 @@ class OutputManager:
         if formattingLevel > 0:
             self.__scriptFormatting.enable("semicolon")
             self.__scriptFormatting.enable("comma")
-
-
-
 
 
     def storeKernel(self, fileName, debug=False):
@@ -140,7 +139,7 @@ class OutputManager:
         if bootCode:
             result.append(packCode("(function(){%s})();" % bootCode))
 
-        File.write(self.__session.expandFileName(fileName), "".join(result))
+        self.__fileManager.writeFile(fileName, "".join(result))
 
 
     def storeLoader(self, classes, fileName, bootCode="", urlPrefix=""):
@@ -192,6 +191,6 @@ class OutputManager:
         loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loader, wrappedBootCode)
         result.append(packCode(loaderCode))
 
-        File.write(self.__session.expandFileName(fileName), "".join(result))
+        self.__fileManager.writeFile(fileName, "".join(result))
 
 

@@ -17,7 +17,7 @@ class FileManager:
     def removeDir(self, dirname):
         """Removes the given directory"""
         
-        dirname = session.expandFileName(dirname)
+        dirname = self.__session.expandFileName(dirname)
         if os.path.exists(dirname):
             Console.info("Deleting folder %s" % dirname)
             shutil.rmtree(dirname)
@@ -26,7 +26,7 @@ class FileManager:
     def removeFile(self, filename):
         """Removes the given file"""
         
-        filename = session.expandFileName(filename)
+        filename = self.__session.expandFileName(filename)
         if os.path.exists(filename):
             Console.info("Deleting file %s" % filename)
             os.remove(filename)
@@ -38,7 +38,7 @@ class FileManager:
         if dirname == "":
             return
             
-        dirname = session.expandFileName(dirname)
+        dirname = self.__session.expandFileName(dirname)
         if not os.path.exists(dirname):
             os.makedirs(dirname)
 
@@ -49,7 +49,7 @@ class FileManager:
         Merges the existing directory structure with the folder to copy.
         """
         
-        dst = session.expandFileName(dst)
+        dst = self.__session.expandFileName(dst)
         srcLength = len(src)
         counter = 0
         
@@ -65,7 +65,7 @@ class FileManager:
                 srcFile = os.path.join(rootFolder, fileName)
                 dstFile = os.path.join(destFolder, fileName)
                 
-                if updateFile(srcFile, dstFile):
+                if self.updateFile(srcFile, dstFile):
                     counter += 1
         
         return counter
@@ -77,10 +77,10 @@ class FileManager:
         if not os.path.isfile(src):
             raise Exception("No such file: %s" % src)
 
-        dst = session.expandFileName(dst)
+        dst = self.__session.expandFileName(dst)
 
         # First test for existance of destination directory
-        makeDir(os.path.dirname(dst))
+        self.makeDir(os.path.dirname(dst))
         
         # Finally copy file to directory
         try:
@@ -97,7 +97,7 @@ class FileManager:
         if not os.path.isfile(src):
             raise Exception("No such file: %s" % src)
         
-        dst = session.expandFileName(dst)
+        dst = self.__session.expandFileName(dst)
         
         try:
             dst_mtime = os.path.getmtime(dst)
@@ -112,16 +112,16 @@ class FileManager:
             # destination file does not exist, so mtime check fails
             pass
             
-        return copyFile(src, dst)
+        return self.copyFile(src, dst)
 
 
     def writeFile(self, dst, content):
         """Writes the content to the destination file name"""
         
-        dst = session.expandFileName(dst)
+        dst = self.__session.expandFileName(dst)
         
         # First test for existance of destination directory
-        makeDir(os.path.dirname(dst))
+        self.makeDir(os.path.dirname(dst))
         
         # Open file handle and write
         handle = open(dst, mode="w", encoding="utf-8")

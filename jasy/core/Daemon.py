@@ -50,8 +50,6 @@ if FileSystemEventHandler:
 
 def watch(path, callback):
     
-    Console.header("Build Daemon")
-    
     if Observer is None:
         Console.error("You need to install Watchdog for supporting file system watchers")
 

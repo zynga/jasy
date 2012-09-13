@@ -10,7 +10,6 @@ from jasy.env.State import session
 
 # Modules
 import jasy.core.Console as Console
-import jasy.env.File as File
 import jasy.env.Task as Task
 import jasy.vcs.Repository as Repository
 
@@ -20,6 +19,7 @@ from jasy.asset.SpritePacker import SpritePacker
 from jasy.js.Resolver import Resolver
 from jasy.js.api.Writer import ApiWriter
 from jasy.core.OutputManager import OutputManager
+from jasy.core.FileManager import FileManager
 
 # Commands
 # TODO: Move them into modules
@@ -44,7 +44,6 @@ def about():
 
     import jasy
 
-    Console.header("About")
     jasy.info()
 
     from jasy.env.Task import getCommand
@@ -59,7 +58,6 @@ def help():
 
     import jasy
 
-    Console.header("Help")
     jasy.info()
 
     print(Console.colorize(Console.colorize("Usage", "underline"), "bold"))
