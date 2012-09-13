@@ -203,6 +203,10 @@ def generateApiScreen(api):
             doc = re.sub(" +", " ", doc)
 
             doc = doc.strip()
+
+            if len(doc) > 75:
+                doc = doc[0:75] + "..."
+
             if doc:
                 msg += ":\n  %s" % doc
 

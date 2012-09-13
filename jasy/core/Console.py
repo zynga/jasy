@@ -3,6 +3,10 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
+"""
+Centralized logging for complete Jasy environment.
+"""
+
 import logging, sys
 
 __all__ = ["colorize", "header", "error", "warn", "info", "debug", "indent", "outdent"]
