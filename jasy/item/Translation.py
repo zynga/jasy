@@ -126,7 +126,7 @@ class TranslationItem(jasy.item.Abstract.AbstractItem):
         table = self.table
         result = { translationId: table[translationId] for translationId in relevantTranslations if translationId in table }
 
-        return Json.toJson(result or None, compress)
+        return Json.toJson(result or None, compress=compress)
 
     def getTable(self):
         """Returns the translation table"""

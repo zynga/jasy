@@ -18,7 +18,7 @@ from jasy.js.Sorter import Sorter
 
 from jasy.env.State import session
 
-import jasy.core.Json
+import jasy.core.Json as Json
 
 from jasy.js.parse.Parser import parse
 from jasy.js.output.Compressor import Compressor
@@ -108,7 +108,7 @@ def storeCompressed(classes, fileName, bootCode=None, optimization=None, formatt
 
     assetData = session.getAssetManager().export(classes)
     if assetData:
-        assetCode = 'jasy.Asset.addData(%s);' % jasy.core.Json.toJson(assetData)
+        assetCode = 'jasy.Asset.addData(%s);' % Json.toJson(assetData, compress=True)
         result.append(packCode(assetCode))
 
     if bootCode:
@@ -153,7 +153,7 @@ def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
     
     assetData = session.getAssetManager().export(classes)
     if assetData:
-        assetCode = 'jasy.Asset.addData(%s);' % jasy.core.Json.toJson(assetData)
+        assetCode = 'jasy.Asset.addData(%s);' % Json.toJson(assetData, compress=True)
         result.append(packCode(assetCode))
 
     translationBundle = session.getCurrentTranslation()
