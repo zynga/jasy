@@ -5,12 +5,15 @@
 
 """Global environment which is used by jasyscript.py files"""
 
+# Session
+from jasy.env.State import session
+
 # Modules
 import jasy.core.Console as Console
-import jasy.vcs.Repository as Repository
+import jasy.core.Output as Output
 import jasy.env.File as File
-import jasy.env.JavaScript as JavaScript
 import jasy.env.Task as Task
+import jasy.vcs.Repository as Repository
 
 # Classes
 from jasy.asset.SpritePacker import SpritePacker
@@ -22,7 +25,6 @@ from jasy.js.api.Writer import ApiWriter
 from jasy.env.Task import task, executeTask, runTask
 from jasy.http.Server import serve
 from jasy.core.Util import executeCommand
-from jasy.env.State import session
 
 # from jasy.js.output.Optimization import Optimization
 # from jasy.js.output.Formatting import Formatting
