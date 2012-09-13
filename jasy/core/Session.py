@@ -470,7 +470,7 @@ class Session():
             export.append("[%s]" % ",".join(content))
             
         if export:
-            return "jasy.Asset.addData([%s]);" % ",".join(export)
+            return "[%s]" % ",".join(export)
 
         return None
     

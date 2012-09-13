@@ -107,7 +107,7 @@ class Resolver():
     def getSortedClasses(self):
         """ Returns a list of sorted classes """
 
-        return Sorter.Sorter(self, session).getSortedClasses()
+        return Sorter.Sorter(self, self.__session).getSortedClasses()
 
 
     def __resolveDependencies(self, classObj, collection):

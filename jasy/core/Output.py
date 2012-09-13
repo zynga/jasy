@@ -44,7 +44,7 @@ class Output:
 
 
 
-    def storeKernel(fileName, debug=False, optimization=None, formatting=None):
+    def storeKernel(self, fileName, debug=False, optimization=None, formatting=None):
         """
         Writes a so-called kernel script to the given location. This script contains
         data about possible permutations based on current session values. It optionally
@@ -70,7 +70,7 @@ class Output:
         
         # Build resolver
         # We need the permutation here because the field configuration might rely on detection classes
-        resolver = Resolver()
+        resolver = Resolver(self.__session)
         resolver.addClassName("core.Env")
         resolver.addClassName("core.io.Queue")
         resolver.addClassName("jasy.Asset")
@@ -78,14 +78,14 @@ class Output:
         
         # Sort resulting class list
         classes = resolver.getSortedClasses()
-        storeCompressed(classes, fileName, optimization=optimization, formatting=formatting)
+        self.storeCompressed(classes, fileName, optimization=optimization, formatting=formatting)
         
         self.__session.setCurrentPermutation(None)
         
         return classes
 
 
-    def storeCompressed(classes, fileName, bootCode=None, optimization=None, formatting=None):
+    def storeCompressed(self, classes, fileName, bootCode=None, optimization=None, formatting=None):
         """
         Combines the compressed result of the stored class list
         
@@ -117,7 +117,7 @@ class Output:
         File.write(self.__session.prependCurrentPrefix(fileName), "".join(result))
 
 
-    def storeLoader(classes, fileName, bootCode="", urlPrefix=""):
+    def storeLoader(self, classes, fileName, bootCode="", urlPrefix=""):
         """
         Generates a source loader which is basically a file which loads the original JavaScript files.
         This is super useful during development of a project as it supports pretty fast workflows

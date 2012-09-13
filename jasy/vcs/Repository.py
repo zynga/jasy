@@ -56,25 +56,29 @@ def update(url, version=None, path=None, update=True):
     return revision
 
 
-def cleanRepository(path=None):
+def clean(path=None):
     
     old = os.getcwd()
-    os.chdir(path)
+
+    if path:
+        os.chdir(path)
 
     if os.path.exists(".git"):
         Git.cleanRepository()
 
-    os.chrdir(old)
+    os.chdir(old)
 
 
-def distcleanRepository(path=None):
+def distclean(path=None):
 
     old = os.getcwd()
-    os.chdir(path)
+
+    if path:
+        os.chdir(path)
 
     if os.path.exists(".git"):
         Git.distcleanRepository()
 
-    os.chrdir(old)
+    os.chdir(old)
 
 

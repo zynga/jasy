@@ -10,7 +10,6 @@ from jasy.env.State import session
 
 # Modules
 import jasy.core.Console as Console
-import jasy.core.Output as Output
 import jasy.env.File as File
 import jasy.env.Task as Task
 import jasy.vcs.Repository as Repository
@@ -19,6 +18,7 @@ import jasy.vcs.Repository as Repository
 from jasy.asset.SpritePacker import SpritePacker
 from jasy.js.Resolver import Resolver
 from jasy.js.api.Writer import ApiWriter
+from jasy.core.Output import Output
 
 # Commands
 # TODO: Move them into modules
