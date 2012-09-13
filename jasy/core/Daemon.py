@@ -6,11 +6,11 @@
 import time, os
 
 import jasy.core.Console as Console
-from jasy.env.State import session
 
 try:
     from watchdog.observers import Observer
     from watchdog.events import FileSystemEventHandler
+
 except ImportError as err:
     Observer = None
     FileSystemEventHandler = None
@@ -54,9 +54,6 @@ def watch(path, callback):
     
     if Observer is None:
         Console.error("You need to install Watchdog for supporting file system watchers")
-
-    # We need to pause the session to make room for other jasy executions
-    session.pause()
 
     # Initialize file system observer
     observer = Observer()

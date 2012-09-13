@@ -4,9 +4,7 @@
 #
 
 import time
-
 import jasy.core.Console as Console
-from jasy.env.State import session
 
 __all__ = ["Sorter"]
 
