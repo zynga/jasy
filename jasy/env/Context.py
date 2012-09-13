@@ -22,6 +22,8 @@ from jasy.http.Server import serve
 from jasy.core.Util import executeCommand
 from jasy.env.JavaScript import *
 
+from jasy.vcs.Git import cleanGitRepository, distcleanGitRepository
+
 # from jasy.js.output.Optimization import Optimization
 # from jasy.js.output.Formatting import Formatting
 # 
