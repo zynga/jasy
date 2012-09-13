@@ -368,14 +368,14 @@ class Session():
     def permutate(self):
         """ Generator method for permutations for improving output capabilities """
         
-        Console.info("Processing permutations")
+        Console.info("Processing permutations...")
         Console.indent()
         
         permutations = self.getPermutations()
         length = len(permutations)
         
         for pos, current in enumerate(permutations):
-            Console.info(Console.colorize("Permutation %s/%s:" % (pos+1, length), "bold"))
+            Console.info("Permutation %s/%s:" % (pos+1, length))
             Console.indent()
             self.setCurrentPermutation(current)
             self.setCurrentTranslation(self.getTranslationBundle())

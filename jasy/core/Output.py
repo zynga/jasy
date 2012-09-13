@@ -78,7 +78,7 @@ class Output:
         exclude it from the real other generated output files.
         """
         
-        Console.info("Storing kernel")
+        Console.info("Storing kernel...")
         Console.indent()
         
         # This exports all field values from the session
@@ -118,7 +118,7 @@ class Output:
         - bootCode: Code to execute once all the classes are loaded
         """
         
-        Console.info("Merging compressed output of %s classes...", len(classes))
+        Console.info("Compressing %s classes...", len(classes))
         Console.indent()
         result = []
         

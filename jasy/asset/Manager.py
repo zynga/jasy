@@ -32,6 +32,9 @@ class AssetManager:
     
     def __init__(self, session):
 
+        Console.info("Initialize Assets...")
+        Console.indent()
+
         # Store session reference (one asset manager per session)
         self.__session = session
 
@@ -44,11 +47,12 @@ class AssetManager:
         # Loop though all projects and merge assets
         assets = self.__assets = {}
         for project in self.__session.getProjects():
-            assets.update(project.assets)
+            assets.update(project.getAssets())
         
         self.__processSprites()
         self.__processAnimations()
         
+        Console.outdent()
         Console.info("Activated %s assets", len(assets))
 
 

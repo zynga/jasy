@@ -25,7 +25,7 @@ class Task:
         self.func = func
         self.name = func.__name__
 
-        self.__name__ = "Task %s" % func.__name__
+        self.__name__ = "Task: %s" % func.__name__
 
         # Circular reference to connect both, function and task
         func.task = self
@@ -71,6 +71,8 @@ class Task:
         #
         # EXECUTE ATTACHED FUNCTION
         #
+
+        Console.header(self.__name__)
 
         # Execute internal function
         return self.func(**merged)
