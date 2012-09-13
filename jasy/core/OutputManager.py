@@ -37,9 +37,9 @@ def packCode(code):
 
 
 
-class Output:
+class OutputManager:
 
-    def __init__(self, session, assetManager=None, compressionLevel=0, formattingLevel=0):
+    def __init__(self, session, assetManager=None, compressionLevel=1, formattingLevel=0):
 
         self.__session = session
         self.__assetManager = assetManager

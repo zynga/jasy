@@ -19,7 +19,7 @@ from jasy.asset.Manager import AssetManager
 from jasy.asset.SpritePacker import SpritePacker
 from jasy.js.Resolver import Resolver
 from jasy.js.api.Writer import ApiWriter
-from jasy.core.Output import Output
+from jasy.core.OutputManager import OutputManager
 
 # Commands
 # TODO: Move them into modules
