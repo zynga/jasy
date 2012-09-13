@@ -7,7 +7,7 @@ import itertools, time, atexit, json, os
 
 import jasy.core.Locale
 import jasy.core.Config
-import jasy.core.Json
+import jasy.core.Json as Json
 import jasy.core.Project
 import jasy.core.Permutation
 
@@ -411,7 +411,7 @@ class Session():
             Console.outdent()
 
 
-    def exportFields(self):
+    def exportFields(self, compress=True):
         """
         Converts data from values to a compact data structure for being used to 
         compute a checksum in JavaScript.
@@ -443,12 +443,12 @@ class Session():
                         values.remove(source["default"])
                         values.insert(0, source["default"])
                     
-                    content.append(jasy.core.Json.toJson(values))
+                    content.append(Json.toJson(values, compress=compress))
             
                 else:
                     # EXPORT STRUCT 2
                     content.append("2")
-                    content.append(jasy.core.Json.toJson(values[0]))
+                    content.append(Json.toJson(values[0], compress=compress))
 
             # Has no relevance for permutation, just insert the test
             else:
@@ -461,7 +461,7 @@ class Session():
                     
                     # Add default value if available
                     if "default" in source:
-                        content.append(jasy.core.Json.toJson(source["default"]))
+                        content.append(Json.toJson(source["default"], compress=compress))
                 
                 else:
                     # Has no detection and no permutation. Ignore it completely
@@ -470,9 +470,9 @@ class Session():
             export.append("[%s]" % ",".join(content))
             
         if export:
-            return "[%s]" % ",".join(export)
-        else:
-            return None
+            return "jasy.Asset.addData([%s]);" % ",".join(export)
+
+        return None
     
     
     
