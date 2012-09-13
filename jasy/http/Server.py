@@ -9,7 +9,6 @@ import jasy.core.Cache
 from collections import namedtuple
 
 import jasy.core.Console as Console
-from jasy.env.State import session
 from jasy.core.Types import CaseInsensitiveDict
 from jasy.core.Util import getKey
 
@@ -281,9 +280,6 @@ def serve(routes=None, customContentTypes=None, port=8080, host="127.0.0.1"):
     
     Console.header("HTTP Server")
     
-    # We need to pause the session to make room for other jasy executions
-    session.pause()
-
     # Shared configuration (global/app)
     config = {
         "global" : {
@@ -346,7 +342,4 @@ def serve(routes=None, customContentTypes=None, port=8080, host="127.0.0.1"):
 
     Console.outdent()
     Console.info("Stopped HTTP server at port %s.", port)
-    
-    # Resume session to continue work on next task (if given)
-    session.resume()
 

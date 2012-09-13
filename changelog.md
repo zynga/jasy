@@ -3,6 +3,7 @@ Jasy 0.8-beta4
 
 ## Changes
 
+- The session is not paused/resumed automatically anymore when the web server is started. This needs to be done in the jasyscript.py manually if required.
 - Changed project scanning to prefer projects nearer to sort order e.g. "core" wins over "apibrowser/core" even if placed before/behind.
 - Changed `jasylibrary.py` initialization so that methods are automatically imported one project dependencies are solved (works like importing fields from the projects)
 - Added support for #require with wildcards aka `core.*`.
