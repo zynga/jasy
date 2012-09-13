@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import jasy.env.Session as Session
+import jasy.core.Session as Session
 
 __all__ = ["session"]
 
