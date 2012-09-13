@@ -234,35 +234,6 @@ class Session():
 
 
 
-
-    #
-    # Asset Managment
-    #
-
-    __assetManager = None
-
-    def getAssetManager(self):
-        """
-        Returns the session's asset manager for caching and processing assets
-        """
-
-        if not self.__assetManager:
-
-            Console.header("Preparing Asset Usage")
-            Console.info("Processing projects...")
-            Console.indent()
-
-            for project in self.__projects:
-                project.scan()
-
-            Console.outdent()
-
-            self.__assetManager = jasy.asset.Manager.AssetManager(self)
-
-        return self.__assetManager
-    
-    
-    
     #
     # Support for fields
     # Fields allow to inject data from the build into the running application
@@ -397,7 +368,8 @@ class Session():
     def permutate(self):
         """ Generator method for permutations for improving output capabilities """
         
-        Console.header("Processing permutations")
+        Console.info("Processing permutations")
+        Console.indent()
         
         permutations = self.getPermutations()
         length = len(permutations)
@@ -409,6 +381,8 @@ class Session():
             self.setCurrentTranslation(self.getTranslationBundle())
             yield current
             Console.outdent()
+
+        Console.outdent()
 
 
     def exportFields(self, compress=True):
@@ -576,6 +550,23 @@ class Session():
 
 
 
+    #
+    # Expand of file names
+    #
+
+    def expandFileName(self, fileName):
+
+        if self.__prefix:
+            fileName = fileName.replace("$prefix", self.__prefix)
+
+        if self.__permutation:
+            fileName = fileName.replace("$permutation", self.__permutation.getChecksum())
+
+            locale = self.__permutation.get("locale")
+            if locale:
+                fileName = fileName.replace("$locale", locale)
+
+        return fileName
 
 
     #
@@ -621,9 +612,3 @@ class Session():
     def getCurrentPrefix(self):
         return self.__prefix
         
-    def prependCurrentPrefix(self, path):
-        if self.__prefix and not os.path.isabs(path):
-            return os.path.join(self.__prefix, path)
-        else:
-            return path
-

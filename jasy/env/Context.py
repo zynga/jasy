@@ -15,6 +15,7 @@ import jasy.env.Task as Task
 import jasy.vcs.Repository as Repository
 
 # Classes
+from jasy.asset.Manager import AssetManager
 from jasy.asset.SpritePacker import SpritePacker
 from jasy.js.Resolver import Resolver
 from jasy.js.api.Writer import ApiWriter

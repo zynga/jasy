@@ -31,6 +31,7 @@ class AssetManager:
     """
     
     def __init__(self, session):
+
         # Store session reference (one asset manager per session)
         self.__session = session
 
@@ -40,9 +41,6 @@ class AssetManager:
         # Registry for profiles aka asset groups
         self.__profiles = []
         
-        # Initialize storage pool
-        self.__assets = None
-
         # Loop though all projects and merge assets
         assets = self.__assets = {}
         for project in self.__session.getProjects():
@@ -322,13 +320,13 @@ class AssetManager:
         
         
         
-    def deploy(self, classes, assetFolder="asset"):
+    def deploy(self, classes, assetFolder="$prefix/asset"):
         """Deploys all asset files to the destination asset folder"""
 
         assets = self.__assets
         projects = self.__session.getProjects()
 
-        copyAssetFolder = self.__session.prependCurrentPrefix(assetFolder)
+        copyAssetFolder = self.__session.expandFileName(assetFolder)
         filterExpr = self.__compileFilterExpr(classes)
         
         Console.info("Deploying assets...")

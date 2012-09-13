@@ -17,6 +17,8 @@ from jasy.js.parse.Parser import parse
 from jasy.js.output.Compressor import Compressor
 from jasy import UserError
 
+from jasy.js.output.Optimization import Optimization
+from jasy.js.output.Formatting import Formatting
 
 compressor = Compressor()
 packCache = {}
@@ -37,14 +39,33 @@ def packCode(code):
 
 class Output:
 
-    def __init__(self, session, compress=True):
+    def __init__(self, session, assetManager=None, compressionLevel=0, formattingLevel=0):
 
         self.__session = session
-        self.__compress = compress
+        self.__assetManager = assetManager
+        self.__compressionLevel = compressionLevel
+
+        self.__scriptOptimization = Optimization()
+
+        if compressionLevel > 0:
+            self.__scriptOptimization.enable("variables")
+            self.__scriptOptimization.enable("declarations")
+
+        if compressionLevel > 1:
+            self.__scriptOptimization.enable("blocks")
+            self.__scriptOptimization.enable("privates")
+
+        self.__scriptFormatting = Formatting()
+
+        if formattingLevel > 0:
+            self.__scriptFormatting.enable("semicolon")
+            self.__scriptFormatting.enable("comma")
 
 
 
-    def storeKernel(self, fileName, debug=False, optimization=None, formatting=None):
+
+
+    def storeKernel(self, fileName, debug=False):
         """
         Writes a so-called kernel script to the given location. This script contains
         data about possible permutations based on current session values. It optionally
@@ -57,7 +78,8 @@ class Output:
         exclude it from the real other generated output files.
         """
         
-        Console.header("Storing kernel")
+        Console.info("Storing kernel")
+        Console.indent()
         
         # This exports all field values from the session
         fields = self.__session.exportFields()
@@ -78,14 +100,16 @@ class Output:
         
         # Sort resulting class list
         classes = resolver.getSortedClasses()
-        self.storeCompressed(classes, fileName, optimization=optimization, formatting=formatting)
+        self.storeCompressed(classes, fileName)
         
         self.__session.setCurrentPermutation(None)
+
+        Console.outdent()
         
         return classes
 
 
-    def storeCompressed(self, classes, fileName, bootCode=None, optimization=None, formatting=None):
+    def storeCompressed(self, classes, fileName, bootCode=None):
         """
         Combines the compressed result of the stored class list
         
@@ -100,21 +124,23 @@ class Output:
         
         try:
             for classObj in classes:
-                result.append(classObj.getCompressed(self.__session.getCurrentPermutation(), self.__session.getCurrentTranslation(), optimization, formatting))
+                result.append(classObj.getCompressed(self.__session.getCurrentPermutation(), 
+                    self.__session.getCurrentTranslation(), self.__scriptOptimization, self.__scriptFormatting))
                 
         except ClassError as error:
             raise UserError("Error during class compression! %s" % error)
 
         Console.outdent()
 
-        assetCode = self.__session.getAssetManager().export(classes, compress=True)
-        if assetCode:
-            result.append(packCode(assetCode))
+        if self.__assetManager:
+            assetCode = self.__assetManager.export(classes, compress=True)
+            if assetCode:
+                result.append(packCode(assetCode))
 
         if bootCode:
             result.append(packCode("(function(){%s})();" % bootCode))
 
-        File.write(self.__session.prependCurrentPrefix(fileName), "".join(result))
+        File.write(self.__session.expandFileName(fileName), "".join(result))
 
 
     def storeLoader(self, classes, fileName, bootCode="", urlPrefix=""):
@@ -150,9 +176,10 @@ class Output:
         result = []
         Console.outdent()
         
-        assetCode = self.__session.getAssetManager().export(classes, compress=True)
-        if assetCode:
-            result.append(packCode(assetCode))
+        if self.__assetManager:
+            assetCode = self.__assetManager.export(classes, compress=True)
+            if assetCode:
+                result.append(packCode(assetCode))
 
         translationBundle = self.__session.getCurrentTranslation()
         if translationBundle:
@@ -165,6 +192,6 @@ class Output:
         loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loader, wrappedBootCode)
         result.append(packCode(loaderCode))
 
-        File.write(self.__session.prependCurrentPrefix(fileName), "".join(result))
+        File.write(self.__session.expandFileName(fileName), "".join(result))
 
 

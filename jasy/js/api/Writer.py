@@ -360,7 +360,7 @@ class ApiWriter():
                 else:
                     classExport = classData.export()
 
-                File.write(self.__session.prependCurrentPrefix(os.path.join(distFolder, "%s.%s" % (className, extension))), encode(classExport, className))
+                File.write(self.__session.expandFileName(os.path.join(distFolder, "%s.%s" % (className, extension))), encode(classExport, className))
             except TypeError as writeError:
                 Console.error("Could not write API data of: %s: %s", className, writeError)
                 continue
@@ -369,14 +369,14 @@ class ApiWriter():
             Console.info("Saving highlighted code (%s files)...", len(highlightedCode))
             for className in highlightedCode:
                 try:
-                    File.write(self.__session.prependCurrentPrefix(os.path.join(distFolder, "%s.html" % className)), highlightedCode[className])
+                    File.write(self.__session.expandFileName(os.path.join(distFolder, "%s.html" % className)), highlightedCode[className])
                 except TypeError as writeError:
                     Console.error("Could not write highlighted code of: %s: %s", className, writeError)
                     continue
 
         Console.info("Writing index...")
-        File.write(self.__session.prependCurrentPrefix(os.path.join(distFolder, "meta-index.%s" % extension)), encode(index, "meta-index"))
-        File.write(self.__session.prependCurrentPrefix(os.path.join(distFolder, "meta-search.%s" % extension)), encode(search, "meta-search"))
+        File.write(self.__session.expandFileName(os.path.join(distFolder, "meta-index.%s" % extension)), encode(index, "meta-index"))
+        File.write(self.__session.expandFileName(os.path.join(distFolder, "meta-search.%s" % extension)), encode(search, "meta-search"))
         
 
 
