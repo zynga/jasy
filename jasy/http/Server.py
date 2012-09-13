@@ -4,11 +4,11 @@
 #
 
 import sys, os, jasy, logging, base64, json, requests, cherrypy
-import jasy.core.Cache
-
 from collections import namedtuple
 
+import jasy.core.Cache as Cache
 import jasy.core.Console as Console
+
 from jasy.core.Types import CaseInsensitiveDict
 from jasy.core.Util import getKey
 
@@ -69,7 +69,7 @@ class Proxy(object):
         self.enableOffline = getKey(config, "offline", False)
 
         if self.enableMirror:
-            self.mirror = jasy.core.Cache.Cache(os.getcwd(), ".jasy/mirror-%s" % self.id, hashkeys=True)
+            self.mirror = Cache.Cache(os.getcwd(), ".jasy/mirror-%s" % self.id, hashkeys=True)
 
         Console.info('Proxy "%s" => "%s" [debug:%s|mirror:%s|offline:%s]', self.id, self.host, self.enableDebug, self.enableMirror, self.enableOffline)
         
