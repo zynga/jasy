@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, os, jasy, logging, base64, json, requests, cherrypy
+import os, logging, base64, json, requests, cherrypy
 from collections import namedtuple
 
 import jasy.core.Cache as Cache
@@ -11,6 +11,7 @@ import jasy.core.Console as Console
 
 from jasy.core.Types import CaseInsensitiveDict
 from jasy.core.Util import getKey
+from jasy import __version__ as jasyVersion
 
 Result = namedtuple('Result', ['headers', 'content'])
 
@@ -159,7 +160,7 @@ class Proxy(object):
                 cherrypy.response.headers[name] = result.headers[name]
 
         # Append special header to all responses
-        cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
+        cherrypy.response.headers["X-Jasy-Version"] = jasyVersion
         
         # Enable cross domain access to this server
         enableCrossDomain()
@@ -186,7 +187,7 @@ class Static(object):
         """
         
         # Append special header to all responses
-        cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
+        cherrypy.response.headers["X-Jasy-Version"] = jasyVersion
         
         # Enable cross domain access to this server
         enableCrossDomain()
