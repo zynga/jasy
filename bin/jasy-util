@@ -6,7 +6,7 @@
 #
 
 # Import standard library stuff
-import sys, os.path, pkg_resources, json, logging
+import sys, os.path, json, logging
 
 # Version check
 if sys.version_info[0] < 3:
