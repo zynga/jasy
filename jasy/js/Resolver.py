@@ -3,16 +3,21 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from jasy.core.Logging import *
-from jasy.env.State import session, getPermutation
-from jasy.js.Sorter import Sorter
+import jasy.js.Sorter as Sorter
+import jasy.core.Console as Console
 
 __all__ = ["Resolver"]
 
 class Resolver():
-    def __init__(self):
+    """Resolves dependencies between JavaScript files"""
+
+    def __init__(self, session):
+        
+        # Keep session reference
+        self.__session = session
+
         # Keep permutation reference
-        self.__permutation = getPermutation()
+        self.__permutation = session.getCurrentPermutation()
 
         # Required classes by the user
         self.__required = []
@@ -35,7 +40,7 @@ class Resolver():
         if not className in self.__classes:
             raise Exception("Unknown Class: %s" % className)
             
-        debug("Adding class: %s", className)
+        Console.debug("Adding class: %s", className)
         self.__required.append(self.__classes[className])
         
         del self.__included[:]
@@ -79,8 +84,8 @@ class Resolver():
         if self.__included:
             return self.__included
         
-        info("Detecting dependencies...")
-        indent()
+        Console.info("Detecting class dependencies...")
+        Console.indent()
         
         collection = set()
         for classObj in self.__required:
@@ -93,14 +98,16 @@ class Resolver():
         
         self.__included = collection
 
-        outdent()
-        debug("Including %s classes", len(collection))
+        Console.outdent()
+        Console.debug("Including %s classes", len(collection))
         
         return self.__included
         
         
     def getSortedClasses(self):
-        return Sorter(self).getSortedClasses()
+        """ Returns a list of sorted classes """
+
+        return Sorter.Sorter(self, self.__session).getSortedClasses()
 
 
     def __resolveDependencies(self, classObj, collection):

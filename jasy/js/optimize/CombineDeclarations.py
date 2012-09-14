@@ -3,8 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from jasy.js.parse.Node import Node
-from jasy.core.Logging import *
+import jasy.js.parse.Node as Node
+import jasy.core.Console as Console
 
 __all__ = ["optimize", "Error"]
 
@@ -20,10 +20,10 @@ class Error(Exception):
         
         
 def optimize(node):
-    debug("Combining declarations...")
-    indent()
+    Console.debug("Combining declarations...")
+    Console.indent()
     result = __optimize(node)
-    outdent()
+    Console.outdent()
     return result
     
 
@@ -64,7 +64,7 @@ def __combineSiblings(node):
         if child.type == "for" and prevChild.type == "var":
             setup = getattr(child, "setup", None)
             if setup and setup.type == "var":
-                debug("Removing for-loop setup section at line %s" % setup.line)
+                Console.debug("Removing for-loop setup section at line %s" % setup.line)
                 child.remove(setup)
                 child = setup    
 
@@ -104,7 +104,7 @@ def __combineVarStatements(node):
     # Only size-saving when there are multiple for-in loops, but no other var statement or first
     # "free" var declaration is after for-loops.
     if not firstVar:
-        firstVar = Node(None, "var")
+        firstVar = Node.Node(None, "var")
         node.insert(0, firstVar)
     
     __patchVarStatements(node, firstVar)
@@ -182,8 +182,8 @@ def __cleanFirst(first):
 
 
 def __createSimpleAssignment(identifier, valueNode):
-    assignNode = Node(None, "assign")
-    identNode = Node(None, "identifier")
+    assignNode = Node.Node(None, "assign")
+    identNode = Node.Node(None, "identifier")
     identNode.value = identifier
     assignNode.append(identNode)
     assignNode.append(valueNode)
@@ -192,7 +192,7 @@ def __createSimpleAssignment(identifier, valueNode):
     
     
 def __createMultiAssignment(names, valueNode):
-    assignNode = Node(None, "assign")
+    assignNode = Node.Node(None, "assign")
     assignNode.append(names)
     assignNode.append(valueNode)
 
@@ -200,14 +200,14 @@ def __createMultiAssignment(names, valueNode):
 
 
 def __createDeclaration(name):
-    declNode = Node(None, "declaration")
+    declNode = Node.Node(None, "declaration")
     declNode.name = name
     declNode.readOnly = False
     return declNode
 
 
 def __createIdentifier(value):
-    identifier = Node(None, "identifier")
+    identifier = Node.Node(None, "identifier")
     identifier.value = value
     return identifier    
 
@@ -233,8 +233,8 @@ def __patchVarStatements(node, firstVarStatement):
             
 def __rebuildAsAssignment(node, firstVarStatement):
     """Rebuilds the items of a var statement into a assignment list and moves declarations to the given var statement"""
-    assignment = Node(node.tokenizer, "semicolon")
-    assignmentList = Node(node.tokenizer, "comma")
+    assignment = Node.Node(node.tokenizer, "semicolon")
+    assignmentList = Node.Node(node.tokenizer, "comma")
     assignment.append(assignmentList, "expression")
 
     # Casting to list() creates a copy during the process (keeps loop stable)
@@ -276,7 +276,7 @@ def __rebuildAsAssignment(node, firstVarStatement):
     # Edge case. Not yet found if this happen realistically
     else:
         if hasattr(node, "rel"):
-            warn("Remove related node (%s) from parent: %s" % (node.rel, node))
+            Console.warn("Remove related node (%s) from parent: %s" % (node.rel, node))
             
         node.parent.remove(node)
         

@@ -10,8 +10,7 @@
 #   - Sebastian Werner <info@sebastian-werner.net> (Refactoring Python) (2010)
 #
 
-from copy import deepcopy
-import json
+import json, copy
 
 class Node(list):
     
@@ -268,10 +267,13 @@ class Node(list):
         
         # Copy children
         for child in self:
-            # Using simple list appends for better performance
-            childCopy = deepcopy(child, memo)
-            childCopy.parent = result
-            list.append(result, childCopy)
+            if child is None:
+                list.append(result, None)
+            else:
+                # Using simple list appends for better performance
+                childCopy = copy.deepcopy(child, memo)
+                childCopy.parent = result
+                list.append(result, childCopy)
         
         # Sync attributes
         # Note: "parent" attribute is handled by append() already
@@ -283,7 +285,7 @@ class Node(list):
                 elif type(value) in (bool, int, float, str):
                     setattr(result, name, value)
                 elif type(value) in (list, set, dict, Node):
-                    setattr(result, name, deepcopy(value, memo))
+                    setattr(result, name, copy.deepcopy(value, memo))
                 # Scope can be assigned (will be re-created when needed for the copied node)
                 elif name == "scope":
                     result.scope = self.scope

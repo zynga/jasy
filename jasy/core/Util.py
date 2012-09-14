@@ -3,10 +3,33 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import re, os, hashlib
-from threading import Timer
+import re, os, hashlib, tempfile, subprocess, sys
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
+
+
+def executeCommand(args, msg):
+    """Executes the given process and outputs message when errors happen."""
+
+    Console.debug("Executing command: %s", " ".join(args))
+    Console.indent()
+    
+    # Using shell on Windows to resolve binaries like "git"
+    output = tempfile.TemporaryFile(mode="w+t")
+    returnValue = subprocess.call(args, stdout=output, stderr=output, shell=sys.platform == "win32")
+    if returnValue != 0:
+        raise Exception("Error during executing shell command: %s" % msg)
+        
+    output.seek(0)
+    result = output.read().strip("\n\r")
+    output.close()
+    
+    for line in result.splitlines():
+        Console.debug(line)
+    
+    Console.outdent()
+    
+    return result
 
 
 def sha1File(f, block_size=2**20):
@@ -30,35 +53,16 @@ def getKey(data, key, default=None):
 
 REGEXP_DASHES = re.compile(r"\-+([\S]+)?")
 
-def __camelizeHelper(match):
-    result = match.group(1)
-    return result[0].upper() + result[1:].lower()
-
 def camelize(str):
     """
     Returns a camelized version of the incoming string: foo-bar-baz => fooBarBaz
     """
+
+    def __camelizeHelper(match):
+        result = match.group(1)
+        return result[0].upper() + result[1:].lower()
     
     return REGEXP_DASHES.sub(__camelizeHelper, str)
-
-
-
-def debounce(wait):
-    """ Decorator that will postpone a functions
-        execution until after wait seconds
-        have elapsed since the last time it was invoked. """
-    def decorator(fn):
-        def debounced(*args, **kwargs):
-            def call_it():
-                fn(*args, **kwargs)
-            try:
-                debounced.t.cancel()
-            except(AttributeError):
-                pass
-            debounced.t = Timer(wait, call_it)
-            debounced.t.start()
-        return debounced
-    return decorator
 
 
 def getFirstSubFolder(start):
@@ -69,17 +73,6 @@ def getFirstSubFolder(start):
                 return directory
 
     return None
-
-
-
-def json2yaml(jsonFile, yamlFile, encoding="utf-8", indent=2):
-    """Stores the given JSON file as a new YAML file"""
-    yaml.dump(json.load(open(jsonFile, "r", encoding="utf-8")), open(yamlFile, "w", encoding="utf-8"), indent=indent, default_flow_style=False, allow_unicode=True)
-
-def yamlToJson(yamlFile, jsonFile, encoding="utf-8", indent=2):
-    """Stores the given YAML file as a new JSON file"""
-    json.dump(yaml.load(open(yamlFile, "r", encoding="utf-8")), open(jsonFile, "w", encoding="utf-8"), indent=2, ensure_ascii=False)        
-
 
 
 
@@ -101,8 +94,8 @@ def massFilePatcher(path, data):
         return str(value)
         
     # Patching files recursively
-    info("Patching files...")
-    indent()
+    Console.info("Patching files...")
+    Console.indent()
     for dirPath, dirNames, fileNames in os.walk(path):
         relpath = os.path.relpath(dirPath, path)
 
@@ -115,7 +108,7 @@ def massFilePatcher(path, data):
             filePath = os.path.join(dirPath, fileName)
             fileRel = os.path.normpath(os.path.join(relpath, fileName))
             
-            debug("Processing: %s..." % fileRel)
+            Console.debug("Processing: %s..." % fileRel)
 
             fileHandle = open(filePath, "r", encoding="utf-8", errors="surrogateescape")
             fileContent = []
@@ -133,11 +126,11 @@ def massFilePatcher(path, data):
                         fileContent.append(line)
         
                 if isBinary:
-                    debug("Ignoring binary file: %s", fileRel)
+                    Console.debug("Ignoring binary file: %s", fileRel)
                     continue
 
             except UnicodeDecodeError as ex:
-                warn("Can't process file: %s: %s", fileRel, ex)
+                Console.warn("Can't process file: %s: %s", fileRel, ex)
                 continue
 
             fileContent = "".join(fileContent)
@@ -146,15 +139,78 @@ def massFilePatcher(path, data):
             try:
                 resultContent = fieldPattern.sub(convertPlaceholder, fileContent)
             except ValueError as ex:
-                warn("Unable to process file %s: %s!", fileRel, ex)
+                Console.warn("Unable to process file %s: %s!", fileRel, ex)
                 continue
 
             # Only write file if there where any changes applied
             if resultContent != fileContent:
-                info("Updating: %s...", colorize(fileRel, "bold"))
+                Console.info("Updating: %s...", Console.colorize(fileRel, "bold"))
                 
                 fileHandle = open(filePath, "w", encoding="utf-8", errors="surrogateescape")
                 fileHandle.write(resultContent)
                 fileHandle.close()
                 
-    outdent()
+    Console.outdent()
+
+
+
+def generateApiScreen(api):
+    """Returns a stringified output for the given API set"""
+
+    import types, inspect
+    import jasy.env.Task as Task
+
+    result = []
+
+    for key in sorted(api):
+
+        if key.startswith("__"):
+            continue
+
+        value = api[key]
+
+        if type(value) is Task.Task:
+            continue
+
+        msg = Console.colorize(key, "bold")
+
+        if type(value) in (types.FunctionType, types.LambdaType):
+            argsspec = inspect.getfullargspec(value)     
+            argmsg = "(%s" % ", ".join(argsspec.args)
+
+            if argsspec.varkw is not None:
+                if argsspec.args:
+                    argmsg += ", "
+
+                argmsg += "..."
+
+            argmsg += ")"
+
+            msg += Console.colorize(argmsg, "grey")
+
+        doc = value.__doc__
+
+        if doc:
+            doc = doc.strip("\n\t ")
+
+            if ". " in doc:
+                doc = doc[:doc.index(". ")]
+
+            if ".\n" in doc:
+                doc = doc[:doc.index(".\n")]
+
+            doc = doc.replace("\n", " ")
+            doc = re.sub(" +", " ", doc)
+
+            doc = doc.strip()
+
+            if len(doc) > 75:
+                doc = doc[0:75] + "..."
+
+            if doc:
+                msg += ":\n  %s" % doc
+
+        result.append(msg)
+
+    return "\n".join(result)    
+

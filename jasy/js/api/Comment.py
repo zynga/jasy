@@ -4,10 +4,13 @@
 #
 
 import re
-from jasy.core.Markdown import markdown
-from jasy.core.Error import JasyError
+
+import jasy.core.Markdown as Markdown
+
+from jasy import UserError
 from jasy.js.util import *
-from jasy.core.Logging import error, warn
+import jasy.core.Console as Console
+
 
 __all__ = ["CommentException", "Comment"]
 
@@ -143,10 +146,10 @@ class Comment():
         field = "__highlightedHTML" if highlight else "__html"
         
         if self.variant == "doc" and getattr(self, field, None) is None:
-            if markdown is None:
-                raise JasyError("Markdown is not supported by the system. Documentation comments could not be processed into HTML.")
+            if Markdown.markdown is None:
+                raise UserError("Markdown is not supported by the system. Documentation comments could not be processed into HTML.")
             
-            setattr(self, field, markdown(self.__originalText, highlight))
+            setattr(self, field, Markdown.markdown(self.__originalText, highlight))
     
         return getattr(self, field, None)
     
@@ -178,7 +181,7 @@ class Comment():
                 # Only warn for doc comments, otherwise it might just be code commented out 
                 # which is sometimes formatted pretty crazy when commented out
                 if self.variant == "doc":
-                    warn("Could not outdent doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
+                    Console.warn("Could not outdent doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
                     
                 return text
                 
@@ -214,7 +217,7 @@ class Comment():
                         # Only warn for doc comments, otherwise it might just be code commented out 
                         # which is sometimes formatted pretty crazy when commented out
                         if self.variant == "doc":
-                            warn("Invalid indentation in doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
+                            Console.warn("Invalid indentation in doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
                         
                     else:
                         lines[lineNo] = line[outdentStringLen:]

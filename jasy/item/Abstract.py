@@ -5,10 +5,10 @@
 
 import os
 
-from jasy.core.Error import JasyError
+from jasy import UserError
 from jasy.core.Util import sha1File
 
-class Item:
+class AbstractItem:
     
     id = None
     project = None
@@ -39,7 +39,7 @@ class Item:
                 self.mtime = os.stat(path).st_mtime
             
         except OSError as oserr:
-            raise JasyError("Invalid item path: %s" % path)
+            raise UserError("Invalid item path: %s" % path)
         
         return self
         

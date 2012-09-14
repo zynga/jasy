@@ -3,12 +3,13 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from jasy.js.api.Data import ApiData
-from jasy.core.Markdown import markdown
-from jasy.item.Item import Item
-from jasy.core.Error import JasyError
+import jasy.js.api.Data as Data
+import jasy.core.Markdown as Markdown
+import jasy.item.Abstract as Abstract
 
-class Doc(Item):
+from jasy import UserError
+
+class DocItem(Abstract.AbstractItem):
     
     kind = "doc"
     
@@ -16,13 +17,13 @@ class Doc(Item):
         field = "api[%s]" % self.id
         apidata = self.project.getCache().read(field, self.getModificationTime())
         
-        if markdown is None:
-            raise JasyError("Missing Markdown feature to convert package docs into HTML.")
+        if Markdown.markdown is None:
+            raise UserError("Missing Markdown feature to convert package docs into HTML.")
         
         if apidata is None:
-            apidata = ApiData(self.id)
+            apidata = Data.ApiData(self.id)
             apidata.main["type"] = "Package"
-            apidata.main["doc"] = markdown(self.getText())
+            apidata.main["doc"] = Markdown.markdown(self.getText())
             
             self.project.getCache().store(field, apidata, self.getModificationTime())
 

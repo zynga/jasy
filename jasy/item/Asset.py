@@ -3,13 +3,14 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from os.path import basename, splitext
+import os.path
 
-from jasy.asset.ImageInfo import ImgInfo
-from jasy.item.Item import Item
+import jasy.asset.ImageInfo
+import jasy.item.Abstract
+
 from jasy.core.Util import getKey
-from jasy.core.Logging import debug
 from jasy.core.Config import loadConfig
+import jasy.core.Console as Console
 
 extensions = {
     ".png" : "image",
@@ -55,7 +56,7 @@ extensions = {
 }
 
 
-class Asset(Item):
+class AssetItem(jasy.item.Abstract.AbstractItem):
     
     kind = "asset"
 
@@ -67,16 +68,16 @@ class Asset(Item):
         # Call Item's init method first
         super().__init__(project, id)
 
-        self.extension = splitext(self.id.lower())[1]
+        self.extension = os.path.splitext(self.id.lower())[1]
         self.type = getKey(extensions, self.extension, "other")
         self.shortType = self.type[0]
         
 
     def isImageSpriteConfig(self):
-        return self.isText() and (basename(self.id) == "jasysprite.yaml" or basename(self.id) == "jasysprite.json")
+        return self.isText() and (os.path.basename(self.id) == "jasysprite.yaml" or os.path.basename(self.id) == "jasysprite.json")
 
     def isImageAnimationConfig(self):
-        return self.isText() and (basename(self.id) == "jasyanimation.yaml" or basename(self.id) == "jasyanimation.json")
+        return self.isText() and (os.path.basename(self.id) == "jasyanimation.yaml" or os.path.basename(self.id) == "jasyanimation.json")
 
     def isText(self):
         return self.type == "text"
@@ -102,7 +103,7 @@ class Asset(Item):
 
     
     def addImageSpriteData(self, id, left, top):
-        debug("Registering sprite location for %s: %s@%sx%s", self.id, id, left, top)
+        Console.debug("Registering sprite location for %s: %s@%sx%s", self.id, id, left, top)
         self.__imageSpriteData = [id, left, top]
         
     
@@ -116,7 +117,7 @@ class Asset(Item):
     
     
     def addImageDimensionData(self, width, height):
-        debug("Adding dimension data for %s: %sx%s", self.id, width, height)
+        Console.debug("Adding dimension data for %s: %sx%s", self.id, width, height)
         self.__imageDimensionData = [width, height]
     
     
@@ -126,7 +127,7 @@ class Asset(Item):
             if self.__imageDimensionData:
                 image = self.__imageDimensionData[:]
             else:
-                info = ImgInfo(self.getPath()).getInfo()
+                info = jasy.asset.ImageInfo.ImgInfo(self.getPath()).getInfo()
                 if info is None:
                     raise Exception("Invalid image: %s" % fileId)
 

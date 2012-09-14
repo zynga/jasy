@@ -3,16 +3,17 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import json, copy, re
+import copy, re, os
 
-from jasy.core.Error import JasyError
-from jasy.env.File import *
-from jasy.js.api.Data import ApiData
-from jasy.js.api.Text import *
+import jasy.js.api.Data as Data
+import jasy.js.api.Text as Text
+import jasy.core.Json as Json
+import jasy.core.File as File
+
 from jasy.js.util import *
-from jasy.env.State import session, header
-from jasy.core.Json import toJson
-from jasy.core.Logging import *
+import jasy.core.Console as Console
+from jasy import UserError
+
 
 __all__ = ["ApiWriter"]
 
@@ -84,7 +85,7 @@ def isErrornous(data):
 
 
 def mergeMixin(className, mixinName, classApi, mixinApi):
-    info("- Merging %s into %s", mixinName, className)
+    Console.info("Merging %s into %s", mixinName, className)
 
     sectionLink = ["member", "property", "event"]
     
@@ -133,7 +134,7 @@ def mergeMixin(className, mixinName, classApi, mixinApi):
 
 
 def connectInterface(className, interfaceName, classApi, interfaceApi):
-    debug("- Connecting %s with %s", className, interfaceName)
+    Console.debug("- Connecting %s with %s", className, interfaceName)
     
     #
     # Properties
@@ -143,7 +144,7 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
         classProperties = getattr(classApi, "properties", {})
         for name in interfaceProperties:
             if not name in classProperties:
-                warn("Class %s is missing implementation for property %s of interface %s!", className, name, interfaceName)
+                Console.warn("Class %s is missing implementation for property %s of interface %s!", className, name, interfaceName)
 
             else:
                 # Add reference to interface
@@ -180,7 +181,7 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
         classEvents = getattr(classApi, "events", {})
         for name in interfaceEvents:
             if not name in classEvents:
-                warn("Class %s is missing implementation for event %s of interface %s!", className, name, interfaceName)
+                Console.warn("Class %s is missing implementation for event %s of interface %s!", className, name, interfaceName)
             else:
                 # Add reference to interface
                 if not "interface" in classEvents[name]:
@@ -219,7 +220,7 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
         classMembers = getattr(classApi, "members", {})
         for name in interfaceMembers:
             if not name in classMembers:
-                warn("Class %s is missing implementation for member %s of interface %s!", className, name, interfaceName)
+                Console.warn("Class %s is missing implementation for member %s of interface %s!", className, name, interfaceName)
     
             else:
                 interfaceEntry = interfaceMembers[name]
@@ -274,6 +275,11 @@ def connectInterface(className, interfaceName, classApi, interfaceApi):
 
 
 class ApiWriter():
+
+    def __init__(self, session):
+
+        self.__session = session
+
     
     def isIncluded(self, className, classFilter):
         
@@ -297,15 +303,16 @@ class ApiWriter():
         # Collecting
         #
         
-        header("Collecting API Data")
+        Console.info("Collecting API Data...")
+        Console.indent()
         
         apiData = {}
         highlightedCode = {}
         
-        for project in session.getProjects():
+        for project in self.__session.getProjects():
             classes = project.getClasses()
-            info("Loading API of project %s: %s...", colorize(project.getName(), "bold"), colorize("%s classes" % len(classes), "cyan"))
-            indent()
+            Console.info("Loading API of project %s: %s...", Console.colorize(project.getName(), "bold"), Console.colorize("%s classes" % len(classes), "cyan"))
+            Console.indent()
             for className in classes:
                 if self.isIncluded(className, classFilter):
 
@@ -316,17 +323,23 @@ class ApiWriter():
                         highlightedCode[className] = classes[className].getHighlightedCode()
                 
                     else:
-                        info("Skipping %s, class is empty." % className)
+                        Console.info("Skipping %s, class is empty." % className)
 
-            outdent()
+            Console.outdent()
         
+        Console.outdent()
+
         
         #
         # Processing
         #
         
-        header("Processing API Data")
+        Console.info("Processing API Data...")
+        Console.indent()
+        
         data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates, printErrors=printErrors, highlightCode=highlightCode)
+        
+        Console.outdent()
         
         
         
@@ -334,17 +347,22 @@ class ApiWriter():
         # Writing
         #
 
-        header("Storing API data")
+        Console.info("Storing API data...")
+        Console.indent()
+
         writeCounter = 0
         extension = "js" if callback else "json"
+        compress = True
 
         def encode(content, name):
             if callback:
-                return "%s(%s,'%s');" % (callback, toJson(content), name)
+                return "%s(%s,'%s');" % (callback, Json.toJson(content, compress=compress), name)
             else:
-                return toJson(content)
+                return Json.toJson(content, compress=compress)
 
-        info("Saving class data (%s files)...", len(data))
+        Console.info("Saving class data (%s files)...", len(data))
+        Console.indent()
+
         for className in data:
             try:
                 classData = data[className]
@@ -353,24 +371,35 @@ class ApiWriter():
                 else:
                     classExport = classData.export()
 
-                writeFile(os.path.join(distFolder, "%s.%s" % (className, extension)), encode(classExport, className))
+                File.write(self.__session.expandFileName(os.path.join(distFolder, "%s.%s" % (className, extension))), encode(classExport, className))
             except TypeError as writeError:
-                error("Could not write API data of: %s: %s", className, writeError)
+                Console.error("Could not write API data of: %s: %s", className, writeError)
                 continue
 
+        Console.outdent()
+
         if highlightCode:
-            info("Saving highlighted code (%s files)...", len(highlightedCode))
+            Console.info("Saving highlighted code (%s files)...", len(highlightedCode))
+            Console.indent()
+
             for className in highlightedCode:
                 try:
-                    writeFile(os.path.join(distFolder, "%s.html" % className), highlightedCode[className])
+                    File.write(self.__session.expandFileName(os.path.join(distFolder, "%s.html" % className)), highlightedCode[className])
                 except TypeError as writeError:
-                    error("Could not write highlighted code of: %s: %s", className, writeError)
+                    Console.error("Could not write highlighted code of: %s: %s", className, writeError)
                     continue
 
-        info("Writing index...")
-        writeFile(os.path.join(distFolder, "meta-index.%s" % extension), encode(index, "meta-index"))
-        writeFile(os.path.join(distFolder, "meta-search.%s" % extension), encode(search, "meta-search"))
+            Console.outdent()
+
+        Console.info("Writing index...")
+
+        Console.indent()
+        File.write(self.__session.expandFileName(os.path.join(distFolder, "meta-index.%s" % extension)), encode(index, "meta-index"))
+        File.write(self.__session.expandFileName(os.path.join(distFolder, "meta-search.%s" % extension)), encode(search, "meta-search"))
+        Console.outdent()
         
+        Console.outdent()
+
 
 
     def process(self, apiData, classFilter=None, internals=False, privates=False, printErrors=True, highlightCode=True):
@@ -384,7 +413,7 @@ class ApiWriter():
         #
 
         
-        info("Adding Source Links...")
+        Console.info("Adding Source Links...")
 
         for className in apiData:
             classApi = apiData[className]
@@ -408,7 +437,8 @@ class ApiWriter():
         # Including Mixins / IncludedBy
         #
 
-        info("Resolving Mixins...")
+        Console.info("Resolving Mixins...")
+        Console.indent()
 
         # Just used temporary to keep track of which classes are merged
         mergedClasses = set()
@@ -423,7 +453,7 @@ class ApiWriter():
             if classIncludes:
                 for mixinName in classIncludes:
                     if not mixinName in apiData:
-                        error("Invalid mixin %s in class %s", className, mixinName)
+                        Console.error("Invalid mixin %s in class %s", className, mixinName)
                         continue
                         
                     mixinApi = apiData[mixinName]
@@ -440,13 +470,15 @@ class ApiWriter():
         for className in apiData:
             apiData[className] = getApi(className)
 
+        Console.outdent()
+
 
 
         #
         # Checking links
         #
         
-        info("Checking Links...")
+        Console.info("Checking Links...")
         
         additionalTypes = ("Call", "Identifier", "Map", "Integer", "Node", "Element")
         
@@ -509,7 +541,7 @@ class ApiWriter():
                                 for paramTypeEntry in paramEntry["type"]:
                                     if not paramTypeEntry["name"] in knownClasses and not paramTypeEntry["name"] in additionalTypes and not ("builtin" in paramTypeEntry or "pseudo" in paramTypeEntry):
                                         item["errornous"] = True
-                                        error('Invalid param type "%s" in %s' % (paramTypeEntry["name"], className))
+                                        Console.error('Invalid param type "%s" in %s' % (paramTypeEntry["name"], className))
 
                                     if not "pseudo" in paramTypeEntry and paramTypeEntry["name"] in knownClasses:
                                         paramTypeEntry["linkable"] = True
@@ -520,14 +552,14 @@ class ApiWriter():
                         for returnTypeEntry in item["returns"]:
                             if not returnTypeEntry["name"] in knownClasses and not returnTypeEntry["name"] in additionalTypes and not ("builtin" in returnTypeEntry or "pseudo" in returnTypeEntry):
                                 item["errornous"] = True
-                                error('Invalid return type "%s" in %s' % (returnTypeEntry["name"], className))
+                                Console.error('Invalid return type "%s" in %s' % (returnTypeEntry["name"], className))
                             
                             if not "pseudo" in returnTypeEntry and returnTypeEntry["name"] in knownClasses:
                                 returnTypeEntry["linkable"] = True
                             
                 elif not item["type"] in builtinTypes and not item["type"] in pseudoTypes and not item["type"] in additionalTypes:
                     item["errornous"] = True
-                    error('Invalid type "%s" in %s' % (item["type"], className))
+                    Console.error('Invalid type "%s" in %s' % (item["type"], className))
             
             
             # Process doc
@@ -542,12 +574,14 @@ class ApiWriter():
                             item["errornous"] = True
 
                             if sectionName:
-                                error("%s in %s:%s~%s" % (linkCheck, sectionName, className, name))
+                                Console.error("%s in %s:%s~%s" % (linkCheck, sectionName, className, name))
                             else:
-                                error("%s in %s" % (linkCheck, className))
+                                Console.error("%s in %s" % (linkCheck, className))
             
                 linkExtract.sub(processInternalLink, item["doc"])
 
+
+        Console.indent()
 
         # Process APIs
         for className in apiData:
@@ -565,13 +599,15 @@ class ApiWriter():
                     for name in section:
                          checkLinksInItem(section[name])
 
+        Console.outdent()
+
 
 
         #
         # Filter Internals/Privates
         #
         
-        info("Filtering Items...")
+        Console.info("Filtering Items...")
         
         def isVisible(entry):
             if "visibility" in entry:
@@ -600,7 +636,8 @@ class ApiWriter():
         # Connection Interfaces / ImplementedBy
         #
         
-        info("Connecting Interfaces...")
+        Console.info("Connecting Interfaces...")
+        Console.indent()
         
         for className in apiData:
             classApi = getApi(className)
@@ -623,14 +660,15 @@ class ApiWriter():
                         implementedBy.append(className)
                         connectInterface(className, interfaceName, classApi, interfaceApi)
         
+        Console.outdent()
         
         
         #
         # Merging Named Classes
         #
         
-        info("Merging Named Classes...")
-        indent()
+        Console.info("Merging Named Classes...")
+        Console.indent()
         
         for className in list(apiData):
             classApi = apiData[className]
@@ -638,14 +676,14 @@ class ApiWriter():
             
             if destName is not None and destName != className:
 
-                debug("Extending class %s with %s", destName, className)
+                Console.debug("Extending class %s with %s", destName, className)
 
                 if destName in apiData:
                     destApi = apiData[destName]
                     destApi.main["from"].append(className)
                 
                 else:
-                    destApi = apiData[destName] = ApiData(destName, highlight=highlightCode)
+                    destApi = apiData[destName] = Data.ApiData(destName, highlight=highlightCode)
                     destApi.main = {
                         "type" : "Extend",
                         "name" : destName,
@@ -666,7 +704,7 @@ class ApiWriter():
 
                 if construct is not None:
                     if hasattr(destApi, "construct"):
-                        warn("Overriding constructor in extension %s by %s", destName, className)
+                        Console.warn("Overriding constructor in extension %s by %s", destName, className)
                         
                     destApi.construct = copy.copy(construct)
 
@@ -688,14 +726,14 @@ class ApiWriter():
                         destApi.members[memberName]["from"] = className
                         destApi.members[memberName]["fromLink"] = "member:%s~%s" % (className, memberName)
 
-        outdent()
+        Console.outdent()
         
 
         #
         # Connecting Uses / UsedBy
         #
 
-        info("Collecting Use Patterns...")
+        Console.info("Collecting Use Patterns...")
 
         # This matches all uses with the known classes and only keeps them if matched
         allClasses = set(list(apiData))
@@ -722,8 +760,8 @@ class ApiWriter():
         # Collecting errors
         #
         
-        info("Collecting Errors...")
-        indent()
+        Console.info("Collecting Errors...")
+        Console.indent()
         
         for className in sorted(apiData):
             classApi = apiData[className]
@@ -757,23 +795,23 @@ class ApiWriter():
                         
             if errors:
                 if printErrors:
-                    warn("Found errors in %s", className)
+                    Console.warn("Found errors in %s", className)
                     
                 errorsSorted = sorted(errors, key=lambda entry: entry["line"])
                 
                 if printErrors:
-                    indent()
+                    Console.indent()
                     for entry in errorsSorted:
                         if entry["name"]:
-                            warn("%s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
+                            Console.warn("%s: %s (line %s)", entry["kind"], entry["name"], entry["line"])
                         else:
-                            warn("%s (line %s)", entry["kind"], entry["line"])
+                            Console.warn("%s (line %s)", entry["kind"], entry["line"])
                 
-                    outdent()
+                    Console.outdent()
                     
                 classApi.errors = errorsSorted
                 
-        outdent()
+        Console.outdent()
         
         
         
@@ -781,7 +819,7 @@ class ApiWriter():
         # Building Search Index
         #
 
-        info("Building Search Index...")
+        Console.info("Building Search Index...")
         search = {}
 
         def addSearch(classApi, field):
@@ -808,7 +846,7 @@ class ApiWriter():
         # Post Process (dict to sorted list)
         #
         
-        info("Post Processing Data...")
+        Console.info("Post Processing Data...")
         
         for className in sorted(apiData):
             classApi = apiData[className]
@@ -842,16 +880,16 @@ class ApiWriter():
         # Collecting Package Docs
         #
 
-        info("Collecting Package Docs...")
-        indent()
+        Console.info("Collecting Package Docs...")
+        Console.indent()
         
         # Inject existing package docs into api data
-        for project in session.getProjects():
+        for project in self.__session.getProjects():
             docs = project.getDocs()
             
             for packageName in docs:
                 if self.isIncluded(packageName, classFilter):
-                    debug("Creating package documentation %s", packageName)
+                    Console.debug("Creating package documentation %s", packageName)
                     apiData[packageName] = docs[packageName].getApi()
         
         
@@ -861,8 +899,8 @@ class ApiWriter():
             packageName = splits[0]
             for split in splits[1:]:
                 if not packageName in apiData:
-                    warn("Missing package documentation %s", packageName)
-                    apiData[packageName] = ApiData(packageName, highlight=highlightCode)
+                    Console.warn("Missing package documentation %s", packageName)
+                    apiData[packageName] = Data.ApiData(packageName, highlight=highlightCode)
                     apiData[packageName].main = {
                         "type" : "Package",
                         "name" : packageName
@@ -886,7 +924,7 @@ class ApiWriter():
                 
                 classMain = apiData[className].main
                 if "doc" in classMain and classMain["doc"]:
-                    summary = extractSummary(classMain["doc"])
+                    summary = Text.extractSummary(classMain["doc"])
                     if summary:
                         entry["summary"] = summary
                         
@@ -898,7 +936,7 @@ class ApiWriter():
                 else:
                     package.content.append(entry)
                     
-        outdent()
+        Console.outdent()
 
 
 
@@ -906,7 +944,7 @@ class ApiWriter():
         # Writing API Index
         #
         
-        debug("Building Index...")
+        Console.debug("Building Index...")
         index = {}
         
         for className in sorted(apiData):

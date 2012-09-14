@@ -5,30 +5,33 @@
 
 import itertools, time, atexit, json, os
 
-from jasy.item.Translation import Translation
-from jasy.core.Locale import *
+import jasy.core.Locale
+import jasy.core.Config
+import jasy.core.Json as Json
+import jasy.core.Project
+import jasy.core.Permutation
 
-from jasy.asset.Manager import AssetManager
-from jasy.core.Json import toJson
-from jasy.core.Project import Project, getProjectFromPath, getProjectDependencies
-from jasy.core.Permutation import Permutation
-from jasy.core.Config import findConfig
+import jasy.asset.Manager
+import jasy.item.Translation
 
-from jasy.core.Error import JasyError
-from jasy.env.State import getPermutation, setPermutation, setTranslation, header, loadLibrary
-from jasy.core.Json import toJson
-from jasy.core.Logging import *
+from jasy import UserError
+import jasy.core.Console as Console
 
 __all__ = ["Session"]
 
 
 class Session():
+    """
+    Manages all projects, fields, permutations, translations etc. Mainly like
+    the main managment infrastructure. 
+    """
 
     #
     # Core
     #
 
     def __init__(self):
+
         atexit.register(self.close)
 
         self.__timestamp = time.time()
@@ -37,23 +40,34 @@ class Session():
         self.__fields = {}
         self.__translations = {}
         
-        if findConfig("jasyproject"):
 
-            header("Initializing project")
+    def init(self, autoInit=True, updateRepositories=True, userApi=None):
+
+        self.__userApi = userApi
+        self.__updateRepositories = updateRepositories
+
+        if autoInit and jasy.core.Config.findConfig("jasyproject"):
 
             try:
-                self.addProject(getProjectFromPath("."))
-            except JasyError as err:
-                outdent(True)
-                error(err)
-                raise JasyError("Critical: Could not initialize session!")
-    
+                self.addProject(jasy.core.Project.getProjectFromPath("."))
+
+            except UserError as err:
+                Console.outdent(True)
+                Console.error(err)
+                raise UserError("Critical: Could not initialize session!")
+
+            Console.info("Active projects (%s):", len(self.__projects))
+            Console.indent()
+
+            for project in self.__projects:
+                Console.info("%s @ %s", Console.colorize(project.getName(), "bold"), Console.colorize(project.version, "magenta"))
+
+            Console.outdent()        
+
     
     def clean(self):
         """Clears all caches of known projects"""
 
-        header("Cleaning session")
-        
         for project in self.__projects:
             project.clean()
 
@@ -61,7 +75,7 @@ class Session():
     def close(self):
         """Closes the session and stores cache to the harddrive."""
 
-        debug("Closing session...")
+        Console.debug("Closing session...")
         for project in self.__projects:
             project.close()
         
@@ -91,7 +105,8 @@ class Session():
                 return classes[className]
 
         return None
-    
+
+
     
     
     
@@ -109,7 +124,7 @@ class Session():
         - project: Instance of Project to append to the list
         """
         
-        result = getProjectDependencies(project)
+        result = jasy.core.Project.getProjectDependencies(project, "external", self.__updateRepositories)
         for project in result:
             
             # Append to session list
@@ -118,7 +133,7 @@ class Session():
             # Import library methods
             libraryPath = os.path.join(project.getPath(), "jasylibrary.py")
             if os.path.exists(libraryPath):
-                loadLibrary(project.getName(), libraryPath)
+                self.loadLibrary(project.getName(), libraryPath, doc="Library of project %s" % project.getName())
 
             # Import project defined fields which might be configured using "activateField()"
             fields = project.getFields()
@@ -126,20 +141,52 @@ class Session():
                 entry = fields[name]
 
                 if name in self.__fields:
-                    raise JasyError("Field '%s' was already defined!" % (name))
+                    raise UserError("Field '%s' was already defined!" % (name))
 
                 if "check" in entry:
                     check = entry["check"]
                     if check in ["Boolean", "String", "Number"] or type(check) == list:
                         pass
                     else:
-                        raise JasyError("Unsupported check: '%s' for field '%s'" % (check, name))
+                        raise UserError("Unsupported check: '%s' for field '%s'" % (check, name))
                     
-                if "detect" in entry:
-                    detect = entry["detect"]
-                
                 self.__fields[name] = entry
 
+
+
+    def loadLibrary(self, objectName, fileName, encoding="utf-8", doc=None):
+        """
+        Creates a new global object (inside global state) with the given name 
+        containing all @share'd functions and fields loaded from the given file.
+        """
+
+        if objectName in self.__userApi:
+            raise UserError("Could not import library %s as the object name %s is already used." % (fileName, objectName))
+
+        # Create internal class object for storing shared methods
+        class Shared(object): pass
+        exportedModule = Shared()
+        exportedModule.__doc__ = doc or "Imported from %s" % os.path.relpath(fileName, os.getcwd())
+        counter = 0
+
+        # Method for being used as a decorator to share methods to the outside
+        def share(func):
+            nonlocal counter
+            setattr(exportedModule, func.__name__, func)
+            counter += 1
+
+            return func
+
+        # Execute given file. Using clean new global environment
+        # but add additional decorator for allowing to define shared methods
+        code = open(fileName, "r", encoding=encoding).read()
+        exec(compile(code, os.path.abspath(fileName), "exec"), {"share" : share})
+
+        # Export destination name as global    
+        Console.debug("Importing %s shared methods under %s...", counter, objectName)
+        self.__userApi[objectName] = exportedModule
+
+        return counter
         
         
     def getProjects(self):
@@ -168,7 +215,7 @@ class Session():
     def getRelativePath(self, project):
         """Returns the relative path of any project to the main project"""
         
-        mainPath = self.__projects[-1].getPath()
+        mainPath = self.__projects[0].getPath()
         projectPath = project.getPath()
         
         return os.path.relpath(projectPath, mainPath)
@@ -176,35 +223,12 @@ class Session():
         
     def getMain(self):
         if self.__projects:
-            return self.__projects[-1]
+            return self.__projects[0]
         else:
             return None
 
 
-    __assetManager = None
 
-    def getAssetManager(self):
-        """
-        Returns the session's asset manager for caching and processing assets
-        """
-
-        if not self.__assetManager:
-
-            header("Initializing Assets")
-            info("Processing projects...")
-            indent()
-
-            for project in self.__projects:
-                project.scan()
-
-            outdent()
-
-            self.__assetManager = AssetManager(self)
-
-        return self.__assetManager
-    
-    
-    
     #
     # Support for fields
     # Fields allow to inject data from the build into the running application
@@ -228,7 +252,7 @@ class Session():
         """
 
         if not "locale" in self.__fields:
-            raise JasyError("Define locales first!")
+            raise UserError("Define locales first!")
 
         self.__fields["locale"]["default"] = locale
 
@@ -331,7 +355,7 @@ class Session():
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         names = sorted(values)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
-        permutations = [Permutation(combi) for combi in combinations]
+        permutations = [jasy.core.Permutation.Permutation(combi) for combi in combinations]
 
         return permutations
 
@@ -339,32 +363,46 @@ class Session():
     def permutate(self):
         """ Generator method for permutations for improving output capabilities """
         
-        header("Processing permutations")
+        Console.info("Processing permutations...")
+        Console.indent()
         
         permutations = self.getPermutations()
         length = len(permutations)
         
         for pos, current in enumerate(permutations):
-            info(colorize("Permutation %s/%s:" % (pos+1, length), "bold"))
-            indent()
-            setPermutation(current)
-            setTranslation(self.getTranslationBundle())
+            Console.info("Permutation %s/%s:" % (pos+1, length))
+            Console.indent()
+            self.setCurrentPermutation(current)
+            self.setCurrentTranslation(self.getTranslationBundle())
             yield current
-            outdent()
+            Console.outdent()
+
+        Console.outdent()
 
 
-    def exportFields(self):
+    def getFieldDetectionClasses(self):
+
+        result = set()
+
+        fields = self.__fields
+        for name in fields:
+            value = fields[name]
+            if "detect" in value:
+                result.add(value["detect"])
+
+        return result
+
+
+    def exportFields(self, compress=True):
         """
         Converts data from values to a compact data structure for being used to 
         compute a checksum in JavaScript.
+
+        Export structures:
+        1. [ name, 1, test, [value1, ...] ]
+        2. [ name, 2, value ]
+        3. [ name, 3, test, default? ]
         """
-        
-        #
-        # Export structures:
-        # 1. [ name, 1, test, [value1, ...] ]
-        # 2. [ name, 2, value ]
-        # 3. [ name, 3, test, default? ]
-        #
         
         export = []
         for key in sorted(self.__fields):
@@ -387,12 +425,12 @@ class Session():
                         values.remove(source["default"])
                         values.insert(0, source["default"])
                     
-                    content.append(toJson(values))
+                    content.append(Json.toJson(values, compress=compress))
             
                 else:
                     # EXPORT STRUCT 2
                     content.append("2")
-                    content.append(toJson(values[0]))
+                    content.append(Json.toJson(values[0], compress=compress))
 
             # Has no relevance for permutation, just insert the test
             else:
@@ -405,7 +443,7 @@ class Session():
                     
                     # Add default value if available
                     if "default" in source:
-                        content.append(toJson(source["default"]))
+                        content.append(Json.toJson(source["default"], compress=compress))
                 
                 else:
                     # Has no detection and no permutation. Ignore it completely
@@ -415,8 +453,8 @@ class Session():
             
         if export:
             return "[%s]" % ",".join(export)
-        else:
-            return None
+
+        return None
     
     
     
@@ -446,19 +484,19 @@ class Session():
         all relevant translation files for the current project set. 
         """
 
-        language = getPermutation().get("locale")
+        language = self.getCurrentPermutation().get("locale")
         if language is None:
             return None
 
         if language in self.__translations:
             return self.__translations[language]
 
-        info("Creating translation bundle: %s", language)
-        indent()
+        Console.info("Creating translation bundle: %s", language)
+        Console.indent()
 
         # Initialize new Translation object with no project assigned
         # This object is used to merge all seperate translation instances later on.
-        combined = Translation(None, id=language)
+        combined = jasy.item.Translation.Translation(None, id=language)
         relevantLanguages = self.expandLanguage(language)
 
         # Loop structure is build to prefer finer language matching over project priority
@@ -466,11 +504,11 @@ class Session():
             for project in self.__projects:
                 for translation in project.getTranslations().values():
                     if translation.getLanguage() == currentLanguage:
-                        debug("Adding %s entries from %s @ %s...", len(translation.getTable()), currentLanguage, project.getName())
+                        Console.debug("Adding %s entries from %s @ %s...", len(translation.getTable()), currentLanguage, project.getName())
                         combined += translation
 
-        debug("Combined number of translations: %s", len(combined.getTable()))
-        outdent()
+        Console.debug("Combined number of translations: %s", len(combined.getTable()))
+        Console.outdent()
 
         self.__translations[language] = combined
         return combined
@@ -493,7 +531,7 @@ class Session():
     def getPermutatedLocale(self):
         """Returns the current locale as defined in current permutation"""
 
-        permutation = getPermutation()
+        permutation = self.getCurrentPermutation()
         if permutation:
             locale = permutation.get("locale")
             if locale:
@@ -514,11 +552,71 @@ class Session():
 
         path = os.path.abspath(os.path.join(".jasy", "locale", locale))
         if not os.path.exists(path) or update:
-            LocaleParser(locale).export(path)
+            jasy.core.Locale.LocaleParser(locale).export(path)
 
-        return getProjectFromPath(path)
-
-
+        return jasy.core.Project.getProjectFromPath(path)
 
 
 
+    #
+    # Expand of file names
+    #
+
+    def expandFileName(self, fileName):
+
+        if self.__prefix:
+            fileName = fileName.replace("$prefix", self.__prefix)
+
+        if self.__permutation:
+            fileName = fileName.replace("$permutation", self.__permutation.getChecksum())
+
+            locale = self.__permutation.get("locale")
+            if locale:
+                fileName = fileName.replace("$locale", locale)
+
+        return fileName
+
+
+    #
+    # Permutation Handling
+    #
+
+    __permutation = None
+
+    def getCurrentPermutation(self):
+        return self.__permutation
+
+    def setCurrentPermutation(self, use):
+        self.__permutation = use
+
+
+    #
+    # Translation Handling
+    #
+
+    __translation = None
+
+    def getCurrentTranslation(self):
+        return self.__translation
+
+    def setCurrentTranslation(self, use):
+        self.__translation = use
+
+
+    #
+    # Prefix Handling
+    #
+
+    __prefix = None
+
+    def setCurrentPrefix(self, path):
+        if path is None:
+            self.__prefix = None
+            Console.debug("Resetting prefix to working directory")
+        else:
+            self.__prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
+            Console.debug("Setting prefix to: %s" % self.__prefix)
+        
+    def getCurrentPrefix(self):
+        return self.__prefix
+        

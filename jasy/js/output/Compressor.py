@@ -4,6 +4,7 @@
 #
 
 import re, sys, json
+
 from jasy.js.tokenize.Lang import keywords
 from jasy.js.parse.Lang import expressions, futureReserved
 

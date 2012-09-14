@@ -16,7 +16,17 @@ class ScopeData():
     """
 
     __slots__ = ["name", "params", "declared", "accessed", "modified", "shared", "unused", "packages"]
-    
+
+    def __init__(self):
+        self.name = None
+        self.params = set()
+        self.declared = set()
+        self.accessed = {}
+        self.modified = set()
+        self.shared = {}
+        self.unused = set()
+        self.packages = {}
+
     def __iter__(self):
         for field in self.__slots__:
             yield field
@@ -42,6 +52,8 @@ class ScopeData():
         raise KeyError("Unknown key: %s" % key)
 
     def export(self):
+        """Exports all data as a Python dict instance"""
+
         return {
             "name": self.name,
             "params": self.params,
@@ -53,19 +65,9 @@ class ScopeData():
             "packages": self.packages
         }
 
-
-    def __init__(self):
-        self.name = None
-        self.params = set()
-        self.declared = set()
-        self.accessed = {}
-        self.modified = set()
-        self.shared = {}
-        self.unused = set()
-        self.packages = {}
-        
     def increment(self, name, by=1):
         """ Small helper so simplify adding variables to "accessed" dict """
+        
         if not name in self.accessed:
             self.accessed[name] = by
         else:

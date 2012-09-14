@@ -3,120 +3,19 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import subprocess, os, hashlib, shutil, re, tempfile, sys
-from urllib.parse import urlparse
-from jasy.core.Logging import *
+import os.path, re, urllib.parse, shutil
 
-__all__ = [
-    "enableRepositoryUpdates", "isRepository", "getRepositoryType", "getRepositoryFolder", "updateRepository",
-    "getGitBranch"
-]
+from jasy.core.Util import executeCommand
+import jasy.core.Console as Console
 
-__nullDevice = open(os.devnull, 'w')
-__gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
-__gitHash = re.compile(r"^[a-f0-9]{40}$")
+
 __versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?$")
 __branchParser = re.compile("^ref:.*/([a-zA-Z0-9_-]+)$")
-__enableUpdates = True
+__gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
+__gitHash = re.compile(r"^[a-f0-9]{40}$")
 
 
-
-# ======================================================
-#   PUBLIC API
-# ======================================================
-
-def enableRepositoryUpdates(enabled):
-    global __enableUpdates
-    __enableUpdates = enabled
-
-
-
-def isRepository(url):
-    # TODO: Support for svn, hg, etc.
-    return isGitRepositoryUrl(url)
-
-
-
-def getRepositoryType(url):
-    if isGitRepositoryUrl(url):
-        return "git"
-
-    # TODO: Support for svn, hg, etc.
-    else:
-        return None
-
-
-def getRepositoryFolder(url, version=None, kind=None):
-
-    if kind == "git" or isGitRepositoryUrl(url):
-
-        version = expandGitVersion(version)
-
-        folder = url[url.rindex("/")+1:]
-        if folder.endswith(".git"):
-            folder = folder[:-4]
-
-        identifier = "%s@%s" % (url, version)
-        version = version[version.rindex("/")+1:]
-
-    # TODO: Support for svn, hg, etc.
-
-    return "%s-%s-%s" % (folder, version, hashlib.sha1(identifier.encode("utf-8")).hexdigest())
-
-
-
-def updateRepository(url, version=None, path=None, update=True):
-
-    revision = None
-
-    if isGitRepositoryUrl(url):
-        version = expandGitVersion(version)
-        revision = updateGitRepository(url, version, path, update)
-
-    # TODO: Support for svn, hg, etc.
-
-    return revision
-
-
-
-
-
-
-# ======================================================
-#   COMMAND LINE UTILITIES
-# ======================================================
-
-def executeCommand(args, msg):
-    """Executes the given process and outputs message when errors happen."""
-
-    debug("Executing command: %s", " ".join(args))
-    indent()
-    
-    # Using shell on Windows to resolve binaries like "git"
-    output = tempfile.TemporaryFile(mode="w+t")
-    returnValue = subprocess.call(args, stdout=output, stderr=output, shell=sys.platform == "win32")
-    if returnValue != 0:
-        raise Exception("Error during executing shell command: %s" % msg)
-        
-    output.seek(0)
-    result = output.read().strip("\n\r")
-    output.close()
-    
-    for line in result.splitlines():
-        debug(line)
-    
-    outdent()
-    
-    return result
-
-
-
-
-# ======================================================
-#   GIT SUPPORT
-# ======================================================
-
-def updateGitRepository(url, version, path, update=True):
+def update(url, version, path, update=True):
     """Clones the given repository URL (optionally with overriding/update features)"""
 
     old = os.getcwd()
@@ -124,7 +23,7 @@ def updateGitRepository(url, version, path, update=True):
     if os.path.exists(path) and os.path.exists(os.path.join(path, ".git")):
         
         if not os.path.exists(os.path.join(path, ".git", "HEAD")):
-            error("Invalid git clone. Cleaning up...")
+            Console.error("Invalid git clone. Cleaning up...")
             shutil.rmtree(path)
 
         else:
@@ -132,8 +31,8 @@ def updateGitRepository(url, version, path, update=True):
             revision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
             
             if update and (version == "master" or "refs/heads/" in version):
-                if __enableUpdates:
-                    info("Updating %s", colorize("%s @ " % url, "grey") + colorize(version, "magenta"))
+                if update:
+                    Console.info("Updating %s", Console.colorize("%s @ " % url, "bold") + Console.colorize(version, "magenta"))
                     
                     try:
                         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", version], "Could not fetch updated revision!")
@@ -141,35 +40,35 @@ def updateGitRepository(url, version, path, update=True):
                         newRevision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
                         
                         if revision != newRevision:
-                            indent()
-                            info("Updated from %s to %s", revision[:10], newRevision[:10])
+                            Console.indent()
+                            Console.info("Updated from %s to %s", revision[:10], newRevision[:10])
                             revision = newRevision
-                            outdent()
+                            Console.outdent()
                         
                     except Exception:
-                        error("Error during git transaction! Could not update clone.")
-                        error("Please verify that the host is reachable or disable automatic branch updates.")
+                        Console.error("Error during git transaction! Could not update clone.")
+                        Console.error("Please verify that the host is reachable or disable automatic branch updates.")
                         
                         os.chdir(old)
                         return
                         
                     except KeyboardInterrupt:
                         print()
-                        error("Git transaction was aborted by user!")
+                        Console.error("Git transaction was aborted by user!")
                         
                         os.chdir(old)
                         return                            
                     
                 else:
-                    debug("Updates disabled")
+                    Console.debug("Updates disabled")
                 
             else:
-                debug("Using existing clone")
+                Console.debug("Using existing clone")
 
             os.chdir(old)
             return revision
 
-    info("Cloning %s", colorize("%s @ " % url, "bold") + colorize(version, "magenta"))
+    Console.info("Cloning %s", Console.colorize("%s @ " % url, "bold") + Console.colorize(version, "magenta"))
 
     os.makedirs(path)
     os.chdir(path)
@@ -182,10 +81,10 @@ def updateGitRepository(url, version, path, update=True):
         revision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
         
     except Exception:
-        error("Error during git transaction! Intitial clone required for continuing!")
-        error("Please verify that the host is reachable.")
+        Console.error("Error during git transaction! Intitial clone required for continuing!")
+        Console.error("Please verify that the host is reachable.")
 
-        error("Cleaning up...")
+        Console.error("Cleaning up...")
         os.chdir(old)
         shutil.rmtree(path)
 
@@ -193,9 +92,9 @@ def updateGitRepository(url, version, path, update=True):
         
     except KeyboardInterrupt:
         print()
-        error("Git transaction was aborted by user!")
+        Console.error("Git transaction was aborted by user!")
         
-        error("Cleaning up...")
+        Console.error("Cleaning up...")
         os.chdir(old)
         shutil.rmtree(path)
         
@@ -206,7 +105,7 @@ def updateGitRepository(url, version, path, update=True):
 
 
 
-def getGitBranch(path=None):
+def getBranch(path=None):
     """Returns the name of the git branch"""
 
     if path is None:
@@ -224,7 +123,7 @@ def getGitBranch(path=None):
 
 
 
-def isGitRepositoryUrl(url):
+def isUrl(url):
     """Figures out whether the given string is a valid Git repository URL"""
 
     # Detects these urls correctly
@@ -241,7 +140,7 @@ def isGitRepositoryUrl(url):
     if not url.endswith(".git"):
         return False
         
-    parsed = urlparse(url)
+    parsed = urllib.parse.urlparse(url)
     if parsed.scheme in ("git", "https"):
         return not parsed.params and not parsed.query and not parsed.fragment
     elif not parsed.scheme and parsed.path == url and __gitAccountUrl.match(url) != None:
@@ -251,10 +150,12 @@ def isGitRepositoryUrl(url):
     
     
     
-def expandGitVersion(version=None):
+def expandVersion(version=None):
     if version is None:
         version = "master"
     
+    version = str(version)
+
     if version.startswith("refs/"):
         pass
     elif re.compile(r"^[a-f0-9]{40}$").match(version):
@@ -266,4 +167,11 @@ def expandGitVersion(version=None):
         version = "refs/heads/" + version
         
     return version
+
+
+def cleanRepository():
+    return executeCommand(["git", "clean", "-d", "-f"], "Could not clean GIT repository!")
+
+def distcleanRepository():
+    return executeCommand(["git", "clean", "-d", "-f", "-x"], "Could not distclean GIT repository!")
 

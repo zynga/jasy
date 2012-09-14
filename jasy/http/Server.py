@@ -3,27 +3,20 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import sys, os, jasy, logging, base64, json, requests
-from urllib.parse import urlparse
+import os, logging, base64, json, requests, cherrypy
 from collections import namedtuple
 
-from jasy.core.Logging import debug, info, error, header, indent, outdent
-from jasy.env.State import session
-from jasy.core.Util import getKey
-from jasy.core.Cache import Cache
+import jasy.core.Cache as Cache
+import jasy.core.Console as Console
+
 from jasy.core.Types import CaseInsensitiveDict
+from jasy.core.Util import getKey
+from jasy import __version__ as jasyVersion
 
 Result = namedtuple('Result', ['headers', 'content'])
 
 # Disable logging HTTP request being created
 logging.getLogger("requests").setLevel(logging.WARNING)
-
-import cherrypy
-from cherrypy.lib.static import serve_file as serveFile
-from cherrypy.lib.static import serve_file as serveFile
-
-
-__all__ = ["serve"]
 
 
 #
@@ -74,9 +67,9 @@ class Proxy(object):
         self.enableOffline = getKey(config, "offline", False)
 
         if self.enableMirror:
-            self.mirror = Cache(os.getcwd(), "jasymirror-%s" % self.id, hashkeys=True)
+            self.mirror = Cache.Cache(os.getcwd(), ".jasy/mirror-%s" % self.id, hashkeys=True)
 
-        info('Proxy "%s" => "%s" [debug:%s|mirror:%s|offline:%s]', self.id, self.host, self.enableDebug, self.enableMirror, self.enableOffline)
+        Console.info('Proxy "%s" => "%s" [debug:%s|mirror:%s|offline:%s]', self.id, self.host, self.enableDebug, self.enableMirror, self.enableOffline)
         
         
     # These headers will be blocked between header copies
@@ -108,11 +101,11 @@ class Proxy(object):
             mirrorId = "%s[%s]" % (url, json.dumps(query, separators=(',',':'), sort_keys=True))
             result = self.mirror.read(mirrorId)
             if result is not None and self.enableDebug:
-                info("Mirrored: %s" % url)
+                Console.info("Mirrored: %s" % url)
          
         # Check if we're in forced offline mode
         if self.enableOffline and result is None:
-            info("Offline: %s" % url)
+            Console.info("Offline: %s" % url)
             raise cherrypy.NotFound(url)
         
         # Load URL from remote server
@@ -127,7 +120,7 @@ class Proxy(object):
             # Load URL from remote host
             try:
                 if self.enableDebug:
-                    info("Requesting: %s", url)
+                    Console.info("Requesting: %s", url)
                     
                 # Apply headers for basic HTTP authentification
                 if "X-Proxy-Authorization" in headers:
@@ -146,7 +139,7 @@ class Proxy(object):
                 
             except Exception as err:
                 if self.enableDebug:
-                    info("Request failed: %s", err)
+                    Console.info("Request failed: %s", err)
                     
                 raise cherrypy.HTTPError(403)
 
@@ -164,7 +157,7 @@ class Proxy(object):
                 cherrypy.response.headers[name] = result.headers[name]
 
         # Append special header to all responses
-        cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
+        cherrypy.response.headers["X-Jasy-Version"] = jasyVersion
         
         # Enable cross domain access to this server
         enableCrossDomain()
@@ -174,14 +167,14 @@ class Proxy(object):
         
 class Static(object):
     
-    def __init__(self, id, config, contentTypes=None):
+    def __init__(self, id, config, mimeTypes=None):
         self.id = id
         self.config = config
-        self.contentTypes = contentTypes
+        self.mimeTypes = mimeTypes
         self.root = getKey(config, "root", ".")
         self.enableDebug = getKey(config, "debug", False)
 
-        info('Static "%s" => "%s" [debug:%s]', self.id, self.root, self.enableDebug)
+        Console.info('Static "%s" => "%s" [debug:%s]', self.id, self.root, self.enableDebug)
         
     @cherrypy.expose
     def default(self, *args, **query):
@@ -191,7 +184,7 @@ class Static(object):
         """
         
         # Append special header to all responses
-        cherrypy.response.headers["X-Jasy-Version"] = jasy.__version__
+        cherrypy.response.headers["X-Jasy-Version"] = jasyVersion
         
         # Enable cross domain access to this server
         enableCrossDomain()
@@ -207,7 +200,7 @@ class Static(object):
         # Check for existance first
         if os.path.isfile(path):
             if self.enableDebug:
-                info("Serving file: %s", path)
+                Console.info("Serving file: %s", path)
 
             # Default content type to autodetection by Python mimetype API            
             contentType = None
@@ -216,15 +209,15 @@ class Static(object):
             extension = os.path.splitext(path)[1]
             if extension:
                 extension = extension.lower()[1:]
-                if extension in self.contentTypes:
-                    contentType = self.contentTypes[extension]
+                if extension in self.mimeTypes:
+                    contentType = self.mimeTypes[extension]
 
-            return serveFile(os.path.abspath(path), content_type=contentType)
+            return cherrypy.lib.static.serve_file(os.path.abspath(path), content_type=contentType)
             
         # Otherwise return a classic 404
         else:
             if self.enableDebug:
-                warn("File at location %s not found at %s!", path, os.path.abspath(path))
+                Console.warn("File at location %s not found at %s!", path, os.path.abspath(path))
             
             raise cherrypy.NotFound(path)
         
@@ -280,76 +273,85 @@ additionalContentTypes = {
 # START
 #
 
-def serve(routes=None, customContentTypes=None, port=8080, host="127.0.0.1"):
-    
-    header("HTTP Server")
-    
-    # We need to pause the session to make room for other jasy executions
-    session.pause()
+class Server:
+    """Starts the built-in HTTP server inside the project's root directory"""
 
-    # Shared configuration (global/app)
-    config = {
-        "global" : {
-            "environment" : "production",
-            "log.screen" : False,
-            "server.socket_port": port,
-            "server.socket_host": host,
-            "engine.autoreload_on" : False
-        },
-        
-        "/" : {
-            "log.screen" : False
+    def __init__(self, port=8080, host="127.0.0.1", mimeTypes=None):
+
+        Console.info("Initializing server...")
+        Console.indent()
+
+        # Shared configuration (global/app)
+        self.__config = {
+            "global" : {
+                "environment" : "production",
+                "log.screen" : False,
+                "server.socket_port": port,
+                "server.socket_host": host,
+                "engine.autoreload_on" : False
+            },
+            
+            "/" : {
+                "log.screen" : False
+            }
         }
-    }
 
-    # Build dict of content types to override native mimetype detection
-    contentTypes = {}
-    contentTypes.update(additionalContentTypes)
-    if customContentTypes:    
-            contentTypes.update(customContentTypes)
+        self.__port = port
 
-    # Update global config
-    cherrypy.config.update(config)
+        # Build dict of content types to override native mimetype detection
+        combinedTypes = {}
+        combinedTypes.update(additionalContentTypes)
+        if mimeTypes:    
+            combinedTypes.update(mimeTypes)
 
-    # Somehow this screen disabling does not work
-    # This hack to disable all access/error logging works
-    def empty(*param, **args): pass
-    def inspect(*param, **args): 
-        if args["severity"] > 20:
-            error("Critical error occoured:")
-            error(param[0])
-    
-    cherrypy.log.access = empty
-    cherrypy.log.error = inspect
-    cherrypy.log.screen = False
+        # Update global config
+        cherrypy.config.update(self.__config)
 
-    # Initialize routing
-    info("Initialize routing...")
-    indent()
-    root = Static("/", {}, contentTypes=contentTypes)
-    if routes:
+        # Somehow this screen disabling does not work
+        # This hack to disable all access/error logging works
+        def empty(*param, **args): pass
+        def inspect(*param, **args): 
+            if args["severity"] > 20:
+                Console.error("Critical error occoured:")
+                Console.error(param[0])
+        
+        cherrypy.log.access = empty
+        cherrypy.log.error = inspect
+        cherrypy.log.screen = False
+
+        # Basic routing
+        self.__root = Static("/", {}, mimeTypes=combinedTypes)
+
+        Console.outdent()
+
+
+    def setRoutes(self, routes):
+
+        Console.info("Adding routes...")
+        Console.indent()        
+
         for key in routes:
             entry = routes[key]
             if "host" in entry:
                 node = Proxy(key, entry)
             else:
-                node = Static(key, entry, contentTypes=contentTypes)
+                node = Static(key, entry, mimeTypes=combinedTypes)
             
-            setattr(root, key, node)
-    outdent()
-    
-    # Finally start the server
-    app = cherrypy.tree.mount(root, "", config)
-    cherrypy.process.plugins.PIDFile(cherrypy.engine, "jasylock-http-%s" % port).subscribe()
-    
-    cherrypy.engine.start()
-    info("Started HTTP server at port %s... [PID=%s]", port, os.getpid())
-    indent()
-    cherrypy.engine.block()
+            setattr(self.__root, key, node)
 
-    outdent()
-    info("Stopped HTTP server at port %s.", port)
-    
-    # Resume session to continue work on next task (if given)
-    session.resume()
+        Console.outdent()
+
+
+    def start(self):
+
+        app = cherrypy.tree.mount(self.__root, "", self.__config)
+        cherrypy.process.plugins.PIDFile(cherrypy.engine, ".jasy/server-%s" % self.__port).subscribe()
+        
+        cherrypy.engine.start()
+        Console.info("Started HTTP server at port %s... [PID=%s]", self.__port, os.getpid())
+        Console.indent()
+        cherrypy.engine.block()
+
+        Console.outdent()
+        Console.info("Stopped HTTP server at port %s.", self.__port)  
 

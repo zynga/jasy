@@ -4,12 +4,10 @@
 #
 
 import polib
+import jasy.item.Abstract
+import jasy.core.Json as Json
 
-from jasy.item.Item import Item
-from jasy.core.Logging import *
-from jasy.core.Json import toJson
-
-__all__ = ["getFormat", "generateId", "Translation"]
+import jasy.core.Console as Console
 
 
 def getFormat(path):
@@ -45,7 +43,7 @@ def generateId(basic, plural=None, context=None):
     return result
 
 
-class Translation(Item):
+class TranslationItem(jasy.item.Abstract.AbstractItem):
     """
     Internal instances mapping a translation file in different formats
     with a conventient API.
@@ -76,8 +74,8 @@ class Translation(Item):
         # Call Item's attach method first
         super().attach(path)
 
-        debug("Loading translation file: %s", path)
-        indent()
+        Console.debug("Loading translation file: %s", path)
+        Console.indent()
 
         # Flat data strucuture where the keys are unique
         table = {}
@@ -87,7 +85,7 @@ class Translation(Item):
         # Decide infrastructure/parser to use based on file name
         if format is "gettext":
             po = polib.pofile(path)
-            debug("Translated messages: %s=%s%%", self.language, po.percent_translated())
+            Console.debug("Translated messages: %s=%s%%", self.language, po.percent_translated())
 
             for entry in po.translated_entries():
                 entryId = generateId(entry.msgid, entry.msgid_plural, entry.msgctxt)
@@ -99,22 +97,22 @@ class Translation(Item):
                         table[entryId] = entry.msgstr_plural
 
         elif format is "xlf":
-            raise JasyError("Parsing ICU/XLF files is currently not supported!")
+            raise UserError("Parsing ICU/XLF files is currently not supported!")
 
         elif format is "properties":
-            raise JasyError("Parsing ICU/Property files is currently not supported!")
+            raise UserError("Parsing ICU/Property files is currently not supported!")
 
         elif format is "txt":
-            raise JasyError("Parsing ICU/text files is currently not supported!")
+            raise UserError("Parsing ICU/text files is currently not supported!")
                         
-        debug("Translation of %s entries ready" % len(table))        
-        outdent()
+        Console.debug("Translation of %s entries ready" % len(table))        
+        Console.outdent()
         
         self.table = table
 
         return self
 
-    def export(self, classes):
+    def export(self, classes, compress=True):
         """Exports the translation table as JSON based on the given set of classes"""
 
         # Based on the given class list figure out which translations are actually used
@@ -128,7 +126,7 @@ class Translation(Item):
         table = self.table
         result = { translationId: table[translationId] for translationId in relevantTranslations if translationId in table }
 
-        return toJson(result or None)
+        return Json.toJson(result or None, compress=compress)
 
     def getTable(self):
         """Returns the translation table"""

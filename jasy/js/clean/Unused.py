@@ -3,9 +3,10 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from jasy.js.parse.Node import Node
+import jasy.js.parse.Node as Node
 import jasy.js.parse.ScopeScanner as ScopeScanner
-from jasy.core.Logging import *
+
+import jasy.core.Console as Console
 
 __all__ = ["cleanup", "Error"]
 
@@ -35,18 +36,18 @@ def cleanup(node):
     x = 0
     cleaned = False
     
-    debug("Removing unused variables...")
+    Console.debug("Removing unused variables...")
     while True:
         x = x + 1
         #debug("Removing unused variables [Iteration: %s]...", x)
-        indent()
+        Console.indent()
 
         if __cleanup(node):
             ScopeScanner.scan(node)
             cleaned = True
-            outdent()
+            Console.outdent()
         else:
-            outdent()
+            Console.outdent()
             break
         
     return cleaned
@@ -99,7 +100,7 @@ def __recurser(node, unused):
             # as there is not a required one after the current one
             for identifier in reversed(params):
                 if identifier.value in unused:
-                    debug("Removing unused parameter '%s' in line %s", identifier.value, identifier.line)
+                    Console.debug("Removing unused parameter '%s' in line %s", identifier.value, identifier.line)
                     params.remove(identifier)
                     retval = True
                 else:
@@ -109,7 +110,7 @@ def __recurser(node, unused):
         if node.parent.functionForm == "expressed_form":
             funcName = getattr(node.parent, "name", None)
             if funcName != None and funcName in unused:
-                debug("Removing unused function name at line %s" % node.line)
+                Console.debug("Removing unused function name at line %s" % node.line)
                 del node.parent.name
                 retval = True
                     
@@ -119,7 +120,7 @@ def __recurser(node, unused):
         if node.functionForm == "declared_form" and getattr(node, "parent", None) and node.parent.type != "call":
             funcName = getattr(node, "name", None)
             if funcName != None and funcName in unused:
-                debug("Removing unused function declaration %s at line %s" % (funcName, node.line))
+                Console.debug("Removing unused function declaration %s at line %s" % (funcName, node.line))
                 node.parent.remove(node)
                 retval = True
             
@@ -130,18 +131,18 @@ def __recurser(node, unused):
                 if hasattr(decl, "initializer"):
                     init = decl.initializer
                     if init.type in ("null", "this", "true", "false", "identifier", "number", "string", "regexp"):
-                        debug("Removing unused primitive variable %s at line %s" % (decl.name, decl.line))
+                        Console.debug("Removing unused primitive variable %s at line %s" % (decl.name, decl.line))
                         node.remove(decl)
                         retval = True
                         
                     elif init.type == "function" and (not hasattr(init, "name") or init.name in unused):
-                        debug("Removing unused function variable %s at line %s" % (decl.name, decl.line))
+                        Console.debug("Removing unused function variable %s at line %s" % (decl.name, decl.line))
                         node.remove(decl)
                         retval = True
                     
                     # If we have only one child, we replace the whole var statement with just the init block
                     elif len(node) == 1:
-                        semicolon = Node(init.tokenizer, "semicolon")
+                        semicolon = Node.Node(init.tokenizer, "semicolon")
                         semicolon.append(init, "expression")
 
                         # Protect non-expressions with parens
@@ -159,7 +160,7 @@ def __recurser(node, unused):
                         
                         node.remove(decl)
                         nodePos = node.parent.index(node)
-                        semicolon = Node(init.tokenizer, "semicolon")
+                        semicolon = Node.Node(init.tokenizer, "semicolon")
                         semicolon.append(init, "expression")
 
                         # Protect non-expressions with parens
@@ -176,14 +177,14 @@ def __recurser(node, unused):
                         retval = True
                         
                     else:
-                        debug("Could not automatically remove unused variable %s at line %s without possible side-effects" % (decl.name, decl.line))
+                        Console.debug("Could not automatically remove unused variable %s at line %s without possible side-effects" % (decl.name, decl.line))
                     
                 else:
                     node.remove(decl)
                     retval = True
                     
         if len(node) == 0:
-            debug("Removing empty 'var' block at line %s" % node.line)
+            Console.debug("Removing empty 'var' block at line %s" % node.line)
             node.parent.remove(node)
 
     return retval

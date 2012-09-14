@@ -32,7 +32,7 @@ if os.path.exists(os.path.join(basedir, "jasy")):
 # ===========================================================================
 
 from jasy.core.Options import Options
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 args = sys.argv[1:]
 if args and "jasyscript.py" in args[0]:
@@ -55,7 +55,7 @@ try:
     options.parse(args)
 except Exception as optionError:
     logging.basicConfig(format="%(message)s")
-    error(optionError)
+    Console.error(optionError)
     sys.exit(1)
 
 # For simple version info we just leave here
@@ -98,16 +98,16 @@ if options.log:
 #   DOCTOR
 # ===========================================================================      
 
+import jasy.core.Doctor as Doctor
+
 # Check for "doctor" parameter. If it's set, the complete doctor routine will be executed, then exit
 for tasks in options.getTasks():
     if tasks['task'] == 'doctor':
-        from jasy.env.Doctor import doCompleteDoctor
-        doCompleteDoctor()
+        Doctor.doCompleteDoctor()
         sys.exit(1)
 
 # Execute the initialization "doctor" routine, only with error output
-from jasy.env.Doctor import doInitializationDoctor
-if not doInitializationDoctor():
+if not Doctor.doInitializationDoctor():
     sys.exit(1)
 
 
@@ -137,7 +137,7 @@ if jasyscript == "jasyscript.py":
 else:
     jasyscript = os.path.abspath(os.path.expanduser(jasyscript))
     if jasyscript is None or not os.path.isfile(jasyscript):
-        error("Cannot find any Jasy script with task definitions in %s!" % options.file)
+        Console.error("Cannot find any Jasy script with task definitions in %s!" % options.file)
         sys.exit(1)
 
 # Change to root directory of jasyscript before executing it
@@ -147,95 +147,100 @@ if jasyscript:
     jasyscript = os.path.basename(jasyscript)
 
 
+
 # ===========================================================================
-#   INITIALIZATION
+#   MAIN ROUTINE
 # ===========================================================================
 
-# Quick mode globally disables repository updates
-if options.fast:
-    from jasy.core.Repository import enableRepositoryUpdates
-    enableRepositoryUpdates(False)
+import time
+import jasy.env.Task as Task
+from jasy import UserError
 
-# Error handling
-from jasy.core.Error import JasyError
+def init():
 
-# Import global environment
-try:
-    from jasy.env.State import *
-except JasyError as errobj:
-    error("%s" % errobj)
-    sys.exit(1)
+    start = time.time()
 
-# Configuring for remote task calls
-import jasy.env.Task
-jasy.env.Task.setCommand(command)
-jasy.env.Task.setOptions(options)
+    Console.header("Initializing")
 
-# Import config object
-from jasy.env.Config import Config
+    Task.setCommand(command)
+    Task.setOptions(options)
 
-if jasyscript:
-    config = Config()
+    # Prepare public API
+    # This object is used for the official API the jasyscript.py is using
+    api = {}
+
+    # Create config object
+    import jasy.core.Config as Config
+    config = Config.Config()
     config.loadValues("jasyscript", optional=True)
 
-# Importing built-in tasks
-import jasy.env.Builtin
+    # Initialize session
+    from jasy.env.State import session
+    session.init(autoInit=True, userApi=api, updateRepositories=not options.fast)
 
-# Enabling execution of shell commands
-from jasy.core.Repository import executeCommand
+    # Make all methods and classes from Context available
+    import jasy.env.Context as Context
 
+    for key in dir(Context):
+        if not key.startswith("__"):
+            api[key] = getattr(Context, key)
 
-# ===========================================================================
-#   MAIN
-# ===========================================================================
+    # Let context know about the methods/classes it has (e.g. for showapi() task)
+    setattr(Context, "__api__", api)    
+
+    # Execute the jasyscript.py in a clean environment
+    if jasyscript:
+
+        code = open(jasyscript, "r", encoding="utf-8").read()
+        exec(compile(code, os.path.abspath(jasyscript), "exec"), api)
+
+    duration = '{0:.2g}'.format(time.time() - start)
+    Console.info("Initialization completed in %ss", duration)
+
 
 def main():
-    try:
-        # execute build script
-        if jasyscript:
-            code = open(jasyscript, "r", encoding="utf-8").read()
-            exec(compile(code, os.path.abspath(jasyscript), "exec"), globals())
 
-        # list all tasks when none is given
+    try:
+
+        # Run help when no tasks are given
         tasks = options.getTasks()
-        
         if not tasks or options.help:
 
-            executeTask("help")
+            Task.executeTask("help")
             
             if options.help:
                 sys.exit(0)
             else:
                 sys.exit(1)
 
-        # all arguments are processed as a list of task to execute in order
+        # All arguments are processed as a list of task to execute in order
         for entry in tasks:
-            executeTask(entry["task"], **entry["params"])
-    
-    except JasyError as errobj:
-        error("%s" % errobj)
+            Task.executeTask(entry["task"], **entry["params"])
+
+    except UserError as errobj:
+        Console.error("%s" % errobj)
         sys.exit(1)
 
     except KeyboardInterrupt:
-        error("Jasy Stopped!")
+        Console.error("Jasy Stopped!")
         sys.exit(2)
 
-    sys.exit(0)
-
 
 
 # ===========================================================================
-#   MAIN EXECUTION
+#   START
 # ===========================================================================
+
+init()
 
 if options.stats:
     
-    info("Running in profiling mode...")
+    Console.info("Running in profiling mode...")
     
     import cProfile
     cProfile.run("main()", "jasyprofile.txt")
     
-    header("Analysing data")
+    Console.header("Analysing data")
     import pstats
     stats = pstats.Stats("jasyprofile.txt")
     
@@ -246,3 +251,5 @@ if options.stats:
 else:
     
     main()
+
+sys.exit(0)

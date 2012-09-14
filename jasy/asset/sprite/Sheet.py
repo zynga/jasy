@@ -3,8 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-from jasy.core.Error import JasyError
-from jasy.core.Logging import debug, warn
+from jasy import UserError
+import jasy.core.Console as Console
 
 # Make PIL (native module) optional
 try:
@@ -49,7 +49,7 @@ class SpriteSheet():
     def write(self, filename, debug=False):
 
         if Image is None:
-            raise JasyError("Missing Python PIL which is required to create sprite sheets!")
+            raise UserError("Missing Python PIL which is required to create sprite sheets!")
 
         img = Image.new('RGBA', (self.width, self.height))
         draw = ImageDraw.Draw(img)
@@ -62,7 +62,7 @@ class SpriteSheet():
 
             x, y = block.fit.x, block.fit.y
             if block.rotated:
-                debug('%s is rotated' % block.image.src)
+                Console.debug('%s is rotated' % block.image.src)
                 res = res.rotate(90)
 
             img.paste(res, (x, y))

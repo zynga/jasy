@@ -3,11 +3,19 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shutil, os, json, yaml
-from jasy.core.Error import JasyError
+"""
+A module consisting of some often used file system actions in easy to use unix tradition.
+"""
+
+import shutil, os
+from jasy import UserError
 
 def cp(src, dst):
     """Copies a file"""
+
+    # First test for existance of destination directory
+    mkdir(os.path.dirname(dst))
+
     return shutil.copy2(src, dst)
 
 def cpdir(src, dst):
@@ -24,7 +32,7 @@ def mkdir(name):
     if os.path.isdir(name):
         return
     elif os.path.exists(name):
-        raise JasyError("Error creating directory %s - File exists!" % name)
+        raise UserError("Error creating directory %s - File exists!" % name)
 
     return os.makedirs(name)
 
@@ -51,3 +59,23 @@ def write(dst, content):
     handle.write(content)
     handle.close()
 
+def syncfile(src, dst):
+    """Same as cp() but only do copying when source file is newer than target file"""
+    
+    if not os.path.isfile(src):
+        raise Exception("No such file: %s" % src)
+    
+    try:
+        dst_mtime = os.path.getmtime(dst)
+        src_mtime = os.path.getmtime(src)
+        
+        # Only accecpt equal modification time as equal as copyFile()
+        # syncs over the mtime from the source.
+        if src_mtime == dst_mtime:
+            return False
+        
+    except OSError:
+        # destination file does not exist, so mtime check fails
+        pass
+        
+    return cp(src, dst)

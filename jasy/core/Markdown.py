@@ -4,7 +4,7 @@
 #
 
 import re
-from jasy.core.Logging import debug
+import jasy.core.Console as Console
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
@@ -24,7 +24,7 @@ try:
         return misaka.html(markdownStr, misakaExt, misakaRender)
 
 except:
-    debug("Misaka is needed to convert Markdown to HTML!")
+    Console.debug("Misaka is needed to convert Markdown to HTML!")
     markdown2html = None
 
 

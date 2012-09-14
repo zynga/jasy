@@ -3,32 +3,25 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, copy, zlib
-
-from jasy.core.Error import JasyError
+import os, copy, zlib, fnmatch, re
 
 import jasy.js.parse.Parser as Parser
 import jasy.js.parse.ScopeScanner as ScopeScanner
-
 import jasy.js.clean.DeadCode
 import jasy.js.clean.Unused
 import jasy.js.clean.Permutate
-
 import jasy.js.optimize.Translation
-
 import jasy.js.output.Optimization
+import jasy.js.api.Data
+import jasy.core.Permutation
+import jasy.item.Abstract
 
-from jasy.item.Item import Item
-from jasy.core.Permutation import getPermutation
-from jasy.js.api.Data import ApiData
 from jasy.js.MetaData import MetaData
 from jasy.js.output.Compressor import Compressor
 
+from jasy import UserError
 from jasy.js.util import *
-
-
-
-from jasy.core.Logging import * 
+import jasy.core.Console as Console 
 
 try:
     from pygments import highlight
@@ -41,10 +34,7 @@ except:
 aliases = {}
 
 defaultOptimization = jasy.js.output.Optimization.Optimization("declarations", "blocks", "variables")
-defaultPermutation = getPermutation({"debug" : False})
-
-
-__all__ = ["Class", "Error"]
+defaultPermutation = jasy.core.Permutation.getPermutation({"debug" : False})
 
 
 def collectFields(node, keys=None):
@@ -75,7 +65,7 @@ class ClassError(Exception):
         return "Error processing class %s: %s" % (self.__inst, self.__msg)
 
 
-class Class(Item):
+class ClassItem(jasy.item.Abstract.AbstractItem):
     
     kind = "class"
     
@@ -84,12 +74,12 @@ class Class(Item):
         field = "tree[%s]" % self.id
         tree = self.project.getCache().read(field, self.mtime)
         if not tree:
-            info("Processing class %s %s...", colorize(self.id, "bold"), colorize("[%s]" % context, "cyan"))
+            Console.info("Processing class %s %s...", Console.colorize(self.id, "bold"), Console.colorize("[%s]" % context, "cyan"))
             
-            indent()
+            Console.indent()
             tree = Parser.parse(self.getText(), self.id)
             ScopeScanner.scan(tree)
-            outdent()
+            Console.outdent()
             
             self.project.getCache().store(field, tree, self.mtime, True)
         
@@ -105,14 +95,14 @@ class Class(Item):
             tree = copy.deepcopy(self.__getTree("%s:plain" % context))
 
             # Logging
-            msg = "Processing class %s" % colorize(self.id, "bold")
+            msg = "Processing class %s" % Console.colorize(self.id, "bold")
             if permutation:
-                msg += colorize(" (%s)" % permutation, "grey")
+                msg += Console.colorize(" (%s)" % permutation, "grey")
             if context:
-                msg += colorize(" [%s]" % context, "cyan")
+                msg += Console.colorize(" [%s]" % context, "cyan")
                 
-            info("%s..." % msg)
-            indent()
+            Console.info("%s..." % msg)
+            Console.indent()
 
             # Apply permutation
             if permutation:
@@ -124,7 +114,7 @@ class Class(Item):
             jasy.js.clean.Unused.cleanup(tree)
         
             self.project.getCache().store(field, tree, self.mtime, True)
-            outdent()
+            Console.outdent()
 
         return tree
 
@@ -148,8 +138,14 @@ class Class(Item):
         for name in meta.requires:
             if name != self.id and name in classes and classes[name].kind == "class":
                 result.add(classes[name])
+            elif "*" in name:
+                reobj = re.compile(fnmatch.translate(name))
+                for className in classes:
+                    if className != self.id:
+                        if reobj.match(className):
+                            result.add(classes[className])
             elif warnings:
-                warn("- Missing class (required): %s in %s", name, self.id)
+                Console.warn("- Missing class (required): %s in %s", name, self.id)
 
         # Globally modified names (mostly relevant when working without namespaces)
         for name in scope.shared:
@@ -186,7 +182,7 @@ class Class(Item):
             if name != self.id and name in classes and classes[name].kind == "class":
                 result.remove(classes[name])
             elif warnings:
-                warn("- Missing class (optional): %s in %s", name, self.id)
+                Console.warn("- Missing class (optional): %s in %s", name, self.id)
         
         return result
         
@@ -212,12 +208,12 @@ class Class(Item):
         field = "api[%s]-%s" % (self.id, highlight)
         apidata = self.project.getCache().read(field, self.mtime, inMemory=False)
         if apidata is None:
-            apidata = ApiData(self.id, highlight)
+            apidata = jasy.js.api.Data.ApiData(self.id, highlight)
             
             tree = self.__getTree(context="api")
-            indent()
+            Console.indent()
             apidata.scanTree(tree)
-            outdent()
+            Console.outdent()
             
             metaData = self.getMetaData()
             apidata.addAssets(metaData.assets)
@@ -239,7 +235,7 @@ class Class(Item):
         source = self.project.getCache().read(field, self.mtime)
         if source is None:
             if highlight is None:
-                raise JasyError("Could not highlight JavaScript code! Please install Pygments.")
+                raise UserError("Could not highlight JavaScript code! Please install Pygments.")
             
             lexer = JavascriptLexer(tabsize=2)
             formatter = HtmlFormatter(full=True, style="autumn", linenos="table", lineanchors="line")

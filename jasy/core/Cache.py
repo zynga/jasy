@@ -5,9 +5,9 @@
 
 import shelve, time, os, os.path, sys, pickle, dbm, uuid, hashlib, atexit
 
-from jasy.core.Logging import *
-from jasy import __version__ as version
-from jasy.core.Util import getKey
+import jasy
+import jasy.core.Util
+import jasy.core.Console as Console
 
 hostId = uuid.getnode()
 
@@ -38,16 +38,18 @@ class Cache:
         try:
             self.__shelve = shelve.open(self.__file, flag="c")
             
-            storedVersion = getKey(self.__shelve, "jasy-version")
-            storedHost = getKey(self.__shelve, "jasy-host")
+            storedVersion = jasy.core.Util.getKey(self.__shelve, "jasy-version")
+            storedHost = jasy.core.Util.getKey(self.__shelve, "jasy-host")
             
-            if storedVersion == version and storedHost == hostId:
+            if storedVersion == jasy.__version__ and storedHost == hostId:
                 return
                     
             if storedVersion is not None or storedHost is not None:
-                debug("Jasy version or host has been changed. Recreating cache...")
-                    
-            self.__shelve["jasy-version"] = version
+                Console.debug("Jasy version or host has been changed. Recreating cache...")
+            
+            self.clear()
+
+            self.__shelve["jasy-version"] = jasy.__version__
             self.__shelve["jasy-host"] = hostId
             
         except dbm.error as dbmerror:
@@ -61,13 +63,13 @@ class Cache:
                 raise IOError("Cache file is locked by another process!")
                 
             elif "type could not be determined" in str(dbmerror):
-                error("Could not detect cache file format: %s" % self.__file)
-                warn("Recreating cache database...")
+                Console.error("Could not detect cache file format: %s" % self.__file)
+                Console.warn("Recreating cache database...")
                 self.clear()
                 
             elif "module is not available" in str(dbmerror):
-                error("Unsupported cache file format: %s" % self.__file)
-                warn("Recreating cache database...")
+                Console.error("Unsupported cache file format: %s" % self.__file)
+                Console.warn("Recreating cache database...")
                 self.clear()
                 
             else:
@@ -80,14 +82,17 @@ class Cache:
         """
         
         if self.__shelve != None:
-            debug("Closing cache file %s..." % self.__file)
+            Console.debug("Closing cache file %s..." % self.__file)
             
             self.__shelve.close()
             self.__shelve = None
 
-        debug("Clearing cache file %s..." % self.__file)
+        Console.debug("Clearing cache file %s..." % self.__file)
+        
         self.__shelve = shelve.open(self.__file, flag="n")
-        self.__shelve["jasy-version"] = version
+
+        self.__shelve["jasy-version"] = jasy.__version__
+        self.__shelve["jasy-host"] = hostId
         
         
     def read(self, key, timestamp=None, inMemory=True):
@@ -146,7 +151,7 @@ class Cache:
             self.__shelve[key+"-timestamp"] = timestamp
             self.__shelve[key] = value
         except pickle.PicklingError as err:
-            error("Failed to store enty: %s" % key)
+            Console.error("Failed to store enty: %s" % key)
 
         
     def sync(self):

@@ -9,18 +9,21 @@ import hashlib
 __all__ = ["Permutation", "getPermutation"]
 
 
-__SharedPermutation = {}
-
+"""Central cache for all permutations"""
+registry = {}
 
 def getPermutation(combination):
-    """ Small wrapper to omit double creation of identical permutations in filter() method """
+    """
+    Small wrapper to omit double creation of identical permutations in filter() method 
+    As these instances don't have any reference to session etc. they are actually cacheable globally.
+    """
     
     key = str(combination)
-    if key in __SharedPermutation:
-        return __SharedPermutation[key]
+    if key in registry:
+        return registry[key]
         
-    __SharedPermutation[key] = Permutation(combination)
-    return __SharedPermutation[key]
+    registry[key] = Permutation(combination)
+    return registry[key]
 
 
 class Permutation:

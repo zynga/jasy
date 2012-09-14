@@ -1,3 +1,23 @@
+Jasy 0.8-beta5
+==============
+
+Bug fix release to fix issues with creating projects from remote skeletons.
+
+
+Jasy 0.8-beta4
+==============
+
+This is a major rework of tons of things in Jasy to make it compatible with typical doc generators, reduce global state and global names inside jasyscript.py and protect the jasy environment by code executed in jasyscript.py.
+
+Unfortunatly there are quite a lot of changes inside jasyscript.py as well:
+
+- The session is not paused/resumed automatically anymore when the web server is started. This needs to be done in the jasyscript.py manually if required.
+- Changed project scanning to prefer projects nearer to sort order e.g. "core" wins over "apibrowser/core" even if placed before/behind.
+- Changed `jasylibrary.py` initialization so that methods are automatically imported one project dependencies are solved (works like importing fields from the projects)
+- Added support for #require with wildcards aka `core.*`.
+- For more details consult the migration guide in our wiki.
+
+
 Jasy 0.8-beta3
 ==============
 

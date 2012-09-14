@@ -5,10 +5,11 @@
 
 import re, copy, polib
 
-from jasy.core.Error import JasyError
-from jasy.core.Logging import *
-from jasy.js.parse.Node import Node
-from jasy.item.Translation import generateId
+import jasy.js.parse.Node as Node
+import jasy.item.Translation as Translation
+
+from jasy import UserError
+import jasy.core.Console as Console
 
 
 #
@@ -71,7 +72,7 @@ def __collectionRecurser(node, collection):
             funcName = node[0][1].value
         
         if funcName in translationFunctions:
-            translationId = generateId(*parseParams(node[1], funcName))
+            translationId = Translation.generateId(*parseParams(node[1], funcName))
             if translationId:
                 if translationId in collection:
                     collection[translationId].append(node.line)
@@ -121,14 +122,14 @@ def __splitTemplate(value, valueParams):
     if len(splits) == 1:
         return None
     
-    pair = Node(None, "plus")
+    pair = Node.Node(None, "plus")
 
     for entry in splits:
         if entry == "":
             continue
             
         if len(pair) == 2:
-            newPair = Node(None, "plus")
+            newPair = Node.Node(None, "plus")
             newPair.append(pair)
             pair = newPair
 
@@ -139,7 +140,7 @@ def __splitTemplate(value, valueParams):
             try:
                 repl = mapper[pos]
             except KeyError:
-                raise JasyError("Invalid positional value: %s in %s" % (entry, value))
+                raise UserError("Invalid positional value: %s in %s" % (entry, value))
             
             copied = copy.deepcopy(mapper[pos])
             if copied.type not in ("identifier", "call"):
@@ -147,7 +148,7 @@ def __splitTemplate(value, valueParams):
             pair.append(copied)
             
         else:
-            child = Node(None, "string")
+            child = Node.Node(None, "string")
             child.value = entry
             pair.append(child)
             
@@ -177,10 +178,10 @@ def __recurser(node, table):
             funcNameNode = node[0][1]
 
         # Gettext methods only at the moment
-        funcName = funcNameNode.value
+        funcName = funcNameNode and funcNameNode.value
         if funcName in translationFunctions:
-            debug("Found translation method %s in %s", funcName, node.line)
-            indent()
+            Console.debug("Found translation method %s in %s", funcName, node.line)
+            Console.indent()
 
             params = node[1]
             
@@ -195,7 +196,7 @@ def __recurser(node, table):
                 
             # Error handling
             elif (funcName == "trn" or funcName == "trc") and params[1].type != "string":
-                warn("Expecting translation string to be type string: %s at line %s" % (params[1].type, params[1].line))
+                Console.warn("Expecting translation string to be type string: %s at line %s" % (params[1].type, params[1].line))
 
             # Signature tr(msg, arg1, ...)
             elif funcName == "tr":
@@ -233,7 +234,7 @@ def __recurser(node, table):
             elif funcName == "trn":
                 key = "%s[N:%s]" % (params[0].value, params[1].value)
                 if not key in table:
-                    outdent()
+                    Console.outdent()
                     return counter
 
                 counter += 1
@@ -246,15 +247,15 @@ def __recurser(node, table):
                 params.remove(params[0])
 
                 # Inject new object into params
-                container = Node(None, "object_init")
+                container = Node.Node(None, "object_init")
                 params.insert(0, container)
 
                 # Create new construction with all properties generated from the translation table
                 for plural in table[key]:
-                    pluralEntry = Node(None, "property_init")
-                    pluralEntryIdentifier = Node(None, "identifier")
+                    pluralEntry = Node.Node(None, "property_init")
+                    pluralEntryIdentifier = Node.Node(None, "identifier")
                     pluralEntryIdentifier.value = plural
-                    pluralEntryValue = Node(None, "string")
+                    pluralEntryValue = Node.Node(None, "string")
                     pluralEntryValue.value = table[key][plural]
                     pluralEntry.append(pluralEntryIdentifier)
                     pluralEntry.append(pluralEntryValue)
@@ -272,6 +273,6 @@ def __recurser(node, table):
                     while len(params) > 2:
                         params.pop()
 
-            outdent()
+            Console.outdent()
 
     return counter

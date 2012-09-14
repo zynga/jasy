@@ -3,67 +3,27 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import shutil, os, tempfile, re, jasy, pip
+import re, os.path, shutil, tempfile
+import jasy
 
-from jasy.core.Logging import *
-from jasy.env.Task import task, runTask
-from jasy.env.State import session
-from jasy.core.Error import JasyError
-from jasy.core.Repository import isRepository, updateRepository
 from jasy.core.Project import getProjectFromPath
 from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
-from jasy.env.Config import Config
+from jasy.core.Config import Config
+from jasy import UserError
+
+import jasy.core.Console as Console
+import jasy.vcs.Repository as Repository
+
+__all__ = ["create"]
+
 
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 
-@task
-def about():
-    """Print outs the Jasy about page"""
-
-    header("About")
-    jasy.info()
-
-    info("Command: %s", jasy.env.Task.getCommand())
-    info("Version: %s", jasy.__version__)
-
-
-@task
-def help():
-    """Shows this help screen"""
-
-    header("Help")
-    jasy.info()
-
-    print(colorize(colorize("Usage", "underline"), "bold"))
-    print("  $ jasy [<options...>] <task1> [<args...>] [<task2> [<args...>]]")
-
-    print()
-    print(colorize(colorize("Global Options", "underline"), "bold"))
-    jasy.env.Task.getOptions().printOptions()
-
-    print()
-    print(colorize(colorize("Available Tasks", "underline"), "bold"))
-    jasy.env.Task.printTasks()
-
-    print()
-
-
-@task
-def doctor():
-    """Verification and tests for Jasy environment"""
-
-    # This is mainly a placeholder (used by help screen)
-    pass
-
-
-@task
-def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, **argv):
-    """Creates a new project"""
-
-    header("Creating project %s" % name)
+def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, session=None, **argv):
+    Console.header("Creating project %s" % name)
 
     if not validProjectName.match(name):
-        raise JasyError("Invalid project name: %s" % name)
+        raise UserError("Invalid project name: %s (Use lowercase characters and numbers only for broadest compabibility)" % name)
 
 
     #
@@ -76,7 +36,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
 
     destinationPath = os.path.abspath(os.path.expanduser(destination))
     if os.path.exists(destinationPath):
-        raise JasyError("Cannot create project %s in %s. File or folder exists!" % (name, destinationPath))
+        raise UserError("Cannot create project %s in %s. File or folder exists!" % (name, destinationPath))
 
     # Origin can be either:
     # 1) None, which means a skeleton from the current main project
@@ -85,37 +45,38 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     # 4) Relative or absolute folder path
 
     if origin is None:
-        originProject = session.getMain()
+        originProject = session and session.getMain()
 
         if originProject is None:
-            raise JasyError("Auto discovery failed! No Jasy projects registered!")
+            raise UserError("Auto discovery failed! No Jasy projects registered!")
 
         originPath = originProject.getPath()
         originName = originProject.getName()
         originRevision = None
 
-    elif isRepository(origin):
-        info("Using remote skeleton")
+    elif Repository.isUrl(origin):
+        Console.info("Using remote skeleton")
 
         tempDirectory = tempfile.TemporaryDirectory()
         originPath = os.path.join(tempDirectory.name, "clone")
         originUrl = origin
 
-        indent()
-        originRevision = updateRepository(originUrl, originVersion, originPath)
-        outdent()
+        Console.indent()
+        originRevision = Repository.update(originUrl, originVersion, originPath)
+        Console.outdent()
 
         if originRevision is None:
-            raise JasyError("Could not clone origin repository!")
+            raise UserError("Could not clone origin repository!")
 
-        debug("Cloned revision: %s" % originRevision)
+        Console.debug("Cloned revision: %s" % originRevision)
 
         originProject = getProjectFromPath(originPath)
         originName = originProject.getName()
 
     else:
-        originProject = session.getProjectByName(origin)
+        originProject = session and session.getProjectByName(origin)
         originVersion = None
+        originRevision = None
 
         if originProject is not None:
             originPath = originProject.getPath()
@@ -127,12 +88,12 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
             originName = originProject.getName()
 
         else:
-            raise JasyError("Invalid value for origin: %s" % origin)
+            raise UserError("Invalid value for origin: %s" % origin)
 
     # Figure out the skeleton root folder
     skeletonDir = os.path.join(originPath, originProject.getConfigValue("skeletonDir", "skeleton"))
     if not os.path.isdir(skeletonDir):
-        raise JasyError('The project %s offers no skeletons!' % originName)
+        raise UserError('The project %s offers no skeletons!' % originName)
 
     # For convenience: Use first skeleton in skeleton folder if no other selection was applied
     if skeleton is None:
@@ -141,7 +102,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     # Finally we have the skeleton path (the root folder to copy for our app)
     skeletonPath = os.path.join(skeletonDir, skeleton)
     if not os.path.isdir(skeletonPath):
-        raise JasyError('Skeleton %s does not exist in project "%s"' % (skeleton, originName))
+        raise UserError('Skeleton %s does not exist in project "%s"' % (skeleton, originName))
 
 
     #
@@ -149,14 +110,14 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     #
 
     # Prechecks done
-    info('Creating %s from %s %s...', colorize(name, "bold"), colorize(skeleton + " @", "bold"), colorize(originName, "magenta"))
-    debug('Skeleton: %s', colorize(skeletonPath, "grey"))
-    debug('Destination: %s', colorize(destinationPath, "grey"))
+    Console.info('Creating %s from %s %s...', Console.colorize(name, "bold"), Console.colorize(skeleton + " @", "bold"), Console.colorize(originName, "magenta"))
+    Console.debug('Skeleton: %s', Console.colorize(skeletonPath, "grey"))
+    Console.debug('Destination: %s', Console.colorize(destinationPath, "grey"))
 
     # Copying files to destination
-    info("Copying files...")
+    Console.info("Copying files...")
     shutil.copytree(skeletonPath, destinationPath)
-    debug("Files were copied successfully.")
+    Console.debug("Files were copied successfully.")
 
     # Close origin project
     if originProject:
@@ -166,7 +127,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     os.chdir(destinationPath)
 
     # Create configuration file from question configs and custom scripts
-    info("Starting configuration...")
+    Console.info("Starting configuration...")
     config = Config()
 
     config.set("name", name)
@@ -184,8 +145,8 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
 
     # Do actual replacement of placeholders
     massFilePatcher(destinationPath, config)
-    debug("Files were patched successfully.")
+    Console.debug("Files were patched successfully.")
 
     # Done
-    info('Your application %s was created successfully!', colorize(name, "bold"))
+    Console.info('Your application %s was created successfully!', Console.colorize(name, "bold"))
 

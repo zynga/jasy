@@ -10,23 +10,21 @@
 #   - Sebastian Werner <info@sebastian-werner.net> (Python Port) (2010-2012)
 #
 
-from jasy.js.tokenize.Tokenizer import Token
-from jasy.js.tokenize.Tokenizer import Tokenizer
-from jasy.js.tokenize.Lang import keywords
-from jasy.js.parse.Node import Node
-from jasy.js.parse.VanillaBuilder import VanillaBuilder
+import jasy.js.tokenize.Tokenizer
+import jasy.js.parse.VanillaBuilder
+import jasy.js.tokenize.Lang
 
 __all__ = [ "parse", "parseExpression" ]
 
 def parseExpression(source, fileId=None, line=1, builder=None):
     if builder == None:
-        builder = VanillaBuilder()
+        builder = jasy.js.parse.VanillaBuilder.VanillaBuilder()
     
     # Convert source into expression statement to be friendly to the Tokenizer
     if not source.endswith(";"):
         source = source + ";"
     
-    tokenizer = Tokenizer(source, fileId, line)
+    tokenizer = jasy.js.tokenize.Tokenizer.Tokenizer(source, fileId, line)
     staticContext = StaticContext(False, builder)
     
     return Expression(tokenizer, staticContext)
@@ -35,9 +33,9 @@ def parseExpression(source, fileId=None, line=1, builder=None):
 
 def parse(source, fileId=None, line=1, builder=None):
     if builder == None:
-        builder = VanillaBuilder()
+        builder = jasy.js.parse.VanillaBuilder.VanillaBuilder()
     
-    tokenizer = Tokenizer(source, fileId, line)
+    tokenizer = jasy.js.tokenize.Tokenizer.Tokenizer(source, fileId, line)
     staticContext = StaticContext(False, builder)
     node = Script(tokenizer, staticContext)
     
@@ -878,15 +876,8 @@ def Variables(tokenizer, staticContext, letBlock=None):
             if tokenizer.token.assignOp:
                 raise SyntaxError("Invalid variable initialization", tokenizer)
 
-            # Parse the init as a normal assignment.
-            id = Node(childNode.tokenizer, "identifier")
-            assignmentNode = builder.ASSIGN_build(tokenizer)
-            builder.ASSIGN_addOperand(assignmentNode, id)
-            builder.ASSIGN_addOperand(assignmentNode, AssignExpression(tokenizer, staticContext))
-            builder.ASSIGN_finish(assignmentNode)
-            
-            # But only add the rhs as the initializer.
-            builder.DECL_setInitializer(childNode, assignmentNode[1])
+            initializerNode = AssignExpression(tokenizer, staticContext)
+            builder.DECL_setInitializer(childNode, initializerNode)
 
         builder.DECL_finish(childNode)
         
@@ -1485,7 +1476,7 @@ def PrimaryExpression(tokenizer, staticContext):
                         break
                             
                     else:
-                        if tokenValue in keywords:
+                        if tokenValue in jasy.js.tokenize.Lang.keywords:
                             id = builder.PRIMARY_build(tokenizer, "identifier")
                             builder.PRIMARY_finish(id)
                         else:

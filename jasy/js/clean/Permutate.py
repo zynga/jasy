@@ -1,5 +1,9 @@
-from jasy.js.tokenize.Tokenizer import Tokenizer
-from jasy.js.parse.Parser import parseExpression
+#
+# Jasy - Web Tooling Framework
+# Copyright 2010-2012 Zynga Inc.
+#
+
+import jasy.js.parse.Parser as Parser
 from jasy.js.util import *
 
 
@@ -39,7 +43,7 @@ def patch(node, permutation):
             params = callNode[1]
             replacement = __translateToJS(permutation.get(params[0].value))
             if replacement:
-                replacementNode = parseExpression(replacement)
+                replacementNode = Parser.parseExpression(replacement)
                 callNode.parent.replace(callNode, replacementNode)
                 modified = True            
         
@@ -53,10 +57,10 @@ def patch(node, permutation):
             
             if replacement != None:
                 # Auto-fill second parameter with boolean "true"
-                expected = params[1] if len(params) > 1 else parseExpression("true")
+                expected = params[1] if len(params) > 1 else Parser.parseExpression("true")
 
                 if expected.type in ("string", "number", "true", "false"):
-                    parsedReplacement = parseExpression(replacement)
+                    parsedReplacement = Parser.parseExpression(replacement)
                     expectedValue = getattr(expected, "value", None)
                     
                     if expectedValue is not None:
@@ -68,7 +72,7 @@ def patch(node, permutation):
                         replacementResult = parsedReplacement.type == expected.type
 
                     # Do actual replacement
-                    replacementNode = parseExpression("true" if replacementResult else "false")
+                    replacementNode = Parser.parseExpression("true" if replacementResult else "false")
                     callNode.parent.replace(callNode, replacementNode)
                     modified = True
         
@@ -78,7 +82,7 @@ def patch(node, permutation):
             params = callNode[1]
             replacement = __translateToJS(permutation.get(params[0].value))
             if replacement:
-                parsedReplacement = parseExpression(replacement)
+                parsedReplacement = Parser.parseExpression(replacement)
                 if parsedReplacement.type != "string":
                     raise Exception("core.Env.select requires that the given replacement is of type string.")
 

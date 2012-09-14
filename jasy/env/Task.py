@@ -5,18 +5,18 @@
 
 import types, os, sys, inspect, subprocess
 
-from jasy.env.State import setPrefix, session, getPrefix
-from jasy.core.Error import JasyError
-from jasy.core.Logging import *
-from jasy.core.Util import camelize
+import jasy.core.Console as Console
 
+from jasy.env.State import session
+from jasy.core.Util import camelize
+from jasy import UserError
 
 __all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOptions", "getOptions"]
 
 
 class Task:
 
-    __slots__ = ["func", "name", "curry", "availableArgs", "hasFlexArgs", "__doc__"]
+    __slots__ = ["func", "name", "curry", "availableArgs", "hasFlexArgs", "__doc__", "__name__"]
 
     
     def __init__(self, func, **curry):
@@ -24,6 +24,11 @@ class Task:
 
         self.func = func
         self.name = func.__name__
+
+        self.__name__ = "Task: %s" % func.__name__
+
+        # Circular reference to connect both, function and task
+        func.task = self
 
         # The are curried in arguments which are being merged with 
         # dynamic command line arguments on each execution
@@ -55,17 +60,19 @@ class Task:
         # Allow overriding of prefix via task or cmdline parameter.
         # By default use name of the task (no prefix for cleanup tasks)
         if "prefix" in merged:
-            setPrefix(merged["prefix"])
+            session.setCurrentPrefix(merged["prefix"])
             del merged["prefix"]
         elif "clean" in self.name:
-            setPrefix(None)
+            session.setCurrentPrefix(None)
         else:
-            setPrefix(self.name)
+            session.setCurrentPrefix(self.name)
         
 
         #
         # EXECUTE ATTACHED FUNCTION
         #
+
+        Console.header(self.__name__)
 
         # Execute internal function
         return self.func(**merged)
@@ -95,7 +102,7 @@ def task(*args, **kwargs):
             return task(**kwargs)
 
         else:
-            raise JasyError("Invalid task")
+            raise UserError("Invalid task")
     
     else:
 
@@ -113,9 +120,9 @@ def addTask(task):
     """Registers the given task with its name"""
     
     if task.name in __taskRegistry:
-        debug("Overriding task: %s" % task.name)
+        Console.debug("Overriding task: %s" % task.name)
     else:
-        debug("Registering task: %s" % task.name)
+        Console.debug("Registering task: %s" % task.name)
         
     __taskRegistry[task.name] = task
 
@@ -126,13 +133,13 @@ def executeTask(taskname, **kwargs):
         try:
             camelCaseArgs = { camelize(key) : kwargs[key] for key in kwargs }
             __taskRegistry[taskname](**camelCaseArgs)
-        except JasyError as err:
+        except UserError as err:
             raise
         except:
-            error("Unexpected error! Could not finish task %s successfully!" % taskname)
+            Console.error("Unexpected error! Could not finish task %s successfully!" % taskname)
             raise
     else:
-        raise JasyError("No such task: %s" % taskname)
+        raise UserError("No such task: %s" % taskname)
 
 def printTasks(indent=16):
     """Prints out a list of all avaible tasks and their descriptions"""
@@ -143,7 +150,7 @@ def printTasks(indent=16):
         formattedName = name
         if obj.__doc__:
             space = (indent - len(name)) * " "
-            print("    %s: %s%s" % (formattedName, space, colorize(obj.__doc__, "magenta")))
+            print("    %s: %s%s" % (formattedName, space, Console.colorize(obj.__doc__, "magenta")))
         else:
             print("    %s" % formattedName)
 
@@ -158,7 +165,7 @@ def printTasks(indent=16):
                 else:
                     text += "--<name> <var>"
 
-            print("      %s" % (colorize(text, "grey")))
+            print("      %s" % (Console.colorize(text, "grey")))
 
 
 # Jasy reference for executing remote tasks
@@ -181,9 +188,13 @@ def getOptions():
     global __options
     return __options
 
-
-# Remote run support
 def runTask(project, task, **kwargs):
+    """
+    Executes the given task of the given projects. 
+    
+    This happens inside a new sandboxed session during which the 
+    current session is paused/resumed automatically.
+    """
 
     remote = session.getProjectByName(project)
     if remote is not None:
@@ -193,9 +204,9 @@ def runTask(project, task, **kwargs):
         remotePath = project
         remoteName = os.path.basename(project)
     else:
-        raise JasyError("Unknown project or invalid path: %s" % project)
+        raise UserError("Unknown project or invalid path: %s" % project)
 
-    info("Running %s of project %s...", colorize(task, "bold"), colorize(remoteName, "bold"))
+    Console.info("Running %s of project %s...", Console.colorize(task, "bold"), Console.colorize(remoteName, "bold"))
 
     # Pauses this session to allow sub process fully accessing the same projects
     session.pause()
@@ -203,7 +214,7 @@ def runTask(project, task, **kwargs):
     # Build parameter list from optional arguments
     params = ["--%s=%s" % (key, kwargs[key]) for key in kwargs]
     if not "prefix" in kwargs:
-        params.append("--prefix=%s" % getPrefix())
+        params.append("--prefix=%s" % session.getPrefix())
 
     # Full list of args to pass to subprocess
     args = [__command, task] + params
@@ -219,7 +230,7 @@ def runTask(project, task, **kwargs):
 
     # Error handling
     if returnValue != 0:
-        raise JasyError("Executing of sub task %s from project %s failed" % (task, project))
+        raise UserError("Executing of sub task %s from project %s failed" % (task, project))
 
 
 

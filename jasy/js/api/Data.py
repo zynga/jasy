@@ -3,10 +3,11 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
+import jasy.js.api.Text as Text
+
 from jasy.js.util import *
-from jasy.js.api.Text import *
-from jasy.core.Logging import *
-from jasy.core.Error import JasyError
+import jasy.core.Console as Console
+from jasy import UserError
 
 
 __all__ = ["ApiData"]
@@ -15,8 +16,7 @@ __all__ = ["ApiData"]
 class ApiData():
     """
     Container for all relevant API data. 
-    Automatically generated, filled and cached by jasy.item.Item
-jasy.item.Class.getApiDocs().
+    Automatically generated, filled and cached by jasy.item.Class.getApiDocs().
     """
 
 
@@ -92,8 +92,8 @@ jasy.item.Class.getApiDocs().
             if not self.__processTree(tree):
                 self.main["errornous"] = True
                 
-        except JasyError as jasyError:
-            raise jasyError
+        except UserError as UserError:
+            raise UserError
                 
         except Exception as error:
             self.main["errors"] = ({
@@ -383,7 +383,7 @@ jasy.item.Class.getApiDocs().
 
 
     def warn(self, message, line):
-        warn("%s at line %s in %s" % (message, line, self.id))
+        Console.warn("%s at line %s in %s" % (message, line, self.id))
 
 
     def setMain(self, mainType, mainNode, exportName):
@@ -401,7 +401,7 @@ jasy.item.Class.getApiDocs().
             if callComment.text:
                 html = callComment.getHtml(self.highlight)
                 entry["doc"] = html
-                entry["summary"] = extractSummary(html)
+                entry["summary"] = Text.extractSummary(html)
         
             if hasattr(callComment, "tags"):
                 entry["tags"] = callComment.tags
@@ -425,7 +425,7 @@ jasy.item.Class.getApiDocs().
         else:
             html = comment.getHtml(self.highlight)
             entry["doc"] = html
-            entry["summary"] = extractSummary(html)
+            entry["summary"] = Text.extractSummary(html)
             
         if comment and comment.tags:
             entry["tags"] = comment.tags
@@ -489,7 +489,7 @@ jasy.item.Class.getApiDocs().
         if comment and comment.hasHtmlContent():
             html = comment.getHtml(self.highlight)
             entry["doc"] = html
-            entry["summary"] = extractSummary(html)
+            entry["summary"] = Text.extractSummary(html)
 
         if comment and comment.tags:
             entry["tags"] = comment.tags
@@ -561,7 +561,7 @@ jasy.item.Class.getApiDocs().
             if comment.hasHtmlContent():
                 html = comment.getHtml(self.highlight)
                 entry["doc"] = html
-                entry["summary"] = extractSummary(html)
+                entry["summary"] = Text.extractSummary(html)
             else:
                 self.warn("Comment contains invalid HTML", commentNode.line)
                 entry["errornous"] = True
@@ -712,7 +712,7 @@ jasy.item.Class.getApiDocs().
             if comment.hasHtmlContent():
                 html = comment.getHtml(self.highlight)
                 entry["doc"] = html
-                entry["summary"] = extractSummary(html)
+                entry["summary"] = Text.extractSummary(html)
             else:
                 entry["errornous"] = True
                 

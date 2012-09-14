@@ -119,6 +119,7 @@ setup(
     'jasy.asset.sprite',
     'jasy.core',
     'jasy.env',
+    'jasy.http',
     'jasy.item',
     'jasy.js',
     'jasy.js.api',
@@ -129,7 +130,7 @@ setup(
     'jasy.js.tokenize',
     'jasy.js.util',
     'jasy.test',
-    'jasy.server'
+    'jasy.vcs',
   ],
 
   package_data = {

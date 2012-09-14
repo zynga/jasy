@@ -49,18 +49,18 @@ It can figure out combined expressions as well like:
 
 __all__ = ["cleanup"]
 
-from jasy.core.Logging import *
+import jasy.core.Console as Console
 
 def cleanup(node):
     """
     Reprocesses JavaScript to remove dead paths 
     """
     
-    debug("Removing dead code branches...")
+    Console.debug("Removing dead code branches...")
 
-    indent()
+    Console.indent()
     result = __cleanup(node)
-    outdent()
+    Console.outdent()
 
     return result
 
@@ -84,7 +84,7 @@ def __cleanup(node):
         check = __checkCondition(node.condition)
         if check is not None:
             optimized = True
-            debug("Optimizing if/else at line %s", node.line)
+            Console.debug("Optimizing if/else at line %s", node.line)
             
             if check is True:
                 node.parent.replace(node, node.thenPart)
@@ -99,7 +99,7 @@ def __cleanup(node):
     if node.type == "hook":
         check = __checkCondition(node[0])
         if check is not None:
-            debug("Optimizing hook at line %s", node.line)
+            Console.debug("Optimizing hook at line %s", node.line)
             optimized = True
         
             if check is True:
@@ -119,7 +119,7 @@ def __cleanup(node):
             if child.type == "case":
                 block = child[len(child)-1]
                 if len(block) == 0 or block[len(block)-1].type != "break":
-                    warn("Could not optimize switch statement (at line %s) because of fallthrough break statement.", node.line)
+                    Console.warn("Could not optimize switch statement (at line %s) because of fallthrough break statement.", node.line)
                     return False
 
             if child.type == "default":
@@ -136,7 +136,7 @@ def __cleanup(node):
                 matcher = fallback
                 
             node.parent.replace(node, matcher)
-            debug("Optimizing switch at line %s", node.line)
+            Console.debug("Optimizing switch at line %s", node.line)
             optimized = True
     
     return optimized

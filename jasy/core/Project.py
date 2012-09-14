@@ -3,29 +3,29 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, json, re
+import os, re
 
-from jasy.core.Cache import Cache
-from jasy.core.Repository import isRepository, getRepositoryType, getRepositoryFolder, updateRepository
-from jasy.core.Error import JasyError
+import jasy.core.Cache
+import jasy.core.Config as Config
+import jasy.core.File as File
+import jasy.core.Console as Console
+
+import jasy.vcs.Repository as Repository
+
+import jasy.item.Abstract
+import jasy.item.Doc
+import jasy.item.Translation
+import jasy.item.Class
+import jasy.item.Asset
+
 from jasy.core.Util import getKey
-from jasy.core.Logging import *
-from jasy.env.Config import Config
-from jasy.env.State import setPermutation, header
-
-# Item types
-from jasy.item.Item import Item
-from jasy.item.Doc import Doc
-from jasy.item.Translation import Translation
-from jasy.item.Class import Class
-from jasy.item.Asset import Asset
+from jasy import UserError
 
 
 __all__ = ["Project", "getProjectFromPath", "getProjectDependencies"]
 
 
 classExtensions = (".js")
-
 # Gettext .po files + ICU formats (http://userguide.icu-project.org/locale/localizing) (all formats but without .java support)
 translationExtensions = (".po", ".xlf", ".properties", ".txt")
 docFiles = ("package.md", "readme.md")
@@ -42,56 +42,74 @@ def getProjectFromPath(path, config=None, version=None):
         projects[path] = Project(path, config, version)
 
     return projects[path]
-    
-    
-def getProjectDependencies(project):
+
+
+def getProjectDependencies(project, checkoutDirectory="external", updateRepositories=True):
     """ Returns a sorted list of projects depending on the given project (including the given one) """
-    
+
+    #info("Resolving project dependencies...")
+    #indent()
+
     def __resolve(project):
 
         name = project.getName()
 
-        if name in names:
-            debug("Ignore already known project %s", name)
+        # List of required projects
+        Console.info("Getting requirements of %s...", Console.colorize(name, "bold"))
+        Console.indent()
+        requires = project.getRequires(checkoutDirectory, updateRepositories)
+        Console.outdent()
+
+        if not requires:
             return
 
-        names[name] = project
-        result.insert(0, project)
+        Console.debug("Processing %s requirements...", len(requires))
+        Console.indent()
 
-        if project.version:
-            info("Processing %s @ %s", colorize(name, "bold"), colorize(project.version, "magenta"))
-        else:
-            info("Processing %s", colorize(name, "bold"))
+        # Adding all project in reverse order.
+        # Adding all local ones first before going down to their requirements
+        for requiredProject in reversed(requires):
+            requiredName = requiredProject.getName()
+            if not requiredName in names:
+                Console.debug("Adding: %s %s (via %s)", requiredName, requiredProject.version, project.getName())
+                names[requiredName] = True
+                result.append(requiredProject)
+            else:
+                Console.debug("Blocking: %s %s (via %s)", requiredName, requiredProject.version, project.getName())
 
-        indent()
-        requires = project.getRequires()
+        # Process all requirements of added projects
+        for requiredProject in requires:
+            if requiredProject.hasRequires():
+                __resolve(requiredProject)
 
-        for require in reversed(requires):
-            __resolve(require)
+        Console.outdent()
 
-        outdent()
-
-    result= []
-    names = {}
-    
-    info("Detecting dependencies...")
-    indent()
+    result = [project]
+    names = {
+        project.getName() : True
+    }
 
     __resolve(project)
-    
-    outdent()
+
+    #outdent()
 
     return result
 
 
-def getProjectNameFromPath(path):
-    basename = os.path.basename(path)
 
-    clone = repositoryFolder.match(basename)
+def getProjectNameFromPath(path):
+    name = os.path.basename(path)
+
+    # Remove folder SHA1 postfix when cloned via git etc.
+    clone = repositoryFolder.match(name)
     if clone is not None:
-        return clone.group(1)
-    else:
-        return basename
+        name = clone.group(1)
+
+    # Slashes are often used as a separator to optional data
+    if "-" in name:
+        name = name[:name.index("-")]
+
+    return name
 
 
 class Project():
@@ -110,7 +128,7 @@ class Project():
         """
         
         if not os.path.isdir(path):
-            raise JasyError("Invalid project path: %s" % path)
+            raise UserError("Invalid project path: %s" % path)
         
         # Only store and work with full path
         self.__path = os.path.abspath(os.path.expanduser(path))
@@ -125,14 +143,15 @@ class Project():
         self.translations = {}
 
         # Load project configuration
-        self.__config = Config(config)
+        self.__config = Config.Config(config)
         self.__config.loadValues(os.path.join(self.__path, "jasyproject"), optional=True)
 
         # Initialize cache
         try:
-            self.__cache = Cache(self.__path)
+            File.mkdir(os.path.join(self.__path, ".jasy"))
+            self.__cache = jasy.core.Cache.Cache(self.__path, filename=".jasy/cache")
         except IOError as err:
-            raise JasyError("Could not initialize project. Cache file in %s could not be initialized! %s" % (self.__path, err))
+            raise UserError("Could not initialize project. Cache file in %s could not be initialized! %s" % (self.__path, err))
         
         # Read name from manifest or use the basename of the project's path
         self.__name = self.__config.get("name", getProjectNameFromPath(self.__path))
@@ -198,9 +217,9 @@ class Project():
 
         # Print out
         if summary:
-            info("Scanned project %s %s: %s" % (colorize(self.__name, "bold"), colorize("[%s]" % self.kind, "grey"), colorize(", ".join(summary), "green")))
+            Console.info("Scanned project %s %s: %s" % (Console.colorize(self.__name, "bold"), Console.colorize("[%s]" % self.kind, "grey"), Console.colorize(", ".join(summary), "green")))
         else:
-            error("Project %s is empty!", colorize(self.__name, "bold"))
+            Console.error("Project %s is empty!", Console.colorize(self.__name, "bold"))
 
         self.scanned = True
 
@@ -214,7 +233,7 @@ class Project():
         full = os.path.join(self.__path, directory)
         if os.path.exists(full):
             if not os.path.isdir(full):
-                raise JasyError("Expecting %s to be a directory: %s" % full)
+                raise UserError("Expecting %s to be a directory: %s" % full)
             
             return True
         
@@ -222,18 +241,18 @@ class Project():
         
         
     def __addContent(self, content):
-        debug("Adding manual content")
+        Console.debug("Adding manual content")
         
-        indent()
+        Console.indent()
         for fileId in content:
             fileContent = content[fileId]
             if len(fileContent) == 0:
-                raise JasyError("Empty content!")
+                raise UserError("Empty content!")
                 
             # If the user defines a file extension for JS public idenfiers 
             # (which is not required) we filter them out
             if fileId.endswith(".js"):
-                raise JasyError("JavaScript files should define the exported name, not a file name: %s" % fileId)
+                raise UserError("JavaScript files should define the exported name, not a file name: %s" % fileId)
 
             fileExtension = os.path.splitext(fileContent[0])[1]
             
@@ -256,20 +275,20 @@ class Project():
                 
             # Check for duplication
             if fileId in dist:
-                raise JasyError("Item ID was registered before: %s" % fileId)
+                raise UserError("Item ID was registered before: %s" % fileId)
             
             # Create instance
             item = construct(self, fileId).attach(filePath)
-            debug("Registering %s %s" % (item.kind, fileId))
+            Console.debug("Registering %s %s" % (item.kind, fileId))
             dist[fileId] = item
             
-        outdent()
+        Console.outdent()
         
         
     def __addDir(self, directory, distname):
         
-        debug("Scanning directory: %s" % directory)
-        indent()
+        Console.debug("Scanning directory: %s" % directory)
+        Console.indent()
         
         path = os.path.join(self.__path, directory)
         if not os.path.exists(path):
@@ -297,7 +316,7 @@ class Project():
                 
                 self.addFile(relPath, fullPath, distname)
         
-        outdent()
+        Console.outdent()
 
 
     def addFile(self, relPath, fullPath, distname, override=False):
@@ -314,33 +333,33 @@ class Project():
         # Structure files  
         if fileExtension in classExtensions and distname == "classes":
             fileId += os.path.splitext(relPath)[0]
-            construct = Class
+            construct = jasy.item.Class.ClassItem
             dist = self.classes
         elif fileExtension in translationExtensions and distname == "translations":
             fileId += os.path.splitext(relPath)[0]
-            construct = Translation
+            construct = jasy.item.Translation.TranslationItem
             dist = self.translations
         elif fileName in docFiles:
             fileId += os.path.dirname(relPath)
             fileId = fileId.strip("/") # edge case when top level directory
-            construct = Doc
+            construct = jasy.item.Doc.DocItem
             dist = self.docs
         else:
             fileId += relPath
-            construct = Asset
+            construct = jasy.item.Asset.AssetItem
             dist = self.assets
 
         # Only assets keep unix style paths identifiers
-        if construct != Asset:
+        if construct != jasy.item.Asset.AssetItem:
             fileId = fileId.replace("/", ".")
 
         # Check for duplication
         if fileId in dist and not override:
-            raise JasyError("Item ID was registered before: %s" % fileId)
+            raise UserError("Item ID was registered before: %s" % fileId)
 
         # Create instance
         item = construct(self, fileId).attach(fullPath)
-        debug("Registering %s %s" % (item.kind, fileId))
+        Console.debug("Registering %s %s" % (item.kind, fileId))
         dist[fileId] = item
         
         
@@ -349,8 +368,12 @@ class Project():
     #
     # ESSENTIALS
     #
+
+    def hasRequires(self):
+        return len(self.__requires) > 0
+
     
-    def getRequires(self, prefix="external"):
+    def getRequires(self, checkoutDirectory="external", updateRepositories=True):
         """
         Return the project requirements as project instances
         """
@@ -372,18 +395,22 @@ class Project():
                 version = None
                 kind = None
 
+            # Versions are expected being string type
+            if version is not None:
+                version = str(version)
+
             revision = None
             
-            if isRepository(source):
-                kind = kind or getRepositoryType(source)
-                path = os.path.abspath(os.path.join(prefix, getRepositoryFolder(source, version, kind)))
+            if Repository.isUrl(source):
+                kind = kind or Repository.getType(source)
+                path = os.path.abspath(os.path.join(checkoutDirectory, Repository.getTargetFolder(source, version, kind)))
                 
                 # Only clone and update when the folder is unique in this session
                 # This reduces git/hg/svn calls which are typically quite expensive
                 if not path in projects:
-                    revision = updateRepository(source, version, path)
+                    revision = Repository.update(source, version, path, updateRepositories)
                     if revision is None:
-                        raise JasyError("Could not update repository %s" % source)
+                        raise UserError("Could not update repository %s" % source)
             
             else:
                 kind = "local"
@@ -478,7 +505,7 @@ class Project():
     def clean(self):
         """Clears the cache of the project"""
         
-        info("Clearing cache of %s..." % self.__name)
+        Console.info("Clearing cache of %s..." % self.__name)
         self.__cache.clear()
         
     def close(self):

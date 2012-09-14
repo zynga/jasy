@@ -4,15 +4,13 @@
 #
 
 import re, json, os, fnmatch
-from os.path import basename, dirname, relpath, normpath
 
-from jasy.env.File import *
-from jasy.core.Project import Project
-from jasy.env.State import getPermutation, prependPrefix
-from jasy.item.Asset import Asset
-from jasy.core.Error import JasyError
-from jasy.core.Util import sha1File, getKey
-from jasy.core.Logging import *
+import jasy.core.File
+import jasy.item.Asset
+import jasy.core.Json as Json
+
+from jasy import UserError
+import jasy.core.Console as Console
 
 __all__ = ["AssetManager"]
 
@@ -33,6 +31,10 @@ class AssetManager:
     """
     
     def __init__(self, session):
+
+        Console.info("Initializing assets...")
+        Console.indent()
+
         # Store session reference (one asset manager per session)
         self.__session = session
 
@@ -42,18 +44,16 @@ class AssetManager:
         # Registry for profiles aka asset groups
         self.__profiles = []
         
-        # Initialize storage pool
-        self.__assets = None
-
         # Loop though all projects and merge assets
         assets = self.__assets = {}
         for project in self.__session.getProjects():
-            assets.update(project.assets)
+            assets.update(project.getAssets())
         
         self.__processSprites()
         self.__processAnimations()
         
-        info("Activated %s assets", len(assets))
+        Console.outdent()
+        Console.info("Activated %s assets", len(assets))
 
 
     def __processSprites(self):
@@ -63,27 +63,27 @@ class AssetManager:
         configs = [fileId for fileId in assets if assets[fileId].isImageSpriteConfig()]
         
         if configs:
-            info("Processing %s image sprite configs...", len(configs))
+            Console.info("Processing %s image sprite configs...", len(configs))
         
         sprites = []
-        indent()
+        Console.indent()
         for fileId in configs:
-            debug("Processing %s...", fileId)
+            Console.debug("Processing %s...", fileId)
             
             asset = assets[fileId]
-            spriteBase = dirname(fileId)
+            spriteBase = os.path.dirname(fileId)
                 
             try:
                 spriteConfig = asset.getParsedObject();
             except ValueError as err:
-                raise JasyError("Could not parse jasysprite.json at %s: %s" % (fileId, err))
+                raise UserError("Could not parse jasysprite.json at %s: %s" % (fileId, err))
                 
-            indent()
+            Console.indent()
             for spriteImage in spriteConfig:
                 spriteImageId = "%s/%s" % (spriteBase, spriteImage)
                 
                 singleRelPaths = spriteConfig[spriteImage]
-                debug("Image %s combines %s images", spriteImageId, len(singleRelPaths))
+                Console.debug("Image %s combines %s images", spriteImageId, len(singleRelPaths))
 
                 for singleRelPath in singleRelPaths:
                     singleId = "%s/%s" % (spriteBase, singleRelPath)
@@ -92,8 +92,8 @@ class AssetManager:
                     if singleId in assets:
                         singleAsset = assets[singleId]
                     else:
-                        info("Creating new asset: %s", singleId)
-                        singleAsset = Asset(None)
+                        Console.info("Creating new asset: %s", singleId)
+                        singleAsset = jasy.item.Asset.AssetItem(None)
                         assets[singleId] = singleAsset
                         
                     if not spriteImageId in sprites:
@@ -112,16 +112,16 @@ class AssetManager:
                         fileChecksum = singleAsset.getChecksum()
                         storedChecksum = singleData["checksum"]
                         
-                        debug("Checksum Compare: %s <=> %s", fileChecksum[0:6], storedChecksum[0:6])
+                        Console.debug("Checksum Compare: %s <=> %s", fileChecksum[0:6], storedChecksum[0:6])
                         
                         if storedChecksum != fileChecksum:
-                            raise JasyError("Sprite Sheet is not up-to-date. Checksum of %s differs.", singleId)
+                            raise UserError("Sprite Sheet is not up-to-date. Checksum of %s differs.", singleId)
         
-            outdent()
-            debug("Deleting sprite config from assets: %s", fileId)
+            Console.outdent()
+            Console.debug("Deleting sprite config from assets: %s", fileId)
             del assets[fileId]
             
-        outdent()
+        Console.outdent()
         self.__sprites = sprites
         
         
@@ -133,33 +133,33 @@ class AssetManager:
         configs = [fileId for fileId in assets if assets[fileId].isImageAnimationConfig()]
         
         if configs:
-            info("Processing %s image animation configs...", len(configs))
+            Console.info("Processing %s image animation configs...", len(configs))
         
-        indent()
+        Console.indent()
         for fileId in configs:
-            debug("Processing %s...", fileId)
+            Console.debug("Processing %s...", fileId)
         
             asset = assets[fileId]
-            base = dirname(fileId)
+            base = os.path.dirname(fileId)
                 
             try:
                 config = json.loads(asset.getText())
             except ValueError as err:
-                raise JasyError("Could not parse jasyanimation.json at %s: %s" % (fileId, err))
+                raise UserError("Could not parse jasyanimation.json at %s: %s" % (fileId, err))
             
             for relPath in config:
                 imageId = "%s/%s" % (base, relPath)
                 data = config[relPath]
                 
                 if not imageId in assets:
-                    raise JasyError("Unknown asset %s in %s" % (imageId, fileId))
+                    raise UserError("Unknown asset %s in %s" % (imageId, fileId))
                 
                 animationAsset = assets[imageId]
                 
                 if "rows" in data or "columns" in data:
-                    rows = getKey(data, "rows", 1)
-                    columns = getKey(data, "columns", 1)
-                    frames = getKey(data, "frames")
+                    rows = Util.getKey(data, "rows", 1)
+                    columns = Util.getKey(data, "columns", 1)
+                    frames = Util.getKey(data, "frames")
                     
                     animationAsset.addImageAnimationData(columns, rows, frames)
                     
@@ -172,14 +172,14 @@ class AssetManager:
                     frames = len(layout)
                     
                 else:
-                    raise JasyError("Invalid image frame data for: %s" % imageId)
+                    raise UserError("Invalid image frame data for: %s" % imageId)
 
-                debug("  - Animation %s has %s frames", imageId, frames)
+                Console.debug("  - Animation %s has %s frames", imageId, frames)
 
-            debug("  - Deleting animation config from assets: %s", fileId)
+            Console.debug("  - Deleting animation config from assets: %s", fileId)
             del assets[fileId]
             
-        outdent()
+        Console.outdent()
         
     
     
@@ -191,7 +191,7 @@ class AssetManager:
         profiles = self.__profiles
         for entry in profiles:
             if entry["name"] == name:
-                raise JasyError("Asset profile %s was already defined!" % name)
+                raise UserError("Asset profile %s was already defined!" % name)
         
         profile = {
             "name" : name
@@ -236,6 +236,8 @@ class AssetManager:
                 data[fileId]["p"] = profileId
                 data[fileId]["u"] = main.toRelativeUrl(assets[fileId].getPath())
 
+        return self
+
 
 
     def addBuildProfile(self, urlPrefix="asset", override=False):
@@ -255,6 +257,8 @@ class AssetManager:
             if override or not "p" in data[fileId]:
                 data[fileId]["p"] = profileId
 
+        return self
+
     
     def addRuntimeData(self, runtime):
         assets = self.__assets
@@ -262,13 +266,15 @@ class AssetManager:
         
         for fileId in runtime:
             if not fileId in assets:
-                debug("Unknown asset: %s" % fileId)
+                Console.debug("Unknown asset: %s" % fileId)
                 continue
         
             if not fileId in data:
                 data[fileId] = {}
                 
             data[fileId].update(runtime[fileId])
+
+        return self
     
     
     def __structurize(self, data):
@@ -296,12 +302,12 @@ class AssetManager:
                 if not split in current:
                     current[split] = {}
                 elif type(current[split]) != dict:
-                    raise JasyError("Invalid asset structure. Folder names must not be identical to any filename without extension: \"%s\" in %s" % (split, fileId))
+                    raise UserError("Invalid asset structure. Folder names must not be identical to any filename without extension: \"%s\" in %s" % (split, fileId))
                     
                 current = current[split]
             
             # Create entry
-            debug("Adding %s..." % fileId)
+            Console.debug("Adding %s..." % fileId)
             current[basename] = data[fileId]
         
         return root
@@ -314,26 +320,26 @@ class AssetManager:
         # Merge asset hints from all classes and remove duplicates
         hints = set()
         for classObj in classes:
-            hints.update(classObj.getMetaData(getPermutation()).assets)
+            hints.update(classObj.getMetaData(self.__session.getCurrentPermutation()).assets)
         
         # Compile filter expressions
         matcher = "^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints])
-        debug("Compiled asset matcher: %s" % matcher)
+        Console.debug("Compiled asset matcher: %s" % matcher)
         
         return re.compile(matcher)
         
         
         
-    def deploy(self, classes, assetFolder="asset"):
+    def deploy(self, classes, assetFolder="$prefix/asset"):
         """Deploys all asset files to the destination asset folder"""
 
         assets = self.__assets
         projects = self.__session.getProjects()
 
-        copyAssetFolder = prependPrefix(assetFolder)
+        copyAssetFolder = self.__session.expandFileName(assetFolder)
         filterExpr = self.__compileFilterExpr(classes)
         
-        info("Deploying assets...")
+        Console.info("Deploying assets...")
         
         counter = 0
         length = len(assets)
@@ -342,18 +348,18 @@ class AssetManager:
             if not filterExpr.match(fileId):
                 length -= 1
                 continue
-            
+
             srcFile = assets[fileId].getPath()
             dstFile = os.path.join(copyAssetFolder, fileId.replace("/", os.sep))
             
-            if updateFile(srcFile, dstFile):
+            if jasy.core.File.syncfile(srcFile, dstFile):
                 counter += 1
         
-        info("Updated %s/%s files" % (counter, length))
+        Console.info("Updated %s/%s files" % (counter, length))
         
 
 
-    def export(self, classes=None):
+    def export(self, classes=None, compress=True):
         """Exports asset data for the source version using assets from their original paths."""
         
         # Processing assets
@@ -384,15 +390,12 @@ class AssetManager:
         if not result:
             return None
 
-        # Exporting data
-        json = toJson({
+        Console.info("Exported %s assets", len(result))
+
+        return "jasy.Asset.addData(%s);" % Json.toJson({
             "assets" : self.__structurize(result),
             "profiles" : self.__profiles,
             "sprites" : self.__sprites
-        })
-        
-        info("Exported %s assets", len(result))
-        
-        return json
+        }, compress=compress)
         
 
