@@ -31,7 +31,7 @@ def update(url, version, path, update=True):
             revision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
             
             if update and (version == "master" or "refs/heads/" in version):
-                if __enableUpdates:
+                if update:
                     Console.info("Updating %s", Console.colorize("%s @ " % url, "bold") + Console.colorize(version, "magenta"))
                     
                     try:
