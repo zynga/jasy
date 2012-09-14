@@ -19,9 +19,6 @@ Result = namedtuple('Result', ['headers', 'content'])
 logging.getLogger("requests").setLevel(logging.WARNING)
 
 
-__all__ = ["serve"]
-
-
 #
 # UTILITIES
 #
