@@ -8,7 +8,7 @@ import os
 import jasy.core.Console as Console
 import jasy.core.Json as Json
 
-from jasy.core.Permutation import Permutation
+from jasy.core.Permutation import getPermutation
 from jasy.item.Class import ClassError
 from jasy.js.Resolver import Resolver
 from jasy.js.Sorter import Sorter
@@ -49,6 +49,8 @@ class OutputManager:
 
         self.__scriptOptimization = Optimization()
 
+        self.__kernelClasses = []
+
         if compressionLevel > 0:
             self.__scriptOptimization.enable("variables")
             self.__scriptOptimization.enable("declarations")
@@ -64,7 +66,7 @@ class OutputManager:
             self.__scriptFormatting.enable("comma")
 
 
-    def storeKernel(self, fileName, debug=False):
+    def storeKernel(self, fileName, classes=None, debug=False):
         """
         Writes a so-called kernel script to the given location. This script contains
         data about possible permutations based on current session values. It optionally
@@ -80,35 +82,46 @@ class OutputManager:
         Console.info("Storing kernel...")
         Console.indent()
         
-        # This exports all field values from the session
-        fields = self.__session.exportFields()
-        
-        # This permutation injects data in the core classes and configures debugging as given by parameter
-        self.__session.setCurrentPermutation(Permutation({
-            "debug" : debug,
-            "fields" : fields
-        }))
-        
         # Build resolver
         # We need the permutation here because the field configuration might rely on detection classes
         resolver = Resolver(self.__session)
-        resolver.addClassName("core.Env")
-        resolver.addClassName("core.io.Queue")
+
+        detectionClasses = self.__session.getFieldDetectionClasses()
+        for className in detectionClasses:
+            resolver.addClassName(className)
+
+        # Jasy client side classes to hold data
+        resolver.addClassName("jasy.Env")
         resolver.addClassName("jasy.Asset")
         resolver.addClassName("jasy.Translate")
-        
+
+        # Allow kernel level mass loading of scripts (required for source, useful for build)
+        resolver.addClassName("core.io.Script")
+        resolver.addClassName("core.io.Queue")
+
+        if classes:
+            for className in classes:
+                resolver.addClassName(className)
+
+        # Generate boot code 
+        bootCode = "jasy.Env.setFields(%s);" % self.__session.exportFields()
+
+        # Permutation to apply
+        permutation = getPermutation({
+            "debug" : debug
+        })
+
         # Sort resulting class list
-        classes = resolver.getSortedClasses()
-        self.storeCompressed(classes, fileName)
+        sortedClasses = resolver.getSortedClasses()
+        self.storeCompressed(sortedClasses, fileName, bootCode, permutation)
         
-        self.__session.setCurrentPermutation(None)
+        # Remember classes for filtering in storeLoader/storeCompressed
+        self.__kernelClasses = set(sortedClasses)
 
         Console.outdent()
-        
-        return classes
 
 
-    def storeCompressed(self, classes, fileName, bootCode=None):
+    def storeCompressed(self, classes, fileName, bootCode=None, permutation=None):
         """
         Combines the compressed result of the stored class list
         
@@ -117,13 +130,21 @@ class OutputManager:
         - bootCode: Code to execute once all the classes are loaded
         """
         
-        Console.info("Compressing %s classes...", len(classes))
+        if self.__kernelClasses:
+            filtered = [ classObj for classObj in classes if not classObj in self.__kernelClasses ]
+        else:
+            filtered = classes
+
+        Console.info("Compressing %s classes...", len(filtered))
         Console.indent()
         result = []
-        
+
+        if permutation is None:
+            permutation = self.__session.getCurrentPermutation()
+
         try:
-            for classObj in classes:
-                result.append(classObj.getCompressed(self.__session.getCurrentPermutation(), 
+            for classObj in filtered:
+                result.append(classObj.getCompressed(permutation, 
                     self.__session.getCurrentTranslation(), self.__scriptOptimization, self.__scriptFormatting))
                 
         except ClassError as error:
@@ -132,7 +153,7 @@ class OutputManager:
         Console.outdent()
 
         if self.__assetManager:
-            assetCode = self.__assetManager.export(classes, compress=True)
+            assetCode = self.__assetManager.export(filtered, compress=True)
             if assetCode:
                 result.append(packCode(assetCode))
 
@@ -154,12 +175,17 @@ class OutputManager:
         - urlPrefix: Prepends the given URL prefix to all class URLs to load
         """
         
+        if self.__kernelClasses:
+            filtered = [ classObj for classObj in classes if not classObj in self.__kernelClasses ]
+        else:
+            filtered = classes
+
         Console.info("Generating loader for %s classes...", len(classes))
         Console.indent()
         
         main = self.__session.getMain()
         files = []
-        for classObj in classes:
+        for classObj in filtered:
             path = classObj.getPath()
 
             # Support for multi path classes 
@@ -176,13 +202,13 @@ class OutputManager:
         Console.outdent()
         
         if self.__assetManager:
-            assetCode = self.__assetManager.export(classes, compress=True)
+            assetCode = self.__assetManager.export(filtered, compress=True)
             if assetCode:
                 result.append(packCode(assetCode))
 
         translationBundle = self.__session.getCurrentTranslation()
         if translationBundle:
-            translationData = translationBundle.export(classes)
+            translationData = translationBundle.export(filtered)
             if translationData:
                 translationCode = 'jasy.Translate.addData(%s);' % translationData
                 result.append(packCode(translationCode))        

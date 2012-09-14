@@ -150,9 +150,6 @@ class Session():
                     else:
                         raise UserError("Unsupported check: '%s' for field '%s'" % (check, name))
                     
-                if "detect" in entry:
-                    detect = entry["detect"]
-                
                 self.__fields[name] = entry
 
 
@@ -381,6 +378,19 @@ class Session():
             Console.outdent()
 
         Console.outdent()
+
+
+    def getFieldDetectionClasses(self):
+
+        result = set()
+
+        fields = self.__fields
+        for name in fields:
+            value = fields[name]
+            if "detect" in value:
+                result.add(value["detect"])
+
+        return result
 
 
     def exportFields(self, compress=True):
