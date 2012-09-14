@@ -267,10 +267,13 @@ class Node(list):
         
         # Copy children
         for child in self:
-            # Using simple list appends for better performance
-            childCopy = copy.deepcopy(child, memo)
-            childCopy.parent = result
-            list.append(result, childCopy)
+            if child is None:
+                list.append(result, None)
+            else:
+                # Using simple list appends for better performance
+                childCopy = copy.deepcopy(child, memo)
+                childCopy.parent = result
+                list.append(result, childCopy)
         
         # Sync attributes
         # Note: "parent" attribute is handled by append() already
