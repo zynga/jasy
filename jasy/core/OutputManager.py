@@ -66,6 +66,21 @@ class OutputManager:
             self.__scriptFormatting.enable("comma")
 
 
+    def deployAssets(self, classes):
+
+        Console.info("Deploying assets...")
+        Console.indent()
+
+        resolver = Resolver(self.__session)
+
+        for className in classes:
+            resolver.addClassName(className)
+
+        self.__assetManager.deploy(resolver.getIncludedClasses())
+
+        Console.outdent()
+
+
     def storeKernel(self, fileName, classes=None, debug=False):
         """
         Writes a so-called kernel script to the given location. This script contains

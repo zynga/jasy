@@ -32,7 +32,7 @@ class AssetManager:
     
     def __init__(self, session):
 
-        Console.info("Initialize Assets...")
+        Console.info("Initializing assets...")
         Console.indent()
 
         # Store session reference (one asset manager per session)
@@ -236,6 +236,8 @@ class AssetManager:
                 data[fileId]["p"] = profileId
                 data[fileId]["u"] = main.toRelativeUrl(assets[fileId].getPath())
 
+        return self
+
 
 
     def addBuildProfile(self, urlPrefix="asset", override=False):
@@ -255,6 +257,8 @@ class AssetManager:
             if override or not "p" in data[fileId]:
                 data[fileId]["p"] = profileId
 
+        return self
+
     
     def addRuntimeData(self, runtime):
         assets = self.__assets
@@ -269,6 +273,8 @@ class AssetManager:
                 data[fileId] = {}
                 
             data[fileId].update(runtime[fileId])
+
+        return self
     
     
     def __structurize(self, data):

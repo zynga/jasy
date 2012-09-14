@@ -85,7 +85,7 @@ def isErrornous(data):
 
 
 def mergeMixin(className, mixinName, classApi, mixinApi):
-    Console.info("- Merging %s into %s", mixinName, className)
+    Console.info("Merging %s into %s", mixinName, className)
 
     sectionLink = ["member", "property", "event"]
     
@@ -335,7 +335,11 @@ class ApiWriter():
         #
         
         Console.info("Processing API Data...")
+        Console.indent()
+        
         data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates, printErrors=printErrors, highlightCode=highlightCode)
+        
+        Console.outdent()
         
         
         
@@ -357,6 +361,8 @@ class ApiWriter():
                 return Json.toJson(content, compress=compress)
 
         Console.info("Saving class data (%s files)...", len(data))
+        Console.indent()
+
         for className in data:
             try:
                 classData = data[className]
@@ -370,8 +376,12 @@ class ApiWriter():
                 Console.error("Could not write API data of: %s: %s", className, writeError)
                 continue
 
+        Console.outdent()
+
         if highlightCode:
             Console.info("Saving highlighted code (%s files)...", len(highlightedCode))
+            Console.indent()
+
             for className in highlightedCode:
                 try:
                     File.write(self.__session.expandFileName(os.path.join(distFolder, "%s.html" % className)), highlightedCode[className])
@@ -379,9 +389,14 @@ class ApiWriter():
                     Console.error("Could not write highlighted code of: %s: %s", className, writeError)
                     continue
 
+            Console.outdent()
+
         Console.info("Writing index...")
+
+        Console.indent()
         File.write(self.__session.expandFileName(os.path.join(distFolder, "meta-index.%s" % extension)), encode(index, "meta-index"))
         File.write(self.__session.expandFileName(os.path.join(distFolder, "meta-search.%s" % extension)), encode(search, "meta-search"))
+        Console.outdent()
         
         Console.outdent()
 
@@ -423,6 +438,7 @@ class ApiWriter():
         #
 
         Console.info("Resolving Mixins...")
+        Console.indent()
 
         # Just used temporary to keep track of which classes are merged
         mergedClasses = set()
@@ -453,6 +469,8 @@ class ApiWriter():
 
         for className in apiData:
             apiData[className] = getApi(className)
+
+        Console.outdent()
 
 
 
@@ -563,6 +581,8 @@ class ApiWriter():
                 linkExtract.sub(processInternalLink, item["doc"])
 
 
+        Console.indent()
+
         # Process APIs
         for className in apiData:
             classApi = apiData[className]
@@ -578,6 +598,8 @@ class ApiWriter():
                 if section is not None:
                     for name in section:
                          checkLinksInItem(section[name])
+
+        Console.outdent()
 
 
 
@@ -615,6 +637,7 @@ class ApiWriter():
         #
         
         Console.info("Connecting Interfaces...")
+        Console.indent()
         
         for className in apiData:
             classApi = getApi(className)
@@ -637,6 +660,7 @@ class ApiWriter():
                         implementedBy.append(className)
                         connectInterface(className, interfaceName, classApi, interfaceApi)
         
+        Console.outdent()
         
         
         #
