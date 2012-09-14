@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import re, os.path, shutil
+import re, os.path, shutil, tempfile
 import jasy
 
 from jasy.core.Project import getProjectFromPath
