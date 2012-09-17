@@ -66,7 +66,13 @@ class OutputManager:
             self.__scriptFormatting.enable("comma")
 
 
-    def deployAssets(self, classes):
+    def deployAssets(self, classes, assetFolder=None):
+        """
+        Deploys assets for the given classes and all their dependencies
+
+        - classes: List of classes to deploy assets for
+        - assetFolder: Destination folder of assets (defaults to $prefix/asset)
+        """
 
         Console.info("Deploying assets...")
         Console.indent()
@@ -76,7 +82,7 @@ class OutputManager:
         for className in classes:
             resolver.addClassName(className)
 
-        self.__assetManager.deploy(resolver.getIncludedClasses())
+        self.__assetManager.deploy(resolver.getIncludedClasses(), assetFolder=assetFolder)
 
         Console.outdent()
 

@@ -91,6 +91,10 @@ class SpritePacker():
         self.dataFormat = 'yaml';
     
     def clear(self):
+        """
+        Removes all generated sprite files found in the base directory
+        """
+
         Console.info("Cleaning sprite files...")
         Console.indent()
         

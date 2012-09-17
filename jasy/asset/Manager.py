@@ -185,7 +185,11 @@ class AssetManager:
     
     def addProfile(self, name, root=None, config=None, items=None):
         """
-        Adds a new profile to the manager
+        Adds a new profile to the manager. This is basically the plain
+        version of addSourceProfile/addBuildProfile which gives complete
+        manual control of where to load the assets from. This is useful
+        for e.g. supporting a complete custom loading scheme aka complex
+        CDN based setup.
         """
         
         profiles = self.__profiles
@@ -213,12 +217,24 @@ class AssetManager:
             for fileId in items:
                 items[fileId]["p"] = unique
             
-            self.addRuntimeData(items)
+            self.__addRuntimeData(items)
         
         return unique
     
     
     def addSourceProfile(self, urlPrefix="", override=False):
+        """
+        Adds a profile to include assets as being available in source tasks.
+        
+        This basically means that assets from all projects are referenced via
+        relative URLs to the main project.
+
+        Note 1: This automatically updates all currently known assets to
+        reference the build profile.
+
+        Note 2: This method only adds profile data to any assets when either
+        there is no profile registered yet or override is set to True.
+        """
 
         # First create a new profile with optional (CDN-) URL prefix
         profileId = self.addProfile("source", urlPrefix)
@@ -241,6 +257,18 @@ class AssetManager:
 
 
     def addBuildProfile(self, urlPrefix="asset", override=False):
+        """
+        Adds a profile to include assets as being available in build tasks.
+        
+        This basically means that assets from all projects are copied to
+        a local directory inside the build folder.
+
+        Note 1: This automatically updates all currently known assets to
+        reference the build profile.
+
+        Note 2: This method only adds profile data to any assets when either
+        there is no profile registered yet or override is set to True.
+        """
         
         # First create a new profile with optional (CDN-) URL prefix
         profileId = self.addProfile("build", urlPrefix)
@@ -260,7 +288,7 @@ class AssetManager:
         return self
 
     
-    def addRuntimeData(self, runtime):
+    def __addRuntimeData(self, runtime):
         assets = self.__assets
         data = self.__data
         
@@ -331,7 +359,10 @@ class AssetManager:
         
         
     def deploy(self, classes, assetFolder="$prefix/asset"):
-        """Deploys all asset files to the destination asset folder"""
+        """
+        Deploys all asset files to the destination asset folder. This merges
+        assets from different projects into one destination folder.
+        """
 
         assets = self.__assets
         projects = self.__session.getProjects()
@@ -360,7 +391,10 @@ class AssetManager:
 
 
     def export(self, classes=None, compress=True):
-        """Exports asset data for the source version using assets from their original paths."""
+        """
+        Exports asset data for usage at the client side. Utilizes JavaScript
+        class jasy.Asset to inject data into the client at runtime.
+        """
         
         # Processing assets
         assets = self.__assets

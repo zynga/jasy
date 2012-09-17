@@ -36,6 +36,8 @@ __colors = {
 }
 
 def colorize(text, color="red"):
+    """Uses to colorize the given text for output on Unix terminals"""
+
     # Not supported on console on Windows native
     # Note: Cygwin has a different platform value
     if sys.platform == "win32":
@@ -52,7 +54,7 @@ def colorize(text, color="red"):
 
 __level = 0
 
-def level(text):
+def __format(text):
     global __level
     
     if __level == 0 or text == "":
@@ -63,10 +65,22 @@ def level(text):
         return "%s- %s" % ("  " * (__level-1), text)
 
 def indent():
+    """
+    Increments global indenting level. Prepends spaces to the next
+    logging messages until outdent() is called.
+
+    Should be called whenever leaving a structural logging section.
+    """
+
     global __level
     __level += 1
 
 def outdent(all=False):
+    """
+    Decrements global indenting level. 
+    Should be called whenever leaving a structural logging section.
+    """
+
     global __level
     
     if all:
@@ -75,18 +89,28 @@ def outdent(all=False):
         __level -= 1
     
 def error(text, *argv):
-    logging.warn(level(colorize(colorize(text, "red"), "bold")), *argv)
+    """Outputs an error message (visible by default)"""
+
+    logging.warn(__format(colorize(colorize(text, "red"), "bold")), *argv)
 
 def warn(text, *argv):
-    logging.warn(level(colorize(text, "red")), *argv)
+    """Outputs an warning (visible by default)"""
+
+    logging.warn(__format(colorize(text, "red")), *argv)
 
 def info(text, *argv):
-    logging.info(level(text), *argv)
+    """Outputs an info message (visible by default, disable via --quiet option)"""
+
+    logging.info(__format(text), *argv)
 
 def debug(text, *argv):
-    logging.debug(level(text), *argv)
+    """Output a debug message (hidden by default, enable via --verbose option)"""
+
+    logging.debug(__format(text), *argv)
 
 def header(title):
+    """Outputs the given title with prominent formatting"""
+
     global __level
     __level = 0
     

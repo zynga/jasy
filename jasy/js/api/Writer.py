@@ -297,7 +297,16 @@ class ApiWriter():
     
 
     def write(self, distFolder, classFilter=None, callback="apiload", showInternals=False, showPrivates=False, printErrors=True, highlightCode=True):
-        
+        """
+        Writes API data generated from JavaScript into distFolder
+
+        - classFilter: Tuple of classes or method to use for filtering
+        - callback: Name of callback to use for loading or None if pure JSON should be used
+        - showInternals: Include internal methods inside API data
+        - showPrivates: Include private methods inside API data
+        - printErrors: Whether errors should be printed to the console
+        - highlightCode: Whether to enable code highlighting using Pygments 
+        """
         
         #
         # Collecting
@@ -337,7 +346,7 @@ class ApiWriter():
         Console.info("Processing API Data...")
         Console.indent()
         
-        data, index, search = self.process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates, printErrors=printErrors, highlightCode=highlightCode)
+        data, index, search = self.__process(apiData, classFilter=classFilter, internals=showInternals, privates=showPrivates, printErrors=printErrors, highlightCode=highlightCode)
         
         Console.outdent()
         
@@ -402,7 +411,7 @@ class ApiWriter():
 
 
 
-    def process(self, apiData, classFilter=None, internals=False, privates=False, printErrors=True, highlightCode=True):
+    def __process(self, apiData, classFilter=None, internals=False, privates=False, printErrors=True, highlightCode=True):
         
         knownClasses = set(list(apiData))
 
