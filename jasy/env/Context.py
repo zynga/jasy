@@ -84,7 +84,7 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
 def showapi():
     """Shows the official API available in jasyscript.py"""
 
-    from jasy.core.Util import generateApiScreen
-    Console.info(generateApiScreen(__api__))
+    from jasy.core.Inspect import generateApi
+    Console.info(generateApi(__api__))
 
 
