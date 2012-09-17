@@ -3,7 +3,8 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import types, inspect, textwrap
+import types, inspect, textwrap, re
+import jasy.core.Console as Console
 
 
 def highlightArgs(value, inClassOrObject=False):
@@ -100,14 +101,12 @@ def generateApi(api):
 
         result.append(msg)
 
-        if level == 0 and not type(value) in (types.FunctionType, types.LambdaType):
+        if inspect.isclass(value) or inspect.ismodule(value) or isinstance(value, object):
 
             if inspect.isclass(value):
                 sprefix = ""
             elif inspect.ismodule(value) or isinstance(value, object):
                 sprefix = "%s." % key
-            else:
-                sprefix = ""
 
             smembers = dict(inspect.getmembers(value))
 
