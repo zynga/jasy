@@ -44,6 +44,9 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     # 3) A project name known inside the current session
     # 4) Relative or absolute folder path
 
+    originPath = None;
+    originName = None;
+
     if origin is None:
         originProject = session and session.getMain()
 
@@ -69,9 +72,11 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
             raise UserError("Could not clone origin repository!")
 
         Console.debug("Cloned revision: %s" % originRevision)
-
-        originProject = getProjectFromPath(originPath)
-        originName = originProject.getName()
+        if os.path.isfile(os.path.join(originPath, "jasycreate.yaml")) or os.path.isfile(os.path.join(originPath, "jasycreate.json")) or os.path.isfile(os.path.join(originPath, "jasycreate.py")):
+            originProject = None
+        else:
+            originProject = getProjectFromPath(originPath)
+            originName = originProject.getName()
 
     else:
         originProject = session and session.getProjectByName(origin)
@@ -84,20 +89,30 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
 
         elif os.path.isdir(origin):
             originPath = origin
-            originProject = getProjectFromPath(originPath)
-            originName = originProject.getName()
+            if os.path.isfile(os.path.join(originPath, "jasycreate.yaml")) or os.path.isfile(os.path.join(originPath, "jasycreate.json")) or os.path.isfile(os.path.join(originPath, "jasycreate.py")):
+                originProject = None
+            else:
+                originProject = getProjectFromPath(originPath)
+                originName = originProject.getName()
 
         else:
             raise UserError("Invalid value for origin: %s" % origin)
 
+
     # Figure out the skeleton root folder
-    skeletonDir = os.path.join(originPath, originProject.getConfigValue("skeletonDir", "skeleton"))
+    if originProject is not None:
+        skeletonDir = os.path.join(originPath, originProject.getConfigValue("skeletonDir", "skeleton"))
+    else:
+        skeletonDir = originPath
     if not os.path.isdir(skeletonDir):
         raise UserError('The project %s offers no skeletons!' % originName)
 
     # For convenience: Use first skeleton in skeleton folder if no other selection was applied
     if skeleton is None:
-        skeleton = getFirstSubFolder(skeletonDir)
+        if originProject is not None:
+            skeleton = getFirstSubFolder(skeletonDir)
+        else:
+            skeleton = skeletonDir
 
     # Finally we have the skeleton path (the root folder to copy for our app)
     skeletonPath = os.path.join(skeletonDir, skeleton)
@@ -110,7 +125,10 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     #
 
     # Prechecks done
-    Console.info('Creating %s from %s %s...', Console.colorize(name, "bold"), Console.colorize(skeleton + " @", "bold"), Console.colorize(originName, "magenta"))
+    if originName:
+        Console.info('Creating %s from %s %s...', Console.colorize(name, "bold"), Console.colorize(skeleton + " @", "bold"), Console.colorize(originName, "magenta"))
+    else:
+        Console.info('Creating %s from %s...', Console.colorize(name, "bold"), Console.colorize(skeleton, "bold"))
     Console.debug('Skeleton: %s', Console.colorize(skeletonPath, "grey"))
     Console.debug('Destination: %s', Console.colorize(destinationPath, "grey"))
 
@@ -132,14 +150,16 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
 
     config.set("name", name)
     config.set("jasy.version", jasy.__version__)
-    config.set("origin.name", originName)
+    if originName:
+        config.set("origin.name", originName)
     config.set("origin.version", originVersion)
     config.set("origin.revision", originRevision)
     config.set("origin.skeleton", os.path.basename(skeletonPath))
 
     config.injectValues(**argv)
-    config.readQuestions("jasycreate", optional=True)
-    config.executeScript("jasycreate.py", optional=True)
+    if originProject is not None:
+        config.readQuestions("jasycreate", optional=True)
+        config.executeScript("jasycreate.py", optional=True)
 
     config.write("jasyscript.yaml")
 
