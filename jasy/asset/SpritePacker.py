@@ -80,6 +80,8 @@ class PackerScore():
 
 
 class SpritePacker():
+    """Packs single images into sprite images automatically"""
+
 
     def __init__(self, base, types = ('png'), width=1024, height=1024):
 
