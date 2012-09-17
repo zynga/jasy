@@ -13,6 +13,17 @@ build/deployment scripts.
 
 For details have a look at [the official documentation](https://github.com/zynga/jasy/wiki).
 
+## Documentation
+
+* [Documentation](http://github.com/zynga/jasy/wiki)
+* [API Reference](http://packages.python.org/jasy/)
+
+## Feedback
+
+* [Star Jasy](https://github.com/zynga/jasy/star)
+* [Report an issue](https://github.com/zynga/jasy/issues/new)
+
+
 
 ## Authors
 
