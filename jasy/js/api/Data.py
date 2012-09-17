@@ -486,7 +486,7 @@ class ApiData():
             
         # Root doc comment is optional for constructors
         comment = getDocComment(commentNode)
-        if comment and comment.hasHtmlContent():
+        if comment and comment.hasContent():
             html = comment.getHtml(self.highlight)
             entry["doc"] = html
             entry["summary"] = Text.extractSummary(html)
@@ -558,7 +558,7 @@ class ApiData():
             elif comment.returns:
                 entry["type"] = comment.returns[0]
 
-            if comment.hasHtmlContent():
+            if comment.hasContent():
                 html = comment.getHtml(self.highlight)
                 entry["doc"] = html
                 entry["summary"] = Text.extractSummary(html)
@@ -709,7 +709,7 @@ class ApiData():
             if comment.type:
                 entry["type"] = comment.type
                 
-            if comment.hasHtmlContent():
+            if comment.hasContent():
                 html = comment.getHtml(self.highlight)
                 entry["doc"] = html
                 entry["summary"] = Text.extractSummary(html)
