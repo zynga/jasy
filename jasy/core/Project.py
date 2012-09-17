@@ -264,13 +264,13 @@ class Project():
             
             # Structure files
             if fileExtension in classExtensions:
-                construct = Class
+                construct = jasy.item.Class.ClassItem
                 dist = self.classes
             elif fileExtension in translationExtensions:
-                construct = Translation
+                construct = jasy.item.Translation.TranslationItem
                 dist = self.translations
             else:
-                construct = Asset
+                construct = jasy.item.Asset.AssetItem
                 dist = self.assets
                 
             # Check for duplication
