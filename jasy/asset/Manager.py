@@ -185,7 +185,7 @@ class AssetManager:
     
     def addProfile(self, name, root=None, config=None, items=None):
         """
-        - root: root uri for assets with the given profile
+        Adds a new profile to the manager
         """
         
         profiles = self.__profiles
