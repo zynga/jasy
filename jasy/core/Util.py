@@ -17,12 +17,13 @@ def executeCommand(args, msg):
     # Using shell on Windows to resolve binaries like "git"
     output = tempfile.TemporaryFile(mode="w+t")
     returnValue = subprocess.call(args, stdout=output, stderr=output, shell=sys.platform == "win32")
-    if returnValue != 0:
-        raise Exception("Error during executing shell command: %s" % msg)
         
     output.seek(0)
     result = output.read().strip("\n\r")
     output.close()
+
+    if returnValue != 0:
+        raise Exception("Error during executing shell command: %s (%s)" % (msg, result))
     
     for line in result.splitlines():
         Console.debug(line)
