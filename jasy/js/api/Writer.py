@@ -281,7 +281,7 @@ class ApiWriter():
         self.__session = session
 
     
-    def isIncluded(self, className, classFilter):
+    def __isIncluded(self, className, classFilter):
         
         if not classFilter:
             return True
@@ -314,7 +314,7 @@ class ApiWriter():
             Console.info("Loading API of project %s: %s...", Console.colorize(project.getName(), "bold"), Console.colorize("%s classes" % len(classes), "cyan"))
             Console.indent()
             for className in classes:
-                if self.isIncluded(className, classFilter):
+                if self.__isIncluded(className, classFilter):
 
                     data = classes[className].getApi(highlightCode)
 
@@ -888,7 +888,7 @@ class ApiWriter():
             docs = project.getDocs()
             
             for packageName in docs:
-                if self.isIncluded(packageName, classFilter):
+                if self.__isIncluded(packageName, classFilter):
                     Console.debug("Creating package documentation %s", packageName)
                     apiData[packageName] = docs[packageName].getApi()
         
