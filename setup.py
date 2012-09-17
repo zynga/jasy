@@ -58,9 +58,9 @@ else:
 
 
 # Integrate batch script for win32 only
-extra["scripts"] = [ "bin/jasy", "bin/jasy-test",  "bin/jasy-util" ]
+extra["scripts"] = [ "bin/jasy", "bin/jasy-doc", "bin/jasy-test",  "bin/jasy-util" ]
 if sys.platform == "win32":
-  extra["scripts"] += [ "bin/jasy.bat", "bin/jasy-test.bat", "bin/jasy-util.bat" ]
+  extra["scripts"] += [ "bin/jasy.bat", "bin/jasy-doc.bat", "bin/jasy-test.bat", "bin/jasy-util.bat" ]
 
 # Import Jasy for version info etc.
 import jasy
