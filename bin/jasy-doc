@@ -66,6 +66,9 @@ open(os.path.join(docfolder, "conf.py"), "w").write(configContent)
 # GENERATING HTML PAGES
 #
 
+if exists("docs"):
+		rmdir("docs")
+
 print("Generating HTML pages...")
 cmd = ["sphinx-build", "-b", "html", docfolder, "docs"]
 executeCommand(cmd, "Could not generate indexies")
