@@ -38,9 +38,10 @@ print("Dist: %s" % os.path.abspath("docs"))
 
 doctemp = tempfile.TemporaryDirectory()
 docfolder = doctemp.name
+srcfolder = os.path.join(basedir, "jasy")
 
 print("Generating API indexes...")
-cmd = ["sphinx-apidoc", "--full", "--maxdepth", "4", "--output-dir", docfolder, "-V", str(version), "-R", str(release), "-A", "Zynga Inc.", "-H", "Jasy – Web Tooling Framework", "jasy"]
+cmd = ["sphinx-apidoc", "--full", "--maxdepth", "4", "--output-dir", docfolder, "-V", str(version), "-R", str(release), "-A", "Zynga Inc.", "-H", "Jasy – Web Tooling Framework", srcfolder]
 executeCommand(cmd, "Could not generate indexies")
 
 
