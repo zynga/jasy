@@ -92,9 +92,6 @@ class Comment():
     
     def __init__(self, text, context=None, lineNo=0, indent="", fileId=None):
 
-        if Markdown.markdown is None:
-            raise UserError("Markdown is not supported by the system. Documentation comments could not be processed.")
-
         # Store context (relation to code)
         self.context = context
         
@@ -151,13 +148,12 @@ class Comment():
 
             # Re-combine everything and apply processing and formatting
             plainText = '' # text without annotations but with markdown
-            combinedText = '' # text with markdown but without code highlighting
-            highlightedText = '' # text with both markdown and code highlightiong
             for b in self.__blocks:
 
                 if b["type"] == "comment":
 
                     processed = self.__processDoc(b["text"], lineNo)
+                    b["processed"] = processed
 
                     if "<" in processed:
                         plainText += stripMarkup.sub("", processed)
@@ -165,24 +161,23 @@ class Comment():
                     else:
                         plainText += processed
 
-                    processed = Markdown.markdown(processed) 
-                    combinedText += processed
-                    highlightedText += processed
-
                 else:
-                    highlightedText += "\n" + Markdown.markdown(b["text"], True)
                     plainText += "\n\n" + b["text"] + "\n\n"
-                    combinedText += "\n" + b["text"] + "\n\n"
 
-            # Store original, unstripped text for later Markdown conversion
-            self.__processedText = combinedText.strip()
-            self.__highlightedText = highlightedText
-
-            # The without any annotations (but with Markdown)
+            # The without any annotations 
             self.text = plainText.strip()
 
 
     def __splitBlocks(self, text):
+
+        """Splits up text and code blocks in comments.
+        
+        This will try to use Misaka for Markdown parsing if available and will 
+        fallback to a simpler implementation in order to allow processing of
+        doc parameters and links without Misaka being installed."""
+
+        if Markdown.markdown is None:
+            return self.__splitSimple(text)
         
         marked = Markdown.markdown(text, False)
 
@@ -257,13 +252,113 @@ class Comment():
         return parts
 
 
+    def __splitSimple(self, text):
+
+        """Splits comment text and code blocks by manually parsing a subset of markdown"""
+        
+        inCode = False
+        oldIndent = 0
+        parts = []
+        wasEmpty = False
+        wasList = False
+        
+        lineNo = 0
+        lines = text.split("\n")
+
+        for s, l in enumerate(lines):
+
+            # ignore empty lines
+            if not l.strip() == "":
+
+                # get indentation value and change
+                indent = len(l) - len(l.lstrip())
+                change = indent - oldIndent
+
+                # detect code blocks
+                if change >= 4 and wasEmpty:
+                    if not wasList:
+                        oldIndent = indent
+                        inCode = True
+                    
+                        parts.append({
+                            "type": "comment",
+                            "text": "\n".join(lines[lineNo:s])
+                        })
+
+                        lineNo = s
+
+                # detect outdents
+                elif change < 0:
+                    inCode = False
+
+                    parts.append({
+                        "type": "code",
+                        "text": "\n".join(lines[lineNo:s - 1])
+                    })
+
+                    lineNo = s
+
+                # only keep track of old previous indentation outside of comments
+                if not inCode:
+                    oldIndent = indent
+
+                # remember whether this marked a list or not
+                wasList = l.strip().startswith('-') or l.strip().startswith('*')
+                wasEmpty = False
+
+            else:
+                wasEmpty = True
+
+        parts.append({
+            "type": "code" if inCode else "comment",
+            "text": "\n".join(lines[lineNo:])
+        })
+        
+        return parts
+
     def getHtml(self, highlight=True):
         """Returns the comment text converted to HTML"""
 
         if highlight:
+
+            # lazily generate highlighted version
+            if self.__highlightedText is None:
+
+                if Markdown.markdown is None:
+                    raise UserError("Markdown is not supported by the system. Documentation comments could converted to HTML.")
+
+                highlightedText = '' # text with both markdown and code highlightiong
+                for b in self.__blocks:
+                    if b["type"] == "comment":
+                        highlightedText += Markdown.markdown(b["processed"])
+
+                    else:
+                        highlightedText += "\n" + Markdown.markdown(b["text"], True)
+
+                self.__highlightedText = highlightedText
+
             return self.__highlightedText
 
         else:
+            
+            if self.__processedText is None:
+            
+                if Markdown.markdown is None:
+                    raise UserError("Markdown is not supported by the system. Documentation comments could converted to HTML.")
+
+                processedText = ''
+                for b in self.__blocks:
+
+                    if b["type"] == "comment":
+
+                        processedText += Markdown.markdown(b["processed"]) 
+
+                    else:
+                        processedText += "\n" + b["text"] + "\n\n"
+
+                # Store original, unstripped text for later Markdown conversion
+                self.__processedText = processedText.strip()
+
             return self.__processedText
     
     
