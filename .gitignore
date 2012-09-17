@@ -2,5 +2,6 @@
 .DS_Store
 dist
 build
+docs
 MANIFEST
 jasy.egg-info
