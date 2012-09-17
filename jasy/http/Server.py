@@ -335,7 +335,7 @@ class Server:
             if "host" in entry:
                 node = Proxy(key, entry)
             else:
-                node = Static(key, entry, mimeTypes=combinedTypes)
+                node = Static(key, entry, mimeTypes=self.__root.mimeTypes)
             
             setattr(self.__root, key, node)
 
