@@ -362,8 +362,8 @@ class Comment():
             return self.__processedText
     
     
-    def hasHtmlContent(self):
-        return self.variant == "doc" and self.__processedText
+    def hasContent(self):
+        return self.variant == "doc" and len(self.text)
     
     def getTags(self):
         return self.tags
