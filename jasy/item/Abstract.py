@@ -6,7 +6,7 @@
 import os
 
 from jasy import UserError
-from jasy.core.Util import sha1File
+import jasy.core.File as File
 
 class AbstractItem:
     
@@ -77,7 +77,7 @@ class AbstractItem:
     def getChecksum(self, mode="rb"):
         """Returns the SHA1 checksum of the item"""
         
-        return sha1File(open(self.getPath(), mode))
+        return File.sha1(open(self.getPath(), mode))
     
 
     # Map Python built-ins
