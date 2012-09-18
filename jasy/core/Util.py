@@ -66,16 +66,15 @@ def camelize(str):
     return REGEXP_DASHES.sub(__camelizeHelper, str)
 
 
-REGEXP_HYPHENATE = re.compile(r"[A-Z]")
+REGEXP_HYPHENATE = re.compile(r"([A-Z])")
 
 def hyphenate(str):
     """
-    Returns a camelized version of the incoming string: foo-bar-baz => fooBarBaz
+    Returns a hyphenated version of the incoming string: fooBarBaz => foo-bar-baz
     """
 
     def __hyphenateHelper(match):
-        result = match.group(1)
-        return result[0]
+        return "-%s" % match.group(1).lower()
     
     return REGEXP_HYPHENATE.sub(__hyphenateHelper, str)    
 
