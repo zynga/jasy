@@ -39,16 +39,17 @@ def extractDoc(value, limit=80, indent=2):
     if ". " in doc:
         doc = doc[:doc.index(". ")]
 
-    if ".\n" in doc:
-        doc = doc[:doc.index(".\n")]
+    lines = doc.split("\n")
+    relevant = []
+    for line in lines:
+        # Stop at special lines (lists, sphinx hints)
+        if line.strip().startswith(("-", "*", "#", ":")):
+            break
 
-    if ":\n" in doc:
-        doc = doc[:doc.index(":\n")]
+        relevant.append(line)
 
-    doc = doc.replace("\n", " ")
-    doc = re.sub(" +", " ", doc)
-
-    doc = doc.strip()
+    # Cleanup spaces
+    doc = re.sub(" +", " ", " ".join(relevant)).strip()
 
     if doc:
         prefix = "\n" + (" " * indent)
