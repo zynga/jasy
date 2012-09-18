@@ -22,9 +22,8 @@ from jasy.js.Resolver import Resolver
 from jasy.js.api.Writer import ApiWriter
 from jasy.http.Server import Server
 
-# Commands
+# Commands (be careful with these, prefer modules and classes)
 from jasy.env.Task import task
-from jasy.core.Util import executeCommand
 
 
 @task
