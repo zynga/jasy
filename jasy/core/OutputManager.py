@@ -70,8 +70,10 @@ class OutputManager:
         """
         Deploys assets for the given classes and all their dependencies
 
-        - classes: List of classes to deploy assets for
-        - assetFolder: Destination folder of assets (defaults to $prefix/asset)
+        :param classes: List of classes to deploy assets for
+        :type classes: list
+        :param assetFolder: Destination folder of assets (defaults to $prefix/asset)
+        :type assetFolder: string
         """
 
         Console.info("Deploying assets...")
@@ -146,9 +148,12 @@ class OutputManager:
         """
         Combines the compressed result of the stored class list
         
-        - classes: List of sorted classes to compress
-        - fileName: Filename to write result to
-        - bootCode: Code to execute once all the classes are loaded
+        :param classes: List of sorted classes to compress
+        :type classes: list
+        :param fileName: Filename to write result to
+        :type fileName: string
+        :param bootCode: Code to execute once all the classes are loaded
+        :type bootCode: string
         """
         
         if self.__kernelClasses:
@@ -190,10 +195,14 @@ class OutputManager:
         This is super useful during development of a project as it supports pretty fast workflows
         where most often a simple reload in the browser is enough to get the newest sources.
         
-        - classes: List of sorted classes to compress
-        - fileName: Filename to write result to
-        - bootCode: Code to execute once all classes have been loaded
-        - urlPrefix: Prepends the given URL prefix to all class URLs to load
+        :param classes: List of sorted classes to compress
+        :type classes: list
+        :param fileName: Filename to write result to
+        :type fileName: string
+        :param bootCode: Code to execute once all classes have been loaded
+        :type bootCode: string
+        :param urlPrefix: Prepends the given URL prefix to all class URLs to load
+        :type urlPrefix: string
         """
         
         if self.__kernelClasses:

@@ -18,6 +18,7 @@ def enableUpdates(enabled):
 
 
 def isUrl(url):
+    """Figures out whether the given string is a valid Git repository URL"""
     return Git.isUrl(url)
 
 
@@ -46,6 +47,7 @@ def getTargetFolder(url, version=None, kind=None):
 
 
 def update(url, version=None, path=None, update=True):
+    """Clones the given repository URL (optionally with overriding/update features)"""
 
     revision = None
 
@@ -57,7 +59,8 @@ def update(url, version=None, path=None, update=True):
 
 
 def clean(path=None):
-    
+    """Cleans git repository from untracked files."""
+
     old = os.getcwd()
 
     Console.info("Cleaning repository (clean)...")
@@ -74,6 +77,7 @@ def clean(path=None):
 
 
 def distclean(path=None):
+    """Cleans git repository from untracked files. Ignores the files listed in ".gitignore"."""
 
     old = os.getcwd()
 
