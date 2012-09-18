@@ -43,24 +43,18 @@ def getKey(data, key, default=None):
 __REGEXP_DASHES = re.compile(r"\-+([\S]+)?")
 __REGEXP_HYPHENATE = re.compile(r"([A-Z])")
 
-def camelize(str):
-    """
-    Returns a camelized version of the incoming string: foo-bar-baz => fooBarBaz
-    """
+def __camelizeHelper(match):
+    result = match.group(1)
+    return result[0].upper() + result[1:].lower()
 
-    def __camelizeHelper(match):
-        result = match.group(1)
-        return result[0].upper() + result[1:].lower()
+def __hyphenateHelper(match):
+    return "-%s" % match.group(1).lower()
     
+def camelize(str):
+    """Returns a camelized version of the incoming string: foo-bar-baz => fooBarBaz"""
     return __REGEXP_DASHES.sub(__camelizeHelper, str)
 
 def hyphenate(str):
-    """
-    Returns a hyphenated version of the incoming string: fooBarBaz => foo-bar-baz
-    """
-
-    def __hyphenateHelper(match):
-        return "-%s" % match.group(1).lower()
-    
+    """Returns a hyphenated version of the incoming string: fooBarBaz => foo-bar-baz"""
     return __REGEXP_HYPHENATE.sub(__hyphenateHelper, str)    
 
