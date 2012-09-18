@@ -4,10 +4,9 @@
 #
 
 import re
-from jasy.core.Markdown import markdown
+import jasy.core.Markdown as Markdown
 from jasy.core.Error import JasyError
 from jasy.js.util import *
-from jasy.core.Logging import error, warn
 
 __all__ = ["CommentException", "Comment"]
 
@@ -37,6 +36,9 @@ paramMatcher = re.compile(r"@([a-zA-Z0-9_][a-zA-Z0-9_\.]*[a-zA-Z0-9_]|[a-zA-Z0-9
 
 # Matches links in own dialect
 linkMatcher = re.compile(r"(\{((static|member|property|event)\:)?([a-zA-Z0-9_\.]+)?(\#([a-zA-Z0-9_]+))?\})")
+
+# matches backticks and has a built-in failsafe for backticks which do not terminate on the same line
+tickMatcher = re.compile(r"(`[^\n`]*?`)")
 
 
 class CommentException(Exception):
@@ -75,36 +77,48 @@ class Comment():
     # Collected text of the comment (without the extracted doc relevant data)
     text = None
     
-    # Text of the comment converted to HTML (only for doc comment)
-    __html = None
-    
-    # Text of the comment converted to HTML including highlighting (only for doc comment)
-    __highlightedHTML = None
+    # Text with extracted / parsed data
+    __processedText = None
 
-    
+    # Text of the comment converted to HTML including highlighting (only for doc comment)
+    __highlightedText = None
+
+    # Text / Code Blocks in the comment
+    __blocks = None
+
+
     def __init__(self, text, context=None, lineNo=0, indent="", fileId=None):
+
+        if Markdown.markdown is None:
+            raise Exception("Markdown is not supported by the system. Documentation comments could not be processed.")
+
         # Store context (relation to code)
         self.context = context
         
         # Store fileId
         self.fileId = fileId
         
-        # Convert
+        # Figure out the type of the comment based on the starting characters
+
+        # Inline comments
         if text.startswith("//"):
             # "// hello" => "   hello"
             text = "  " + text[2:]
             self.variant = "single"
             
+        # Doc comments
         elif text.startswith("/**"):
             # "/** hello */" => "    hello "
             text = "   " + text[3:-2]
             self.variant = "doc"
 
+        # Protected comments which should not be removed (e.g these are used for license blocks)
         elif text.startswith("/*!"):
             # "/*! hello */" => "    hello "
             text = "   " + text[3:-2]
             self.variant = "protected"
             
+        # A normal multiline comment
         elif text.startswith("/*"):
             # "/* hello */" => "   hello "
             text = "  " + text[2:-2]
@@ -113,46 +127,145 @@ class Comment():
         else:
             raise CommentException("Invalid comment text: %s" % text, lineNo)
 
+        # Multi line comments need to have their indentation removed
         if "\n" in text:
-            # Outdent indentation
             text = self.__outdent(text, indent, lineNo)
 
+        # For single line comments strip the surrounding whitespace
         else:
-            # Strip white space from single line comments
             # " hello " => "hello"
             text = text.strip()
 
-        if self.variant == "doc":
-            text = self.__processDoc(text, lineNo)
-            
-        # Post process text to not contain any markup
-        if self.variant == "doc":
-            
-            # Store original, unstripped text for later Markdown conversion
-            self.__originalText = text
-            
-            if "<" in text:
-                text = stripMarkup.sub("", text)
-                
+        # The text of the comment before any processing took place
         self.text = text
+
+
+        # Perform annotation parsing, markdown conversion and code highlighting on doc blocks
+        if self.variant == "doc":
+
+            # Separate text and code blocks
+            self.__blocks = self.__splitBlocks(text)
+
+            # Re-combine everything and apply processing and formatting
+            plainText = '' # text without annotations but with markdown
+            combinedText = '' # text with markdown but without code highlighting
+            highlightedText = '' # text with both markdown and code highlightiong
+            for b in self.__blocks:
+
+                if b["type"] == "comment":
+
+                    processed = self.__processDoc(b["text"], lineNo)
+
+                    if "<" in processed:
+                        plainText += stripMarkup.sub("", processed)
+
+                    else:
+                        plainText += processed
+
+                    processed = Markdown.markdown(processed) 
+                    combinedText += processed
+                    highlightedText += processed
+
+                else:
+                    highlightedText += "\n" + Markdown.markdown(b["text"], True)
+                    plainText += "\n\n" + b["text"] + "\n\n"
+                    combinedText += "\n" + b["text"] + "\n\n"
+
+            # Store original, unstripped text for later Markdown conversion
+            self.__processedText = combinedText.strip()
+            self.__highlightedText = highlightedText
+
+            # The without any annotations (but with Markdown)
+            self.text = plainText.strip()
+
+
+    def __splitBlocks(self, text):
+        
+        marked = Markdown.markdown(text, False)
+
+        def unescape(html):
+            html = html.replace('&lt;', '<')
+            html = html.replace('&gt;', '>')
+            html = html.replace('&amp;', '&')
+            html = html.replace('&quot;', '"')
+            return html.replace('&#39;', "'")
+
+        parts = []
+
+        lineNo = 0
+        lines = text.split("\n")
+        markedLines = marked.split("\n")
+
+        i = 0
+        while i < len(markedLines):
+
+            l = markedLines[i]
+
+            # the original text of the line
+            parsed = unescape(stripMarkup.sub("", l))
+
+            # start of a code block, grab all text before it and move it into a block
+            if l.startswith('<pre><code>'):
+
+                # everything since the last code block and before this one must be text
+                comment = []
+                for s in range(lineNo, len(lines)):
+
+                    source = lines[s]
+                    if source.strip() == parsed.strip():
+                        lineNo = s
+                        break
+
+                    comment.append(source)
+
+                parts.append({
+                    "type": "comment",
+                    "text": "\n".join(comment)
+                })
+
+                # Find the end of the code block
+                e = i
+                while i < len(markedLines):
+                    l = markedLines[i]
+                    i += 1
+
+                    if l.startswith('</code></pre>'):
+                        break
+
+                lineCount = (i - e) - 1
+
+                # add the code block
+                parts.append({
+                    "type": "code",
+                    "text": "\n".join(lines[lineNo:lineNo + lineCount])
+                })
+
+                lineNo += lineCount
+
+            else:
+                i += 1
+            
+        # append the rest of the comment as text
+        parts.append({
+            "type": "comment",
+            "text": "\n".join(lines[lineNo:])
+        })
+
+        return parts
 
 
     def getHtml(self, highlight=True):
         """Returns the comment text converted to HTML"""
 
-        field = "__highlightedHTML" if highlight else "__html"
-        
-        if self.variant == "doc" and getattr(self, field, None) is None:
-            if markdown is None:
-                raise JasyError("Markdown is not supported by the system. Documentation comments could not be processed into HTML.")
-            
-            setattr(self, field, markdown(self.__originalText, highlight))
-    
-        return getattr(self, field, None)
+        if highlight:
+            return self.__highlightedText
+
+        else:
+            return self.__processedText
     
     
     def hasHtmlContent(self):
-        return self.variant == "doc" and self.__originalText
+        return self.variant == "doc" and self.__processedText
     
     def getTags(self):
         return self.tags
@@ -169,11 +282,16 @@ class Comment():
         """
         
         lines = []
+
+        # First, split up the comments lines and remove the leading indentation
         for lineNo, line in enumerate((indent+text).split("\n")):
+
             if line.startswith(indent):
                 lines.append(line[len(indent):].rstrip())
+
             elif line.strip() == "":
                 lines.append("")
+
             else:
                 # Only warn for doc comments, otherwise it might just be code commented out 
                 # which is sometimes formatted pretty crazy when commented out
@@ -181,10 +299,12 @@ class Comment():
                     warn("Could not outdent doc comment at line %s in %s", startLineNo+lineNo, self.fileId)
                     
                 return text
-                
-        # Find first line with real content
+
+        # Find first line with real content, then grab the one after it to get the 
+        # characters which need 
         outdentString = ""
         for lineNo, line in enumerate(lines):
+
             if line != "" and line.strip() != "":
                 matchedDocIndent = docIndentReg.match(line)
                 
@@ -200,14 +320,16 @@ class Comment():
                 
             lineNo += 1
 
-        # Process outdenting to all lines
+        # Process outdenting to all lines (remove the outdentString from the start of the lines)
         if outdentString != "":
+
             lineNo = 0
             outdentStringLen = len(outdentString)
 
             for lineNo, line in enumerate(lines):
                 if len(line) <= outdentStringLen:
                     lines[lineNo] = ""
+
                 else:
                     if not line.startswith(outdentString):
                         
@@ -221,7 +343,6 @@ class Comment():
 
         # Merge final lines and remove leading and trailing new lines
         return "\n".join(lines).strip("\n")
-
             
             
     def __processDoc(self, text, startLineNo):
@@ -233,11 +354,28 @@ class Comment():
         # Collapse new empty lines at start/end
         text = text.strip("\n\t ")
 
-        text = self.__processParams(text)
-        text = self.__processLinks(text)
-        
-        return text            
-            
+        parsed = ''
+
+        # Now parse only the text outside of backticks
+        last = 0
+        def split(match):
+
+            # Grab the text before the back tick and process any parameters in it
+            nonlocal parsed
+            nonlocal last
+            start, end = match.span() 
+            before = text[last:start]
+            parsed += self.__processParams(before) + match.group(1)
+            last = end
+
+        tickMatcher.sub(split, text)
+
+        # add the rest of the text
+        parsed += self.__processParams(text[last:])
+
+        text = self.__processLinks(parsed)
+
+        return text
             
 
     def __splitTypeList(self, decl):
@@ -387,14 +525,10 @@ class Comment():
                         paramEntry["fields"] = {}
 
                     params = paramEntry["fields"]
-
-
             
             return '<code class="param">%s</code>' % fullName
             
         return paramMatcher.sub(collectParams, text)
-        
-        
         
     def __processLinks(self, text):
         
@@ -435,11 +569,6 @@ class Comment():
             
             # build final HTML
             return '<a%s><code>%s</code></a>' % (attr, label)
-
-
-        # TODO this should be done by parsing the markdown first...
-        # TODO we should integrate comment parsing into the markdown parser...
-        # TODO Right now is breaks certain json structures in code examples
 
         return linkMatcher.sub(formatTypes, text)
         
