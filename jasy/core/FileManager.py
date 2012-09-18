@@ -8,6 +8,9 @@ import jasy.core.Console as Console
 
 
 class FileManager:
+    """
+    Summarizes utility methods for operations in filesystem.
+    """
 
     def __init__(self, session):
 

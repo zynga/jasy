@@ -120,8 +120,8 @@ class Session():
         their priority. This adds the field configuration of each project to the session fields.
         Fields must not conflict between different projects (same name).
         
-        Parameters:
-        - project: Instance of Project to append to the list
+        :param project: Instance of Project to append to the list
+        :type project: object
         """
         
         result = jasy.core.Project.getProjectDependencies(project, "external", self.__updateRepositories)

@@ -22,26 +22,29 @@ __all__ = ["watch"]
 if FileSystemEventHandler:
 
     class JasyEventHandler(FileSystemEventHandler):
+        """
+        Summarizes callbacks for filesystem change events.
+        """
 
-      def on_moved(self, event):
+        def on_moved(self, event):
         super(JasyEventHandler, self).on_moved(event)
 
         what = 'directory' if event.is_directory else 'file'
         Console.info("Moved %s: from %s to %s", what, event.src_path, event.dest_path)
 
-      def on_created(self, event):
+        def on_created(self, event):
         super(JasyEventHandler, self).on_created(event)
 
         what = 'directory' if event.is_directory else 'file'
         Console.info("Created %s: %s", what, event.src_path)
 
-      def on_deleted(self, event):
+        def on_deleted(self, event):
         super(JasyEventHandler, self).on_deleted(event)
 
         what = 'directory' if event.is_directory else 'file'
         Console.info("Deleted %s: %s", what, event.src_path)
 
-      def on_modified(self, event):
+        def on_modified(self, event):
         super(JasyEventHandler, self).on_modified(event)
 
         what = 'directory' if event.is_directory else 'file'
@@ -49,6 +52,12 @@ if FileSystemEventHandler:
 
 
 def watch(path, callback):
+    """
+    Start observing changes in filesystem. See JasyEventHandler for the event callbacks.
+
+    :param path: Path wich will be observed
+    :type name: string
+    """
     
     if Observer is None:
         Console.error("You need to install Watchdog for supporting file system watchers")

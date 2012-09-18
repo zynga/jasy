@@ -20,6 +20,23 @@ __all__ = ["create"]
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 
 def create(name="myproject", origin=None, originVersion=None, skeleton=None, destination=None, session=None, **argv):
+    """
+    Creates a new project from a defined skeleton or an existing project's root directory (only if there is a jasycreate.yaml/.json).
+
+    :param name: The name of the new created project
+    :type name: string
+    :param origin: Path or git url to the base project
+    :type origin: string
+    :param originVersion: Version of the base project from wich will be created
+    :type originVersion: string
+    :param skeleton: Name of a defined skeleton. None for creating from root
+    :type skeleton: string
+    :param destination: Destination path for the new created project
+    :type destination: string
+    :param session: An optional session to use as origin project
+    :type session: string
+    """
+
     Console.header("Creating project %s" % name)
 
     if not validProjectName.match(name):
