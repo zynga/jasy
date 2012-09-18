@@ -14,8 +14,6 @@ from jasy import UserError
 import jasy.core.Console as Console
 import jasy.vcs.Repository as Repository
 
-__all__ = ["create"]
-
 
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
 

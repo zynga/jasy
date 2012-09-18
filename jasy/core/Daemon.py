@@ -16,9 +16,6 @@ except ImportError as err:
     FileSystemEventHandler = None
 
 
-__all__ = ["watch"]
-
-
 if FileSystemEventHandler:
 
     class JasyEventHandler(FileSystemEventHandler):
