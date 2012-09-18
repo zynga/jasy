@@ -60,6 +60,9 @@ def clean(path=None):
     
     old = os.getcwd()
 
+    Console.info("Cleaning repository (clean)...")
+    Console.indent()
+
     if path:
         os.chdir(path)
 
@@ -67,11 +70,15 @@ def clean(path=None):
         Git.cleanRepository()
 
     os.chdir(old)
+    Console.outdent()
 
 
 def distclean(path=None):
 
     old = os.getcwd()
+
+    Console.info("Cleaning repository (distclean)...")
+    Console.indent()
 
     if path:
         os.chdir(path)
@@ -80,5 +87,5 @@ def distclean(path=None):
         Git.distcleanRepository()
 
     os.chdir(old)
-
+    Console.outdent()
 
