@@ -66,6 +66,20 @@ def camelize(str):
     return REGEXP_DASHES.sub(__camelizeHelper, str)
 
 
+REGEXP_HYPHENATE = re.compile(r"[A-Z]")
+
+def hyphenate(str):
+    """
+    Returns a camelized version of the incoming string: foo-bar-baz => fooBarBaz
+    """
+
+    def __hyphenateHelper(match):
+        result = match.group(1)
+        return result[0]
+    
+    return REGEXP_HYPHENATE.sub(__hyphenateHelper, str)    
+
+
 def getFirstSubFolder(start):
 
     for root, dirs, files in os.walk(start):
