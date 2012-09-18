@@ -27,7 +27,7 @@ def highlightArgs(value, inClassOrObject=False):
     return Console.colorize(argmsg, "cyan")    
 
 
-def extractDoc(value, limit=75, indent=2):
+def extractDoc(value, limit=95, indent=2):
 
     doc = value.__doc__
 
@@ -49,6 +49,8 @@ def extractDoc(value, limit=75, indent=2):
 
     if len(doc) > limit:
         doc = doc[0:limit] + "..."
+
+    #textwrap.wrap(text, **kwargs)
 
     if doc:
         return ":\n%s%s" % (indent * " ", doc)

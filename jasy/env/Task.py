@@ -3,6 +3,10 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
+"""
+Tasks are basically functions with some managment code allow them to run in jasyscript.py
+"""
+
 import types, os, sys, inspect, subprocess
 
 import jasy.core.Console as Console
@@ -13,11 +17,7 @@ from jasy import UserError
 
 __all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOptions", "getOptions"]
 
-
 class Task:
-    """
-    Tasks are basically functions with some managment code allow them to run in jasyscript.py
-    """
 
     __slots__ = ["func", "name", "curry", "availableArgs", "hasFlexArgs", "__doc__", "__name__"]
 
