@@ -15,6 +15,9 @@ __all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOpt
 
 
 class Task:
+    """
+    Tasks are basically functions with some managment code allow them to run in jasyscript.py
+    """
 
     __slots__ = ["func", "name", "curry", "availableArgs", "hasFlexArgs", "__doc__", "__name__"]
 

@@ -169,10 +169,7 @@ def init():
     # This object is used for the official API the jasyscript.py is using
     api = {}
 
-    # Create config object
-    import jasy.core.Config as Config
-    config = Config.Config()
-    config.loadValues("jasyscript", optional=True)
+
 
     # Initialize session
     from jasy.env.State import session
