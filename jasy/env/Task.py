@@ -8,7 +8,7 @@ import types, os, sys, inspect, subprocess
 import jasy.core.Console as Console
 
 from jasy.env.State import session
-from jasy.core.Util import camelize
+from jasy.core.Util import camelize, hyphenate
 from jasy import UserError
 
 __all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOptions", "getOptions"]
@@ -157,7 +157,7 @@ def printTasks(indent=16):
         if obj.availableArgs or obj.hasFlexArgs:
             text = ""
             if obj.availableArgs:
-                text += "--%s <var>" % " <var> --".join(obj.availableArgs)
+                text += hyphenate("--%s <var>" % " <var> --".join(obj.availableArgs))
 
             if obj.hasFlexArgs:
                 if text:
