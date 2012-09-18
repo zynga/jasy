@@ -170,8 +170,10 @@ def expandVersion(version=None):
 
 
 def cleanRepository():
+    """Cleans git repository from untracked files."""
     return executeCommand(["git", "clean", "-d", "-f"], "Could not clean GIT repository!")
 
 def distcleanRepository():
+    """Cleans git repository from untracked files. Ignores the files listed in ".gitignore"."""
     return executeCommand(["git", "clean", "-d", "-f", "-x"], "Could not distclean GIT repository!")
 
