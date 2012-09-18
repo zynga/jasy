@@ -278,7 +278,7 @@ class Config:
 
     def ask(self, question, name, accept=None, required=True, default=None, force=False, parse=True):
         """
-        Asks the user for value for the given configuration field
+        Asks the user for value for the given configuration field:
 
         - question (str): Question to ask the user
         - name (str): Name of field to store value in

@@ -27,7 +27,7 @@ def highlightArgs(value, inClassOrObject=False):
     return Console.colorize(argmsg, "cyan")    
 
 
-def extractDoc(value, limit=95, indent=2):
+def extractDoc(value, limit=80, indent=2):
 
     doc = value.__doc__
 
@@ -42,18 +42,17 @@ def extractDoc(value, limit=95, indent=2):
     if ".\n" in doc:
         doc = doc[:doc.index(".\n")]
 
+    if ":\n" in doc:
+        doc = doc[:doc.index(":\n")]
+
     doc = doc.replace("\n", " ")
     doc = re.sub(" +", " ", doc)
 
     doc = doc.strip()
 
-    if len(doc) > limit:
-        doc = doc[0:limit] + "..."
-
-    #textwrap.wrap(text, **kwargs)
-
     if doc:
-        return ":\n%s%s" % (indent * " ", doc)
+        prefix = "\n" + (" " * indent)
+        return ":" + prefix + prefix.join(textwrap.wrap(doc, limit))
     else:
         return None
 
