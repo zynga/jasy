@@ -217,7 +217,7 @@ def runTask(project, task, **kwargs):
     # Build parameter list from optional arguments
     params = ["--%s=%s" % (key, kwargs[key]) for key in kwargs]
     if not "prefix" in kwargs:
-        params.append("--prefix=%s" % session.getPrefix())
+        params.append("--prefix=%s" % session.getCurrentPrefix())
 
     # Full list of args to pass to subprocess
     args = [__command, task] + params
