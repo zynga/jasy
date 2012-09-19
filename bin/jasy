@@ -171,7 +171,7 @@ def init():
 
     # Initialize session
     from jasy.env.State import session
-    session.init(autoInit=True, userApi=api, updateRepositories=not options.fast)
+    session.init(autoInitialize=True, scriptEnvironment=api, updateRepositories=not options.fast)
 
     # Make all methods and classes from Context available
     import jasy.env.Context as Context

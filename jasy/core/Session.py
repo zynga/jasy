@@ -16,14 +16,24 @@ import jasy.item.Translation
 from jasy import UserError
 import jasy.core.Console as Console
 
-__all__ = ["Session"]
-
 
 class Session():
     """
     Manages all projects, fields, permutations, translations etc. Mainly like
     the main managment infrastructure. 
     """
+
+    __currentPermutation = None
+    __currentTranslationBundle = None
+    __currentPrefix = None
+    
+    __timestamp = None
+    __projects = None
+    __fields = None
+    __translationBundles = None
+    __updateRepositories = True
+    __scriptEnvironment = None
+
 
     #
     # Core
@@ -34,25 +44,25 @@ class Session():
         atexit.register(self.close)
 
         self.__timestamp = time.time()
+
         self.__projects = []
-        self.__projectByName = {}
         self.__fields = {}
-        self.__translations = {}
+        self.__translationBundles = {}
         
 
-    def init(self, autoInit=True, updateRepositories=True, userApi=None):
+    def init(self, autoInitialize=True, updateRepositories=True, scriptEnvironment=None):
         """
         Initialize the actual session with projects
 
-        :param autoInit: Whether the projects should be automatically added when the current folder contains a valid Jasy project.
+        :param autoInitialize: Whether the projects should be automatically added when the current folder contains a valid Jasy project.
         :param updateRepositories: Whether to update repositories of all project dependencies.
-        :param userApi: API object as being used for loadLibrary to add Python features offered by projects.
+        :param scriptEnvironment: API object as being used for loadLibrary to add Python features offered by projects.
         """
 
-        self.__userApi = userApi
+        self.__scriptEnvironment = scriptEnvironment
         self.__updateRepositories = updateRepositories
 
-        if autoInit and jasy.core.Config.findConfig("jasyproject"):
+        if autoInitialize and jasy.core.Config.findConfig("jasyproject"):
 
             try:
                 self.addProject(jasy.core.Project.getProjectFromPath("."))
@@ -182,7 +192,7 @@ class Session():
         containing all @share'd functions and fields loaded from the given file.
         """
 
-        if objectName in self.__userApi:
+        if objectName in self.__scriptEnvironment:
             raise UserError("Could not import library %s as the object name %s is already used." % (fileName, objectName))
 
         # Create internal class object for storing shared methods
@@ -206,7 +216,7 @@ class Session():
 
         # Export destination name as global    
         Console.debug("Importing %s shared methods under %s...", counter, objectName)
-        self.__userApi[objectName] = exportedModule
+        self.__scriptEnvironment[objectName] = exportedModule
 
         return counter
         
@@ -217,7 +227,7 @@ class Session():
         Injects locale project when current permutation has configured a locale.
         """
 
-        project = self.getLocaleProject()
+        project = self.getCurrentLocaleProject()
         if project:
             return self.__projects + [project]
 
@@ -370,96 +380,6 @@ class Session():
             entry["detect"] = detect
         
         
-    def __generatePermutations(self):
-        """
-        Combines all values to a set of permutations.
-        These define all possible combinations of the configured settings
-        """
-
-        fields = self.__fields
-        values = { key:fields[key]["values"] for key in fields if "values" in fields[key] }
-
-        # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
-        names = sorted(values)
-        combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
-        permutations = [jasy.core.Permutation.Permutation(combi) for combi in combinations]
-
-        return permutations
-
-
-    def permutate(self):
-        """ Generator method for permutations for improving output capabilities """
-        
-        Console.info("Processing permutations...")
-        Console.indent()
-        
-        permutations = self.__generatePermutations()
-        length = len(permutations)
-        
-        for pos, current in enumerate(permutations):
-            Console.info("Permutation %s/%s:" % (pos+1, length))
-            Console.indent()
-
-            self.__permutation = current
-            self.__translation = self.__generateTranslationBundle()
-            
-            yield current
-            Console.outdent()
-
-        Console.outdent()
-
-
-    __permutation = None
-
-    def getCurrentPermutation(self):
-        """Returns current permutation object (useful during looping through permutations via permutate())."""
-
-        return self.__permutation
-
-
-    __translation = None
-
-    def getCurrentTranslationBundle(self):
-        """Returns the current translation bundle (useful during looping through permutations via permutate())."""
-        
-        return self.__translation
-
-
-    def getCurrentLocale(self):
-        """Returns the current locale as defined in current permutation"""
-
-        permutation = self.getCurrentPermutation()
-        if permutation:
-            locale = permutation.get("locale")
-            if locale:
-                return locale
-
-        return None
-
-
-    __prefix = None
-
-    def setCurrentPrefix(self, path):
-        """Interface for Task class to configure the current prefix to use"""
-
-        if path is None:
-            self.__prefix = None
-            Console.debug("Resetting prefix to working directory")
-        else:
-            self.__prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
-            Console.debug("Setting prefix to: %s" % self.__prefix)
-        
-
-    def getCurrentPrefix(self):
-        """
-        Returns the current prefix which should be used to generate/copy new files 
-        in the current task. This somewhat sandboxes each task automatically to mostly
-        only create files in a task specific folder.
-        """
-
-        return self.__prefix
-
-
     def getFieldDetectionClasses(self):
         """
         Returns all JavaScript classes relevant by current field setups to detect all 
@@ -572,8 +492,8 @@ class Session():
         if language is None:
             return None
 
-        if language in self.__translations:
-            return self.__translations[language]
+        if language in self.__translationBundles:
+            return self.__translationBundles[language]
 
         Console.info("Creating translation bundle: %s", language)
         Console.indent()
@@ -594,7 +514,7 @@ class Session():
         Console.debug("Combined number of translations: %s", len(combined.getTable()))
         Console.outdent()
 
-        self.__translations[language] = combined
+        self.__translationBundles[language] = combined
         return combined
 
 
@@ -612,7 +532,75 @@ class Session():
         return all
 
 
-    def getLocaleProject(self, update=False):
+
+    #
+    # State Handling / Looping
+    #
+
+    def __generatePermutations(self):
+        """
+        Combines all values to a set of permutations.
+        These define all possible combinations of the configured settings
+        """
+
+        fields = self.__fields
+        values = { key:fields[key]["values"] for key in fields if "values" in fields[key] }
+
+        # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
+        names = sorted(values)
+        combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
+        permutations = [jasy.core.Permutation.Permutation(combi) for combi in combinations]
+
+        return permutations
+
+
+    def permutate(self):
+        """ Generator method for permutations for improving output capabilities """
+        
+        Console.info("Processing permutations...")
+        Console.indent()
+        
+        permutations = self.__generatePermutations()
+        length = len(permutations)
+        
+        for pos, current in enumerate(permutations):
+            Console.info("Permutation %s/%s:" % (pos+1, length))
+            Console.indent()
+
+            self.__currentPermutation = current
+            self.__currentTranslationBundle = self.__generateTranslationBundle()
+            
+            yield current
+            Console.outdent()
+
+        Console.outdent()
+
+
+    def getCurrentPermutation(self):
+        """Returns current permutation object (useful during looping through permutations via permutate())."""
+
+        return self.__currentPermutation
+
+
+    def getCurrentTranslationBundle(self):
+        """Returns the current translation bundle (useful during looping through permutations via permutate())."""
+        
+        return self.__currentTranslationBundle
+
+
+    def getCurrentLocale(self):
+        """Returns the current locale as defined in current permutation"""
+
+        permutation = self.getCurrentPermutation()
+        if permutation:
+            locale = permutation.get("locale")
+            if locale:
+                return locale
+
+        return None
+
+
+    def getCurrentLocaleProject(self, update=False):
         """
         Returns a locale project for the currently configured locale. 
         Returns None if locale is not set to a valid value.
@@ -629,10 +617,26 @@ class Session():
         return jasy.core.Project.getProjectFromPath(path)
 
 
+    def setCurrentPrefix(self, path):
+        """Interface for Task class to configure the current prefix to use"""
 
-    #
-    # Expand of file names
-    #
+        if path is None:
+            self.__currentPrefix = None
+            Console.debug("Resetting prefix to working directory")
+        else:
+            self.__currentPrefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
+            Console.debug("Setting prefix to: %s" % self.__currentPrefix)
+        
+
+    def getCurrentPrefix(self):
+        """
+        Returns the current prefix which should be used to generate/copy new files 
+        in the current task. This somewhat sandboxes each task automatically to mostly
+        only create files in a task specific folder.
+        """
+
+        return self.__currentPrefix
+
 
     def expandFileName(self, fileName):
         """
@@ -646,15 +650,16 @@ class Session():
         - $locale: Name of current locale e.g. de_DE
         """
 
-        if self.__prefix:
-            fileName = fileName.replace("$prefix", self.__prefix)
+        if self.__currentPrefix:
+            fileName = fileName.replace("$prefix", self.__currentPrefix)
 
-        if self.__permutation:
-            fileName = fileName.replace("$permutation", self.__permutation.getChecksum())
+        if self.__currentPermutation:
+            fileName = fileName.replace("$permutation", self.__currentPermutation.getChecksum())
 
-            locale = self.__permutation.get("locale")
+            locale = self.__currentPermutation.get("locale")
             if locale:
                 fileName = fileName.replace("$locale", locale)
 
         return fileName
-       
+
+
