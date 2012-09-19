@@ -3,16 +3,19 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
+"""
+Tasks are basically functions with some managment code allow them to run in jasyscript.py
+"""
+
 import types, os, sys, inspect, subprocess
 
 import jasy.core.Console as Console
 
 from jasy.env.State import session
-from jasy.core.Util import camelize, hyphenate
+import jasy.core.Util as Util
 from jasy import UserError
 
 __all__ = ["task", "executeTask", "runTask", "printTasks", "setCommand", "setOptions", "getOptions"]
-
 
 class Task:
 
@@ -131,7 +134,7 @@ def executeTask(taskname, **kwargs):
 
     if taskname in __taskRegistry:
         try:
-            camelCaseArgs = { camelize(key) : kwargs[key] for key in kwargs }
+            camelCaseArgs = { Util.camelize(key) : kwargs[key] for key in kwargs }
             __taskRegistry[taskname](**camelCaseArgs)
         except UserError as err:
             raise
@@ -157,7 +160,7 @@ def printTasks(indent=16):
         if obj.availableArgs or obj.hasFlexArgs:
             text = ""
             if obj.availableArgs:
-                text += hyphenate("--%s <var>" % " <var> --".join(obj.availableArgs))
+                text += Util.hyphenate("--%s <var>" % " <var> --".join(obj.availableArgs))
 
             if obj.hasFlexArgs:
                 if text:
@@ -214,7 +217,7 @@ def runTask(project, task, **kwargs):
     # Build parameter list from optional arguments
     params = ["--%s=%s" % (key, kwargs[key]) for key in kwargs]
     if not "prefix" in kwargs:
-        params.append("--prefix=%s" % session.getPrefix())
+        params.append("--prefix=%s" % session.getCurrentPrefix())
 
     # Full list of args to pass to subprocess
     args = [__command, task] + params

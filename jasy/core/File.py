@@ -7,7 +7,7 @@
 A module consisting of some often used file system actions in easy to use unix tradition.
 """
 
-import shutil, os
+import shutil, os, hashlib
 from jasy import UserError
 
 def cp(src, dst):
@@ -79,3 +79,16 @@ def syncfile(src, dst):
         pass
         
     return cp(src, dst)
+
+def sha1(f, block_size=2**20):
+    """Returns a SHA 1 checksum (as hex digest) of the given file (handle)"""
+
+    sha1 = hashlib.sha1()
+    while True:
+        data = f.read(block_size)
+        if not data:
+            break
+        sha1.update(data)
+
+    return sha1.hexdigest()
+

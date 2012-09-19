@@ -48,12 +48,16 @@ class OutputManager:
         self.__fileManager = FileManager(session)
 
         self.__scriptOptimization = Optimization()
+        
+        self.__compressBootCode = False
 
         self.__kernelClasses = []
 
         if compressionLevel > 0:
             self.__scriptOptimization.enable("variables")
             self.__scriptOptimization.enable("declarations")
+            
+            self.__compressBootCode = True
 
         if compressionLevel > 1:
             self.__scriptOptimization.enable("blocks")
@@ -129,6 +133,9 @@ class OutputManager:
         # Generate boot code 
         bootCode = "jasy.Env.setFields(%s);" % self.__session.exportFields()
 
+        if self.__compressBootCode:
+            bootCode = packCode(bootCode)
+
         # Permutation to apply
         permutation = getPermutation({
             "debug" : debug
@@ -171,7 +178,7 @@ class OutputManager:
         try:
             for classObj in filtered:
                 result.append(classObj.getCompressed(permutation, 
-                    self.__session.getCurrentTranslation(), self.__scriptOptimization, self.__scriptFormatting))
+                    self.__session.getCurrentTranslationBundle(), self.__scriptOptimization, self.__scriptFormatting))
                 
         except ClassError as error:
             raise UserError("Error during class compression! %s" % error)
@@ -236,7 +243,7 @@ class OutputManager:
             if assetCode:
                 result.append(packCode(assetCode))
 
-        translationBundle = self.__session.getCurrentTranslation()
+        translationBundle = self.__session.getCurrentTranslationBundle()
         if translationBundle:
             translationData = translationBundle.export(filtered)
             if translationData:

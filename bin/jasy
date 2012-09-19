@@ -169,11 +169,6 @@ def init():
     # This object is used for the official API the jasyscript.py is using
     api = {}
 
-    # Create config object
-    import jasy.core.Config as Config
-    config = Config.Config()
-    config.loadValues("jasyscript", optional=True)
-
     # Initialize session
     from jasy.env.State import session
     session.init(autoInit=True, userApi=api, updateRepositories=not options.fast)
@@ -231,7 +226,11 @@ def main():
 #   START
 # ===========================================================================
 
-init()
+try:
+    init()
+except UserError as ex:
+    Console.error("Could not initialize Jasy: %s" % ex)
+    sys.exit(1)
 
 if options.stats:
     

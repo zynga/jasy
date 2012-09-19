@@ -7,7 +7,6 @@ import itertools, time, atexit, json, os
 
 import jasy.core.Locale
 import jasy.core.Config
-import jasy.core.Json as Json
 import jasy.core.Project
 import jasy.core.Permutation
 
@@ -42,6 +41,13 @@ class Session():
         
 
     def init(self, autoInit=True, updateRepositories=True, userApi=None):
+        """
+        Initialize the actual session with projects
+
+        :param autoInit: Whether the projects should be automatically added when the current folder contains a valid Jasy project.
+        :param updateRepositories: Whether to update repositories of all project dependencies.
+        :param userApi: API object as being used for loadLibrary to add Python features offered by projects.
+        """
 
         self.__userApi = userApi
         self.__updateRepositories = updateRepositories
@@ -66,38 +72,54 @@ class Session():
 
     
     def clean(self):
-        """Clears all caches of known projects"""
+        """Clears all caches of all registered projects"""
+
+        Console.info("Cleaning session...")
+        Console.indent()
 
         for project in self.__projects:
             project.clean()
+
+        Console.outdent()
 
 
     def close(self):
         """Closes the session and stores cache to the harddrive."""
 
-        Console.debug("Closing session...")
+        Console.info("Closing session...")
+        Console.indent()
+
         for project in self.__projects:
             project.close()
         
         self.__projects = None
+
+        Console.outdent()
     
     
     def pause(self):
-        """Pauses the session"""
+        """
+        Pauses the session. This release cache files etc. and makes 
+        it possible to call other jasy processes on the same projects.
+        """
         
+        Console.info("Pausing session...")
+
         for project in self.__projects:
             project.pause()
-    
-    
+
+
     def resume(self):
-        """Resumes the session"""
+        """Resumes the session after it has been paused."""
+
+        Console.info("Resuming session...")
 
         for project in self.__projects:
             project.resume()
             
     
     def getClassByName(self, className):
-        """Queries all currently known projects for the given class and returns the class object"""
+        """Queries all currently registered projects for the given class and returns the class item"""
 
         for project in self.__projects:
             classes = project.getClasses()
@@ -156,7 +178,7 @@ class Session():
 
     def loadLibrary(self, objectName, fileName, encoding="utf-8", doc=None):
         """
-        Creates a new global object (inside global state) with the given name 
+        Creates a new object inside the user API (jasyscript.py) with the given name 
         containing all @share'd functions and fields loaded from the given file.
         """
 
@@ -191,8 +213,8 @@ class Session():
         
     def getProjects(self):
         """
-        Returns all currently known and active projects. 
-        Injects locale project by current permutation value.
+        Returns all currently registered projects. 
+        Injects locale project when current permutation has configured a locale.
         """
 
         project = self.getLocaleProject()
@@ -203,7 +225,7 @@ class Session():
         
         
     def getProjectByName(self, name):
-        """Returns a project as used by the session by its name"""
+        """Returns a project by its name"""
         
         for project in self.__projects:
             if project.getName() == name:
@@ -222,6 +244,11 @@ class Session():
         
         
     def getMain(self):
+        """
+        Returns the main project which is the first project added to the
+        session and the one with the highest priority.
+        """
+
         if self.__projects:
             return self.__projects[0]
         else:
@@ -343,7 +370,7 @@ class Session():
             entry["detect"] = detect
         
         
-    def getPermutations(self):
+    def __generatePermutations(self):
         """
         Combines all values to a set of permutations.
         These define all possible combinations of the configured settings
@@ -366,21 +393,78 @@ class Session():
         Console.info("Processing permutations...")
         Console.indent()
         
-        permutations = self.getPermutations()
+        permutations = self.__generatePermutations()
         length = len(permutations)
         
         for pos, current in enumerate(permutations):
             Console.info("Permutation %s/%s:" % (pos+1, length))
             Console.indent()
-            self.setCurrentPermutation(current)
-            self.setCurrentTranslation(self.getTranslationBundle())
+
+            self.__permutation = current
+            self.__translation = self.__generateTranslationBundle()
+            
             yield current
             Console.outdent()
 
         Console.outdent()
 
 
+    __permutation = None
+
+    def getCurrentPermutation(self):
+        """Returns current permutation object (useful during looping through permutations via permutate())."""
+
+        return self.__permutation
+
+
+    __translation = None
+
+    def getCurrentTranslationBundle(self):
+        """Returns the current translation bundle (useful during looping through permutations via permutate())."""
+        
+        return self.__translation
+
+
+    def getCurrentLocale(self):
+        """Returns the current locale as defined in current permutation"""
+
+        permutation = self.getCurrentPermutation()
+        if permutation:
+            locale = permutation.get("locale")
+            if locale:
+                return locale
+
+        return None
+
+
+    __prefix = None
+
+    def setCurrentPrefix(self, path):
+        """Interface for Task class to configure the current prefix to use"""
+
+        if path is None:
+            self.__prefix = None
+            Console.debug("Resetting prefix to working directory")
+        else:
+            self.__prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
+            Console.debug("Setting prefix to: %s" % self.__prefix)
+        
+
+    def getCurrentPrefix(self):
+        """
+        Returns the current prefix which should be used to generate/copy new files 
+        in the current task. This somewhat sandboxes each task automatically to mostly
+        only create files in a task specific folder.
+        """
+
+        return self.__prefix
+
+
     def getFieldDetectionClasses(self):
+        """
+        Returns all JavaScript classes relevant by current field setups to detect all 
+        relevant values for the given fields.
+        """
 
         result = set()
 
@@ -393,7 +477,7 @@ class Session():
         return result
 
 
-    def exportFields(self, compress=True):
+    def exportFields(self):
         """
         Converts data from values to a compact data structure for being used to 
         compute a checksum in JavaScript.
@@ -403,7 +487,7 @@ class Session():
         2. [ name, 2, value ]
         3. [ name, 3, test, default? ]
         """
-        
+
         export = []
         for key in sorted(self.__fields):
             source = self.__fields[key]
@@ -425,12 +509,12 @@ class Session():
                         values.remove(source["default"])
                         values.insert(0, source["default"])
                     
-                    content.append(Json.toJson(values, compress=compress))
+                    content.append(json.dumps(values))
             
                 else:
                     # EXPORT STRUCT 2
                     content.append("2")
-                    content.append(Json.toJson(values[0], compress=compress))
+                    content.append(json.dumps(values[0]))
 
             # Has no relevance for permutation, just insert the test
             else:
@@ -443,16 +527,16 @@ class Session():
                     
                     # Add default value if available
                     if "default" in source:
-                        content.append(Json.toJson(source["default"], compress=compress))
+                        content.append(json.dumps(source["default"]))
                 
                 else:
                     # Has no detection and no permutation. Ignore it completely
                     continue
                 
-            export.append("[%s]" % ",".join(content))
+            export.append("[%s]" % ", ".join(content))
             
         if export:
-            return "[%s]" % ",".join(export)
+            return "[%s]" % ", ".join(export)
 
         return None
     
@@ -478,7 +562,7 @@ class Session():
         return supported
     
     
-    def getTranslationBundle(self):
+    def __generateTranslationBundle(self):
         """ 
         Returns a translation object for the given language containing 
         all relevant translation files for the current project set. 
@@ -496,8 +580,8 @@ class Session():
 
         # Initialize new Translation object with no project assigned
         # This object is used to merge all seperate translation instances later on.
-        combined = jasy.item.Translation.Translation(None, id=language)
-        relevantLanguages = self.expandLanguage(language)
+        combined = jasy.item.Translation.TranslationItem(None, id=language)
+        relevantLanguages = self.__expandLanguage(language)
 
         # Loop structure is build to prefer finer language matching over project priority
         for currentLanguage in reversed(relevantLanguages):
@@ -514,7 +598,7 @@ class Session():
         return combined
 
 
-    def expandLanguage(self, language):
+    def __expandLanguage(self, language):
         """Expands the given language into a list of languages being used in priority order (highest first)"""
 
         # Priority Chain: 
@@ -528,25 +612,13 @@ class Session():
         return all
 
 
-    def getPermutatedLocale(self):
-        """Returns the current locale as defined in current permutation"""
-
-        permutation = self.getCurrentPermutation()
-        if permutation:
-            locale = permutation.get("locale")
-            if locale:
-                return locale
-
-        return None
-        
-
     def getLocaleProject(self, update=False):
         """
         Returns a locale project for the currently configured locale. 
         Returns None if locale is not set to a valid value.
         """
 
-        locale = self.getPermutatedLocale()
+        locale = self.getCurrentLocale()
         if not locale:
             return None
 
@@ -563,6 +635,16 @@ class Session():
     #
 
     def expandFileName(self, fileName):
+        """
+        Replaces placeholders inside the given filename and returns the result. 
+        The placeholders are based on the current state of the session.
+
+        These are the currently supported placeholders:
+
+        - $prefix: Current prefix of task
+        - $permutation: SHA1 checksum of current permutation
+        - $locale: Name of current locale e.g. de_DE
+        """
 
         if self.__prefix:
             fileName = fileName.replace("$prefix", self.__prefix)
@@ -575,48 +657,4 @@ class Session():
                 fileName = fileName.replace("$locale", locale)
 
         return fileName
-
-
-    #
-    # Permutation Handling
-    #
-
-    __permutation = None
-
-    def getCurrentPermutation(self):
-        return self.__permutation
-
-    def setCurrentPermutation(self, use):
-        self.__permutation = use
-
-
-    #
-    # Translation Handling
-    #
-
-    __translation = None
-
-    def getCurrentTranslation(self):
-        return self.__translation
-
-    def setCurrentTranslation(self, use):
-        self.__translation = use
-
-
-    #
-    # Prefix Handling
-    #
-
-    __prefix = None
-
-    def setCurrentPrefix(self, path):
-        if path is None:
-            self.__prefix = None
-            Console.debug("Resetting prefix to working directory")
-        else:
-            self.__prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
-            Console.debug("Setting prefix to: %s" % self.__prefix)
-        
-    def getCurrentPrefix(self):
-        return self.__prefix
-        
+       

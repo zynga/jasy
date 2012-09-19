@@ -5,17 +5,9 @@
 
 import hashlib, os
 
-import jasy.vcs.Git as Git
-
 import jasy.core.Console as Console
-from jasy.core.Util import executeCommand
-
-__enableUpdates = True
-
-def enableUpdates(enabled):
-    """Switches access for updating repository."""
-    global __enableUpdates
-    __enableUpdates = enabled
+import jasy.core.Util as Util
+import jasy.vcs.Git as Git
 
 
 def isUrl(url):
@@ -36,14 +28,14 @@ def getType(url):
         return None
 
 
-def getTargetFolder(url, version=None, kind=None):
-    """
-    Generates name of the target folder for the given repository containing name, version and identifier
+def getTargetFolder(url, version=None):
+    """Returns the target folder name based on the URL and version using SHA1 checksums
 
     :param url: URL to the repository
     :type url: string
     """
-    if kind == "git" or Git.isRepositoryUrl(url):
+    
+    if Git.isUrl(url):
 
         version = Git.expandVersion(version)
 
@@ -71,9 +63,12 @@ def update(url, version=None, path=None, update=True):
 
 
 def clean(path=None):
-    """Cleans git repository from untracked files."""
+    """Cleans repository from untracked files."""
 
     old = os.getcwd()
+
+    Console.info("Cleaning repository (clean)...")
+    Console.indent()
 
     if path:
         os.chdir(path)
@@ -82,12 +77,20 @@ def clean(path=None):
         Git.cleanRepository()
 
     os.chdir(old)
+    Console.outdent()
 
 
 def distclean(path=None):
-    """Cleans git repository from untracked files. Ignores the files listed in ".gitignore"."""
+    """
+    Cleans repository from untracked and ignored files. This method
+    is pretty agressive in a way that it deletes all non repository managed
+    files e.g. external folder, uncommitted changes, unstaged files, etc.
+    """
 
     old = os.getcwd()
+
+    Console.info("Cleaning repository (distclean)...")
+    Console.indent()
 
     if path:
         os.chdir(path)
@@ -96,5 +99,5 @@ def distclean(path=None):
         Git.distcleanRepository()
 
     os.chdir(old)
-
+    Console.outdent()
 

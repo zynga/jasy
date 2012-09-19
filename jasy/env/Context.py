@@ -22,9 +22,14 @@ from jasy.js.Resolver import Resolver
 from jasy.js.api.Writer import ApiWriter
 from jasy.http.Server import Server
 
-# Commands
+# Commands (be careful with these, prefer modules and classes)
 from jasy.env.Task import task
-from jasy.core.Util import executeCommand
+
+# Create config object
+import jasy.core.Config as Config
+config = Config.Config()
+config.__doc__ = "Auto initialized config object based on project's jasyscript.yaml/json"
+config.loadValues("jasyscript", optional=True)
 
 
 @task

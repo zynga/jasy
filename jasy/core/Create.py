@@ -3,18 +3,105 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import re, os.path, shutil, tempfile
+import re, os, os.path, shutil, tempfile
+
 import jasy
 
 from jasy.core.Project import getProjectFromPath
-from jasy.core.Util import getKey, getFirstSubFolder, massFilePatcher
+from jasy.core.Util import getKey
 from jasy.core.Config import Config
 from jasy import UserError
 
 import jasy.core.Console as Console
 import jasy.vcs.Repository as Repository
 
-__all__ = ["create"]
+
+def getFirstSubFolder(start):
+
+    for root, dirs, files in os.walk(start):
+        for directory in dirs:
+            if not directory.startswith("."):
+                return directory
+
+    return None
+
+
+
+fieldPattern = re.compile(r"\$\${([_a-z][_a-z0-9\.]*)}", re.IGNORECASE | re.VERBOSE)
+
+def massFilePatcher(path, data):
+    
+    # Convert method with access to local data
+    def convertPlaceholder(mo):
+        field = mo.group(1)
+        value = data.get(field)
+
+        # Verify that None means missing
+        if value is None and not data.has(field):
+            raise ValueError('No value for placeholder "%s"' % field)
+    
+        # Requires value being a string
+        return str(value)
+        
+    # Patching files recursively
+    Console.info("Patching files...")
+    Console.indent()
+    for dirPath, dirNames, fileNames in os.walk(path):
+        relpath = os.path.relpath(dirPath, path)
+
+        # Filter dotted directories like .git, .bzr, .hg, .svn, etc.
+        for dirname in dirNames:
+            if dirname.startswith("."):
+                dirNames.remove(dirname)
+        
+        for fileName in fileNames:
+            filePath = os.path.join(dirPath, fileName)
+            fileRel = os.path.normpath(os.path.join(relpath, fileName))
+            
+            Console.debug("Processing: %s..." % fileRel)
+
+            fileHandle = open(filePath, "r", encoding="utf-8", errors="surrogateescape")
+            fileContent = []
+            
+            # Parse file line by line to detect binary files early and omit
+            # fully loading them into memory
+            try:
+                isBinary = False
+
+                for line in fileHandle:
+                    if '\0' in line:
+                        isBinary = True
+                        break 
+                    else:
+                        fileContent.append(line)
+        
+                if isBinary:
+                    Console.debug("Ignoring binary file: %s", fileRel)
+                    continue
+
+            except UnicodeDecodeError as ex:
+                Console.warn("Can't process file: %s: %s", fileRel, ex)
+                continue
+
+            fileContent = "".join(fileContent)
+
+            # Update content with available data
+            try:
+                resultContent = fieldPattern.sub(convertPlaceholder, fileContent)
+            except ValueError as ex:
+                Console.warn("Unable to process file %s: %s!", fileRel, ex)
+                continue
+
+            # Only write file if there where any changes applied
+            if resultContent != fileContent:
+                Console.info("Updating: %s...", Console.colorize(fileRel, "bold"))
+                
+                fileHandle = open(filePath, "w", encoding="utf-8", errors="surrogateescape")
+                fileHandle.write(resultContent)
+                fileHandle.close()
+                
+    Console.outdent()
+
 
 
 validProjectName = re.compile(r"^[a-z][a-z0-9]*$")
@@ -36,8 +123,6 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     :param session: An optional session to use as origin project
     :type session: object
     """
-
-    Console.header("Creating project %s" % name)
 
     if not validProjectName.match(name):
         raise UserError("Invalid project name: %s (Use lowercase characters and numbers only for broadest compabibility)" % name)
@@ -177,8 +262,6 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     if originProject is not None:
         config.readQuestions("jasycreate", optional=True)
         config.executeScript("jasycreate.py", optional=True)
-
-    config.write("jasyscript.yaml")
 
     # Do actual replacement of placeholders
     massFilePatcher(destinationPath, config)
