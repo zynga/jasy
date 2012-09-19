@@ -69,6 +69,8 @@ class OutputManager:
             self.__scriptFormatting.enable("semicolon")
             self.__scriptFormatting.enable("comma")
 
+        Console.info("Initialized OutputManager (Compression: %s, Formatting: %s)", compressionLevel, formattingLevel)
+
 
     def deployAssets(self, classes, assetFolder=None):
         """
@@ -188,10 +190,18 @@ class OutputManager:
         if self.__assetManager:
             assetCode = self.__assetManager.export(filtered, compress=True)
             if assetCode:
-                result.append(packCode(assetCode))
+                if self.__compressBootCode:
+                    result.append(packCode(assetCode))
+                else:
+                    result.append(assetCode)
 
         if bootCode:
-            result.append(packCode("(function(){%s})();" % bootCode))
+            bootCode = "(function(){%s})();" % bootCode
+
+            if self.__compressBootCode:
+                result.append(packCode(bootCode))
+            else:
+                result.append(bootCode)
 
         self.__fileManager.writeFile(fileName, "".join(result))
 
@@ -241,18 +251,28 @@ class OutputManager:
         if self.__assetManager:
             assetCode = self.__assetManager.export(filtered, compress=True)
             if assetCode:
-                result.append(packCode(assetCode))
+                if self.__compressBootCode:
+                    result.append(packCode(assetCode))
+                else:
+                    result.append(assetCode)
 
         translationBundle = self.__session.getCurrentTranslationBundle()
         if translationBundle:
             translationData = translationBundle.export(filtered)
             if translationData:
                 translationCode = 'jasy.Translate.addData(%s);' % translationData
-                result.append(packCode(translationCode))        
+                if self.__compressBootCode:
+                    result.append(packCode(translationCode))        
+                else:
+                    result.append(translationCode)
 
         wrappedBootCode = "function(){%s}" % bootCode if bootCode else "null"
         loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loader, wrappedBootCode)
-        result.append(packCode(loaderCode))
+
+        if self.__compressBootCode:
+            result.append(packCode(loaderCode))
+        else:
+            result.append(loaderCode)
 
         self.__fileManager.writeFile(fileName, "".join(result))
 
