@@ -78,7 +78,6 @@ class Compressor:
                 result = getattr(self, "type_%s" % type)(node)
             except KeyError:
                 print("Compressor does not support type '%s' from line %s in file %s" % (type, node.line, node.getFileName()))
-                print(node.toJson())
                 sys.exit(1)
             
         if getattr(node, "parenthesized", None):
