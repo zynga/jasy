@@ -245,7 +245,6 @@ class OutputManager:
             else:
                 files.append(main.toRelativeUrl(path, urlPrefix))
         
-        loader = '"%s"' % '","'.join(files)
         result = []
         Console.outdent()
         
@@ -268,14 +267,24 @@ class OutputManager:
                 else:
                     result.append(translationCode)
 
-        wrappedBootCode = "function(){%s}" % bootCode if bootCode else "null"
-        loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loader, wrappedBootCode)
+        if self.__compressBootCode:
+            loaderList = '"%s"' % '","'.join(files)
+        else:
+            loaderList = '"%s"' % '",\n"'.join(files)
+
+        wrappedBootCode = "function(){ %s }" % bootCode if bootCode else "null"
+        loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loaderList, wrappedBootCode)
 
         if self.__compressBootCode:
             result.append(packCode(loaderCode))
         else:
             result.append(loaderCode)
 
-        self.__fileManager.writeFile(fileName, "".join(result))
+        if self.__compressBootCode:
+            loaderCode = "".join(result)
+        else:
+            loaderCode = "\n\n".join(result)
+
+        self.__fileManager.writeFile(fileName, loaderCode)
 
 
