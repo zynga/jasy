@@ -172,7 +172,7 @@ class Session():
 
     def loadLibrary(self, objectName, fileName, encoding="utf-8", doc=None):
         """
-        Creates a new global object (inside global state) with the given name 
+        Creates a new object inside the user API (jasyscript.py) with the given name 
         containing all @share'd functions and fields loaded from the given file.
         """
 
@@ -207,8 +207,8 @@ class Session():
         
     def getProjects(self):
         """
-        Returns all currently known and active projects. 
-        Injects locale project by current permutation value.
+        Returns all currently registered projects. 
+        Injects locale project when current permutation has configured a locale.
         """
 
         project = self.getLocaleProject()
@@ -219,7 +219,7 @@ class Session():
         
         
     def getProjectByName(self, name):
-        """Returns a project as used by the session by its name"""
+        """Returns a project by its name"""
         
         for project in self.__projects:
             if project.getName() == name:
@@ -238,6 +238,11 @@ class Session():
         
         
     def getMain(self):
+        """
+        Returns the main project which is the first project added to the
+        session and the one with the highest priority.
+        """
+
         if self.__projects:
             return self.__projects[0]
         else:
@@ -359,7 +364,7 @@ class Session():
             entry["detect"] = detect
         
         
-    def getPermutations(self):
+    def __generatePermutations(self):
         """
         Combines all values to a set of permutations.
         These define all possible combinations of the configured settings
@@ -382,7 +387,7 @@ class Session():
         Console.info("Processing permutations...")
         Console.indent()
         
-        permutations = self.getPermutations()
+        permutations = self.__generatePermutations()
         length = len(permutations)
         
         for pos, current in enumerate(permutations):
@@ -397,6 +402,10 @@ class Session():
 
 
     def getFieldDetectionClasses(self):
+        """
+        Returns all JavaScript classes relevant by current field setups to detect all 
+        relevant values for the given fields.
+        """
 
         result = set()
 
@@ -409,7 +418,7 @@ class Session():
         return result
 
 
-    def exportFields(self, compress=True):
+    def exportFields(self):
         """
         Converts data from values to a compact data structure for being used to 
         compute a checksum in JavaScript.
@@ -419,7 +428,7 @@ class Session():
         2. [ name, 2, value ]
         3. [ name, 3, test, default? ]
         """
-        
+
         export = []
         for key in sorted(self.__fields):
             source = self.__fields[key]
@@ -441,12 +450,12 @@ class Session():
                         values.remove(source["default"])
                         values.insert(0, source["default"])
                     
-                    content.append(Json.toJson(values, compress=compress))
+                    content.append(json.dumps(values))
             
                 else:
                     # EXPORT STRUCT 2
                     content.append("2")
-                    content.append(Json.toJson(values[0], compress=compress))
+                    content.append(json.dumps(values[0]))
 
             # Has no relevance for permutation, just insert the test
             else:
@@ -459,16 +468,16 @@ class Session():
                     
                     # Add default value if available
                     if "default" in source:
-                        content.append(Json.toJson(source["default"], compress=compress))
+                        content.append(json.dumps(source["default"]))
                 
                 else:
                     # Has no detection and no permutation. Ignore it completely
                     continue
                 
-            export.append("[%s]" % ",".join(content))
+            export.append("[%s]" % ", ".join(content))
             
         if export:
-            return "[%s]" % ",".join(export)
+            return "[%s]" % ", ".join(export)
 
         return None
     

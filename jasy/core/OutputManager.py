@@ -48,12 +48,16 @@ class OutputManager:
         self.__fileManager = FileManager(session)
 
         self.__scriptOptimization = Optimization()
+        
+        self.__compressBootCode = False
 
         self.__kernelClasses = []
 
         if compressionLevel > 0:
             self.__scriptOptimization.enable("variables")
             self.__scriptOptimization.enable("declarations")
+            
+            self.__compressBootCode = True
 
         if compressionLevel > 1:
             self.__scriptOptimization.enable("blocks")
@@ -128,6 +132,9 @@ class OutputManager:
 
         # Generate boot code 
         bootCode = "jasy.Env.setFields(%s);" % self.__session.exportFields()
+
+        if self.__compressBootCode:
+            bootCode = packCode(bootCode)
 
         # Permutation to apply
         permutation = getPermutation({
