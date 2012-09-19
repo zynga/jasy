@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import copy, re, os
+import copy, re, os, json
 
 import jasy.js.api.Data as Data
 import jasy.js.api.Text as Text
@@ -376,7 +376,7 @@ class ApiWriter():
         writeCounter = 0
         extension = "js" if callback else "json"
         compress = True
-        
+
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
