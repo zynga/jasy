@@ -114,14 +114,14 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     :type name: string
     :param origin: Path or git url to the base project
     :type origin: string
-    :param originVersion: Version of the base project from wich will be created
+    :param originVersion: Version of the base project from wich will be created.
     :type originVersion: string
     :param skeleton: Name of a defined skeleton. None for creating from root
     :type skeleton: string
     :param destination: Destination path for the new created project
     :type destination: string
     :param session: An optional session to use as origin project
-    :type session: string
+    :type session: object
     """
 
     if not validProjectName.match(name):

@@ -280,11 +280,15 @@ class Config:
         """
         Asks the user for value for the given configuration field:
 
-        - question (str): Question to ask the user
-        - name (str): Name of field to store value in
-        - accept (str): Any of the supported types to validate for (see matchesType)
-        - required (bool): Whether the field is required
-        - default (any): Default value whenever user has given no value
+        :param question: Question to ask the user
+        :type question: string
+        :param name: Name of field to store value in
+        :type name: string
+        :param accept: Any of the supported types to validate for (see matchesType)
+        :type accept: string
+        :param required: Whether the field is required
+        :type required: boolean
+        :param default: Default value whenever user has given no value
         """
 
         while True:

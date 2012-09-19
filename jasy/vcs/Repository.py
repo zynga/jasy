@@ -11,13 +11,22 @@ import jasy.vcs.Git as Git
 
 
 def isUrl(url):
-    """Figures out whether the given string is a valid Git repository URL"""
+    """
+    Figures out whether the given string is a valid Git repository URL
+
+    :param url: URL to the repository
+    :type url: string
+    """
     return Git.isUrl(url)
 
 
 def getType(url):
-    """Returns the repository type of the given URL"""
+    """
+    Returns repository type of the given URL
 
+    :param url: URL to the repository
+    :type url: string
+    """
     if Git.isUrl(url):
         return "git"
     else:
@@ -25,8 +34,15 @@ def getType(url):
 
 
 def getTargetFolder(url, version=None):
-    """Returns the target folder name based on the URL and version using SHA1 checksums"""
+    """
+    Returns the target folder name based on the URL and version using SHA1 checksums
 
+    :param url: URL to the repository
+    :type url: string
+    :param version: Version to use
+    :type url: string
+    """
+    
     if Git.isUrl(url):
 
         version = Git.expandVersion(version)
@@ -43,7 +59,18 @@ def getTargetFolder(url, version=None):
 
 
 def update(url, version=None, path=None, update=True):
-    """Clones the given repository URL (optionally with overriding/update features)"""
+    """
+    Clones the given repository URL (optionally with overriding/update features)
+
+    :param url: URL to the repository
+    :type url: string
+    :param version: Version to clone
+    :type url: string
+    :param version: Destination path
+    :type url: string
+    :param version: Eneable/disable update functionality
+    :type url: string
+    """
 
     revision = None
 
@@ -55,7 +82,12 @@ def update(url, version=None, path=None, update=True):
 
 
 def clean(path=None):
-    """Cleans repository from untracked files."""
+    """
+    Cleans repository from untracked files.
+
+    :param url: Path to the local repository
+    :type url: string
+    """
 
     old = os.getcwd()
 
@@ -77,6 +109,9 @@ def distclean(path=None):
     Cleans repository from untracked and ignored files. This method
     is pretty agressive in a way that it deletes all non repository managed
     files e.g. external folder, uncommitted changes, unstaged files, etc.
+
+    :param url: Path to the local repository
+    :type url: string
     """
 
     old = os.getcwd()
