@@ -3,10 +3,9 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import polib
-import jasy.item.Abstract
-import jasy.core.Json as Json
+import polib, json
 
+import jasy.item.Abstract
 import jasy.core.Console as Console
 
 
@@ -126,7 +125,7 @@ class TranslationItem(jasy.item.Abstract.AbstractItem):
         table = self.table
         result = { translationId: table[translationId] for translationId in relevantTranslations if translationId in table }
 
-        return Json.toJson(result or None)
+        return json.dumps(result or None)
 
     def getTable(self):
         """Returns the translation table"""
