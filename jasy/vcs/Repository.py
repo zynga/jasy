@@ -27,7 +27,7 @@ def getType(url):
 def getTargetFolder(url, version=None):
     """Returns the target folder name based on the URL and version using SHA1 checksums"""
 
-    if Git.isRepositoryUrl(url):
+    if Git.isUrl(url):
 
         version = Git.expandVersion(version)
 

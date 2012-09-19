@@ -66,38 +66,54 @@ class Session():
 
     
     def clean(self):
-        """Clears all caches of known projects"""
+        """Clears all caches of all registered projects"""
+
+        Console.info("Cleaning session...")
+        Console.indent()
 
         for project in self.__projects:
             project.clean()
+
+        Console.outdent()
 
 
     def close(self):
         """Closes the session and stores cache to the harddrive."""
 
-        Console.debug("Closing session...")
+        Console.info("Closing session...")
+        Console.indent()
+
         for project in self.__projects:
             project.close()
         
         self.__projects = None
+
+        Console.outdent()
     
     
     def pause(self):
-        """Pauses the session"""
+        """
+        Pauses the session. This release cache files etc. and makes 
+        it possible to call other jasy processes on the same projects.
+        """
         
+        Console.info("Pausing session...")
+
         for project in self.__projects:
             project.pause()
-    
-    
+
+
     def resume(self):
-        """Resumes the session"""
+        """Resumes the session after it has been paused."""
+
+        Console.info("Resuming session...")
 
         for project in self.__projects:
             project.resume()
             
     
     def getClassByName(self, className):
-        """Queries all currently known projects for the given class and returns the class object"""
+        """Queries all currently registered projects for the given class and returns the class item"""
 
         for project in self.__projects:
             classes = project.getClasses()
