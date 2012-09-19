@@ -49,7 +49,7 @@ class OutputManager:
 
         self.__scriptOptimization = Optimization()
         
-        self.__compressBootCode = False
+        self.__compressGeneratedCode = False
 
         self.__kernelClasses = []
 
@@ -57,7 +57,7 @@ class OutputManager:
             self.__scriptOptimization.enable("variables")
             self.__scriptOptimization.enable("declarations")
             
-            self.__compressBootCode = True
+            self.__compressGeneratedCode = True
 
         if compressionLevel > 1:
             self.__scriptOptimization.enable("blocks")
@@ -135,13 +135,11 @@ class OutputManager:
         # Generate boot code 
         bootCode = "jasy.Env.setFields(%s);" % self.__session.exportFields()
 
-        if self.__compressBootCode:
+        if self.__compressGeneratedCode:
             bootCode = packCode(bootCode)
 
         # Permutation to apply
-        permutation = getPermutation({
-            "debug" : debug
-        })
+        permutation = getPermutation({ "debug" : debug })
 
         # Sort resulting class list
         sortedClasses = resolver.getSortedClasses()
@@ -191,7 +189,7 @@ class OutputManager:
             assetData = self.__assetManager.export(filtered)
             if assetData:
                 assetCode = "jasy.Asset.addData(%s);" % assetData
-                if self.__compressBootCode:
+                if self.__compressGeneratedCode:
                     result.append(packCode(assetCode))
                 else:
                     result.append(assetCode)
@@ -199,12 +197,17 @@ class OutputManager:
         if bootCode:
             bootCode = "(function(){%s})();" % bootCode
 
-            if self.__compressBootCode:
+            if self.__compressGeneratedCode:
                 result.append(packCode(bootCode))
             else:
                 result.append(bootCode)
 
-        self.__fileManager.writeFile(fileName, "".join(result))
+        if self.__compressGeneratedCode:
+            compressedCode = "".join(result)
+        else:
+            compressedCode = "\n\n".join(result)
+
+        self.__fileManager.writeFile(fileName, compressedCode)
 
 
     def storeLoader(self, classes, fileName, bootCode="", urlPrefix=""):
@@ -252,7 +255,7 @@ class OutputManager:
             assetData = self.__assetManager.export(filtered)
             if assetData:
                 assetCode = "jasy.Asset.addData(%s);" % assetData
-                if self.__compressBootCode:
+                if self.__compressGeneratedCode:
                     result.append(packCode(assetCode))
                 else:
                     result.append(assetCode)
@@ -262,12 +265,12 @@ class OutputManager:
             translationData = translationBundle.export(filtered)
             if translationData:
                 translationCode = 'jasy.Translate.addData(%s);' % translationData
-                if self.__compressBootCode:
+                if self.__compressGeneratedCode:
                     result.append(packCode(translationCode))        
                 else:
                     result.append(translationCode)
 
-        if self.__compressBootCode:
+        if self.__compressGeneratedCode:
             loaderList = '"%s"' % '","'.join(files)
         else:
             loaderList = '"%s"' % '",\n"'.join(files)
@@ -275,12 +278,12 @@ class OutputManager:
         wrappedBootCode = "function(){ %s }" % bootCode if bootCode else "null"
         loaderCode = 'core.io.Queue.load([%s], %s, null, true);' % (loaderList, wrappedBootCode)
 
-        if self.__compressBootCode:
+        if self.__compressGeneratedCode:
             result.append(packCode(loaderCode))
         else:
             result.append(loaderCode)
 
-        if self.__compressBootCode:
+        if self.__compressGeneratedCode:
             loaderCode = "".join(result)
         else:
             loaderCode = "\n\n".join(result)
