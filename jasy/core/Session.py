@@ -41,6 +41,13 @@ class Session():
         
 
     def init(self, autoInit=True, updateRepositories=True, userApi=None):
+        """
+        Initialize the actual session with projects
+
+        :param autoInit: Whether the projects should be automatically added when the current folder contains a valid Jasy project.
+        :param updateRepositories: Whether to update repositories of all project dependencies.
+        :param userApi: API object as being used for loadLibrary to add Python features offered by projects.
+        """
 
         self.__userApi = userApi
         self.__updateRepositories = updateRepositories
