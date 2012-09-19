@@ -6,7 +6,6 @@
 import os
 
 import jasy.core.Console as Console
-import jasy.core.Json as Json
 
 from jasy.core.Permutation import getPermutation
 from jasy.item.Class import ClassError

@@ -7,7 +7,6 @@ import copy, re, os, json
 
 import jasy.js.api.Data as Data
 import jasy.js.api.Text as Text
-import jasy.core.Json as Json
 import jasy.core.File as File
 
 from jasy.js.util import *
