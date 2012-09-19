@@ -5,10 +5,9 @@
 
 import hashlib, os
 
-import jasy.vcs.Git as Git
-
 import jasy.core.Console as Console
 import jasy.core.Util as Util
+import jasy.vcs.Git as Git
 
 
 def isUrl(url):
@@ -28,7 +27,7 @@ def getType(url):
 def getTargetFolder(url, version=None):
     """Returns the target folder name based on the URL and version using SHA1 checksums"""
 
-    if kind == "git" or Git.isRepositoryUrl(url):
+    if Git.isRepositoryUrl(url):
 
         version = Git.expandVersion(version)
 
@@ -75,8 +74,9 @@ def clean(path=None):
 
 def distclean(path=None):
     """
-    Cleans repository from untracked files. 
-    Ignores the files listed in ignore files and deletes them as well.
+    Cleans repository from untracked and ignored files. This method
+    is pretty agressive in a way that it deletes all non repository managed
+    files e.g. external folder, uncommitted changes, unstaged files, etc.
     """
 
     old = os.getcwd()
