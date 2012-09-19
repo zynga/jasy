@@ -2,7 +2,7 @@ Jasy 0.8
 ========
 
 - Removed unused jasy.core.Json module. Just use `json` from standard library instead.
-- Imporved compression features of `OutputManager`.
+- Improved compression features of `OutputManager`.
 - Added and improved a lot of doc comments.
 - Fixed a few issues for locale/translation support.
 - Reduced number of public methods on `Session` to not show only internally used methods to the outside.
