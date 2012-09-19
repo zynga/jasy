@@ -7,7 +7,6 @@ import itertools, time, atexit, json, os
 
 import jasy.core.Locale
 import jasy.core.Config
-import jasy.core.Json as Json
 import jasy.core.Project
 import jasy.core.Permutation
 
