@@ -176,18 +176,26 @@ __command = None
 __options = None
 
 def setCommand(cmd):
+    """Sets the jasy command which should be used to execute tasks with runTask()"""
+
     global __command
     __command = cmd
 
 def getCommand():
+    """Returns the "jasy" command which is currently executed."""
+
     global __command
     return __command
 
 def setOptions(options):
+    """Sets currently configured command line options. Mainly used for printing help screens."""
+
     global __options
     __options = options
 
 def getOptions():
+    """Returns the options as passed to the jasy command. Useful for printing all command line arguments."""
+
     global __options
     return __options
 

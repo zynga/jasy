@@ -129,7 +129,13 @@ class Session():
             
     
     def getClassByName(self, className):
-        """Queries all currently registered projects for the given class and returns the class item"""
+        """
+        Queries all currently registered projects for the given class and returns the class item.
+        Returns None when no matching class item was found.
+
+        :param className: Any valid classname from any of the projects.
+        :type className: str
+        """
 
         for project in self.__projects:
             classes = project.getClasses()
