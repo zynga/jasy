@@ -29,7 +29,8 @@ def getType(url):
 
 
 def getTargetFolder(url, version=None):
-    """Returns the target folder name based on the URL and version using SHA1 checksums
+    """
+    Returns the target folder name based on the URL and version using SHA1 checksums
 
     :param url: URL to the repository
     :type url: string
