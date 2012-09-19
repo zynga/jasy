@@ -167,6 +167,7 @@ def __recurser(node, table):
     # Process all method calls
     if node.type == "call":
         funcName = None
+        funcNameNode = None
         
         # Uses global translation method (not typical)
         if node[0].type == "identifier":
