@@ -178,7 +178,7 @@ class OutputManager:
         try:
             for classObj in filtered:
                 result.append(classObj.getCompressed(permutation, 
-                    self.__session.getCurrentTranslation(), self.__scriptOptimization, self.__scriptFormatting))
+                    self.__session.getCurrentTranslationBundle(), self.__scriptOptimization, self.__scriptFormatting))
                 
         except ClassError as error:
             raise UserError("Error during class compression! %s" % error)
@@ -243,7 +243,7 @@ class OutputManager:
             if assetCode:
                 result.append(packCode(assetCode))
 
-        translationBundle = self.__session.getCurrentTranslation()
+        translationBundle = self.__session.getCurrentTranslationBundle()
         if translationBundle:
             translationData = translationBundle.export(filtered)
             if translationData:

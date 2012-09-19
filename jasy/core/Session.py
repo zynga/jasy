@@ -419,10 +419,22 @@ class Session():
 
     __translation = None
 
-    def getCurrentTranslation(self):
+    def getCurrentTranslationBundle(self):
         """Returns the current translation bundle (useful during looping through permutations via permutate())."""
         
         return self.__translation
+
+
+    def getCurrentLocale(self):
+        """Returns the current locale as defined in current permutation"""
+
+        permutation = self.getCurrentPermutation()
+        if permutation:
+            locale = permutation.get("locale")
+            if locale:
+                return locale
+
+        return None
 
 
     __prefix = None
@@ -437,6 +449,7 @@ class Session():
             self.__prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
             Console.debug("Setting prefix to: %s" % self.__prefix)
         
+
     def getCurrentPrefix(self):
         """
         Returns the current prefix which should be used to generate/copy new files 
@@ -599,25 +612,13 @@ class Session():
         return all
 
 
-    def getPermutatedLocale(self):
-        """Returns the current locale as defined in current permutation"""
-
-        permutation = self.getCurrentPermutation()
-        if permutation:
-            locale = permutation.get("locale")
-            if locale:
-                return locale
-
-        return None
-        
-
     def getLocaleProject(self, update=False):
         """
         Returns a locale project for the currently configured locale. 
         Returns None if locale is not set to a valid value.
         """
 
-        locale = self.getPermutatedLocale()
+        locale = self.getCurrentLocale()
         if not locale:
             return None
 
