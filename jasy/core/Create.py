@@ -124,8 +124,6 @@ def create(name="myproject", origin=None, originVersion=None, skeleton=None, des
     :type session: string
     """
 
-    Console.header("Creating project %s" % name)
-
     if not validProjectName.match(name):
         raise UserError("Invalid project name: %s (Use lowercase characters and numbers only for broadest compabibility)" % name)
 
