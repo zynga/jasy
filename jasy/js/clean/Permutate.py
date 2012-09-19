@@ -37,8 +37,8 @@ def patch(node, permutation):
     if node.type == "dot" and node.parent.type == "call":
         assembled = assembleDot(node)
         
-        # core.Env.getValue(key)
-        if assembled == "core.Env.getValue" and node.parent.type == "call":
+        # jasy.Env.getValue(key)
+        if assembled == "jasy.Env.getValue" and node.parent.type == "call":
             callNode = node.parent
             params = callNode[1]
             replacement = __translateToJS(permutation.get(params[0].value))
@@ -47,9 +47,9 @@ def patch(node, permutation):
                 callNode.parent.replace(callNode, replacementNode)
                 modified = True            
         
-        # core.Env.isSet(key, expected)
-        # also supports boolean like: core.Env.isSet(key)
-        elif assembled == "core.Env.isSet" and node.parent.type == "call":
+        # jasy.Env.isSet(key, expected)
+        # also supports boolean like: jasy.Env.isSet(key)
+        elif assembled == "jasy.Env.isSet" and node.parent.type == "call":
             callNode = node.parent
             params = callNode[1]
             name = params[0].value
@@ -76,15 +76,15 @@ def patch(node, permutation):
                     callNode.parent.replace(callNode, replacementNode)
                     modified = True
         
-        # core.Env.select(key, map)
-        elif assembled == "core.Env.select" and node.parent.type == "call":
+        # jasy.Env.select(key, map)
+        elif assembled == "jasy.Env.select" and node.parent.type == "call":
             callNode = node.parent
             params = callNode[1]
             replacement = __translateToJS(permutation.get(params[0].value))
             if replacement:
                 parsedReplacement = Parser.parseExpression(replacement)
                 if parsedReplacement.type != "string":
-                    raise Exception("core.Env.select requires that the given replacement is of type string.")
+                    raise Exception("jasy.Env.select requires that the given replacement is of type string.")
 
                 # Directly try to find matching identifier in second param (map)
                 objectInit = params[1]

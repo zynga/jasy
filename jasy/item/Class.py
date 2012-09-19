@@ -43,8 +43,8 @@ def collectFields(node, keys=None):
         keys = set()
     
     # Always the first parameter
-    # Supported calls: core.Env.isSet(key, expected?), core.Env.getValue(key), core.Env.select(key, map)
-    calls = ("core.Env.isSet", "core.Env.getValue", "core.Env.select")
+    # Supported calls: jasy.Env.isSet(key, expected?), jasy.Env.getValue(key), jasy.Env.select(key, map)
+    calls = ("jasy.Env.isSet", "jasy.Env.getValue", "jasy.Env.select")
     if node.type == "dot" and node.parent.type == "call" and assembleDot(node) in calls:
         keys.add(node.parent[1][0].value)
 
