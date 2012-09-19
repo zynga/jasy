@@ -7,7 +7,6 @@ import re, json, os, fnmatch
 
 import jasy.core.File
 import jasy.item.Asset
-import jasy.core.Json as Json
 
 from jasy import UserError
 import jasy.core.Console as Console
@@ -395,7 +394,7 @@ class AssetManager:
         
 
 
-    def export(self, classes=None, compress=True):
+    def export(self, classes=None):
         """
         Exports asset data for usage at the client side. Utilizes JavaScript
         class jasy.Asset to inject data into the client at runtime.
@@ -431,10 +430,10 @@ class AssetManager:
 
         Console.info("Exported %s assets", len(result))
 
-        return "jasy.Asset.addData(%s);" % Json.toJson({
+        return json.dumps({
             "assets" : self.__structurize(result),
             "profiles" : self.__profiles,
             "sprites" : self.__sprites
-        }, compress=compress)
+        }, indent=2)
         
 

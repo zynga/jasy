@@ -188,8 +188,9 @@ class OutputManager:
         Console.outdent()
 
         if self.__assetManager:
-            assetCode = self.__assetManager.export(filtered, compress=True)
-            if assetCode:
+            assetData = self.__assetManager.export(filtered)
+            if assetData:
+                assetCode = "jasy.Asset.addData(%s);" % assetData
                 if self.__compressBootCode:
                     result.append(packCode(assetCode))
                 else:
@@ -249,8 +250,9 @@ class OutputManager:
         Console.outdent()
         
         if self.__assetManager:
-            assetCode = self.__assetManager.export(filtered, compress=True)
-            if assetCode:
+            assetData = self.__assetManager.export(filtered)
+            if assetData:
+                assetCode = "jasy.Asset.addData(%s);" % assetData
                 if self.__compressBootCode:
                     result.append(packCode(assetCode))
                 else:

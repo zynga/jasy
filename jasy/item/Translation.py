@@ -112,7 +112,7 @@ class TranslationItem(jasy.item.Abstract.AbstractItem):
 
         return self
 
-    def export(self, classes, compress=True):
+    def export(self, classes):
         """Exports the translation table as JSON based on the given set of classes"""
 
         # Based on the given class list figure out which translations are actually used
@@ -126,7 +126,7 @@ class TranslationItem(jasy.item.Abstract.AbstractItem):
         table = self.table
         result = { translationId: table[translationId] for translationId in relevantTranslations if translationId in table }
 
-        return Json.toJson(result or None, compress=compress)
+        return Json.toJson(result or None)
 
     def getTable(self):
         """Returns the translation table"""
