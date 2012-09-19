@@ -1,6 +1,26 @@
+Jasy 0.8
+========
+
+- Removed unused jasy.core.Json module. Just use `json` from standard library instead.
+- Imporved compression features of `OutputManager`.
+- Added and improved a lot of doc comments.
+- Fixed a few issues for locale/translation support.
+- Reduced number of public methods on `Session` to not show only internally used methods to the outside.
+- Improved output/export logic for translations and assets.
+- Added feature to back-hyphenate parameters on the command line help screen (e.g. parameter `originVersion` => command line argument `--origin-version`)
+
+
 Jasy 0.8-beta6
 ==============
 
+- Added support for generating API documentation using new script "bin/jasy-doc"
+- Cleaned up references to `pkg_resources`.
+- Added a lot of doc comments to the code.
+- Added support for top-level skeletons
+- Drastically improved stability of comment parser to better protect code blocks from further interpretation by documentation tags/params etc.
+- Added some new unit tests for comment parser to verify stability improvements.
+- Added `Inspection` module and new built-in task `showapi` to render a list to the console of all available API.
+- Fixed references to new `Item` classes when defining manual layout for projects.
 
 
 Jasy 0.8-beta5
