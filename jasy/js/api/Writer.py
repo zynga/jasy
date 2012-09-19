@@ -376,12 +376,28 @@ class ApiWriter():
         writeCounter = 0
         extension = "js" if callback else "json"
         compress = True
+        
+
+        class JsonEncoder(json.JSONEncoder):
+            def default(self, obj):
+                if isinstance(obj, set):
+                    return list(obj)
+                    
+                return json.JSONEncoder.default(self, obj)
+
 
         def encode(content, name):
-            if callback:
-                return "%s(%s,'%s');" % (callback, Json.toJson(content, compress=compress), name)
+
+            if compress:
+                jsonContent = json.dumps(content, sort_keys=True, cls=JsonEncoder, separators=(',',':'))
             else:
-                return Json.toJson(content, compress=compress)
+                jsonContent = json.dumps(content, sort_keys=True, cls=JsonEncoder, indent=2)
+
+            if callback:
+                return "%s(%s,'%s');" % (callback, jsonContent, name)
+            else:
+                return jsonContent
+
 
         Console.info("Saving class data (%s files)...", len(data))
         Console.indent()
