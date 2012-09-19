@@ -13,6 +13,7 @@ from jasy.core.Util import executeCommand
 __enableUpdates = True
 
 def enableUpdates(enabled):
+    """Switches access for updating repository."""
     global __enableUpdates
     __enableUpdates = enabled
 
@@ -23,6 +24,12 @@ def isUrl(url):
 
 
 def getType(url):
+    """
+    Returns repository type of the given URL
+
+    :param url: URL to the repository
+    :type url: string
+    """
     if Git.isUrl(url):
         return "git"
     else:
@@ -30,7 +37,12 @@ def getType(url):
 
 
 def getTargetFolder(url, version=None, kind=None):
+    """
+    Generates name of the target folder for the given repository containing name, version and identifier
 
+    :param url: URL to the repository
+    :type url: string
+    """
     if kind == "git" or Git.isRepositoryUrl(url):
 
         version = Git.expandVersion(version)
