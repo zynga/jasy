@@ -496,7 +496,7 @@ class Session():
 
         # Initialize new Translation object with no project assigned
         # This object is used to merge all seperate translation instances later on.
-        combined = jasy.item.Translation.Translation(None, id=language)
+        combined = jasy.item.Translation.TranslationItem(None, id=language)
         relevantLanguages = self.expandLanguage(language)
 
         # Loop structure is build to prefer finer language matching over project priority
