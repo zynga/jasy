@@ -10,12 +10,6 @@ import jasy.vcs.Git as Git
 import jasy.core.Console as Console
 import jasy.core.Util as Util
 
-__enableUpdates = True
-
-def enableUpdates(enabled):
-    global __enableUpdates
-    __enableUpdates = enabled
-
 
 def isUrl(url):
     """Figures out whether the given string is a valid Git repository URL"""
@@ -23,13 +17,16 @@ def isUrl(url):
 
 
 def getType(url):
+    """Returns the repository type of the given URL"""
+
     if Git.isUrl(url):
         return "git"
     else:
         return None
 
 
-def getTargetFolder(url, version=None, kind=None):
+def getTargetFolder(url, version=None):
+    """Returns the target folder name based on the URL and version using SHA1 checksums"""
 
     if kind == "git" or Git.isRepositoryUrl(url):
 
@@ -59,7 +56,7 @@ def update(url, version=None, path=None, update=True):
 
 
 def clean(path=None):
-    """Cleans git repository from untracked files."""
+    """Cleans repository from untracked files."""
 
     old = os.getcwd()
 
@@ -77,7 +74,10 @@ def clean(path=None):
 
 
 def distclean(path=None):
-    """Cleans git repository from untracked files. Ignores the files listed in ".gitignore"."""
+    """
+    Cleans repository from untracked files. 
+    Ignores the files listed in ignore files and deletes them as well.
+    """
 
     old = os.getcwd()
 

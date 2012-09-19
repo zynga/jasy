@@ -403,7 +403,7 @@ class Project():
             
             if Repository.isUrl(source):
                 kind = kind or Repository.getType(source)
-                path = os.path.abspath(os.path.join(checkoutDirectory, Repository.getTargetFolder(source, version, kind)))
+                path = os.path.abspath(os.path.join(checkoutDirectory, Repository.getTargetFolder(source, version)))
                 
                 # Only clone and update when the folder is unique in this session
                 # This reduces git/hg/svn calls which are typically quite expensive
