@@ -392,12 +392,52 @@ class Session():
         for pos, current in enumerate(permutations):
             Console.info("Permutation %s/%s:" % (pos+1, length))
             Console.indent()
-            self.setCurrentPermutation(current)
-            self.setCurrentTranslation(self.getTranslationBundle())
+
+            self.__permutation = current
+            self.__translation = self.__generateTranslationBundle()
+            
             yield current
             Console.outdent()
 
         Console.outdent()
+
+
+    __permutation = None
+
+    def getCurrentPermutation(self):
+        """Returns current permutation object (useful during looping through permutations via permutate())."""
+
+        return self.__permutation
+
+
+    __translation = None
+
+    def getCurrentTranslation(self):
+        """Returns the current translation bundle (useful during looping through permutations via permutate())."""
+        
+        return self.__translation
+
+
+    __prefix = None
+
+    def setCurrentPrefix(self, path):
+        """Interface for Task class to configure the current prefix to use"""
+
+        if path is None:
+            self.__prefix = None
+            Console.debug("Resetting prefix to working directory")
+        else:
+            self.__prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
+            Console.debug("Setting prefix to: %s" % self.__prefix)
+        
+    def getCurrentPrefix(self):
+        """
+        Returns the current prefix which should be used to generate/copy new files 
+        in the current task. This somewhat sandboxes each task automatically to mostly
+        only create files in a task specific folder.
+        """
+
+        return self.__prefix
 
 
     def getFieldDetectionClasses(self):
@@ -502,7 +542,7 @@ class Session():
         return supported
     
     
-    def getTranslationBundle(self):
+    def __generateTranslationBundle(self):
         """ 
         Returns a translation object for the given language containing 
         all relevant translation files for the current project set. 
@@ -521,7 +561,7 @@ class Session():
         # Initialize new Translation object with no project assigned
         # This object is used to merge all seperate translation instances later on.
         combined = jasy.item.Translation.TranslationItem(None, id=language)
-        relevantLanguages = self.expandLanguage(language)
+        relevantLanguages = self.__expandLanguage(language)
 
         # Loop structure is build to prefer finer language matching over project priority
         for currentLanguage in reversed(relevantLanguages):
@@ -538,7 +578,7 @@ class Session():
         return combined
 
 
-    def expandLanguage(self, language):
+    def __expandLanguage(self, language):
         """Expands the given language into a list of languages being used in priority order (highest first)"""
 
         # Priority Chain: 
@@ -587,6 +627,16 @@ class Session():
     #
 
     def expandFileName(self, fileName):
+        """
+        Replaces placeholders inside the given filename and returns the result. 
+        The placeholders are based on the current state of the session.
+
+        These are the currently supported placeholders:
+
+        - $prefix: Current prefix of task
+        - $permutation: SHA1 checksum of current permutation
+        - $locale: Name of current locale e.g. de_DE
+        """
 
         if self.__prefix:
             fileName = fileName.replace("$prefix", self.__prefix)
@@ -599,48 +649,4 @@ class Session():
                 fileName = fileName.replace("$locale", locale)
 
         return fileName
-
-
-    #
-    # Permutation Handling
-    #
-
-    __permutation = None
-
-    def getCurrentPermutation(self):
-        return self.__permutation
-
-    def setCurrentPermutation(self, use):
-        self.__permutation = use
-
-
-    #
-    # Translation Handling
-    #
-
-    __translation = None
-
-    def getCurrentTranslation(self):
-        return self.__translation
-
-    def setCurrentTranslation(self, use):
-        self.__translation = use
-
-
-    #
-    # Prefix Handling
-    #
-
-    __prefix = None
-
-    def setCurrentPrefix(self, path):
-        if path is None:
-            self.__prefix = None
-            Console.debug("Resetting prefix to working directory")
-        else:
-            self.__prefix = os.path.normpath(os.path.abspath(os.path.expanduser(path)))
-            Console.debug("Setting prefix to: %s" % self.__prefix)
-        
-    def getCurrentPrefix(self):
-        return self.__prefix
-        
+       
