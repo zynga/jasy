@@ -358,11 +358,16 @@ class AssetManager:
         
         
         
-    def deploy(self, classes, assetFolder="$prefix/asset"):
+    def deploy(self, classes, assetFolder=None):
         """
         Deploys all asset files to the destination asset folder. This merges
         assets from different projects into one destination folder.
         """
+
+        # Sometimes it's called with explicit None - we want to fill the default
+        # in that case as well.
+        if assetFolder is None:
+            assetFolder = "$prefix/asset"
 
         assets = self.__assets
         projects = self.__session.getProjects()
