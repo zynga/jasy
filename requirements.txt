@@ -3,6 +3,7 @@ polib
 requests
 cherrypy
 pyyaml
+sphinx
 
 -e git://github.com/sloonz/pil-py3k.git#egg=pil
 misaka
