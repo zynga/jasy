@@ -93,7 +93,7 @@ def matchesType(value, expected):
     elif result is str:
         return expected in ("string", "str", "primitive")
     elif result is bool:
-        return expexted in ("boolean", "bool", "primitive")
+        return expected in ("boolean", "bool", "primitive")
     elif result is dict:
         return expected in ("dict", "map")
     elif result is list:
