@@ -41,6 +41,11 @@ class OutputManager:
 
     def __init__(self, session, assetManager=None, compressionLevel=1, formattingLevel=0):
 
+        Console.info("Initializing OutputManager...")
+        Console.indent()
+        Console.info("Formatting Level: %s", formattingLevel)
+        Console.info("Compression Level: %s", compressionLevel)
+
         self.__session = session
 
         self.__assetManager = assetManager
@@ -68,7 +73,7 @@ class OutputManager:
             self.__scriptFormatting.enable("semicolon")
             self.__scriptFormatting.enable("comma")
 
-        Console.info("Initialized OutputManager (Compression: %s, Formatting: %s)", compressionLevel, formattingLevel)
+        Console.outdent()
 
 
     def deployAssets(self, classes, assetFolder=None):
@@ -171,6 +176,15 @@ class OutputManager:
         Console.indent()
         result = []
 
+        if self.__assetManager:
+            assetData = self.__assetManager.export(filtered)
+            if assetData:
+                assetCode = "jasy.Asset.addData(%s);" % assetData
+                if self.__compressGeneratedCode:
+                    result.append(packCode(assetCode))
+                else:
+                    result.append(assetCode)
+
         if permutation is None:
             permutation = self.__session.getCurrentPermutation()
 
@@ -183,15 +197,6 @@ class OutputManager:
             raise UserError("Error during class compression! %s" % error)
 
         Console.outdent()
-
-        if self.__assetManager:
-            assetData = self.__assetManager.export(filtered)
-            if assetData:
-                assetCode = "jasy.Asset.addData(%s);" % assetData
-                if self.__compressGeneratedCode:
-                    result.append(packCode(assetCode))
-                else:
-                    result.append(assetCode)
 
         if bootCode:
             bootCode = "(function(){%s})();" % bootCode
