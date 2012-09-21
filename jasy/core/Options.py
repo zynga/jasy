@@ -14,7 +14,7 @@ class Options:
     
     __slots__ = ["__tasks", "__options", "__defaults", "__types", "__shortcuts", "__help"]
     
-    def __init__(self, defaults={}):
+    def __init__(self):
 
         self.__tasks = []
         self.__options = {}
@@ -143,5 +143,6 @@ class Options:
     
     def getTasks(self):
         return self.__tasks
+
 
         
