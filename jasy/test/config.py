@@ -64,6 +64,25 @@ class Tests(unittest.TestCase):
         self.assertTrue(Config.matchesType({"one": 10-9,"two": 5-3}, "dict"))
     
 
+    def test_config_object_hasdata(self):
+
+        config = Config.Config({'two': 2, 'one': 1, 'ten': 10})
+        self.assertTrue(config.has('two'))
+
+
+    def test_config_object_getdata(self):
+
+        config = Config.Config({'two': 2, 'one': 1, 'ten': 10})
+        self.assertEqual(config.get('ten'), 10)
+
+
+    def test_config_object_setdata(self):
+
+        config = Config.Config({'two': 2, 'one': 1, 'ten': 10})
+        config.set('ten', 15)
+        self.assertEqual(config.get('ten'), 15)
+
+
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
     suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
