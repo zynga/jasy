@@ -83,6 +83,19 @@ class Tests(unittest.TestCase):
         self.assertEqual(config.get('ten'), 15)
 
 
+    def test_config_object_getdata_withdot(self):
+
+        config = Config.Config({'foo': {'yeah': 42}, 'one': 1})
+        self.assertEqual(config.get('foo.yeah'), 42)
+
+
+    def test_config_object_setdata_withdot(self):
+
+        config = Config.Config({'foo': {'yeah': 42}, 'one': 1})
+        config.set('foo.yeah', 1337)
+        self.assertEqual(config.get('foo')['yeah'], 1337)
+
+
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
     suite = unittest.TestLoader().loadTestsFromTestCase(Tests)
