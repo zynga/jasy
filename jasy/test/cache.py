@@ -53,6 +53,38 @@ class Tests(unittest.TestCase):
         cache3 = Cache.Cache(tempDirectory)
         self.assertEqual(cache3.read("test"), None)   
 
+    def test_store_iMfalse_and_read_iMtrue(self):
+
+        tempDirectory = tempfile.TemporaryDirectory().name
+        os.makedirs(tempDirectory)
+        cache = Cache.Cache(tempDirectory)
+        cache.store("test", 1337, inMemory=False)
+        self.assertEqual(cache.read("test"), 1337)
+
+    def test_store_iMfalse_and_read_iMfalse(self):
+
+        tempDirectory = tempfile.TemporaryDirectory().name
+        os.makedirs(tempDirectory)
+        cache = Cache.Cache(tempDirectory)
+        cache.store("test", 1337, inMemory=False)
+        self.assertEqual(cache.read("test", inMemory=False), 1337)
+
+    def test_store_iMtrue_and_read_iMfalse(self):
+
+        tempDirectory = tempfile.TemporaryDirectory().name
+        os.makedirs(tempDirectory)
+        cache = Cache.Cache(tempDirectory)
+        cache.store("test", 1337)
+        self.assertEqual(cache.read("test", inMemory=False), 1337)
+
+    def test_store_read_transient(self):
+
+        tempDirectory = tempfile.TemporaryDirectory().name
+        os.makedirs(tempDirectory)
+        cache = Cache.Cache(tempDirectory)
+        cache.store("test", 1337, transient=True, inMemory=False)
+        self.assertEqual(cache.read("test", inMemory=False), None)
+
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.ERROR)
