@@ -96,7 +96,7 @@ class Session():
     def close(self):
         """Closes the session and stores cache to the harddrive."""
 
-        Console.info("Closing session...")
+        Console.debug("Closing session...")
         Console.indent()
 
         for project in self.__projects:
