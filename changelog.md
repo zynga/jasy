@@ -1,6 +1,25 @@
 Jasy 0.8.1
 ==========
 
+## Improvements:
+
+- Support for (alternative) string formatted commands in `jasy.core.Util.executeCommand()`. Uses `shlex` to parse string into array.
+- Support for executing commands in different working directories in `jasy.core.Util.executeCommand()`. Changed signature to make `failmsg` optional: `jasy.core.Util.executeCommand(args, failmsg?, path?)`.
+- Added contributing.md for GitHub contributor feature (pull requests / issue reporting)
+- Pack assets before compressed code in `storeCompressed` in `jasy.core.OutputManager`
+- Added task completion timing
+
+## Cleanups:
+
+- Reworked travis.ci tests to test more and better
+- Enabled travis.ci testing for all branches
+- Fixed separate unit tests to better run standalone
+- Removed useless `defaults` parameter in `jasy.core.Options`
+- Moved JavaScript related unit tests into `jasy.test.js`.
+- Added more related and skeleton links to `readme.md`.
+- Using Zynga's fork of PIL for better safety in `requirements.txt`
+- Adding `sphinx` to optional dependencies.
+
 
 Jasy 0.8
 ========
