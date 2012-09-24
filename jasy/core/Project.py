@@ -47,9 +47,6 @@ def getProjectFromPath(path, config=None, version=None):
 def getProjectDependencies(project, checkoutDirectory="external", updateRepositories=True):
     """ Returns a sorted list of projects depending on the given project (including the given one) """
 
-    #info("Resolving project dependencies...")
-    #indent()
-
     def __resolve(project):
 
         name = project.getName()
@@ -90,8 +87,6 @@ def getProjectDependencies(project, checkoutDirectory="external", updateReposito
     }
 
     __resolve(project)
-
-    #outdent()
 
     return result
 
