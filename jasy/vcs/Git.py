@@ -15,11 +15,11 @@ __gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-
 __gitHash = re.compile(r"^[a-f0-9]{40}$")
 
 
-def update(url, version, path, update=True):
+def update(url, version, path, update=True, submodules=True):
     """Clones the given repository URL (optionally with overriding/update features)"""
 
     old = os.getcwd()
-    
+
     if os.path.exists(path) and os.path.exists(os.path.join(path, ".git")):
         
         if not os.path.exists(os.path.join(path, ".git", "HEAD")):
@@ -44,7 +44,11 @@ def update(url, version, path, update=True):
                             Console.info("Updated from %s to %s", revision[:10], newRevision[:10])
                             revision = newRevision
                             Console.outdent()
-                        
+
+                            if submodules and os.path.exists(".gitmodules"):
+                                Console.info("Updading sub modules (this might take some time)...")
+                                executeCommand("git submodule update --recursive", "Could not initialize sub modules")
+
                     except Exception:
                         Console.error("Error during git transaction! Could not update clone.")
                         Console.error("Please verify that the host is reachable or disable automatic branch updates.")
@@ -79,6 +83,10 @@ def update(url, version, path, update=True):
         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", version], "Could not fetch revision!")
         executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
         revision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
+
+        if submodules and os.path.exists(".gitmodules"):
+            Console.info("Updading sub modules (this might take some time)...")
+            executeCommand("git submodule update --init --recursive", "Could not initialize sub modules")
         
     except Exception:
         Console.error("Error during git transaction! Intitial clone required for continuing!")
