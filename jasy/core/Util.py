@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import re, os, hashlib, tempfile, subprocess, sys
+import re, os, hashlib, tempfile, subprocess, sys, shlex
 
 import jasy.core.Console as Console
 
@@ -22,18 +22,18 @@ def executeCommand(args, failmsg=None, path=None):
     :raise Exception: Raises an exception whenever the shell command fails in execution
     """
 
+    if type(args) == str:
+        args = shlex.split(args)
+
     prevpath = os.getcwd()
 
-    if type(args) == str:
-        Console.debug("Executing command: %s in %s", args, path or prevpath)
-    else:
-        Console.debug("Executing command: %s in %s", " ".join(args), path or prevpath)
-
-    Console.indent()
-
-    # Execute in custom directoryq
+    # Execute in custom directory
     if path:
+        path = os.path.abspath(os.path.expanduser(path))
         os.chdir(path)
+
+    Console.debug("Executing command: %s in %s", " ".join(args), os.getcwd())
+    Console.indent()
     
     # Using shell on Windows to resolve binaries like "git"
     output = tempfile.TemporaryFile(mode="w+t")
