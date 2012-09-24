@@ -4,5 +4,5 @@ requests
 cherrypy
 pyyaml
 sphinx
--e git://github.com/zynga/pil-py3k.git#egg=pil
 misaka
+git://github.com/zynga/pil-py3k.git
