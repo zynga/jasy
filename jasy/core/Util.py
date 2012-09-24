@@ -17,7 +17,7 @@ def executeCommand(args, failmsg=None, path=None):
     :type args: str or list
     :param failmsg: Message for exception when command fails
     :type failmsg: str
-    :param path: 
+    :param path: Directory path where the command should be executed
     :type path: str
     :raise Exception: Raises an exception whenever the shell command fails in execution
     """
