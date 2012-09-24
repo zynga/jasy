@@ -102,7 +102,7 @@ def getProjectNameFromPath(path):
 
     # Slashes are often used as a separator to optional data
     if "-" in name:
-        name = name[:name.index("-")]
+        name = name[:name.rindex("-")]
 
     return name
 
