@@ -8,11 +8,32 @@ import re, os, hashlib, tempfile, subprocess, sys
 import jasy.core.Console as Console
 
 
-def executeCommand(args, msg):
-    """Executes the given process and outputs message when errors happen."""
+def executeCommand(args, failmsg=None, path=None):
+    """
+    Executes the given process and outputs failmsg when errors happen.
+    Returns the combined shell output (stdout and strerr combined).
 
-    Console.debug("Executing command: %s", " ".join(args))
+    :param args: 
+    :type args: str or list
+    :param failmsg: Message for exception when command fails
+    :type failmsg: str
+    :param path: 
+    :type path: str
+    :raise Exception: Raises an exception whenever the shell command fails in execution
+    """
+
+    prevpath = os.getcwd()
+
+    if type(args) == str:
+        Console.debug("Executing command: %s in %s", args, path or prevpath)
+    else:
+        Console.debug("Executing command: %s in %s", " ".join(args), path or prevpath)
+
     Console.indent()
+
+    # Execute in custom directoryq
+    if path:
+        os.chdir(path)
     
     # Using shell on Windows to resolve binaries like "git"
     output = tempfile.TemporaryFile(mode="w+t")
@@ -22,8 +43,11 @@ def executeCommand(args, msg):
     result = output.read().strip("\n\r")
     output.close()
 
+    # Change back to previous path
+    os.chdir(prevpath)
+
     if returnValue != 0:
-        raise Exception("Error during executing shell command: %s (%s)" % (msg, result))
+        raise Exception("Error during executing shell command: %s (%s)" % (failmsg, result))
     
     for line in result.splitlines():
         Console.debug(line)
@@ -34,6 +58,17 @@ def executeCommand(args, msg):
 
 
 def getKey(data, key, default=None):
+    """
+    Returns the key from the data if available or the given default
+
+    :param data: Data structure to inspect
+    :type data: dict
+    :param key: Key to lookup in dictionary
+    :type key: str
+    :param default: Default value to return when key is not set
+    :type default: any
+    """
+
     if key in data:
         return data[key]
     else:
@@ -51,10 +86,18 @@ def __hyphenateHelper(match):
     return "-%s" % match.group(1).lower()
     
 def camelize(str):
-    """Returns a camelized version of the incoming string: foo-bar-baz => fooBarBaz"""
+    """
+    Returns a camelized version of the incoming string: foo-bar-baz => fooBarBaz
+
+    :param str: Input string
+    """
     return __REGEXP_DASHES.sub(__camelizeHelper, str)
 
 def hyphenate(str):
-    """Returns a hyphenated version of the incoming string: fooBarBaz => foo-bar-baz"""
+    """Returns a hyphenated version of the incoming string: fooBarBaz => foo-bar-baz
+
+    :param str: Input string
+    """
+
     return __REGEXP_HYPHENATE.sub(__hyphenateHelper, str)    
 
