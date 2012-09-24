@@ -76,7 +76,10 @@ class Session():
             Console.indent()
 
             for project in self.__projects:
-                Console.info("%s @ %s", Console.colorize(project.getName(), "bold"), Console.colorize(project.version, "magenta"))
+                if project.version:
+                    Console.info("%s @ %s", Console.colorize(project.getName(), "bold"), Console.colorize(project.version, "magenta"))
+                else:
+                    Console.info(Console.colorize(project.getName(), "bold"))
 
             Console.outdent()        
 
