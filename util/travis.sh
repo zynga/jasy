@@ -1,7 +1,6 @@
 #!/bin/bash
 
 echo ">>> PREPARING ENVIRONMENT..."
-
 cd bin || exit 1
 if ! [ `which python3` ]; then
   ln -sf `which python` python3 || exit 1 
@@ -29,4 +28,4 @@ cd .. || exit1
 rm -rf mytest || exit1
 
 echo 
-echo ">>> DONE"
+echo ">>> DONE - ALL FINE"
