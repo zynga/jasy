@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-import sys, os, unittest, logging, pkg_resources, tempfile
-
-import jasy.core.Config as Config
+import sys, os, unittest, logging, tempfile
 
 # Extend PYTHONPATH with local 'lib' folder
-jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, os.pardir))
-sys.path.insert(0, jasyroot)
+if __name__ == "__main__":
+    jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, os.pardir))
+    sys.path.insert(0, jasyroot)
+    print("Running from %s..." % jasyroot)
 
+import jasy.core.Config as Config
 
 class Tests(unittest.TestCase):
 
