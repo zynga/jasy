@@ -32,7 +32,7 @@ def executeCommand(args, failmsg=None, path=None):
         path = os.path.abspath(os.path.expanduser(path))
         os.chdir(path)
 
-    Console.debug("Executing command: %s in %s", " ".join(args), os.getcwd())
+    Console.debug("Executing command: %s", " ".join(args))
     Console.indent()
     
     # Using shell on Windows to resolve binaries like "git"
