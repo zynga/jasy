@@ -19,6 +19,10 @@ __gitSchemes = ('git', 'git+http', 'git+https', 'git+ssh', 'git+git', 'git+file'
 def update(url, version, path, update=True, submodules=True):
     """Clones the given repository URL (optionally with overriding/update features)"""
 
+    # Prepend git+ so that user knows that we identified the URL as git repository
+    if not url.startswith("git+"):
+        url = "git+%s" % url
+
     old = os.getcwd()
 
     if os.path.exists(path) and os.path.exists(os.path.join(path, ".git")):
@@ -79,8 +83,11 @@ def update(url, version, path, update=True, submodules=True):
     os.chdir(path)
     
     try:
+        # cut of "git+" prefix
+        remoteurl = url[4:]
+
         executeCommand(["git", "init", "."], "Could not initialize GIT repository!")
-        executeCommand(["git", "remote", "add", "origin", url], "Could not register remote repository!")
+        executeCommand(["git", "remote", "add", "origin", remoteurl], "Could not register remote repository!")
         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", version], "Could not fetch revision!")
         executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
         revision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
@@ -141,6 +148,7 @@ def isUrl(url):
     # https://faz.net?x=1 => False
     # git@github.com:zynga/apibrowser.git => True
     # https://github.com/zynga/core.git => True
+    # git+https://github.com/zynga/core.git => True
     # https://wpbasti@github.com/zynga/apibrowser.git => True
     # git://github.com/zynga/core.git => True
     # git://gitorious.org/qt/qtdeclarative.git => True
