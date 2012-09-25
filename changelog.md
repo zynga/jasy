@@ -1,6 +1,12 @@
 Jasy 0.8.1
 ==========
 
+## New:
+
+- Adding support for cloning sub modules (git only)
+- Adding support for executing setup commands (defined in jasyproject.yaml/json - section "setup"). Allows you to run grunt, ant, etc. before letting Jasy scan the project content.
+- Added support for explicit Git urls ("git+" + url) for later support of adding.
+
 ## Improvements:
 
 - Support for (alternative) string formatted commands in `jasy.core.Util.executeCommand()`. Uses `shlex` to parse string into array.
