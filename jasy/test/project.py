@@ -167,35 +167,29 @@ content: {myproject.Main: [man/Main.js, man/Add.js], myproject/main.css: [man/ma
 
     def test_has_requires(self):
         for project in self.getProjects():
-            project.scan()
             self.assertEqual(project.hasRequires(), True)
 
     def test_requires(self):
         for project in self.getProjects():
-            project.scan()
             requires = project.getRequires()
             self.assertEqual(requires[0].getName(), "core")
             self.assertEqual(requires[1].getName(), "apibrowser")
 
     def test_fields(self):
         for project in self.getProjects():
-            project.scan()
             self.assertEqual(project.getFields(), {})
 
     def test_get_class_by_name(self):
         for project in self.getProjects():
-            project.scan()
             self.assertEqual(project.getClassByName("myproject.Main"), project.getClasses()["myproject.Main"])
             self.assertEqual(type(project.getClassByName("myproject.Main")).__name__, "ClassItem")
 
     def test_assets(self):
         for project in self.getProjects():
-            project.scan()
             self.assertEqual(type(project.getAssets()["myproject/main.css"]).__name__, "AssetItem")
 
     def test_translations(self):
         for project in [self.createCaseTwo(), self.createCaseFour()]:
-            project.scan() 
             self.assertEqual(type(project.getTranslations()["myproject.de"]).__name__, "TranslationItem")     
 
     def test_manual_class_fusion(self):
