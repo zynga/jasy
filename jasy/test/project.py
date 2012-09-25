@@ -103,7 +103,6 @@ content: {myproject.Main: [man/Main.js, man/Add.js], myproject/main.css: [man/ma
 
         def createFolders():
             os.makedirs(os.path.join(path, "src"))
-            os.makedirs(os.path.join(path, "translation"))
 
         def createSampleClasses():
             self.writeFile(os.path.join(path, "src"), "index.html", """<html></html>""")
@@ -151,9 +150,7 @@ content: {myproject.Main: [man/Main.js, man/Add.js], myproject/main.css: [man/ma
 
 
     def getProjects(self):
-        #return [self.createCaseOne(),self.createCaseTwo(),self.createCaseThree(),self.createCaseFour()]
-        return [self.createCaseThree()]
-        #return [self.createCaseOne()]
+        return [self.createCaseOne(),self.createCaseTwo(),self.createCaseThree(),self.createCaseFour()]
 
     def test_get_project(self):
         for project in self.getProjects():
