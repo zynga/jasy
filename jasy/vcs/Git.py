@@ -38,6 +38,7 @@ def update(url, version, path, update=True, submodules=True):
             if update and (version == "master" or "refs/heads/" in version):
                 if update:
                     Console.info("Updating %s", Console.colorize("%s @ " % url, "bold") + Console.colorize(version, "magenta"))
+                    Console.indent()
                     
                     try:
                         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", version], "Could not fetch updated revision!")
@@ -45,28 +46,30 @@ def update(url, version, path, update=True, submodules=True):
                         newRevision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
                         
                         if revision != newRevision:
-                            Console.indent()
                             Console.info("Updated from %s to %s", revision[:10], newRevision[:10])
                             revision = newRevision
-                            Console.outdent()
 
                             if submodules and os.path.exists(".gitmodules"):
-                                Console.info("Updading sub modules (this might take some time)...")
+                                Console.info("Updating sub modules (this might take some time)...")
                                 executeCommand("git submodule update --recursive", "Could not initialize sub modules")
 
                     except Exception:
                         Console.error("Error during git transaction! Could not update clone.")
                         Console.error("Please verify that the host is reachable or disable automatic branch updates.")
-                        
+                        Console.outdent()
+
                         os.chdir(old)
                         return
                         
                     except KeyboardInterrupt:
                         print()
                         Console.error("Git transaction was aborted by user!")
+                        Console.outdent()
                         
                         os.chdir(old)
                         return                            
+
+                    Console.outdent()
                     
                 else:
                     Console.debug("Updates disabled")
@@ -78,6 +81,7 @@ def update(url, version, path, update=True, submodules=True):
             return revision
 
     Console.info("Cloning %s", Console.colorize("%s @ " % url, "bold") + Console.colorize(version, "magenta"))
+    Console.indent()
 
     os.makedirs(path)
     os.chdir(path)
@@ -93,7 +97,7 @@ def update(url, version, path, update=True, submodules=True):
         revision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
 
         if submodules and os.path.exists(".gitmodules"):
-            Console.info("Updading sub modules (this might take some time)...")
+            Console.info("Updating sub modules (this might take some time)...")
             executeCommand("git submodule update --init --recursive", "Could not initialize sub modules")
         
     except Exception:
@@ -104,6 +108,7 @@ def update(url, version, path, update=True, submodules=True):
         os.chdir(old)
         shutil.rmtree(path)
 
+        Console.outdent()
         return
         
     except KeyboardInterrupt:
@@ -113,10 +118,13 @@ def update(url, version, path, update=True, submodules=True):
         Console.error("Cleaning up...")
         os.chdir(old)
         shutil.rmtree(path)
-        
+
+        Console.outdent()
         return
     
     os.chdir(old)
+    Console.outdent()
+
     return revision
 
 
