@@ -13,6 +13,7 @@ __versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?
 __branchParser = re.compile("^ref:.*/([a-zA-Z0-9_-]+)$")
 __gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
 __gitHash = re.compile(r"^[a-f0-9]{40}$")
+__gitSchemes = ('git', 'git+http', 'git+https', 'git+ssh', 'git+git', 'git+file')
 
 
 def update(url, version, path, update=True, submodules=True):
@@ -139,20 +140,26 @@ def isUrl(url):
     # ../bar => False
     # https://faz.net?x=1 => False
     # git@github.com:zynga/apibrowser.git => True
-    # https://github.com/zynga/core => True
+    # https://github.com/zynga/core.git => True
     # https://wpbasti@github.com/zynga/apibrowser.git => True
     # git://github.com/zynga/core.git => True
     # git://gitorious.org/qt/qtdeclarative.git => True
     # https://git.gitorious.org/qt/qtdeclarative.git => True
+    # git+git://gitorious.org/qt/qtdeclarative.git => True
     
     if not url.endswith(".git"):
         return False
-        
+    
     parsed = urllib.parse.urlparse(url)
-    if parsed.scheme in ("git", "https"):
-        return not parsed.params and not parsed.query and not parsed.fragment
-    elif not parsed.scheme and parsed.path == url and __gitAccountUrl.match(url) != None:
-        return True
+
+    if not parsed.params and not parsed.query and not parsed.fragment:
+    
+        if parsed.scheme in __gitSchemes:
+            return True
+        elif parsed.scheme == "https" and parsed.path.endswith(".git"):
+            return True
+        elif not parsed.scheme and parsed.path == url and __gitAccountUrl.match(url) != None:
+            return True
         
     return False
     
