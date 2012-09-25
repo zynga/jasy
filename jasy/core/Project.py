@@ -182,11 +182,7 @@ class Project():
         if self.scanned:
             return
 
-        if self.__modified:
-            updatemsg = "[updated]"
-        else:
-            updatemsg = "[cached]"
-
+        updatemsg = "[updated]" if self.__modified else "[cached]"
         Console.info("Scanning project %s %s...", self.__name, Console.colorize(updatemsg, "grey"))
         Console.indent()
 
@@ -210,7 +206,6 @@ class Project():
                     raise UserError("Could not scan project %s: %s" % (self.__name, ex))
 
             Console.outdent()
-
         
         # Processing custom content section. Only supports classes and assets.
         if self.__config.has("content"):
