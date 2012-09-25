@@ -21,20 +21,11 @@ class Tests(unittest.TestCase):
 
     def createjpyaml(self, path):
         self.writeFile(path, "jasyproject.yaml", """name: myproject
-requires:
-- source: https://github.com/zynga/core.git
-  version: 0.8-beta2
-- source: https://github.com/zynga/apibrowser.git
-  version: 0.5.6
 """)
 
     def createjpyaml_withContent(self, path):
         self.writeFile(path, "jasyproject.yaml", """name: myproject
-requires:
-- source: https://github.com/zynga/core.git
-  version: 0.8-beta2
-- source: https://github.com/zynga/apibrowser.git
-  version: 0.5.6
+
 content: {myproject.Main: [man/Main.js, man/Add.js], myproject/main.css: [man/main.css]}
 """)
 
@@ -167,13 +158,7 @@ content: {myproject.Main: [man/Main.js, man/Add.js], myproject/main.css: [man/ma
 
     def test_has_requires(self):
         for project in self.getProjects():
-            self.assertEqual(project.hasRequires(), True)
-
-    def test_requires(self):
-        for project in self.getProjects():
-            requires = project.getRequires()
-            self.assertEqual(requires[0].getName(), "core")
-            self.assertEqual(requires[1].getName(), "apibrowser")
+            self.assertEqual(project.hasRequires(), False)
 
     def test_fields(self):
         for project in self.getProjects():
