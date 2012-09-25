@@ -5,4 +5,4 @@ cherrypy
 pyyaml
 sphinx
 misaka
-git://github.com/zynga/pil-py3k.git
+git+git://github.com/zynga/pil-py3k.git
