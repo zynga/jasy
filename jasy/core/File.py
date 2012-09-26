@@ -80,12 +80,15 @@ def syncfile(src, dst):
         
     return cp(src, dst)
 
-def sha1(f, block_size=2**20):
+def sha1(fileOrPath, block_size=2**20):
     """Returns a SHA 1 checksum (as hex digest) of the given file (handle)"""
+
+    if type(fileOrPath) is str:
+        fileOrPath = open(fileOrPath, "rb")
 
     sha1res = hashlib.sha1()
     while True:
-        data = f.read(block_size)
+        data = fileOrPath.read(block_size)
         if not data:
             break
         sha1res.update(data)
