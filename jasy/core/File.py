@@ -83,12 +83,12 @@ def syncfile(src, dst):
 def sha1(f, block_size=2**20):
     """Returns a SHA 1 checksum (as hex digest) of the given file (handle)"""
 
-    sha1 = hashlib.sha1()
+    sha1res = hashlib.sha1()
     while True:
         data = f.read(block_size)
         if not data:
             break
-        sha1.update(data)
+        sha1res.update(data)
 
-    return sha1.hexdigest()
+    return sha1res.hexdigest()
 
