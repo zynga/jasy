@@ -10,7 +10,7 @@ import jasy.core.Console as Console
 
 
 __versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?$")
-__branchParser = re.compile("^ref:.*/([a-zA-Z0-9_-]+)$")
+
 __gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
 __gitHash = re.compile(r"^[a-f0-9]{40}$")
 __gitSchemes = ('git', 'git+http', 'git+https', 'git+ssh', 'git+git', 'git+file')
@@ -132,18 +132,7 @@ def update(url, version, path, update=True, submodules=True):
 def getBranch(path=None):
     """Returns the name of the git branch"""
 
-    if path is None:
-        path = os.getcwd()
-
-    headfile = os.path.join(path, ".git/HEAD")
-    if not os.path.exists(headfile):
-        raise Exception("Invalid GIT project path: %s" % path)
-
-    match = __branchParser.match(open(headfile).read())
-    if match is not None:
-        return match.group(1)
-
-    return None
+    return executeCommand("git rev-parse --abbrev-ref HEAD", "Could not figure out git branch. Is there a valid Git repository?", path=path)
 
 
 
