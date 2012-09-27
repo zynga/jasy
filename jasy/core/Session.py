@@ -325,6 +325,28 @@ class Session():
         # Delete detection if configured by the project
         if "detect" in entry:
             del entry["detect"]
+
+
+    def getStaticPermutation(self, **argv):
+        """
+        Returns the static permutation which contains all values hardly wired to 
+        static value using setField() or given via additional named parameters.
+        """
+
+        combi = {}
+
+        for name in self.__fields:
+            entry = self.__fields[name]
+            if not "detect" in entry:
+                combi[name] = entry["default"]
+
+        for name in argv:
+            combi[name] = argv[name]
+
+        if not combi:
+            return None
+
+        return jasy.core.Permutation.getPermutation(combi)
     
     
     def permutateField(self, name, values=None, detect=None, default=None):
@@ -558,7 +580,7 @@ class Session():
         # Thanks to eumiro via http://stackoverflow.com/questions/3873654/combinations-from-dictionary-with-list-values-using-python
         names = sorted(values)
         combinations = [dict(zip(names, prod)) for prod in itertools.product(*(values[name] for name in names))]
-        permutations = [jasy.core.Permutation.Permutation(combi) for combi in combinations]
+        permutations = [jasy.core.Permutation.getPermutation(combi) for combi in combinations]
 
         return permutations
 
@@ -592,6 +614,12 @@ class Session():
         """Returns current permutation object (useful during looping through permutations via permutate())."""
 
         return self.__currentPermutation
+
+
+    def setCurrentPermutation(self, permutation):
+        """Sets the current permutation object."""
+
+        self.__currentPermutation = permutation
 
 
     def getCurrentTranslationBundle(self):
