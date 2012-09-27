@@ -41,6 +41,11 @@ class OutputManager:
 
     def __init__(self, session, assetManager=None, compressionLevel=1, formattingLevel=0):
 
+        Console.info("Initializing OutputManager...")
+        Console.indent()
+        Console.info("Formatting Level: %s", formattingLevel)
+        Console.info("Compression Level: %s", compressionLevel)
+
         self.__session = session
 
         self.__assetManager = assetManager
@@ -68,7 +73,7 @@ class OutputManager:
             self.__scriptFormatting.enable("semicolon")
             self.__scriptFormatting.enable("comma")
 
-        Console.info("Initialized OutputManager (Compression: %s, Formatting: %s)", compressionLevel, formattingLevel)
+        Console.outdent()
 
 
     def deployAssets(self, classes, assetFolder=None):
@@ -110,6 +115,9 @@ class OutputManager:
         Console.info("Storing kernel...")
         Console.indent()
         
+        # Use a new permutation based on debug settings and statically configured fields
+        self.__session.setStaticPermutation(debug=debug)
+
         # Build resolver
         # We need the permutation here because the field configuration might rely on detection classes
         resolver = Resolver(self.__session)
@@ -137,20 +145,20 @@ class OutputManager:
         if self.__compressGeneratedCode:
             bootCode = packCode(bootCode)
 
-        # Permutation to apply
-        permutation = getPermutation({ "debug" : debug })
-
         # Sort resulting class list
         sortedClasses = resolver.getSortedClasses()
-        self.storeCompressed(sortedClasses, fileName, bootCode, permutation)
+        self.storeCompressed(sortedClasses, fileName, bootCode)
         
         # Remember classes for filtering in storeLoader/storeCompressed
         self.__kernelClasses = set(sortedClasses)
 
+        # Reset static permutation
+        self.__session.resetCurrentPermutation()
+
         Console.outdent()
 
 
-    def storeCompressed(self, classes, fileName, bootCode=None, permutation=None):
+    def storeCompressed(self, classes, fileName, bootCode=None):
         """
         Combines the compressed result of the stored class list
         
@@ -161,7 +169,7 @@ class OutputManager:
         :param bootCode: Code to execute once all the classes are loaded
         :type bootCode: string
         """
-        
+
         if self.__kernelClasses:
             filtered = [ classObj for classObj in classes if not classObj in self.__kernelClasses ]
         else:
@@ -171,8 +179,16 @@ class OutputManager:
         Console.indent()
         result = []
 
-        if permutation is None:
-            permutation = self.__session.getCurrentPermutation()
+        if self.__assetManager:
+            assetData = self.__assetManager.export(filtered)
+            if assetData:
+                assetCode = "jasy.Asset.addData(%s);" % assetData
+                if self.__compressGeneratedCode:
+                    result.append(packCode(assetCode))
+                else:
+                    result.append(assetCode)
+
+        permutation = self.__session.getCurrentPermutation()
 
         try:
             for classObj in filtered:
@@ -183,15 +199,6 @@ class OutputManager:
             raise UserError("Error during class compression! %s" % error)
 
         Console.outdent()
-
-        if self.__assetManager:
-            assetData = self.__assetManager.export(filtered)
-            if assetData:
-                assetCode = "jasy.Asset.addData(%s);" % assetData
-                if self.__compressGeneratedCode:
-                    result.append(packCode(assetCode))
-                else:
-                    result.append(assetCode)
 
         if bootCode:
             bootCode = "(function(){%s})();" % bootCode
@@ -288,5 +295,4 @@ class OutputManager:
             loaderCode = "\n\n".join(result)
 
         self.__fileManager.writeFile(fileName, loaderCode)
-
 

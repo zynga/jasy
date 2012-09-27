@@ -51,10 +51,13 @@ def loadConfig(fileName, encoding="utf-8"):
 
     fileExt = os.path.splitext(configName)[1]
     if fileExt == ".json":
-        return json.load(fileHandle)
+        result = json.load(fileHandle)
 
     elif fileExt == ".yaml":
-        return yaml.load(fileHandle)
+        result = yaml.load(fileHandle)
+
+    fileHandle.close()
+    return result
 
 
 def writeConfig(data, fileName, indent=2, encoding="utf-8"):
@@ -68,11 +71,14 @@ def writeConfig(data, fileName, indent=2, encoding="utf-8"):
     fileExt = os.path.splitext(fileName)[1]
     if fileExt == ".json":
         json.dump(data, fileHandle, indent=indent, ensure_ascii=False)
-    
+        fileHandle.close()
+
     elif fileExt == ".yaml":
         yaml.dump(data, fileHandle, default_flow_style=False, indent=indent, allow_unicode=True)
+        fileHandle.close()
 
     else:
+        fileHandle.close()
         raise UserError("Unsupported config type: %s" % fileExt)
 
 
@@ -93,7 +99,7 @@ def matchesType(value, expected):
     elif result is str:
         return expected in ("string", "str", "primitive")
     elif result is bool:
-        return expexted in ("boolean", "bool", "primitive")
+        return expected in ("boolean", "bool", "primitive")
     elif result is dict:
         return expected in ("dict", "map")
     elif result is list:

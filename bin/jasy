@@ -104,7 +104,7 @@ import jasy.core.Doctor as Doctor
 for tasks in options.getTasks():
     if tasks['task'] == 'doctor':
         Doctor.doCompleteDoctor()
-        sys.exit(1)
+        sys.exit(0)
 
 # Execute the initialization "doctor" routine, only with error output
 if not Doctor.doInitializationDoctor():
@@ -210,7 +210,12 @@ def main():
 
         # All arguments are processed as a list of task to execute in order
         for entry in tasks:
+            start = time.time()
+
             Task.executeTask(entry["task"], **entry["params"])
+
+            duration = '{0:.2g}'.format(time.time() - start)
+            Console.info("Task completed in %ss", duration)
 
     except UserError as errobj:
         Console.error("%s" % errobj)

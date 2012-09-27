@@ -10,16 +10,21 @@ import jasy.core.Console as Console
 
 
 __versionNumber = re.compile(r"^v?([0-9\.]+)(-?(a|b|rc|alpha|beta)([0-9]+)?)?\+?$")
-__branchParser = re.compile("^ref:.*/([a-zA-Z0-9_-]+)$")
+
 __gitAccountUrl = re.compile("([a-zA-Z0-9-_]+)@([a-zA-Z0-9-_\.]+):([a-zA-Z0-9/_-]+\.git)")
 __gitHash = re.compile(r"^[a-f0-9]{40}$")
+__gitSchemes = ('git', 'git+http', 'git+https', 'git+ssh', 'git+git', 'git+file')
 
 
-def update(url, version, path, update=True):
+def update(url, version, path, update=True, submodules=True):
     """Clones the given repository URL (optionally with overriding/update features)"""
 
+    # Prepend git+ so that user knows that we identified the URL as git repository
+    if not url.startswith("git+"):
+        url = "git+%s" % url
+
     old = os.getcwd()
-    
+
     if os.path.exists(path) and os.path.exists(os.path.join(path, ".git")):
         
         if not os.path.exists(os.path.join(path, ".git", "HEAD")):
@@ -33,6 +38,7 @@ def update(url, version, path, update=True):
             if update and (version == "master" or "refs/heads/" in version):
                 if update:
                     Console.info("Updating %s", Console.colorize("%s @ " % url, "bold") + Console.colorize(version, "magenta"))
+                    Console.indent()
                     
                     try:
                         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", version], "Could not fetch updated revision!")
@@ -40,24 +46,30 @@ def update(url, version, path, update=True):
                         newRevision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
                         
                         if revision != newRevision:
-                            Console.indent()
                             Console.info("Updated from %s to %s", revision[:10], newRevision[:10])
                             revision = newRevision
-                            Console.outdent()
-                        
+
+                            if submodules and os.path.exists(".gitmodules"):
+                                Console.info("Updating sub modules (this might take some time)...")
+                                executeCommand("git submodule update --recursive", "Could not initialize sub modules")
+
                     except Exception:
                         Console.error("Error during git transaction! Could not update clone.")
                         Console.error("Please verify that the host is reachable or disable automatic branch updates.")
-                        
+                        Console.outdent()
+
                         os.chdir(old)
                         return
                         
                     except KeyboardInterrupt:
                         print()
                         Console.error("Git transaction was aborted by user!")
+                        Console.outdent()
                         
                         os.chdir(old)
                         return                            
+
+                    Console.outdent()
                     
                 else:
                     Console.debug("Updates disabled")
@@ -69,16 +81,24 @@ def update(url, version, path, update=True):
             return revision
 
     Console.info("Cloning %s", Console.colorize("%s @ " % url, "bold") + Console.colorize(version, "magenta"))
+    Console.indent()
 
     os.makedirs(path)
     os.chdir(path)
     
     try:
+        # cut of "git+" prefix
+        remoteurl = url[4:]
+
         executeCommand(["git", "init", "."], "Could not initialize GIT repository!")
-        executeCommand(["git", "remote", "add", "origin", url], "Could not register remote repository!")
+        executeCommand(["git", "remote", "add", "origin", remoteurl], "Could not register remote repository!")
         executeCommand(["git", "fetch", "-q", "--depth", "1", "origin", version], "Could not fetch revision!")
         executeCommand(["git", "reset", "-q", "--hard", "FETCH_HEAD"], "Could not update checkout!")
         revision = executeCommand(["git", "rev-parse", "HEAD"], "Could not detect current revision")
+
+        if submodules and os.path.exists(".gitmodules"):
+            Console.info("Updating sub modules (this might take some time)...")
+            executeCommand("git submodule update --init --recursive", "Could not initialize sub modules")
         
     except Exception:
         Console.error("Error during git transaction! Intitial clone required for continuing!")
@@ -88,6 +108,7 @@ def update(url, version, path, update=True):
         os.chdir(old)
         shutil.rmtree(path)
 
+        Console.outdent()
         return
         
     except KeyboardInterrupt:
@@ -97,10 +118,13 @@ def update(url, version, path, update=True):
         Console.error("Cleaning up...")
         os.chdir(old)
         shutil.rmtree(path)
-        
+
+        Console.outdent()
         return
     
     os.chdir(old)
+    Console.outdent()
+
     return revision
 
 
@@ -108,43 +132,23 @@ def update(url, version, path, update=True):
 def getBranch(path=None):
     """Returns the name of the git branch"""
 
-    if path is None:
-        path = os.getcwd()
-
-    headfile = os.path.join(path, ".git/HEAD")
-    if not os.path.exists(headfile):
-        raise Exception("Invalid GIT project path: %s" % path)
-
-    match = __branchParser.match(open(headfile).read())
-    if match is not None:
-        return match.group(1)
-
-    return None
+    return executeCommand("git rev-parse --abbrev-ref HEAD", "Could not figure out git branch. Is there a valid Git repository?", path=path)
 
 
 
 def isUrl(url):
     """Figures out whether the given string is a valid Git repository URL"""
 
-    # Detects these urls correctly
-    # foo => False
-    # ../bar => False
-    # https://faz.net?x=1 => False
-    # git@github.com:zynga/apibrowser.git => True
-    # https://github.com/zynga/core => True
-    # https://wpbasti@github.com/zynga/apibrowser.git => True
-    # git://github.com/zynga/core.git => True
-    # git://gitorious.org/qt/qtdeclarative.git => True
-    # https://git.gitorious.org/qt/qtdeclarative.git => True
-    
-    if not url.endswith(".git"):
-        return False
-        
     parsed = urllib.parse.urlparse(url)
-    if parsed.scheme in ("git", "https"):
-        return not parsed.params and not parsed.query and not parsed.fragment
-    elif not parsed.scheme and parsed.path == url and __gitAccountUrl.match(url) != None:
-        return True
+
+    if not parsed.params and not parsed.query and not parsed.fragment:
+
+        if parsed.scheme in __gitSchemes:
+            return True
+        elif parsed.scheme == "https" and parsed.path.endswith(".git"):
+            return True
+        elif not parsed.scheme and parsed.path == url and __gitAccountUrl.match(url) != None:
+            return True
         
     return False
     

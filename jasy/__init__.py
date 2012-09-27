@@ -11,7 +11,7 @@ It makes it easy to manage heavy web projects.
 Its main goal is to offer an API which could be used by developers to write their custom build/deployment scripts.
 """
 
-__version__ = "0.8"
+__version__ = "0.8.1"
 __author__ = "Sebastian Werner <info@sebastian-werner.net>"
 
 import os.path

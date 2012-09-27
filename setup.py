@@ -41,13 +41,9 @@ if uses == "distribute":
     "extras_require" : {
       "jsdoc" : ["misaka"],
       "daemon" : ["watchdog"],
-      "sprites" : ["pil"]
-    },
-
-    "dependency_links" : [
-      "https://github.com/zynga/pil-py3k",
-      "https://github.com/wpbasti/watchdog"
-    ]
+      "sprites" : ["pil"],
+      "doc" : ["sphinx"]
+    }
 
   }
 
