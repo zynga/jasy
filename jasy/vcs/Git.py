@@ -139,26 +139,10 @@ def getBranch(path=None):
 def isUrl(url):
     """Figures out whether the given string is a valid Git repository URL"""
 
-    # Detects these urls correctly
-    # foo => False
-    # ../bar => False
-    # https://faz.net?x=1 => False
-    # git@github.com:zynga/apibrowser.git => True
-    # https://github.com/zynga/core.git => True
-    # git+https://github.com/zynga/core.git => True
-    # https://wpbasti@github.com/zynga/apibrowser.git => True
-    # git://github.com/zynga/core.git => True
-    # git://gitorious.org/qt/qtdeclarative.git => True
-    # https://git.gitorious.org/qt/qtdeclarative.git => True
-    # git+git://gitorious.org/qt/qtdeclarative.git => True
-    
-    if not url.endswith(".git"):
-        return False
-    
     parsed = urllib.parse.urlparse(url)
 
     if not parsed.params and not parsed.query and not parsed.fragment:
-    
+
         if parsed.scheme in __gitSchemes:
             return True
         elif parsed.scheme == "https" and parsed.path.endswith(".git"):
