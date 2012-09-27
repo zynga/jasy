@@ -28,7 +28,7 @@ requires:"""
         self.writeFile(path, "jasyproject.yaml",  content)
         #print(content)
 
-    def createRequirement(self, name, subrequirements=None, manPath = None): #subrequirement
+    def createRequirement(self, name, subrequirements=None, manPath=None):
         if manPath is not None:
             reqpath = os.path.join(manPath, name)
         else:
@@ -53,7 +53,7 @@ requires:"""
 
         return ruquirement
 
-    def createSubRequirement(self, name, manPath = None): #subrequirement
+    def createSubRequirement(self, name, manPath=None):
         if manPath is not None:
             reqpath = os.path.join(manPath, name)
         else:
@@ -146,8 +146,8 @@ requires:"""
         enginePath = tempfile.TemporaryDirectory().name
         frameworkPath = tempfile.TemporaryDirectory().name
 
-        requirement1 = self.createRequirement("engine", [self.createSubRequirement("framework", manPath = frameworkPath)], manPath = enginePath)
-        requirement2 = self.createRequirement("framework", [self.createSubRequirement("engine", manPath = enginePath)], manPath = frameworkPath)
+        requirement1 = self.createRequirement("engine", [self.createSubRequirement("framework", manPath=frameworkPath)], manPath=enginePath)
+        requirement2 = self.createRequirement("framework", [self.createSubRequirement("engine", manPath=enginePath)], manPath=frameworkPath)
 
         session = Session.Session()
         session.addProject(self.createProject([requirement1, requirement2]))
@@ -159,8 +159,8 @@ requires:"""
 
         frameworkPath = tempfile.TemporaryDirectory().name
 
-        requirement1 = self.createRequirement("engine", [self.createSubRequirement("framework", manPath = frameworkPath)])
-        requirement2 = self.createRequirement("engine2", [self.createSubRequirement("framework", manPath = frameworkPath)])
+        requirement1 = self.createRequirement("engine", [self.createSubRequirement("framework", manPath=frameworkPath)])
+        requirement2 = self.createRequirement("engine2", [self.createSubRequirement("framework", manPath=frameworkPath)])
 
         session = Session.Session()
         session.addProject(self.createProject([requirement1, requirement2]))
