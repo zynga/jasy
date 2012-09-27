@@ -115,8 +115,8 @@ class OutputManager:
         Console.info("Storing kernel...")
         Console.indent()
         
-        # Build a new permutation based on debug settings and statically configured fields
-        self.__session.setCurrentPermutation(self.__session.getStaticPermutation(debug=debug))
+        # Use a new permutation based on debug settings and statically configured fields
+        self.__session.setStaticPermutation(debug=debug)
 
         # Build resolver
         # We need the permutation here because the field configuration might rely on detection classes
@@ -152,8 +152,8 @@ class OutputManager:
         # Remember classes for filtering in storeLoader/storeCompressed
         self.__kernelClasses = set(sortedClasses)
 
-        # Reset temporary permutation
-        self.__session.setCurrentPermutation(None)
+        # Reset static permutation
+        self.__session.resetCurrentPermutation()
 
         Console.outdent()
 
@@ -169,7 +169,7 @@ class OutputManager:
         :param bootCode: Code to execute once all the classes are loaded
         :type bootCode: string
         """
-        
+
         if self.__kernelClasses:
             filtered = [ classObj for classObj in classes if not classObj in self.__kernelClasses ]
         else:
@@ -295,5 +295,4 @@ class OutputManager:
             loaderCode = "\n\n".join(result)
 
         self.__fileManager.writeFile(fileName, loaderCode)
-
 

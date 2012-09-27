@@ -327,28 +327,6 @@ class Session():
             del entry["detect"]
 
 
-    def getStaticPermutation(self, **argv):
-        """
-        Returns the static permutation which contains all values hardly wired to 
-        static value using setField() or given via additional named parameters.
-        """
-
-        combi = {}
-
-        for name in self.__fields:
-            entry = self.__fields[name]
-            if not "detect" in entry:
-                combi[name] = entry["default"]
-
-        for name in argv:
-            combi[name] = argv[name]
-
-        if not combi:
-            return None
-
-        return jasy.core.Permutation.getPermutation(combi)
-    
-    
     def permutateField(self, name, values=None, detect=None, default=None):
         """
         Adds the given key/value pair to the session for permutation usage.
@@ -616,10 +594,36 @@ class Session():
         return self.__currentPermutation
 
 
-    def setCurrentPermutation(self, permutation):
-        """Sets the current permutation object."""
+    def resetCurrentPermutation(self):
+        """Resets the current permutation object."""
 
+        self.__currentPermutation = None
+
+
+    def setStaticPermutation(self, **argv):
+        """
+        Sets current permutation to a static permutation which contains all values hardly wired to 
+        static values using setField() or given via additional named parameters.
+        """
+
+        combi = {}
+
+        for name in self.__fields:
+            entry = self.__fields[name]
+            if not "detect" in entry:
+                combi[name] = entry["default"]
+
+        for name in argv:
+            combi[name] = argv[name]
+
+        if not combi:
+            self.__currentPermutation = None
+            return None
+
+        permutation = jasy.core.Permutation.getPermutation(combi)
         self.__currentPermutation = permutation
+
+        return permutation
 
 
     def getCurrentTranslationBundle(self):
