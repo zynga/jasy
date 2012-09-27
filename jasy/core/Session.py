@@ -584,6 +584,9 @@ class Session():
 
         Console.outdent()
 
+        self.__currentPermutation = None
+        self.__currentTranslationBundle = None
+
 
     def getCurrentPermutation(self):
         """Returns current permutation object (useful during looping through permutations via permutate())."""
