@@ -5,21 +5,27 @@ Jasy 0.8.1
 
 - Adding support for cloning sub modules (git only)
 - Adding support for executing setup commands (defined in jasyproject.yaml/json - section "setup"). Allows you to run grunt, ant, etc. before letting Jasy scan the project content.
-- Added support for explicit Git urls ("git+" + url) for later support of adding.
-
-## Improvements:
-
+- Added support for explicit Git urls ("git+" + url) for later support of adding support for bazaar, hg, svn, etc.
+- New unit tests for `jasy.core.Cache`, `jasy.core.Config`, `jasy.vcs.Repository.isUrl()`, `jasy.core.Options`, `jasy.core.Project`, 
+- Correctly support proxying of HTTP `body` in `POST` and `PUT` requests when using remote proxy features of integrated web server.
+- Reworked travis.ci tests to test more and better and enabled for all branches on our Github account.
 - Support for (alternative) string formatted commands in `jasy.core.Util.executeCommand()`. Uses `shlex` to parse string into array.
 - Support for executing commands in different working directories in `jasy.core.Util.executeCommand()`. Changed signature to make `failmsg` optional: `jasy.core.Util.executeCommand(args, failmsg?, path?)`.
 - Added contributing.md for GitHub contributor feature (pull requests / issue reporting)
+- Added task completion timing to measure run time of each task.
+
+## Improvements:
+
+- Improved `jasy.vcs.Git.getBranch()` to use native `git` methods for branch detection. This now works out of sub folders as well.
 - Pack assets before compressed code in `storeCompressed` in `jasy.core.OutputManager`
-- Added task completion timing
-
-## Cleanups:
-
-- Reworked travis.ci tests to test more and better
-- Enabled travis.ci testing for all branches
+- Respect static field configurations for kernel as well e.g. `setField("es5", True)` is also applied to kernel classes and dependencies.
+- Imporved `jasy.core.File.sha()` call to additionally support file paths - not just file objects.
+- Added support for `getStaticPermutation()` in `jasy.core.Session` to result an permutation object which only contains fields without detection configuration (aka static fields). This is used for building the kernel now.
+- Fixed path to project name logic to fix handling of "jquery-ui" vs. "jquery" where both resulted in "jquery" as project name.
+- Fixed `jasy.core.Session.permutate()` to correctly reset both, current permutation and translation after the loop ended.
+- Improved error handling when manually defined items does not exist. Now prints out the exact item which is wrong and not the whole list.
 - Fixed separate unit tests to better run standalone
+- Added debugging code to permutation patcher. The detailed modifications are now visible in the log file or using the verbose mode.
 - Removed useless `defaults` parameter in `jasy.core.Options`
 - Moved JavaScript related unit tests into `jasy.test.js`.
 - Added more related and skeleton links to `readme.md`.
