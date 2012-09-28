@@ -17,13 +17,13 @@ class DocItem(Abstract.AbstractItem):
         field = "api[%s]" % self.id
         apidata = self.project.getCache().read(field, self.getModificationTime())
         
-        if Markdown.markdown is None:
+        if not Text.supportsMarkdown:
             raise UserError("Missing Markdown feature to convert package docs into HTML.")
         
         if apidata is None:
             apidata = Data.ApiData(self.id)
             apidata.main["type"] = "Package"
-            apidata.main["doc"] = Text.markdown(self.getText())
+            apidata.main["doc"] = Text.code2highlight(Text.markdown2html(self.getText()))
             
             self.project.getCache().store(field, apidata, self.getModificationTime())
 

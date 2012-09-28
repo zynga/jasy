@@ -178,7 +178,7 @@ class Comment():
         doc parameters and links without Misaka being installed.
         """
 
-        if Text.markdown is None:
+        if not Text.supportsMarkdown:
             return self.__splitSimple(text)
         
         marked = Text.markdown2html(text)
@@ -326,7 +326,7 @@ class Comment():
         :type highlight: bool
         """
 
-        if Text.markdown is None:
+        if not Text.supportsMarkdown:
             raise UserError("Markdown is not supported by the system. Documentation comments could converted to HTML.")
 
         if highlight:

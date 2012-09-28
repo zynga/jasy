@@ -10,10 +10,6 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 
-
-__all__ = ["markdown2html", "code2highlight"]
-
-
 try:
     import misaka
 
@@ -23,11 +19,15 @@ try:
     def markdown2html(markdownStr):
         return misaka.html(markdownStr, misakaExt, misakaRender)
 
+    supportsMarkdown = True
+
 except:
 
     def markdown2html(markdownStr):
         return None
-        
+
+    supportsMarkdown = False
+
 
 # By http://misaka.61924.nl/#toc_3
 codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
