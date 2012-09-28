@@ -39,7 +39,18 @@ Paragraph 2
 1. Item 1
 2. Item 2
 3. Item 3
-        """), "<ol>\n<li>Item 1</li>\n<li>Item 2</li>\n<li>Item 3</li>\n</ol>\n")        
+        """), "<ol>\n<li>Item 1</li>\n<li>Item 2</li>\n<li>Item 3</li>\n</ol>\n")
+
+
+        self.assertEqual(Text.highlightCodeBlocks(Text.markdownToHtml("""
+```js
+alert("hello");
+```
+        """)), 
+'''<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span class="nx">alert</span><span class="p">(</span><span class="s2">"hello"</span><span class="p">);</span>
+</pre></div>
+</td></tr></table>
+''')
 
 
 if __name__ == '__main__':
