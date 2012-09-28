@@ -6,10 +6,11 @@
 import re
 
 import jasy.core.Markdown as Markdown
+import jasy.core.Console as Console
 
 from jasy import UserError
 from jasy.js.util import *
-import jasy.core.Console as Console
+
 
 __all__ = ["CommentException", "Comment"]
 
@@ -318,23 +319,28 @@ class Comment():
 
 
     def getHtml(self, highlight=True):
-        """Returns the comment text converted to HTML"""
+        """
+        Returns the comment text converted to HTML
+
+        :param highlight: Whether to highlight the code
+        :type highlight: bool
+        """
+
+        if Markdown.markdown is None:
+            raise UserError("Markdown is not supported by the system. Documentation comments could converted to HTML.")
 
         if highlight:
 
-            # lazily generate highlighted version
             if self.__highlightedText is None:
 
-                if Markdown.markdown is None:
-                    raise UserError("Markdown is not supported by the system. Documentation comments could converted to HTML.")
+                highlightedText = ""
 
-                highlightedText = '' # text with both markdown and code highlightiong
-                for b in self.__blocks:
-                    if b["type"] == "comment":
-                        highlightedText += Markdown.markdown(b["processed"])
+                for block in self.__blocks:
 
+                    if block["type"] == "comment":
+                        highlightedText += Markdown.markdown(block["processed"])
                     else:
-                        highlightedText += "\n" + Markdown.markdown(b["text"], True)
+                        highlightedText += "\n%s" % Markdown.markdown(block["text"], True)
 
                 self.__highlightedText = highlightedText
 
@@ -344,20 +350,15 @@ class Comment():
             
             if self.__processedText is None:
             
-                if Markdown.markdown is None:
-                    raise UserError("Markdown is not supported by the system. Documentation comments could converted to HTML.")
+                processedText = ""
 
-                processedText = ''
-                for b in self.__blocks:
+                for block in self.__blocks:
 
-                    if b["type"] == "comment":
-
-                        processedText += Markdown.markdown(b["processed"]) 
-
+                    if block["type"] == "comment":
+                        processedText += Markdown.markdown(block["processed"]) 
                     else:
-                        processedText += "\n" + b["text"] + "\n\n"
+                        processedText += "\n%s\n\n" % block["text"]
 
-                # Store original, unstripped text for later Markdown conversion
                 self.__processedText = processedText.strip()
 
             return self.__processedText
@@ -366,14 +367,17 @@ class Comment():
     def hasContent(self):
         return self.variant == "doc" and len(self.text)
     
+
     def getTags(self):
         return self.tags
         
+
     def hasTag(self, name):
         if not self.tags:
             return False
 
         return name in self.tags
+
 
     def __outdent(self, text, indent, startLineNo):
         """
@@ -462,7 +466,7 @@ class Comment():
             # Grab the text before the back tick and process any parameters in it
             nonlocal parsed
             nonlocal last
-            
+
             start, end = match.span() 
             before = text[last:start]
             parsed += self.__processParams(before) + match.group(1)
