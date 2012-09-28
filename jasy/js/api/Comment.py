@@ -338,9 +338,9 @@ class Comment():
                 for block in self.__blocks:
 
                     if block["type"] == "comment":
-                        highlightedText += Text.code2highlight(Text.markdown2html(block["processed"]))
+                        highlightedText += Text.highlightCodeBlocks(Text.markdown2html(block["processed"]))
                     else:
-                        highlightedText += "\n%s" % Text.code2highlight(Text.markdown2html(block["text"]))
+                        highlightedText += "\n%s" % Text.highlightCodeBlocks(Text.markdown2html(block["text"]))
 
                 self.__highlightedText = highlightedText
 

@@ -32,7 +32,7 @@ except:
 # By http://misaka.61924.nl/#toc_3
 codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
 
-def code2highlight(html, tabsize=2, defaultlang="javascript"):
+def highlightCodeBlocks(html, tabsize=2, defaultlang="javascript"):
 
     def unescape(html):
         html = html.replace('&lt;', '<')
