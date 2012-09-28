@@ -11,7 +11,7 @@ import jasy.core.Text as Text
 
 class Tests(unittest.TestCase):
 
-    def test_basics(self):
+    def test_markdown(self):
         
         self.assertEqual(Text.markdownToHtml("*emphased*"), "<p><em>emphased</em></p>\n")
         self.assertEqual(Text.markdownToHtml("**bold**"), "<p><strong>bold</strong></p>\n")
@@ -22,7 +22,24 @@ class Tests(unittest.TestCase):
         self.assertEqual(Text.markdownToHtml("#### Header 4"), "<h4>Header 4</h4>\n")
         self.assertEqual(Text.markdownToHtml("##### Header 5"), "<h5>Header 5</h5>\n")
         self.assertEqual(Text.markdownToHtml("###### Header 6"), "<h6>Header 6</h6>\n")
-    
+
+        self.assertEqual(Text.markdownToHtml("""
+Paragraph 1
+
+Paragraph 2
+        """), "<p>Paragraph 1</p>\n\n<p>Paragraph 2</p>\n")
+
+        self.assertEqual(Text.markdownToHtml("""
+- Item 1
+- Item 2
+- Item 3
+        """), "<ul>\n<li>Item 1</li>\n<li>Item 2</li>\n<li>Item 3</li>\n</ul>\n")        
+
+        self.assertEqual(Text.markdownToHtml("""
+1. Item 1
+2. Item 2
+3. Item 3
+        """), "<ol>\n<li>Item 1</li>\n<li>Item 2</li>\n<li>Item 3</li>\n</ol>\n")        
 
 
 if __name__ == '__main__':
