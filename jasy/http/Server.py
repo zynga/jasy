@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, logging, base64, json, requests, cherrypy
+import os, logging, base64, json, requests, cherrypy, locale
 from collections import namedtuple
 
 import jasy.core.Cache as Cache
@@ -216,7 +216,7 @@ class Static(object):
             if extension:
                 extension = extension.lower()[1:]
                 if extension in self.mimeTypes:
-                    contentType = self.mimeTypes[extension]
+                    contentType = self.mimeTypes[extension] + "; charset=" + locale.getpreferredencoding()
 
             return cherrypy.lib.static.serve_file(os.path.abspath(path), content_type=contentType)
             
