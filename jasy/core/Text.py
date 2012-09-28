@@ -32,7 +32,7 @@ except:
 # By http://misaka.61924.nl/#toc_3
 codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
 
-def code2highlight(html, tabsize=2):
+def code2highlight(html, tabsize=2, defaultlang="javascript"):
 
     def unescape(html):
         html = html.replace('&lt;', '<')
@@ -44,7 +44,7 @@ def code2highlight(html, tabsize=2):
     def replace(match):
         language, classname, code = match.groups()
         if language is None:
-            language = classname if classname else "javascript"
+            language = classname if classname else defaultlang
     
         lexer = get_lexer_by_name(language, tabsize=tabsize)
         formatter = HtmlFormatter(linenos="table")
