@@ -181,7 +181,7 @@ class Comment():
         if not Text.supportsMarkdown:
             return self.__splitSimple(text)
         
-        marked = Text.markdown2html(text)
+        marked = Text.markdownToHtml(text)
 
         def unescape(html):
             html = html.replace('&lt;', '<')
@@ -338,9 +338,9 @@ class Comment():
                 for block in self.__blocks:
 
                     if block["type"] == "comment":
-                        highlightedText += Text.highlightCodeBlocks(Text.markdown2html(block["processed"]))
+                        highlightedText += Text.highlightCodeBlocks(Text.markdownToHtml(block["processed"]))
                     else:
-                        highlightedText += "\n%s" % Text.highlightCodeBlocks(Text.markdown2html(block["text"]))
+                        highlightedText += "\n%s" % Text.highlightCodeBlocks(Text.markdownToHtml(block["text"]))
 
                 self.__highlightedText = highlightedText
 
@@ -355,7 +355,7 @@ class Comment():
                 for block in self.__blocks:
 
                     if block["type"] == "comment":
-                        processedText += Text.markdown2html(block["processed"]) 
+                        processedText += Text.markdownToHtml(block["processed"]) 
                     else:
                         processedText += "\n%s\n\n" % block["text"]
 

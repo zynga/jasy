@@ -16,14 +16,14 @@ try:
     misakaExt = misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS | misaka.EXT_FENCED_CODE
     misakaRender = misaka.HTML_SKIP_STYLE | misaka.HTML_SMARTYPANTS
 
-    def markdown2html(markdownStr):
+    def markdownToHtml(markdownStr):
         return misaka.html(markdownStr, misakaExt, misakaRender)
 
     supportsMarkdown = True
 
 except:
 
-    def markdown2html(markdownStr):
+    def markdownToHtml(markdownStr):
         return None
 
     supportsMarkdown = False
