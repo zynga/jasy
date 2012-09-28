@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, os, unittest, logging, pkg_resources, tempfile
+import sys, os, unittest, logging
 
 # Extend PYTHONPATH with local 'lib' folder
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, os.pardir))
