@@ -169,12 +169,13 @@ class Comment():
 
 
     def __splitBlocks(self, text):
-
-        """Splits up text and code blocks in comments.
+        """
+        Splits up text and code blocks in comments.
         
         This will try to use Misaka for Markdown parsing if available and will 
         fallback to a simpler implementation in order to allow processing of
-        doc parameters and links without Misaka being installed."""
+        doc parameters and links without Misaka being installed.
+        """
 
         if Markdown.markdown is None:
             return self.__splitSimple(text)
@@ -253,7 +254,6 @@ class Comment():
 
 
     def __splitSimple(self, text):
-
         """Splits comment text and code blocks by manually parsing a subset of markdown"""
         
         inCode = False
@@ -315,6 +315,7 @@ class Comment():
         })
         
         return parts
+
 
     def getHtml(self, highlight=True):
         """Returns the comment text converted to HTML"""
@@ -461,6 +462,7 @@ class Comment():
             # Grab the text before the back tick and process any parameters in it
             nonlocal parsed
             nonlocal last
+            
             start, end = match.span() 
             before = text[last:start]
             parsed += self.__processParams(before) + match.group(1)
@@ -560,8 +562,7 @@ class Comment():
              return ""
 
         return tagMatcher.sub(collectTags, text)
-        
-        
+                
         
     def __processParams(self, text):
         
