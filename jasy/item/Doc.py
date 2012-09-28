@@ -4,7 +4,7 @@
 #
 
 import jasy.js.api.Data as Data
-import jasy.core.Markdown as Markdown
+import jasy.core.Text as Text
 import jasy.item.Abstract as Abstract
 
 from jasy import UserError
@@ -23,7 +23,7 @@ class DocItem(Abstract.AbstractItem):
         if apidata is None:
             apidata = Data.ApiData(self.id)
             apidata.main["type"] = "Package"
-            apidata.main["doc"] = Markdown.markdown(self.getText())
+            apidata.main["doc"] = Text.markdown(self.getText())
             
             self.project.getCache().store(field, apidata, self.getModificationTime())
 

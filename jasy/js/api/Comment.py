@@ -5,7 +5,7 @@
 
 import re
 
-import jasy.core.Markdown as Markdown
+import jasy.core.Text as Text
 import jasy.core.Console as Console
 
 from jasy import UserError
