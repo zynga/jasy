@@ -178,10 +178,10 @@ class Comment():
         doc parameters and links without Misaka being installed.
         """
 
-        if Markdown.markdown is None:
+        if Text.markdown is None:
             return self.__splitSimple(text)
         
-        marked = Markdown.markdown(text, False)
+        marked = Text.markdown2html(text)
 
         def unescape(html):
             html = html.replace('&lt;', '<')
@@ -326,7 +326,7 @@ class Comment():
         :type highlight: bool
         """
 
-        if Markdown.markdown is None:
+        if Text.markdown is None:
             raise UserError("Markdown is not supported by the system. Documentation comments could converted to HTML.")
 
         if highlight:
@@ -338,9 +338,9 @@ class Comment():
                 for block in self.__blocks:
 
                     if block["type"] == "comment":
-                        highlightedText += Markdown.markdown(block["processed"])
+                        highlightedText += Text.code2highlight(Text.markdown2html(block["processed"]))
                     else:
-                        highlightedText += "\n%s" % Markdown.markdown(block["text"], True)
+                        highlightedText += "\n%s" % Text.code2highlight(Text.markdown2html(block["text"]))
 
                 self.__highlightedText = highlightedText
 
@@ -355,7 +355,7 @@ class Comment():
                 for block in self.__blocks:
 
                     if block["type"] == "comment":
-                        processedText += Markdown.markdown(block["processed"]) 
+                        processedText += Text.markdown2html(block["processed"]) 
                     else:
                         processedText += "\n%s\n\n" % block["text"]
 
