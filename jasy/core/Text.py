@@ -4,35 +4,54 @@
 #
 
 import re
-import jasy.core.Console as Console
 
-from pygments import highlight
-from pygments.formatters import HtmlFormatter
-from pygments.lexers import get_lexer_by_name
+
+#
+# MARKDOWN TO HTML
+#
 
 try:
     import misaka
 
     misakaExt = misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS | misaka.EXT_FENCED_CODE
     misakaRender = misaka.HTML_SKIP_STYLE | misaka.HTML_SMARTYPANTS
-
-    def markdownToHtml(markdownStr):
-        return misaka.html(markdownStr, misakaExt, misakaRender)
-
     supportsMarkdown = True
 
 except:
-
-    def markdownToHtml(markdownStr):
-        return None
-
     supportsMarkdown = False
 
+def markdownToHtml(markdownStr):
+    """
+    Converts Markdown to HTML. Supports GitHub's fenced code blocks, 
+    auto linking and typographic features by SmartyPants.
+    """
 
-# By http://misaka.61924.nl/#toc_3
-codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
+    return misaka.html(markdownStr, misakaExt, misakaRender)
+
+
+#
+# HIGHLIGHT CODE BLOCKS
+#
+
+try:
+    from pygments import highlight
+    from pygments.formatters import HtmlFormatter
+    from pygments.lexers import get_lexer_by_name
+
+    # By http://misaka.61924.nl/#toc_3
+    codeblock = re.compile(r'<pre(?: lang="([a-z0-9]+)")?><code(?: class="([a-z0-9]+).*?")?>(.*?)</code></pre>', re.IGNORECASE | re.DOTALL)
+
+    supportsHighlighting = True
+
+except ImportError:
+
+    supportsHighlighting = False
 
 def highlightCodeBlocks(html, tabsize=2, defaultlang="javascript"):
+    """
+    Patches 'code' elements in HTML to apply HTML based syntax highlighting. Automatically
+    chooses the matching language detected via a CSS class of the 'code' element.
+    """
 
     def unescape(html):
         html = html.replace('&lt;', '<')
