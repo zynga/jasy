@@ -94,7 +94,7 @@ def __patch(node, blocked=None, enable=False, translate=None):
                 if declared:
                     names.update(declared)
                 
-                namesSorted = list(reversed(sorted(names, key=lambda x: scope.accessed[x] if x in scope.accessed else 0)))
+                namesSorted = list(reversed(sorted(sorted(names), key=lambda x: scope.accessed[x] if x in scope.accessed else 0)))
 
                 # Extend translation map by new replacements for locally 
                 # declared variables. Automatically ignores keywords. Only
