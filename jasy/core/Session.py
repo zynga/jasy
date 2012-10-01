@@ -443,7 +443,11 @@ class Session():
                 else:
                     # EXPORT STRUCT 2
                     content.append("2")
-                    content.append(json.dumps(values[0]))
+
+                    if "default" in source:
+                        content.append(json.dumps(source["default"]))
+                    else:
+                        content.append(json.dumps(values[0]))
 
             # Has no relevance for permutation, just insert the test
             else:
@@ -458,6 +462,11 @@ class Session():
                     if "default" in source:
                         content.append(json.dumps(source["default"]))
                 
+                elif "default" in source:
+                    # EXPORT STRUCT 2
+                    content.append("2")
+                    content.append(json.dumps(source["default"]))
+
                 else:
                     # Has no detection and no permutation. Ignore it completely
                     continue
