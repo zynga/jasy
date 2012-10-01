@@ -90,10 +90,10 @@ def doCompleteDoctor():
                     Console.info(Console.colorize('Version is OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]), "green"))
                 else:
                     Console.info(Console.colorize(Console.colorize('- Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
-                    Console.info('  -> Update to the newest version of %s using %s' % (packageName, updatePath))
+                    Console.info('Update to the newest version of %s using %s' % (packageName, updatePath))
         else:
             Console.info(Console.colorize(Console.colorize('Did NOT find installation', "red"), "bold"))
-            Console.info('  -> Install the newest version of %s using %s' % (packageName, installPath))
+            Console.info('Install the newest version of %s using %s' % (packageName, installPath))
         Console.outdent()
 
 
