@@ -56,13 +56,13 @@ optionals = [
     {
         "packageName": "watchdog",
         "minVersion": "0.0",
-        "installPath": "'pip install -e git+https://github.com/wpbasti/watchdog#egg=watchdog'",
+        "installPath": "'pip install git+https://github.com/wpbasti/watchdog'",
         "updatePath": ""
     },
     {
         "packageName": "pil",
         "minVersion": "0.0",
-        "installPath": "'pip install -e git+https://github.com/zynga/pil-py3k#egg=pil-py3k'",
+        "installPath": "'pip install git+https://github.com/zynga/pil-py3k'",
         "updatePath": ""
     }
 ]
@@ -127,17 +127,17 @@ def doInitializationDoctor():
         if packageName.lower() in keys:
             if StrictVersion(minVersion) > StrictVersion("0.0"):
                 if StrictVersion(versions[packageName.lower()]) < StrictVersion(minVersion):
-                    Console.info(Console.colorize(Console.colorize('JASY requirement error: "%s"' % packageName, "red"), "bold"))
+                    Console.info(Console.colorize(Console.colorize('Jasy requirement error: "%s"' % packageName, "red"), "bold"))
                     Console.indent()
-                    Console.info(Console.colorize(Console.colorize('- Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
-                    Console.info('  -> Update to the newest version of %s using %s' % (packageName, updatePath))
+                    Console.info(Console.colorize(Console.colorize('Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
+                    Console.info('Update to the newest version of %s using %s' % (packageName, updatePath))
                     Console.outdent()
                     return False
         else:
-            Console.info(Console.colorize(Console.colorize('JASY requirement error: "%s"' % packageName, "red"), "bold"))
+            Console.info(Console.colorize(Console.colorize('Jasy requirement error: "%s"' % packageName, "red"), "bold"))
             Console.indent()
             Console.info(Console.colorize(Console.colorize('Did NOT find installation', "red"), "bold"))
-            Console.info('  -> Install the newest version of %s using %s' % (packageName, installPath))
+            Console.info('Install the newest version of %s using %s' % (packageName, installPath))
             Console.outdent()
             return False
 
