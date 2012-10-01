@@ -1,3 +1,11 @@
+Jasy 1.0
+========
+
+- Added support for Python 3.3.
+- Fixed missing `jasy.test.js` package in installation package.
+- Added more unit tests for `Session` (permutations, locales, library support, etc.)
+
+
 Jasy 0.8.1
 ==========
 
