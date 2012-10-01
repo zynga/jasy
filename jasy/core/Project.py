@@ -9,6 +9,7 @@ import jasy.core.Cache
 import jasy.core.Config as Config
 import jasy.core.File as File
 import jasy.core.Console as Console
+import jasy.core.Util as Util
 
 import jasy.vcs.Repository as Repository
 
@@ -18,7 +19,6 @@ import jasy.item.Translation
 import jasy.item.Class
 import jasy.item.Asset
 
-from jasy.core.Util import getKey
 from jasy import UserError
 
 
@@ -46,9 +46,6 @@ def getProjectFromPath(path, config=None, version=None):
 
 def getProjectDependencies(project, checkoutDirectory="external", updateRepositories=True):
     """ Returns a sorted list of projects depending on the given project (including the given one) """
-
-    #info("Resolving project dependencies...")
-    #indent()
 
     def __resolve(project):
 
@@ -91,8 +88,6 @@ def getProjectDependencies(project, checkoutDirectory="external", updateReposito
 
     __resolve(project)
 
-    #outdent()
-
     return result
 
 
@@ -107,7 +102,7 @@ def getProjectNameFromPath(path):
 
     # Slashes are often used as a separator to optional data
     if "-" in name:
-        name = name[:name.index("-")]
+        name = name[:name.rindex("-")]
 
     return name
 
@@ -153,6 +148,14 @@ class Project():
         except IOError as err:
             raise UserError("Could not initialize project. Cache file in %s could not be initialized! %s" % (self.__path, err))
         
+        # Detect version changes
+        if version is None:
+            self.__modified = True
+        else:
+            cachedVersion = self.__cache.read("project[version]")
+            self.__modified = cachedVersion != version
+            self.__cache.store("project[version]", version)
+
         # Read name from manifest or use the basename of the project's path
         self.__name = self.__config.get("name", getProjectNameFromPath(self.__path))
             
@@ -165,6 +168,9 @@ class Project():
         # Read fields (for injecting data into the project and build permutations)
         self.__fields = self.__config.get("fields", {})
 
+        # Read setup for running command pre-scan
+        self.__setup = self.__config.get("setup")
+
 
 
     #
@@ -175,6 +181,31 @@ class Project():
 
         if self.scanned:
             return
+
+        updatemsg = "[updated]" if self.__modified else "[cached]"
+        Console.info("Scanning project %s %s...", self.__name, Console.colorize(updatemsg, "grey"))
+        Console.indent()
+
+        # Support for pre-initialize projects...
+        setup = self.__setup
+        if setup and self.__modified:
+            Console.info("Running setup...")
+            Console.indent()
+
+            for cmd in setup:
+                Console.info("Executing %s...", cmd)
+
+                result = None
+                try:
+                    result = None
+                    result = Util.executeCommand(cmd, "Failed to execute setup command %s" % cmd, path=self.__path)
+                except Exception as ex:
+                    if result:
+                        Console.error(result)
+
+                    raise UserError("Could not scan project %s: %s" % (self.__name, ex))
+
+            Console.outdent()
         
         # Processing custom content section. Only supports classes and assets.
         if self.__config.has("content"):
@@ -217,11 +248,14 @@ class Project():
 
         # Print out
         if summary:
-            Console.info("Scanned project %s %s: %s" % (Console.colorize(self.__name, "bold"), Console.colorize("[%s]" % self.kind, "grey"), Console.colorize(", ".join(summary), "green")))
+            Console.info("Done %s: %s" % (Console.colorize("[%s]" % self.kind, "grey"), Console.colorize(", ".join(summary), "green")))
         else:
-            Console.error("Project %s is empty!", Console.colorize(self.__name, "bold"))
+            Console.error("Project is empty!")
 
         self.scanned = True
+
+        Console.outdent()
+
 
 
 
@@ -386,9 +420,9 @@ class Project():
             
             if type(entry) is dict:
                 source = entry["source"]
-                config = getKey(entry, "config")
-                version = getKey(entry, "version")
-                kind = getKey(entry, "kind")
+                config = Util.getKey(entry, "config")
+                version = Util.getKey(entry, "version")
+                kind = Util.getKey(entry, "kind")
             else:
                 source = entry
                 config = None

@@ -115,6 +115,9 @@ class OutputManager:
         Console.info("Storing kernel...")
         Console.indent()
         
+        # Use a new permutation based on debug settings and statically configured fields
+        self.__session.setStaticPermutation(debug=debug)
+
         # Build resolver
         # We need the permutation here because the field configuration might rely on detection classes
         resolver = Resolver(self.__session)
@@ -142,20 +145,20 @@ class OutputManager:
         if self.__compressGeneratedCode:
             bootCode = packCode(bootCode)
 
-        # Permutation to apply
-        permutation = getPermutation({ "debug" : debug })
-
         # Sort resulting class list
         sortedClasses = resolver.getSortedClasses()
-        self.storeCompressed(sortedClasses, fileName, bootCode, permutation)
+        self.storeCompressed(sortedClasses, fileName, bootCode)
         
         # Remember classes for filtering in storeLoader/storeCompressed
         self.__kernelClasses = set(sortedClasses)
 
+        # Reset static permutation
+        self.__session.resetCurrentPermutation()
+
         Console.outdent()
 
 
-    def storeCompressed(self, classes, fileName, bootCode=None, permutation=None):
+    def storeCompressed(self, classes, fileName, bootCode=None):
         """
         Combines the compressed result of the stored class list
         
@@ -166,7 +169,7 @@ class OutputManager:
         :param bootCode: Code to execute once all the classes are loaded
         :type bootCode: string
         """
-        
+
         if self.__kernelClasses:
             filtered = [ classObj for classObj in classes if not classObj in self.__kernelClasses ]
         else:
@@ -185,8 +188,7 @@ class OutputManager:
                 else:
                     result.append(assetCode)
 
-        if permutation is None:
-            permutation = self.__session.getCurrentPermutation()
+        permutation = self.__session.getCurrentPermutation()
 
         try:
             for classObj in filtered:
@@ -293,5 +295,4 @@ class OutputManager:
             loaderCode = "\n\n".join(result)
 
         self.__fileManager.writeFile(fileName, loaderCode)
-
 

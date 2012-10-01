@@ -32,12 +32,12 @@ def requestUrl(url, content_type="text/plain", headers=None, method="GET", port=
     else:
         request.putrequest(method, parsed.path)
     
-    request.putConsole.header("Content-Type", content_type)
-    request.putConsole.header("Content-Length", str(len(body)))
+    request.putheader("Content-Type", content_type)
+    request.putheader("Content-Length", str(len(body)))
 
     if user is not None and password is not None:
         auth = "Basic %s" % base64.b64encode(("%s:%s" % (user, password)).encode("utf-8")).decode("utf-8")
-        request.putConsole.header("Authorization", auth)
+        request.putheader("Authorization", auth)
         
     request.endheaders()
     

@@ -12,9 +12,8 @@
 
 import re, copy
 
-import jasy.js.tokenize.Lang
-import jasy.js.api.Comment
-
+import jasy.js.tokenize.Lang as Lang
+import jasy.js.api.Comment as Comment
 import jasy.core.Console as Console
 
 __all__ = [ "Tokenizer" ]
@@ -221,8 +220,8 @@ class Tokenizer(object):
                 text = text.replace("*\/", "*/")
                 
                 try:
-                    self.comments.append(jasy.js.api.Comment.Comment(text, mode, commentStartLine, indent, self.fileId))
-                except jasy.js.api.Comment.CommentException as commentError:
+                    self.comments.append(Comment.Comment(text, mode, commentStartLine, indent, self.fileId))
+                except Comment.CommentException as commentError:
                     Console.error("Ignoring comment in %s: %s", self.fileId, commentError)
                     
                     
@@ -253,8 +252,8 @@ class Tokenizer(object):
                     text += ch
                     
                 try:
-                    self.comments.append(jasy.js.api.Comment.Comment(text, mode, self.line-1, "", self.fileId))
-                except jasy.js.api.Comment.CommentException:
+                    self.comments.append(Comment.Comment(text, mode, self.line-1, "", self.fileId))
+                except Comment.CommentException:
                     Console.error("Ignoring comment in %s: %s", self.fileId, commentError)
 
             # check for whitespace, also for special cases like 0xA0
@@ -510,7 +509,7 @@ class Tokenizer(object):
         self.cursor -= 1
 
         identifier = input[token.start:self.cursor]
-        if identifier in jasy.js.tokenize.Lang.keywords:
+        if identifier in Lang.keywords:
             token.type = identifier
         else:
             token.type = "identifier"

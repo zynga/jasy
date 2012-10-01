@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, os, unittest, logging, pkg_resources, tempfile
+import sys, os, unittest, logging
 
 # Extend PYTHONPATH with local 'lib' folder
 jasyroot = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]), os.pardir, os.pardir, os.pardir))
@@ -18,10 +18,13 @@ class Tests(unittest.TestCase):
         self.assertEqual(Repository.isUrl("https://faz.net?x=1"), False)
         self.assertEqual(Repository.isUrl("git@github.com:zynga/apibrowser.git"), True)
         self.assertEqual(Repository.isUrl("https://github.com/zynga/core"), False)
+        self.assertEqual(Repository.isUrl("git+https://github.com/zynga/core"), True)
         self.assertEqual(Repository.isUrl("https://github.com/zynga/core.git"), True)
+        self.assertEqual(Repository.isUrl("git+https://github.com/zynga/core.git"), True)
         self.assertEqual(Repository.isUrl("https://wpbasti@github.com/zynga/apibrowser.git"), True)
         self.assertEqual(Repository.isUrl("git://github.com/zynga/core.git"), True)
         self.assertEqual(Repository.isUrl("git://gitorious.org/qt/qtdeclarative.git"), True)
+        self.assertEqual(Repository.isUrl("git+git://gitorious.org/qt/qtdeclarative.git"), True)
         self.assertEqual(Repository.isUrl("https://git.gitorious.org/qt/qtdeclarative.git"), True)
     
 

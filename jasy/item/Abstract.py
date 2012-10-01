@@ -25,6 +25,8 @@ class AbstractItem:
     def attach(self, path):
         self.__path = path
         
+        entry = None
+
         try:
             if type(path) is list:
                 mtime = 0
@@ -36,10 +38,11 @@ class AbstractItem:
                 self.mtime = mtime
         
             else:
-                self.mtime = os.stat(path).st_mtime
+                entry = path
+                self.mtime = os.stat(entry).st_mtime
             
         except OSError as oserr:
-            raise UserError("Invalid item path: %s" % path)
+            raise UserError("Invalid item path: %s" % entry)
         
         return self
         

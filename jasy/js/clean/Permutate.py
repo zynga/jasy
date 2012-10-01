@@ -4,6 +4,8 @@
 #
 
 import jasy.js.parse.Parser as Parser
+import jasy.core.Console as Console
+
 from jasy.js.util import *
 
 
@@ -41,20 +43,31 @@ def patch(node, permutation):
         if assembled == "jasy.Env.getValue" and node.parent.type == "call":
             callNode = node.parent
             params = callNode[1]
-            replacement = __translateToJS(permutation.get(params[0].value))
+            name = params[0].value
+
+            Console.debug("Found jasy.Env.getValue(%s) in line %s", name, node.line)
+
+            replacement = __translateToJS(permutation.get(name))
             if replacement:
                 replacementNode = Parser.parseExpression(replacement)
                 callNode.parent.replace(callNode, replacementNode)
-                modified = True            
+                modified = True
+
+                Console.debug("Replaced with %s", replacement)
+         
         
         # jasy.Env.isSet(key, expected)
         # also supports boolean like: jasy.Env.isSet(key)
         elif assembled == "jasy.Env.isSet" and node.parent.type == "call":
+
             callNode = node.parent
             params = callNode[1]
             name = params[0].value
+
+            Console.debug("Found jasy.Env.isSet(%s) in line %s", name, node.line)
+
             replacement = __translateToJS(permutation.get(name))
-            
+
             if replacement != None:
                 # Auto-fill second parameter with boolean "true"
                 expected = params[1] if len(params) > 1 else Parser.parseExpression("true")
@@ -75,9 +88,14 @@ def patch(node, permutation):
                     replacementNode = Parser.parseExpression("true" if replacementResult else "false")
                     callNode.parent.replace(callNode, replacementNode)
                     modified = True
+
+                    Console.debug("Replaced with %s", "true" if replacementResult else "false")
+
         
         # jasy.Env.select(key, map)
         elif assembled == "jasy.Env.select" and node.parent.type == "call":
+            Console.debug("Found jasy.Env.select() in line %s", node.line)
+
             callNode = node.parent
             params = callNode[1]
             replacement = __translateToJS(permutation.get(params[0].value))
@@ -102,6 +120,8 @@ def patch(node, permutation):
                     if not modified and fallbackNode is not None:
                         callNode.parent.replace(callNode, fallbackNode)
                         modified = True
+
+                        Console.debug("Updated with %s", replacement)
 
 
     # Process children

@@ -3,7 +3,7 @@
 # Copyright 2010-2012 Zynga Inc.
 #
 
-import os, logging, base64, json, requests, cherrypy
+import os, logging, base64, json, requests, cherrypy, locale
 from collections import namedtuple
 
 import jasy.core.Cache as Cache
@@ -48,6 +48,10 @@ def findIndex(path):
             
     return None
 
+def noBodyProcess():
+    cherrypy.request.process_request_body = False
+
+cherrypy.tools.noBodyProcess = cherrypy.Tool('before_request_body', noBodyProcess)
 
 
 #
@@ -87,6 +91,7 @@ class Proxy(object):
     
     
     @cherrypy.expose
+    @cherrypy.tools.noBodyProcess()
     def default(self, *args, **query):
         """
         This method returns the content of existing files on the file system.
@@ -95,7 +100,8 @@ class Proxy(object):
         
         url = self.config["host"] + "/".join(args)
         result = None
-
+        body = None
+        
         # Try using offline mirror if feasible
         if self.enableMirror and cherrypy.request.method == "GET":
             mirrorId = "%s[%s]" % (url, json.dumps(query, separators=(',',':'), sort_keys=True))
@@ -135,7 +141,7 @@ class Proxy(object):
                         headers["Authorization"] = b"Basic " + base64.b64encode(("%s:%s" % (self.auth["user"], self.auth["password"])).encode("ascii"))
                     
                 # We disable verifícation of SSL certificates to be more tolerant on test servers
-                result = requests.request(cherrypy.request.method, url, params=query, headers=headers, verify=False)
+                result = requests.request(cherrypy.request.method, url, params=query, headers=headers, data=body, verify=False)
                 
             except Exception as err:
                 if self.enableDebug:
@@ -210,7 +216,7 @@ class Static(object):
             if extension:
                 extension = extension.lower()[1:]
                 if extension in self.mimeTypes:
-                    contentType = self.mimeTypes[extension]
+                    contentType = self.mimeTypes[extension] + "; charset=" + locale.getpreferredencoding()
 
             return cherrypy.lib.static.serve_file(os.path.abspath(path), content_type=contentType)
             

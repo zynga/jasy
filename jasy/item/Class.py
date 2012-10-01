@@ -106,7 +106,10 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
 
             # Apply permutation
             if permutation:
+                Console.info("Patching tree with permutation: %s", permutation)
+                Console.indent()
                 jasy.js.clean.Permutate.patch(tree, permutation)
+                Console.outdent()
 
             # Cleanups
             jasy.js.clean.DeadCode.cleanup(tree)
@@ -126,9 +129,9 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
         makes use of the meta data (see core/MetaData.py) and the variable data 
         (see parse/ScopeData.py).
         """
-        
+
         permutation = self.filterPermutation(permutation)
-        
+
         meta = self.getMetaData(permutation)
         scope = self.getScopeData(permutation)
         
@@ -183,7 +186,7 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
                 result.remove(classes[name])
             elif warnings:
                 Console.warn("- Missing class (optional): %s in %s", name, self.id)
-        
+
         return result
         
         
@@ -200,7 +203,7 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
         if scope is None:
             scope = self.__getOptimizedTree(permutation, "scope").scope
             self.project.getCache().store(field, scope, self.mtime)
-        
+
         return scope
         
         
@@ -248,7 +251,7 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
 
     def getMetaData(self, permutation=None):
         permutation = self.filterPermutation(permutation)
-        
+
         field = "meta[%s]-%s" % (self.id, permutation)
         meta = self.project.getCache().read(field, self.mtime)
         if meta is None:

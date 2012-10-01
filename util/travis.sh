@@ -17,6 +17,18 @@ echo ">>> RUNNING DOC GENERATOR..."
 jasy-doc || exit 1
 
 echo
+echo ">>> EXECUTING JASY VERSION..."
+jasy --version || exit 1
+
+echo
+echo ">>> EXECUTING JASY ABOUT..."
+jasy about || exit 1
+
+echo
+echo ">>> EXECUTING JASY DOCTOR..."
+jasy doctor || exit 1
+
+echo
 echo ">>> RUNNING JASY CREATE"
 jasy create --name mytest --origin https://github.com/zynga/jasy-skeleton.git --skeleton test --user.age 34 --user.name Alex --incr 6,7,8 --foo-bar hello --pi 3.17 || exit 1
 
