@@ -87,6 +87,9 @@ class Session():
     def clean(self):
         """Clears all caches of all registered projects"""
 
+        if not self.__projects:
+            return
+
         Console.info("Cleaning session...")
         Console.indent()
 
@@ -98,6 +101,9 @@ class Session():
 
     def close(self):
         """Closes the session and stores cache to the harddrive."""
+
+        if not self.__projects:
+            return
 
         Console.debug("Closing session...")
         Console.indent()
