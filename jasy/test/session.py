@@ -9,7 +9,7 @@ sys.path.insert(0, jasyroot)
 import jasy.core.Project as Project
 import jasy.core.Session as Session
 
-test = None
+globProject = None
 
 
 class Tests(unittest.TestCase):
@@ -26,7 +26,7 @@ class Tests(unittest.TestCase):
         content = """name: myproject
 fields:
   debug: {check: "Boolean", default: False, values: [True, False]}
-  engine: {check: ["webkit", "gecko", "trident", "presto"], default: "trident"}
+  engine: {check: ["webkit", "gecko", "trident", "presto"], default: "trident", values: ["webkit", "gecko", "trident", "presto"]}
 requires:"""
         for r in requirements:
             content += r
@@ -53,10 +53,10 @@ requires:"""
 
     def createProject(self, requirements, onlyFileCreation=False):
 
-        global test
-        test = tempfile.TemporaryDirectory()
+        global globProject
+        globProject = tempfile.TemporaryDirectory()
 
-        path = os.path.join(test.name, "myproject")
+        path = os.path.join(globProject.name, "myproject")
         os.makedirs(path)
 
         def createFolders():
@@ -163,7 +163,7 @@ requires:"""
 
 
     def test_load_library(self):
-        path = os.path.join(test.name, "mylib")
+        path = os.path.join(globProject.name, "mylib")
         os.makedirs(path)
         self.writeFile(path, "MyScript.py", """
 @share
@@ -194,14 +194,67 @@ def add(number):
             self.assertTrue(True)
 
 
-    def test_fields(self):
+    def test_field(self):
         session = Session.Session()
         session.addProject(self.createProject([]))
-        #session.setField("debug", True)
-        #session.setField("engine", "presoto")
-        session.permutate()
-        #session.setField("debug", True)
-        print(session.exportFields())
+
+        self.assertEqual(session.exportFields(),'[[\'debug\', 2, false], [\'engine\', 2, "trident"]]')
+
+    
+    def test_set_field(self):
+        session = Session.Session()
+        session.addProject(self.createProject([]))
+
+        session.setField("debug", True)
+        self.assertEqual(session.exportFields(),'[[\'debug\', 2, true], [\'engine\', 2, "trident"]]')
+
+    
+    def test_set_permutation(self):
+        session = Session.Session()
+        session.addProject(self.createProject([]))
+
+        session.permutateField("debug", values=[False, True], detect=None, default=True)
+        session.permutateField("engine", values=["webkit", "gecko", "trident", "presto"], detect=None, default="gecko")
+
+        self.assertEqual(session.exportFields(),'[[\'debug\', 2, true], [\'engine\', 2, "gecko"]]')  
+
+        session.permutateField("engine", values=["webkit"], detect=None, default="webkit")
+
+        self.assertEqual(session.exportFields(),'[[\'debug\', 2, true], [\'engine\', 2, "webkit"]]')  
+
+    
+    def test_permutate(self):
+        session = Session.Session()
+        session.addProject(self.createProject([]))
+
+        counter = 0
+        for p in session.permutate():
+            counter += 1
+        self.assertEqual(counter, 8)
+
+        session.permutateField("engine", values=["webkit", "gecko", "trident"])
+        counter = 0
+        for p in session.permutate():
+            counter += 1
+        self.assertEqual(counter, 6)
+
+        session.setField("debug", True)
+        counter = 0
+        for p in session.permutate():
+            counter += 1
+        self.assertEqual(counter, 3)
+
+
+    def test_locale(self):
+        session = Session.Session()
+        session.addProject(self.createProject([]))
+
+        session.setLocales(["de", "en_", "fr"])
+
+        counter = 0
+        for p in session.permutate():
+            counter += 1
+        self.assertEqual(counter, 24)
 
 
 if __name__ == '__main__':
