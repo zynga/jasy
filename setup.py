@@ -126,6 +126,7 @@ setup(
     'jasy.js.tokenize',
     'jasy.js.util',
     'jasy.test',
+    'jasy.test.js',
     'jasy.vcs',
   ],
 
