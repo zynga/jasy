@@ -72,8 +72,6 @@ requires:"""
 
     def createProject(self, requirements):
 
-        self.createRequirement("bob")
-
         path = os.path.join(tempfile.TemporaryDirectory().name, "myproject")
         os.makedirs(path)
 
@@ -140,7 +138,7 @@ requires:"""
 
 
     """
-    # jasy error: TODO catch if this ends in an endless loop
+    # TODO catch if this ends in an endless loop
     def test_crossed_requirements(self):
 
         enginePath = tempfile.TemporaryDirectory().name
