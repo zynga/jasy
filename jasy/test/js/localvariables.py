@@ -26,7 +26,7 @@ class Tests(unittest.TestCase):
     def test_basic(self):
         self.assertEqual(self.process(
             'function test(para1, para2) { var result = para1 + para2; return result; }'), 
-            'function test(b,c){var a=b+c;return a}'
+            'function test(c,b){var a=c+b;return a}'
         )
 
     def test_args(self):
@@ -50,7 +50,7 @@ class Tests(unittest.TestCase):
             return result * outer(alpha, beta, gamma); 
           }
           '''), 
-          'function outer(b,c,a){function f(){}var d=b*c+a;var e=d.alpha.beta.gamma;return d*outer(b,c,a)}'
+          'function outer(d,c,b){function e(){}var a=d*c+b;var f=a.alpha.beta.gamma;return a*outer(d,c,b)}'
         )
         
     def test_bind(self):
@@ -64,7 +64,7 @@ class Tests(unittest.TestCase):
               }); 
             };
             '''),
-            'function bind(a,b,c){return this.create(a,{self:b,args:null})};'
+            'function bind(b,a,c){return this.create(b,{self:a,args:null})};'
         )
 
     def test_closure(self):
@@ -80,7 +80,7 @@ class Tests(unittest.TestCase):
               }
             })(this);
             '''),
-            '(function(c){var a;var b=function(){var b=a}})(this);'
+            '(function(b){var a;var c=function(){var b=a}})(this);'
         )
 
     def test_conflict_generatedname(self):
@@ -126,7 +126,7 @@ class Tests(unittest.TestCase):
               var [desFirst, desSecond]=destruct(), after;
             }
             '''),
-            'function wrapper(){var c,f=5,e;var [a,b]=destruct(),d}'
+            'function wrapper(){var e,d=5,c;var [b,a]=destruct(),f}'
         )
 
     def test_exception_catchvar(self):
@@ -146,7 +146,7 @@ class Tests(unittest.TestCase):
               }
             }
             '''),
-            'function wrapper(){var b=1,d=b+2;try{something()}catch(a){var c=3;alert(a)}}'
+            'function wrapper(){var a=1,c=a+2;try{something()}catch(b){var d=3;alert(b)}}'
         )
 
     def test_exception(self):
@@ -180,7 +180,7 @@ class Tests(unittest.TestCase):
               }
             })(window);
             '''),
-            '(function(b){var c=a();function a(){a()}})(window);'
+            '(function(c){var b=a();function a(){a()}})(window);'
         )
 
     def test_inline_access(self):
@@ -255,7 +255,7 @@ class Tests(unittest.TestCase):
 
             }
             '''),
-            'function run(){var a=function(){var a=1};var b=function(){var a=2}}'
+            'function run(){var b=function(){var a=1};var a=function(){var a=2}}'
         )
 
     def test_reuse_names(self):
@@ -273,7 +273,7 @@ class Tests(unittest.TestCase):
 
             }
             '''),
-            'function run(){var a=function(){var a=1};var b=function(){var a=2}}'
+            'function run(){var b=function(){var a=1};var a=function(){var a=2}}'
         )
 
 

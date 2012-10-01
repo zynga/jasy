@@ -94,6 +94,8 @@ def __patch(node, blocked=None, enable=False, translate=None):
                 if declared:
                     names.update(declared)
                 
+                # We have to sort the set() before to support both Python 3.2 and 
+                # Python 3.3 with identical results.
                 namesSorted = list(reversed(sorted(sorted(names), key=lambda x: scope.accessed[x] if x in scope.accessed else 0)))
 
                 # Extend translation map by new replacements for locally 
