@@ -161,7 +161,7 @@ class ImgInfo(object):
         for cls in classes:
             img = cls(filename)
             if img.verify():
-                return img.size()
+                return (img.size()[0], img.size()[1], img.type())
 
         return None
 
