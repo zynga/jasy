@@ -108,6 +108,9 @@ class Proxy(object):
             result = self.mirror.read(mirrorId)
             if result is not None and self.enableDebug:
                 Console.info("Mirrored: %s" % url)
+            
+        if cherrypy.request.method in ("POST", "PUT"):
+            body = cherrypy.request.body.fp.read()
          
         # Check if we're in forced offline mode
         if self.enableOffline and result is None:
