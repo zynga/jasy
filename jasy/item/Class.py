@@ -106,7 +106,7 @@ class ClassItem(jasy.item.Abstract.AbstractItem):
 
             # Apply permutation
             if permutation:
-                Console.info("Patching tree with permutation: %s", permutation)
+                Console.debug("Patching tree with permutation: %s", permutation)
                 Console.indent()
                 jasy.js.clean.Permutate.patch(tree, permutation)
                 Console.outdent()

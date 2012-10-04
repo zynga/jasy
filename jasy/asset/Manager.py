@@ -229,7 +229,7 @@ class AssetManager:
         relative URLs to the main project.
 
         Note 1: This automatically updates all currently known assets to
-        reference the build profile.
+        reference the source profile.
 
         Note 2: This method only adds profile data to any assets when either
         there is no profile registered yet or override is set to True.

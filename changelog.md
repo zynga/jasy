@@ -1,7 +1,14 @@
 Jasy 1.0
 ========
 
+## New:
+
+- New Skeleton based on HTML5Boilerplate: https://github.com/zynga/jasy-html5-boilerplate
 - Added support for Python 3.3.
+
+
+## Improvements:
+
 - Fixed missing `jasy.test.js` package in installation package.
 - Added more unit tests for `Session` (permutations, locales, library support, etc.)
 
