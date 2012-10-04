@@ -524,6 +524,22 @@ class Tests(unittest.TestCase):
             'function foo(){"use strict";doSomething()}foo();'
         )
 
+    def test_return_in_elseif(self):
+        self.assertEqual(self.process(
+            '''
+            var a = function() {
+                if (yyy) {
+                    return;
+                } else if (zzz) {
+                    return;
+                } else {
+                    return;
+                }
+            };
+            '''),
+            'var a=function(){if(yyy)return;if(zzz){return}return};'
+        )
+
 
 
 if __name__ == '__main__':
