@@ -537,7 +537,7 @@ class Tests(unittest.TestCase):
                 }
             };
             '''),
-            'var a=function(){if(yyy)return;if(zzz){return}return};'
+            'var a=function(){if(yyy)return;if(zzz)return;return};'
         )
 
 

@@ -167,14 +167,8 @@ def __optimize(node, compressor):
             elsePart = None
         
         # Optimize using hook operator
-        if elsePart and thenPart.type == "return" and elsePart.type == "return":
+        if elsePart and thenPart.type == "return" and elsePart.type == "return" and hasattr(thenPart, "value") and hasattr(elsePart, "value"):
             # Combine return statement
-            if not hasattr(thenPart, "value"):
-                thenPart.value = Node.Node(None, "identifier")
-                thenPart.value.value = "undefined"
-            if not hasattr(elsePart, "value"):
-                elsePart.value = Node.Node(None, "identifier")
-                elsePart.value.value = "undefined"
             replacement = createReturn(createHook(condition, thenPart.value, elsePart.value))
             node.parent.replace(node, replacement)
             return
