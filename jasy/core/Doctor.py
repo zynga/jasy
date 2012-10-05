@@ -22,13 +22,13 @@ needs = [
     },
     {
         "packageName": "polib",
-        "minVersion": "1.0",
+        "minVersion": "1.0.1",
         "installPath": "'pip install polib'",
         "updatePath": "'pip install --upgrade polib'"
     },
     {
         "packageName": "requests",
-        "minVersion": "0.13",
+        "minVersion": "0.14",
         "installPath": "'pip install requests'",
         "updatePath": "'pip install --upgrade requests'"
     },
@@ -40,7 +40,7 @@ needs = [
     },
     {
         "packageName": "PyYAML",
-        "minVersion": "3.0",
+        "minVersion": "3.1",
         "installPath": "'pip install PyYAML'",
         "updatePath": "'pip install --upgrade PyYAML'"
     }
@@ -49,10 +49,16 @@ needs = [
 optionals = [
     {
         "packageName": "misaka",
-        "minVersion": "0.0",
+        "minVersion": "1.0",
         "installPath": "'pip install misaka'",
         "updatePath": ""
     },
+    {
+        "packageName": "sphinx",
+        "minVersion": "1.1",
+        "installPath": "'pip install sphinx'",
+        "updatePath": ""
+    },    
     {
         "packageName": "watchdog",
         "minVersion": "0.0",
@@ -61,7 +67,7 @@ optionals = [
     },
     {
         "packageName": "pil",
-        "minVersion": "0.0",
+        "minVersion": "1.0",
         "installPath": "'pip install git+https://github.com/zynga/pil-py3k'",
         "updatePath": ""
     }
