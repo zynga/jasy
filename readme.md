@@ -26,7 +26,6 @@ For details have a look at [the official documentation](https://github.com/zynga
 ## QuickStart
 
 * [Jasy Boilerplate Skeleton](https://github.com/zynga/jasy-html5-boilerplate) with [QuickStart guide](https://github.com/zynga/jasy-html5-boilerplate/wiki/QuickStart) for beginners
-* [Report an issue](https://github.com/zynga/jasy/issues/new)
 
 ## Related
 
