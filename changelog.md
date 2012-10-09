@@ -3,15 +3,22 @@ Jasy 1.0
 
 ## New:
 
-- New Skeleton based on HTML5Boilerplate: https://github.com/zynga/jasy-html5-boilerplate
-- Added support for Python 3.3.
-
+- New [Skeleton based on HTML5Boilerplate](https://github.com/zynga/jasy-html5-boilerplate)
+- Added support for Python 3.3. Bug fixes for local variable optimizer to correctly sort dictionaries.
+- Reworked Markdown/Highlighting support into new `jasy.core.Text` module and updated dependencies accordingly.
+- Refined asset export logic to better handle a few rare edge cases.
+- Added unit tests for `ImageInfo` and `Text` module.
+- Added more unit tests for `Session` (permutations, locales, library support, etc.)
 
 ## Improvements:
 
 - Fixed missing `jasy.test.js` package in installation package.
-- Added more unit tests for `Session` (permutations, locales, library support, etc.)
-
+- Fixed Image Info API to correctly return file type, too.
+- Updated requirements list to newest versions.
+- Added Sphinx to "jasy doctor"
+- Fixed one remaining issue with correctly supporting proxying PUT/POST requests.
+- Improved encoding support in proxy server.
+- Fixed issue in block optimizer with value-less returns in if-else-if constructs.
 
 Jasy 0.8.1
 ==========
