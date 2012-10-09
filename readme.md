@@ -23,6 +23,11 @@ For details have a look at [the official documentation](https://github.com/zynga
 * [Star Jasy](https://github.com/zynga/jasy/star)
 * [Report an issue](https://github.com/zynga/jasy/issues/new)
 
+## QuickStart
+
+* [Jasy Boilerplate Skeleton](https://github.com/zynga/jasy-html5-boilerplate) with [QuickStart guide](https://github.com/zynga/jasy-html5-boilerplate/wiki/QuickStart) for beginners
+* [Core Skeleton](https://github.com/zynga/core.git): Lightweight skeleton for using Jasy, Core and Api Browser with a set of pre-defined tasks.
+
 ## Related
 
 * [Core](http://github.com/zynga/core): Core Library for JavaScript projects. Ideal JS counterpart to Jasy.
@@ -30,9 +35,8 @@ For details have a look at [the official documentation](https://github.com/zynga
 * [Jasy Compat](http://github.com/zynga/jasy-compat): Showing how to integrate other JavaScript libraries into Jasy workflow
 * [Jasy Locale](https://github.com/zynga/jasy-locale): Demonstrating locale and translation support in Jasy/Core.
  
-## Skeletons
+## Test Skeletons
 
-* [Core Skeleton](https://github.com/zynga/core.git): Skeleton for using Jasy, Core and Api Browser (inside skeleton subfolder) with a set of pre-defined tasks.
 * [Jasy Skeleton](http://github.com/zynga/jasy-skeleton): Test skeletons for Jasy using different "jasy create" aspects
 * [Jasy Top Level Skeleton](https://github.com/zynga/jasy-toplevelskeleton): Demonstrating how a standalone skeleton might look like.
 
