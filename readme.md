@@ -26,7 +26,7 @@ For details have a look at [the official documentation](https://github.com/zynga
 ## QuickStart
 
 * [Jasy Boilerplate Skeleton](https://github.com/zynga/jasy-html5-boilerplate) with [QuickStart guide](https://github.com/zynga/jasy-html5-boilerplate/wiki/QuickStart) for beginners
-* [Core Skeleton](https://github.com/zynga/core.git): Lightweight skeleton for using Jasy, Core and Api Browser (inside skeleton subfolder) with a set of pre-defined tasks.
+* [Core Skeleton](https://github.com/zynga/core.git): Lightweight skeleton for using Jasy, Core and Api Browser with a set of pre-defined tasks.
 
 ## Related
 
