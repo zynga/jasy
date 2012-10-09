@@ -23,6 +23,11 @@ For details have a look at [the official documentation](https://github.com/zynga
 * [Star Jasy](https://github.com/zynga/jasy/star)
 * [Report an issue](https://github.com/zynga/jasy/issues/new)
 
+## QuickStart
+
+* [Jasy Boilerplate Skeleton](https://github.com/zynga/jasy-html5-boilerplate) with [QuickStart guide](https://github.com/zynga/jasy-html5-boilerplate/wiki/QuickStart) for beginners
+* [Report an issue](https://github.com/zynga/jasy/issues/new)
+
 ## Related
 
 * [Core](http://github.com/zynga/core): Core Library for JavaScript projects. Ideal JS counterpart to Jasy.
