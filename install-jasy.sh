@@ -80,6 +80,7 @@ function check_exec {
 
 # Python3 Install Action with homebrew for MacOS
 function do_install_python3_with_brew {
+  check_exec "brew" "Homebrew" "Please see install instructions here : http://bit.ly/Sv5lhA" "exit 1"
   track_command_install "python3" "brew" "start"
   brew update && brew install python3 
   track_command_install "python3" "brew" "complete"
@@ -177,7 +178,6 @@ function main {
   
   track_event START "\"platform\":\"$platform\""
   if [[ $platform == "MacOS" ]]; then
-    check_exec "brew" "Homebrew" "Please see install instructions here : http://bit.ly/Sv5lhA" "exit 1"
     check_python3_and_install
   else
     echo "This is an unsupported platform : $platform"
