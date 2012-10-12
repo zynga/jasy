@@ -105,8 +105,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(pngInfo.getInfo(), (16, 16, 'png'))
         self.assertEqual(jpgInfo.getInfo(), (32, 32, 'jpeg'))
 
-        print(jpgInfo.getInfo())
-
 
 
 
