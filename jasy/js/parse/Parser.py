@@ -1454,6 +1454,7 @@ def PrimaryExpression(tokenizer, staticContext):
             while True:
                 tokenType = tokenizer.get()
                 tokenValue = getattr(tokenizer.token, "value", None)
+                tokenSource = getattr(tokenizer.token, "source", None)
                 comments = tokenizer.getComments()
                 
                 if tokenValue in ("get", "set") and tokenizer.peek() == "identifier":
@@ -1464,6 +1465,10 @@ def PrimaryExpression(tokenizer, staticContext):
                     builder.OBJECTINIT_addProperty(node, fd)
                     
                 else:
+
+                    if tokenType == "string":
+                        setattr(tokenizer.token, "value", tokenSource)
+
                     if tokenType == "identifier" or tokenType == "number" or tokenType == "string":
                         id = builder.PRIMARY_build(tokenizer, "identifier")
                         builder.PRIMARY_finish(id)

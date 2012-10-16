@@ -194,7 +194,6 @@ class Compressor:
     def type_property_init(self, node):
         key = self.compress(node[0])
         value = self.compress(node[1])
-
         if type(key) in (int, float):
             pass
 
@@ -203,7 +202,7 @@ class Compressor:
 
         # Protect keywords and special characters
         elif key in keywords or key in futureReserved or not self.__simple_property.match(key):
-            key = self.type_string(node[0])
+            key = self.type_string(node[0]).replace(r'\\u', r'\u')
 
         return "%s:%s" % (key, value)
         

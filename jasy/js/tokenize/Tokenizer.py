@@ -81,7 +81,7 @@ assignOperators = ["|", "^", "&", "<<", ">>", ">>>", "+", "-", "*", "/", "%"]
 #
 
 class Token: 
-    __slots__ = ["type", "start", "line", "assignOp", "end", "value"]
+    __slots__ = ["type", "start", "line", "assignOp", "end", "value", "source"]
 
 
 class ParseError(Exception):
@@ -406,10 +406,13 @@ class Tokenizer(object):
             ch = input[self.cursor]
             self.cursor += 1
 
+        token.source = input[token.start+1:self.cursor-1]
+
         if hasEscapes:
             token.value = eval(input[token.start:self.cursor])
+
         else:
-            token.value = input[token.start+1:self.cursor-1]
+            token.value = token.source
 
 
     def lexRegExp(self, ch):
