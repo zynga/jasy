@@ -165,6 +165,9 @@ class Proxy(object):
             if not name.lower() in self.__blockHeaders:
                 cherrypy.response.headers[name] = result.headers[name]
 
+        # Set the proxyed reply status to the response status
+        cherrypy.response.status = result.status_code
+
         # Append special header to all responses
         cherrypy.response.headers["X-Jasy-Version"] = jasyVersion
         
