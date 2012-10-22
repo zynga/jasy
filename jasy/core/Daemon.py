@@ -24,28 +24,28 @@ if FileSystemEventHandler:
         """
 
         def on_moved(self, event):
-        super(JasyEventHandler, self).on_moved(event)
+            super(JasyEventHandler, self).on_moved(event)
 
-        what = 'directory' if event.is_directory else 'file'
-        Console.info("Moved %s: from %s to %s", what, event.src_path, event.dest_path)
+            what = 'directory' if event.is_directory else 'file'
+            Console.info("Moved %s: from %s to %s", what, event.src_path, event.dest_path)
 
         def on_created(self, event):
-        super(JasyEventHandler, self).on_created(event)
+            super(JasyEventHandler, self).on_created(event)
 
-        what = 'directory' if event.is_directory else 'file'
-        Console.info("Created %s: %s", what, event.src_path)
+            what = 'directory' if event.is_directory else 'file'
+            Console.info("Created %s: %s", what, event.src_path)
 
         def on_deleted(self, event):
-        super(JasyEventHandler, self).on_deleted(event)
+            super(JasyEventHandler, self).on_deleted(event)
 
-        what = 'directory' if event.is_directory else 'file'
-        Console.info("Deleted %s: %s", what, event.src_path)
+            what = 'directory' if event.is_directory else 'file'
+            Console.info("Deleted %s: %s", what, event.src_path)
 
         def on_modified(self, event):
-        super(JasyEventHandler, self).on_modified(event)
+            super(JasyEventHandler, self).on_modified(event)
 
-        what = 'directory' if event.is_directory else 'file'
-        Console.info("Modified %s: %s", what, event.src_path)
+            what = 'directory' if event.is_directory else 'file'
+            Console.info("Modified %s: %s", what, event.src_path)
 
 
 def watch(path, callback):
