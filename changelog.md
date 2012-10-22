@@ -1,3 +1,10 @@
+Jasy 1.0.1
+==========
+
+- Fixed unicode issues
+- Fixed HTTP status code issues (404 did not work)
+
+
 Jasy 1.0
 ========
 
