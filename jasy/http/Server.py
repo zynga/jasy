@@ -13,7 +13,7 @@ from jasy.core.Types import CaseInsensitiveDict
 from jasy.core.Util import getKey
 from jasy import __version__ as jasyVersion
 
-Result = namedtuple('Result', ['headers', 'content'])
+Result = namedtuple('Result', ['headers', 'content', 'status_code'])
 
 # Disable logging HTTP request being created
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -153,10 +153,10 @@ class Proxy(object):
                 raise cherrypy.HTTPError(403)
 
             # Storing result into mirror
-            if self.enableMirror and cherrypy.request.method == "GET":
+            if self.enableMirror and cherrypy.request.method == "GET" and result.status_code == 200:
 
                 # Wrap result into mirrorable entry
-                resultCopy = Result(result.headers, result.content)
+                resultCopy = Result(result.headers, result.content, result.status_code)
                 self.mirror.store(mirrorId, resultCopy)
         
 
