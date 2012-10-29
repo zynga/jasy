@@ -1,6 +1,6 @@
 Pygments
 polib
-requests=0.14.1
+requests==0.14.1
 cherrypy
 pyyaml
 sphinx
