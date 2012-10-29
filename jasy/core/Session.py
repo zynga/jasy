@@ -226,8 +226,9 @@ class Session():
 
         # Execute given file. Using clean new global environment
         # but add additional decorator for allowing to define shared methods
+        # and the session object (self).
         code = open(fileName, "r", encoding=encoding).read()
-        exec(compile(code, os.path.abspath(fileName), "exec"), {"share" : share})
+        exec(compile(code, os.path.abspath(fileName), "exec"), {"share" : share, "session" : self})
 
         # Export destination name as global    
         Console.debug("Importing %s shared methods under %s...", counter, objectName)
