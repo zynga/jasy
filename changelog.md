@@ -1,3 +1,11 @@
+Jasy 1.0.2
+==========
+
+- Path in session object into libraries so that these can execute information about other projects etc.
+- Limit HTTP mirroring feature with additional flag for only mirror responses with status code of 200.
+- Enforce "requests" version 0.14.1 in requirements.txt as 0.14.2 is buggy in Python 3. Waiting for 0.14.3 (See also: https://github.com/kennethreitz/requests/issues/916)
+
+
 Jasy 1.0.1
 ==========
 
