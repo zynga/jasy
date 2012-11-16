@@ -350,7 +350,7 @@ class AssetManager:
             hints.update(classObj.getMetaData(self.__session.getCurrentPermutation()).assets)
         
         # Compile filter expressions
-        matcher = "^%s$" % "|".join(["(%s)" % fnmatch.translate(hint) for hint in hints])
+        matcher = "^%s$" % "|".join(["(?:%s)" % fnmatch.translate(hint) for hint in hints])
         Console.debug("Compiled asset matcher: %s" % matcher)
         
         return re.compile(matcher)
