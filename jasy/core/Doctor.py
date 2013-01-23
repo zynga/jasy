@@ -4,7 +4,7 @@
 #
 
 import jasy.core.Console as Console
-from distutils.version import StrictVersion
+from distutils.version import LooseVersion
 
 try:
     import pip
@@ -58,7 +58,7 @@ optionals = [
         "minVersion": "1.1",
         "installPath": "'pip install sphinx'",
         "updatePath": ""
-    },    
+    },
     {
         "packageName": "watchdog",
         "minVersion": "0.0",
@@ -81,7 +81,7 @@ def doCompleteDoctor():
 
     dists = [dist for dist in pip.get_installed_distributions()]
     keys = [dist.key for dist in pip.get_installed_distributions()]
-    
+
     versions = {}
     for dist in dists:
         versions[dist.key] = dist.version
@@ -91,8 +91,8 @@ def doCompleteDoctor():
         Console.indent()
         if packageName.lower() in keys:
             Console.info(Console.colorize('Found installation', "green"))
-            if StrictVersion(minVersion) > StrictVersion("0.0"):
-                if StrictVersion(versions[packageName.lower()]) >= StrictVersion(minVersion):
+            if LooseVersion(minVersion) > LooseVersion("0.0"):
+                if LooseVersion(versions[packageName.lower()]) >= LooseVersion(minVersion):
                     Console.info(Console.colorize('Version is OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]), "green"))
                 else:
                     Console.info(Console.colorize(Console.colorize('- Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
@@ -124,15 +124,15 @@ def doInitializationDoctor():
 
     dists = [dist for dist in pip.get_installed_distributions()]
     keys = [dist.key for dist in pip.get_installed_distributions()]
-    
+
     versions = {}
     for dist in dists:
         versions[dist.key] = dist.version
 
     def checkSingleInstallation(keys, versions, packageName, minVersion, installPath, updatePath):
         if packageName.lower() in keys:
-            if StrictVersion(minVersion) > StrictVersion("0.0"):
-                if StrictVersion(versions[packageName.lower()]) < StrictVersion(minVersion):
+            if LooseVersion(minVersion) > LooseVersion("0.0"):
+                if LooseVersion(versions[packageName.lower()]) < LooseVersion(minVersion):
                     Console.info(Console.colorize(Console.colorize('Jasy requirement error: "%s"' % packageName, "red"), "bold"))
                     Console.indent()
                     Console.info(Console.colorize(Console.colorize('Version is NOT OK (needed: %s installed: %s)' % (minVersion, versions[packageName.lower()]) , "red"), "bold"))
@@ -153,7 +153,7 @@ def doInitializationDoctor():
 
     for entry in needs:
         if not checkSingleInstallation(keys, versions, entry["packageName"], entry["minVersion"], entry["installPath"], entry["updatePath"]):
-            allOk = False   
+            allOk = False
 
     return allOk
 
