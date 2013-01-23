@@ -1,3 +1,8 @@
+Jasy 1.0.3
+==========
+
+- Fix version comparison in Jasy doctor. See https://github.com/zynga/jasy/issues/119
+
 Jasy 1.0.2
 ==========
 
@@ -43,7 +48,7 @@ Jasy 0.8.1
 - Adding support for cloning sub modules (git only)
 - Adding support for executing setup commands (defined in jasyproject.yaml/json - section "setup"). Allows you to run grunt, ant, etc. before letting Jasy scan the project content.
 - Added support for explicit Git urls ("git+" + url) for later support of adding support for bazaar, hg, svn, etc.
-- New unit tests for `jasy.core.Cache`, `jasy.core.Config`, `jasy.vcs.Repository.isUrl()`, `jasy.core.Options`, `jasy.core.Project`, 
+- New unit tests for `jasy.core.Cache`, `jasy.core.Config`, `jasy.vcs.Repository.isUrl()`, `jasy.core.Options`, `jasy.core.Project`,
 - Correctly support proxying of HTTP `body` in `POST` and `PUT` requests when using remote proxy features of integrated web server.
 - Reworked travis.ci tests to test more and better and enabled for all branches on our Github account.
 - Support for (alternative) string formatted commands in `jasy.core.Util.executeCommand()`. Uses `shlex` to parse string into array.
@@ -157,9 +162,9 @@ Mainly fixes bugs around scaffolding and interactive configuration support. Also
 
 Other changes:
 
-- Added support for destination folder for created applications. 
-- Changed naming of built-in internatal variables. 
-- Added support for a flat export of `Config` objects. 
+- Added support for destination folder for created applications.
+- Changed naming of built-in internatal variables.
+- Added support for a flat export of `Config` objects.
 - Cleanup of old binary package support.
 
 
@@ -172,7 +177,7 @@ Jasy 0.8-beta1
 
 - Creating new projects from scratch. Each project is able to offer one or more skeletons.
   - These "origin" projects can be available locally or can be auto-cloned from a remote repository (*GIT* only at the moment)
-- Skeletons might have placeholders which are dynamically replaced with custom values e.g. name of the project. 
+- Skeletons might have placeholders which are dynamically replaced with custom values e.g. name of the project.
   - The placeholder format is defined as `$${name}` to reduce conflicts with existing templating solutions
   - File patcher can handle non UTF-8 files and supports detection of binary files
 - Skeletons are able to define configuration questions to the user (`ask()`, `set()`)
@@ -249,7 +254,7 @@ Jasy 0.7.4
 ==========
 
 - Fixed issues with correctly loading cache file on some systems
-- Revamped project initialization phase to be more efficient and logical while displaying a nice dependency tree during init. 
+- Revamped project initialization phase to be more efficient and logical while displaying a nice dependency tree during init.
 - Improved version detection and handling inside `Session`/`Project`
 - Internal Repository API is now less Git specific
 - Made error reporting for API errors optional on console using new "printErrors" parameter in `Writer.write()`
@@ -348,8 +353,8 @@ Jasy 0.6-beta1
 ==============
 
 - Support for checking links, param and return types inside API docs.
-- Support API docs for dotted parameters (object parameters with specific required sub keys). 
-- Support API doc generation for plain JavaScript statics/members (using namespace={} or namespace.prototype={}) 
+- Support API docs for dotted parameters (object parameters with specific required sub keys).
+- Support API doc generation for plain JavaScript statics/members (using namespace={} or namespace.prototype={})
 - Supporting recursive project dependencies aka project A uses B uses C and A does not know anything about C.
 - Improve support for 3rd party JavaScript libraries not matching the Jasy requirements (no jasyproject.conf or matching file layout). This will be implemented moving the configuration and a manual file layout structure into the project requiring this 3rd party library.
 - Support for executing and manipulating tasks from other projects e.g. generating build version of project A from project B into a destination folder of project B.
@@ -392,7 +397,7 @@ Jasy 0.5-beta8
 ==============
 
 - Improved markdown handling
-- Stabilization when errors happen during API generation 
+- Stabilization when errors happen during API generation
 - Added assets and other meta information to API data
 
 Jasy 0.5-beta7
@@ -437,7 +442,7 @@ Jasy 0.5-beta1
 ==============
 
 - Initial release with support for generating API data as JSON files
-- Support for generating session based API data with class/interface linking 
+- Support for generating session based API data with class/interface linking
 - Changed checksum computing to SHA1 to bring it in sync with changes in Core library
 - Improved installation process with dependency handling etc.
 
