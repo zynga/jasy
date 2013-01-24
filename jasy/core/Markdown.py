@@ -53,6 +53,7 @@ def code2highlight(html):
         # for some reason pygments escapes our code once again so we need to reverse it twice
         return unescape(highlight(code, lexer, formatter))
     
+    print(replace);
     return codeblock.sub(replace, html)
 
 

@@ -169,7 +169,7 @@ class Comment():
                 else:
                     highlightedText += "\n" + Markdown.markdown(b["text"], True)
                     plainText += "\n\n" + b["text"] + "\n\n"
-                    combinedText += "\n" + b["text"] + "\n\n"
+                    combinedText += "\n" + "<pre><code>" + b["text"] + "</code></pre>" + "\n\n"
 
             # Store original, unstripped text for later Markdown conversion
             self.__processedText = combinedText.strip()
