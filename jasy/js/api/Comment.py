@@ -6,6 +6,7 @@
 import re
 import jasy.core.Markdown as Markdown
 from jasy.core.Error import JasyError
+from jasy.core.Logging import *
 from jasy.js.util import *
 
 __all__ = ["CommentException", "Comment"]
