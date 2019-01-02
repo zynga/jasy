@@ -1,4 +1,6 @@
-[![Build Status](https://secure.travis-ci.org/zynga/jasy.png?branch=jasy08)](http://travis-ci.org/zynga/jasy)
+**Please note:** This project is deprecated at Zynga and is no longer maintained.
+
+---
 
 Jasy - Web Tooling Framework
 ============================
